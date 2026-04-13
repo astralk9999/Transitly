@@ -1,0 +1,52 @@
+name: transitly
+description: "Next-generation urban transit companion for Jerez de la Frontera"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.9.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+
+  # State management
+  flutter_riverpod: ^2.6.1
+
+  # Navigation
+  go_router: ^14.8.1
+
+  # Fonts
+  google_fonts: ^6.2.1
+
+  # Maps
+  flutter_map: ^7.0.2
+  latlong2: ^0.9.1
+
+  # Icons
+  lucide_icons: ^0.257.0
+
+  # UI
+  shimmer: ^3.0.0
+
+  # Utils
+  intl: ^0.20.2
+  equatable: ^2.0.7
+  share_plus: ^10.1.4
+  url_launcher: ^6.3.1
+  image_picker: ^1.1.2
+  path_provider: ^2.1.5
+  connectivity_plus: ^6.1.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/mock/

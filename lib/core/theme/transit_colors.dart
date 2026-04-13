@@ -1,37 +1,85 @@
 import 'package:flutter/material.dart';
 
-abstract final class TransitColors {
-  // Primary palette
-  static const Color signalGreen = Color(0xFF00C896);
-  static const Color background = Color(0xFF0C0C0C);
-  static const Color surface = Color(0xFF1A1A1A);
-  static const Color surfaceLight = Color(0xFF2A2A2A);
-  static const Color card = Color(0xFF1E1E1E);
+abstract class TransitColorScheme {
+  // Backgrounds
+  Color get bgRoot;
+  Color get bgSidebar;
+  Color get bgSurface;
+  Color get bgRaised;
+  Color get bgInput;
+
+  // Borders
+  Color get border;
+  Color get borderFocus;
+
+  // Accent
+  Color get accent;
+  Color get accentBg;
+
+  // State
+  Color get stateOnRoute;
+  Color get stateOnTime;
+  Color get stateDelay;
+  Color get stateCancelled;
+  Color get stateIdle;
 
   // Text
-  static const Color textPrimary = Color(0xFFFFFFFF);
-  static const Color textSecondary = Color(0xFFB0B0B0);
-  static const Color textTertiary = Color(0xFF707070);
-  static const Color textOnGreen = Color(0xFF0C0C0C);
+  Color get textHi;
+  Color get textMid;
+  Color get textLo;
 
-  // Semantic
-  static const Color error = Color(0xFFFF4D4D);
-  static const Color warning = Color(0xFFFFB300);
-  static const Color info = Color(0xFF42A5F5);
-  static const Color success = Color(0xFF66BB6A);
+  factory TransitColorScheme.of(bool isDark) =>
+      isDark ? const TransitDarkColors() : const TransitLightColors();
+}
 
-  // Status
-  static const Color onTime = signalGreen;
-  static const Color delayed = warning;
-  static const Color cancelled = error;
+class TransitDarkColors implements TransitColorScheme {
+  const TransitDarkColors();
 
-  // Capacity
-  static const Color seatsAvailable = signalGreen;
-  static const Color halfFull = warning;
-  static const Color full = error;
+  @override Color get bgRoot => const Color(0xFF0C0C0C);
+  @override Color get bgSidebar => const Color(0xFF0A0A0A);
+  @override Color get bgSurface => const Color(0xFF131313);
+  @override Color get bgRaised => const Color(0xFF1A1A1A);
+  @override Color get bgInput => const Color(0xFF131313);
 
-  // Divider
-  static const Color divider = Color(0xFF2A2A2A);
-  static const Color shimmerBase = Color(0xFF1A1A1A);
-  static const Color shimmerHighlight = Color(0xFF2A2A2A);
+  @override Color get border => const Color(0xFF252525);
+  @override Color get borderFocus => const Color(0xFF3A3A3A);
+
+  @override Color get accent => const Color(0xFF00C896);
+  @override Color get accentBg => const Color(0xFF001E15);
+
+  @override Color get stateOnRoute => const Color(0xFF00A0FF);
+  @override Color get stateOnTime => const Color(0xFFB0FF00);
+  @override Color get stateDelay => const Color(0xFFFF8C00);
+  @override Color get stateCancelled => const Color(0xFFFF3B3B);
+  @override Color get stateIdle => const Color(0xFF3A3A3A);
+
+  @override Color get textHi => const Color(0xFFF0F0F0);
+  @override Color get textMid => const Color(0xFF7A7A7A);
+  @override Color get textLo => const Color(0xFF3A3A3A);
+}
+
+class TransitLightColors implements TransitColorScheme {
+  const TransitLightColors();
+
+  @override Color get bgRoot => const Color(0xFFF9F9F7);
+  @override Color get bgSidebar => const Color(0xFFF5F4F0);
+  @override Color get bgSurface => const Color(0xFFFFFFFF);
+  @override Color get bgRaised => const Color(0xFFF0EFEB);
+  @override Color get bgInput => const Color(0xFFFFFFFF);
+
+  @override Color get border => const Color(0xFFE0DFD9);
+  @override Color get borderFocus => const Color(0xFFC8C7C1);
+
+  @override Color get accent => const Color(0xFF00A87A);
+  @override Color get accentBg => const Color(0xFFE6F9F3);
+
+  @override Color get stateOnRoute => const Color(0xFF00A0FF);
+  @override Color get stateOnTime => const Color(0xFFB0FF00);
+  @override Color get stateDelay => const Color(0xFFFF8C00);
+  @override Color get stateCancelled => const Color(0xFFFF3B3B);
+  @override Color get stateIdle => const Color(0xFF3A3A3A);
+
+  @override Color get textHi => const Color(0xFF111111);
+  @override Color get textMid => const Color(0xFF666660);
+  @override Color get textLo => const Color(0xFFAAAAAA);
 }

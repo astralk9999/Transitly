@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class MapTab extends StatelessWidget {
+import '../../../shared/providers/theme_provider.dart';
+import '../../map/transit_map.dart';
+
+class MapTab extends ConsumerWidget {
   const MapTab({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeModeProvider);
+    final isDark = themeMode == ThemeMode.dark ||
+        (themeMode == ThemeMode.system &&
+            MediaQuery.platformBrightnessOf(context) == Brightness.dark);
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: const Center(
-        child: Text('PANTALLA: MAPA',
-            style: TextStyle(color: Colors.white54, fontFamily: 'monospace')),
-      ),
+      body: TransitMap(isDark: isDark),
     );
   }
 }

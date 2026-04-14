@@ -9,6 +9,7 @@ import 'package:latlong2/latlong.dart';
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../data/mock/mock_data_service.dart';
+import '../../../data/mock/mock_realtime_service.dart';
 import '../../../shared/models/route_model.dart';
 import '../../../shared/models/stop_model.dart';
 import '../../../shared/providers/theme_provider.dart';
@@ -132,6 +133,8 @@ class _MapTabState extends ConsumerState<MapTab> {
     final c = TransitColorScheme.of(isDark);
 
     final mockData = ref.watch(mockDataServiceProvider);
+    final realtimeTrips = ref.watch(realtimeTripsProvider);
+    final liveTrips = realtimeTrips.valueOrNull ?? mockData.activeTrips;
     final routes = mockData.routes;
     final stops = mockData.stops;
 
@@ -175,7 +178,7 @@ class _MapTabState extends ConsumerState<MapTab> {
             stops: stops,
             hubStopIds: hubStopIds,
             selectedRouteId: _selectedRouteId,
-            activeTrips: mockData.activeTrips,
+            activeTrips: liveTrips,
             routeMap: routeMap,
             onMapTap: _onMapTap,
             onStopTap: (stop) => showStopInfoSheet(

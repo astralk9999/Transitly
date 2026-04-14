@@ -6,6 +6,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../data/mock/mock_data_service.dart';
+import '../../data/mock/mock_realtime_service.dart';
+import '../../shared/models/active_trip_model.dart';
 import '../../shared/models/enums.dart';
 import '../../shared/models/route_stop_model.dart';
 import '../../shared/models/stop_model.dart';
@@ -32,6 +34,9 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
     final mockData = ref.watch(mockDataServiceProvider);
+    final realtimeTrips = ref.watch(realtimeTripsProvider);
+    // Watch clock for countdown refresh
+    ref.watch(realtimeClockProvider);
     final route = mockData.getRouteById(widget.routeId);
 
     if (route == null) {
@@ -41,7 +46,15 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
       );
     }
 
-    final activeTrip = mockData.getActiveTripForRoute(widget.routeId);
+    // Use realtime trip if available
+    final tripsList = realtimeTrips.valueOrNull ?? mockData.activeTrips;
+    ActiveTripModel? activeTrip;
+    for (final t in tripsList) {
+      if (t.routeId == widget.routeId && t.status != TripStatus.cancelled) {
+        activeTrip = t;
+        break;
+      }
+    }
     final routeStopsList = mockData.routeStops[widget.routeId] ?? [];
     final sortedRouteStops = List<RouteStopModel>.from(routeStopsList)
       ..sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
@@ -448,10 +461,14 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
                       ),
                     ),
                     const SizedBox(width: 12),
-                    Text(
-                      'en ${entry.diffMinutes} min',
-                      style: TransitTypography.bodySecondary(
-                          entry.isNext ? c.accent : c.textMid),
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 200),
+                      child: Text(
+                        'en ${entry.diffMinutes} min',
+                        key: ValueKey(entry.diffMinutes),
+                        style: TransitTypography.bodySecondary(
+                            entry.isNext ? c.accent : c.textMid),
+                      ),
                     ),
                   ],
                 ),

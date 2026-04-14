@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../data/mock/mock_data_service.dart';
+import '../../../data/mock/mock_realtime_service.dart';
 import '../../../shared/models/models.dart';
 import '../../../shared/widgets/route_card.dart';
 import '../../../shared/widgets/shimmer_skeleton.dart';
@@ -35,6 +36,16 @@ class _HomeTabState extends ConsumerState<HomeTab> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
     final mockData = ref.watch(mockDataServiceProvider);
+    final realtimeTrips = ref.watch(realtimeTripsProvider);
+    // Watch clock for countdown refresh
+    ref.watch(realtimeClockProvider);
+
+    // Merge realtime trips into a lookup
+    final activeTripsMap = <String, ActiveTripModel>{};
+    final tripsList = realtimeTrips.valueOrNull ?? mockData.activeTrips;
+    for (final t in tripsList) {
+      activeTripsMap[t.routeId] = t;
+    }
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -42,7 +53,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
         duration: const Duration(milliseconds: 300),
         child: _loading
             ? _buildShimmer(context)
-            : _buildContent(context, c, mockData),
+            : _buildContent(context, c, mockData, activeTripsMap),
       ),
     );
   }
@@ -77,8 +88,8 @@ class _HomeTabState extends ConsumerState<HomeTab> {
     );
   }
 
-  Widget _buildContent(
-      BuildContext context, TransitColorScheme c, MockDataService mockData) {
+  Widget _buildContent(BuildContext context, TransitColorScheme c,
+      MockDataService mockData, Map<String, ActiveTripModel> activeTripsMap) {
     final favorites = mockData.favorites;
     final favRouteIds = favorites.map((f) => f.routeId).toSet();
 
@@ -135,18 +146,20 @@ class _HomeTabState extends ConsumerState<HomeTab> {
               ...favorites.map((fav) {
                 final route = mockData.getRouteById(fav.routeId);
                 if (route == null) return const SizedBox.shrink();
-                final trip = mockData.getActiveTripForRoute(route.id);
+                final trip = activeTripsMap[route.id] ??
+                    mockData.getActiveTripForRoute(route.id);
                 final stopsForRoute = mockData.getStopsForRoute(route.id);
                 final next =
                     mockData.getNextDepartures(route.id, '', 1);
                 final mins = next.isNotEmpty ? _minutesUntil(next.first.departureTime) : null;
+                final minsStr = mins != null ? '${mins}m' : null;
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 8),
                   child: RouteCard(
                     route: route,
                     activeTrip: trip,
                     remainingStops: stopsForRoute.length,
-                    estimatedMinutes: mins != null ? '${mins}m' : null,
+                    estimatedMinutes: minsStr,
                     onTap: () => context.push('/route/${route.id}'),
                   ),
                 );
@@ -204,12 +217,16 @@ class _HomeTabState extends ConsumerState<HomeTab> {
               children: [
                 Text(nextTime, style: TransitTypography.stopTime(c.textMid)),
                 const SizedBox(width: 12),
-                Text(
-                  mins != null ? 'en ${mins}m' : '--',
-                  style: GoogleFonts.ibmPlexMono(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                    color: c.accent,
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 200),
+                  child: Text(
+                    mins != null ? 'en ${mins}m' : '--',
+                    key: ValueKey(mins),
+                    style: GoogleFonts.ibmPlexMono(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      color: c.accent,
+                    ),
                   ),
                 ),
                 const Spacer(),
@@ -292,9 +309,13 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                     Text(time, style: TransitTypography.stopTime(c.textHi)),
                     if (mins != null) ...[
                       const SizedBox(width: 4),
-                      Text(
-                        '${mins}m',
-                        style: TransitTypography.bodySmall(c.accent),
+                      AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 200),
+                        child: Text(
+                          '${mins}m',
+                          key: ValueKey('$routeId-$mins'),
+                          style: TransitTypography.bodySmall(c.accent),
+                        ),
                       ),
                     ],
                     const SizedBox(width: 4),

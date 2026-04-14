@@ -1,17 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../../data/mock/mock_data_service.dart';
+import '../../../shared/models/route_model.dart';
 import '../../../shared/models/stop_model.dart';
 import '../../../shared/providers/theme_provider.dart';
+import '../../map/map_config.dart';
+import '../../map/sheets/stop_info_sheet.dart';
+import '../../map/sheets/trip_info_sheet.dart';
 import '../../map/transit_map.dart';
+import '../../map/widgets/map_controls.dart';
 
-class MapTab extends ConsumerWidget {
+class MapTab extends ConsumerStatefulWidget {
   const MapTab({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MapTab> createState() => _MapTabState();
+}
+
+class _MapTabState extends ConsumerState<MapTab> {
+  final _mapController = MapController();
+
+  @override
+  Widget build(BuildContext context) {
     final themeMode = ref.watch(themeModeProvider);
     final isDark = themeMode == ThemeMode.dark ||
         (themeMode == ThemeMode.system &&
@@ -24,7 +37,9 @@ class MapTab extends ConsumerWidget {
     // Build routePaths from polylines or fallback to stop coords
     final routePaths = <String, List<LatLng>>{};
     final routeStopsMap = <String, List<StopModel>>{};
+    final routeMap = <String, RouteModel>{};
     for (final route in routes) {
+      routeMap[route.id] = route;
       final polyCoords = mockData.polylines[route.id];
       if (polyCoords != null && polyCoords.isNotEmpty) {
         routePaths[route.id] =
@@ -49,11 +64,46 @@ class MapTab extends ConsumerWidget {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: TransitMap(
         isDark: isDark,
+        controller: _mapController,
         routes: routes,
         routePaths: routePaths,
         routeStopsMap: routeStopsMap,
         stops: stops,
         hubStopIds: hubStopIds,
+        activeTrips: mockData.activeTrips,
+        routeMap: routeMap,
+        onStopTap: (stop) => showStopInfoSheet(
+          context,
+          stop: stop,
+          mockData: mockData,
+        ),
+        onTripTap: (trip) => showTripInfoSheet(
+          context,
+          trip: trip,
+          mockData: mockData,
+        ),
+        overlayWidgets: [
+          MapControls(
+            isDark: isDark,
+            onZoomIn: () {
+              final cam = _mapController.camera;
+              _mapController.move(cam.center, cam.zoom + 1);
+            },
+            onZoomOut: () {
+              final cam = _mapController.camera;
+              _mapController.move(cam.center, cam.zoom - 1);
+            },
+            onCenter: () {
+              _mapController.move(
+                  MapConfig.defaultCenter, MapConfig.defaultZoom);
+            },
+            onFilter: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Filtros: próximamente')),
+              );
+            },
+          ),
+        ],
       ),
     );
   }

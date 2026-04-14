@@ -58,6 +58,20 @@ void showStopInfoSheet(
               '${stop.municipality} · ${stop.officialCode}',
               style: TransitTypography.bodySecondary(c.textMid),
             ),
+            // Service icons
+            if (stop.hasShelter || stop.isAccessible || stop.hasBench) ...[
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  if (stop.hasShelter)
+                    _serviceIcon(Icons.night_shelter_outlined, 'Marquesina', c),
+                  if (stop.isAccessible)
+                    _serviceIcon(Icons.accessible, 'Accesible', c),
+                  if (stop.hasBench)
+                    _serviceIcon(Icons.chair_outlined, 'Banco', c),
+                ],
+              ),
+            ],
             const SizedBox(height: 16),
             // Next arrivals
             Text(
@@ -117,7 +131,7 @@ void showStopInfoSheet(
                   ),
                 ),
                 child: Text(
-                  'VER DETALLE',
+                  'VER DETALLE →',
                   style: TransitTypography.sectionTitle(c.accent),
                 ),
               ),
@@ -126,5 +140,19 @@ void showStopInfoSheet(
         ),
       );
     },
+  );
+}
+
+Widget _serviceIcon(IconData icon, String label, TransitColorScheme c) {
+  return Padding(
+    padding: const EdgeInsets.only(right: 12),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 14, color: c.textMid),
+        const SizedBox(width: 4),
+        Text(label, style: TransitTypography.bodySmall(c.textMid)),
+      ],
+    ),
   );
 }

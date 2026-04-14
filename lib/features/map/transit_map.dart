@@ -29,6 +29,7 @@ class TransitMap extends StatefulWidget {
     this.routeMap = const {},
     this.onTripTap,
     this.overlayWidgets = const [],
+    this.onMapTap,
   });
 
   final bool isDark;
@@ -47,6 +48,7 @@ class TransitMap extends StatefulWidget {
   final Map<String, RouteModel> routeMap;
   final ValueChanged<ActiveTripModel>? onTripTap;
   final List<Widget> overlayWidgets;
+  final void Function(TapPosition, LatLng)? onMapTap;
 
   @override
   State<TransitMap> createState() => _TransitMapState();
@@ -92,6 +94,7 @@ class _TransitMapState extends State<TransitMap> {
             initialZoom: widget.zoom ?? MapConfig.defaultZoom,
             minZoom: MapConfig.minZoom,
             maxZoom: MapConfig.maxZoom,
+            onTap: widget.onMapTap,
             onPositionChanged: (camera, hasGesture) {
               if (camera.zoom != _currentZoom) {
                 setState(() => _currentZoom = camera.zoom);

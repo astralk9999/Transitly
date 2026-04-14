@@ -6,6 +6,7 @@ import '../../../core/theme/transit_typography.dart';
 import '../../../data/mock/mock_data_service.dart';
 import '../../../shared/models/active_trip_model.dart';
 import '../../../shared/models/enums.dart';
+import '../../../shared/widgets/route_card.dart';
 
 void showTripInfoSheet(
   BuildContext context, {
@@ -64,35 +65,15 @@ void showTripInfoSheet(
                 ),
               ),
             ),
-            // Route code + name
-            Row(
-              children: [
-                if (route != null)
-                  Container(
-                    width: 48,
-                    height: 28,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: route.routeColor,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: Text(
-                      route.code,
-                      style: TransitTypography.routeCodeSmall(Colors.white),
-                    ),
-                  ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    route?.name ?? trip.routeId,
-                    style: TransitTypography.heading(c.textHi),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
+            // RouteCard
+            if (route != null)
+              RouteCard(
+                route: route,
+                activeTrip: trip,
+                remainingStops: totalStops,
+              ),
             const SizedBox(height: 12),
-            // Status
+            // Status detail
             Row(
               children: [
                 Container(
@@ -130,7 +111,6 @@ void showTripInfoSheet(
               'Capacidad: ${trip.capacity.label}',
               style: TransitTypography.bodySecondary(c.textMid),
             ),
-            // Vehicle
             if (trip.vehicleNumber != null) ...[
               const SizedBox(height: 2),
               Text(
@@ -155,7 +135,7 @@ void showTripInfoSheet(
                   ),
                 ),
                 child: Text(
-                  'VER RUTA',
+                  'VER RUTA →',
                   style: TransitTypography.sectionTitle(c.accent),
                 ),
               ),

@@ -10,6 +10,7 @@ class MapControls extends StatelessWidget {
     required this.onZoomOut,
     required this.onCenter,
     required this.onFilter,
+    this.onSearch,
   });
 
   final bool isDark;
@@ -17,6 +18,7 @@ class MapControls extends StatelessWidget {
   final VoidCallback onZoomOut;
   final VoidCallback onCenter;
   final VoidCallback onFilter;
+  final VoidCallback? onSearch;
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +26,17 @@ class MapControls extends StatelessWidget {
 
     return Stack(
       children: [
+        // Search button - top left
+        if (onSearch != null)
+          Positioned(
+            top: 16,
+            left: 16,
+            child: _ControlButton(
+              icon: Icons.search,
+              colors: c,
+              onTap: onSearch!,
+            ),
+          ),
         // Filter button - top right
         Positioned(
           top: 16,

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/theme/transit_colors.dart';
 import '../../shared/providers/user_provider.dart';
+import '../driver/driver_panel.dart';
 
 class HomeShell extends ConsumerWidget {
   const HomeShell({super.key, required this.navigationShell});
@@ -117,8 +118,10 @@ class HomeShell extends ConsumerWidget {
     return FloatingActionButton(
       backgroundColor: c.accent,
       onPressed: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Panel conductor: próximamente')),
+        showModalBottomSheet(
+          context: context,
+          backgroundColor: Colors.transparent,
+          builder: (_) => const DriverPanel(),
         );
       },
       child: Icon(Icons.directions_bus, color: c.bgRoot),

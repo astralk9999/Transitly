@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:transitly/app.dart';
 
 void main() {
-  testWidgets('App renders TRANSITLY text', (WidgetTester tester) async {
+  testWidgets('App renders splash screen', (WidgetTester tester) async {
     await tester.pumpWidget(
       const ProviderScope(child: TransitlyApp()),
     );

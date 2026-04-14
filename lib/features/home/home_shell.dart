@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class HomeShell extends StatelessWidget {
+import '../../core/theme/transit_colors.dart';
+import '../../shared/providers/user_provider.dart';
+
+class HomeShell extends ConsumerWidget {
   const HomeShell({super.key, required this.navigationShell});
 
   final StatefulNavigationShell navigationShell;
@@ -19,7 +23,10 @@ class HomeShell extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isDriver = ref.watch(isDriverModeProvider);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final c = TransitColorScheme.of(isDark);
     final wide = MediaQuery.sizeOf(context).width > 600;
 
     if (wide) {
@@ -54,7 +61,19 @@ class HomeShell extends StatelessWidget {
               ],
             ),
             const VerticalDivider(width: 1, thickness: 0.5, color: Color(0xFF1A1A1A)),
-            Expanded(child: navigationShell),
+            Expanded(
+              child: Stack(
+                children: [
+                  navigationShell,
+                  if (isDriver)
+                    Positioned(
+                      bottom: 16,
+                      right: 16,
+                      child: _driverFab(context, c),
+                    ),
+                ],
+              ),
+            ),
           ],
         ),
       );
@@ -62,7 +81,17 @@ class HomeShell extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFF0C0C0C),
-      body: navigationShell,
+      body: Stack(
+        children: [
+          navigationShell,
+          if (isDriver)
+            Positioned(
+              bottom: 72,
+              right: 16,
+              child: _driverFab(context, c),
+            ),
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: navigationShell.currentIndex,
         onTap: _onTap,
@@ -81,6 +110,18 @@ class HomeShell extends StatelessWidget {
             ),
         ],
       ),
+    );
+  }
+
+  Widget _driverFab(BuildContext context, TransitColorScheme c) {
+    return FloatingActionButton(
+      backgroundColor: c.accent,
+      onPressed: () {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Panel conductor: próximamente')),
+        );
+      },
+      child: Icon(Icons.directions_bus, color: c.bgRoot),
     );
   }
 }

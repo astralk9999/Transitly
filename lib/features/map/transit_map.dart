@@ -2,9 +2,13 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../../shared/models/route_model.dart';
+import '../../shared/models/stop_model.dart';
+import 'layers/route_polylines.dart';
 import 'map_config.dart';
+import 'markers/stop_marker.dart';
 
-class TransitMap extends StatelessWidget {
+class TransitMap extends StatefulWidget {
   const TransitMap({
     super.key,
     required this.isDark,
@@ -12,6 +16,13 @@ class TransitMap extends StatelessWidget {
     this.zoom,
     this.controller,
     this.additionalLayers = const [],
+    this.routes = const [],
+    this.routePaths = const {},
+    this.routeStopsMap = const {},
+    this.stops = const [],
+    this.hubStopIds = const {},
+    this.selectedRouteId,
+    this.onStopTap,
   });
 
   final bool isDark;
@@ -19,24 +30,65 @@ class TransitMap extends StatelessWidget {
   final double? zoom;
   final MapController? controller;
   final List<Widget> additionalLayers;
+  final List<RouteModel> routes;
+  final Map<String, List<LatLng>> routePaths;
+  final Map<String, List<StopModel>> routeStopsMap;
+  final List<StopModel> stops;
+  final Set<String> hubStopIds;
+  final String? selectedRouteId;
+  final ValueChanged<StopModel>? onStopTap;
+
+  @override
+  State<TransitMap> createState() => _TransitMapState();
+}
+
+class _TransitMapState extends State<TransitMap> {
+  late double _currentZoom;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentZoom = widget.zoom ?? MapConfig.defaultZoom;
+  }
 
   @override
   Widget build(BuildContext context) {
+    final polylines = buildRoutePolylines(
+      routes: widget.routes,
+      routePaths: widget.routePaths,
+      routeStopsMap: widget.routeStopsMap,
+      selectedRouteId: widget.selectedRouteId,
+    );
+
+    final markers = buildStopMarkers(
+      stops: widget.stops,
+      currentZoom: _currentZoom,
+      hubStopIds: widget.hubStopIds,
+      onTap: widget.onStopTap,
+    );
+
     return FlutterMap(
-      mapController: controller,
+      mapController: widget.controller,
       options: MapOptions(
-        initialCenter: center ?? MapConfig.defaultCenter,
-        initialZoom: zoom ?? MapConfig.defaultZoom,
+        initialCenter: widget.center ?? MapConfig.defaultCenter,
+        initialZoom: widget.zoom ?? MapConfig.defaultZoom,
         minZoom: MapConfig.minZoom,
         maxZoom: MapConfig.maxZoom,
+        onPositionChanged: (camera, hasGesture) {
+          if (camera.zoom != _currentZoom) {
+            setState(() => _currentZoom = camera.zoom);
+          }
+        },
       ),
       children: [
         TileLayer(
-          urlTemplate: MapConfig.tileUrl(isDark),
+          urlTemplate: MapConfig.tileUrl(widget.isDark),
           subdomains: MapConfig.subdomains,
           retinaMode: true,
         ),
-        ...additionalLayers,
+        if (polylines.isNotEmpty) PolylineLayer(polylines: polylines),
+        if (markers.isNotEmpty) MarkerLayer(markers: markers),
+        ...widget.additionalLayers,
       ],
     );
   }

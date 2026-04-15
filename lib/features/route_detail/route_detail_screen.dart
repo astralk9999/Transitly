@@ -384,7 +384,7 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
                             icon: Icon(Icons.thumb_down_outlined,
                                 size: 20, color: c.textMid),
                             onPressed: () => context
-                                .push('/route/${widget.routeId}/feedback'),
+                                .push('/feedback/${widget.routeId}'),
                           ),
                         ],
                       ),
@@ -400,7 +400,7 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
                         isPrimary: false,
                         icon: Icons.chat_bubble_outline,
                         onPressed: () => context
-                            .push('/route/${widget.routeId}/feedback'),
+                            .push('/feedback/${widget.routeId}'),
                       ),
                     ),
 

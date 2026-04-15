@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+import '../../core/theme/transit_colors.dart';
 
 class DriverHistoryScreen extends StatelessWidget {
   const DriverHistoryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final c = TransitColorScheme.of(isDark);
+
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: const Center(
+      backgroundColor: c.bgRoot,
+      body: Center(
         child: Text('PANTALLA: HISTORIAL CONDUCTOR',
-            style: TextStyle(color: Colors.white54, fontFamily: 'monospace')),
+            style: GoogleFonts.ibmPlexMono(color: c.textLo)),
       ),
     );
   }

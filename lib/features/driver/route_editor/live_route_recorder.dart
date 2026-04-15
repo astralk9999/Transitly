@@ -350,8 +350,8 @@ class _LiveRouteRecorderState extends State<LiveRouteRecorder> {
                       child: Container(
                         width: 8,
                         height: 8,
-                        decoration: const BoxDecoration(
-                          color: Color(0xFFFF3B3B),
+                        decoration: BoxDecoration(
+                          color: c.stateCancelled,
                           shape: BoxShape.circle,
                         ),
                       ),

@@ -192,7 +192,7 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                 ),
                 const SizedBox(height: 8),
                 GestureDetector(
-                  onTap: () => context.push('/profile/contributions'),
+                  onTap: () => context.push('/contributions'),
                   child: Text('VER TODO →',
                       style: TransitTypography.bodySecondary(c.accent)),
                 ),

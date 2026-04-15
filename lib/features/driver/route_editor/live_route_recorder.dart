@@ -136,7 +136,11 @@ class _LiveRouteRecorderState extends State<LiveRouteRecorder> {
       SnackBar(
         content: Text(
           'PARADA #$n MARCADA · ${distFromLast.toStringAsFixed(2)} km',
-          style: GoogleFonts.ibmPlexMono(color: const Color(0xFF00C896)),
+          style: GoogleFonts.ibmPlexMono(
+            color: TransitColorScheme.of(
+              Theme.of(context).brightness == Brightness.dark,
+            ).accent,
+          ),
         ),
         duration: const Duration(seconds: 1),
       ),

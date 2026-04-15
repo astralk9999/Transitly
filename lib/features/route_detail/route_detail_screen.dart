@@ -12,6 +12,7 @@ import '../../shared/models/enums.dart';
 import '../../shared/models/route_stop_model.dart';
 import '../../shared/models/stop_model.dart';
 import '../../shared/widgets/data_freshness_indicator.dart';
+import '../../shared/widgets/shimmer_skeleton.dart';
 import '../../shared/widgets/status_badge.dart';
 import '../../shared/widgets/stop_list_item.dart';
 import '../../shared/widgets/transit_button.dart';
@@ -28,6 +29,15 @@ class RouteDetailScreen extends ConsumerStatefulWidget {
 class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
   DayType _selectedDayType = DayType.weekday;
   bool _showAllSchedules = false;
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(seconds: 1), () {
+      if (mounted) setState(() => _loading = false);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,6 +101,38 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
     final weekdaySchedules =
         mockData.getSchedulesForRoute(widget.routeId, dayType: DayType.weekday);
     final frequency = _calcFrequency(weekdaySchedules);
+
+    if (_loading) {
+      return Scaffold(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        body: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 48, 16, 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              GestureDetector(
+                onTap: () => context.pop(),
+                child: Icon(Icons.arrow_back, size: 24, color: c.textMid),
+              ),
+              const SizedBox(height: 16),
+              ShimmerSkeleton.rect(context, height: 60),
+              const SizedBox(height: 16),
+              ShimmerSkeleton.text(context, width: 200),
+              const SizedBox(height: 24),
+              ShimmerSkeleton.list(
+                context: context,
+                count: 5,
+                builder: () => ShimmerSkeleton.stopItem(context),
+              ),
+              const SizedBox(height: 24),
+              ShimmerSkeleton.text(context, width: 140),
+              const SizedBox(height: 8),
+              ShimmerSkeleton.rect(context, height: 40),
+            ],
+          ),
+        ),
+      );
+    }
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,

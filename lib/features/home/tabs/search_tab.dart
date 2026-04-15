@@ -9,6 +9,7 @@ import '../../../data/mock/mock_data_service.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/route_card.dart';
 import '../../../shared/widgets/route_search_bar.dart';
+import '../../../shared/widgets/shimmer_skeleton.dart';
 
 class SearchTab extends ConsumerStatefulWidget {
   const SearchTab({super.key});
@@ -19,6 +20,7 @@ class SearchTab extends ConsumerStatefulWidget {
 
 class _SearchTabState extends ConsumerState<SearchTab> {
   bool _hasSearched = false;
+  bool _searchLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -36,13 +38,25 @@ class _SearchTabState extends ConsumerState<SearchTab> {
               padding: const EdgeInsets.all(16),
               child: RouteSearchBar(
                 availableStops: mockData.stops,
-                onSearch: () => setState(() => _hasSearched = true),
+                onSearch: () {
+                  setState(() {
+                    _searchLoading = true;
+                    _hasSearched = true;
+                  });
+                  Future.delayed(const Duration(milliseconds: 1500), () {
+                    if (mounted) setState(() => _searchLoading = false);
+                  });
+                },
               ),
             ),
             // Results or empty state
             Expanded(
-              child: _hasSearched
-                  ? _buildResults(context, c, mockData)
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: _hasSearched
+                  ? (_searchLoading
+                      ? _buildSearchShimmer(context)
+                      : _buildResults(context, c, mockData))
                   : Column(
                       children: [
                         const Expanded(
@@ -55,8 +69,28 @@ class _SearchTabState extends ConsumerState<SearchTab> {
                       ],
                     ),
             ),
+            ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildSearchShimmer(BuildContext context) {
+    return Padding(
+      key: const ValueKey('search-shimmer'),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ShimmerSkeleton.text(context, width: 180),
+          const SizedBox(height: 16),
+          ShimmerSkeleton.routeCard(context),
+          const SizedBox(height: 12),
+          ShimmerSkeleton.routeCard(context),
+          const SizedBox(height: 12),
+          ShimmerSkeleton.routeCard(context),
+        ],
       ),
     );
   }

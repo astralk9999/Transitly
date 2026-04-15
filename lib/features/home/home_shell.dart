@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/theme/transit_colors.dart';
 import '../../shared/providers/user_provider.dart';
@@ -32,25 +33,24 @@ class HomeShell extends ConsumerWidget {
 
     if (wide) {
       return Scaffold(
-        backgroundColor: const Color(0xFF0C0C0C),
+        backgroundColor: c.bgRoot,
         body: Row(
           children: [
             NavigationRail(
-              backgroundColor: const Color(0xFF0C0C0C),
+              backgroundColor: c.bgRoot,
               selectedIndex: navigationShell.currentIndex,
               onDestinationSelected: _onTap,
               labelType: NavigationRailLabelType.all,
-              selectedIconTheme: const IconThemeData(color: Color(0xFF00C896)),
-              unselectedIconTheme: const IconThemeData(color: Color(0xFF3A3A3A)),
-              selectedLabelTextStyle: const TextStyle(
-                color: Color(0xFF00C896),
-                fontSize: 11,
-                fontFamily: 'monospace',
+              selectedIconTheme: IconThemeData(color: c.accent),
+              unselectedIconTheme: IconThemeData(color: c.textLo),
+              selectedLabelTextStyle: GoogleFonts.ibmPlexMono(
+                color: c.accent,
+                fontSize: 10,
+                fontWeight: FontWeight.w500,
               ),
-              unselectedLabelTextStyle: const TextStyle(
-                color: Color(0xFF3A3A3A),
-                fontSize: 11,
-                fontFamily: 'monospace',
+              unselectedLabelTextStyle: GoogleFonts.ibmPlexMono(
+                color: c.textLo,
+                fontSize: 10,
               ),
               destinations: [
                 for (final tab in _tabs)
@@ -61,7 +61,7 @@ class HomeShell extends ConsumerWidget {
                   ),
               ],
             ),
-            const VerticalDivider(width: 1, thickness: 0.5, color: Color(0xFF1A1A1A)),
+            VerticalDivider(width: 1, thickness: 0.5, color: c.border),
             Expanded(
               child: Stack(
                 children: [
@@ -81,7 +81,7 @@ class HomeShell extends ConsumerWidget {
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFF0C0C0C),
+      backgroundColor: c.bgRoot,
       body: Stack(
         children: [
           navigationShell,
@@ -93,23 +93,10 @@ class HomeShell extends ConsumerWidget {
             ),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: _TransitBottomNav(
         currentIndex: navigationShell.currentIndex,
         onTap: _onTap,
-        backgroundColor: const Color(0xFF0C0C0C),
-        selectedItemColor: const Color(0xFF00C896),
-        unselectedItemColor: const Color(0xFF3A3A3A),
-        type: BottomNavigationBarType.fixed,
-        selectedFontSize: 11,
-        unselectedFontSize: 11,
-        items: [
-          for (final tab in _tabs)
-            BottomNavigationBarItem(
-              icon: Icon(tab.icon),
-              activeIcon: Icon(tab.activeIcon),
-              label: tab.label,
-            ),
-        ],
+        tabs: _tabs,
       ),
     );
   }
@@ -125,6 +112,72 @@ class HomeShell extends ConsumerWidget {
         );
       },
       child: Icon(Icons.directions_bus, color: c.bgRoot),
+    );
+  }
+}
+
+class _TransitBottomNav extends StatelessWidget {
+  const _TransitBottomNav({
+    required this.currentIndex,
+    required this.onTap,
+    required this.tabs,
+  });
+
+  final int currentIndex;
+  final ValueChanged<int> onTap;
+  final List<_TabItem> tabs;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final c = TransitColorScheme.of(isDark);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: c.bgRoot,
+        border: Border(
+          top: BorderSide(color: c.border, width: 0.5),
+        ),
+      ),
+      child: SafeArea(
+        top: false,
+        child: SizedBox(
+          height: 56,
+          child: Row(
+            children: List.generate(tabs.length, (i) {
+              final isActive = i == currentIndex;
+              final tab = tabs[i];
+              return Expanded(
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () => onTap(i),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        isActive ? tab.activeIcon : tab.icon,
+                        size: 20,
+                        color: isActive ? c.accent : c.textLo,
+                      ),
+                      if (isActive) ...[
+                        const SizedBox(height: 2),
+                        Text(
+                          tab.label,
+                          style: GoogleFonts.ibmPlexMono(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                            color: c.accent,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              );
+            }),
+          ),
+        ),
+      ),
     );
   }
 }

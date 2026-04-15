@@ -98,6 +98,26 @@ class ShimmerSkeleton {
     );
   }
 
+  static Widget rect(
+    BuildContext context, {
+    double? width,
+    double height = 80,
+  }) {
+    final c = _colors(context);
+    return Shimmer.fromColors(
+      baseColor: c.bgRaised,
+      highlightColor: c.border,
+      child: Container(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          color: c.bgRaised,
+          borderRadius: BorderRadius.circular(6),
+        ),
+      ),
+    );
+  }
+
   static Widget text(
     BuildContext context, {
     double width = 120,

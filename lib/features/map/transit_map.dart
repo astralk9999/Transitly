@@ -75,6 +75,7 @@ class _TransitMapState extends State<TransitMap> {
     final stopMarkers = buildStopMarkers(
       stops: widget.stops,
       currentZoom: _currentZoom,
+      isDark: widget.isDark,
       hubStopIds: widget.hubStopIds,
       onTap: widget.onStopTap,
     );

@@ -42,11 +42,11 @@ final routerProvider = Provider<GoRouter>((ref) {
     routes: [
       GoRoute(
         path: '/splash',
-        pageBuilder: (context, state) => _fade(state, const SplashScreen()),
+        pageBuilder: (context, state) => _fadeSlow(state, const SplashScreen()),
       ),
       GoRoute(
         path: '/onboarding',
-        pageBuilder: (context, state) => _slide(state, const OnboardingScreen()),
+        pageBuilder: (context, state) => _fadeSlow(state, const OnboardingScreen()),
       ),
 
       // ── Home shell with 5 tabs ──
@@ -57,31 +57,31 @@ final routerProvider = Provider<GoRouter>((ref) {
           StatefulShellBranch(routes: [
             GoRoute(
               path: '/home/inicio',
-              pageBuilder: (context, state) => _fade(state, const HomeTab()),
+              pageBuilder: (context, state) => _fadeTab(state, const HomeTab()),
             ),
           ]),
           StatefulShellBranch(routes: [
             GoRoute(
               path: '/home/mapa',
-              pageBuilder: (context, state) => _fade(state, const MapTab()),
+              pageBuilder: (context, state) => _fadeTab(state, const MapTab()),
             ),
           ]),
           StatefulShellBranch(routes: [
             GoRoute(
               path: '/home/buscar',
-              pageBuilder: (context, state) => _fade(state, const SearchTab()),
+              pageBuilder: (context, state) => _fadeTab(state, const SearchTab()),
             ),
           ]),
           StatefulShellBranch(routes: [
             GoRoute(
               path: '/home/tarjeta',
-              pageBuilder: (context, state) => _fade(state, const CardTab()),
+              pageBuilder: (context, state) => _fadeTab(state, const CardTab()),
             ),
           ]),
           StatefulShellBranch(routes: [
             GoRoute(
               path: '/home/perfil',
-              pageBuilder: (context, state) => _fade(state, const ProfileTab()),
+              pageBuilder: (context, state) => _fadeTab(state, const ProfileTab()),
             ),
           ]),
         ],
@@ -242,11 +242,23 @@ final routerProvider = Provider<GoRouter>((ref) {
 
 // ── Transition helpers ──
 
-CustomTransitionPage<void> _fade(GoRouterState state, Widget child) {
+/// Tabs: fast fade 150ms
+CustomTransitionPage<void> _fadeTab(GoRouterState state, Widget child) {
   return CustomTransitionPage(
     key: state.pageKey,
     child: child,
-    transitionDuration: const Duration(milliseconds: 250),
+    transitionDuration: const Duration(milliseconds: 150),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+        FadeTransition(opacity: animation, child: child),
+  );
+}
+
+/// Splash → Home: slow fade 400ms
+CustomTransitionPage<void> _fadeSlow(GoRouterState state, Widget child) {
+  return CustomTransitionPage(
+    key: state.pageKey,
+    child: child,
+    transitionDuration: const Duration(milliseconds: 400),
     transitionsBuilder: (context, animation, secondaryAnimation, child) =>
         FadeTransition(opacity: animation, child: child),
   );

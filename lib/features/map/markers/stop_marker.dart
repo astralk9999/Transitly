@@ -2,18 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../../../core/theme/transit_colors.dart';
 import '../../../shared/models/stop_model.dart';
 
 List<Marker> buildStopMarkers({
   required List<StopModel> stops,
   required double currentZoom,
+  bool isDark = true,
   Set<String> hubStopIds = const {},
   ValueChanged<StopModel>? onTap,
 }) {
   if (currentZoom < 13.0) return [];
 
-  const accent = Color(0xFF00C896);
-  const bgBorder = Color(0xFF0C0C0C);
+  final c = TransitColorScheme.of(isDark);
 
   return stops.map((stop) {
     final isHub = hubStopIds.contains(stop.id);
@@ -30,9 +31,9 @@ List<Marker> buildStopMarkers({
             width: dotSize,
             height: dotSize,
             decoration: BoxDecoration(
-              color: accent,
+              color: c.accent,
               shape: BoxShape.circle,
-              border: Border.all(color: bgBorder, width: 1),
+              border: Border.all(color: c.bgRoot, width: 1),
             ),
           ),
         ),

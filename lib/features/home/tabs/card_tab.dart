@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../data/mock/mock_data_service.dart';
+import '../../../shared/widgets/responsive_scaffold.dart';
 
 class CardTab extends ConsumerStatefulWidget {
   const CardTab({super.key});
@@ -22,9 +23,13 @@ class _CardTabState extends ConsumerState<CardTab> {
     final card = mockData.transitCard;
     final history = mockData.tripHistory;
 
+    final padding = ResponsiveScaffold.screenPadding(context);
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: RefreshIndicator(
+      body: ContentConstraints(
+        maxWidth: 600,
+        child: RefreshIndicator(
         onRefresh: () async {
           await Future.delayed(const Duration(milliseconds: 500));
         },
@@ -33,7 +38,7 @@ class _CardTabState extends ConsumerState<CardTab> {
         key: const ValueKey('card-content'),
         slivers: [
           SliverPadding(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(padding),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
                 // ── TARJETA VISUAL ──
@@ -96,6 +101,7 @@ class _CardTabState extends ConsumerState<CardTab> {
             ),
           ),
         ],
+      ),
       ),
       ),
     );

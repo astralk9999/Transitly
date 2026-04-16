@@ -4,7 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/theme/transit_colors.dart';
+import '../../core/theme/transit_spacing.dart';
 import '../../shared/providers/user_provider.dart';
+import '../../shared/widgets/responsive_scaffold.dart';
 import '../driver/driver_panel.dart';
 
 class HomeShell extends ConsumerWidget {
@@ -29,9 +31,11 @@ class HomeShell extends ConsumerWidget {
     final isDriver = ref.watch(isDriverModeProvider);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
-    final wide = MediaQuery.sizeOf(context).width > 600;
+    final screen = ResponsiveScaffold.screenSizeOf(context);
+    final useRail = screen != ScreenSize.compact;
+    final extendedRail = screen == ScreenSize.large;
 
-    if (wide) {
+    if (useRail) {
       return Scaffold(
         backgroundColor: c.bgRoot,
         body: Row(
@@ -40,7 +44,12 @@ class HomeShell extends ConsumerWidget {
               backgroundColor: c.bgRoot,
               selectedIndex: navigationShell.currentIndex,
               onDestinationSelected: _onTap,
-              labelType: NavigationRailLabelType.all,
+              extended: extendedRail,
+              minWidth: 72,
+              minExtendedWidth: 180,
+              labelType: extendedRail
+                  ? NavigationRailLabelType.none
+                  : NavigationRailLabelType.all,
               selectedIconTheme: IconThemeData(color: c.accent),
               unselectedIconTheme: IconThemeData(color: c.textLo),
               selectedLabelTextStyle: GoogleFonts.ibmPlexMono(
@@ -55,21 +64,25 @@ class HomeShell extends ConsumerWidget {
               destinations: [
                 for (final tab in _tabs)
                   NavigationRailDestination(
-                    icon: Icon(tab.icon),
+                    icon: Tooltip(message: tab.label, child: Icon(tab.icon)),
                     selectedIcon: Icon(tab.activeIcon),
                     label: Text(tab.label),
                   ),
               ],
             ),
-            VerticalDivider(width: 1, thickness: 0.5, color: c.border),
+            VerticalDivider(
+              width: TransitSpacing.strokeNormal,
+              thickness: TransitSpacing.strokeThin,
+              color: c.border,
+            ),
             Expanded(
               child: Stack(
                 children: [
-                  navigationShell,
+                  ResponsiveScaffold(child: navigationShell),
                   if (isDriver)
                     Positioned(
-                      bottom: 16,
-                      right: 16,
+                      bottom: TransitSpacing.space16,
+                      right: TransitSpacing.space16,
                       child: _driverFab(context, c),
                     ),
                 ],
@@ -88,7 +101,7 @@ class HomeShell extends ConsumerWidget {
           if (isDriver)
             Positioned(
               bottom: 72,
-              right: 16,
+              right: TransitSpacing.space16,
               child: _driverFab(context, c),
             ),
         ],
@@ -148,29 +161,40 @@ class _TransitBottomNav extends StatelessWidget {
               final isActive = i == currentIndex;
               final tab = tabs[i];
               return Expanded(
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () => onTap(i),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        isActive ? tab.activeIcon : tab.icon,
-                        size: 20,
-                        color: isActive ? c.accent : c.textLo,
-                      ),
-                      if (isActive) ...[
-                        const SizedBox(height: 2),
-                        Text(
-                          tab.label,
-                          style: GoogleFonts.ibmPlexMono(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w500,
-                            color: c.accent,
-                          ),
+                child: Semantics(
+                  label: tab.label,
+                  button: true,
+                  selected: isActive,
+                  child: Tooltip(
+                    message: tab.label,
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () => onTap(i),
+                      child: SizedBox(
+                        height: TransitSpacing.heightNavBar,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              isActive ? tab.activeIcon : tab.icon,
+                              size: 20,
+                              color: isActive ? c.accent : c.textLo,
+                            ),
+                            if (isActive) ...[
+                              const SizedBox(height: 2),
+                              Text(
+                                tab.label,
+                                style: GoogleFonts.ibmPlexMono(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w500,
+                                  color: c.accent,
+                                ),
+                              ),
+                            ],
+                          ],
                         ),
-                      ],
-                    ],
+                      ),
+                    ),
                   ),
                 ),
               );

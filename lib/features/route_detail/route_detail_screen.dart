@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../data/mock/mock_data_service.dart';
+import '../../shared/widgets/responsive_scaffold.dart';
 import '../../data/mock/mock_realtime_service.dart';
 import '../../shared/models/active_trip_model.dart';
 import '../../shared/models/enums.dart';
@@ -92,14 +93,17 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
         mockData.getSchedulesForRoute(widget.routeId, dayType: DayType.weekday);
     final frequency = _calcFrequency(weekdaySchedules);
 
+    final padding = ResponsiveScaffold.screenPadding(context);
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: Stack(
+      body: ContentConstraints(
+        child: Stack(
         children: [
           CustomScrollView(
             slivers: [
               SliverPadding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
+                padding: EdgeInsets.fromLTRB(padding, 0, padding, 80),
                 sliver: SliverList(
                   delegate: SliverChildListDelegate([
                     const SizedBox(height: 48),
@@ -377,8 +381,8 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
 
           // ── 9. BOTÓN FLOTANTE INFERIOR ──
           Positioned(
-            left: 16,
-            right: 16,
+            left: padding,
+            right: padding,
             bottom: 16,
             child: SizedBox(
               width: double.infinity,
@@ -390,6 +394,7 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
             ),
           ),
         ],
+      ),
       ),
     );
   }

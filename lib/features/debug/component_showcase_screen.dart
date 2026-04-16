@@ -9,6 +9,7 @@ import '../../shared/models/enums.dart';
 import '../../shared/models/route_model.dart';
 import '../../shared/models/stop_model.dart';
 import '../../shared/providers/theme_provider.dart';
+import '../../shared/widgets/responsive_scaffold.dart';
 import '../../shared/widgets/capacity_indicator.dart';
 import '../../shared/widgets/data_freshness_indicator.dart';
 import '../../shared/widgets/empty_state.dart';
@@ -63,8 +64,11 @@ class ComponentShowcaseScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
+      body: ContentConstraints(
+        child: Builder(builder: (context) {
+        final padding = ResponsiveScaffold.screenPadding(context);
+        return ListView(
+        padding: EdgeInsets.fromLTRB(padding, 0, padding, 32),
         children: [
           // ── COLORES ──
           _sectionTitle(c, 'COLORES'),
@@ -115,6 +119,8 @@ class ComponentShowcaseScreen extends ConsumerWidget {
           _sectionTitle(c, 'INDICATORS'),
           _indicatorsSection(c),
         ],
+      );
+        }),
       ),
     );
   }

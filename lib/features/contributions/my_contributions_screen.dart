@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../data/mock/mock_data_service.dart';
+import '../../shared/widgets/responsive_scaffold.dart';
 import '../../shared/models/enums.dart';
 import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/reputation_badge.dart';
@@ -34,12 +35,15 @@ class MyContributionsScreen extends ConsumerWidget {
             style: TransitTypography.sectionTitle(c.textHi)),
         centerTitle: false,
       ),
-      body: Column(
+      body: ContentConstraints(
+        child: Builder(builder: (context) {
+        final padding = ResponsiveScaffold.screenPadding(context);
+        return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Header with reputation
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.symmetric(horizontal: padding),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -116,7 +120,7 @@ class MyContributionsScreen extends ConsumerWidget {
                                 ),
                               )
                             : ListView.builder(
-                                padding: const EdgeInsets.all(16),
+                                padding: EdgeInsets.all(padding),
                                 itemCount: suggestions.length,
                                 itemBuilder: (context, index) {
                                   final sug = suggestions[index];
@@ -181,7 +185,7 @@ class MyContributionsScreen extends ConsumerWidget {
                                 ),
                               )
                             : ListView.builder(
-                                padding: const EdgeInsets.all(16),
+                                padding: EdgeInsets.all(padding),
                                 itemCount: feedbacks.length,
                                 itemBuilder: (context, index) {
                                   final fb = feedbacks[index];
@@ -248,6 +252,8 @@ class MyContributionsScreen extends ConsumerWidget {
             ),
           ),
         ],
+      );
+        }),
       ),
     );
   }

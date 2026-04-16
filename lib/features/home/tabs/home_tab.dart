@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../data/mock/mock_data_service.dart';
+import '../../../shared/widgets/responsive_scaffold.dart';
 import '../../../data/mock/mock_realtime_service.dart';
 import '../../../shared/models/models.dart';
 import '../../../shared/widgets/route_card.dart';
@@ -50,6 +51,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
       MockDataService mockData, Map<String, ActiveTripModel> activeTripsMap) {
     final favorites = mockData.favorites;
     final favRouteIds = favorites.map((f) => f.routeId).toSet();
+    final padding = ResponsiveScaffold.screenPadding(context);
 
     // Simulated habitual trip from first favorite
     final habitualFav = favorites.isNotEmpty ? favorites.first : null;
@@ -82,7 +84,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
       key: const ValueKey('content'),
       slivers: [
         SliverPadding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          padding: EdgeInsets.symmetric(horizontal: padding, vertical: 16),
           sliver: SliverList(
             delegate: SliverChildListDelegate([
               // ── 1) VIAJE HABITUAL ──

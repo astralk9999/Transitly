@@ -7,6 +7,7 @@ import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../data/mock/mock_data_service.dart';
 import '../../../shared/widgets/empty_state.dart';
+import '../../../shared/widgets/responsive_scaffold.dart';
 import '../../../shared/widgets/route_card.dart';
 import '../../../shared/widgets/route_search_bar.dart';
 import '../../../shared/widgets/shimmer_skeleton.dart';
@@ -28,14 +29,17 @@ class _SearchTabState extends ConsumerState<SearchTab> {
     final c = TransitColorScheme.of(isDark);
     final mockData = ref.watch(mockDataServiceProvider);
 
+    final padding = ResponsiveScaffold.screenPadding(context);
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: SafeArea(
+      body: ContentConstraints(
+        child: SafeArea(
         child: Column(
           children: [
             // Search bar
             Padding(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(padding),
               child: RouteSearchBar(
                 availableStops: mockData.stops,
                 onSearch: () {
@@ -73,13 +77,15 @@ class _SearchTabState extends ConsumerState<SearchTab> {
           ],
         ),
       ),
+      ),
     );
   }
 
   Widget _buildSearchShimmer(BuildContext context) {
+    final padding = ResponsiveScaffold.screenPadding(context);
     return Padding(
       key: const ValueKey('search-shimmer'),
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: EdgeInsets.symmetric(horizontal: padding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -105,8 +111,9 @@ class _SearchTabState extends ConsumerState<SearchTab> {
     final routeL4 = mockData.getRouteById('L4');
     final routeL5 = mockData.getRouteById('L5');
 
+    final padding = ResponsiveScaffold.screenPadding(context);
     return ListView(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: EdgeInsets.symmetric(horizontal: padding),
       children: [
         // Header
         Row(

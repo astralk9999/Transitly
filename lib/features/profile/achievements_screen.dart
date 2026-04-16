@@ -7,6 +7,7 @@ import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../data/mock/mock_data_service.dart';
 import '../../shared/models/user_achievement_model.dart';
+import '../../shared/widgets/responsive_scaffold.dart';
 
 class AchievementsScreen extends ConsumerWidget {
   const AchievementsScreen({super.key});
@@ -53,11 +54,15 @@ class AchievementsScreen extends ConsumerWidget {
             style: TransitTypography.sectionTitle(c.textHi)),
         centerTitle: false,
       ),
-      body: Column(
+      body: ContentConstraints(
+        child: Builder(builder: (context) {
+        final padding = ResponsiveScaffold.screenPadding(context);
+        final columns = ResponsiveScaffold.gridColumns(context) + 1;
+        return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.symmetric(horizontal: padding),
             child: Text(
               'Nivel: VIAJERO · 450 XP',
               style: GoogleFonts.dmSans(
@@ -70,9 +75,9 @@ class AchievementsScreen extends ConsumerWidget {
           const SizedBox(height: 16),
           Expanded(
             child: GridView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
+              padding: EdgeInsets.symmetric(horizontal: padding),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: columns,
                 mainAxisSpacing: 8,
                 crossAxisSpacing: 8,
                 childAspectRatio: 1.0,
@@ -134,6 +139,8 @@ class AchievementsScreen extends ConsumerWidget {
             ),
           ),
         ],
+      );
+        }),
       ),
     );
   }

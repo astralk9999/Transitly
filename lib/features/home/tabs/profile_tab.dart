@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../shared/providers/theme_provider.dart';
+import '../../../shared/widgets/responsive_scaffold.dart';
 import '../../../shared/providers/user_provider.dart';
 import '../../../shared/widgets/reputation_badge.dart';
 
@@ -32,12 +33,16 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
     final isDriver = ref.watch(isDriverModeProvider);
     final user = ref.watch(currentUserProvider);
 
+    final padding = ResponsiveScaffold.screenPadding(context);
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: CustomScrollView(
+      body: ContentConstraints(
+        maxWidth: 600,
+        child: CustomScrollView(
         slivers: [
           SliverPadding(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(padding),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
                 // ── 1. HEADER ──
@@ -291,6 +296,7 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
             ),
           ),
         ],
+      ),
       ),
     );
   }

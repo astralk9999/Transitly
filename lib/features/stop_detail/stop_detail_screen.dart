@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../data/mock/mock_data_service.dart';
+import '../../shared/widgets/responsive_scaffold.dart';
 import '../../shared/widgets/capacity_indicator.dart';
 import '../../shared/widgets/transit_chip.dart';
 
@@ -36,12 +37,15 @@ class StopDetailScreen extends ConsumerWidget {
       }
     }
 
+    final padding = ResponsiveScaffold.screenPadding(context);
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: CustomScrollView(
+      body: ContentConstraints(
+        child: CustomScrollView(
         slivers: [
           SliverPadding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
+            padding: EdgeInsets.fromLTRB(padding, 0, padding, 32),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
                 const SizedBox(height: 48),
@@ -222,6 +226,7 @@ class StopDetailScreen extends ConsumerWidget {
             ),
           ),
         ],
+      ),
       ),
     );
   }

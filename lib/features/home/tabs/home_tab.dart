@@ -168,9 +168,12 @@ class _HomeTabState extends ConsumerState<HomeTab> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'TU PRÓXIMO BUS',
-              style: TransitTypography.sectionTitle(c.accent),
+            Semantics(
+              header: true,
+              child: Text(
+                'TU PRÓXIMO BUS',
+                style: TransitTypography.sectionTitle(c.accent),
+              ),
             ),
             const SizedBox(height: 8),
             Text(
@@ -211,19 +214,25 @@ class _HomeTabState extends ConsumerState<HomeTab> {
   }
 
   Widget _buildSectionTitle(TransitColorScheme c, String text) {
-    return Text(text, style: TransitTypography.sectionTitle(c.textMid));
+    return Semantics(
+      header: true,
+      child: Text(text, style: TransitTypography.sectionTitle(c.textMid)),
+    );
   }
 
   Widget _buildMyLinesHeader(TransitColorScheme c, int count) {
-    return Row(
-      children: [
-        Text('MIS LÍNEAS', style: TransitTypography.sectionTitle(c.textMid)),
-        const SizedBox(width: 8),
-        Text(
-          '($count líneas)',
-          style: TransitTypography.bodySmall(c.textLo),
-        ),
-      ],
+    return Semantics(
+      header: true,
+      child: Row(
+        children: [
+          Text('MIS LÍNEAS', style: TransitTypography.sectionTitle(c.textMid)),
+          const SizedBox(width: 8),
+          Text(
+            '($count líneas)',
+            style: TransitTypography.bodySmall(c.textLo),
+          ),
+        ],
+      ),
     );
   }
 

@@ -147,15 +147,14 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                route.name.toUpperCase(),
-                                style: GoogleFonts.dmSans(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500,
-                                  color: c.textHi,
+                              Semantics(
+                                header: true,
+                                child: Text(
+                                  route.name.toUpperCase(),
+                                  style: TransitTypography.heading(c.textHi),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
                               ),
                               Text(
                                 'COMUJESA',
@@ -256,8 +255,11 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
                     ],
 
                     // ── 4. RECORRIDO ──
-                    Text('RECORRIDO',
-                        style: TransitTypography.sectionTitle(c.textMid)),
+                    Semantics(
+                      header: true,
+                      child: Text('RECORRIDO',
+                          style: TransitTypography.sectionTitle(c.textMid)),
+                    ),
                     const SizedBox(height: 8),
                     SizedBox(
                       height: sortedRouteStops.length * 60.0,
@@ -302,8 +304,11 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
                     const SizedBox(height: 24),
 
                     // ── 6. CAMBIOS RECIENTES ──
-                    Text('CAMBIOS RECIENTES',
-                        style: TransitTypography.sectionTitle(c.textMid)),
+                    Semantics(
+                      header: true,
+                      child: Text('CAMBIOS RECIENTES',
+                          style: TransitTypography.sectionTitle(c.textMid)),
+                    ),
                     const SizedBox(height: 8),
                     _changelogItem(c, Icons.edit, '12/03',
                         'Horario actualizado para días laborables'),
@@ -437,8 +442,11 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
         // Header + day type toggle
         Row(
           children: [
-            Text('HORARIOS',
-                style: TransitTypography.sectionTitle(c.textMid)),
+            Semantics(
+              header: true,
+              child: Text('HORARIOS',
+                  style: TransitTypography.sectionTitle(c.textMid)),
+            ),
             const Spacer(),
           ],
         ),

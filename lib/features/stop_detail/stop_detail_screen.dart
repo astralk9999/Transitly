@@ -63,12 +63,11 @@ class StopDetailScreen extends ConsumerWidget {
                 const SizedBox(height: 16),
 
                 // ── 1. HEADER ──
-                Text(
-                  stop.name.toUpperCase(),
-                  style: GoogleFonts.dmSans(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                    color: c.textHi,
+                Semantics(
+                  header: true,
+                  child: Text(
+                    stop.name.toUpperCase(),
+                    style: TransitTypography.heading(c.textHi),
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -92,8 +91,11 @@ class StopDetailScreen extends ConsumerWidget {
                 Divider(height: 32, thickness: 0.5, color: c.border),
 
                 // ── 2. PRÓXIMAS LLEGADAS ──
-                Text('PRÓXIMAS LLEGADAS',
-                    style: TransitTypography.sectionTitle(c.textMid)),
+                Semantics(
+                  header: true,
+                  child: Text('PRÓXIMAS LLEGADAS',
+                      style: TransitTypography.sectionTitle(c.textMid)),
+                ),
                 const SizedBox(height: 12),
 
                 if (routesAtStop.isEmpty)
@@ -181,8 +183,11 @@ class StopDetailScreen extends ConsumerWidget {
                 const SizedBox(height: 24),
 
                 // ── 3. LÍNEAS QUE PASAN ──
-                Text('LÍNEAS',
-                    style: TransitTypography.sectionTitle(c.textMid)),
+                Semantics(
+                  header: true,
+                  child: Text('LÍNEAS',
+                      style: TransitTypography.sectionTitle(c.textMid)),
+                ),
                 const SizedBox(height: 8),
                 Wrap(
                   spacing: 8,

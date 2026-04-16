@@ -7,6 +7,7 @@ import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../shared/providers/theme_provider.dart';
 import '../../../shared/widgets/responsive_scaffold.dart';
+import '../../../shared/widgets/transit_button.dart';
 import '../../../shared/providers/user_provider.dart';
 import '../../../shared/widgets/reputation_badge.dart';
 
@@ -286,7 +287,7 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                 ),
                 const SizedBox(height: 8),
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () => _showDeleteConfirmation(context, c),
                   child: Text('Eliminar cuenta',
                       style:
                           TransitTypography.bodySecondary(c.stateCancelled)),
@@ -297,6 +298,43 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
           ),
         ],
       ),
+      ),
+    );
+  }
+
+  void _showDeleteConfirmation(BuildContext context, TransitColorScheme c) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: c.bgSurface,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        title: Text(
+          '¿Eliminar cuenta?',
+          style: TransitTypography.heading(c.textHi),
+        ),
+        content: Text(
+          'Esta acción es irreversible. Se eliminarán todos tus datos, favoritos y contribuciones.',
+          style: TransitTypography.bodySecondary(c.textMid),
+        ),
+        actions: [
+          TransitButton(
+            label: 'CANCELAR',
+            isPrimary: false,
+            isSmall: true,
+            onPressed: () => Navigator.of(ctx).pop(),
+          ),
+          TransitButton(
+            label: 'ELIMINAR',
+            isDanger: true,
+            isSmall: true,
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Cuenta eliminada (demo)')),
+              );
+            },
+          ),
+        ],
       ),
     );
   }

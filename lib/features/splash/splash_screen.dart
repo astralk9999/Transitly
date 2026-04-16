@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../core/theme/transit_animations.dart';
 import '../../core/theme/transit_colors.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -24,10 +25,17 @@ class _SplashScreenState extends State<SplashScreen>
       duration: const Duration(milliseconds: 400),
     );
     _opacity = CurvedAnimation(parent: _ctrl, curve: Curves.easeIn);
-    _ctrl.forward();
 
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) context.go('/onboarding');
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final animate = TransitAnimations.shouldAnimate(context);
+      if (animate) {
+        _ctrl.forward();
+      } else {
+        _ctrl.value = 1.0;
+      }
+      Future.delayed(Duration(seconds: animate ? 2 : 0), () {
+        if (mounted) context.go('/onboarding');
+      });
     });
   }
 

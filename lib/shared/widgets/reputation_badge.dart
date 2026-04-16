@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/theme/transit_colors.dart';
+import '../../core/theme/transit_spacing.dart';
 import '../models/enums.dart';
 
 class ReputationBadge extends StatelessWidget {
@@ -26,20 +27,23 @@ class ReputationBadge extends StatelessWidget {
         color = c.stateOnTime;
     }
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(
-        color: c.bgRaised,
-        border: Border.all(color: color, width: 0.5),
-        borderRadius: BorderRadius.circular(2),
-      ),
-      child: Text(
-        level.label.toUpperCase(),
-        style: GoogleFonts.ibmPlexMono(
-          fontSize: 10,
-          fontWeight: FontWeight.w500,
-          letterSpacing: 1.0,
-          color: color,
+    return Semantics(
+      label: 'Reputación: ${level.label}',
+      child: Container(
+        padding: TransitSpacing.paddingBadge,
+        decoration: BoxDecoration(
+          color: c.bgRaised,
+          border: Border.all(color: color, width: TransitSpacing.strokeThin),
+          borderRadius: BorderRadius.circular(TransitSpacing.radiusXs),
+        ),
+        child: Text(
+          level.label.toUpperCase(),
+          style: GoogleFonts.ibmPlexMono(
+            fontSize: 10,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 1.0,
+            color: color,
+          ),
         ),
       ),
     );

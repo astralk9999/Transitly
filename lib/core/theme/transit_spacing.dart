@@ -11,7 +11,9 @@ abstract final class TransitSpacing {
   static const double space16 = 16;
   static const double space20 = 20;
   static const double space24 = 24;
+  static const double space28 = 28;
   static const double space32 = 32;
+  static const double space36 = 36;
   static const double space40 = 40;
   static const double space48 = 48;
   static const double space64 = 64;
@@ -22,6 +24,12 @@ abstract final class TransitSpacing {
   static const double radiusMd = 6;
   static const double radiusLg = 8;
   static const double radiusXl = 12;
+
+  // ── Divider ─────────────────────────────────────────────
+  static const double dividerHeight = 0.5;
+
+  // ── Tap target ─────────────────────────────────────────
+  static const double minTapTarget = 48.0;
 
   // ── Strokes ─────────────────────────────────────────────
   static const double strokeThin = 0.5;

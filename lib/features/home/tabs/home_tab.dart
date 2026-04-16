@@ -9,7 +9,6 @@ import '../../../data/mock/mock_data_service.dart';
 import '../../../data/mock/mock_realtime_service.dart';
 import '../../../shared/models/models.dart';
 import '../../../shared/widgets/route_card.dart';
-import '../../../shared/widgets/shimmer_skeleton.dart';
 import '../../../shared/widgets/transit_button.dart';
 import '../../../shared/widgets/transit_chip.dart';
 
@@ -21,26 +20,14 @@ class HomeTab extends ConsumerStatefulWidget {
 }
 
 class _HomeTabState extends ConsumerState<HomeTab> {
-  bool _loading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(const Duration(seconds: 1), () {
-      if (mounted) setState(() => _loading = false);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
     final mockData = ref.watch(mockDataServiceProvider);
     final realtimeTrips = ref.watch(realtimeTripsProvider);
-    // Watch clock for countdown refresh
     ref.watch(realtimeClockProvider);
 
-    // Merge realtime trips into a lookup
     final activeTripsMap = <String, ActiveTripModel>{};
     final tripsList = realtimeTrips.valueOrNull ?? mockData.activeTrips;
     for (final t in tripsList) {
@@ -49,42 +36,13 @@ class _HomeTabState extends ConsumerState<HomeTab> {
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 300),
-        child: _loading
-            ? _buildShimmer(context)
-            : _buildContent(context, c, mockData, activeTripsMap),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await Future.delayed(const Duration(milliseconds: 500));
+        },
+        color: c.accent,
+        child: _buildContent(context, c, mockData, activeTripsMap),
       ),
-    );
-  }
-
-  Widget _buildShimmer(BuildContext context) {
-    return CustomScrollView(
-      key: const ValueKey('shimmer'),
-      slivers: [
-        SliverPadding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-          sliver: SliverList(
-            delegate: SliverChildListDelegate([
-              ShimmerSkeleton.routeCard(context),
-              const SizedBox(height: 16),
-              ShimmerSkeleton.text(context, width: 180),
-              const SizedBox(height: 8),
-              ShimmerSkeleton.list(
-                context: context,
-                count: 3,
-                builder: () => ShimmerSkeleton.stopItem(context),
-              ),
-              const SizedBox(height: 24),
-              ShimmerSkeleton.text(context, width: 120),
-              const SizedBox(height: 8),
-              ShimmerSkeleton.routeCard(context),
-              const SizedBox(height: 8),
-              ShimmerSkeleton.routeCard(context),
-            ]),
-          ),
-        ),
-      ],
     );
   }
 

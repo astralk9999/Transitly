@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/theme/transit_colors.dart';
+import '../../core/theme/transit_spacing.dart';
 import '../../core/theme/transit_typography.dart';
 import '../models/active_trip_model.dart';
 import '../models/enums.dart';
 import '../models/route_model.dart';
+import 'pressable.dart';
 import 'status_badge.dart';
 
 class RouteCard extends StatelessWidget {
@@ -46,14 +48,16 @@ class RouteCard extends StatelessWidget {
       leftBorderColor = c.stateIdle;
     }
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        splashFactory: NoSplash.splashFactory,
-        borderRadius: BorderRadius.circular(6),
-        child: Container(
-          constraints: const BoxConstraints(minHeight: 80),
+    final statusLabel = activeTrip != null ? ', ${activeTrip!.status.label}' : '';
+    final minsLabel = estimatedMinutes != null ? ', $estimatedMinutes' : '';
+
+    return Semantics(
+      label: 'Línea ${route.code}, ${route.name}$statusLabel$minsLabel',
+      button: onTap != null,
+      child: Pressable(
+      onTap: onTap,
+      child: Container(
+          constraints: const BoxConstraints(minHeight: TransitSpacing.heightRouteCard),
           decoration: BoxDecoration(
             color: c.bgSurface,
             border: Border.all(color: c.border, width: 0.5),
@@ -157,7 +161,7 @@ class RouteCard extends StatelessWidget {
                 ),
             ],
           ),
-        ),
+      ),
       ),
     );
   }

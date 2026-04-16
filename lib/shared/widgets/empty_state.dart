@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/theme/transit_colors.dart';
+import '../../core/theme/transit_spacing.dart';
 import '../../core/theme/transit_typography.dart';
 import 'transit_button.dart';
 
@@ -10,12 +11,14 @@ class EmptyState extends StatelessWidget {
     this.title,
     this.subtitle, {
     super.key,
+    this.icon,
     this.actionLabel,
     this.onAction,
   });
 
   final String title;
   final String subtitle;
+  final IconData? icon;
   final String? actionLabel;
   final VoidCallback? onAction;
 
@@ -26,10 +29,14 @@ class EmptyState extends StatelessWidget {
 
     return Center(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32),
+        padding: const EdgeInsets.symmetric(horizontal: TransitSpacing.space32),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            if (icon != null) ...[
+              Icon(icon, size: 48, color: c.textLo),
+              const SizedBox(height: TransitSpacing.space16),
+            ],
             Text(
               title,
               style: GoogleFonts.ibmPlexMono(
@@ -39,7 +46,7 @@ class EmptyState extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: TransitSpacing.space8),
             Text(
               subtitle,
               style: TransitTypography.bodyPrimary(c.textMid),

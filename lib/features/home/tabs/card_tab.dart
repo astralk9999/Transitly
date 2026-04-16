@@ -5,7 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../data/mock/mock_data_service.dart';
-import '../../../shared/widgets/shimmer_skeleton.dart';
 
 class CardTab extends ConsumerStatefulWidget {
   const CardTab({super.key});
@@ -15,16 +14,6 @@ class CardTab extends ConsumerStatefulWidget {
 }
 
 class _CardTabState extends ConsumerState<CardTab> {
-  bool _loading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(const Duration(seconds: 1), () {
-      if (mounted) setState(() => _loading = false);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -35,9 +24,12 @@ class _CardTabState extends ConsumerState<CardTab> {
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 300),
-        child: _loading ? _buildShimmer(context) : CustomScrollView(
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await Future.delayed(const Duration(milliseconds: 500));
+        },
+        color: c.accent,
+        child: CustomScrollView(
         key: const ValueKey('card-content'),
         slivers: [
           SliverPadding(
@@ -105,27 +97,6 @@ class _CardTabState extends ConsumerState<CardTab> {
           ),
         ],
       ),
-      ),
-    );
-  }
-
-  Widget _buildShimmer(BuildContext context) {
-    return Padding(
-      key: const ValueKey('card-shimmer'),
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ShimmerSkeleton.rect(context, height: 200),
-          const SizedBox(height: 24),
-          ShimmerSkeleton.text(context, width: 100),
-          const SizedBox(height: 12),
-          ShimmerSkeleton.list(
-            context: context,
-            count: 4,
-            builder: () => ShimmerSkeleton.stopItem(context),
-          ),
-        ],
       ),
     );
   }

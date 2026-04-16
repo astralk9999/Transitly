@@ -27,7 +27,9 @@ class CapacityIndicator extends StatelessWidget {
         dotColor = c.stateCancelled;
     }
 
-    return Row(
+    return Semantics(
+      label: 'Ocupación: ${capacity.label}',
+      child: Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
@@ -46,6 +48,7 @@ class CapacityIndicator extends StatelessWidget {
           ),
         ],
       ],
+    ),
     );
   }
 }

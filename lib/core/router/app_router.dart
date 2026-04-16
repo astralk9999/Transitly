@@ -34,11 +34,13 @@ import '../../features/splash/splash_screen.dart';
 import '../../features/stop_detail/stop_detail_screen.dart';
 import '../../features/suggestions/suggest_route_screen.dart';
 import '../../features/suggestions/suggestion_contribute_screen.dart';
+import '../../features/error/not_found_screen.dart';
 import '../../features/suggestions/suggestion_detail_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     initialLocation: '/splash',
+    errorBuilder: (context, state) => const NotFoundScreen(),
     routes: [
       GoRoute(
         path: '/splash',

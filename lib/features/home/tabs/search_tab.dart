@@ -43,7 +43,7 @@ class _SearchTabState extends ConsumerState<SearchTab> {
                     _searchLoading = true;
                     _hasSearched = true;
                   });
-                  Future.delayed(const Duration(milliseconds: 1500), () {
+                  Future.delayed(const Duration(milliseconds: 800), () {
                     if (mounted) setState(() => _searchLoading = false);
                   });
                 },

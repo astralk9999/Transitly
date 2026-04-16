@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/theme/transit_colors.dart';
+import '../../core/theme/transit_spacing.dart';
+import 'pressable.dart';
 
 class TransitButton extends StatelessWidget {
   const TransitButton({
@@ -29,7 +31,7 @@ class TransitButton extends StatelessWidget {
     final c = TransitColorScheme.of(isDark);
 
     final disabled = onPressed == null;
-    final height = isSmall ? 36.0 : 48.0;
+    final height = isSmall ? TransitSpacing.heightBtnSmall : TransitSpacing.heightBtnPrimary;
     final fontSize = isSmall ? 12.0 : 14.0;
 
     Color bg;
@@ -57,22 +59,26 @@ class TransitButton extends StatelessWidget {
       color: fg,
     );
 
-    return Opacity(
-      opacity: disabled ? 0.4 : 1.0,
-      child: SizedBox(
-        height: height,
-        child: Material(
-          color: bg,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4),
-            side: BorderSide(color: borderColor, width: 1),
-          ),
-          child: InkWell(
-            onTap: disabled || isLoading ? null : onPressed,
-            borderRadius: BorderRadius.circular(4),
-            splashFactory: NoSplash.splashFactory,
+    return Semantics(
+      button: true,
+      enabled: !disabled,
+      label: label,
+      child: Pressable(
+      onTap: disabled || isLoading ? null : onPressed,
+      scale: 0.95,
+      enabled: !disabled && !isLoading,
+      child: Opacity(
+        opacity: disabled ? 0.4 : 1.0,
+        child: SizedBox(
+          height: height,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: bg,
+              borderRadius: BorderRadius.circular(TransitSpacing.radiusSm),
+              border: Border.all(color: borderColor, width: TransitSpacing.strokeNormal),
+            ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: TransitSpacing.space16),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -89,7 +95,7 @@ class TransitButton extends StatelessWidget {
                   else ...[
                     if (icon != null) ...[
                       Icon(icon, size: isSmall ? 16 : 18, color: fg),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: TransitSpacing.space8),
                     ],
                     Text(label.toUpperCase(), style: textStyle),
                   ],
@@ -98,6 +104,7 @@ class TransitButton extends StatelessWidget {
             ),
           ),
         ),
+      ),
       ),
     );
   }

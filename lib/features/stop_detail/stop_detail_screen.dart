@@ -249,27 +249,33 @@ class StopDetailScreen extends ConsumerWidget {
 
   Widget _actionButton(
       BuildContext context, TransitColorScheme c, IconData icon, String label) {
-    return GestureDetector(
-      onTap: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('$label: próximamente')),
-        );
-      },
-      child: Column(
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: c.bgRaised,
-              shape: BoxShape.circle,
-              border: Border.all(color: c.border, width: 0.5),
-            ),
-            child: Icon(icon, size: 18, color: c.textHi),
+    return Tooltip(
+      message: label,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(
+          onTap: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('$label: próximamente')),
+            );
+          },
+          child: Column(
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: c.bgRaised,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: c.border, width: 0.5),
+                ),
+                child: Icon(icon, size: 18, color: c.textHi),
+              ),
+              const SizedBox(height: 4),
+              Text(label, style: TransitTypography.bodySmall(c.textMid)),
+            ],
           ),
-          const SizedBox(height: 4),
-          Text(label, style: TransitTypography.bodySmall(c.textMid)),
-        ],
+        ),
       ),
     );
   }

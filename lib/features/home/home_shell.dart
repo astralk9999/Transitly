@@ -167,7 +167,9 @@ class _TransitBottomNav extends StatelessWidget {
                   selected: isActive,
                   child: Tooltip(
                     message: tab.label,
-                    child: GestureDetector(
+                    child: MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      child: GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTap: () => onTap(i),
                       child: SizedBox(
@@ -194,6 +196,7 @@ class _TransitBottomNav extends StatelessWidget {
                           ],
                         ),
                       ),
+                    ),
                     ),
                   ),
                 ),

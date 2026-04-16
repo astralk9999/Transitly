@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../models/stop_model.dart';
+import 'pressable.dart';
 import 'transit_chip.dart';
 
 class StopListItem extends StatelessWidget {
@@ -36,9 +37,9 @@ class StopListItem extends StatelessWidget {
 
     final textColor = isPassed ? c.textLo : c.textHi;
 
-    return InkWell(
+    return Pressable(
       onTap: onTap,
-      splashFactory: NoSplash.splashFactory,
+      scale: 0.98,
       child: ConstrainedBox(
         constraints: const BoxConstraints(minHeight: 60),
         child: IntrinsicHeight(

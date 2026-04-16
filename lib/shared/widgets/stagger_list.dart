@@ -25,14 +25,24 @@ class _StaggerListState extends State<StaggerList>
   final List<AnimationController> _controllers = [];
   final List<Animation<double>> _opacities = [];
   final List<Animation<Offset>> _offsets = [];
+  bool _initialized = false;
 
   @override
   void initState() {
     super.initState();
-    _initAnimations();
+    _buildControllers();
   }
 
-  void _initAnimations() {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_initialized) {
+      _initialized = true;
+      _startStagger();
+    }
+  }
+
+  void _buildControllers() {
     for (final ctrl in _controllers) {
       ctrl.dispose();
     }
@@ -59,8 +69,6 @@ class _StaggerListState extends State<StaggerList>
         curve: TransitAnimations.transitEaseOut,
       )));
     }
-
-    _startStagger();
   }
 
   Future<void> _startStagger() async {
@@ -85,7 +93,8 @@ class _StaggerListState extends State<StaggerList>
   void didUpdateWidget(StaggerList oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.children.length != widget.children.length) {
-      _initAnimations();
+      _buildControllers();
+      _startStagger();
     }
   }
 

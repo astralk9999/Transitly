@@ -6,6 +6,7 @@ import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../data/mock/mock_data_service.dart';
 import '../../../shared/widgets/responsive_scaffold.dart';
+import '../../../shared/widgets/stagger_list.dart';
 
 class CardTab extends ConsumerStatefulWidget {
   const CardTab({super.key});
@@ -56,46 +57,48 @@ class _CardTabState extends ConsumerState<CardTab> {
                 Text('ÚLTIMOS VIAJES',
                     style: TransitTypography.sectionTitle(c.textMid)),
                 const SizedBox(height: 8),
-                ...history.map((trip) {
-                  final route = mockData.getRouteById(trip.routeId);
-                  final date =
-                      '${trip.startedAt.day.toString().padLeft(2, '0')}/${trip.startedAt.month.toString().padLeft(2, '0')}';
-                  final time =
-                      '${trip.startedAt.hour.toString().padLeft(2, '0')}:${trip.startedAt.minute.toString().padLeft(2, '0')}';
-                  return Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: Row(
-                          children: [
-                            Text(
-                              '$date · $time',
-                              style: TransitTypography.bodySecondary(c.textMid),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Text(
-                                route != null
-                                    ? '${route.code} ${route.name}'
-                                    : trip.routeId,
-                                style:
-                                    TransitTypography.subheading(c.textHi),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                            if (trip.cost != null)
+                StaggerList(
+                  children: history.map((trip) {
+                    final route = mockData.getRouteById(trip.routeId);
+                    final date =
+                        '${trip.startedAt.day.toString().padLeft(2, '0')}/${trip.startedAt.month.toString().padLeft(2, '0')}';
+                    final time =
+                        '${trip.startedAt.hour.toString().padLeft(2, '0')}:${trip.startedAt.minute.toString().padLeft(2, '0')}';
+                    return Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: Row(
+                            children: [
                               Text(
-                                '-${trip.cost!.toStringAsFixed(2)} €',
-                                style: TransitTypography.bodySecondary(
-                                    c.stateCancelled),
+                                '$date · $time',
+                                style: TransitTypography.bodySecondary(c.textMid),
                               ),
-                          ],
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  route != null
+                                      ? '${route.code} ${route.name}'
+                                      : trip.routeId,
+                                  style:
+                                      TransitTypography.subheading(c.textHi),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              if (trip.cost != null)
+                                Text(
+                                  '-${trip.cost!.toStringAsFixed(2)} €',
+                                  style: TransitTypography.bodySecondary(
+                                      c.stateCancelled),
+                                ),
+                            ],
+                          ),
                         ),
-                      ),
-                      Divider(height: 1, thickness: 0.5, color: c.border),
-                    ],
-                  );
-                }),
+                        Divider(height: 1, thickness: 0.5, color: c.border),
+                      ],
+                    );
+                  }).toList(),
+                ),
                 const SizedBox(height: 32),
               ]),
             ),

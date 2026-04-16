@@ -8,6 +8,7 @@ import '../../core/theme/transit_typography.dart';
 import '../../data/mock/mock_data_service.dart';
 import '../../shared/widgets/responsive_scaffold.dart';
 import '../../shared/widgets/capacity_indicator.dart';
+import '../../shared/widgets/stagger_list.dart';
 import '../../shared/widgets/transit_chip.dart';
 
 class StopDetailScreen extends ConsumerWidget {
@@ -99,81 +100,83 @@ class StopDetailScreen extends ConsumerWidget {
                   Text('Sin líneas registradas',
                       style: TransitTypography.bodySecondary(c.textMid))
                 else
-                  ...routesAtStop.map((routeId) {
-                    final route = mockData.getRouteById(routeId);
-                    if (route == null) return const SizedBox.shrink();
+                  StaggerList(
+                    children: routesAtStop.map((routeId) {
+                      final route = mockData.getRouteById(routeId);
+                      if (route == null) return const SizedBox.shrink();
 
-                    final nextDeps =
-                        mockData.getNextDepartures(routeId, stopId, 1);
-                    final activeTrip =
-                        mockData.getActiveTripForRoute(routeId);
+                      final nextDeps =
+                          mockData.getNextDepartures(routeId, stopId, 1);
+                      final activeTrip =
+                          mockData.getActiveTripForRoute(routeId);
 
-                    final now = DateTime.now();
-                    final nowMinutes = now.hour * 60 + now.minute;
+                      final now = DateTime.now();
+                      final nowMinutes = now.hour * 60 + now.minute;
 
-                    String timeStr = '--:--';
-                    String countdownStr = '';
-                    bool isNext = false;
+                      String timeStr = '--:--';
+                      String countdownStr = '';
+                      bool isNext = false;
 
-                    if (nextDeps.isNotEmpty) {
-                      timeStr = nextDeps.first.departureTime;
-                      final parts = timeStr.split(':');
-                      final depMinutes =
-                          int.parse(parts[0]) * 60 + int.parse(parts[1]);
-                      final diff = depMinutes - nowMinutes;
-                      countdownStr = 'en $diff min';
-                      isNext = diff <= 10;
-                    }
+                      if (nextDeps.isNotEmpty) {
+                        timeStr = nextDeps.first.departureTime;
+                        final parts = timeStr.split(':');
+                        final depMinutes =
+                            int.parse(parts[0]) * 60 + int.parse(parts[1]);
+                        final diff = depMinutes - nowMinutes;
+                        countdownStr = 'en $diff min';
+                        isNext = diff <= 10;
+                      }
 
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: GestureDetector(
-                        onTap: () => context.push('/route/$routeId'),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 10),
-                          decoration: BoxDecoration(
-                            color: c.bgSurface,
-                            border: Border.all(color: c.border, width: 0.5),
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: Row(
-                            children: [
-                              TransitChip(route.code,
-                                  color: route.routeColor),
-                              const SizedBox(width: 12),
-                              Text(
-                                timeStr,
-                                style: GoogleFonts.ibmPlexMono(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  color: c.textHi,
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: Text(
-                                  countdownStr,
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: GestureDetector(
+                          onTap: () => context.push('/route/$routeId'),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 10),
+                            decoration: BoxDecoration(
+                              color: c.bgSurface,
+                              border: Border.all(color: c.border, width: 0.5),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Row(
+                              children: [
+                                TransitChip(route.code,
+                                    color: route.routeColor),
+                                const SizedBox(width: 12),
+                                Text(
+                                  timeStr,
                                   style: GoogleFonts.ibmPlexMono(
                                     fontSize: 14,
-                                    color: isNext ? c.accent : c.textMid,
+                                    fontWeight: FontWeight.w500,
+                                    color: c.textHi,
                                   ),
                                 ),
-                              ),
-                              if (activeTrip != null)
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 8),
-                                  child: CapacityIndicator(
-                                      activeTrip.capacity),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    countdownStr,
+                                    style: GoogleFonts.ibmPlexMono(
+                                      fontSize: 14,
+                                      color: isNext ? c.accent : c.textMid,
+                                    ),
+                                  ),
                                 ),
-                              Icon(Icons.notifications_none,
-                                  size: 20, color: c.textMid),
-                            ],
+                                if (activeTrip != null)
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 8),
+                                    child: CapacityIndicator(
+                                        activeTrip.capacity),
+                                  ),
+                                Icon(Icons.notifications_none,
+                                    size: 20, color: c.textMid),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  }),
+                      );
+                    }).toList(),
+                  ),
 
                 const SizedBox(height: 24),
 

@@ -10,6 +10,7 @@ import '../../../shared/widgets/responsive_scaffold.dart';
 import '../../../data/mock/mock_realtime_service.dart';
 import '../../../shared/models/models.dart';
 import '../../../shared/widgets/route_card.dart';
+import '../../../shared/widgets/stagger_list.dart';
 import '../../../shared/widgets/transit_button.dart';
 import '../../../shared/widgets/transit_chip.dart';
 
@@ -96,41 +97,47 @@ class _HomeTabState extends ConsumerState<HomeTab> {
               // ── 2) PARADAS CERCANAS ──
               _buildSectionTitle(c, 'PARADAS CERCA DE TI'),
               const SizedBox(height: 8),
-              ...nearbyStops.map((stop) =>
-                  _buildNearbyStop(context, c, mockData, stop)),
+              StaggerList(
+                children: nearbyStops.map((stop) =>
+                    _buildNearbyStop(context, c, mockData, stop)).toList(),
+              ),
               const SizedBox(height: 24),
 
               // ── 3) MIS LÍNEAS ──
               _buildMyLinesHeader(c, favorites.length),
               const SizedBox(height: 8),
-              ...favorites.map((fav) {
-                final route = mockData.getRouteById(fav.routeId);
-                if (route == null) return const SizedBox.shrink();
-                final trip = activeTripsMap[route.id] ??
-                    mockData.getActiveTripForRoute(route.id);
-                final stopsForRoute = mockData.getStopsForRoute(route.id);
-                final next =
-                    mockData.getNextDepartures(route.id, '', 1);
-                final mins = next.isNotEmpty ? _minutesUntil(next.first.departureTime) : null;
-                final minsStr = mins != null ? '${mins}m' : null;
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: RouteCard(
-                    route: route,
-                    activeTrip: trip,
-                    remainingStops: stopsForRoute.length,
-                    estimatedMinutes: minsStr,
-                    onTap: () => context.push('/route/${route.id}'),
-                  ),
-                );
-              }),
+              StaggerList(
+                children: favorites.map((fav) {
+                  final route = mockData.getRouteById(fav.routeId);
+                  if (route == null) return const SizedBox.shrink();
+                  final trip = activeTripsMap[route.id] ??
+                      mockData.getActiveTripForRoute(route.id);
+                  final stopsForRoute = mockData.getStopsForRoute(route.id);
+                  final next =
+                      mockData.getNextDepartures(route.id, '', 1);
+                  final mins = next.isNotEmpty ? _minutesUntil(next.first.departureTime) : null;
+                  final minsStr = mins != null ? '${mins}m' : null;
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: RouteCard(
+                      route: route,
+                      activeTrip: trip,
+                      remainingStops: stopsForRoute.length,
+                      estimatedMinutes: minsStr,
+                      onTap: () => context.push('/route/${route.id}'),
+                    ),
+                  );
+                }).toList(),
+              ),
 
               // ── 4) AVISOS ──
               if (favAlerts.isNotEmpty) ...[
                 const SizedBox(height: 24),
                 _buildSectionTitle(c, 'AVISOS'),
                 const SizedBox(height: 8),
-                ...favAlerts.map((alert) => _buildAlertItem(c, alert)),
+                StaggerList(
+                  children: favAlerts.map((alert) => _buildAlertItem(c, alert)).toList(),
+                ),
               ],
               const SizedBox(height: 32),
             ]),

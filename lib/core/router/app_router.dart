@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../theme/transit_animations.dart';
+
 import '../../features/contributions/my_contributions_screen.dart';
 import '../../features/debug/component_showcase_screen.dart';
 import '../../features/driver/active_route_screen.dart';
@@ -244,14 +246,20 @@ final routerProvider = Provider<GoRouter>((ref) {
 
 // ── Transition helpers ──
 
-/// Tabs: fast fade 150ms
+/// Tabs: fast fade 150ms with custom easing
 CustomTransitionPage<void> _fadeTab(GoRouterState state, Widget child) {
   return CustomTransitionPage(
     key: state.pageKey,
     child: child,
     transitionDuration: const Duration(milliseconds: 150),
-    transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-        FadeTransition(opacity: animation, child: child),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      if (!TransitAnimations.shouldAnimate(context)) return child;
+      final curved = CurvedAnimation(
+        parent: animation,
+        curve: TransitAnimations.transitEaseOut,
+      );
+      return FadeTransition(opacity: curved, child: child);
+    },
   );
 }
 
@@ -261,33 +269,67 @@ CustomTransitionPage<void> _fadeSlow(GoRouterState state, Widget child) {
     key: state.pageKey,
     child: child,
     transitionDuration: const Duration(milliseconds: 400),
-    transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-        FadeTransition(opacity: animation, child: child),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      if (!TransitAnimations.shouldAnimate(context)) return child;
+      final curved = CurvedAnimation(
+        parent: animation,
+        curve: TransitAnimations.transitEaseOut,
+      );
+      return FadeTransition(opacity: curved, child: child);
+    },
   );
 }
 
+/// Detail screens: slide + fade combined, custom easing
 CustomTransitionPage<void> _slide(GoRouterState state, Widget child) {
   return CustomTransitionPage(
     key: state.pageKey,
     child: child,
     transitionDuration: const Duration(milliseconds: 250),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      final tween = Tween(begin: const Offset(1.0, 0.0), end: Offset.zero)
-          .chain(CurveTween(curve: Curves.easeInOut));
-      return SlideTransition(position: animation.drive(tween), child: child);
+      if (!TransitAnimations.shouldAnimate(context)) return child;
+      final curve = CurvedAnimation(
+        parent: animation,
+        curve: TransitAnimations.transitEaseOut,
+      );
+      final slideTween = Tween(
+        begin: const Offset(1.0, 0.0),
+        end: Offset.zero,
+      );
+      return FadeTransition(
+        opacity: curve,
+        child: SlideTransition(
+          position: slideTween.animate(curve),
+          child: child,
+        ),
+      );
     },
   );
 }
 
+/// Modals/sheets: slide up + fade, custom easing
 CustomTransitionPage<void> _slideUp(GoRouterState state, Widget child) {
   return CustomTransitionPage(
     key: state.pageKey,
     child: child,
-    transitionDuration: const Duration(milliseconds: 250),
+    transitionDuration: const Duration(milliseconds: 300),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      final tween = Tween(begin: const Offset(0.0, 1.0), end: Offset.zero)
-          .chain(CurveTween(curve: Curves.easeInOut));
-      return SlideTransition(position: animation.drive(tween), child: child);
+      if (!TransitAnimations.shouldAnimate(context)) return child;
+      final curve = CurvedAnimation(
+        parent: animation,
+        curve: TransitAnimations.transitEaseOut,
+      );
+      final slideTween = Tween(
+        begin: const Offset(0.0, 0.3),
+        end: Offset.zero,
+      );
+      return FadeTransition(
+        opacity: curve,
+        child: SlideTransition(
+          position: slideTween.animate(curve),
+          child: child,
+        ),
+      );
     },
   );
 }

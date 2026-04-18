@@ -9,6 +9,7 @@ import '../../core/theme/transit_typography.dart';
 import '../../data/mock/mock_data_service.dart';
 import '../../data/mock/mock_realtime_service.dart';
 import '../../shared/models/enums.dart';
+import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_button.dart';
 
 class ActiveRouteScreen extends ConsumerStatefulWidget {
@@ -39,21 +40,26 @@ class _ActiveRouteScreenState extends ConsumerState<ActiveRouteScreen> {
 
     if (activeTrip == null) {
       return Scaffold(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        body: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('No hay ruta activa',
-                  style: TransitTypography.bodyPrimary(c.textMid)),
-              const SizedBox(height: 16),
-              TransitButton(
-                label: 'VOLVER',
-                isSmall: true,
-                onPressed: () => context.pop(),
+        backgroundColor: c.bgRoot,
+        body: Stack(
+          children: [
+            Positioned.fill(child: SmokeBackground(color: c.accent, isDark: isDark)),
+            Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('No hay ruta activa',
+                      style: TransitTypography.bodyPrimary(c.textMid)),
+                  const SizedBox(height: 16),
+                  TransitButton(
+                    label: 'VOLVER',
+                    isSmall: true,
+                    onPressed: () => context.pop(),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       );
     }
@@ -72,8 +78,11 @@ class _ActiveRouteScreenState extends ConsumerState<ActiveRouteScreen> {
         '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: Column(
+      backgroundColor: c.bgRoot,
+      body: Stack(
+        children: [
+          Positioned.fill(child: SmokeBackground(color: c.accent, isDark: isDark)),
+          Column(
         children: [
           // Safe area top
           SizedBox(height: MediaQuery.of(context).padding.top),
@@ -274,6 +283,8 @@ class _ActiveRouteScreenState extends ConsumerState<ActiveRouteScreen> {
               ),
             ),
           ),
+        ],
+      ),
         ],
       ),
     );

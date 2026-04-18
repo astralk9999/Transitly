@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
+import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_button.dart';
 import '../../shared/widgets/transit_input.dart';
 
@@ -42,7 +43,7 @@ class _SuggestRouteScreenState extends State<SuggestRouteScreen> {
     final c = TransitColorScheme.of(isDark);
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: c.bgRoot,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -54,7 +55,10 @@ class _SuggestRouteScreenState extends State<SuggestRouteScreen> {
             style: TransitTypography.sectionTitle(c.textHi)),
         centerTitle: false,
       ),
-      body: SingleChildScrollView(
+      body: Stack(
+        children: [
+          Positioned.fill(child: SmokeBackground(color: c.accent, isDark: isDark)),
+          SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -280,6 +284,8 @@ class _SuggestRouteScreenState extends State<SuggestRouteScreen> {
             const SizedBox(height: 32),
           ],
         ),
+      ),
+        ],
       ),
     );
   }

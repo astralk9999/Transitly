@@ -11,16 +11,35 @@ List<Marker> buildStopMarkers({
   bool isDark = true,
   Set<String> hubStopIds = const {},
   ValueChanged<StopModel>? onTap,
+  LatLngBounds? visibleBounds,
 }) {
   if (currentZoom < 13.0) return [];
 
-  final c = TransitColorScheme.of(isDark);
+  // Zoom 13-14: only show hub stops to reduce marker count
+  final bool hubsOnly = currentZoom < 14.5;
 
-  return stops.map((stop) {
+  final c = TransitColorScheme.of(isDark);
+  final markers = <Marker>[];
+
+  for (final stop in stops) {
     final isHub = hubStopIds.contains(stop.id);
+
+    // Skip non-hub stops at medium zoom
+    if (hubsOnly && !isHub) continue;
+
+    // Viewport culling
+    if (visibleBounds != null) {
+      if (stop.lat < visibleBounds.south ||
+          stop.lat > visibleBounds.north ||
+          stop.lng < visibleBounds.west ||
+          stop.lng > visibleBounds.east) {
+        continue;
+      }
+    }
+
     final dotSize = isHub ? 10.0 : (currentZoom < 15 ? 6.0 : 8.0);
 
-    return Marker(
+    markers.add(Marker(
       point: LatLng(stop.lat, stop.lng),
       width: 20,
       height: 20,
@@ -38,6 +57,8 @@ List<Marker> buildStopMarkers({
           ),
         ),
       ),
-    );
-  }).toList();
+    ));
+  }
+
+  return markers;
 }

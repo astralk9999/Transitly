@@ -15,6 +15,7 @@ import '../../shared/models/stop_model.dart';
 import '../../shared/widgets/data_freshness_indicator.dart';
 import '../../shared/widgets/status_badge.dart';
 import '../../shared/widgets/stop_list_item.dart';
+import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_button.dart';
 
 class RouteDetailScreen extends ConsumerStatefulWidget {
@@ -42,7 +43,7 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
 
     if (route == null) {
       return Scaffold(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        backgroundColor: c.bgRoot,
         body: const Center(child: Text('Ruta no encontrada')),
       );
     }
@@ -96,8 +97,13 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
     final padding = ResponsiveScaffold.screenPadding(context);
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: ContentConstraints(
+      backgroundColor: c.bgRoot,
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: SmokeBackground(color: c.accent, isDark: isDark),
+          ),
+          ContentConstraints(
         child: Stack(
         children: [
           CustomScrollView(
@@ -400,6 +406,8 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
           ),
         ],
       ),
+      ),
+        ],
       ),
     );
   }

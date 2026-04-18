@@ -8,6 +8,7 @@ import '../../core/theme/transit_typography.dart';
 import '../../data/mock/mock_data_service.dart';
 import '../../shared/models/user_achievement_model.dart';
 import '../../shared/widgets/responsive_scaffold.dart';
+import '../../shared/widgets/smoke_background.dart';
 
 class AchievementsScreen extends ConsumerWidget {
   const AchievementsScreen({super.key});
@@ -42,7 +43,7 @@ class AchievementsScreen extends ConsumerWidget {
     }
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: c.bgRoot,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -54,7 +55,10 @@ class AchievementsScreen extends ConsumerWidget {
             style: TransitTypography.sectionTitle(c.textHi)),
         centerTitle: false,
       ),
-      body: ContentConstraints(
+      body: Stack(
+        children: [
+          Positioned.fill(child: SmokeBackground(color: c.accent, isDark: isDark)),
+          ContentConstraints(
         child: Builder(builder: (context) {
         final padding = ResponsiveScaffold.screenPadding(context);
         final columns = ResponsiveScaffold.gridColumns(context) + 1;
@@ -141,6 +145,8 @@ class AchievementsScreen extends ConsumerWidget {
         ],
       );
         }),
+      ),
+        ],
       ),
     );
   }

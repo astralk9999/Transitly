@@ -27,7 +27,12 @@ class MockDataService {
   late final List<TripHistoryModel> tripHistory;
   late final List<AchievementModel> achievements;
   late final List<UserAchievementModel> userAchievements;
-  late final Map<String, List<List<double>>> polylines;
+  late final Map<String, Map<int, List<List<double>>>> polylinesLod;
+  late final Map<String, List<double>> routeBounds; // [minLat, minLng, maxLat, maxLng]
+
+  /// Full-detail polylines (LOD4) for bus interpolation compatibility.
+  Map<String, List<List<double>>> get polylines =>
+      polylinesLod.map((k, v) => MapEntry(k, v[4] ?? v.values.last));
 
   static Future<MockDataService> init() async {
     final svc = MockDataService._();
@@ -48,7 +53,8 @@ class MockDataService {
     final stopMap = <String, StopModel>{};
     final rStops = <String, List<RouteStopModel>>{};
     final sched = <String, List<ScheduleModel>>{};
-    final polys = <String, List<List<double>>>{};
+    final polysLod = <String, Map<int, List<List<double>>>>{};
+    final bounds = <String, List<double>>{};
 
     for (final line in lines) {
       final lj = line as Map<String, dynamic>;
@@ -83,13 +89,43 @@ class MockDataService {
       }
       sched[route.id] = lineSchedules;
 
-      // Polyline
+      // Polyline — LOD format { lod0..lod4 }
       final polyJ = lj['polyline'] as Map<String, dynamic>?;
       if (polyJ != null) {
-        final coords = (polyJ['coordinates'] as List<dynamic>)
-            .map((c) => [(c as List<dynamic>)[1] as double, c[0] as double])
-            .toList();
-        polys[route.id] = coords;
+        final coordsRaw = polyJ['coordinates'];
+        final lodMap = <int, List<List<double>>>{};
+
+        if (coordsRaw is Map<String, dynamic>) {
+          for (final lodKey in ['lod0', 'lod1', 'lod2', 'lod3', 'lod4']) {
+            final lodIdx = int.parse(lodKey.substring(3));
+            final pts = (coordsRaw[lodKey] as List<dynamic>?)
+                ?.map((c) => [(c as List<dynamic>)[1] as double, c[0] as double])
+                .toList();
+            if (pts != null && pts.isNotEmpty) lodMap[lodIdx] = pts;
+          }
+        } else if (coordsRaw is List<dynamic>) {
+          // Legacy flat format
+          final pts = coordsRaw
+              .map((c) => [(c as List<dynamic>)[1] as double, c[0] as double])
+              .toList();
+          lodMap[4] = pts;
+        }
+
+        if (lodMap.isNotEmpty) {
+          polysLod[route.id] = lodMap;
+
+          // Compute bounding box from highest LOD
+          final fullPts = lodMap[4] ?? lodMap.values.last;
+          var minLat = double.infinity, minLng = double.infinity;
+          var maxLat = double.negativeInfinity, maxLng = double.negativeInfinity;
+          for (final p in fullPts) {
+            if (p[0] < minLat) minLat = p[0];
+            if (p[0] > maxLat) maxLat = p[0];
+            if (p[1] < minLng) minLng = p[1];
+            if (p[1] > maxLng) maxLng = p[1];
+          }
+          bounds[route.id] = [minLat, minLng, maxLat, maxLng];
+        }
       }
     }
 
@@ -97,7 +133,8 @@ class MockDataService {
     stops = stopMap.values.toList();
     routeStops = rStops;
     schedules = sched;
-    polylines = polys;
+    polylinesLod = polysLod;
+    routeBounds = bounds;
 
     // Active trips
     activeTrips = (data['activeTrips'] as List<dynamic>?)

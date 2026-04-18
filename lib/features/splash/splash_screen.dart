@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../core/theme/transit_animations.dart';
 import '../../core/theme/transit_colors.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -15,27 +14,18 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _ctrl;
-  late final Animation<double> _opacity;
 
   @override
   void initState() {
     super.initState();
+
     _ctrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 400),
-    );
-    _opacity = CurvedAnimation(parent: _ctrl, curve: Curves.easeIn);
+      duration: const Duration(milliseconds: 800),
+    )..forward();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final animate = TransitAnimations.shouldAnimate(context);
-      if (animate) {
-        _ctrl.forward();
-      } else {
-        _ctrl.value = 1.0;
-      }
-      Future.delayed(Duration(seconds: animate ? 2 : 0), () {
-        if (mounted) context.go('/onboarding');
-      });
+    Future.delayed(const Duration(seconds: 3), () {
+      if (mounted) context.go('/onboarding');
     });
   }
 
@@ -52,31 +42,49 @@ class _SplashScreenState extends State<SplashScreen>
 
     return Scaffold(
       backgroundColor: c.bgRoot,
-      body: Center(
-        child: FadeTransition(
-          opacity: _opacity,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'TRANSITLY',
-                style: GoogleFonts.ibmPlexMono(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w700,
-                  color: c.accent,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'TU TRANSPORTE PÚBLICO',
-                style: GoogleFonts.dmSans(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w400,
-                  color: c.textLo,
-                  letterSpacing: 0.15 * 11,
-                ),
-              ),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          gradient: RadialGradient(
+            center: Alignment.center,
+            radius: 1.0,
+            colors: [
+              c.accent.withValues(alpha: 0.12),
+              c.bgRoot,
             ],
+          ),
+        ),
+        child: Center(
+          child: FadeTransition(
+            opacity: CurvedAnimation(
+              parent: _ctrl,
+              curve: Curves.easeOut,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'TRANSITLY',
+                  style: GoogleFonts.ibmPlexMono(
+                    fontSize: 36,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 4,
+                    color: c.accent,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'TU TRANSPORTE PUBLICO',
+                  style: GoogleFonts.dmSans(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
+                    color: c.textMid,
+                    letterSpacing: 3,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

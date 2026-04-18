@@ -4,7 +4,7 @@ class MapConfig {
   MapConfig._();
 
   static const darkTileUrl =
-      'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png';
+      'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}@2x.png';
   static const lightTileUrl =
       'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}@2x.png';
   static const subdomains = ['a', 'b', 'c', 'd'];

@@ -6,6 +6,7 @@ import 'package:latlong2/latlong.dart';
 
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
+import '../../../shared/widgets/smoke_background.dart';
 import '../../../shared/widgets/transit_button.dart';
 import '../../../shared/widgets/transit_input.dart';
 import '../../map/map_config.dart';
@@ -61,7 +62,7 @@ class _PostRecordingEditorState extends State<PostRecordingEditor> {
     final c = TransitColorScheme.of(isDark);
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: c.bgRoot,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -73,7 +74,10 @@ class _PostRecordingEditorState extends State<PostRecordingEditor> {
             style: TransitTypography.sectionTitle(c.textHi)),
         centerTitle: false,
       ),
-      body: Column(
+      body: Stack(
+        children: [
+          Positioned.fill(child: SmokeBackground(color: c.accent, isDark: isDark)),
+          Column(
         children: [
           // Map preview
           SizedBox(
@@ -256,6 +260,8 @@ class _PostRecordingEditorState extends State<PostRecordingEditor> {
               ),
             ),
           ),
+        ],
+      ),
         ],
       ),
     );

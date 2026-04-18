@@ -33,9 +33,11 @@ class _MapTabState extends ConsumerState<MapTab> {
   final _scrollController = ScrollController();
   String? _selectedRouteId;
 
-  // Precomputed data (set once in build)
-  late Map<String, List<LatLng>> _routePaths;
-  late Map<String, List<StopModel>> _routeStopsMap;
+  Map<String, Map<int, List<LatLng>>>? _routePathsLod;
+  Map<String, List<StopModel>>? _routeStopsMap;
+  Map<String, RouteModel>? _routeMap;
+  Map<String, List<double>>? _routeBounds;
+  Set<String>? _hubStopIds;
 
   @override
   void dispose() {
@@ -64,8 +66,10 @@ class _MapTabState extends ConsumerState<MapTab> {
     String? bestRouteId;
     double bestDist = double.infinity;
 
-    for (final entry in _routePaths.entries) {
-      final points = entry.value;
+    for (final entry in _routePathsLod!.entries) {
+      // Use highest LOD available for tap detection
+      final lodData = entry.value;
+      final points = lodData[4] ?? lodData.values.last;
       for (int i = 0; i < points.length - 1; i++) {
         final d = _distToSegment(point, points[i], points[i + 1]);
         if (d < bestDist) {
@@ -76,8 +80,8 @@ class _MapTabState extends ConsumerState<MapTab> {
     }
 
     // Also check fallback stop-based paths
-    for (final entry in _routeStopsMap.entries) {
-      if (_routePaths.containsKey(entry.key)) continue;
+    for (final entry in _routeStopsMap!.entries) {
+      if (_routePathsLod!.containsKey(entry.key)) continue;
       final stops = entry.value;
       for (int i = 0; i < stops.length - 1; i++) {
         final a = LatLng(stops[i].lat, stops[i].lng);
@@ -138,34 +142,40 @@ class _MapTabState extends ConsumerState<MapTab> {
     final routes = mockData.routes;
     final stops = mockData.stops;
 
-    // Build data maps
-    _routePaths = <String, List<LatLng>>{};
-    _routeStopsMap = <String, List<StopModel>>{};
-    final routeMap = <String, RouteModel>{};
-    for (final route in routes) {
-      routeMap[route.id] = route;
-      final polyCoords = mockData.polylines[route.id];
-      if (polyCoords != null && polyCoords.isNotEmpty) {
-        _routePaths[route.id] =
-            polyCoords.map((p) => LatLng(p[0], p[1])).toList();
+    // Cache data maps (built once, reused across rebuilds)
+    if (_routePathsLod == null) {
+      _routePathsLod = <String, Map<int, List<LatLng>>>{};
+      _routeStopsMap = <String, List<StopModel>>{};
+      _routeMap = <String, RouteModel>{};
+      for (final route in routes) {
+        _routeMap![route.id] = route;
+        final lodData = mockData.polylinesLod[route.id];
+        if (lodData != null) {
+          final lodLatLng = <int, List<LatLng>>{};
+          for (final entry in lodData.entries) {
+            lodLatLng[entry.key] =
+                entry.value.map((p) => LatLng(p[0], p[1])).toList();
+          }
+          _routePathsLod![route.id] = lodLatLng;
+        }
+        _routeStopsMap![route.id] = mockData.getStopsForRoute(route.id);
       }
-      _routeStopsMap[route.id] = mockData.getStopsForRoute(route.id);
-    }
+      _routeBounds = mockData.routeBounds;
 
-    // Hub stops
-    final stopRouteCounts = <String, int>{};
-    for (final rs in mockData.routeStops.values) {
-      for (final r in rs) {
-        stopRouteCounts[r.stopId] = (stopRouteCounts[r.stopId] ?? 0) + 1;
+      final stopRouteCounts = <String, int>{};
+      for (final rs in mockData.routeStops.values) {
+        for (final r in rs) {
+          stopRouteCounts[r.stopId] = (stopRouteCounts[r.stopId] ?? 0) + 1;
+        }
       }
+      _hubStopIds = stopRouteCounts.entries
+          .where((e) => e.value > 1)
+          .map((e) => e.key)
+          .toSet();
     }
-    final hubStopIds = stopRouteCounts.entries
-        .where((e) => e.value > 1)
-        .map((e) => e.key)
-        .toSet();
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: c.bgRoot,
       body: Stack(
         children: [
           // Map
@@ -173,13 +183,14 @@ class _MapTabState extends ConsumerState<MapTab> {
             isDark: isDark,
             controller: _mapController,
             routes: routes,
-            routePaths: _routePaths,
-            routeStopsMap: _routeStopsMap,
+            routePathsLod: _routePathsLod!,
+            routeStopsMap: _routeStopsMap!,
+            routeBounds: _routeBounds!,
             stops: stops,
-            hubStopIds: hubStopIds,
+            hubStopIds: _hubStopIds!,
             selectedRouteId: _selectedRouteId,
             activeTrips: liveTrips,
-            routeMap: routeMap,
+            routeMap: _routeMap!,
             onMapTap: _onMapTap,
             onStopTap: (stop) => showStopInfoSheet(
               context,

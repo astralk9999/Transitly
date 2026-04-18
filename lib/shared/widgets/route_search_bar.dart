@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../models/stop_model.dart';
+import 'glass_card.dart';
 import 'transit_button.dart';
 
 class RouteSearchBar extends StatefulWidget {
@@ -94,13 +95,11 @@ class _RouteSearchBarState extends State<RouteSearchBar> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
 
-    return Container(
+    return GlassCard(
+      blur: 20,
+      fillOpacity: 0.06,
+      borderRadius: 16,
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: c.bgSurface,
-        border: Border.all(color: c.border, width: 0.5),
-        borderRadius: BorderRadius.circular(6),
-      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -108,11 +107,12 @@ class _RouteSearchBarState extends State<RouteSearchBar> {
           Row(
             children: [
               Container(
-                width: 8,
-                height: 8,
+                width: 10,
+                height: 10,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(color: c.textMid, width: 1.5),
+                  color: c.accent.withValues(alpha: 0.3),
+                  border: Border.all(color: c.accent, width: 1.5),
                 ),
               ),
               const SizedBox(width: 12),
@@ -127,7 +127,6 @@ class _RouteSearchBarState extends State<RouteSearchBar> {
               ),
             ],
           ),
-          // Suggestions for From
           if (_showFromSuggestions)
             _buildSuggestionsList(
               _fromSuggestions,
@@ -141,12 +140,12 @@ class _RouteSearchBarState extends State<RouteSearchBar> {
           Row(
             children: [
               SizedBox(
-                width: 8,
+                width: 10,
                 child: Center(
                   child: Container(
                     width: 1,
                     height: 16,
-                    color: c.border,
+                    color: c.accent.withValues(alpha: 0.25),
                   ),
                 ),
               ),
@@ -157,11 +156,11 @@ class _RouteSearchBarState extends State<RouteSearchBar> {
           Row(
             children: [
               Container(
-                width: 6,
-                height: 6,
+                width: 8,
+                height: 8,
                 decoration: BoxDecoration(
                   color: c.accent,
-                  borderRadius: BorderRadius.circular(1),
+                  borderRadius: BorderRadius.circular(2),
                 ),
               ),
               const SizedBox(width: 13),
@@ -176,7 +175,6 @@ class _RouteSearchBarState extends State<RouteSearchBar> {
               ),
             ],
           ),
-          // Suggestions for To
           if (_showToSuggestions)
             _buildSuggestionsList(
               _toSuggestions,
@@ -187,7 +185,6 @@ class _RouteSearchBarState extends State<RouteSearchBar> {
               },
             ),
           const SizedBox(height: 16),
-          // Search button
           SizedBox(
             width: double.infinity,
             child: TransitButton(
@@ -215,12 +212,17 @@ class _RouteSearchBarState extends State<RouteSearchBar> {
       decoration: InputDecoration(
         hintText: hint,
         hintStyle: TransitTypography.bodyPrimary(colors.textLo),
-        filled: true,
-        fillColor: colors.bgInput,
-        border: InputBorder.none,
-        enabledBorder: InputBorder.none,
-        focusedBorder: InputBorder.none,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+        filled: false,
+        border: UnderlineInputBorder(
+          borderSide: BorderSide(color: colors.border.withValues(alpha: 0.3)),
+        ),
+        enabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: colors.border.withValues(alpha: 0.3)),
+        ),
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: colors.accent.withValues(alpha: 0.5)),
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 10),
         isDense: true,
       ),
     );
@@ -232,11 +234,11 @@ class _RouteSearchBarState extends State<RouteSearchBar> {
     ValueChanged<StopModel> onSelect,
   ) {
     return Container(
-      margin: const EdgeInsets.only(left: 20, top: 2),
+      margin: const EdgeInsets.only(left: 22, top: 4),
       decoration: BoxDecoration(
-        color: colors.bgSurface,
-        border: Border.all(color: colors.border, width: 0.5),
-        borderRadius: BorderRadius.circular(4),
+        color: Colors.white.withValues(alpha: 0.05),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.08), width: 0.5),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -244,8 +246,9 @@ class _RouteSearchBarState extends State<RouteSearchBar> {
           return InkWell(
             onTap: () => onSelect(stop),
             splashFactory: NoSplash.splashFactory,
+            borderRadius: BorderRadius.circular(8),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
               child: Row(
                 children: [
                   Expanded(

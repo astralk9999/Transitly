@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../core/theme/transit_colors.dart';
-
 class StatusBadge extends StatelessWidget {
   const StatusBadge(this.text, this.stateColor, {super.key});
 
@@ -11,21 +9,18 @@ class StatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final c = TransitColorScheme.of(isDark);
-
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: c.bgRaised,
-        border: Border.all(color: stateColor, width: 0.5),
-        borderRadius: BorderRadius.circular(2),
+        color: stateColor.withValues(alpha: 0.12),
+        border: Border.all(color: stateColor.withValues(alpha: 0.25), width: 0.5),
+        borderRadius: BorderRadius.circular(6),
       ),
       child: Text(
         text.toUpperCase(),
         style: GoogleFonts.ibmPlexMono(
           fontSize: 10,
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.w600,
           letterSpacing: 1.0,
           color: stateColor,
         ),

@@ -115,7 +115,7 @@ class MockRealtimeService {
         delay--;
       }
 
-      // Interpolate position
+      // Interpolate position along polyline
       final currentStopId = sortedStops[stopIdx].stopId;
       final nextStopId = sortedStops[stopIdx + 1].stopId;
       final currentStop = _mockData.getStopById(currentStopId);
@@ -128,8 +128,34 @@ class MockRealtimeService {
       if (currentStop != null && nextStop != null) {
         final maxCountdown = 2 + (stopIdx % 3);
         final progress = 1.0 - (countdown / maxCountdown);
-        lat = currentStop.lat + (nextStop.lat - currentStop.lat) * progress;
-        lng = currentStop.lng + (nextStop.lng - currentStop.lng) * progress;
+
+        final polyCoords = _mockData.polylines[trip.routeId];
+        if (polyCoords != null && polyCoords.length >= 2) {
+          // Find polyline segment between current and next stop
+          final startIdx = _closestPolylineIndex(
+              polyCoords, currentStop.lat, currentStop.lng);
+          final endIdx = _closestPolylineIndex(
+              polyCoords, nextStop.lat, nextStop.lng);
+
+          if (startIdx != endIdx) {
+            final from = min(startIdx, endIdx);
+            final to = max(startIdx, endIdx);
+            final pos = _interpolateAlongPolyline(
+                polyCoords, from, to, progress);
+            lat = pos[0];
+            lng = pos[1];
+          } else {
+            lat = currentStop.lat +
+                (nextStop.lat - currentStop.lat) * progress;
+            lng = currentStop.lng +
+                (nextStop.lng - currentStop.lng) * progress;
+          }
+        } else {
+          lat = currentStop.lat +
+              (nextStop.lat - currentStop.lat) * progress;
+          lng = currentStop.lng +
+              (nextStop.lng - currentStop.lng) * progress;
+        }
         bearing = _bearingDegrees(lat, lng, nextStop.lat, nextStop.lng);
       }
 
@@ -165,6 +191,61 @@ class MockRealtimeService {
     if (idx == null) return;
     _countdownMinutes[tripId] = 0; // force advance on next tick
     _tick();
+  }
+
+  /// Find the polyline point index closest to the given lat/lng.
+  int _closestPolylineIndex(
+      List<List<double>> poly, double lat, double lng) {
+    var bestIdx = 0;
+    var bestDist = double.infinity;
+    for (var i = 0; i < poly.length; i++) {
+      final dLat = poly[i][0] - lat;
+      final dLng = poly[i][1] - lng;
+      final d = dLat * dLat + dLng * dLng;
+      if (d < bestDist) {
+        bestDist = d;
+        bestIdx = i;
+      }
+    }
+    return bestIdx;
+  }
+
+  /// Interpolate along polyline points from [fromIdx] to [toIdx] by [t] (0-1).
+  List<double> _interpolateAlongPolyline(
+      List<List<double>> poly, int fromIdx, int toIdx, double t) {
+    if (fromIdx == toIdx) return [poly[fromIdx][0], poly[fromIdx][1]];
+
+    // Calculate cumulative distances between points
+    var totalDist = 0.0;
+    final segDists = <double>[];
+    for (var i = fromIdx; i < toIdx; i++) {
+      final dLat = poly[i + 1][0] - poly[i][0];
+      final dLng = poly[i + 1][1] - poly[i][1];
+      final d = sqrt(dLat * dLat + dLng * dLng);
+      segDists.add(d);
+      totalDist += d;
+    }
+
+    if (totalDist == 0) return [poly[fromIdx][0], poly[fromIdx][1]];
+
+    // Find the target distance along the path
+    final targetDist = t * totalDist;
+    var accumulated = 0.0;
+
+    for (var i = 0; i < segDists.length; i++) {
+      if (accumulated + segDists[i] >= targetDist) {
+        final segProgress =
+            segDists[i] > 0 ? (targetDist - accumulated) / segDists[i] : 0.0;
+        final idx = fromIdx + i;
+        return [
+          poly[idx][0] + (poly[idx + 1][0] - poly[idx][0]) * segProgress,
+          poly[idx][1] + (poly[idx + 1][1] - poly[idx][1]) * segProgress,
+        ];
+      }
+      accumulated += segDists[i];
+    }
+
+    return [poly[toIdx][0], poly[toIdx][1]];
   }
 
   double _bearingDegrees(

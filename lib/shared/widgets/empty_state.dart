@@ -4,6 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_spacing.dart';
 import '../../core/theme/transit_typography.dart';
+import 'glass_card.dart';
+import 'gradient_text.dart';
 import 'transit_button.dart';
 
 class EmptyState extends StatelessWidget {
@@ -30,37 +32,42 @@ class EmptyState extends StatelessWidget {
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: TransitSpacing.space32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (icon != null) ...[
-              Icon(icon, size: 48, color: c.textLo),
-              const SizedBox(height: TransitSpacing.space16),
-            ],
-            Text(
-              title,
-              style: GoogleFonts.ibmPlexMono(
-                fontSize: 24,
-                fontWeight: FontWeight.w700,
-                color: c.textLo,
+        child: GlassCard(
+          blur: 16,
+          fillOpacity: 0.05,
+          borderRadius: 16,
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (icon != null) ...[
+                Icon(icon, size: 48, color: c.accent),
+                const SizedBox(height: TransitSpacing.space16),
+              ],
+              GradientText(
+                title,
+                style: GoogleFonts.ibmPlexMono(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                ),
+                gradient: c.gradientAccent,
               ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: TransitSpacing.space8),
-            Text(
-              subtitle,
-              style: TransitTypography.bodyPrimary(c.textMid),
-              textAlign: TextAlign.center,
-            ),
-            if (actionLabel != null && onAction != null) ...[
-              const SizedBox(height: 24),
-              TransitButton(
-                label: actionLabel!,
-                isPrimary: false,
-                onPressed: onAction,
+              const SizedBox(height: TransitSpacing.space8),
+              Text(
+                subtitle,
+                style: TransitTypography.bodyPrimary(c.textMid),
+                textAlign: TextAlign.center,
               ),
+              if (actionLabel != null && onAction != null) ...[
+                const SizedBox(height: 24),
+                TransitButton(
+                  label: actionLabel!,
+                  isPrimary: false,
+                  onPressed: onAction,
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );

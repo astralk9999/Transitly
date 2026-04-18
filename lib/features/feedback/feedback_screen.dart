@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../data/mock/mock_data_service.dart';
+import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_button.dart';
 import '../../shared/widgets/transit_input.dart';
 
@@ -35,7 +36,7 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
     final code = route?.code ?? widget.routeId;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: c.bgRoot,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -47,7 +48,10 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
             style: TransitTypography.sectionTitle(c.textHi)),
         centerTitle: false,
       ),
-      body: SingleChildScrollView(
+      body: Stack(
+        children: [
+          Positioned.fill(child: SmokeBackground(color: c.accent, isDark: isDark)),
+          SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,6 +114,8 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
             const SizedBox(height: 32),
           ],
         ),
+      ),
+        ],
       ),
     );
   }

@@ -8,6 +8,7 @@ import '../../core/theme/transit_typography.dart';
 import '../../data/mock/mock_data_service.dart';
 import '../../shared/widgets/responsive_scaffold.dart';
 import '../../shared/widgets/capacity_indicator.dart';
+import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/stagger_list.dart';
 import '../../shared/widgets/transit_chip.dart';
 
@@ -25,7 +26,7 @@ class StopDetailScreen extends ConsumerWidget {
 
     if (stop == null) {
       return Scaffold(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        backgroundColor: c.bgRoot,
         body: const Center(child: Text('Parada no encontrada')),
       );
     }
@@ -41,8 +42,13 @@ class StopDetailScreen extends ConsumerWidget {
     final padding = ResponsiveScaffold.screenPadding(context);
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: ContentConstraints(
+      backgroundColor: c.bgRoot,
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: SmokeBackground(color: c.accent, isDark: isDark),
+          ),
+          ContentConstraints(
         child: CustomScrollView(
         slivers: [
           SliverPadding(
@@ -235,6 +241,8 @@ class StopDetailScreen extends ConsumerWidget {
           ),
         ],
       ),
+      ),
+        ],
       ),
     );
   }

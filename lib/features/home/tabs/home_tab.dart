@@ -9,6 +9,7 @@ import '../../../data/mock/mock_data_service.dart';
 import '../../../shared/widgets/responsive_scaffold.dart';
 import '../../../data/mock/mock_realtime_service.dart';
 import '../../../shared/models/models.dart';
+import '../../../shared/widgets/glass_card.dart';
 import '../../../shared/widgets/route_card.dart';
 import '../../../shared/widgets/stagger_list.dart';
 import '../../../shared/widgets/transit_button.dart';
@@ -37,7 +38,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
     }
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: Colors.transparent,
       body: RefreshIndicator(
         onRefresh: () async {
           await Future.delayed(const Duration(milliseconds: 500));
@@ -54,7 +55,6 @@ class _HomeTabState extends ConsumerState<HomeTab> {
     final favRouteIds = favorites.map((f) => f.routeId).toSet();
     final padding = ResponsiveScaffold.screenPadding(context);
 
-    // Simulated habitual trip from first favorite
     final habitualFav = favorites.isNotEmpty ? favorites.first : null;
     final habitualRoute =
         habitualFav != null ? mockData.getRouteById(habitualFav.routeId) : null;
@@ -70,42 +70,69 @@ class _HomeTabState extends ConsumerState<HomeTab> {
         ? mockData.getNextDepartures(habitualRoute.id, '', 1)
         : <ScheduleModel>[];
 
-    // Nearby stops
     const jerezLat = 36.6850;
     const jerezLng = -6.1261;
     final nearbyStops = mockData.getNearbyStops(jerezLat, jerezLng, 3);
 
-    // Alerts for favorite routes
     final favAlerts = <AlertModel>[];
     for (final routeId in favRouteIds) {
       favAlerts.addAll(mockData.getAlertsForRoute(routeId));
     }
 
+    final topPadding = MediaQuery.of(context).padding.top;
+
     return CustomScrollView(
       key: const ValueKey('content'),
       slivers: [
         SliverPadding(
-          padding: EdgeInsets.symmetric(horizontal: padding, vertical: 16),
+          padding: EdgeInsets.only(
+            left: padding,
+            right: padding,
+            top: topPadding + 24,
+            bottom: 16,
+          ),
           sliver: SliverList(
             delegate: SliverChildListDelegate([
+              // ── Header ──
+              Text(
+                'TRANSITLY',
+                style: GoogleFonts.ibmPlexMono(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 2,
+                  color: c.textHi,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Jerez de la Frontera',
+                style: GoogleFonts.dmSans(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: c.textMid,
+                ),
+              ),
+              const SizedBox(height: 24),
               // ── 1) VIAJE HABITUAL ──
               if (habitualRoute != null)
                 _buildHabitualTrip(
                     c, habitualRoute, habitualStop, habitualDest, habitualNext),
-              if (habitualRoute != null) const SizedBox(height: 24),
+              if (habitualRoute != null) const SizedBox(height: 28),
 
               // ── 2) PARADAS CERCANAS ──
-              _buildSectionTitle(c, 'PARADAS CERCA DE TI'),
-              const SizedBox(height: 8),
+              _sectionTitle(c, 'PARADAS CERCA DE TI'),
+              const SizedBox(height: 10),
               StaggerList(
-                children: nearbyStops.map((stop) =>
-                    _buildNearbyStop(context, c, mockData, stop)).toList(),
+                children: nearbyStops
+                    .map((stop) =>
+                        _buildNearbyStop(context, c, mockData, stop))
+                    .toList(),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 28),
 
-              // ── 3) MIS LÍNEAS ──
-              _buildMyLinesHeader(c, favorites.length),
-              const SizedBox(height: 8),
+              // ── 3) MIS LINEAS ──
+              _sectionTitle(c, 'MIS LINEAS'),
+              const SizedBox(height: 10),
               StaggerList(
                 children: favorites.map((fav) {
                   final route = mockData.getRouteById(fav.routeId);
@@ -113,9 +140,10 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                   final trip = activeTripsMap[route.id] ??
                       mockData.getActiveTripForRoute(route.id);
                   final stopsForRoute = mockData.getStopsForRoute(route.id);
-                  final next =
-                      mockData.getNextDepartures(route.id, '', 1);
-                  final mins = next.isNotEmpty ? _minutesUntil(next.first.departureTime) : null;
+                  final next = mockData.getNextDepartures(route.id, '', 1);
+                  final mins = next.isNotEmpty
+                      ? _minutesUntil(next.first.departureTime)
+                      : null;
                   final minsStr = mins != null ? '${mins}m' : null;
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 8),
@@ -132,14 +160,16 @@ class _HomeTabState extends ConsumerState<HomeTab> {
 
               // ── 4) AVISOS ──
               if (favAlerts.isNotEmpty) ...[
-                const SizedBox(height: 24),
-                _buildSectionTitle(c, 'AVISOS'),
-                const SizedBox(height: 8),
+                const SizedBox(height: 28),
+                _sectionTitle(c, 'AVISOS'),
+                const SizedBox(height: 10),
                 StaggerList(
-                  children: favAlerts.map((alert) => _buildAlertItem(c, alert)).toList(),
+                  children: favAlerts
+                      .map((alert) => _buildAlertItem(c, alert))
+                      .toList(),
                 ),
               ],
-              const SizedBox(height: 32),
+              const SizedBox(height: 100),
             ]),
           ),
         ),
@@ -155,37 +185,40 @@ class _HomeTabState extends ConsumerState<HomeTab> {
     List<ScheduleModel> next,
   ) {
     final nextTime = next.isNotEmpty ? next.first.departureTime : '--:--';
-    final mins = next.isNotEmpty ? _minutesUntil(next.first.departureTime) : null;
+    final mins =
+        next.isNotEmpty ? _minutesUntil(next.first.departureTime) : null;
 
     return GestureDetector(
       onTap: () => context.push('/route/${route.id}'),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          border: Border.all(color: c.accent, width: 1),
-          borderRadius: BorderRadius.circular(6),
-        ),
+      child: GlassCard(
+        blur: 28,
+        fillOpacity: 0.10,
+        borderRadius: 20,
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Semantics(
-              header: true,
-              child: Text(
-                'TU PRÓXIMO BUS',
-                style: TransitTypography.sectionTitle(c.accent),
+            Text(
+              'TU PROXIMO BUS',
+              style: GoogleFonts.ibmPlexMono(
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 2,
+                color: c.accent,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 12),
             Text(
-              '${route.code} · ${stop?.name ?? 'Parada'} → ${dest?.name ?? 'Destino'}',
+              '${route.code} \u00B7 ${stop?.name ?? 'Parada'} \u2192 ${dest?.name ?? 'Destino'}',
               style: TransitTypography.bodyPrimary(c.textHi),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 14),
             Row(
               children: [
-                Text(nextTime, style: TransitTypography.stopTime(c.textMid)),
+                Text(nextTime,
+                    style: TransitTypography.stopTime(c.textMid)),
                 const SizedBox(width: 12),
                 AnimatedSwitcher(
                   duration: const Duration(milliseconds: 200),
@@ -193,8 +226,8 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                     mins != null ? 'en ${mins}m' : '--',
                     key: ValueKey(mins),
                     style: GoogleFonts.ibmPlexMono(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
+                      fontSize: 24,
+                      fontWeight: FontWeight.w700,
                       color: c.accent,
                     ),
                   ),
@@ -213,32 +246,23 @@ class _HomeTabState extends ConsumerState<HomeTab> {
     );
   }
 
-  Widget _buildSectionTitle(TransitColorScheme c, String text) {
+  Widget _sectionTitle(TransitColorScheme c, String text) {
     return Semantics(
       header: true,
-      child: Text(text, style: TransitTypography.sectionTitle(c.textMid)),
-    );
-  }
-
-  Widget _buildMyLinesHeader(TransitColorScheme c, int count) {
-    return Semantics(
-      header: true,
-      child: Row(
-        children: [
-          Text('MIS LÍNEAS', style: TransitTypography.sectionTitle(c.textMid)),
-          const SizedBox(width: 8),
-          Text(
-            '($count líneas)',
-            style: TransitTypography.bodySmall(c.textLo),
-          ),
-        ],
+      child: Text(
+        text,
+        style: GoogleFonts.ibmPlexMono(
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 1,
+          color: c.textMid,
+        ),
       ),
     );
   }
 
   Widget _buildNearbyStop(BuildContext context, TransitColorScheme c,
       MockDataService mockData, StopModel stop) {
-    // Find routes that pass through this stop
     final routesAtStop = <String>[];
     for (final entry in mockData.routeStops.entries) {
       for (final rs in entry.value) {
@@ -249,20 +273,17 @@ class _HomeTabState extends ConsumerState<HomeTab> {
       }
     }
 
-    return Container(
+    return GlassCard(
+      blur: 20,
+      fillOpacity: 0.06,
+      borderRadius: 14,
       margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: c.bgSurface,
-        border: Border.all(color: c.border, width: 0.5),
-        borderRadius: BorderRadius.circular(6),
-      ),
+      padding: const EdgeInsets.all(14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(stop.name, style: TransitTypography.bodyPrimary(c.textHi)),
-          const SizedBox(height: 6),
-          // Arrivals per route
+          const SizedBox(height: 8),
           Wrap(
             spacing: 6,
             runSpacing: 4,
@@ -272,8 +293,9 @@ class _HomeTabState extends ConsumerState<HomeTab> {
               final next = mockData.getNextDepartures(routeId, stop.id, 1);
               final time =
                   next.isNotEmpty ? next.first.departureTime : '--:--';
-              final mins =
-                  next.isNotEmpty ? _minutesUntil(next.first.departureTime) : null;
+              final mins = next.isNotEmpty
+                  ? _minutesUntil(next.first.departureTime)
+                  : null;
 
               return GestureDetector(
                 onTap: () => context.push('/route/$routeId'),
@@ -282,7 +304,8 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                   children: [
                     TransitChip(route.code, color: route.routeColor),
                     const SizedBox(width: 4),
-                    Text(time, style: TransitTypography.stopTime(c.textHi)),
+                    Text(time,
+                        style: TransitTypography.stopTime(c.textHi)),
                     if (mins != null) ...[
                       const SizedBox(width: 4),
                       AnimatedSwitcher(
@@ -310,25 +333,30 @@ class _HomeTabState extends ConsumerState<HomeTab> {
     final Color severityColor;
     switch (alert.severity) {
       case AlertSeverity.info:
-        severityColor = c.stateOnRoute;
+        severityColor = c.neonBlue;
       case AlertSeverity.warning:
         severityColor = c.stateDelay;
       case AlertSeverity.critical:
         severityColor = c.stateCancelled;
     }
 
-    return Container(
+    return GlassCard(
+      blur: 16,
+      fillOpacity: 0.05,
+      borderRadius: 12,
       margin: const EdgeInsets.only(bottom: 6),
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: c.bgSurface,
-        border: Border.all(color: c.border, width: 0.5),
-        borderRadius: BorderRadius.circular(4),
-      ),
+      padding: const EdgeInsets.all(12),
       child: Row(
         children: [
-          Container(width: 2, height: 32, color: severityColor),
-          const SizedBox(width: 10),
+          Container(
+            width: 3,
+            height: 32,
+            decoration: BoxDecoration(
+              color: severityColor,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(width: 12),
           Expanded(
             child: Text(
               alert.title,

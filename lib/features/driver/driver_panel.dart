@@ -15,7 +15,7 @@ class DriverPanel extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: c.bgSurface,
+        color: c.bgRoot,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
       ),
       child: Column(

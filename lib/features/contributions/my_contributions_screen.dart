@@ -10,6 +10,7 @@ import '../../shared/widgets/responsive_scaffold.dart';
 import '../../shared/models/enums.dart';
 import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/reputation_badge.dart';
+import '../../shared/widgets/smoke_background.dart';
 
 class MyContributionsScreen extends ConsumerWidget {
   const MyContributionsScreen({super.key});
@@ -23,7 +24,7 @@ class MyContributionsScreen extends ConsumerWidget {
     final feedbacks = mockData.feedbacks;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: c.bgRoot,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -35,7 +36,10 @@ class MyContributionsScreen extends ConsumerWidget {
             style: TransitTypography.sectionTitle(c.textHi)),
         centerTitle: false,
       ),
-      body: ContentConstraints(
+      body: Stack(
+        children: [
+          Positioned.fill(child: SmokeBackground(color: c.accent, isDark: isDark)),
+          ContentConstraints(
         child: Builder(builder: (context) {
         final padding = ResponsiveScaffold.screenPadding(context);
         return Column(
@@ -254,6 +258,8 @@ class MyContributionsScreen extends ConsumerWidget {
         ],
       );
         }),
+      ),
+        ],
       ),
     );
   }

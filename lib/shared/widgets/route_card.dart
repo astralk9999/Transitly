@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/theme/transit_colors.dart';
-import '../../core/theme/transit_spacing.dart';
 import '../../core/theme/transit_typography.dart';
 import '../models/active_trip_model.dart';
 import '../models/enums.dart';
@@ -31,69 +30,65 @@ class RouteCard extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
 
-    // Left border color based on trip status
-    Color leftBorderColor;
+    Color statusColor;
     if (activeTrip != null) {
       switch (activeTrip!.status) {
         case TripStatus.onTime:
-          leftBorderColor = c.stateOnRoute;
+          statusColor = c.stateOnRoute;
         case TripStatus.delay:
-          leftBorderColor = c.stateDelay;
+          statusColor = c.stateDelay;
         case TripStatus.cancelled:
-          leftBorderColor = c.stateCancelled;
+          statusColor = c.stateCancelled;
         case TripStatus.completed:
-          leftBorderColor = c.stateIdle;
+          statusColor = c.stateIdle;
       }
     } else {
-      leftBorderColor = c.stateIdle;
+      statusColor = c.stateIdle;
     }
 
     final statusLabel = activeTrip != null ? ', ${activeTrip!.status.label}' : '';
     final minsLabel = estimatedMinutes != null ? ', $estimatedMinutes' : '';
 
     return Semantics(
-      label: 'Línea ${route.code}, ${route.name}$statusLabel$minsLabel',
+      label: 'Linea ${route.code}, ${route.name}$statusLabel$minsLabel',
       button: onTap != null,
       child: Pressable(
-      onTap: onTap,
-      child: Container(
-          constraints: const BoxConstraints(minHeight: TransitSpacing.heightRouteCard),
+        onTap: onTap,
+        child: Container(
+          constraints: const BoxConstraints(minHeight: 80),
           decoration: BoxDecoration(
-            color: c.bgSurface,
-            border: Border.all(color: c.border, width: 0.5),
-            borderRadius: BorderRadius.circular(6),
+            color: isDark
+                ? Colors.white.withValues(alpha: 0.10)
+                : Colors.white.withValues(alpha: 0.80),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: isDark
+                  ? Colors.white.withValues(alpha: 0.15)
+                  : Colors.black.withValues(alpha: 0.08),
+              width: 1,
+            ),
           ),
           child: Row(
             children: [
-              // Left accent border
+              // Route code box with status color accent
               Container(
-                width: 3,
-                constraints: const BoxConstraints(minHeight: 80),
+                width: 60,
+                margin: const EdgeInsets.all(10),
+                padding: const EdgeInsets.symmetric(vertical: 10),
                 decoration: BoxDecoration(
-                  color: leftBorderColor,
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(6),
-                    bottomLeft: Radius.circular(6),
+                  color: statusColor.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: statusColor.withValues(alpha: 0.30),
+                    width: 1,
                   ),
                 ),
-              ),
-              // Route code box
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: Container(
-                  width: 52,
-                  height: 40,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: c.bgRaised,
-                    border: Border.all(color: c.border, width: 0.5),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
+                child: Center(
                   child: Text(
                     route.code,
                     style: GoogleFonts.ibmPlexMono(
                       fontSize: 18,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w800,
                       color: c.accent,
                     ),
                   ),
@@ -110,7 +105,7 @@ class RouteCard extends StatelessWidget {
                       Text(
                         route.name.toUpperCase(),
                         style: GoogleFonts.dmSans(
-                          fontSize: 15,
+                          fontSize: 14,
                           fontWeight: FontWeight.w500,
                           color: c.textHi,
                         ),
@@ -137,7 +132,7 @@ class RouteCard extends StatelessWidget {
                               const SizedBox(width: 8),
                             StatusBadge(
                               activeTrip!.status.label,
-                              leftBorderColor,
+                              statusColor,
                             ),
                           ],
                         ),
@@ -149,19 +144,19 @@ class RouteCard extends StatelessWidget {
               // Right: estimated minutes
               if (estimatedMinutes != null)
                 Padding(
-                  padding: const EdgeInsets.only(right: 12),
+                  padding: const EdgeInsets.only(right: 14),
                   child: Text(
                     estimatedMinutes!,
                     style: GoogleFonts.ibmPlexMono(
                       fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                      color: activeTrip != null ? c.accent : c.textMid,
+                      fontWeight: FontWeight.w700,
+                      color: c.accent,
                     ),
                   ),
                 ),
             ],
           ),
-      ),
+        ),
       ),
     );
   }

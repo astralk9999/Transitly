@@ -4,152 +4,275 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
-import '../../../data/mock/mock_data_service.dart';
+import '../../../data/nfc/nfc_card_service.dart';
+import '../../../shared/providers/nfc_provider.dart';
+import '../../../shared/widgets/glass_card.dart';
+import '../../../shared/widgets/gradient_text.dart';
 import '../../../shared/widgets/responsive_scaffold.dart';
-import '../../../shared/widgets/stagger_list.dart';
+import '../../../shared/widgets/transit_button.dart';
 
-class CardTab extends ConsumerStatefulWidget {
+class CardTab extends ConsumerWidget {
   const CardTab({super.key});
 
   @override
-  ConsumerState<CardTab> createState() => _CardTabState();
-}
-
-class _CardTabState extends ConsumerState<CardTab> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
-    final mockData = ref.watch(mockDataServiceProvider);
-    final card = mockData.transitCard;
-    final history = mockData.tripHistory;
-
+    final nfcAvailable = ref.watch(nfcAvailableProvider);
+    final scanState = ref.watch(nfcScanProvider);
     final padding = ResponsiveScaffold.screenPadding(context);
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: Colors.transparent,
       body: ContentConstraints(
         maxWidth: 600,
-        child: RefreshIndicator(
-        onRefresh: () async {
-          await Future.delayed(const Duration(milliseconds: 500));
-        },
-        color: c.accent,
-        child: CustomScrollView(
-        key: const ValueKey('card-content'),
-        slivers: [
-          SliverPadding(
-            padding: EdgeInsets.all(padding),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate([
-                // ── TARJETA VISUAL ──
-                _buildCard(c, card),
-                const SizedBox(height: 24),
-
-                // ── ESTADÍSTICAS ──
-                Text('ESTE MES',
-                    style: TransitTypography.sectionTitle(c.textMid)),
-                const SizedBox(height: 8),
-                _buildStatsGrid(c),
-                const SizedBox(height: 24),
-
-                // ── HISTORIAL ──
-                Text('ÚLTIMOS VIAJES',
-                    style: TransitTypography.sectionTitle(c.textMid)),
-                const SizedBox(height: 8),
-                StaggerList(
-                  children: history.map((trip) {
-                    final route = mockData.getRouteById(trip.routeId);
-                    final date =
-                        '${trip.startedAt.day.toString().padLeft(2, '0')}/${trip.startedAt.month.toString().padLeft(2, '0')}';
-                    final time =
-                        '${trip.startedAt.hour.toString().padLeft(2, '0')}:${trip.startedAt.minute.toString().padLeft(2, '0')}';
-                    return Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          child: Row(
-                            children: [
-                              Text(
-                                '$date · $time',
-                                style: TransitTypography.bodySecondary(c.textMid),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Text(
-                                  route != null
-                                      ? '${route.code} ${route.name}'
-                                      : trip.routeId,
-                                  style:
-                                      TransitTypography.subheading(c.textHi),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                              if (trip.cost != null)
-                                Text(
-                                  '-${trip.cost!.toStringAsFixed(2)} €',
-                                  style: TransitTypography.bodySecondary(
-                                      c.stateCancelled),
-                                ),
-                            ],
-                          ),
+        child: SafeArea(
+          child: CustomScrollView(
+            slivers: [
+              SliverPadding(
+                padding: EdgeInsets.all(padding),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    const SizedBox(height: 8),
+                    Semantics(
+                      header: true,
+                      child: Text(
+                        'TARJETA NFC',
+                        style: GoogleFonts.ibmPlexMono(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 2,
+                          color: c.textMid,
                         ),
-                        Divider(height: 1, thickness: 0.5, color: c.border),
-                      ],
-                    );
-                  }).toList(),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    nfcAvailable.when(
+                      loading: () => _buildLoading(c),
+                      error: (_, __) => _buildUnsupported(c),
+                      data: (available) {
+                        if (!available) return _buildUnsupported(c);
+                        return _buildNfcContent(context, ref, c, scanState);
+                      },
+                    ),
+                    const SizedBox(height: 100),
+                  ]),
                 ),
-                const SizedBox(height: 32),
-              ]),
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
-      ),
+        ),
       ),
     );
   }
 
-  Widget _buildCard(TransitColorScheme c, dynamic card) {
-    final balance = card?.balance ?? 0.0;
-    final cardNumber = card?.cardNumber ?? '0000 0000 0000 0000';
-
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: c.bgSurface,
-        border: Border.all(color: c.border, width: 1),
-        borderRadius: BorderRadius.circular(8),
+  Widget _buildLoading(TransitColorScheme c) {
+    return SizedBox(
+      height: 200,
+      child: Center(
+        child: CircularProgressIndicator(strokeWidth: 2, color: c.accent),
       ),
+    );
+  }
+
+  Widget _buildUnsupported(TransitColorScheme c) {
+    return GlassCard(
+      blur: 24,
+      fillOpacity: 0.08,
+      borderRadius: 20,
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 48),
+      child: Column(
+        children: [
+          Icon(Icons.nfc, size: 48, color: c.textLo),
+          const SizedBox(height: 16),
+          Text('NFC NO DISPONIBLE',
+              style: TransitTypography.sectionTitle(c.textLo)),
+          const SizedBox(height: 8),
+          Text(
+            'La lectura de tarjetas del Consorcio de Transportes solo '
+            'esta disponible en dispositivos Android con NFC.',
+            style: TransitTypography.bodySecondary(c.textMid),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNfcContent(BuildContext context, WidgetRef ref,
+      TransitColorScheme c, NfcScanState scanState) {
+    switch (scanState.status) {
+      case NfcScanStatus.idle:
+        return _buildIdle(context, ref, c, scanState);
+      case NfcScanStatus.scanning:
+        return _buildScanning(context, ref, c);
+      case NfcScanStatus.success:
+        return _buildSuccess(context, ref, c, scanState);
+      case NfcScanStatus.error:
+        return _buildError(context, ref, c, scanState);
+      case NfcScanStatus.unsupported:
+        return _buildUnsupported(c);
+    }
+  }
+
+  Widget _buildIdle(BuildContext context, WidgetRef ref,
+      TransitColorScheme c, NfcScanState scanState) {
+    return Column(
+      children: [
+        GlassCard(
+          blur: 28,
+          fillOpacity: 0.08,
+          borderRadius: 20,
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 44),
+          child: Column(
+            children: [
+              Icon(Icons.nfc, size: 56, color: c.accent),
+              const SizedBox(height: 20),
+              GradientText(
+                'ACERCA TU TARJETA',
+                style: GoogleFonts.ibmPlexMono(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 2,
+                ),
+                gradient: c.gradientAccent,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Coloca tu tarjeta del Consorcio de Transportes '
+                'en la parte trasera del dispositivo',
+                style: TransitTypography.bodySecondary(c.textMid),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              TransitButton(
+                label: 'ESCANEAR TARJETA',
+                icon: Icons.contactless,
+                onPressed: () =>
+                    ref.read(nfcScanProvider.notifier).startScan(),
+              ),
+            ],
+          ),
+        ),
+        if (scanState.scanHistory.isNotEmpty) ...[
+          const SizedBox(height: 24),
+          _buildHistory(c, scanState.scanHistory),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildScanning(
+      BuildContext context, WidgetRef ref, TransitColorScheme c) {
+    return GlassCard(
+      blur: 28,
+      fillOpacity: 0.10,
+      borderRadius: 20,
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 48),
+      child: Column(
+        children: [
+          SizedBox(
+            width: 56,
+            height: 56,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              color: c.accent,
+            ),
+          ),
+          const SizedBox(height: 24),
+          GradientText(
+            'LEYENDO TARJETA...',
+            style: GoogleFonts.ibmPlexMono(
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 1,
+            ),
+            gradient: c.gradientAccent,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Manten la tarjeta cerca del dispositivo',
+            style: TransitTypography.bodySecondary(c.textMid),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 24),
+          TransitButton(
+            label: 'CANCELAR',
+            isPrimary: false,
+            isSmall: true,
+            onPressed: () =>
+                ref.read(nfcScanProvider.notifier).cancelScan(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSuccess(BuildContext context, WidgetRef ref,
+      TransitColorScheme c, NfcScanState scanState) {
+    final result = scanState.result!;
+
+    return Column(
+      children: [
+        _buildBalanceCard(c, result),
+        const SizedBox(height: 16),
+        TransitButton(
+          label: 'ESCANEAR DE NUEVO',
+          isPrimary: false,
+          icon: Icons.contactless,
+          onPressed: () =>
+              ref.read(nfcScanProvider.notifier).startScan(),
+        ),
+        if (scanState.scanHistory.length > 1) ...[
+          const SizedBox(height: 24),
+          _buildHistory(c, scanState.scanHistory.skip(1).toList()),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildBalanceCard(TransitColorScheme c, NfcCardResult result) {
+    final elapsed = DateTime.now().difference(result.scannedAt);
+    final timeAgo = elapsed.inMinutes < 1
+        ? 'Ahora mismo'
+        : elapsed.inMinutes < 60
+            ? 'Hace ${elapsed.inMinutes} min'
+            : 'Hace ${elapsed.inHours}h';
+
+    return GlassCard(
+      blur: 30,
+      fillOpacity: 0.10,
+      borderRadius: 20,
+      padding: const EdgeInsets.all(24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Text(
-                'TARJETA MULTIVIAJE',
+              GradientText(
+                'TARJETA CONSORCIO',
                 style: GoogleFonts.ibmPlexMono(
                   fontSize: 10,
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 1.0,
-                  color: c.textMid,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 1.5,
                 ),
+                gradient: c.gradientAccent,
               ),
               const Spacer(),
-              Text(
-                'COMUJESA',
-                style: GoogleFonts.dmSans(fontSize: 12, color: c.textLo),
-              ),
+              Icon(Icons.nfc, size: 20, color: c.accent),
             ],
           ),
-          const SizedBox(height: 24),
-          Center(
-            child: Text(
-              '${balance.toStringAsFixed(2)} €',
-              style: GoogleFonts.ibmPlexMono(
-                fontSize: 32,
-                fontWeight: FontWeight.w700,
-                color: c.accent,
+          const SizedBox(height: 28),
+          Semantics(
+            label: 'Saldo: ${result.balance.toStringAsFixed(2)} euros',
+            child: Center(
+              child: GradientText(
+                '${result.balance.toStringAsFixed(2)} \u20AC',
+                style: GoogleFonts.ibmPlexMono(
+                  fontSize: 42,
+                  fontWeight: FontWeight.w900,
+                ),
+                gradient: c.gradientAccent,
               ),
             ),
           ),
@@ -159,70 +282,115 @@ class _CardTabState extends ConsumerState<CardTab> {
               style: TransitTypography.bodySecondary(c.textMid),
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 28),
           Text(
-            cardNumber,
+            result.cardId,
             style: GoogleFonts.ibmPlexMono(
-              fontSize: 14,
+              fontSize: 11,
               color: c.textLo,
-              letterSpacing: 2.0,
+              letterSpacing: 1.5,
             ),
           ),
           const SizedBox(height: 4),
-          Text(
-            'Actualizado hace 2h',
-            style: GoogleFonts.dmSans(fontSize: 11, color: c.textLo),
-          ),
+          Text(timeAgo, style: TransitTypography.bodySmall(c.textLo)),
         ],
       ),
     );
   }
 
-  Widget _buildStatsGrid(TransitColorScheme c) {
-    return GridView.count(
-      crossAxisCount: 2,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      mainAxisSpacing: 8,
-      crossAxisSpacing: 8,
-      childAspectRatio: 1.6,
+  Widget _buildError(BuildContext context, WidgetRef ref,
+      TransitColorScheme c, NfcScanState scanState) {
+    return Column(
       children: [
-        _statCell(c, '23', 'viajes', c.textHi),
-        _statCell(c, '18h 30min', 'en bus', c.textHi),
-        _statCell(c, '45,80 €', 'gastados', c.textHi),
-        _statCell(c, '~89 kg', 'CO₂ evitado', c.accent),
+        GlassCard(
+          blur: 24,
+          fillOpacity: 0.08,
+          borderRadius: 20,
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            children: [
+              Icon(Icons.error_outline, size: 44, color: c.stateCancelled),
+              const SizedBox(height: 12),
+              Text(
+                'ERROR DE LECTURA',
+                style: GoogleFonts.ibmPlexMono(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 1,
+                  color: c.stateCancelled,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                scanState.errorMessage ?? 'Error desconocido',
+                style: TransitTypography.bodySecondary(c.textMid),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+              TransitButton(
+                label: 'REINTENTAR',
+                icon: Icons.refresh,
+                onPressed: () =>
+                    ref.read(nfcScanProvider.notifier).startScan(),
+              ),
+            ],
+          ),
+        ),
+        if (scanState.scanHistory.isNotEmpty) ...[
+          const SizedBox(height: 24),
+          _buildHistory(c, scanState.scanHistory),
+        ],
       ],
     );
   }
 
-  Widget _statCell(
-      TransitColorScheme c, String value, String label, Color valueColor) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: c.bgSurface,
-        border: Border.all(color: c.border, width: 0.5),
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            value,
-            style: GoogleFonts.ibmPlexMono(
-              fontSize: 24,
-              fontWeight: FontWeight.w600,
-              color: valueColor,
-            ),
+  Widget _buildHistory(TransitColorScheme c, List<NfcCardResult> history) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'LECTURAS ANTERIORES',
+          style: GoogleFonts.ibmPlexMono(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 1,
+            color: c.textMid,
           ),
-          const SizedBox(height: 2),
-          Text(
-            label,
-            style: GoogleFonts.dmSans(fontSize: 11, color: c.textMid),
+        ),
+        const SizedBox(height: 8),
+        GlassCard(
+          blur: 16,
+          fillOpacity: 0.05,
+          borderRadius: 14,
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          child: Column(
+            children: history.map((scan) {
+              final date =
+                  '${scan.scannedAt.day.toString().padLeft(2, '0')}/${scan.scannedAt.month.toString().padLeft(2, '0')}';
+              final time =
+                  '${scan.scannedAt.hour.toString().padLeft(2, '0')}:${scan.scannedAt.minute.toString().padLeft(2, '0')}';
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Row(
+                  children: [
+                    Text('$date $time',
+                        style: TransitTypography.bodySecondary(c.textMid)),
+                    const Spacer(),
+                    Text(
+                      '${scan.balance.toStringAsFixed(2)} \u20AC',
+                      style: GoogleFonts.ibmPlexMono(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: c.accent,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }).toList(),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

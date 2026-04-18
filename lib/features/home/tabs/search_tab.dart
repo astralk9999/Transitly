@@ -32,51 +32,51 @@ class _SearchTabState extends ConsumerState<SearchTab> {
     final padding = ResponsiveScaffold.screenPadding(context);
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: Colors.transparent,
       body: ContentConstraints(
         child: SafeArea(
-        child: Column(
-          children: [
-            // Search bar
-            Padding(
-              padding: EdgeInsets.all(padding),
-              child: RouteSearchBar(
-                availableStops: mockData.stops,
-                onSearch: () {
-                  setState(() {
-                    _searchLoading = true;
-                    _hasSearched = true;
-                  });
-                  Future.delayed(const Duration(milliseconds: 800), () {
-                    if (mounted) setState(() => _searchLoading = false);
-                  });
-                },
+          child: Column(
+            children: [
+              // Search bar
+              Padding(
+                padding: EdgeInsets.all(padding),
+                child: RouteSearchBar(
+                  availableStops: mockData.stops,
+                  onSearch: () {
+                    setState(() {
+                      _searchLoading = true;
+                      _hasSearched = true;
+                    });
+                    Future.delayed(const Duration(milliseconds: 800), () {
+                      if (mounted) setState(() => _searchLoading = false);
+                    });
+                  },
+                ),
               ),
-            ),
-            // Results or empty state
-            Expanded(
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 300),
-                child: _hasSearched
-                  ? (_searchLoading
-                      ? _buildSearchShimmer(context)
-                      : _buildResults(context, c, mockData))
-                  : Column(
-                      children: [
-                        const Expanded(
-                          child: EmptyState(
-                            'BUSCAR RUTA',
-                            'Indica origen y destino',
+              // Results or empty state
+              Expanded(
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  child: _hasSearched
+                    ? (_searchLoading
+                        ? _buildSearchShimmer(context)
+                        : _buildResults(context, c, mockData))
+                    : Column(
+                        children: [
+                          const Expanded(
+                            child: EmptyState(
+                              'BUSCAR RUTA',
+                              'Indica origen y destino',
+                            ),
                           ),
-                        ),
-                        _buildSuggestLink(c),
-                      ],
-                    ),
-            ),
-            ),
-          ],
+                          _buildSuggestLink(c),
+                        ],
+                      ),
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
       ),
     );
   }

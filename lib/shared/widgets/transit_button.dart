@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/theme/transit_colors.dart';
-import '../../core/theme/transit_spacing.dart';
 import 'pressable.dart';
 
 class TransitButton extends StatelessWidget {
@@ -31,31 +30,46 @@ class TransitButton extends StatelessWidget {
     final c = TransitColorScheme.of(isDark);
 
     final disabled = onPressed == null;
-    final height = isSmall ? TransitSpacing.heightBtnSmall : TransitSpacing.heightBtnPrimary;
-    final fontSize = isSmall ? 12.0 : 14.0;
+    final height = isSmall ? 36.0 : 48.0;
+    final fontSize = isSmall ? 11.0 : 13.0;
+    final radius = BorderRadius.circular(14);
 
     Color bg;
     Color fg;
     Color borderColor;
+    List<BoxShadow> shadows;
 
     if (isDanger) {
-      bg = Colors.transparent;
+      bg = c.stateCancelled.withValues(alpha: 0.20);
       fg = c.stateCancelled;
-      borderColor = c.stateCancelled;
+      borderColor = c.stateCancelled.withValues(alpha: 0.40);
+      shadows = [];
     } else if (isPrimary) {
       bg = c.accent;
-      fg = c.bgRoot;
+      fg = Colors.white;
       borderColor = c.accent;
+      shadows = [
+        BoxShadow(
+          color: c.accent.withValues(alpha: 0.35),
+          blurRadius: 20,
+          offset: const Offset(0, 6),
+        ),
+      ];
     } else {
-      bg = Colors.transparent;
-      fg = c.accent;
-      borderColor = c.accent;
+      bg = isDark
+          ? Colors.white.withValues(alpha: 0.10)
+          : Colors.black.withValues(alpha: 0.06);
+      fg = c.textHi;
+      borderColor = isDark
+          ? Colors.white.withValues(alpha: 0.15)
+          : Colors.black.withValues(alpha: 0.12);
+      shadows = [];
     }
 
     final textStyle = GoogleFonts.ibmPlexMono(
       fontSize: fontSize,
       fontWeight: FontWeight.w700,
-      letterSpacing: 0.5,
+      letterSpacing: 1,
       color: fg,
     );
 
@@ -64,47 +78,44 @@ class TransitButton extends StatelessWidget {
       enabled: !disabled,
       label: label,
       child: Pressable(
-      onTap: disabled || isLoading ? null : onPressed,
-      scale: 0.95,
-      enabled: !disabled && !isLoading,
-      child: Opacity(
-        opacity: disabled ? 0.4 : 1.0,
-        child: SizedBox(
-          height: height,
-          child: DecoratedBox(
+        onTap: disabled || isLoading ? null : onPressed,
+        scale: 0.96,
+        enabled: !disabled && !isLoading,
+        child: Opacity(
+          opacity: disabled ? 0.35 : 1.0,
+          child: Container(
+            height: height,
             decoration: BoxDecoration(
               color: bg,
-              borderRadius: BorderRadius.circular(TransitSpacing.radiusSm),
-              border: Border.all(color: borderColor, width: TransitSpacing.strokeNormal),
+              borderRadius: radius,
+              border: Border.all(color: borderColor, width: isPrimary ? 0 : 1),
+              boxShadow: shadows,
             ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: TransitSpacing.space16),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (isLoading)
-                    SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: fg,
-                      ),
-                    )
-                  else ...[
-                    if (icon != null) ...[
-                      Icon(icon, size: isSmall ? 16 : 18, color: fg),
-                      const SizedBox(width: TransitSpacing.space8),
-                    ],
-                    Text(label.toUpperCase(), style: textStyle),
+            padding: EdgeInsets.symmetric(horizontal: isSmall ? 14 : 24),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (isLoading)
+                  SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 1.5,
+                      color: fg,
+                    ),
+                  )
+                else ...[
+                  if (icon != null) ...[
+                    Icon(icon, size: isSmall ? 15 : 17, color: fg),
+                    const SizedBox(width: 8),
                   ],
+                  Text(label.toUpperCase(), style: textStyle),
                 ],
-              ),
+              ],
             ),
           ),
         ),
-      ),
       ),
     );
   }

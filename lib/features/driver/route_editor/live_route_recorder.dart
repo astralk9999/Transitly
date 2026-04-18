@@ -9,6 +9,7 @@ import 'package:latlong2/latlong.dart';
 
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
+import '../../../shared/widgets/smoke_background.dart';
 import '../../../shared/widgets/transit_input.dart';
 import '../../map/map_config.dart';
 
@@ -229,15 +230,15 @@ class _LiveRouteRecorderState extends State<LiveRouteRecorder> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
 
-    if (!_isRecording) return _buildPreRecording(c);
+    if (!_isRecording) return _buildPreRecording(c, isDark);
     return _buildRecording(c, isDark);
   }
 
   // ── PRE-RECORDING ──
 
-  Widget _buildPreRecording(TransitColorScheme c) {
+  Widget _buildPreRecording(TransitColorScheme c, bool isDark) {
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: c.bgRoot,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -249,7 +250,10 @@ class _LiveRouteRecorderState extends State<LiveRouteRecorder> {
             style: TransitTypography.sectionTitle(c.textHi)),
         centerTitle: false,
       ),
-      body: SingleChildScrollView(
+      body: Stack(
+        children: [
+          Positioned.fill(child: SmokeBackground(color: c.accent, isDark: isDark)),
+          SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -317,6 +321,8 @@ class _LiveRouteRecorderState extends State<LiveRouteRecorder> {
           ],
         ),
       ),
+        ],
+      ),
     );
   }
 
@@ -330,9 +336,10 @@ class _LiveRouteRecorderState extends State<LiveRouteRecorder> {
         : 0.0;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: c.bgRoot,
       body: Stack(
         children: [
+          Positioned.fill(child: SmokeBackground(color: c.accent, isDark: isDark)),
           Column(
             children: [
               SizedBox(height: MediaQuery.of(context).padding.top),

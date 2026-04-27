@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../theme/transit_animations.dart';
 
+import '../../data/mock/mock_data_service.dart';
 import '../../features/contributions/my_contributions_screen.dart';
 import '../../features/debug/component_showcase_screen.dart';
 import '../../features/driver/active_route_screen.dart';
@@ -39,9 +40,13 @@ import '../../features/suggestions/suggestion_contribute_screen.dart';
 import '../../features/error/not_found_screen.dart';
 import '../../features/suggestions/suggestion_detail_screen.dart';
 
+/// Initial location of the app router. Overridable in tests to bypass the
+/// splash screen (which holds a real `Future.delayed(3s)` timer).
+final routerInitialLocationProvider = Provider<String>((ref) => '/splash');
+
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    initialLocation: '/splash',
+    initialLocation: ref.watch(routerInitialLocationProvider),
     errorBuilder: (context, state) => const NotFoundScreen(),
     routes: [
       GoRoute(
@@ -94,6 +99,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       // ── Detail screens (slide horizontal) ──
       GoRoute(
         path: '/route/:routeId',
+        redirect: (context, state) {
+          final id = state.pathParameters['routeId'];
+          final mock = ref.read(mockDataServiceProvider);
+          if (id == null || mock.getRouteById(id) == null) {
+            return '/home/inicio';
+          }
+          return null;
+        },
         pageBuilder: (context, state) => _slide(
           state,
           RouteDetailScreen(routeId: state.pathParameters['routeId']!),
@@ -101,6 +114,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/stop/:stopId',
+        redirect: (context, state) {
+          final id = state.pathParameters['stopId'];
+          final mock = ref.read(mockDataServiceProvider);
+          if (id == null || mock.getStopById(id) == null) {
+            return '/home/inicio';
+          }
+          return null;
+        },
         pageBuilder: (context, state) => _slide(
           state,
           StopDetailScreen(stopId: state.pathParameters['stopId']!),

@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 import 'package:nfc_manager/platform_tags.dart';
 
+import '../../core/utils/app_logger.dart';
+
 /// Result of a successful NFC card read.
 class NfcCardResult {
   const NfcCardResult({
@@ -52,13 +54,31 @@ class NfcCardException implements Exception {
 /// Service for reading Consorcio de Transportes de Andalucia transit cards
 /// via NFC Mifare Classic protocol.
 ///
-/// Protocol reverse-engineered from the saldotarjetas Android app.
+/// Protocol reverse-engineered from the saldotarjetas Android app. Sector
+/// keys default to the values required by that card format; override at
+/// build time with `--dart-define=NFC_KEY_SECTOR0=<hex>` and
+/// `--dart-define=NFC_KEY_SECTOR9=<hex>` for environments where those
+/// defaults are inappropriate or legally sensitive.
 class NfcCardService {
-  // Authentication keys extracted from decompiled APK
-  static final _keySector9 =
-      Uint8List.fromList([0x99, 0x10, 0x02, 0x25, 0xD8, 0x3B]);
-  static final _keySector0 =
-      Uint8List.fromList([0x18, 0x48, 0xA8, 0xD1, 0xE4, 0xC5]);
+  static const _tag = 'NfcCardService';
+
+  // Default Mifare Classic sector keys (hex, 6 bytes each).
+  // Overridable via --dart-define at build time. See class docstring.
+  static const _defaultKeySector9Hex = '99100225D83B';
+  static const _defaultKeySector0Hex = '1848A8D1E4C5';
+
+  static final _keySector9 = _parseHexKey(
+    const String.fromEnvironment(
+      'NFC_KEY_SECTOR9',
+      defaultValue: _defaultKeySector9Hex,
+    ),
+  );
+  static final _keySector0 = _parseHexKey(
+    const String.fromEnvironment(
+      'NFC_KEY_SECTOR0',
+      defaultValue: _defaultKeySector0Hex,
+    ),
+  );
 
   // Block addresses
   static const _balanceBlock = 37; // Sector 9, block 1
@@ -75,7 +95,8 @@ class NfcCardService {
     if (kIsWeb) return false;
     try {
       return await NfcManager.instance.isAvailable();
-    } catch (_) {
+    } catch (e) {
+      AppLogger.warn(_tag, 'isAvailable() failed', e);
       return false;
     }
   }
@@ -95,17 +116,13 @@ class NfcCardService {
           } on NfcCardException catch (e) {
             onError(e);
           } catch (e) {
-            final isTagLost = e.toString().contains('TagLost') ||
-                e.toString().contains('tag was lost');
-            if (isTagLost) {
-              onError(const NfcCardException(NfcCardError.tagLost));
-            } else {
-              onError(NfcCardException(NfcCardError.unknown, e.toString()));
-            }
+            onError(classify(e));
           } finally {
             try {
               await NfcManager.instance.stopSession();
-            } catch (_) {}
+            } catch (e) {
+              AppLogger.warn(_tag, 'stopSession (finally) failed', e);
+            }
           }
         },
         onError: (NfcError error) async {
@@ -121,7 +138,9 @@ class NfcCardService {
   Future<void> stopScan() async {
     try {
       await NfcManager.instance.stopSession();
-    } catch (_) {}
+    } catch (e) {
+      AppLogger.warn(_tag, 'stopScan failed', e);
+    }
   }
 
   /// Read card data from a discovered NFC tag.
@@ -162,8 +181,8 @@ class NfcCardService {
     }
 
     // 3. Parse results
-    final balance = _parseBalance(balanceBytes);
-    final cardId = _bytesToHex(idBytes);
+    final balance = parseBalance(balanceBytes);
+    final cardId = bytesToHex(idBytes);
 
     return NfcCardResult(
       cardId: cardId,
@@ -187,8 +206,8 @@ class NfcCardService {
           key: key,
         );
         if (ok) return true;
-      } catch (_) {
-        // Tag communication error, retry
+      } catch (e) {
+        AppLogger.warn(_tag, 'auth sector=$sectorIndex attempt=$attempt', e);
       }
 
       if (attempt < _maxRetries - 1) {
@@ -205,9 +224,25 @@ class NfcCardService {
       MifareClassic mifare, int blockIndex) async {
     try {
       return await mifare.readBlock(blockIndex: blockIndex);
-    } catch (_) {
+    } catch (e) {
+      AppLogger.warn(_tag, 'readBlock $blockIndex failed', e);
       return null;
     }
+  }
+
+  /// Classify an arbitrary exception thrown from the NFC stack.
+  ///
+  /// Exposed (not private) so unit tests can exercise the heuristic without
+  /// needing a real [NfcTag]. Keep behavior backwards-compatible with prior
+  /// inline classification.
+  @visibleForTesting
+  static NfcCardException classify(Object e) {
+    final text = e.toString();
+    final isTagLost = text.contains('TagLost') || text.contains('tag was lost');
+    if (isTagLost) {
+      return const NfcCardException(NfcCardError.tagLost);
+    }
+    return NfcCardException(NfcCardError.unknown, text);
   }
 
   /// Parse balance from raw bytes.
@@ -216,7 +251,8 @@ class NfcCardService {
   /// 1. Convert first 2 bytes to hex
   /// 2. Swap byte pairs (little-endian to big-endian)
   /// 3. Parse as int, divide by 2, divide by 100
-  static double _parseBalance(Uint8List bytes) {
+  @visibleForTesting
+  static double parseBalance(Uint8List bytes) {
     final hex = bytes
         .take(2)
         .map((b) => b.toRadixString(16).padLeft(2, '0'))
@@ -229,9 +265,24 @@ class NfcCardService {
   /// Convert byte array to uppercase hex string.
   ///
   /// Algorithm from decompiled z21.u().
-  static String _bytesToHex(Uint8List bytes) {
+  @visibleForTesting
+  static String bytesToHex(Uint8List bytes) {
     return bytes
         .map((b) => b.toRadixString(16).padLeft(2, '0').toUpperCase())
         .join();
+  }
+
+  /// Parse a hex string (e.g. "99100225D83B") into a 6-byte key.
+  ///
+  /// Throws [FormatException] if the string is not exactly 12 hex chars.
+  static Uint8List _parseHexKey(String hex) {
+    if (hex.length != 12) {
+      throw FormatException('NFC key must be 12 hex chars, got ${hex.length}');
+    }
+    final out = Uint8List(6);
+    for (int i = 0; i < 6; i++) {
+      out[i] = int.parse(hex.substring(i * 2, i * 2 + 2), radix: 16);
+    }
+    return out;
   }
 }

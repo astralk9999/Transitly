@@ -7,6 +7,7 @@ import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../data/mock/mock_data_service.dart';
 import '../../shared/models/enums.dart';
+import '../../shared/models/schedule_model.dart';
 import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_button.dart';
 
@@ -44,8 +45,8 @@ class _StartRouteScreenState extends ConsumerState<StartRouteScreen> {
     final selectedSchedules = _selectedRouteId != null
         ? mockData.getSchedulesForRoute(_selectedRouteId!,
             dayType: DayType.weekday)
-        : <dynamic>[];
-    final sortedSchedules = List.of(selectedSchedules)
+        : const <ScheduleModel>[];
+    final sortedSchedules = [...selectedSchedules]
       ..sort((a, b) => a.departureTime.compareTo(b.departureTime));
 
     // Selected route info
@@ -183,14 +184,14 @@ class _StartRouteScreenState extends ConsumerState<StartRouteScreen> {
                 spacing: 8,
                 runSpacing: 8,
                 children: sortedSchedules.map((s) {
-                  final time = s.departureTime as String;
+                  final time = s.departureTime;
                   final parts = time.split(':');
                   final m = int.parse(parts[0]) * 60 + int.parse(parts[1]);
                   final isPast = m < nowMinutes;
                   final isNext = !isPast &&
                       (sortedSchedules.indexOf(s) ==
                           sortedSchedules.indexWhere((x) {
-                            final p = (x.departureTime as String).split(':');
+                            final p = x.departureTime.split(':');
                             return int.parse(p[0]) * 60 + int.parse(p[1]) >=
                                 nowMinutes;
                           }));

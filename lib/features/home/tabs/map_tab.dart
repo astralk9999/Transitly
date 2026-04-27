@@ -10,11 +10,10 @@ import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../data/mock/mock_data_service.dart';
 import '../../../data/mock/mock_realtime_service.dart';
-import '../../../shared/models/route_model.dart';
-import '../../../shared/models/stop_model.dart';
-import '../../../shared/providers/theme_provider.dart';
+import '../../../shared/providers/is_dark_provider.dart';
 import '../../../shared/widgets/route_card.dart';
 import '../../map/map_config.dart';
+import '../../map/map_data_cache.dart';
 import '../../map/sheets/stop_info_sheet.dart';
 import '../../map/sheets/trip_info_sheet.dart';
 import '../../map/transit_map.dart';
@@ -33,12 +32,6 @@ class _MapTabState extends ConsumerState<MapTab> {
   final _scrollController = ScrollController();
   String? _selectedRouteId;
 
-  Map<String, Map<int, List<LatLng>>>? _routePathsLod;
-  Map<String, List<StopModel>>? _routeStopsMap;
-  Map<String, RouteModel>? _routeMap;
-  Map<String, List<double>>? _routeBounds;
-  Set<String>? _hubStopIds;
-
   @override
   void dispose() {
     _sheetController.dispose();
@@ -47,8 +40,8 @@ class _MapTabState extends ConsumerState<MapTab> {
   }
 
   void _onMapTap(TapPosition tapPosition, LatLng point) {
-    // Find closest polyline to tap point
-    final closest = _findClosestRoute(point);
+    final cache = ref.read(mapDataCacheProvider);
+    final closest = _findClosestRoute(point, cache);
     if (closest != null && closest != _selectedRouteId) {
       setState(() => _selectedRouteId = closest);
       _sheetController.animateTo(0.35,
@@ -61,13 +54,12 @@ class _MapTabState extends ConsumerState<MapTab> {
     }
   }
 
-  String? _findClosestRoute(LatLng point) {
+  String? _findClosestRoute(LatLng point, MapDataCache cache) {
     const thresholdDeg = 0.003; // ~300m at Jerez latitude
     String? bestRouteId;
     double bestDist = double.infinity;
 
-    for (final entry in _routePathsLod!.entries) {
-      // Use highest LOD available for tap detection
+    for (final entry in cache.routePathsLod.entries) {
       final lodData = entry.value;
       final points = lodData[4] ?? lodData.values.last;
       for (int i = 0; i < points.length - 1; i++) {
@@ -79,9 +71,8 @@ class _MapTabState extends ConsumerState<MapTab> {
       }
     }
 
-    // Also check fallback stop-based paths
-    for (final entry in _routeStopsMap!.entries) {
-      if (_routePathsLod!.containsKey(entry.key)) continue;
+    for (final entry in cache.routeStopsMap.entries) {
+      if (cache.routePathsLod.containsKey(entry.key)) continue;
       final stops = entry.value;
       for (int i = 0; i < stops.length - 1; i++) {
         final a = LatLng(stops[i].lat, stops[i].lng);
@@ -130,10 +121,7 @@ class _MapTabState extends ConsumerState<MapTab> {
 
   @override
   Widget build(BuildContext context) {
-    final themeMode = ref.watch(themeModeProvider);
-    final isDark = themeMode == ThemeMode.dark ||
-        (themeMode == ThemeMode.system &&
-            MediaQuery.platformBrightnessOf(context) == Brightness.dark);
+    final isDark = isDarkMode(ref, context);
     final c = TransitColorScheme.of(isDark);
 
     final mockData = ref.watch(mockDataServiceProvider);
@@ -141,38 +129,7 @@ class _MapTabState extends ConsumerState<MapTab> {
     final liveTrips = realtimeTrips.valueOrNull ?? mockData.activeTrips;
     final routes = mockData.routes;
     final stops = mockData.stops;
-
-    // Cache data maps (built once, reused across rebuilds)
-    if (_routePathsLod == null) {
-      _routePathsLod = <String, Map<int, List<LatLng>>>{};
-      _routeStopsMap = <String, List<StopModel>>{};
-      _routeMap = <String, RouteModel>{};
-      for (final route in routes) {
-        _routeMap![route.id] = route;
-        final lodData = mockData.polylinesLod[route.id];
-        if (lodData != null) {
-          final lodLatLng = <int, List<LatLng>>{};
-          for (final entry in lodData.entries) {
-            lodLatLng[entry.key] =
-                entry.value.map((p) => LatLng(p[0], p[1])).toList();
-          }
-          _routePathsLod![route.id] = lodLatLng;
-        }
-        _routeStopsMap![route.id] = mockData.getStopsForRoute(route.id);
-      }
-      _routeBounds = mockData.routeBounds;
-
-      final stopRouteCounts = <String, int>{};
-      for (final rs in mockData.routeStops.values) {
-        for (final r in rs) {
-          stopRouteCounts[r.stopId] = (stopRouteCounts[r.stopId] ?? 0) + 1;
-        }
-      }
-      _hubStopIds = stopRouteCounts.entries
-          .where((e) => e.value > 1)
-          .map((e) => e.key)
-          .toSet();
-    }
+    final cache = ref.watch(mapDataCacheProvider);
 
     return Scaffold(
       backgroundColor: c.bgRoot,
@@ -183,14 +140,14 @@ class _MapTabState extends ConsumerState<MapTab> {
             isDark: isDark,
             controller: _mapController,
             routes: routes,
-            routePathsLod: _routePathsLod!,
-            routeStopsMap: _routeStopsMap!,
-            routeBounds: _routeBounds!,
+            routePathsLod: cache.routePathsLod,
+            routeStopsMap: cache.routeStopsMap,
+            routeBounds: cache.routeBounds,
             stops: stops,
-            hubStopIds: _hubStopIds!,
+            hubStopIds: cache.hubStopIds,
             selectedRouteId: _selectedRouteId,
             activeTrips: liveTrips,
-            routeMap: _routeMap!,
+            routeMap: cache.routeMap,
             onMapTap: _onMapTap,
             onStopTap: (stop) => showStopInfoSheet(
               context,

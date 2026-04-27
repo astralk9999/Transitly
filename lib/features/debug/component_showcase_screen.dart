@@ -8,6 +8,7 @@ import '../../shared/models/active_trip_model.dart';
 import '../../shared/models/enums.dart';
 import '../../shared/models/route_model.dart';
 import '../../shared/models/stop_model.dart';
+import '../../shared/providers/is_dark_provider.dart';
 import '../../shared/providers/theme_provider.dart';
 import '../../shared/widgets/responsive_scaffold.dart';
 import '../../shared/widgets/capacity_indicator.dart';
@@ -28,10 +29,7 @@ class ComponentShowcaseScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final themeMode = ref.watch(themeModeProvider);
-    final isDark = themeMode == ThemeMode.dark ||
-        (themeMode == ThemeMode.system &&
-            MediaQuery.platformBrightnessOf(context) == Brightness.dark);
+    final isDark = isDarkMode(ref, context);
     final c = TransitColorScheme.of(isDark);
 
     return Scaffold(
@@ -291,7 +289,7 @@ class ComponentShowcaseScreen extends ConsumerWidget {
         status: TripStatus.delay, capacity: BusCapacity.halfFull,
         delayMinutes: 8, currentStopIndex: 3,
       ),
-      ActiveTripModel(
+      const ActiveTripModel(
         id: 't3', routeId: 'L8',
         status: TripStatus.cancelled, capacity: BusCapacity.empty,
       ),
@@ -368,10 +366,10 @@ class ComponentShowcaseScreen extends ConsumerWidget {
 
   // ── CHIPS ──
   Widget _chipsSection() {
-    return Wrap(
+    return const Wrap(
       spacing: 8,
       runSpacing: 8,
-      children: const [
+      children: [
         TransitChip('L1', color: Color(0xFF00A0FF)),
         TransitChip('L3', color: Color(0xFFFF8C00)),
         TransitChip('L8', color: Color(0xFFFF3B3B)),

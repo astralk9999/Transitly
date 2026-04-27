@@ -5,6 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../data/nfc/nfc_card_service.dart';
+import '../../../data/nfc/nfc_l10n.dart';
+import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/providers/nfc_provider.dart';
 import '../../../shared/widgets/glass_card.dart';
 import '../../../shared/widgets/gradient_text.dart';
@@ -322,7 +324,7 @@ class CardTab extends ConsumerWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                scanState.errorMessage ?? 'Error desconocido',
+                _resolveErrorMessage(context, scanState),
                 style: TransitTypography.bodySecondary(c.textMid),
                 textAlign: TextAlign.center,
               ),
@@ -392,5 +394,14 @@ class CardTab extends ConsumerWidget {
         ),
       ],
     );
+  }
+
+  String _resolveErrorMessage(BuildContext context, NfcScanState scanState) {
+    final l10n = AppLocalizations.of(context);
+    final kind = scanState.errorKind;
+    if (kind != null) {
+      return kind.localizedMessage(l10n, fallback: scanState.errorMessage);
+    }
+    return scanState.errorMessage ?? l10n.nfcErrorUnknown;
   }
 }

@@ -1,0 +1,56 @@
+{
+  "@@locale": "es",
+  "appTitle": "Transitly",
+  "@appTitle": {
+    "description": "App display name"
+  },
+  "tabHome": "Inicio",
+  "tabSearch": "Buscar",
+  "tabMap": "Mapa",
+  "tabCard": "Tarjeta",
+  "tabProfile": "Perfil",
+  "@tabHome": { "description": "Bottom nav: Home tab" },
+  "@tabSearch": { "description": "Bottom nav: Search tab" },
+  "@tabMap": { "description": "Bottom nav: Map tab" },
+  "@tabCard": { "description": "Bottom nav: NFC card tab" },
+  "@tabProfile": { "description": "Bottom nav: Profile tab" },
+
+  "nfcErrorUnsupported": "NFC no disponible en este dispositivo",
+  "nfcErrorNotMifareClassic": "Esta tarjeta no es compatible",
+  "nfcErrorAuthFailed": "No se pudo autenticar la tarjeta",
+  "nfcErrorReadFailed": "Error al leer la tarjeta",
+  "nfcErrorTagLost": "Tarjeta retirada demasiado pronto",
+  "nfcErrorUnknown": "Error desconocido",
+
+  "profileSectionAppearance": "APARIENCIA",
+  "profileSectionDemoProfile": "PERFIL DE DEMO",
+  "profileSectionAccessibility": "ACCESIBILIDAD",
+  "profileSectionOfflineData": "DATOS OFFLINE",
+  "profileSectionAbout": "ACERCA DE",
+
+  "accessibilityTitle": "Accesibilidad",
+  "accessibilityThemeSection": "TEMA",
+  "accessibilityThemeSystem": "Sistema",
+  "accessibilityThemeLight": "Claro",
+  "accessibilityThemeDark": "Oscuro",
+  "accessibilitySystemPreferencesSection": "PREFERENCIAS DEL SISTEMA",
+  "accessibilityLanguageSection": "IDIOMA",
+  "accessibilityLanguageEs": "Español",
+  "accessibilityLanguageEn": "Inglés",
+  "accessibilityLanguageSystem": "Seguir idioma del sistema",
+
+  "offlineDataTitle": "Datos offline",
+  "offlineDataContent": "CONTENIDO",
+  "offlineDataArchive": "ARCHIVO",
+  "offlineDataReload": "Recargar desde assets",
+  "offlineDataReloaded": "Datos recargados",
+  "offlineDataSize": "Tamaño",
+  "offlineDataLoaded": "Cargado",
+  "offlineDataRoutes": "Rutas",
+  "offlineDataStops": "Paradas",
+
+  "actionClose": "Cerrar",
+  "actionRetry": "Reintentar",
+  "actionCancel": "Cancelar",
+  "actionSave": "Guardar"
+}

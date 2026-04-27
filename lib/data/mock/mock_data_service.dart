@@ -11,24 +11,32 @@ final mockDataServiceProvider = Provider<MockDataService>((ref) {
 class MockDataService {
   MockDataService._();
 
-  late final OperatorModel operator_;
-  late final List<RouteModel> routes;
-  late final List<StopModel> stops;
-  late final Map<String, List<RouteStopModel>> routeStops;
-  late final Map<String, List<ScheduleModel>> schedules;
-  late final List<ActiveTripModel> activeTrips;
-  late final List<AlertModel> alerts;
-  late final List<IncidentModel> incidents;
-  late final List<RouteSuggestionModel> routeSuggestions;
-  late final List<RouteFeedbackModel> feedbacks;
-  late final List<UserModel> users;
-  late final UserCardModel? transitCard;
-  late final List<UserFavoriteModel> favorites;
-  late final List<TripHistoryModel> tripHistory;
-  late final List<AchievementModel> achievements;
-  late final List<UserAchievementModel> userAchievements;
-  late final Map<String, Map<int, List<List<double>>>> polylinesLod;
-  late final Map<String, List<double>> routeBounds; // [minLat, minLng, maxLat, maxLng]
+  static const String _assetPath = 'assets/mock/comujesa_data.json';
+
+  late OperatorModel operator_;
+  late List<RouteModel> routes;
+  late List<StopModel> stops;
+  late Map<String, List<RouteStopModel>> routeStops;
+  late Map<String, List<ScheduleModel>> schedules;
+  late List<ActiveTripModel> activeTrips;
+  late List<AlertModel> alerts;
+  late List<IncidentModel> incidents;
+  late List<RouteSuggestionModel> routeSuggestions;
+  late List<RouteFeedbackModel> feedbacks;
+  late List<UserModel> users;
+  late UserCardModel? transitCard;
+  late List<UserFavoriteModel> favorites;
+  late List<TripHistoryModel> tripHistory;
+  late List<AchievementModel> achievements;
+  late List<UserAchievementModel> userAchievements;
+  late Map<String, Map<int, List<List<double>>>> polylinesLod;
+  late Map<String, List<double>> routeBounds; // [minLat, minLng, maxLat, maxLng]
+
+  /// Tamaño en bytes del JSON tal como se leyó del bundle.
+  late int assetBytes;
+
+  /// Momento de la última carga (primera [init] o [reload]).
+  late DateTime loadedAt;
 
   /// Full-detail polylines (LOD4) for bus interpolation compatibility.
   Map<String, List<List<double>>> get polylines =>
@@ -36,11 +44,20 @@ class MockDataService {
 
   static Future<MockDataService> init() async {
     final svc = MockDataService._();
-    final raw =
-        await rootBundle.loadString('assets/mock/comujesa_data.json');
-    final Map<String, dynamic> data = json.decode(raw) as Map<String, dynamic>;
-    svc._parse(data);
+    await svc._loadFromAsset();
     return svc;
+  }
+
+  /// Vuelve a leer el JSON desde assets y re-parsea en la misma instancia.
+  /// Permite a la UI "recargar" los datos sin reiniciar la app.
+  Future<void> reload() => _loadFromAsset();
+
+  Future<void> _loadFromAsset() async {
+    final raw = await rootBundle.loadString(_assetPath);
+    final data = json.decode(raw) as Map<String, dynamic>;
+    assetBytes = utf8.encode(raw).length;
+    loadedAt = DateTime.now();
+    _parse(data);
   }
 
   void _parse(Map<String, dynamic> data) {

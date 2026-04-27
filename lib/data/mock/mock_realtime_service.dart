@@ -64,8 +64,8 @@ class MockRealtimeService {
       }
 
       final routeStops =
-          _mockData.routeStops[trip.routeId] ?? [];
-      final sortedStops = List.from(routeStops)
+          _mockData.routeStops[trip.routeId] ?? const [];
+      final sortedStops = [...routeStops]
         ..sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
       final totalStops = sortedStops.length;
 

@@ -45,5 +45,11 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NFCReaderUsageDescription</key>
+	<string>Transitly necesita acceso a NFC para leer el saldo de tu tarjeta de transporte.</string>
+	<key>com.apple.developer.nfc.readersession.iso18092.system-codes</key>
+	<array/>
+	<key>com.apple.developer.nfc.readersession.iso7816.select-identifiers</key>
+	<array/>
 </dict>
 </plist>

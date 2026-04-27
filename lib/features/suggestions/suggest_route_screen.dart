@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
+import '../../shared/widgets/single_field_dialog.dart';
 import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_button.dart';
 import '../../shared/widgets/transit_input.dart';
@@ -290,36 +291,19 @@ class _SuggestRouteScreenState extends State<SuggestRouteScreen> {
     );
   }
 
-  void _addHourDialog(TransitColorScheme c) {
-    final ctrl = TextEditingController();
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: c.bgSurface,
-        title:
-            Text('Añadir hora', style: TransitTypography.heading(c.textHi)),
-        content: TransitInput(hint: 'HH:MM', controller: ctrl),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: Text('CANCELAR',
-                style: TransitTypography.bodySecondary(c.textMid)),
-          ),
-          TextButton(
-            onPressed: () {
-              if (ctrl.text.isNotEmpty) {
-                setState(() {
-                  _hours.add(ctrl.text);
-                  _hours.sort();
-                });
-              }
-              Navigator.of(ctx).pop();
-            },
-            child: Text('AÑADIR',
-                style: TransitTypography.bodySecondary(c.accent)),
-          ),
-        ],
-      ),
+  Future<void> _addHourDialog(TransitColorScheme c) async {
+    final hour = await showSingleFieldDialog(
+      context,
+      title: 'Añadir hora',
+      hint: 'HH:MM',
+      confirmLabel: 'AÑADIR',
     );
+    if (hour != null && mounted) {
+      setState(() {
+        _hours
+          ..add(hour)
+          ..sort();
+      });
+    }
   }
 }

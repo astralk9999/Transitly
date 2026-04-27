@@ -1,0 +1,48 @@
+{
+  "@@locale": "en",
+  "appTitle": "Transitly",
+  "tabHome": "Home",
+  "tabSearch": "Search",
+  "tabMap": "Map",
+  "tabCard": "Card",
+  "tabProfile": "Profile",
+
+  "nfcErrorUnsupported": "NFC is not available on this device",
+  "nfcErrorNotMifareClassic": "This card is not supported",
+  "nfcErrorAuthFailed": "Could not authenticate the card",
+  "nfcErrorReadFailed": "Error reading the card",
+  "nfcErrorTagLost": "Card removed too soon",
+  "nfcErrorUnknown": "Unknown error",
+
+  "profileSectionAppearance": "APPEARANCE",
+  "profileSectionDemoProfile": "DEMO PROFILE",
+  "profileSectionAccessibility": "ACCESSIBILITY",
+  "profileSectionOfflineData": "OFFLINE DATA",
+  "profileSectionAbout": "ABOUT",
+
+  "accessibilityTitle": "Accessibility",
+  "accessibilityThemeSection": "THEME",
+  "accessibilityThemeSystem": "System",
+  "accessibilityThemeLight": "Light",
+  "accessibilityThemeDark": "Dark",
+  "accessibilitySystemPreferencesSection": "SYSTEM PREFERENCES",
+  "accessibilityLanguageSection": "LANGUAGE",
+  "accessibilityLanguageEs": "Spanish",
+  "accessibilityLanguageEn": "English",
+  "accessibilityLanguageSystem": "Follow system language",
+
+  "offlineDataTitle": "Offline data",
+  "offlineDataContent": "CONTENT",
+  "offlineDataArchive": "FILE",
+  "offlineDataReload": "Reload from assets",
+  "offlineDataReloaded": "Data reloaded",
+  "offlineDataSize": "Size",
+  "offlineDataLoaded": "Loaded",
+  "offlineDataRoutes": "Routes",
+  "offlineDataStops": "Stops",
+
+  "actionClose": "Close",
+  "actionRetry": "Retry",
+  "actionCancel": "Cancel",
+  "actionSave": "Save"
+}

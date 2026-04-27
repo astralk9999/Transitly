@@ -1,0 +1,136 @@
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+import '../../../core/theme/transit_colors.dart';
+import 'home_tab_item.dart';
+
+/// Glass-style bottom navigation bar for mobile layouts.
+///
+/// Renders a pill indicator that animates horizontally across tabs.
+class HomeBottomNav extends StatelessWidget {
+  const HomeBottomNav({
+    super.key,
+    required this.currentIndex,
+    required this.onTap,
+    required this.tabs,
+  });
+
+  final int currentIndex;
+  final ValueChanged<int> onTap;
+  final List<HomeTabItem> tabs;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final c = TransitColorScheme.of(isDark);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: c.bgSurface,
+        border: Border(
+          top: BorderSide(
+            color:
+                isDark ? c.border : Colors.black.withValues(alpha: 0.08),
+            width: 1,
+          ),
+        ),
+      ),
+      child: SafeArea(
+        top: false,
+        child: SizedBox(
+          height: 56,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final tabWidth = constraints.maxWidth / tabs.length;
+              final pillLeft = tabWidth * currentIndex + (tabWidth - 28) / 2;
+
+              return Stack(
+                children: [
+                  AnimatedPositioned(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeOutCubic,
+                    top: 4,
+                    left: pillLeft,
+                    child: Container(
+                      width: 28,
+                      height: 3,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(1.5),
+                        color: c.accent,
+                        boxShadow: [
+                          BoxShadow(
+                            color: c.accent.withValues(alpha: 0.4),
+                            blurRadius: 8,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Row(
+                    children: List.generate(tabs.length, (i) {
+                      final isActive = i == currentIndex;
+                      final tab = tabs[i];
+                      return Expanded(
+                        child: Semantics(
+                          label: tab.label,
+                          button: true,
+                          selected: isActive,
+                          child: Tooltip(
+                            message: tab.label,
+                            child: MouseRegion(
+                              cursor: SystemMouseCursors.click,
+                              child: GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onTap: () => onTap(i),
+                                child: SizedBox(
+                                  height: 56,
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.center,
+                                    children: [
+                                      const SizedBox(height: 4),
+                                      AnimatedOpacity(
+                                        duration: const Duration(
+                                            milliseconds: 200),
+                                        opacity: isActive ? 1.0 : 0.35,
+                                        child: Icon(
+                                          isActive ? tab.activeIcon : tab.icon,
+                                          size: 21,
+                                          color: isActive ? c.accent : c.textHi,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 3),
+                                      AnimatedDefaultTextStyle(
+                                        duration: const Duration(
+                                            milliseconds: 200),
+                                        style: GoogleFonts.ibmPlexMono(
+                                          fontSize: 9,
+                                          fontWeight: isActive
+                                              ? FontWeight.w600
+                                              : FontWeight.w400,
+                                          color: isActive
+                                              ? c.accent
+                                              : c.textHi.withValues(alpha: 0.35),
+                                          letterSpacing: 0.5,
+                                        ),
+                                        child: Text(tab.label),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}

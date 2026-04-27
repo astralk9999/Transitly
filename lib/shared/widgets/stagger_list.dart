@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../../core/theme/transit_animations.dart';
@@ -82,7 +84,7 @@ class _StaggerListState extends State<StaggerList>
       }
       if (!mounted) return;
       if (animate) {
-        _controllers[i].forward();
+        unawaited(_controllers[i].forward());
       } else {
         _controllers[i].value = 1.0;
       }

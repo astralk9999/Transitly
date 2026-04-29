@@ -12,11 +12,13 @@ List<Marker> buildStopMarkers({
   Set<String> hubStopIds = const {},
   ValueChanged<StopModel>? onTap,
   LatLngBounds? visibleBounds,
+  bool ignoreZoomCutoff = false,
 }) {
-  if (currentZoom < 13.0) return [];
+  if (!ignoreZoomCutoff && currentZoom < 13.0) return [];
 
-  // Zoom 13-14: only show hub stops to reduce marker count
-  final bool hubsOnly = currentZoom < 14.5;
+  // Zoom 13-14: only show hub stops to reduce marker count.
+  // When the caller pinned a specific route we always show its stops.
+  final bool hubsOnly = !ignoreZoomCutoff && currentZoom < 14.5;
 
   final c = TransitColorScheme.of(isDark);
   final markers = <Marker>[];

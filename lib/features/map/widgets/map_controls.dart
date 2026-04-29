@@ -6,16 +6,12 @@ class MapControls extends StatelessWidget {
   const MapControls({
     super.key,
     required this.isDark,
-    required this.onZoomIn,
-    required this.onZoomOut,
     required this.onCenter,
     required this.onFilter,
     this.onSearch,
   });
 
   final bool isDark;
-  final VoidCallback onZoomIn;
-  final VoidCallback onZoomOut;
   final VoidCallback onCenter;
   final VoidCallback onFilter;
   final VoidCallback? onSearch;
@@ -24,57 +20,45 @@ class MapControls extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = TransitColorScheme.of(isDark);
 
-    return Stack(
-      children: [
-        // Search button - top left
-        if (onSearch != null)
+    // SafeArea keeps the top buttons clear of the status bar / camera
+    // notch and the bottom button clear of the gesture bar / nav pill.
+    return SafeArea(
+      child: Stack(
+        children: [
+          // Search button - top left
+          if (onSearch != null)
+            Positioned(
+              top: 16,
+              left: 16,
+              child: _ControlButton(
+                icon: Icons.search,
+                colors: c,
+                onTap: onSearch!,
+              ),
+            ),
+          // Filter button - top right
           Positioned(
             top: 16,
-            left: 16,
+            right: 16,
             child: _ControlButton(
-              icon: Icons.search,
+              icon: Icons.tune,
               colors: c,
-              onTap: onSearch!,
+              onTap: onFilter,
             ),
           ),
-        // Filter button - top right
-        Positioned(
-          top: 16,
-          right: 16,
-          child: _ControlButton(
-            icon: Icons.tune,
-            colors: c,
-            onTap: onFilter,
+          // Center / my-location button - bottom right.
+          // Pinch-to-zoom replaces the +/- buttons (flutter_map handles it).
+          Positioned(
+            bottom: 16,
+            right: 16,
+            child: _ControlButton(
+              icon: Icons.my_location,
+              colors: c,
+              onTap: onCenter,
+            ),
           ),
-        ),
-        // Zoom + center buttons - bottom right
-        Positioned(
-          bottom: 16,
-          right: 16,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _ControlButton(
-                icon: Icons.add,
-                colors: c,
-                onTap: onZoomIn,
-              ),
-              const SizedBox(height: 8),
-              _ControlButton(
-                icon: Icons.remove,
-                colors: c,
-                onTap: onZoomOut,
-              ),
-              const SizedBox(height: 8),
-              _ControlButton(
-                icon: Icons.my_location,
-                colors: c,
-                onTap: onCenter,
-              ),
-            ],
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

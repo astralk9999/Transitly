@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../../core/theme/transit_colors.dart';
 import '../../shared/models/active_trip_model.dart';
 import '../../shared/models/enums.dart';
 import '../../shared/models/route_model.dart';
@@ -138,20 +139,42 @@ class _TransitMapState extends State<TransitMap> {
       activeRouteIds: activeRouteIds,
     );
 
+    // Markers (buses + stops) are gated on a selected route — the map stays
+    // visually quiet until the user opens a line, mirroring the way transit
+    // maps surface detail on demand.
+    final selectedId = widget.selectedRouteId;
+    final visibleStops = selectedId == null
+        ? const <StopModel>[]
+        : (widget.routeStopsMap[selectedId] ?? const <StopModel>[]);
+    final visibleTrips = selectedId == null
+        ? const <ActiveTripModel>[]
+        : widget.activeTrips
+            .where((t) => t.routeId == selectedId)
+            .toList(growable: false);
+
     final stopMarkers = buildStopMarkers(
-      stops: widget.stops,
+      stops: visibleStops,
       currentZoom: _currentZoom,
       isDark: widget.isDark,
       hubStopIds: widget.hubStopIds,
       onTap: widget.onStopTap,
       visibleBounds: _visibleBounds,
+      // Once a route is pinned we show every stop on it regardless of zoom.
+      ignoreZoomCutoff: selectedId != null,
     );
 
     final busMarkers = buildBusMarkers(
-      activeTrips: widget.activeTrips,
+      activeTrips: visibleTrips,
       routeMap: widget.routeMap,
       onTap: widget.onTripTap,
     );
+
+    final c = TransitColorScheme.of(widget.isDark);
+    // Slightly darker than `bgRaised` in light mode so the offline state
+    // reads as "map area" instead of "blank page". Passed straight into
+    // FlutterMap (its default 0xFFE0E0E0 was painting over our Stack).
+    final fallback =
+        widget.isDark ? c.bgRaised : const Color(0xFFC9CCD4);
 
     return Stack(
       children: [
@@ -162,6 +185,7 @@ class _TransitMapState extends State<TransitMap> {
             initialZoom: widget.zoom ?? MapConfig.defaultZoom,
             minZoom: MapConfig.minZoom,
             maxZoom: MapConfig.maxZoom,
+            backgroundColor: fallback,
             onTap: widget.onMapTap,
             onPositionChanged: _onPositionChanged,
           ),
@@ -169,7 +193,15 @@ class _TransitMapState extends State<TransitMap> {
             TileLayer(
               urlTemplate: MapConfig.tileUrl(widget.isDark),
               subdomains: MapConfig.subdomains,
-              retinaMode: true,
+              // Retina off on slow connections — @2x doubles bandwidth and
+              // causes the load → evict → reload churn the user reported.
+              retinaMode: false,
+              // CartoDB ToS requires a real package id; placeholder values
+              // (`com.example.*`) get throttled or 403'd.
+              userAgentPackageName: 'com.transitly.transitly',
+              tileDisplay: const TileDisplay.fadeIn(
+                duration: Duration(milliseconds: 200),
+              ),
             ),
             if (polylines.isNotEmpty) PolylineLayer(polylines: polylines),
             if (stopMarkers.isNotEmpty) MarkerLayer(markers: stopMarkers),

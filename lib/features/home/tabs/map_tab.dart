@@ -7,10 +7,13 @@ import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../../core/theme/transit_colors.dart';
+import '../../../core/theme/transit_spacing.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../data/mock/mock_data_service.dart';
 import '../../../data/mock/mock_realtime_service.dart';
+import '../../../shared/providers/connectivity_provider.dart';
 import '../../../shared/providers/is_dark_provider.dart';
+import '../../../shared/widgets/pressable.dart';
 import '../../../shared/widgets/route_card.dart';
 import '../../map/map_config.dart';
 import '../../map/map_data_cache.dart';
@@ -49,7 +52,7 @@ class _MapTabState extends ConsumerState<MapTab> {
       _scrollToRoute(closest);
     } else if (closest == null && _selectedRouteId != null) {
       setState(() => _selectedRouteId = null);
-      _sheetController.animateTo(0.12,
+      _sheetController.animateTo(0.22,
           duration: const Duration(milliseconds: 250), curve: Curves.easeInOut);
     }
   }
@@ -130,6 +133,7 @@ class _MapTabState extends ConsumerState<MapTab> {
     final routes = mockData.routes;
     final stops = mockData.stops;
     final cache = ref.watch(mapDataCacheProvider);
+    final offline = ref.watch(isOfflineProvider);
 
     return Scaffold(
       backgroundColor: c.bgRoot,
@@ -162,14 +166,6 @@ class _MapTabState extends ConsumerState<MapTab> {
             overlayWidgets: [
               MapControls(
                 isDark: isDark,
-                onZoomIn: () {
-                  final cam = _mapController.camera;
-                  _mapController.move(cam.center, cam.zoom + 1);
-                },
-                onZoomOut: () {
-                  final cam = _mapController.camera;
-                  _mapController.move(cam.center, cam.zoom - 1);
-                },
                 onCenter: () {
                   _mapController.move(
                       MapConfig.defaultCenter, MapConfig.defaultZoom);
@@ -188,46 +184,120 @@ class _MapTabState extends ConsumerState<MapTab> {
               ),
             ],
           ),
+          if (offline)
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: SafeArea(
+                bottom: false,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(72, 16, 72, 0),
+                  child: Center(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: c.bgSurface,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: c.border, width: 0.5),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.cloud_off,
+                              size: 14, color: c.stateDelay),
+                          const SizedBox(width: 6),
+                          Text(
+                            'Sin conexión · mapa offline',
+                            style: TransitTypography.bodySmall(c.textMid),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           // DraggableScrollableSheet
           DraggableScrollableSheet(
             controller: _sheetController,
-            initialChildSize: 0.12,
-            minChildSize: 0.08,
-            maxChildSize: 0.8,
+            initialChildSize: 0.22,
+            minChildSize: 0.12,
+            maxChildSize: 0.75,
             snap: true,
-            snapSizes: const [0.12, 0.35, 0.8],
+            snapSizes: const [0.12, 0.32, 0.75],
             builder: (context, scrollController) {
-              return Container(
+              return DecoratedBox(
                 decoration: BoxDecoration(
                   color: c.bgSurface,
                   borderRadius:
-                      const BorderRadius.vertical(top: Radius.circular(12)),
+                      const BorderRadius.vertical(top: Radius.circular(20)),
                   border: Border(
                     top: BorderSide(color: c.border, width: 0.5),
                   ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.18),
+                      blurRadius: 16,
+                      offset: const Offset(0, -4),
+                    ),
+                  ],
                 ),
-                child: ListView.builder(
-                  controller: scrollController,
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                  itemCount: routes.length + 1, // +1 for handle
-                  itemBuilder: (context, index) {
-                    if (index == 0) {
-                      return _buildHandle(c);
-                    }
-                    final route = routes[index - 1];
-                    final trip = mockData.getActiveTripForRoute(route.id);
-                    final routeStops =
-                        mockData.getStopsForRoute(route.id);
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: RouteCard(
-                        route: route,
-                        activeTrip: trip,
-                        remainingStops: routeStops.length,
-                        onTap: () => context.push('/route/${route.id}'),
+                child: ClipRRect(
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(20)),
+                  child: Stack(
+                    children: [
+                      ListView.builder(
+                        controller: scrollController,
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                        itemCount: routes.length + 1, // +1 for handle
+                        itemBuilder: (context, index) {
+                          if (index == 0) {
+                            return _buildHandle(c, routes.length);
+                          }
+                          final route = routes[index - 1];
+                          final trip =
+                              mockData.getActiveTripForRoute(route.id);
+                          final routeStops =
+                              mockData.getStopsForRoute(route.id);
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 8),
+                            child: RouteCard(
+                              route: route,
+                              activeTrip: trip,
+                              remainingStops: routeStops.length,
+                              onTap: () =>
+                                  context.push('/route/${route.id}'),
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
+                      // Subtle bottom fade hints that more content scrolls
+                      // beyond the visible region of the sheet.
+                      Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        height: 18,
+                        child: IgnorePointer(
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.bottomCenter,
+                                end: Alignment.topCenter,
+                                colors: [
+                                  c.bgSurface,
+                                  c.bgSurface.withValues(alpha: 0.0),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               );
             },
@@ -237,13 +307,13 @@ class _MapTabState extends ConsumerState<MapTab> {
     );
   }
 
-  Widget _buildHandle(TransitColorScheme c) {
+  Widget _buildHandle(TransitColorScheme c, int routeCount) {
     return Column(
       children: [
         const SizedBox(height: 8),
         Center(
           child: Container(
-            width: 32,
+            width: 36,
             height: 4,
             decoration: BoxDecoration(
               color: c.textLo,
@@ -252,31 +322,67 @@ class _MapTabState extends ConsumerState<MapTab> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12),
+          padding: const EdgeInsets.fromLTRB(0, 14, 0, 12),
           child: Row(
             children: [
               Text(
                 'LÍNEAS URBANAS',
                 style: TransitTypography.sectionTitle(c.textMid),
               ),
+              const SizedBox(width: 8),
+              Container(
+                padding: TransitSpacing.paddingBadge,
+                decoration: BoxDecoration(
+                  color: c.bgRaised,
+                  borderRadius:
+                      BorderRadius.circular(TransitSpacing.radiusXs),
+                  border: Border.all(color: c.border, width: 0.5),
+                ),
+                child: Text(
+                  '$routeCount',
+                  style: TransitTypography.bodySmall(c.textLo),
+                ),
+              ),
               const Spacer(),
               if (_selectedRouteId != null)
-                GestureDetector(
-                  onTap: () {
-                    setState(() => _selectedRouteId = null);
-                    _sheetController.animateTo(0.12,
-                        duration: const Duration(milliseconds: 250),
-                        curve: Curves.easeInOut);
-                  },
-                  child: Text(
-                    'VER TODAS',
-                    style: TransitTypography.bodySmall(c.accent),
+                Pressable(
+                  onTap: _clearSelection,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: c.accent.withValues(alpha: 0.10),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                          color: c.accent.withValues(alpha: 0.20),
+                          width: 0.5),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.clear, size: 14, color: c.accent),
+                        const SizedBox(width: 6),
+                        Text(
+                          'VER TODAS',
+                          style: TransitTypography.bodySmall(c.accent),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
             ],
           ),
         ),
       ],
+    );
+  }
+
+  void _clearSelection() {
+    setState(() => _selectedRouteId = null);
+    _sheetController.animateTo(
+      0.22,
+      duration: const Duration(milliseconds: 250),
+      curve: Curves.easeInOut,
     );
   }
 }

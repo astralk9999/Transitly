@@ -1,6 +1,50 @@
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:transitly/data/mock/mock_data_error.dart';
+import 'package:transitly/data/mock/mock_data_exception.dart';
 import 'package:transitly/data/mock/mock_data_service.dart';
 import 'package:transitly/shared/models/enums.dart';
+
+const _validMinimalJson = '''
+{
+  "operator": {
+    "id": "op-test",
+    "name": "Test Operator",
+    "shortName": "TEST",
+    "region": "Test Region",
+    "website": "",
+    "phone": ""
+  },
+  "lines": []
+}
+''';
+
+class _StubAssetBundle extends AssetBundle {
+  _StubAssetBundle({this.content, this.notFound = false});
+
+  final String? content;
+  final bool notFound;
+
+  @override
+  Future<ByteData> load(String key) async {
+    if (notFound || content == null) {
+      throw FlutterError('Unable to load asset: "$key"');
+    }
+    final bytes = utf8.encode(content!);
+    return ByteData.view(Uint8List.fromList(bytes).buffer);
+  }
+
+  @override
+  Future<String> loadString(String key, {bool cache = true}) async {
+    if (notFound || content == null) {
+      throw FlutterError('Unable to load asset: "$key"');
+    }
+    return content!;
+  }
+}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -103,6 +147,96 @@ void main() {
         expect(minLat, lessThanOrEqualTo(maxLat));
         expect(minLng, lessThanOrEqualTo(maxLng));
       }
+    });
+  });
+
+  group('MockDataService error handling', () {
+    test('valid bundle parses without throwing', () async {
+      final svc = await MockDataService.init(
+        bundle: _StubAssetBundle(content: _validMinimalJson),
+      );
+      expect(svc.operator_.id, 'op-test');
+      expect(svc.routes, isEmpty);
+      expect(svc.stops, isEmpty);
+    });
+
+    test('missing asset throws MockDataException(assetNotFound)', () async {
+      await expectLater(
+        () => MockDataService.init(
+          bundle: _StubAssetBundle(notFound: true),
+        ),
+        throwsA(
+          isA<MockDataException>().having(
+            (e) => e.error,
+            'error',
+            MockDataError.assetNotFound,
+          ),
+        ),
+      );
+    });
+
+    test('malformed JSON throws MockDataException(parseError)', () async {
+      await expectLater(
+        () => MockDataService.init(
+          bundle: _StubAssetBundle(content: 'not valid json {'),
+        ),
+        throwsA(
+          isA<MockDataException>().having(
+            (e) => e.error,
+            'error',
+            MockDataError.parseError,
+          ),
+        ),
+      );
+    });
+
+    test('non-object root throws MockDataException(parseError)', () async {
+      await expectLater(
+        () => MockDataService.init(
+          bundle: _StubAssetBundle(content: '[1, 2, 3]'),
+        ),
+        throwsA(
+          isA<MockDataException>().having(
+            (e) => e.error,
+            'error',
+            MockDataError.parseError,
+          ),
+        ),
+      );
+    });
+
+    test('missing top-level key throws MockDataException(unexpectedSchema)',
+        () async {
+      await expectLater(
+        () => MockDataService.init(
+          bundle: _StubAssetBundle(content: '{"foo": "bar"}'),
+        ),
+        throwsA(
+          isA<MockDataException>().having(
+            (e) => e.error,
+            'error',
+            MockDataError.unexpectedSchema,
+          ),
+        ),
+      );
+    });
+
+    test('schema mismatch in nested fields throws unexpectedSchema', () async {
+      // operator missing required "id" field → TypeError that _parse wraps.
+      await expectLater(
+        () => MockDataService.init(
+          bundle: _StubAssetBundle(
+            content: '{"operator": {}, "lines": []}',
+          ),
+        ),
+        throwsA(
+          isA<MockDataException>().having(
+            (e) => e.error,
+            'error',
+            MockDataError.unexpectedSchema,
+          ),
+        ),
+      );
     });
   });
 }

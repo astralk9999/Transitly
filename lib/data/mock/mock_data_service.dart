@@ -1,17 +1,26 @@
 import 'dart:convert';
 import 'dart:math';
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart' show AssetBundle, PlatformException, rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../core/utils/app_logger.dart';
 import '../../shared/models/models.dart';
+import 'mock_data_error.dart';
+import 'mock_data_exception.dart';
 
 final mockDataServiceProvider = Provider<MockDataService>((ref) {
   throw UnimplementedError('Must be overridden after init');
 });
 
+const String _logTag = 'MockData';
+
 class MockDataService {
-  MockDataService._();
+  MockDataService._(this._bundle);
 
   static const String _assetPath = 'assets/mock/comujesa_data.json';
+
+  final AssetBundle _bundle;
 
   late OperatorModel operator_;
   late List<RouteModel> routes;
@@ -43,8 +52,17 @@ class MockDataService {
   Map<String, List<List<double>>> get polylines =>
       polylinesLod.map((k, v) => MapEntry(k, v[4] ?? v.values.last));
 
-  static Future<MockDataService> init() async {
-    final svc = MockDataService._();
+  /// Inicializa el servicio cargando y parseando el JSON desde [bundle]
+  /// (por defecto `rootBundle`). Inyectable para permitir tests con
+  /// contenido controlado.
+  ///
+  /// Lanza [MockDataException] tipada si:
+  /// - el asset no se encuentra → `assetNotFound`.
+  /// - el JSON está malformado → `parseError`.
+  /// - falta una clave top-level requerida → `unexpectedSchema`.
+  /// - el canal de assets falla en plataforma → `unknown`.
+  static Future<MockDataService> init({AssetBundle? bundle}) async {
+    final svc = MockDataService._(bundle ?? rootBundle);
     await svc._loadFromAsset();
     return svc;
   }
@@ -54,14 +72,78 @@ class MockDataService {
   Future<void> reload() => _loadFromAsset();
 
   Future<void> _loadFromAsset() async {
-    final raw = await rootBundle.loadString(_assetPath);
-    final data = json.decode(raw) as Map<String, dynamic>;
+    String raw;
+    try {
+      raw = await _bundle.loadString(_assetPath);
+    } on FlutterError catch (e, st) {
+      AppLogger.error(_logTag, 'asset not found at $_assetPath', e, st);
+      throw MockDataException(
+        error: MockDataError.assetNotFound,
+        message: 'Asset no encontrado: $_assetPath',
+        cause: e,
+        stackTrace: st,
+      );
+    } on PlatformException catch (e, st) {
+      AppLogger.error(_logTag, 'platform error loading asset', e, st);
+      throw MockDataException(
+        error: MockDataError.unknown,
+        message: 'Error de plataforma al cargar el asset',
+        cause: e,
+        stackTrace: st,
+      );
+    }
+
+    Map<String, dynamic> data;
+    try {
+      final decoded = json.decode(raw);
+      if (decoded is! Map<String, dynamic>) {
+        throw const FormatException(
+            'JSON root must be a Map<String, dynamic>');
+      }
+      data = decoded;
+    } on FormatException catch (e, st) {
+      AppLogger.error(_logTag, 'malformed JSON', e, st);
+      throw MockDataException(
+        error: MockDataError.parseError,
+        message: 'JSON malformado',
+        cause: e,
+        stackTrace: st,
+      );
+    }
+
     assetBytes = utf8.encode(raw).length;
     loadedAt = DateTime.now();
-    _parse(data);
+
+    try {
+      _parse(data);
+    } on MockDataException {
+      rethrow;
+    } catch (e, st) {
+      AppLogger.error(_logTag, '_parse failed unexpectedly', e, st);
+      throw MockDataException(
+        error: MockDataError.unexpectedSchema,
+        message: 'Schema inesperado: ${e.runtimeType}',
+        cause: e,
+        stackTrace: st,
+      );
+    }
+
+    AppLogger.info(_logTag,
+        'loaded ($assetBytes B, ${routes.length} routes, ${stops.length} stops)');
   }
 
   void _parse(Map<String, dynamic> data) {
+    // Schema mínimo: validamos las claves top-level requeridas para que el
+    // error sea explícito en lugar de un TypeError críptico.
+    for (final required in const ['operator', 'lines']) {
+      if (!data.containsKey(required)) {
+        throw MockDataException(
+          error: MockDataError.unexpectedSchema,
+          message: 'Falta la clave top-level "$required"',
+        );
+      }
+    }
+
     // Operator
     operator_ = OperatorModel.fromJson(data['operator'] as Map<String, dynamic>);
 

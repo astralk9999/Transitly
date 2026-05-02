@@ -2,18 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:latlong2/latlong.dart';
 
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../data/mock/mock_data_service.dart';
-import '../../../shared/widgets/responsive_scaffold.dart';
 import '../../../data/mock/mock_realtime_service.dart';
 import '../../../shared/models/models.dart';
+import '../../../shared/providers/derived/home_providers.dart';
 import '../../../shared/widgets/glass_card.dart';
+import '../../../shared/widgets/responsive_scaffold.dart';
 import '../../../shared/widgets/route_card.dart';
 import '../../../shared/widgets/stagger_list.dart';
 import '../../../shared/widgets/transit_button.dart';
 import '../../../shared/widgets/transit_chip.dart';
+
+const _jerezCenter = LatLng(36.6850, -6.1261);
+const _nearbyCount = 3;
 
 class HomeTab extends ConsumerStatefulWidget {
   const HomeTab({super.key});
@@ -52,15 +57,12 @@ class _HomeTabState extends ConsumerState<HomeTab> {
   Widget _buildContent(BuildContext context, TransitColorScheme c,
       MockDataService mockData, Map<String, ActiveTripModel> activeTripsMap) {
     final favorites = mockData.favorites;
-    final favRouteIds = favorites.map((f) => f.routeId).toSet();
     final padding = ResponsiveScaffold.screenPadding(context);
 
     final habitualFav = favorites.isNotEmpty ? favorites.first : null;
     final habitualRoute =
         habitualFav != null ? mockData.getRouteById(habitualFav.routeId) : null;
-    final habitualStop = habitualFav?.homeStopId != null
-        ? mockData.getStopById(habitualFav!.homeStopId!)
-        : null;
+    final habitualStop = ref.watch(homeHabitualStopProvider);
     final habitualStops = habitualRoute != null
         ? mockData.getStopsForRoute(habitualRoute.id)
         : <StopModel>[];
@@ -70,14 +72,10 @@ class _HomeTabState extends ConsumerState<HomeTab> {
         ? mockData.getNextDepartures(habitualRoute.id, '', 1)
         : <ScheduleModel>[];
 
-    const jerezLat = 36.6850;
-    const jerezLng = -6.1261;
-    final nearbyStops = mockData.getNearbyStops(jerezLat, jerezLng, 3);
+    final nearbyStops = ref.watch(homeNearbyStopsProvider(
+        (center: _jerezCenter, count: _nearbyCount)));
 
-    final favAlerts = <AlertModel>[];
-    for (final routeId in favRouteIds) {
-      favAlerts.addAll(mockData.getAlertsForRoute(routeId));
-    }
+    final favAlerts = ref.watch(homeFavAlertsProvider);
 
     final topPadding = MediaQuery.of(context).padding.top;
 

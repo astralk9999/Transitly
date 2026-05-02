@@ -11,6 +11,7 @@ import '../../data/mock/mock_realtime_service.dart';
 import '../../shared/models/enums.dart';
 import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_button.dart';
+import '../incidents/report_incident_sheet.dart';
 
 class ActiveRouteScreen extends ConsumerStatefulWidget {
   const ActiveRouteScreen({super.key});
@@ -240,11 +241,11 @@ class _ActiveRouteScreenState extends ConsumerState<ActiveRouteScreen> {
                 label: '⚠ INCIDENCIA',
                 isDanger: true,
                 isSmall: true,
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Incidencia registrada')),
-                  );
-                },
+                onPressed: () => showReportIncidentSheet(
+                  context,
+                  route: route,
+                  stop: nextStop,
+                ),
               ),
             ),
           ),

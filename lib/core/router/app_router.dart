@@ -32,7 +32,6 @@ import '../../features/profile/filter_presets_screen.dart';
 import '../../features/profile/offline_data_screen.dart';
 import '../../features/profile/planned_trips_screen.dart';
 import '../../features/route_detail/route_detail_screen.dart';
-import '../../features/search/search_results_screen.dart';
 import '../../features/splash/splash_screen.dart';
 import '../../features/stop_detail/stop_detail_screen.dart';
 import '../../features/suggestions/suggest_route_screen.dart';
@@ -127,12 +126,6 @@ final routerProvider = Provider<GoRouter>((ref) {
           StopDetailScreen(stopId: state.pathParameters['stopId']!),
         ),
       ),
-      GoRoute(
-        path: '/search/results',
-        pageBuilder: (context, state) =>
-            _slide(state, const SearchResultsScreen()),
-      ),
-
       // ── Driver screens ──
       GoRoute(
         path: '/driver/start',

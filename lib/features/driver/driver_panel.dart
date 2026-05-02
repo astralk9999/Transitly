@@ -69,7 +69,7 @@ class DriverPanel extends StatelessWidget {
           _option(context, c, Icons.fiber_manual_record, 'Crear ruta en vivo', '/driver/editor/live'),
           _option(context, c, Icons.history, 'Mis rutas', '/driver/history'),
           _option(context, c, Icons.schedule, 'Importar horarios', '/driver/ai-import'),
-          _option(context, c, Icons.inbox, 'Bandeja de gestión', '/driver/stats'),
+          _option(context, c, Icons.inbox, 'Bandeja de gestión', '/management/inbox'),
 
           const SizedBox(height: 16),
         ],

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../core/theme/transit_animations.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../data/mock/mock_data_service.dart';
@@ -21,6 +22,25 @@ class StartRouteScreen extends ConsumerStatefulWidget {
 class _StartRouteScreenState extends ConsumerState<StartRouteScreen> {
   String? _selectedRouteId;
   String? _selectedTime;
+  final ScrollController _scrollController = ScrollController();
+  final GlobalKey _routeListKey = GlobalKey();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollToRouteList() {
+    final ctx = _routeListKey.currentContext;
+    if (ctx == null) return;
+    Scrollable.ensureVisible(
+      ctx,
+      duration: TransitAnimations.normal,
+      curve: TransitAnimations.transitEaseOut,
+      alignment: 0.05,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,6 +96,7 @@ class _StartRouteScreenState extends ConsumerState<StartRouteScreen> {
         children: [
           Positioned.fill(child: SmokeBackground(color: c.accent, isDark: isDark)),
           SingleChildScrollView(
+        controller: _scrollController,
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,7 +129,7 @@ class _StartRouteScreenState extends ConsumerState<StartRouteScreen> {
                         ),
                         const SizedBox(width: 12),
                         GestureDetector(
-                          onTap: () {},
+                          onTap: _scrollToRouteList,
                           child: Text('Elegir otra',
                               style:
                                   TransitTypography.bodySecondary(c.accent)),
@@ -123,6 +144,7 @@ class _StartRouteScreenState extends ConsumerState<StartRouteScreen> {
 
             // ── b) SELECCIONAR LÍNEA ──
             Text('SELECCIONA LÍNEA',
+                key: _routeListKey,
                 style: TransitTypography.sectionTitle(c.textMid)),
             const SizedBox(height: 12),
             GridView.count(

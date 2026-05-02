@@ -4,7 +4,7 @@
 >
 > **Estado del documento:** vivo. Si una decisión cambia, se actualiza aquí — no se documenta en commit messages.
 >
-> **Última auditoría que respalda este doc:** ver `C:\Users\k\.claude\plans\quiero-que-me-hagas-reflective-hummingbird.md` (post P43, commit `b91fc25`).
+> **Última auditoría que respalda este doc:** [`docs/AUDIT_2026_04.md`](AUDIT_2026_04.md) (post P43, commit `b91fc25`). Inventario de assets y datos: [`docs/DATA_INVENTORY.md`](DATA_INVENTORY.md). Pendientes vivos: [`docs/PENDIENTES.md`](PENDIENTES.md).
 
 ---
 
@@ -252,4 +252,4 @@ Todo el logging pasa por `lib/core/utils/app_logger.dart` (wrapper sobre `debugP
 
 ---
 
-**Última actualización:** 2026-04-29 · post auditoría P43.
+**Última actualización:** 2026-05-02 · refs cruzadas a `AUDIT_2026_04.md`, `DATA_INVENTORY.md`, `PENDIENTES.md`.

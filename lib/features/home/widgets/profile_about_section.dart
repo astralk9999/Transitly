@@ -67,7 +67,7 @@ class _ProfileAboutSectionState extends State<ProfileAboutSection> {
             color: Colors.white.withValues(alpha: 0.06),
           ),
           GestureDetector(
-            onTap: () {},
+            onTap: () => _showSignOutConfirmation(context, c),
             child: Text('Cerrar sesión',
                 style: TransitTypography.bodySecondary(c.textMid)),
           ),
@@ -77,6 +77,43 @@ class _ProfileAboutSectionState extends State<ProfileAboutSection> {
             child: Text('Eliminar cuenta',
                 style:
                     TransitTypography.bodySecondary(c.stateCancelled)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showSignOutConfirmation(BuildContext context, TransitColorScheme c) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: c.bgSurface,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        title: Text(
+          '¿Cerrar sesión?',
+          style: TransitTypography.heading(c.textHi),
+        ),
+        content: Text(
+          'Volverás a la pantalla de inicio de sesión. Tus datos guardados localmente se conservan.',
+          style: TransitTypography.bodySecondary(c.textMid),
+        ),
+        actions: [
+          TransitButton(
+            label: 'CANCELAR',
+            isPrimary: false,
+            isSmall: true,
+            onPressed: () => Navigator.of(ctx).pop(),
+          ),
+          TransitButton(
+            label: 'CERRAR SESIÓN',
+            isSmall: true,
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              // F4: reemplazar por authRepository.signOut().
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Sesión cerrada (demo)')),
+              );
+            },
           ),
         ],
       ),

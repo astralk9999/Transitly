@@ -150,7 +150,7 @@ class RouteDetailScreen extends ConsumerWidget {
                           RouteDetailScheduleSection(
                               mockData: mockData, routeId: routeId),
                           const SizedBox(height: 24),
-                          const RouteDetailChangelog(),
+                          RouteDetailChangelog(routeId: routeId),
                           const SizedBox(height: 24),
                           RouteDetailFeedbackSection(routeId: routeId),
                           const SizedBox(height: 24),

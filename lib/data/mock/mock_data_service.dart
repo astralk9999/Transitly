@@ -29,6 +29,7 @@ class MockDataService {
   late List<TripHistoryModel> tripHistory;
   late List<AchievementModel> achievements;
   late List<UserAchievementModel> userAchievements;
+  late List<RouteChangelogModel> routeChangelogs;
   late Map<String, Map<int, List<List<double>>>> polylinesLod;
   late Map<String, List<double>> routeBounds; // [minLat, minLng, maxLat, maxLng]
 
@@ -220,6 +221,13 @@ class MockDataService {
         .map((e) =>
             UserAchievementModel.fromJson(e as Map<String, dynamic>))
         .toList();
+
+    // Route changelogs
+    routeChangelogs = (data['routeChangelogs'] as List<dynamic>?)
+            ?.map((e) =>
+                RouteChangelogModel.fromJson(e as Map<String, dynamic>))
+            .toList() ??
+        [];
   }
 
   // ── Helpers ──────────────────────────────────────────────
@@ -300,6 +308,15 @@ class MockDataService {
 
   List<IncidentModel> getIncidentsForRoute(String routeId) =>
       incidents.where((i) => i.routeId == routeId).toList();
+
+  /// Devuelve los cambios registrados para una ruta, ordenados de más
+  /// reciente a más antiguo.
+  List<RouteChangelogModel> getChangelogForRoute(String routeId) {
+    final entries =
+        routeChangelogs.where((c) => c.routeId == routeId).toList();
+    entries.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    return entries;
+  }
 
   static double _distSq(double lat1, double lng1, double lat2, double lng2) {
     final dLat = lat1 - lat2;

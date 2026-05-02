@@ -58225,5 +58225,71 @@
       "earned": false,
       "earnedAt": null
     }
+  ],
+  "routeChangelogs": [
+    {
+      "id": "chg-001",
+      "routeId": "L1",
+      "changeType": "scheduleUpdated",
+      "description": "Horario actualizado para días laborables",
+      "changedBy": "comujesa_admin",
+      "createdAt": "2026-03-12T08:00:00Z"
+    },
+    {
+      "id": "chg-002",
+      "routeId": "L1",
+      "changeType": "stopAdded",
+      "description": "Añadida parada Esteve",
+      "changedBy": "comujesa_admin",
+      "createdAt": "2026-02-28T09:30:00Z"
+    },
+    {
+      "id": "chg-003",
+      "routeId": "L1",
+      "changeType": "statusChanged",
+      "description": "Ruta verificada por la comunidad",
+      "changedBy": "moderator_team",
+      "createdAt": "2026-02-15T11:15:00Z"
+    },
+    {
+      "id": "chg-004",
+      "routeId": "L3",
+      "changeType": "scheduleUpdated",
+      "description": "Frecuencia aumentada en hora punta",
+      "changedBy": "comujesa_admin",
+      "createdAt": "2026-03-08T07:00:00Z"
+    },
+    {
+      "id": "chg-005",
+      "routeId": "L3",
+      "changeType": "stopMoved",
+      "description": "Parada La Plata reubicada 30m",
+      "changedBy": "comujesa_admin",
+      "createdAt": "2026-02-20T10:00:00Z"
+    },
+    {
+      "id": "chg-006",
+      "routeId": "L5",
+      "changeType": "pathUpdated",
+      "description": "Trazado revisado tras obras en Av. Espera",
+      "changedBy": "comujesa_admin",
+      "createdAt": "2026-03-15T08:30:00Z"
+    },
+    {
+      "id": "chg-007",
+      "routeId": "L5",
+      "changeType": "infoUpdated",
+      "description": "Ruta extendida hasta Crtra. Nva. Jarilla",
+      "changedBy": "comujesa_admin",
+      "createdAt": "2026-01-30T12:00:00Z"
+    },
+    {
+      "id": "chg-008",
+      "routeId": "L8",
+      "changeType": "scheduleAdded",
+      "description": "Nuevos horarios festivos",
+      "changedBy": "comujesa_admin",
+      "createdAt": "2026-02-10T09:00:00Z"
+    }
   ]
 }

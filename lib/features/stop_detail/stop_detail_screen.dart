@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../data/mock/mock_data_service.dart';
+import '../incidents/report_incident_sheet.dart';
 import '../../shared/widgets/responsive_scaffold.dart';
 import '../../shared/widgets/capacity_indicator.dart';
 import '../../shared/widgets/smoke_background.dart';
@@ -215,8 +216,13 @@ class StopDetailScreen extends ConsumerWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _actionButton(context, c, Icons.warning_amber,
-                        'Reportar'),
+                    _actionButton(
+                      context,
+                      c,
+                      Icons.warning_amber,
+                      'Reportar',
+                      onTap: () => showReportIncidentSheet(context, stop: stop),
+                    ),
                     _actionButton(context, c, Icons.edit, 'Mejorar'),
                     _actionButton(context, c, Icons.share, 'Compartir'),
                     _actionButton(
@@ -261,17 +267,23 @@ class StopDetailScreen extends ConsumerWidget {
   }
 
   Widget _actionButton(
-      BuildContext context, TransitColorScheme c, IconData icon, String label) {
+    BuildContext context,
+    TransitColorScheme c,
+    IconData icon,
+    String label, {
+    VoidCallback? onTap,
+  }) {
     return Tooltip(
       message: label,
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
         child: GestureDetector(
-          onTap: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('$label: próximamente')),
-            );
-          },
+          onTap: onTap ??
+              () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('$label: próximamente')),
+                );
+              },
           child: Column(
             children: [
               Container(

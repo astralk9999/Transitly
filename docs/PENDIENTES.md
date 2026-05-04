@@ -15,7 +15,7 @@
 
 > Se cierran en F0.5. Esfuerzo previsto ≈ 1 día. Orden ejecutado: F0.5.A → F0.5.B → F0.5.C.
 
-### ✅ Cerrados en F0.5 (12 items + 1 huérfano + 1 parcial)
+### ✅ Cerrados en F0.5 (15 items + 2 huérfanos + 1 parcial)
 
 > Cada entrada referencia el commit donde se cerró el item. Fechas en formato ISO. Convención de hash: 7 chars.
 
@@ -43,13 +43,11 @@
 - ✅ [F0.5.C] **`1.9`** — Categorías de feedback activas: selección + envío real vía `LocalFeedbackNotifier` con `shared_preferences:local_feedback_drafts`. `MyContributions` hidrata desde el notifier. `M` · `cerrar` · `222c647`.
 - ✅ [F0.5.C] **`feedback_detail_screen.dart`** — huérfana eliminada junto con la ruta `/feedback/detail`. `S` · `borrar` · `222c647`.
 
-### 🟨 Pendientes de F0.5
+#### F0.5.D · pasada extra de cierre (commits 2026-05-05)
 
-> No entraron en los prompts del usuario para A/B/C. Quedan abiertos para una pasada de "limpieza F0.5" antes de F1, o se trasladan a la fase natural correspondiente.
-
-- [F0.5.A] **`1.1` — `ScheduleEditor` placeholder solapando `StepSchedules`.** `S` · `borrar`. No incluido en el prompt de F0.5.A. Eliminar archivo `lib/features/driver/route_editor/schedule_editor.dart` y ruta `/driver/editor/schedule`.
-- [F0.5.A] **Wiring olvidado de `OfflineDataScreen`** *(detectado en `AUDIT §2.6`)*. `S` · `cerrar`. No incluido en el prompt. P40 cerró el contenido pero olvidó el `context.push` en `ProfileTab`. Añadir entry-point.
-- [F0.5.B] **`3.4.5` — `route_detail_screen.dart:34-43`: cálculo de frecuencia.** `M` · `cerrar`. No incluido en el prompt de B2 (que listó solo B2.1-B2.4). Mover el `map+sort+fold` de la frecuencia a un `routeFrequencyProvider.family<RouteId>` derivado, con tests.
+- ✅ [F0.5.D] **`1.1`** — `ScheduleEditor` placeholder + ruta `/driver/editor/schedule` eliminados. Solapaba con `StepSchedules` del wizard. `S` · `borrar` · `1ad92c7`.
+- ✅ [F0.5.D] **Wiring olvidado de `OfflineDataScreen`** — `ProfileLocationSection` gana subsección "DATOS OFFLINE" con `context.push('/profile/offline')`. `S` · `cerrar` · `e7527ab`.
+- ✅ [F0.5.D] **`3.4.5`** — Cálculo de frecuencia en `route_detail_screen` movido a `routeFrequencyProvider.family<int?, String>` con 6 tests. `M` · `cerrar` · `ba6cd74`.
 
 ---
 
@@ -122,4 +120,4 @@
 
 ---
 
-**Última actualización:** 2026-05-05 · post F0.5 (A+B+C). 12 items cerrados + 1 huérfano borrado + 1 cierre parcial. 3 items quedan pendientes para una pasada extra.
+**Última actualización:** 2026-05-05 · post F0.5 (A+B+C+D). 15 items cerrados + 2 huérfanos borrados + 1 cierre parcial. F0.5 cerrado completo.

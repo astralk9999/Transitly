@@ -8,8 +8,8 @@ import '../../data/mock/mock_realtime_service.dart';
 import '../../shared/models/active_trip_model.dart';
 import '../../shared/models/enums.dart';
 import '../../shared/models/route_stop_model.dart';
-import '../../shared/models/schedule_model.dart';
 import '../../shared/models/stop_model.dart';
+import '../../shared/providers/derived/schedule_providers.dart';
 import '../../shared/providers/route_lookup_providers.dart';
 import '../../shared/widgets/responsive_scaffold.dart';
 import '../../shared/widgets/smoke_background.dart';
@@ -25,22 +25,6 @@ class RouteDetailScreen extends ConsumerWidget {
   const RouteDetailScreen({super.key, required this.routeId});
 
   final String routeId;
-
-  int _timeToMinutes(String time) {
-    final parts = time.split(':');
-    return int.parse(parts[0]) * 60 + int.parse(parts[1]);
-  }
-
-  int? _calcFrequency(List<ScheduleModel> schedules) {
-    if (schedules.length < 2) return null;
-    final times = schedules.map((s) => _timeToMinutes(s.departureTime)).toList()
-      ..sort();
-    var totalDiff = 0;
-    for (var i = 1; i < times.length; i++) {
-      totalDiff += times[i] - times[i - 1];
-    }
-    return (totalDiff / (times.length - 1)).round();
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -95,9 +79,7 @@ class RouteDetailScreen extends ConsumerWidget {
         : null;
     final estimatedMinutes = lastTimeMinutes ?? (stopsForRoute.length * 3);
 
-    final weekdaySchedules =
-        mockData.getSchedulesForRoute(routeId, dayType: DayType.weekday);
-    final frequency = _calcFrequency(weekdaySchedules);
+    final frequency = ref.watch(routeFrequencyProvider(routeId));
 
     final padding = ResponsiveScaffold.screenPadding(context);
 

@@ -152,4 +152,89 @@ void main() {
       expect(defaultUpcomingCount, 3);
     });
   });
+
+  group('routeFrequencyProvider', () {
+    test('ruta sin schedules → null', () async {
+      final svc = await _build(_buildJson(
+        routeCode: 'L1',
+        weekday: const [],
+      ));
+      final container = ProviderContainer(overrides: [
+        mockDataServiceProvider.overrideWithValue(svc),
+      ]);
+      addTearDown(container.dispose);
+
+      expect(container.read(routeFrequencyProvider('L1')), isNull);
+    });
+
+    test('una sola salida → null (frecuencia indefinida)', () async {
+      final svc = await _build(_buildJson(
+        routeCode: 'L1',
+        weekday: const ['08:00'],
+      ));
+      final container = ProviderContainer(overrides: [
+        mockDataServiceProvider.overrideWithValue(svc),
+      ]);
+      addTearDown(container.dispose);
+
+      expect(container.read(routeFrequencyProvider('L1')), isNull);
+    });
+
+    test('intervalos regulares → media exacta', () async {
+      // 07:00, 07:30, 08:00, 08:30 → diffs 30, 30, 30 → media 30.
+      final svc = await _build(_buildJson(
+        routeCode: 'L1',
+        weekday: const ['07:00', '07:30', '08:00', '08:30'],
+      ));
+      final container = ProviderContainer(overrides: [
+        mockDataServiceProvider.overrideWithValue(svc),
+      ]);
+      addTearDown(container.dispose);
+
+      expect(container.read(routeFrequencyProvider('L1')), 30);
+    });
+
+    test('intervalos irregulares → media redondeada', () async {
+      // 07:00, 07:20, 07:50, 08:30 → diffs 20, 30, 40 → media 30.
+      final svc = await _build(_buildJson(
+        routeCode: 'L1',
+        weekday: const ['07:00', '07:20', '07:50', '08:30'],
+      ));
+      final container = ProviderContainer(overrides: [
+        mockDataServiceProvider.overrideWithValue(svc),
+      ]);
+      addTearDown(container.dispose);
+
+      expect(container.read(routeFrequencyProvider('L1')), 30);
+    });
+
+    test('schedules desordenados → ordena antes de calcular', () async {
+      // Mismas 4 horas que el caso regular pero entradas desordenadas.
+      final svc = await _build(_buildJson(
+        routeCode: 'L1',
+        weekday: const ['08:30', '07:00', '08:00', '07:30'],
+      ));
+      final container = ProviderContainer(overrides: [
+        mockDataServiceProvider.overrideWithValue(svc),
+      ]);
+      addTearDown(container.dispose);
+
+      expect(container.read(routeFrequencyProvider('L1')), 30);
+    });
+
+    test('ignora schedules de saturday/sunday', () async {
+      final svc = await _build(_buildJson(
+        routeCode: 'L1',
+        weekday: const ['07:00', '08:00'],
+        saturday: const ['07:00', '07:15', '07:30'],
+      ));
+      final container = ProviderContainer(overrides: [
+        mockDataServiceProvider.overrideWithValue(svc),
+      ]);
+      addTearDown(container.dispose);
+
+      // Solo se considera weekday: diff 60 min, 1 par.
+      expect(container.read(routeFrequencyProvider('L1')), 60);
+    });
+  });
 }

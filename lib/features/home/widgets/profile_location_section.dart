@@ -68,6 +68,38 @@ class ProfileLocationSection extends StatelessWidget {
             child: Text('GESTIONAR →',
                 style: TransitTypography.bodySecondary(c.accent)),
           ),
+          Divider(
+            height: 24,
+            thickness: 0.5,
+            color: Colors.white.withValues(alpha: 0.06),
+          ),
+          GradientText(
+            'DATOS OFFLINE',
+            style: GoogleFonts.ibmPlexMono(
+              fontSize: 11,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 1.5,
+            ),
+            gradient: c.gradientAccent,
+          ),
+          const SizedBox(height: 12),
+          GestureDetector(
+            onTap: () => context.push('/profile/offline'),
+            child: Row(
+              children: [
+                Icon(Icons.cloud_download_outlined,
+                    size: 16, color: c.accent),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'Ver caché de mapa y datos',
+                    style: TransitTypography.bodyPrimary(c.textHi),
+                  ),
+                ),
+                Icon(Icons.chevron_right, size: 20, color: c.textLo),
+              ],
+            ),
+          ),
         ],
       ),
     );

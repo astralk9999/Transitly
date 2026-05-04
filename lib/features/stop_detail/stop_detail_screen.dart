@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../data/mock/mock_data_service.dart';
+import '../../shared/providers/route_lookup_providers.dart';
 import '../incidents/report_incident_sheet.dart';
 import '../../shared/widgets/responsive_scaffold.dart';
 import '../../shared/widgets/capacity_indicator.dart';
@@ -33,12 +34,8 @@ class StopDetailScreen extends ConsumerWidget {
     }
 
     // Find all routes that pass through this stop
-    final routesAtStop = <String>[];
-    for (final entry in mockData.routeStops.entries) {
-      if (entry.value.any((rs) => rs.stopId == stopId)) {
-        routesAtStop.add(entry.key);
-      }
-    }
+    final stopToRoutes = ref.watch(stopToRouteCodesProvider);
+    final routesAtStop = stopToRoutes[stopId] ?? const <String>[];
 
     final padding = ResponsiveScaffold.screenPadding(context);
 

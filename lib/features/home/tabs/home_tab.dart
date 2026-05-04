@@ -10,6 +10,7 @@ import '../../../data/mock/mock_data_service.dart';
 import '../../../data/mock/mock_realtime_service.dart';
 import '../../../shared/models/models.dart';
 import '../../../shared/providers/derived/home_providers.dart';
+import '../../../shared/providers/route_lookup_providers.dart';
 import '../../../shared/widgets/glass_card.dart';
 import '../../../shared/widgets/responsive_scaffold.dart';
 import '../../../shared/widgets/route_card.dart';
@@ -261,15 +262,8 @@ class _HomeTabState extends ConsumerState<HomeTab> {
 
   Widget _buildNearbyStop(BuildContext context, TransitColorScheme c,
       MockDataService mockData, StopModel stop) {
-    final routesAtStop = <String>[];
-    for (final entry in mockData.routeStops.entries) {
-      for (final rs in entry.value) {
-        if (rs.stopId == stop.id) {
-          routesAtStop.add(entry.key);
-          break;
-        }
-      }
-    }
+    final stopToRoutes = ref.watch(stopToRouteCodesProvider);
+    final routesAtStop = stopToRoutes[stop.id] ?? const <String>[];
 
     return GlassCard(
       blur: 20,

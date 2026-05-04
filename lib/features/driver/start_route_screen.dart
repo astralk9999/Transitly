@@ -9,6 +9,7 @@ import '../../core/theme/transit_typography.dart';
 import '../../data/mock/mock_data_service.dart';
 import '../../shared/models/enums.dart';
 import '../../shared/models/schedule_model.dart';
+import '../../shared/providers/derived/schedule_providers.dart';
 import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_button.dart';
 
@@ -61,13 +62,14 @@ class _StartRouteScreenState extends ConsumerState<StartRouteScreen> {
     final suggestedTime =
         suggestedNext.isNotEmpty ? suggestedNext.first.departureTime : '--:--';
 
-    // Schedules for selected route
-    final selectedSchedules = _selectedRouteId != null
-        ? mockData.getSchedulesForRoute(_selectedRouteId!,
-            dayType: DayType.weekday)
-        : const <ScheduleModel>[];
-    final sortedSchedules = [...selectedSchedules]
-      ..sort((a, b) => a.departureTime.compareTo(b.departureTime));
+    // Schedules for selected route — pre-sorted por el provider derivado.
+    final sortedSchedules = _selectedRouteId == null
+        ? const <ScheduleModel>[]
+        : ref.watch(upcomingDeparturesForRouteProvider((
+            routeId: _selectedRouteId!,
+            count: null,
+            dayType: DayType.weekday,
+          )));
 
     // Selected route info
     final selectedRoute =

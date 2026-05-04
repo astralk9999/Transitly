@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../data/mock/mock_data_service.dart';
+import '../../shared/providers/local_feedback_provider.dart';
 import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_button.dart';
 import '../../shared/widgets/transit_input.dart';
@@ -20,11 +21,43 @@ class FeedbackScreen extends ConsumerStatefulWidget {
 
 class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
   final _descCtrl = TextEditingController();
+  FeedbackCategory? _selected;
 
   @override
   void dispose() {
     _descCtrl.dispose();
     super.dispose();
+  }
+
+  Future<void> _submit() async {
+    final cat = _selected;
+    if (cat == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Selecciona una categoría primero')),
+      );
+      return;
+    }
+    final desc = _descCtrl.text.trim();
+    if (desc.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Escribe una descripción')),
+      );
+      return;
+    }
+
+    final entry = LocalFeedbackEntry(
+      id: 'local-${DateTime.now().millisecondsSinceEpoch}',
+      routeId: widget.routeId,
+      category: cat,
+      description: desc,
+      createdAt: DateTime.now(),
+    );
+    await ref.read(localFeedbackProvider.notifier).add(entry);
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Feedback enviado · Gracias')),
+    );
+    context.pop();
   }
 
   @override
@@ -50,91 +83,60 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
       ),
       body: Stack(
         children: [
-          Positioned.fill(child: SmokeBackground(color: c.accent, isDark: isDark)),
+          Positioned.fill(
+              child: SmokeBackground(color: c.accent, isDark: isDark)),
           SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _feedbackOption(
-              c,
-              Icons.route,
-              'El recorrido en el mapa',
-              'Editor de trazado',
-            ),
-            _feedbackOption(
-              c,
-              Icons.location_on,
-              'Una parada (falta, sobra o está mal)',
-              'Paradas',
-            ),
-            _feedbackOption(
-              c,
-              Icons.schedule,
-              'Los horarios',
-              'Horarios',
-            ),
-            _feedbackOption(
-              c,
-              Icons.info_outline,
-              'Información general',
-              'Información general',
-            ),
-            _feedbackOption(
-              c,
-              Icons.lightbulb_outline,
-              'Tengo una sugerencia',
-              'Sugerencia',
-            ),
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _option(c, Icons.route, FeedbackCategory.route),
+                _option(c, Icons.location_on, FeedbackCategory.stops),
+                _option(c, Icons.schedule, FeedbackCategory.schedules),
+                _option(c, Icons.info_outline, FeedbackCategory.info),
+                _option(c, Icons.lightbulb_outline,
+                    FeedbackCategory.suggestion),
 
-            const SizedBox(height: 24),
+                const SizedBox(height: 24),
 
-            Text('Descripción',
-                style: TransitTypography.bodySecondary(c.textMid)),
-            const SizedBox(height: 6),
-            TransitInput(
-              hint: 'Descripción de lo que has encontrado',
-              controller: _descCtrl,
-              maxLines: 4,
+                Text('Descripción',
+                    style: TransitTypography.bodySecondary(c.textMid)),
+                const SizedBox(height: 6),
+                TransitInput(
+                  hint: 'Descripción de lo que has encontrado',
+                  controller: _descCtrl,
+                  maxLines: 4,
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  child: TransitButton(
+                    label: 'ENVIAR FEEDBACK',
+                    onPressed: _submit,
+                  ),
+                ),
+                const SizedBox(height: 32),
+              ],
             ),
-            const SizedBox(height: 16),
-            SizedBox(
-              width: double.infinity,
-              child: TransitButton(
-                label: 'ENVIAR FEEDBACK',
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content: Text('Feedback enviado · Gracias')),
-                  );
-                  context.pop();
-                },
-              ),
-            ),
-            const SizedBox(height: 32),
-          ],
-        ),
-      ),
+          ),
         ],
       ),
     );
   }
 
-  Widget _feedbackOption(
-      TransitColorScheme c, IconData icon, String label, String type) {
+  Widget _option(TransitColorScheme c, IconData icon, FeedbackCategory cat) {
+    final isSelected = _selected == cat;
     return GestureDetector(
-      onTap: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Formulario de $type: próximamente')),
-        );
-      },
+      onTap: () => setState(() => _selected = cat),
       child: Container(
         height: 56,
         margin: const EdgeInsets.only(bottom: 8),
         padding: const EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
-          color: c.bgSurface,
-          border: Border.all(color: c.border, width: 0.5),
+          color: isSelected ? c.accentBg : c.bgSurface,
+          border: Border.all(
+              color: isSelected ? c.accent : c.border,
+              width: isSelected ? 1 : 0.5),
           borderRadius: BorderRadius.circular(6),
         ),
         child: Row(
@@ -142,10 +144,14 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
             Icon(icon, size: 24, color: c.accent),
             const SizedBox(width: 12),
             Expanded(
-              child: Text(label,
+              child: Text(cat.label,
                   style: TransitTypography.bodyPrimary(c.textHi)),
             ),
-            Icon(Icons.chevron_right, size: 20, color: c.textLo),
+            Icon(
+              isSelected ? Icons.check_circle : Icons.chevron_right,
+              size: 20,
+              color: isSelected ? c.accent : c.textLo,
+            ),
           ],
         ),
       ),

@@ -17,7 +17,6 @@ import '../../features/driver/route_editor/post_recording_editor.dart';
 import '../../features/driver/route_editor/recorded_session.dart';
 import '../../features/driver/route_editor/schedule_editor.dart';
 import '../../features/driver/start_route_screen.dart';
-import '../../features/feedback/feedback_detail_screen.dart';
 import '../../features/feedback/feedback_screen.dart';
 import '../../features/home/home_shell.dart';
 import '../../features/home/tabs/card_tab.dart';
@@ -202,12 +201,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         ),
       ),
 
-      // ── Feedback (static paths before parameterized) ──
-      GoRoute(
-        path: '/feedback/detail',
-        pageBuilder: (context, state) =>
-            _slide(state, const FeedbackDetailScreen()),
-      ),
+      // ── Feedback ──
       GoRoute(
         path: '/feedback/:routeId',
         pageBuilder: (context, state) => _slideUp(

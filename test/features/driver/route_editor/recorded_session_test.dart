@@ -6,12 +6,12 @@ import 'package:transitly/features/driver/route_editor/recorded_session.dart';
 void main() {
   group('RecordedStop / RecordedSession', () {
     test('toJson/fromJson roundtrip preserva todos los campos', () {
-      final session = RecordedSession(
-        trace: const [
+      const session = RecordedSession(
+        trace: [
           LatLng(36.6819, -6.1365),
           LatLng(36.6820, -6.1360),
         ],
-        stops: const [
+        stops: [
           RecordedStop(
             position: LatLng(36.6819, -6.1365),
             arrivalOffset: Duration(seconds: 0),

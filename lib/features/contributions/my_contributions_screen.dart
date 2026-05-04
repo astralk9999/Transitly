@@ -6,10 +6,11 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../data/mock/mock_data_service.dart';
-import '../../shared/widgets/responsive_scaffold.dart';
 import '../../shared/models/enums.dart';
+import '../../shared/providers/local_feedback_provider.dart';
 import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/reputation_badge.dart';
+import '../../shared/widgets/responsive_scaffold.dart';
 import '../../shared/widgets/smoke_background.dart';
 
 class MyContributionsScreen extends ConsumerWidget {
@@ -21,7 +22,7 @@ class MyContributionsScreen extends ConsumerWidget {
     final c = TransitColorScheme.of(isDark);
     final mockData = ref.watch(mockDataServiceProvider);
     final suggestions = mockData.routeSuggestions;
-    final feedbacks = mockData.feedbacks;
+    final feedbacks = ref.watch(localFeedbackProvider);
 
     return Scaffold(
       backgroundColor: c.bgRoot,
@@ -180,7 +181,8 @@ class MyContributionsScreen extends ConsumerWidget {
                                 },
                               ),
 
-                        // Feedback tab
+                        // Feedback tab — hidratado desde el notifier local
+                        // (shared_preferences). F15 lo conecta al backend.
                         feedbacks.isEmpty
                             ? const Center(
                                 child: EmptyState(
@@ -193,6 +195,10 @@ class MyContributionsScreen extends ConsumerWidget {
                                 itemCount: feedbacks.length,
                                 itemBuilder: (context, index) {
                                   final fb = feedbacks[index];
+                                  final code = mockData
+                                          .getRouteById(fb.routeId)
+                                          ?.code ??
+                                      fb.routeId;
                                   return Container(
                                     margin: const EdgeInsets.only(bottom: 8),
                                     padding: const EdgeInsets.all(12),
@@ -209,8 +215,7 @@ class MyContributionsScreen extends ConsumerWidget {
                                         Row(
                                           children: [
                                             Text(
-                                              fb.feedbackType.label
-                                                  .toUpperCase(),
+                                              '$code · ${fb.category.label.toUpperCase()}',
                                               style: GoogleFonts.ibmPlexMono(
                                                 fontSize: 10,
                                                 fontWeight: FontWeight.w600,
@@ -219,7 +224,7 @@ class MyContributionsScreen extends ConsumerWidget {
                                             ),
                                             const Spacer(),
                                             Text(
-                                              fb.status.label,
+                                              'BORRADOR LOCAL',
                                               style:
                                                   TransitTypography.bodySmall(
                                                       c.accent),

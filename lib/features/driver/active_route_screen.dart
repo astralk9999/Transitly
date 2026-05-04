@@ -9,6 +9,7 @@ import '../../core/theme/transit_typography.dart';
 import '../../data/mock/mock_data_service.dart';
 import '../../data/mock/mock_realtime_service.dart';
 import '../../shared/models/enums.dart';
+import '../../shared/providers/derived/active_trip_providers.dart';
 import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_button.dart';
 import '../incidents/report_incident_sheet.dart';
@@ -39,7 +40,11 @@ class _ActiveRouteScreenState extends ConsumerState<ActiveRouteScreen> {
         t.status != TripStatus.cancelled &&
         t.status != TripStatus.completed).firstOrNull;
 
-    if (activeTrip == null) {
+    final detail = activeTrip != null
+        ? ref.watch(activeTripDetailProvider(activeTrip.id))
+        : null;
+
+    if (detail == null) {
       return Scaffold(
         backgroundColor: c.bgRoot,
         body: Stack(
@@ -65,14 +70,12 @@ class _ActiveRouteScreenState extends ConsumerState<ActiveRouteScreen> {
       );
     }
 
-    final route = mockData.getRouteById(activeTrip.routeId);
-    final stopsForRoute = mockData.getStopsForRoute(activeTrip.routeId);
-    final currentIdx = activeTrip.currentStopIndex ?? 0;
-    final nextIdx = (currentIdx + 1).clamp(0, stopsForRoute.length - 1);
-    final nextStop =
-        nextIdx < stopsForRoute.length ? stopsForRoute[nextIdx] : null;
-    final firstStop = stopsForRoute.isNotEmpty ? stopsForRoute.first : null;
-    final lastStop = stopsForRoute.length > 1 ? stopsForRoute.last : null;
+    final route = mockData.getRouteById(detail.trip.routeId);
+    final currentIdx = detail.currentIdx;
+    final nextIdx = currentIdx + 1;
+    final nextStop = detail.nextStop;
+    final firstStop = detail.firstStop;
+    final lastStop = detail.lastStop;
 
     final now = DateTime.now();
     final timeStr =
@@ -128,7 +131,7 @@ class _ActiveRouteScreenState extends ConsumerState<ActiveRouteScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  '${firstStop?.name ?? '?'} → ${lastStop?.name ?? '?'}',
+                  '${firstStop.name} → ${lastStop.name}',
                   style: TransitTypography.bodyPrimary(c.textHi),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,

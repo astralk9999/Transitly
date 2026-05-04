@@ -13,36 +13,43 @@
 
 ## Bloqueantes
 
-> Se cierran en F0.5. Esfuerzo total ≈ 1 día (7×S + 4×M en serie). Orden recomendado: F0.5.A → F0.5.B → F0.5.C.
+> Se cierran en F0.5. Esfuerzo previsto ≈ 1 día. Orden ejecutado: F0.5.A → F0.5.B → F0.5.C.
 
-### F0.5.A — Routing y wirings huérfanos
+### ✅ Cerrados en F0.5 (12 items + 1 huérfano + 1 parcial)
 
-- [F0.5.A] **`1.17` — Bug de routing en `driver_panel.dart:72`.** `S` · `cerrar`. "Bandeja de gestión" enlaza a `/driver/stats`; debe ir a `/management/inbox`.
-- [F0.5.A] **`1.5` — `onTap: () {}` "Elegir otra" en `start_route_screen.dart:111`.** `S` · `cerrar`. Sustituir por `ScrollController.ensureVisible` hacia la lista de rutas disponibles del mismo screen.
-- [F0.5.A] **`1.7` — `SearchResultsScreen` placeholder + huérfana.** `S` · `borrar`. Eliminar archivo y ruta `/search/results`. Verificar `flutter analyze` limpio.
-- [F0.5.A] **`1.11` — `onTap: () {}` "Cerrar sesión" en `profile_about_section.dart:69-73`.** `S` · `cerrar`. Abrir `AlertDialog` "¿Cerrar sesión?"; en OK, `SnackBar` "Sesión cerrada (demo)" hasta que F4 lo reemplace por `authRepository.signOut()`.
-- [F0.5.A] **`1.14` — Botón "INCIDENCIA" en `active_route_screen.dart:243-247` solo lanza `SnackBar`.** `S` · `cerrar`. Sustituir por `showReportIncidentSheet` con contexto del trip activo (`route_id`, `stop_id` si aplica).
-- [F0.5.A] **`1.15` — Changelog hardcoded en `route_detail_changelog.dart` (3 entradas literales).** `S` · `cerrar`. Consumir `RouteChangelogModel` desde provider del route detail (existe o derivar de `mapDataCacheProvider`).
-- [F0.5.A] **`1.16` — Acción "Reportar" inerte en `stop_detail_screen.dart:270-273`.** `S` · `cerrar` parcial. Solo la primera de las cuatro acciones; cablear a `showReportIncidentSheet` con `stop_id` precargado. Las otras tres → bloque "Mejora".
-- [F0.5.A] **`1.1` — `ScheduleEditor` placeholder solapando `StepSchedules`.** `S` · `borrar`. Eliminar archivo `lib/features/driver/route_editor/schedule_editor.dart` y ruta `/driver/editor/schedule`.
-- [F0.5.A] **Wiring olvidado de `OfflineDataScreen`** *(detectado en `AUDIT §2.6`)*. `S` · `cerrar`. P40 cerró el contenido pero olvidó el `context.push` en `ProfileTab` u origen equivalente. Añadir entry-point.
+> Cada entrada referencia el commit donde se cerró el item. Fechas en formato ISO. Convención de hash: 7 chars.
 
-### F0.5.B — Calidad estructural
+#### F0.5.A · routing y wirings (commits 2026-05-04)
 
-- [F0.5.B] **`3.2` — `MockDataException` tipada.** `M` · `cerrar`. Crear `enum MockDataError { assetNotFound, parseError, unexpectedSchema, unknown }` + `class MockDataException implements Exception` siguiendo patrón `NfcCardError` documentado en `ARCHITECTURE.md §4.3`. Tests negativos con asset bundle mock.
-- [F0.5.B] **`3.4` — Lógica de negocio en 5 widgets.** `M` · `cerrar`. Mover a providers derivados en `lib/shared/providers/derived/`:
-    - `home_tab.dart:54-80` → `homeFavRouteIdsProvider`, `homeHabitualStopProvider`, `homeNearbyStopsProvider.family<LatLng>`, `homeFavAlertsProvider`.
-    - `home_tab.dart:264-274` y `stop_detail_screen.dart:35-40` → reutilizar `stopToRouteCodesProvider` (ya existente) o crear selector encima.
-    - `start_route_screen.dart:44-60` → `upcomingDeparturesForRouteProvider.family<RouteId>`.
-    - `active_route_screen.dart:32-78` → `activeTripDetailProvider.family<TripId, ActiveTripDetail>` con value object inmutable.
-    - `route_detail_screen.dart:34-43` → `routeFrequencyProvider.family<RouteId>` con cálculo de frecuencia (map + sort + fold).
-    - Cada provider con test unitario `ProviderContainer` (vacío / normal / edge).
+- ✅ [F0.5.A] **`1.17`** — Bug de routing en `driver_panel.dart:72`. Bandeja de gestión ahora enlaza a `/management/inbox`. `S` · `cerrar` · `e4af39e`.
+- ✅ [F0.5.A] **`1.5`** — "Elegir otra" en `start_route_screen.dart:111` hace `Scrollable.ensureVisible` a la lista de rutas. `S` · `cerrar` · `fa531e1`.
+- ✅ [F0.5.A] **`1.7`** — `SearchResultsScreen` placeholder + huérfana eliminada. Ruta `/search/results` retirada. `S` · `borrar` · `456b0a0`.
+- ✅ [F0.5.A] **`1.11`** — "Cerrar sesión" abre `AlertDialog` con `SnackBar` "Sesión cerrada (demo)". F4 lo reemplaza por `authRepository.signOut()`. `S` · `cerrar` · `a60a263`.
+- ✅ [F0.5.A] **`1.14`** — Botón "INCIDENCIA" en `active_route_screen.dart` invoca `showReportIncidentSheet` con `route` y `nextStop` precargados. `S` · `cerrar` · `0491f79`.
+- ✅ [F0.5.A] **`1.15`** — `RouteDetailChangelog` ahora consume `RouteChangelogModel` vía `MockDataService.getChangelogForRoute(routeId)`. JSON ganó `routeChangelogs` con 8 entradas seed. `S` · `cerrar` · `5f295d6`.
+- ✅ [F0.5.A] **`1.16` (parcial)** — Acción "Reportar" en `stop_detail_screen.dart` invoca `showReportIncidentSheet` con `stop` precargado. Las otras 3 (Compartir, Mejorar, Cómo llegar) → ver "Mejora". `S` · `cerrar` · `1a0b8bc`.
 
-### F0.5.C — Cierre de flujos para demo continua
+#### F0.5.B · calidad estructural (commits 2026-05-04)
 
-- [F0.5.C] **`1.4` — Post-recording editor con `_trace` y 5 paradas hardcoded.** `M` · `cerrar`. `post_recording_editor.dart`: eliminar `const _trace` y stops literales (líneas 23-35, 44-50). Recibir `final List<LatLng> trace` y `final List<RecordedStop> stops` por constructor desde `LiveRecorderController.getCurrentSession() → RecordedSession`. Persistir vía `shared_preferences` con clave `live_recorder_draft:<userId-or-guest>` hasta F3 (Hive).
-- [F0.5.C] **`1.9` — Categorías de feedback inertes en `feedback_screen.dart:126-130`.** `M` · `cerrar`. Cada categoría abre el flujo correspondiente (sheet/pantalla) en lugar de `SnackBar 'próximamente'`. Persistencia local en `LocalFeedbackNotifier` nuevo (`shared/providers/local_feedback_provider.dart`) con `shared_preferences` (`local_feedback_drafts`). `MyContributions` se hidrata desde aquí.
-- [F0.5.C] **`feedback_detail_screen.dart` huérfana.** `S` · `borrar`. Eliminar archivo y ruta `/feedback/detail` durante el cierre de C2.
+- ✅ [F0.5.B] **`3.2`** — `MockDataException` tipada con `MockDataError`. `MockDataService.init({AssetBundle? bundle})` inyectable. `M` · `cerrar` · `1f16f12`.
+- ✅ [F0.5.B] **`3.4.1`** — `home_tab.dart:54-80` movido a `homeFavRouteIdsProvider`, `homeHabitualStopProvider`, `homeNearbyStopsProvider.family`, `homeFavAlertsProvider`. `M` · `cerrar` · `d087fcd`.
+- ✅ [F0.5.B] **`3.4.2`** — Inverted index `home_tab._buildNearbyStop` y `stop_detail_screen` consolidados en `stopToRouteCodesProvider`. `M` · `cerrar` · `9329089`.
+- ✅ [F0.5.B] **`3.4.3`** — `start_route_screen.dart:44-60` consume `upcomingDeparturesForRouteProvider.family`. `M` · `cerrar` · `7d89293`.
+- ✅ [F0.5.B] **`3.4.4`** — `active_route_screen.dart:32-78` consume `activeTripDetailProvider.family<ActiveTripDetail?, String>`. `M` · `cerrar` · `ae0c738`.
+
+#### F0.5.C · flujos para demo continua (commits 2026-05-04)
+
+- ✅ [F0.5.C] **`1.4`** — Post-recording editor recibe `trace` y `stops` reales desde `LiveRecorderController.getCurrentSession()`. Persistencia en `shared_preferences:live_recorder_draft:<userId>`. `M` · `cerrar` · `688539a`.
+- ✅ [F0.5.C] **`1.9`** — Categorías de feedback activas: selección + envío real vía `LocalFeedbackNotifier` con `shared_preferences:local_feedback_drafts`. `MyContributions` hidrata desde el notifier. `M` · `cerrar` · `222c647`.
+- ✅ [F0.5.C] **`feedback_detail_screen.dart`** — huérfana eliminada junto con la ruta `/feedback/detail`. `S` · `borrar` · `222c647`.
+
+### 🟨 Pendientes de F0.5
+
+> No entraron en los prompts del usuario para A/B/C. Quedan abiertos para una pasada de "limpieza F0.5" antes de F1, o se trasladan a la fase natural correspondiente.
+
+- [F0.5.A] **`1.1` — `ScheduleEditor` placeholder solapando `StepSchedules`.** `S` · `borrar`. No incluido en el prompt de F0.5.A. Eliminar archivo `lib/features/driver/route_editor/schedule_editor.dart` y ruta `/driver/editor/schedule`.
+- [F0.5.A] **Wiring olvidado de `OfflineDataScreen`** *(detectado en `AUDIT §2.6`)*. `S` · `cerrar`. No incluido en el prompt. P40 cerró el contenido pero olvidó el `context.push` en `ProfileTab`. Añadir entry-point.
+- [F0.5.B] **`3.4.5` — `route_detail_screen.dart:34-43`: cálculo de frecuencia.** `M` · `cerrar`. No incluido en el prompt de B2 (que listó solo B2.1-B2.4). Mover el `map+sort+fold` de la frecuencia a un `routeFrequencyProvider.family<RouteId>` derivado, con tests.
 
 ---
 
@@ -115,4 +122,4 @@
 
 ---
 
-**Última actualización:** 2026-05-02 · sincronizado con `AUDIT_2026_04.md` (items 1.1-1.19, 3.1-3.5, 3.6.1-3.6.6 + 6 huérfanos + 1 wiring olvidado).
+**Última actualización:** 2026-05-05 · post F0.5 (A+B+C). 12 items cerrados + 1 huérfano borrado + 1 cierre parcial. 3 items quedan pendientes para una pasada extra.

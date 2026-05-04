@@ -1,0 +1,18 @@
+# Configuración de codegen para freezed + json_serializable.
+#
+# Los archivos generados (.freezed.dart, .g.dart) viven junto a su origen
+# en lib/ — comportamiento por defecto, se conserva.
+
+targets:
+  $default:
+    builders:
+      json_serializable:
+        options:
+          # toJson() debe serializar también los objetos anidados, no
+          # delegar en su .toString(). Necesario para que los toJson
+          # sean simétricos con los fromJson y permitan persistencia
+          # de borradores (ver F0.5.C).
+          explicit_to_json: true
+          # Ignorar campos a null en la salida JSON. Reduce ruido en
+          # debug y mantiene los borradores de shared_preferences ligeros.
+          include_if_null: false

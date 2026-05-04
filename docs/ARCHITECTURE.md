@@ -237,6 +237,34 @@ Todo el logging pasa por `lib/core/utils/app_logger.dart` (wrapper sobre `debugP
 
 ### 6.3 Helpers y patrones de Riverpod
 
+### 6.4 Codegen (freezed + json_serializable)
+
+Desde F1 los modelos de valor críticos viven como clases `@freezed`. La cadena de codegen está configurada para que el archivo generado (`.freezed.dart`, `.g.dart`) repose junto a su fuente en `lib/`.
+
+**Ejecución manual:**
+
+```bash
+tool/build.sh           # genera una vez (--delete-conflicting-outputs incluido)
+tool/build_watch.sh     # regenera al cambiar las fuentes
+```
+
+Equivalente directo: `dart run build_runner build --delete-conflicting-outputs`.
+
+**Configuración** vive en `build.yaml` (raíz del repo):
+- `json_serializable.explicit_to_json: true` — `toJson` desciende por objetos anidados.
+- `json_serializable.include_if_null: false` — campos `null` no se serializan; reduce el peso de los borradores en `shared_preferences`.
+
+**Cuándo regenerar:**
+- Al añadir, renombrar o borrar campos de cualquier `@freezed`.
+- Tras un `git pull` que toque `lib/shared/models/`.
+- Si tras un cambio aparece un error `Undefined name '_$ModelImpl'` en compilación.
+
+**Política de commits:** los archivos `*.freezed.dart` y `*.g.dart` **se commitean** junto al cambio que los genera. Sin CI, garantizar que el repo siempre compile sin un paso previo manual reduce fricción para cualquiera que clone el proyecto o ejecute `flutter test` desde frío.
+
+---
+
+### 6.5 Helpers y patrones de Riverpod
+
 - `isDarkMode(ref, context)` → unifica lectura de tema (`themeModeProvider` + `MediaQuery.platformBrightnessOf`).
 - `routerInitialLocationProvider` → punto de override para tests (saltar splash).
 - `mapDataCacheProvider` → memoiza estructuras derivadas pesadas; **patrón a replicar** para cualquier cómputo O(n²) sobre las colecciones del JSON.

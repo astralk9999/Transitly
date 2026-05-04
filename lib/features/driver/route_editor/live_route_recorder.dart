@@ -1,22 +1,35 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
+import '../../../core/utils/app_logger.dart';
+import '../../../shared/providers/user_provider.dart';
 import 'live_recorder_controller.dart';
+import 'recorded_session.dart';
 import 'widgets/recorder_live_view.dart';
 import 'widgets/recorder_pre_form.dart';
 
-class LiveRouteRecorder extends StatefulWidget {
+/// Prefijo de la clave que guarda el último borrador de grabación en
+/// `shared_preferences`. Una entrada por usuario (o `guest` si no
+/// hay sesión). En F3 esto migra a Hive con cifrado AES.
+const String liveRecorderDraftKeyPrefix = 'live_recorder_draft';
+
+class LiveRouteRecorder extends ConsumerStatefulWidget {
   const LiveRouteRecorder({super.key});
 
   @override
-  State<LiveRouteRecorder> createState() => _LiveRouteRecorderState();
+  ConsumerState<LiveRouteRecorder> createState() => _LiveRouteRecorderState();
 }
 
-class _LiveRouteRecorderState extends State<LiveRouteRecorder> {
+class _LiveRouteRecorderState extends ConsumerState<LiveRouteRecorder> {
   final _controller = LiveRecorderController();
   final _codeCtrl = TextEditingController();
   final _nameCtrl = TextEditingController();
@@ -97,10 +110,13 @@ class _LiveRouteRecorderState extends State<LiveRouteRecorder> {
                 style: TransitTypography.bodySecondary(c.textMid)),
           ),
           TextButton(
-            onPressed: () {
+            onPressed: () async {
+              final session = _controller.getCurrentSession();
               _controller.stop();
               Navigator.of(ctx).pop();
-              context.push('/driver/editor/post');
+              await _persistDraft(session);
+              if (!mounted) return;
+              unawaited(context.push('/driver/editor/post', extra: session));
             },
             child: Text('DETENER',
                 style: TransitTypography.bodySecondary(c.stateCancelled)),
@@ -108,5 +124,20 @@ class _LiveRouteRecorderState extends State<LiveRouteRecorder> {
         ],
       ),
     );
+  }
+
+  Future<void> _persistDraft(RecordedSession session) async {
+    try {
+      final user = ref.read(currentUserProvider);
+      final key = '$liveRecorderDraftKeyPrefix:${user.id}';
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(key, jsonEncode(session.toJson()));
+      AppLogger.info('LiveRecorder',
+          'draft saved (key=$key, ${session.stops.length} stops)');
+    } catch (e, st) {
+      AppLogger.error('LiveRecorder', 'failed to persist draft', e, st);
+      // No relanzamos: el flujo de navegación al editor sigue
+      // independientemente de si la persistencia tuvo éxito.
+    }
   }
 }

@@ -5,16 +5,20 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
+import 'recorded_session.dart';
+
 class MarkedStop {
   const MarkedStop({
     required this.number,
     required this.position,
     required this.distanceKm,
+    required this.markedAt,
   });
 
   final int number;
   final LatLng position;
   final double distanceKm;
+  final Duration markedAt;
 }
 
 /// Predefined GPS path based on L1 stops with intermediates.
@@ -113,6 +117,7 @@ class LiveRecorderController extends ChangeNotifier {
       number: n,
       position: pos,
       distanceKm: distFromLast,
+      markedAt: Duration(seconds: elapsedSeconds),
     );
     markedStops.add(stop);
     flashVisible = true;
@@ -134,6 +139,18 @@ class LiveRecorderController extends ChangeNotifier {
     _clockTimer = null;
     _blinkTimer = null;
   }
+
+  /// Snapshot inmutable del estado actual de la grabación. Pensado para
+  /// pasarse al editor post-grabación o serializarse a disco.
+  RecordedSession getCurrentSession() => RecordedSession(
+        trace: List<LatLng>.unmodifiable(trace),
+        stops: markedStops
+            .map((m) => RecordedStop(
+                  position: m.position,
+                  arrivalOffset: m.markedAt,
+                ))
+            .toList(growable: false),
+      );
 
   @override
   void dispose() {

@@ -60,7 +60,7 @@ flowchart TD
     subgraph State["Estado · lib/shared/providers + controllers locales"]
         Global["Providers globales<br/>themeMode, locale, user, isDriver,<br/>nfcScan, connectivity, mapDataCache,<br/>realtimeTrips, realtimeClock"]
         Local["Controllers locales<br/>EditorController, LiveRecorderController"]
-        Derived["Providers derivados<br/>isOffline, stopToRouteCodes,<br/>routeStopsMap (en MapDataCache)"]
+        Derived["Providers derivados<br/>isOffline, stopToRouteCodes,<br/>routeStopsMap (en MapDataCache),<br/>homeFavRouteIds, homeHabitualStop,<br/>homeNearbyStops, homeFavAlerts,<br/>upcomingDeparturesForRoute,<br/>activeTripDetail"]
     end
 
     subgraph Repos["Servicios / 'Repositorios' · lib/data"]
@@ -240,7 +240,11 @@ Todo el logging pasa por `lib/core/utils/app_logger.dart` (wrapper sobre `debugP
 - `isDarkMode(ref, context)` → unifica lectura de tema (`themeModeProvider` + `MediaQuery.platformBrightnessOf`).
 - `routerInitialLocationProvider` → punto de override para tests (saltar splash).
 - `mapDataCacheProvider` → memoiza estructuras derivadas pesadas; **patrón a replicar** para cualquier cómputo O(n²) sobre las colecciones del JSON.
-- `stopToRouteCodesProvider` → ejemplo de inverted index derivado.
+- `stopToRouteCodesProvider` → ejemplo de inverted index derivado. Consumido por `home_tab._buildNearbyStop`, `stop_detail_screen` y `route_detail_screen`.
+- **Providers derivados de feature** en `lib/shared/providers/derived/` (introducidos en F0.5.B para sacar lógica de negocio de los widgets):
+  - `home_providers.dart` → `homeFavRouteIdsProvider` (`Set<String>`), `homeHabitualStopProvider` (`StopModel?`), `homeNearbyStopsProvider.family<({LatLng center, int count}), List<StopModel>>`, `homeFavAlertsProvider` (`List<AlertModel>`). Hidratados desde `currentUserProvider` y `mockDataServiceProvider`.
+  - `schedule_providers.dart` → `upcomingDeparturesForRouteProvider.family<({String routeId, int? count, DayType dayType}), List<ScheduleModel>>`. `count=null` devuelve todas las salidas del día sorted; `count=N` devuelve las primeras N. Constante `defaultUpcomingCount = 3`.
+  - `active_trip_providers.dart` → `activeTripDetailProvider.family<ActiveTripDetail?, String>` (tripId). Devuelve un value object inmutable con `trip, currentIdx, nextStop, firstStop, lastStop`. `null` si el trip no existe o la ruta no tiene stops.
 
 ---
 

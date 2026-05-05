@@ -4,6 +4,11 @@
 .env.local
 .env.*.local
 
+# Supabase CLI — caché local, access token y referencia al proyecto
+# vinculado. Generado por `supabase login` y `supabase link`.
+.supabase/
+supabase/.temp/
+
 # Miscellaneous
 *.class
 *.log

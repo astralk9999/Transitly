@@ -1,0 +1,11 @@
+# Configuración mínima de Supabase CLI.
+#
+# `project_id` es una etiqueta local (no tiene que coincidir con el ref
+# remoto). El proyecto remoto vinculado se guarda en `.supabase/` tras
+# correr `supabase link --project-ref mmzahxtiaurkgtmtehxk`.
+#
+# Para desarrollo local con `supabase start` (Docker) habría que
+# expandir este fichero — no lo necesitamos hoy: las migraciones se
+# aplican directamente al proyecto remoto.
+
+project_id = "transitly"

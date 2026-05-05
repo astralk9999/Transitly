@@ -115,22 +115,28 @@ Lo que ya existe en `lib/shared/models/` y lo que vamos a añadir. Marcado `✅`
 
 | Entidad | Estado | Modelo / origen | Notas |
 |---------|--------|-----------------|-------|
-| **User** | ✅ | `UserModel` (`user_model.dart`) | `id`, `name`, `email`, `roles` (List\<String\>), `driverOperatorIds`, `primaryZoneId`, `reputationScore`, `reputationLevel` |
+| **User** | ✅ (freezed) | `UserModel` (`user_model.dart`) | `id`, `name`, `email`, `roles` (List\<String\>), `driverOperatorIds`, `primaryZoneId`, `reputationScore`, `reputationLevel` |
 | **Role** | 🟨 | embebido en `UserModel.roles` | Hoy son strings (`passenger`, `driver`, `admin`). Pendiente: extraer a `enum UserRole` con permisos asociados |
-| **Route — oficial** | ✅ | `RouteModel` (`route_model.dart`) | `status: RouteStatus.official`, `operatorId` apuntando a COMUJESA |
+| **Route — oficial** | ✅ (freezed) | `RouteModel` (`route_model.dart`) | `status: RouteStatus.official`, `operatorId` apuntando a COMUJESA |
 | **Route — comunitaria** | 🟨 | mismo `RouteModel`, distinguible por `status` ∈ {`draft`, `pendingVerification`, `verified`, `suspended`} | Conviven en la misma colección. Pendiente: diferenciar `source: RouteSource.{official,community}` (campo nuevo) para no usar `status` como dual marker |
-| **Stop** | ✅ | `StopModel` (`stop_model.dart`) | 598 paradas geocodificadas reales |
-| **Schedule** | ✅ | `ScheduleModel` (`schedule_model.dart`) | `dayType` ∈ {weekday, saturday, sunday/holiday}, `direction`, lista de `daysOfWeek` |
-| **BusLocation** | 🟨 | embebido en `ActiveTripModel.currentLat/currentLng/bearing` | Pendiente: extraer a value-object `BusLocation { lat, lng, bearing, recordedAt }` para que sirva tanto a `ActiveTripModel` como a futuros telemetry events |
-| **Report** | ✅ | `IncidentModel` + `RouteFeedbackModel` | Dos sabores: `IncidentModel` (problemas en parada/línea: retraso, no presentado, congestión) y `RouteFeedbackModel` (correcciones de información: cambio de parada, error de horario) |
-| **Suggestion** | ✅ | `RouteSuggestionModel` | Propuesta de nueva ruta (origen, destino, motivación, votos) |
-| **FeatureRequest** | ⬜ | — | **No existe.** Pendiente: modelo dedicado (separar de `Suggestion`, que es siempre de rutas). Campos previstos: `id`, `title`, `description`, `submittedBy`, `category`, `priority`, `status`, `votes`, `createdAt` |
-| **Theme** | 🟨 | `ThemeMode` (Flutter SDK) + `themeModeProvider` | Hoy es solo el toggle light/dark/system. Pendiente: si quisiéramos temas custom (`AccessibleHighContrast`, marcas blancas), envolver en `enum AppTheme` propio |
-| **OfflineRegion** | ⬜ | — | **No existe.** `OfflineDataScreen` solo expone metadatos del asset. Pendiente: modelo `OfflineRegion { id, label, bounds, downloadedAt, sizeBytes, status }` para cuando descarguemos tiles del mapa offline |
+| **Stop** | ✅ (freezed) | `StopModel` (`stop_model.dart`) | 598 paradas geocodificadas reales |
+| **Schedule** | ✅ (freezed) | `ScheduleModel` (`schedule_model.dart`) | `dayType` ∈ {weekday, saturday, sunday/holiday}, `direction`, lista de `daysOfWeek` |
+| **BusLocation** | ✅ (freezed) | `BusLocation` (`bus_location.dart`) | Value object con `lat, lng, bearing?, recordedAt, accuracy?`. Sin consumidor aún; F4-F12 lo extraerán de `ActiveTripModel.currentLat/Lng/bearing` |
+| **Report** | ✅ (freezed) | `IncidentModel` + `RouteFeedbackModel` | Dos sabores: `IncidentModel` (problemas en parada/línea: retraso, no presentado, congestión) y `RouteFeedbackModel` (correcciones de información: cambio de parada, error de horario) |
+| **Suggestion** | ✅ (freezed) | `RouteSuggestionModel` | Propuesta de nueva ruta (origen, destino, motivación, votos) |
+| **FeatureRequest** | ✅ (freezed) | `FeatureRequest` (`feature_request.dart`) | Distinto de Suggestion: correcciones de datos, mejoras de app, oficialización de rutas comunitarias. Enums: `FeatureRequestCategory`, `FeatureRequestPriority`, `FeatureRequestStatus` |
+| **Theme** | 🟨 | `ThemeMode` (Flutter SDK) + `themeModeProvider` | Hoy es solo el toggle light/dark/system. Para apariencia avanzada (paletas, fuentes, modo daltónico) usar `UserPreferences` (ver abajo) |
+| **OfflineRegion** | ✅ (freezed) | `OfflineRegion` (`offline_region.dart`) | Bounding box `OfflineRegionBounds` value object + estado `OfflineRegionStatus`. Sin consumidor aún; F20 lo enganchará al descargar tiles MapTiler |
+| **RouteShare** | ✅ (freezed) | `RouteShare` (`route_share.dart`) | Permiso `RouteSharePermission` ∈ {view, edit}. F12 lo cablea al flujo "Compartir + oficializar" |
+| **DriverInvitationCode** | ✅ (freezed) | `DriverInvitationCode` (`driver_invitation_code.dart`) | Código un-solo-uso `XXX-XXXX-XX`. F6 lo emite desde el operador |
+| **UserPreferences** | ✅ (freezed) | `UserPreferences` (`user_preferences.dart`) | Apariencia + accesibilidad: paleta, fondo, `fontScale`, `ColorBlindMode`, dyslexia, reduceMotion. F17/F18 lo persisten |
+| **AppNotification** | ✅ (freezed) | `AppNotification` (`app_notification.dart`) | Inbox in-app + FCM. Tipos en `AppNotificationType` (incidentResolved, routePromoted, shareReceived, …). F21 lo conecta a push |
 
-### Modelos auxiliares ya presentes (no entran en la lista anterior pero conviene anotar)
+### Modelos auxiliares ya presentes
 
-`OperatorModel`, `RouteStopModel`, `ActiveTripModel`, `AlertModel`, `RouteChangelogModel`, `ZoneModel`, `UserCardModel`, `UserFavoriteModel`, `HabitualTripModel`, `TripHistoryModel`, `AchievementModel`, `UserAchievementModel`, `FeedbackMessageModel`. Todos son **plain-Dart** con `factory fromJson`. **Pendiente arquitectónico:** evaluar migración a `freezed` cuando el grafo crezca lo suficiente para que la igualdad por valor importe (rebuilds de Riverpod). Hoy no es prioridad.
+**Migrados a `freezed` en F1.2 (lote 2):** `OperatorModel`, `RouteStopModel`, `ActiveTripModel`, `AlertModel`, `ZoneModel`, `UserCardModel`. Igualdad por valor + `copyWith` gratis.
+
+**Conservados como plain-Dart** (decisión consciente — no se tocan en fases inmediatas, baja frecuencia de instancia, sin presión de rebuilds): `RouteChangelogModel`, `UserFavoriteModel`, `HabitualTripModel`, `TripHistoryModel`, `AchievementModel`, `UserAchievementModel`, `FeedbackMessageModel`. Migración futura cuando su feature aterrice (ver `PENDIENTES.md`).
 
 ---
 

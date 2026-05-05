@@ -1,27 +1,38 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+
 import 'enums.dart';
 
-class RouteStopModel {
-  const RouteStopModel({
-    required this.routeId,
-    required this.stopId,
-    required this.orderIndex,
-    this.direction = RouteDirection.outbound,
-    this.timeFromStartMinutes,
-    this.distanceFromStartKm,
-  });
+part 'route_stop_model.freezed.dart';
 
-  final String routeId;
-  final String stopId;
-  final int orderIndex;
-  final RouteDirection direction;
-  final int? timeFromStartMinutes;
-  final double? distanceFromStartKm;
+@freezed
+class RouteStopModel with _$RouteStopModel {
+  const RouteStopModel._();
 
-  factory RouteStopModel.fromJson(Map<String, dynamic> j,
+  const factory RouteStopModel({
+    required String routeId,
+    required String stopId,
+    required int orderIndex,
+    @Default(RouteDirection.outbound) RouteDirection direction,
+    int? timeFromStartMinutes,
+    double? distanceFromStartKm,
+  }) = _RouteStopModel;
+
+  static RouteStopModel fromJson(Map<String, dynamic> j,
           {required String routeId}) =>
       RouteStopModel(
         routeId: routeId,
         stopId: j['officialCode'] as String? ?? j['name'] as String,
         orderIndex: j['order'] as int,
       );
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'routeId': routeId,
+        'stopId': stopId,
+        'order': orderIndex,
+        'direction': direction.name,
+        if (timeFromStartMinutes != null)
+          'timeFromStartMinutes': timeFromStartMinutes,
+        if (distanceFromStartKm != null)
+          'distanceFromStartKm': distanceFromStartKm,
+      };
 }

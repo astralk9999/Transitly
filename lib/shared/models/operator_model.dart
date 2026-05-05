@@ -1,21 +1,21 @@
-class OperatorModel {
-  const OperatorModel({
-    required this.id,
-    required this.name,
-    required this.shortName,
-    required this.region,
-    required this.website,
-    required this.phone,
-  });
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  final String id;
-  final String name;
-  final String shortName;
-  final String region;
-  final String website;
-  final String phone;
+part 'operator_model.freezed.dart';
 
-  factory OperatorModel.fromJson(Map<String, dynamic> j) => OperatorModel(
+@freezed
+class OperatorModel with _$OperatorModel {
+  const OperatorModel._();
+
+  const factory OperatorModel({
+    required String id,
+    required String name,
+    required String shortName,
+    required String region,
+    @Default('') String website,
+    @Default('') String phone,
+  }) = _OperatorModel;
+
+  static OperatorModel fromJson(Map<String, dynamic> j) => OperatorModel(
         id: j['id'] as String,
         name: j['name'] as String,
         shortName: j['shortName'] as String,
@@ -23,4 +23,13 @@ class OperatorModel {
         website: j['website'] as String? ?? '',
         phone: j['phone'] as String? ?? '',
       );
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'id': id,
+        'name': name,
+        'shortName': shortName,
+        'region': region,
+        if (website.isNotEmpty) 'website': website,
+        if (phone.isNotEmpty) 'phone': phone,
+      };
 }

@@ -1,27 +1,25 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+
 import 'enums.dart';
 
-class AlertModel {
-  const AlertModel({
-    required this.id,
-    required this.operatorId,
-    this.routeId,
-    required this.severity,
-    required this.title,
-    required this.body,
-    this.activeFrom,
-    this.activeUntil,
-  });
+part 'alert_model.freezed.dart';
 
-  final String id;
-  final String operatorId;
-  final String? routeId;
-  final AlertSeverity severity;
-  final String title;
-  final String body;
-  final DateTime? activeFrom;
-  final DateTime? activeUntil;
+@freezed
+class AlertModel with _$AlertModel {
+  const AlertModel._();
 
-  factory AlertModel.fromJson(Map<String, dynamic> j) => AlertModel(
+  const factory AlertModel({
+    required String id,
+    required String operatorId,
+    String? routeId,
+    required AlertSeverity severity,
+    required String title,
+    required String body,
+    DateTime? activeFrom,
+    DateTime? activeUntil,
+  }) = _AlertModel;
+
+  static AlertModel fromJson(Map<String, dynamic> j) => AlertModel(
         id: j['id'] as String,
         operatorId: 'comujesa',
         routeId: j['lineCode'] as String?,
@@ -35,4 +33,14 @@ class AlertModel {
             ? DateTime.tryParse(j['endDate'] as String)
             : null,
       );
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'id': id,
+        if (routeId != null) 'lineCode': routeId,
+        'type': severity.name,
+        'title': title,
+        'description': body,
+        if (activeFrom != null) 'startDate': activeFrom!.toIso8601String(),
+        if (activeUntil != null) 'endDate': activeUntil!.toIso8601String(),
+      };
 }

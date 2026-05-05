@@ -1,37 +1,30 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+
 import 'enums.dart';
 
-class ActiveTripModel {
-  const ActiveTripModel({
-    required this.id,
-    required this.routeId,
-    this.driverId,
-    this.startedAt,
-    this.currentLat,
-    this.currentLng,
-    this.currentBearing,
-    this.currentStopIndex,
-    required this.status,
-    this.delayMinutes = 0,
-    required this.capacity,
-    this.vehicleNumber,
-    this.driverMessage,
-  });
+part 'active_trip_model.freezed.dart';
 
-  final String id;
-  final String routeId;
-  final String? driverId;
-  final DateTime? startedAt;
-  final double? currentLat;
-  final double? currentLng;
-  final double? currentBearing;
-  final int? currentStopIndex;
-  final TripStatus status;
-  final int delayMinutes;
-  final BusCapacity capacity;
-  final String? vehicleNumber;
-  final String? driverMessage;
+@freezed
+class ActiveTripModel with _$ActiveTripModel {
+  const ActiveTripModel._();
 
-  factory ActiveTripModel.fromJson(Map<String, dynamic> j) {
+  const factory ActiveTripModel({
+    required String id,
+    required String routeId,
+    String? driverId,
+    DateTime? startedAt,
+    double? currentLat,
+    double? currentLng,
+    double? currentBearing,
+    int? currentStopIndex,
+    required TripStatus status,
+    @Default(0) int delayMinutes,
+    required BusCapacity capacity,
+    String? vehicleNumber,
+    String? driverMessage,
+  }) = _ActiveTripModel;
+
+  static ActiveTripModel fromJson(Map<String, dynamic> j) {
     final pos = j['currentPosition'] as Map<String, dynamic>?;
     final delay = j['delay'] as int? ?? 0;
     final rawStatus = j['status'] as String? ?? 'onTime';
@@ -54,9 +47,29 @@ class ActiveTripModel {
       currentStopIndex: j['currentStopIndex'] as int?,
       status: status,
       delayMinutes: delay,
-      capacity: BusCapacity.fromString(j['capacity'] as String? ?? 'seatsAvailable'),
+      capacity:
+          BusCapacity.fromString(j['capacity'] as String? ?? 'seatsAvailable'),
       vehicleNumber: j['vehicleId'] as String?,
       driverMessage: j['cancellationReason'] as String?,
     );
   }
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'id': id,
+        'lineCode': routeId,
+        if (driverId != null) 'driverName': driverId,
+        if (startedAt != null) 'lastUpdated': startedAt!.toIso8601String(),
+        if (currentLat != null && currentLng != null)
+          'currentPosition': <String, dynamic>{
+            'lat': currentLat,
+            'lng': currentLng,
+          },
+        if (currentBearing != null) 'heading': currentBearing,
+        if (currentStopIndex != null) 'currentStopIndex': currentStopIndex,
+        'status': status.name,
+        'delay': delayMinutes,
+        'capacity': capacity.name,
+        if (vehicleNumber != null) 'vehicleId': vehicleNumber,
+        if (driverMessage != null) 'cancellationReason': driverMessage,
+      };
 }

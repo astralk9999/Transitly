@@ -76,7 +76,7 @@
 
 ### Deuda técnica estructural
 
-- [F1] **`3.1` — 22 modelos plain-Dart sin `==` ni `hashCode`.** `L`. Migración selectiva a `freezed` priorizando `RouteModel`, `StopModel`, `ScheduleModel`, `IncidentModel`, `RouteFeedbackModel`, `RouteSuggestionModel`, `UserModel`, `ActiveTripModel`. Resto puede esperar.
+- ✅ [F1] **`3.1`** — 13 modelos críticos migrados a `freezed` (lote 1: User, Route, Stop, Schedule, Incident, RouteFeedback, RouteSuggestion en `d09852a`; lote 2: ActiveTrip, Operator, UserCard, RouteStop, Zone, Alert en `ddd2156`). 7 modelos nuevos (BusLocation, FeatureRequest, OfflineRegion, RouteShare, DriverInvitationCode, UserPreferences, AppNotification) en `5429f28`. 7 modelos auxiliares se conservan plain-Dart por decisión consciente. `L` · `cerrar` · F1 cerrado.
 - [F26] **`3.5` — Huecos de cobertura por feature.** `L`. 0 tests sobre editor de rutas (manual/live/post/AI), realtime trip simulation, `MapDataCache`, `MapTab` con gestos, `RouteDetailScreen`, golden tests. Se aborda feature a feature en F26.
 
 ### Riesgos del runtime y empaquetado

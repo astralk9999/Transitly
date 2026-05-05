@@ -1,3 +1,9 @@
+# Secrets — nunca commitear .env (Supabase, PostHog, Sentry, MapTiler).
+# Replícalo desde .env.example para configurar tu entorno local.
+.env
+.env.local
+.env.*.local
+
 # Miscellaneous
 *.class
 *.log

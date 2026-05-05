@@ -45,6 +45,11 @@ dependencies:
   # Codegen — value-class models con igualdad por valor + copyWith.
   freezed_annotation: ^2.4.4
   json_annotation: ^4.9.0
+
+  # Backend (F2). supabase_flutter ya incluye postgrest, gotrue,
+  # realtime_client y storage_client como deps transitivas.
+  supabase_flutter: ^2.8.0
+  flutter_dotenv: ^5.1.0
   url_launcher: ^6.3.1
   image_picker: ^1.1.2
   path_provider: ^2.1.5
@@ -68,6 +73,10 @@ flutter:
   assets:
     - assets/mock/
     - assets/branding/
+    # flutter_dotenv carga el .env local como un asset bundleado en
+    # debug. En release, sustituir por --dart-define o un .env por
+    # plataforma (F22 lo formaliza).
+    - .env
 
   shaders:
     - shaders/smoke.frag

@@ -1,39 +1,47 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+
 import 'enums.dart';
 
-class UserModel {
-  const UserModel({
-    required this.id,
-    required this.name,
-    required this.email,
-    required this.roles,
-    this.driverOperatorIds = const [],
-    this.primaryZoneId,
-    this.reputationScore = 0,
-    this.reputationLevel = ReputationLevel.new_,
-  });
+part 'user_model.freezed.dart';
 
-  final String id;
-  final String name;
-  final String email;
-  final List<String> roles;
-  final List<String> driverOperatorIds;
-  final String? primaryZoneId;
-  final int reputationScore;
-  final ReputationLevel reputationLevel;
+@freezed
+class UserModel with _$UserModel {
+  const UserModel._();
+
+  const factory UserModel({
+    required String id,
+    required String name,
+    required String email,
+    required List<String> roles,
+    @Default(<String>[]) List<String> driverOperatorIds,
+    String? primaryZoneId,
+    @Default(0) int reputationScore,
+    @Default(ReputationLevel.new_) ReputationLevel reputationLevel,
+  }) = _UserModel;
 
   bool get isDriver => roles.contains('driver');
   bool get isAdmin => roles.contains('admin');
 
-  factory UserModel.fromJson(Map<String, dynamic> j) => UserModel(
+  static UserModel fromJson(Map<String, dynamic> j) => UserModel(
         id: j['id'] as String,
         name: j['displayName'] as String? ?? j['username'] as String? ?? '',
         email: j['email'] as String? ?? '',
-        roles: [j['role'] as String? ?? 'passenger'],
+        roles: <String>[j['role'] as String? ?? 'passenger'],
         driverOperatorIds: j['operator'] != null
-            ? [j['operator'] as String]
-            : const [],
+            ? <String>[j['operator'] as String]
+            : const <String>[],
         reputationScore: j['reputation'] as int? ?? 0,
-        reputationLevel:
-            ReputationLevel.fromString(j['reputationLevel'] as String? ?? 'new'),
+        reputationLevel: ReputationLevel.fromString(
+            j['reputationLevel'] as String? ?? 'new'),
       );
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'id': id,
+        'displayName': name,
+        if (email.isNotEmpty) 'email': email,
+        'role': roles.isNotEmpty ? roles.first : 'passenger',
+        if (driverOperatorIds.isNotEmpty) 'operator': driverOperatorIds.first,
+        'reputation': reputationScore,
+        'reputationLevel': reputationLevel.name,
+      };
 }

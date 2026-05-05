@@ -1,31 +1,27 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+
 import 'enums.dart';
 
-class IncidentModel {
-  const IncidentModel({
-    required this.id,
-    required this.reporterId,
-    required this.routeId,
-    this.stopId,
-    required this.incidentType,
-    required this.category,
-    this.comment,
-    required this.status,
-    this.confirmations = 0,
-    required this.createdAt,
-  });
+part 'incident_model.freezed.dart';
 
-  final String id;
-  final String reporterId;
-  final String routeId;
-  final String? stopId;
-  final IncidentType incidentType;
-  final IncidentCategory category;
-  final String? comment;
-  final String status;
-  final int confirmations;
-  final DateTime createdAt;
+@freezed
+class IncidentModel with _$IncidentModel {
+  const IncidentModel._();
 
-  factory IncidentModel.fromJson(Map<String, dynamic> j) => IncidentModel(
+  const factory IncidentModel({
+    required String id,
+    required String reporterId,
+    required String routeId,
+    String? stopId,
+    required IncidentType incidentType,
+    required IncidentCategory category,
+    String? comment,
+    required String status,
+    @Default(0) int confirmations,
+    required DateTime createdAt,
+  }) = _IncidentModel;
+
+  static IncidentModel fromJson(Map<String, dynamic> j) => IncidentModel(
         id: j['id'] as String,
         reporterId: j['reportedBy'] as String? ?? '',
         routeId: j['lineCode'] as String,
@@ -39,9 +35,31 @@ class IncidentModel {
       );
 
   static IncidentCategory _categoryFor(String type) => switch (type) {
-        'delay' || 'noShow' || 'busFull' || 'dangerousDriving' => IncidentCategory.service,
-        'stopBlocked' || 'shelterDamaged' || 'signageMissing' => IncidentCategory.infrastructure,
-        'punctual' || 'driverKind' || 'stopClean' => IncidentCategory.positive,
+        'delay' ||
+        'noShow' ||
+        'busFull' ||
+        'dangerousDriving' =>
+          IncidentCategory.service,
+        'stopBlocked' ||
+        'shelterDamaged' ||
+        'signageMissing' =>
+          IncidentCategory.infrastructure,
+        'punctual' ||
+        'driverKind' ||
+        'stopClean' =>
+          IncidentCategory.positive,
         _ => IncidentCategory.service,
+      };
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'id': id,
+        'reportedBy': reporterId,
+        'lineCode': routeId,
+        if (stopId != null) 'stopName': stopId,
+        'type': incidentType.name,
+        if (comment != null) 'description': comment,
+        'status': status,
+        'confirmations': confirmations,
+        'reportedAt': createdAt.toIso8601String(),
       };
 }

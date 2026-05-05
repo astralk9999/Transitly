@@ -1,32 +1,29 @@
 import 'dart:ui';
+
+import 'package:freezed_annotation/freezed_annotation.dart';
+
 import 'enums.dart';
 
-class RouteModel {
-  const RouteModel({
-    required this.id,
-    required this.operatorId,
-    required this.code,
-    required this.name,
-    required this.serviceType,
-    required this.routeColor,
-    this.hasReturn = true,
-    this.isCircular = false,
-    this.status = RouteStatus.official,
-    this.active = true,
-  });
+part 'route_model.freezed.dart';
 
-  final String id;
-  final String operatorId;
-  final String code;
-  final String name;
-  final ServiceType serviceType;
-  final Color routeColor;
-  final bool hasReturn;
-  final bool isCircular;
-  final RouteStatus status;
-  final bool active;
+@freezed
+class RouteModel with _$RouteModel {
+  const RouteModel._();
 
-  factory RouteModel.fromJson(Map<String, dynamic> j,
+  const factory RouteModel({
+    required String id,
+    required String operatorId,
+    required String code,
+    required String name,
+    required ServiceType serviceType,
+    required Color routeColor,
+    @Default(true) bool hasReturn,
+    @Default(false) bool isCircular,
+    @Default(RouteStatus.official) RouteStatus status,
+    @Default(true) bool active,
+  }) = _RouteModel;
+
+  static RouteModel fromJson(Map<String, dynamic> j,
           {String operatorId = 'comujesa'}) =>
       RouteModel(
         id: j['code'] as String,
@@ -35,11 +32,23 @@ class RouteModel {
         name: j['name'] as String,
         serviceType: ServiceType.fromString(j['serviceType'] as String),
         routeColor: _parseColor(j['color'] as String),
-        isCircular: (j['name'] as String).toLowerCase().contains('circular') ||
-            (j['name'] as String).toLowerCase().contains('circunvalación'),
+        isCircular:
+            (j['name'] as String).toLowerCase().contains('circular') ||
+                (j['name'] as String).toLowerCase().contains('circunvalación'),
         status: RouteStatus.official,
         active: true,
       );
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'code': code,
+        'name': name,
+        'serviceType': serviceType.name,
+        'color': '#${routeColor.toARGB32().toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+        'hasReturn': hasReturn,
+        'isCircular': isCircular,
+        'status': status.name,
+        'active': active,
+      };
 
   static Color _parseColor(String hex) {
     final buffer = StringBuffer();

@@ -1,49 +1,36 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+
 import 'enums.dart';
 
-class RouteSuggestionModel {
-  const RouteSuggestionModel({
-    required this.id,
-    required this.suggestedBy,
-    required this.originText,
-    this.originLat,
-    this.originLng,
-    required this.destinationText,
-    this.destinationLat,
-    this.destinationLng,
-    this.routeCode,
-    this.operatorName,
-    this.serviceType,
-    this.detailLevel,
-    this.source,
-    this.notes,
-    required this.status,
-    this.voteCount = 0,
-    this.contributionCount = 0,
-    this.priority = Priority.medium,
-    required this.createdAt,
-  });
+part 'route_suggestion_model.freezed.dart';
 
-  final String id;
-  final String suggestedBy;
-  final String originText;
-  final double? originLat;
-  final double? originLng;
-  final String destinationText;
-  final double? destinationLat;
-  final double? destinationLng;
-  final String? routeCode;
-  final String? operatorName;
-  final ServiceType? serviceType;
-  final String? detailLevel;
-  final String? source;
-  final String? notes;
-  final SuggestionStatus status;
-  final int voteCount;
-  final int contributionCount;
-  final Priority priority;
-  final DateTime createdAt;
+@freezed
+class RouteSuggestionModel with _$RouteSuggestionModel {
+  const RouteSuggestionModel._();
 
-  factory RouteSuggestionModel.fromJson(Map<String, dynamic> j) {
+  const factory RouteSuggestionModel({
+    required String id,
+    required String suggestedBy,
+    required String originText,
+    double? originLat,
+    double? originLng,
+    required String destinationText,
+    double? destinationLat,
+    double? destinationLng,
+    String? routeCode,
+    String? operatorName,
+    ServiceType? serviceType,
+    String? detailLevel,
+    String? source,
+    String? notes,
+    required SuggestionStatus status,
+    @Default(0) int voteCount,
+    @Default(0) int contributionCount,
+    @Default(Priority.medium) Priority priority,
+    required DateTime createdAt,
+  }) = _RouteSuggestionModel;
+
+  static RouteSuggestionModel fromJson(Map<String, dynamic> j) {
     final title = j['title'] as String? ?? '';
     final parts = title.split(' - ');
     return RouteSuggestionModel(
@@ -58,4 +45,19 @@ class RouteSuggestionModel {
       createdAt: DateTime.parse(j['proposedAt'] as String),
     );
   }
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'id': id,
+        'proposedBy': suggestedBy,
+        'title': '$originText - $destinationText',
+        if (notes != null) 'description': notes,
+        if (routeCode != null) 'routeCode': routeCode,
+        if (operatorName != null) 'operatorName': operatorName,
+        if (serviceType != null) 'serviceType': serviceType!.name,
+        'status': status.name,
+        'votes': voteCount,
+        'contributions': contributionCount,
+        'priority': priority.name,
+        'proposedAt': createdAt.toIso8601String(),
+      };
 }

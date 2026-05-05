@@ -1,35 +1,31 @@
-class StopModel {
-  const StopModel({
-    required this.id,
-    required this.name,
-    required this.officialCode,
-    required this.lat,
-    required this.lng,
-    required this.municipality,
-    this.zoneId,
-    this.hasShelter = false,
-    this.hasBench = false,
-    this.isAccessible = false,
-    this.hasDisplay = false,
-    this.photoUrl,
-    this.notes,
-  });
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  final String id;
-  final String name;
-  final String officialCode;
-  final double lat;
-  final double lng;
-  final String municipality;
-  final String? zoneId;
-  final bool hasShelter;
-  final bool hasBench;
-  final bool isAccessible;
-  final bool hasDisplay;
-  final String? photoUrl;
-  final String? notes;
+part 'stop_model.freezed.dart';
 
-  factory StopModel.fromJson(Map<String, dynamic> j) => StopModel(
+@freezed
+class StopModel with _$StopModel {
+  const StopModel._();
+
+  const factory StopModel({
+    required String id,
+    required String name,
+    required String officialCode,
+    required double lat,
+    required double lng,
+    required String municipality,
+    String? zoneId,
+    @Default(false) bool hasShelter,
+    @Default(false) bool hasBench,
+    @Default(false) bool isAccessible,
+    @Default(false) bool hasDisplay,
+    String? photoUrl,
+    String? notes,
+  }) = _StopModel;
+
+  // Custom mapping (id derivado de officialCode || name). Static en lugar
+  // de factory para no engatillar json_serializable, que generaría un
+  // .g.dart innecesario porque el cuerpo no llama a _$StopModelFromJson.
+  static StopModel fromJson(Map<String, dynamic> j) => StopModel(
         id: j['officialCode'] as String? ?? j['name'] as String,
         name: j['name'] as String,
         officialCode: j['officialCode'] as String? ?? '',
@@ -40,4 +36,19 @@ class StopModel {
         hasBench: j['hasBench'] as bool? ?? false,
         isAccessible: j['isAccessible'] as bool? ?? false,
       );
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        if (officialCode.isNotEmpty) 'officialCode': officialCode,
+        'name': name,
+        'lat': lat,
+        'lng': lng,
+        if (municipality.isNotEmpty) 'municipality': municipality,
+        if (zoneId != null) 'zoneId': zoneId,
+        'hasShelter': hasShelter,
+        'hasBench': hasBench,
+        'isAccessible': isAccessible,
+        if (hasDisplay) 'hasDisplay': hasDisplay,
+        if (photoUrl != null) 'photoUrl': photoUrl,
+        if (notes != null) 'notes': notes,
+      };
 }

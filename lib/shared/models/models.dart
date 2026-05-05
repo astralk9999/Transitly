@@ -19,3 +19,13 @@ export 'feedback_message_model.dart';
 export 'route_changelog_model.dart';
 export 'achievement_model.dart';
 export 'user_achievement_model.dart';
+
+// Modelos nuevos introducidos en F1.3 (sin consumidores aún; se
+// engancharán en F4-F21).
+export 'app_notification.dart';
+export 'bus_location.dart';
+export 'driver_invitation_code.dart';
+export 'feature_request.dart';
+export 'offline_region.dart';
+export 'route_share.dart';
+export 'user_preferences.dart';

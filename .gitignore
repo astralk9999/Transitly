@@ -9,6 +9,10 @@
 .supabase/
 supabase/.temp/
 
+# Claude Code MCP — config local con PAT de Supabase (Personal Access
+# Token). Plantilla en .mcp.json.example. NUNCA commitear.
+.mcp.json
+
 # Miscellaneous
 *.class
 *.log

@@ -1,0 +1,16 @@
+{
+  "_comment": "Plantilla de configuración MCP. Cópialo como .mcp.json (gitignored) y rellena con un Personal Access Token propio. PAT se genera en https://supabase.com/dashboard/account/tokens — NO es la service_role key del proyecto. Tras editar .mcp.json, reinicia Claude Code para cargar el server.",
+  "mcpServers": {
+    "supabase": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@supabase/mcp-server-supabase@latest",
+        "--project-ref=mmzahxtiaurkgtmtehxk"
+      ],
+      "env": {
+        "SUPABASE_ACCESS_TOKEN": "sbp_REPLACE_WITH_YOUR_PAT"
+      }
+    }
+  }
+}

@@ -39,18 +39,24 @@ La primera puede tardar 30-60s por las extensiones PostGIS y los
 ## Verificar tras aplicar `001_init.sql`
 
 ```sql
--- Debe devolver 23 (número de tablas creadas en public).
+-- Debe devolver 26 (25 tablas de la migración + `spatial_ref_sys`
+-- que PostGIS instala automáticamente en public).
 SELECT count(*) FROM pg_tables WHERE schemaname = 'public';
 
 -- Debe devolver 17 (enums creados).
 SELECT count(*) FROM pg_type
 WHERE typcategory = 'E' AND typnamespace = 'public'::regnamespace;
 
--- Debe devolver al menos 'postgis' y 'pgcrypto'.
+-- Debe devolver 'postgis' y 'pgcrypto'.
 SELECT extname FROM pg_extension WHERE extname IN ('postgis', 'pgcrypto');
 
 -- Sanity: el trigger de auto-creación de profile debe existir.
 SELECT tgname FROM pg_trigger WHERE tgname = 'on_auth_user_created';
+
+-- Helper functions (handle_new_user, touch_updated_at, cleanup_expired_bus_positions).
+SELECT count(*) FROM pg_proc
+WHERE proname IN ('handle_new_user','touch_updated_at','cleanup_expired_bus_positions')
+  AND pronamespace = 'public'::regnamespace;  -- esperado: 3
 ```
 
 ## Notas operativas

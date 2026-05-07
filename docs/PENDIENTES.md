@@ -96,6 +96,24 @@
     - `HabitualTripModel` → F44+ (planificación).
     - `FeedbackMessageModel` → F15 (threading de feedback).
 
+### F3.2 — Repositorios pendientes (canónico ya en `lib/data/operator/`)
+
+Cada entidad necesita el mismo conjunto de 5 archivos: interfaz abstracta + remoto Supabase + local Hive + mock guest-fallback + provider con stale-while-revalidate. Modelo: `lib/data/operator/`.
+
+- [F3.2] **Stop** — `nearby(LatLng, radiusM)` vía RPC `nearby_stops`, `byId`, `byOperator`. Cache `Box<StopModel>` con clave `op:<operatorId>:stop:<id>`.
+- [F3.2] **Route** — `byOperator`, `byId`, `community(ownerId)`, `intersectingBbox`. Llama `routes_intersecting_bbox` para el viewport del mapa. RLS filtra visibilidad automáticamente.
+- [F3.2] **Schedule** — `forRoute(routeId, dayType)`, `nextDepartures(routeId, n)`. Cache por `op:<id>:schedule:<routeId>:<dayType>`.
+- [F3.2] **BusLocation** — `latestForRoute(routeId)`, `streamForRoute(routeId)` (con Supabase Realtime en F13). Cache de poco valor: TTL 60s.
+- [F3.2] **IncidentReport** — `byAuthor(uid)`, `forRoute(routeId)`, `create(IncidentModel)`. Si red falla, `create` cae en `pending_actions`.
+- [F3.2] **RouteFeedback** — análogo a IncidentReport. Cache local solo lectura.
+- [F3.2] **RouteSuggestion** — `list()`, `byId`, `create(...)`, `castVote` (RPC `cast_suggestion_vote`).
+- [F3.2] **FeatureRequest** — `list()`, `byId`, `create(...)`, `castVote`.
+- [F3.2] **Notification** — `forUser(uid)`, `markRead(id)`, `unreadCount`. Stream con Supabase Realtime cuando F21 se active.
+- [F3.2] **UserPreferences** — `getMine()`, `update(prefs)`. Cache singleton `user:<uid>:pref`.
+- [F3.2] **OfflineRegion** — `forUser(uid)`, `add(region)`, `delete(id)`. Cache primaria local; remoto solo para sincronizar entre dispositivos.
+
+Implementar en commits independientes para mantener PRs de tamaño revisable.
+
 ### Migraciones programadas (creadas durante F0.5)
 
 - [F3] **Migrar `live_recorder_draft` de `shared_preferences` a Hive con cifrado AES.** `M`. Generado por F0.5.C como solución temporal.

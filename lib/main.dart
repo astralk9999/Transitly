@@ -8,6 +8,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'app.dart';
 import 'core/env.dart';
 import 'core/utils/app_logger.dart';
+import 'data/cache/hive_init.dart';
 import 'data/mock/mock_data_service.dart';
 import 'features/error/env_error_screen.dart';
 
@@ -26,6 +27,8 @@ void main() async {
   // data + go_router) se omite.
   try {
     await Env.load();
+    await HiveInit.bootstrap();
+    AppLogger.info('HiveCache', 'bootstrap complete');
     await Supabase.initialize(
       url: Env.supabaseUrl,
       anonKey: Env.supabaseAnonKey,

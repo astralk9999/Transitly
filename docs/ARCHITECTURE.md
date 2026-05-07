@@ -241,9 +241,7 @@ Todo el logging pasa por `lib/core/utils/app_logger.dart` (wrapper sobre `debugP
 
 `Pressable` (escala + opacidad), `GlassCard` (fondo translúcido), `StaggerList` (entrada en cascada), `RouteCard`, `ReputationBadge`, `StatusBadge`, `TransitButton`, `SmokeBackground`, `GradientText`, `SingleFieldDialog`, `SmokeBackground`, `ResponsiveScaffold` (rail vs bottomNav).
 
-### 6.3 Helpers y patrones de Riverpod
-
-### 6.4 Codegen (freezed + json_serializable)
+### 6.3 Codegen (freezed + json_serializable)
 
 Desde F1 los modelos de valor críticos viven como clases `@freezed`. La cadena de codegen está configurada para que el archivo generado (`.freezed.dart`, `.g.dart`) repose junto a su fuente en `lib/`.
 
@@ -269,6 +267,47 @@ Equivalente directo: `dart run build_runner build --delete-conflicting-outputs`.
 
 ---
 
+### 6.4 Caché Hive (`lib/data/cache/`)
+
+Desde F3 los modelos de valor críticos se persisten localmente en Hive. La cadena vive en tres archivos:
+
+- `hive_adapters.dart` — `TypeAdapter` por modelo. Cada adapter delega en `fromJson`/`toJson` del modelo `@freezed`, así no acoplamos el modelo al binario de Hive.
+- `hive_init.dart` — `HiveInit.bootstrap()` registra adapters y abre las cajas. Se llama desde `main.dart` entre `Env.load()` y `Supabase.initialize()`. Si una caja está corrupta, se borra del disco antes de fallar el arranque.
+- `hive_box_provider.dart` — un `Provider` Riverpod por caja, para que repositorios y tests puedan inyectar.
+
+**Cajas activas:**
+
+| Constante | Tipo | Contenido |
+|-----------|------|-----------|
+| `HiveBoxes.routes` | `Box<RouteModel>` | Cache de rutas oficiales y comunitarias visibles. |
+| `HiveBoxes.stops` | `Box<StopModel>` | Paradas geocodeadas (todas o por operador). |
+| `HiveBoxes.schedules` | `Box<ScheduleModel>` | Horarios por ruta+día. |
+| `HiveBoxes.operators` | `Box<OperatorModel>` | Operadores conocidos (lista + bbox). |
+| `HiveBoxes.userPreferences` | `Box<UserPreferences>` | Preferencias del usuario actual (1 entrada por uid). |
+| `HiveBoxes.offlineRegions` | `Box<OfflineRegion>` | Regiones del mapa marcadas offline. |
+| `HiveBoxes.alerts` | `Box<AlertModel>` | Avisos de servicio del operador. |
+| `HiveBoxes.pendingActions` | `Box<Map<dynamic, dynamic>>` | Cola FIFO de mutaciones offline (formato definido en F3.3). |
+| `HiveBoxes.authSessionMeta` | `Box<Map<dynamic, dynamic>>` | Último uid, expiraciones de tokens, banderas de sesión. |
+
+**TypeIds.** Asignación append-only en `hive_adapters.dart`. Nunca reutilizar un `typeId`, aunque el modelo se elimine — Hive lee bytes por id, romperíamos cachés legacy.
+
+**Convención de claves.** `<scope>:<id>` para colecciones del mismo dominio:
+
+```
+op:comujesa:route:L1            → ruta L1 del operador COMUJESA
+op:comujesa:stop:JER-001        → parada JER-001 del operador COMUJESA
+op:comujesa:schedule:L1:weekday → todas las salidas weekday de L1 (lista serializada)
+user:<uid>:pref                 → preferencias del usuario (singleton por uid)
+user:<uid>:fav:<stopId>         → entrada de favoritos de un usuario sobre una parada
+region:<uid>:<region_id>        → región offline descargada por un usuario
+```
+
+El prefijo permite filtrar/borrar por scope sin recorrer la caja entera. Cuando un usuario cierra sesión, se purgan claves `user:<uid>:*`.
+
+**Política de fallos.** Si una caja no abre (corruption, adapter mismatch tras un cambio incompatible), `HiveInit._open()` la borra del disco y reintenta. Se prefiere perder caché a romper el arranque — el caché siempre se reconstruye desde Supabase.
+
+---
+
 ### 6.5 Helpers y patrones de Riverpod
 
 - `isDarkMode(ref, context)` → unifica lectura de tema (`themeModeProvider` + `MediaQuery.platformBrightnessOf`).
@@ -290,4 +329,4 @@ Equivalente directo: `dart run build_runner build --delete-conflicting-outputs`.
 
 ---
 
-**Última actualización:** 2026-05-02 · refs cruzadas a `AUDIT_2026_04.md`, `DATA_INVENTORY.md`, `PENDIENTES.md`.
+**Última actualización:** 2026-05-07 · §6 reorganizado y nueva sección 6.4 "Caché Hive" tras F3.1.

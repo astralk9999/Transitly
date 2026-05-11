@@ -7,6 +7,7 @@ import '../../shared/models/offline_region.dart';
 import '../../shared/models/operator_model.dart';
 import '../../shared/models/route_feedback_model.dart';
 import '../../shared/models/route_model.dart';
+import '../../shared/models/route_suggestion_model.dart';
 import '../../shared/models/schedule_model.dart';
 import '../../shared/models/stop_model.dart';
 import '../../shared/models/user_preferences.dart';
@@ -61,6 +62,10 @@ final incidentsBoxProvider = Provider<Box<IncidentModel>>(
 
 final routeFeedbackBoxProvider = Provider<Box<RouteFeedbackModel>>(
   (_) => Hive.box<RouteFeedbackModel>(HiveBoxes.routeFeedback),
+);
+
+final routeSuggestionsBoxProvider = Provider<Box<RouteSuggestionModel>>(
+  (_) => Hive.box<RouteSuggestionModel>(HiveBoxes.routeSuggestions),
 );
 
 /// Cola de mutaciones offline. Las entradas son `PendingAction`

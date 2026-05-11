@@ -100,8 +100,8 @@
 
 Cada entidad necesita el mismo conjunto de 5 archivos: interfaz abstracta + remoto Supabase + local Hive + mock guest-fallback + provider con stale-while-revalidate. Modelo: `lib/data/operator/`.
 
-- ✅ [F3.2] **Stop** — `nearby(LatLng, radiusM, limit)` vía RPC `nearby_stops`, `byId`, `watch(id)`, `byOperator`. Cache `Box<StopModel>` con clave `stop:<id>`. SWR + mock guest fallback. Cerrado en `<commit-pendiente>`.
-- [F3.2] **Route** — `byOperator`, `byId`, `community(ownerId)`, `intersectingBbox`. Llama `routes_intersecting_bbox` para el viewport del mapa. RLS filtra visibilidad automáticamente.
+- ✅ [F3.2] **Stop** — `nearby(LatLng, radiusM, limit)` vía RPC `nearby_stops`, `byId`, `watch(id)`, `byOperator`. Cache `Box<StopModel>` con clave `stop:<id>`. SWR + mock guest fallback. Cerrado en `b9f9bbc`.
+- ✅ [F3.2] **Route** — `byOperator`, `byId`, `watch`, `community(ownerId)`, `intersectingBbox` (RPC `routes_intersecting_bbox` con EWKT POLYGON 4326). RLS filtra visibilidad. Cache `Box<RouteModel>` clave `route:<id>`. SWR + mock guest fallback. Cerrado en `260b02e`.
 - [F3.2] **Schedule** — `forRoute(routeId, dayType)`, `nextDepartures(routeId, n)`. Cache por `op:<id>:schedule:<routeId>:<dayType>`.
 - [F3.2] **BusLocation** — `latestForRoute(routeId)`, `streamForRoute(routeId)` (con Supabase Realtime en F13). Cache de poco valor: TTL 60s.
 - [F3.2] **IncidentReport** — `byAuthor(uid)`, `forRoute(routeId)`, `create(IncidentModel)`. Si red falla, `create` cae en `pending_actions`.

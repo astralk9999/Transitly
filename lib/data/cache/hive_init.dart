@@ -25,9 +25,14 @@ abstract class HiveBoxes {
   static const offlineRegions = 'offline_regions';
   static const alerts = 'alerts';
 
-  /// Cola de mutaciones offline. Cada entrada es un `Map<String,
-  /// dynamic>` con la forma del payload (definida en F3.3).
+  /// Cola de mutaciones offline. Cada entrada es la serialización
+  /// JSON de `PendingAction` (`lib/data/sync/pending_action.dart`).
   static const pendingActions = 'pending_actions';
+
+  /// Tabla muerta de mutaciones que han superado `maxAttempts`.
+  /// Vive separada de `pendingActions` para que el drenado no las
+  /// reintente y para mostrarlas al usuario en una pantalla aparte.
+  static const deadLetterActions = 'dead_letter_actions';
 
   /// Metadatos de la sesión Auth (último uid, expiración tokens, …).
   /// Sirve para mostrar UI placeholder mientras Supabase rehidrata.
@@ -66,6 +71,7 @@ abstract class HiveInit {
     // limitación del binario; el cast a `Map<String, dynamic>` se hace
     // en el repositorio que consume cada entrada).
     await _open<Map<dynamic, dynamic>>(HiveBoxes.pendingActions);
+    await _open<Map<dynamic, dynamic>>(HiveBoxes.deadLetterActions);
     await _open<Map<dynamic, dynamic>>(HiveBoxes.authSessionMeta);
 
     AppLogger.info(_logTag, 'opened ${Hive.box(HiveBoxes.routes).path != null ? "all" : "?"} boxes');

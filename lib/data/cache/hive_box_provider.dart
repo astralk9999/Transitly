@@ -53,10 +53,16 @@ final alertsBoxProvider = Provider<Box<AlertModel>>(
   (_) => Hive.box<AlertModel>(HiveBoxes.alerts),
 );
 
-/// Cola de mutaciones offline. Las entradas son `Map<String,
-/// dynamic>` serializables; el formato canónico vive en F3.3.
+/// Cola de mutaciones offline. Las entradas son `PendingAction`
+/// serializadas a JSON (ver `lib/data/sync/pending_action.dart`).
 final pendingActionsBoxProvider = Provider<Box<Map<dynamic, dynamic>>>(
   (_) => Hive.box<Map<dynamic, dynamic>>(HiveBoxes.pendingActions),
+);
+
+/// Tabla muerta de mutaciones tras 10 fallos. La UI puede listarla
+/// para que el usuario decida reintentar o descartar.
+final deadLetterActionsBoxProvider = Provider<Box<Map<dynamic, dynamic>>>(
+  (_) => Hive.box<Map<dynamic, dynamic>>(HiveBoxes.deadLetterActions),
 );
 
 /// Metadatos de sesión Auth (último uid, expiraciones, banderas).

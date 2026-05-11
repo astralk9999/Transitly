@@ -321,6 +321,39 @@ El prefijo permite filtrar/borrar por scope sin recorrer la caja entera. Cuando 
 
 ---
 
+### 6.6 Cola offline (`lib/data/sync/`)
+
+Capa de sincronización diferida para mutaciones cuando la red no está. Diseño:
+
+1. **Repositorio remoto** intenta primero contra Supabase.
+2. Si falla por **red** (no por permisos/validación), serializa la mutación como `PendingAction` y la encola.
+3. El UI recibe **éxito optimista** — la operación se considera aplicada localmente.
+4. Cuando `isOfflineProvider` pasa a `false`, `OfflineSyncService.drainNow()` recorre la cola FIFO ejecutando los `kind` registrados.
+5. Cada fallo aumenta `attempts` y aplica backoff exponencial (1s · 2s · 4s · 8s · 16s · 32s · cap 60s) antes del siguiente intento.
+6. Si `attempts > 10` la acción pasa a la **dead letter** (`dead_letter_actions`) y deja de reintentarse hasta intervención manual.
+
+**Piezas:**
+
+- `pending_action.dart` — `@freezed PendingAction { id, kind, payload, createdAt, attempts, lastError }` + enum `PendingActionKind` con los 11 tipos del plan v2 (createIncident, createRouteFeedback, etc.).
+- `pending_actions_queue.dart` — `PendingActionsQueue` envuelve dos cajas Hive (`pending_actions` y `dead_letter_actions`). Operaciones: `enqueue`, `peek`, `list`, `remove`, `markFailure`, `clearAll`. Stream `pendingCountStream` para badges en UI.
+- `offline_sync_service.dart` — `OfflineSyncService` con registro de `PendingActionExecutor` por `kind`. `drainNow()` recorre FIFO; si un `kind` no tiene executor registrado, **detiene el drenado** para conservar el orden hasta que la feature aterrice y registre su handler.
+- `offline_sync_provider.dart` — providers Riverpod: `pendingActionsQueueProvider`, `pendingActionsCountProvider` (StreamProvider para UI), `offlineSyncServiceProvider` que escucha `isOfflineProvider` con `ref.listen` y dispara `drainNow()` al volver online.
+
+**Registro de executors.** Cada repositorio con escritura llama a `registerExecutor` al ser instanciado:
+
+```dart
+ref.read(offlineSyncServiceProvider).registerExecutor(
+  PendingActionKind.createIncident,
+  (payload) => _client.from('incidents').insert(payload),
+);
+```
+
+**UI.** `OfflineBanner` (`lib/shared/widgets/offline_banner.dart`) se asoma cuando `isOfflineProvider == true` **o** `pendingActionsCountProvider > 0`. Color `TransitColorScheme.stateDelay`. Se muestra al inicio del Scaffold de cada pantalla que escriba.
+
+**Tag de logger.** `[OfflineSync]` para el servicio y `[OfflineSync:Queue]` para la cola — separar el ruido entre orquestación y persistencia.
+
+---
+
 ## 7. Cómo evolucionar este documento
 
 1. **Antes de empezar una feature nueva**, abre este doc y comprueba que sus piezas (entidades, providers, servicios, errores) están descritas. Si no, añádelas en estado `⬜` con una nota.
@@ -329,4 +362,4 @@ El prefijo permite filtrar/borrar por scope sin recorrer la caja entera. Cuando 
 
 ---
 
-**Última actualización:** 2026-05-07 · §6 reorganizado y nueva sección 6.4 "Caché Hive" tras F3.1.
+**Última actualización:** 2026-05-07 · §6.6 "Cola offline" tras F3.3.

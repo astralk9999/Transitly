@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 
 import '../../shared/models/alert_model.dart';
+import '../../shared/models/incident_model.dart';
 import '../../shared/models/offline_region.dart';
 import '../../shared/models/operator_model.dart';
 import '../../shared/models/route_model.dart';
@@ -51,6 +52,10 @@ final offlineRegionsBoxProvider = Provider<Box<OfflineRegion>>(
 
 final alertsBoxProvider = Provider<Box<AlertModel>>(
   (_) => Hive.box<AlertModel>(HiveBoxes.alerts),
+);
+
+final incidentsBoxProvider = Provider<Box<IncidentModel>>(
+  (_) => Hive.box<IncidentModel>(HiveBoxes.incidents),
 );
 
 /// Cola de mutaciones offline. Las entradas son `PendingAction`

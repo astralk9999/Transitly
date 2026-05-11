@@ -1,6 +1,7 @@
 import 'package:hive/hive.dart';
 
 import '../../shared/models/alert_model.dart';
+import '../../shared/models/incident_model.dart';
 import '../../shared/models/offline_region.dart';
 import '../../shared/models/operator_model.dart';
 import '../../shared/models/route_model.dart';
@@ -29,6 +30,7 @@ import '../../shared/models/user_preferences.dart';
 /// |   4    | UserPreferences   |
 /// |   5    | OfflineRegion     |
 /// |   6    | AlertModel        |
+/// |   7    | IncidentModel     |
 ///
 /// Si añades un modelo cacheable nuevo: extiende esta tabla, crea su
 /// adapter abajo y registra en `HiveAdapters.registerAll()`.
@@ -46,6 +48,7 @@ abstract class HiveAdapters {
     if (!Hive.isAdapterRegistered(4)) Hive.registerAdapter(_UserPreferencesAdapter());
     if (!Hive.isAdapterRegistered(5)) Hive.registerAdapter(_OfflineRegionAdapter());
     if (!Hive.isAdapterRegistered(6)) Hive.registerAdapter(_AlertModelAdapter());
+    if (!Hive.isAdapterRegistered(7)) Hive.registerAdapter(_IncidentModelAdapter());
   }
 }
 
@@ -147,5 +150,18 @@ class _AlertModelAdapter extends TypeAdapter<AlertModel> {
 
   @override
   void write(BinaryWriter writer, AlertModel obj) =>
+      writer.write(obj.toJson());
+}
+
+class _IncidentModelAdapter extends TypeAdapter<IncidentModel> {
+  @override
+  final int typeId = 7;
+
+  @override
+  IncidentModel read(BinaryReader reader) =>
+      IncidentModel.fromJson(_readJsonMap(reader));
+
+  @override
+  void write(BinaryWriter writer, IncidentModel obj) =>
       writer.write(obj.toJson());
 }

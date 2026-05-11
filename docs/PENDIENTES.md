@@ -105,7 +105,7 @@ Cada entidad necesita el mismo conjunto de 5 archivos: interfaz abstracta + remo
 - ✅ [F3.2] **Schedule** — `forRoute(routeId, dayType)`, `nextDepartures(routeId, n)` (server filtra `departure_time >= now()` + day_type del weekday actual). Cache `Box<ScheduleModel>` clave `schedule:<routeId>:<dayType>:<HH:MM>` para filtrar por prefijo. Cerrado en `e8b42f9`.
 - [F3.2] **BusLocation** — `latestForRoute(routeId)`, `streamForRoute(routeId)` (con Supabase Realtime en F13). Cache de poco valor: TTL 60s.
 - ✅ [F3.2] **IncidentReport** — `byAuthor(uid)`, `forRoute(routeId)`, `create(IncidentModel)`. Si red falla, `create` encola `PendingAction(kind=createIncident)` y devuelve copia optimista con UUID v4 estable; `core/utils/uuid.dart` genera el id. Provider registra el executor `createIncident` al instanciarse para drenar cuando vuelva la red. Cache `Box<IncidentModel>` (typeId 7) clave `incident:<id>`.
-- [F3.2] **RouteFeedback** — análogo a IncidentReport. Cache local solo lectura.
+- ✅ [F3.2] **RouteFeedback** — `byAuthor(uid)`, `forRoute(routeId)`, `create(RouteFeedbackModel)` con encolado offline (`PendingActionKind.createRouteFeedback`). Cache `Box<RouteFeedbackModel>` (typeId 8) clave `feedback:<id>`. Mapeo FeedbackType (12) → feedback_kind DB (4) + FeedbackStatus (6) → feedback_status DB (4) en remote impl.
 - [F3.2] **RouteSuggestion** — `list()`, `byId`, `create(...)`, `castVote` (RPC `cast_suggestion_vote`).
 - [F3.2] **FeatureRequest** — `list()`, `byId`, `create(...)`, `castVote`.
 - [F3.2] **Notification** — `forUser(uid)`, `markRead(id)`, `unreadCount`. Stream con Supabase Realtime cuando F21 se active.

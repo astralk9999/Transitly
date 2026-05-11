@@ -5,6 +5,7 @@ import '../../shared/models/alert_model.dart';
 import '../../shared/models/incident_model.dart';
 import '../../shared/models/offline_region.dart';
 import '../../shared/models/operator_model.dart';
+import '../../shared/models/route_feedback_model.dart';
 import '../../shared/models/route_model.dart';
 import '../../shared/models/schedule_model.dart';
 import '../../shared/models/stop_model.dart';
@@ -26,6 +27,7 @@ abstract class HiveBoxes {
   static const offlineRegions = 'offline_regions';
   static const alerts = 'alerts';
   static const incidents = 'incidents';
+  static const routeFeedback = 'route_feedback';
 
   /// Cola de mutaciones offline. Cada entrada es la serialización
   /// JSON de `PendingAction` (`lib/data/sync/pending_action.dart`).
@@ -68,6 +70,7 @@ abstract class HiveInit {
     await _open<OfflineRegion>(HiveBoxes.offlineRegions);
     await _open<AlertModel>(HiveBoxes.alerts);
     await _open<IncidentModel>(HiveBoxes.incidents);
+    await _open<RouteFeedbackModel>(HiveBoxes.routeFeedback);
 
     // Cajas sin tipo fijado: cada entrada es `Map<dynamic, dynamic>`
     // serializable directamente por Hive (los maps se cargan así por

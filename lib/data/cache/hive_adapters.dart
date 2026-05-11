@@ -4,6 +4,7 @@ import '../../shared/models/alert_model.dart';
 import '../../shared/models/incident_model.dart';
 import '../../shared/models/offline_region.dart';
 import '../../shared/models/operator_model.dart';
+import '../../shared/models/route_feedback_model.dart';
 import '../../shared/models/route_model.dart';
 import '../../shared/models/schedule_model.dart';
 import '../../shared/models/stop_model.dart';
@@ -31,6 +32,7 @@ import '../../shared/models/user_preferences.dart';
 /// |   5    | OfflineRegion     |
 /// |   6    | AlertModel        |
 /// |   7    | IncidentModel     |
+/// |   8    | RouteFeedbackModel|
 ///
 /// Si añades un modelo cacheable nuevo: extiende esta tabla, crea su
 /// adapter abajo y registra en `HiveAdapters.registerAll()`.
@@ -49,6 +51,7 @@ abstract class HiveAdapters {
     if (!Hive.isAdapterRegistered(5)) Hive.registerAdapter(_OfflineRegionAdapter());
     if (!Hive.isAdapterRegistered(6)) Hive.registerAdapter(_AlertModelAdapter());
     if (!Hive.isAdapterRegistered(7)) Hive.registerAdapter(_IncidentModelAdapter());
+    if (!Hive.isAdapterRegistered(8)) Hive.registerAdapter(_RouteFeedbackModelAdapter());
   }
 }
 
@@ -163,5 +166,18 @@ class _IncidentModelAdapter extends TypeAdapter<IncidentModel> {
 
   @override
   void write(BinaryWriter writer, IncidentModel obj) =>
+      writer.write(obj.toJson());
+}
+
+class _RouteFeedbackModelAdapter extends TypeAdapter<RouteFeedbackModel> {
+  @override
+  final int typeId = 8;
+
+  @override
+  RouteFeedbackModel read(BinaryReader reader) =>
+      RouteFeedbackModel.fromJson(_readJsonMap(reader));
+
+  @override
+  void write(BinaryWriter writer, RouteFeedbackModel obj) =>
       writer.write(obj.toJson());
 }

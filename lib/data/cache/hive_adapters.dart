@@ -1,6 +1,7 @@
 import 'package:hive/hive.dart';
 
 import '../../shared/models/alert_model.dart';
+import '../../shared/models/app_notification.dart';
 import '../../shared/models/feature_request.dart';
 import '../../shared/models/incident_model.dart';
 import '../../shared/models/offline_region.dart';
@@ -37,6 +38,7 @@ import '../../shared/models/user_preferences.dart';
 /// |   8    | RouteFeedbackModel|
 /// |   9    | RouteSuggestionModel |
 /// |  10    | FeatureRequest    |
+/// |  11    | AppNotification   |
 ///
 /// Si añades un modelo cacheable nuevo: extiende esta tabla, crea su
 /// adapter abajo y registra en `HiveAdapters.registerAll()`.
@@ -58,6 +60,7 @@ abstract class HiveAdapters {
     if (!Hive.isAdapterRegistered(8)) Hive.registerAdapter(_RouteFeedbackModelAdapter());
     if (!Hive.isAdapterRegistered(9)) Hive.registerAdapter(_RouteSuggestionModelAdapter());
     if (!Hive.isAdapterRegistered(10)) Hive.registerAdapter(_FeatureRequestAdapter());
+    if (!Hive.isAdapterRegistered(11)) Hive.registerAdapter(_AppNotificationAdapter());
   }
 }
 
@@ -211,5 +214,18 @@ class _FeatureRequestAdapter extends TypeAdapter<FeatureRequest> {
 
   @override
   void write(BinaryWriter writer, FeatureRequest obj) =>
+      writer.write(obj.toJson());
+}
+
+class _AppNotificationAdapter extends TypeAdapter<AppNotification> {
+  @override
+  final int typeId = 11;
+
+  @override
+  AppNotification read(BinaryReader reader) =>
+      AppNotification.fromJson(_readJsonMap(reader));
+
+  @override
+  void write(BinaryWriter writer, AppNotification obj) =>
       writer.write(obj.toJson());
 }

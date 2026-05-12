@@ -2,9 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../theme/transit_animations.dart';
-
 import '../../data/mock/mock_data_service.dart';
+import '../../features/auth/auth_provider.dart';
+import '../../features/auth/auth_repository.dart';
+import '../../features/auth/signin_screen.dart';
+import '../../features/auth/signup_screen.dart';
+import '../../features/auth/magic_link_screen.dart';
+import '../../features/auth/recover_password_screen.dart';
+import '../../features/auth/email_verify_pending_screen.dart';
+import '../theme/transit_animations.dart';
 import '../../features/contributions/my_contributions_screen.dart';
 import '../../features/debug/component_showcase_screen.dart';
 import '../../features/driver/active_route_screen.dart';
@@ -43,9 +49,33 @@ import '../../features/suggestions/suggestion_detail_screen.dart';
 final routerInitialLocationProvider = Provider<String>((ref) => '/splash');
 
 final routerProvider = Provider<GoRouter>((ref) {
+  final authState = ref.watch(authStateProvider).valueOrNull;
+  final isAuth = authState is AuthAuthenticated;
+
   return GoRouter(
     initialLocation: ref.watch(routerInitialLocationProvider),
     errorBuilder: (context, state) => const NotFoundScreen(),
+    redirect: (context, state) {
+      final loc = state.matchedLocation;
+      final isAuthRoute = loc.startsWith('/sign-in') ||
+          loc.startsWith('/sign-up') ||
+          loc.startsWith('/magic-link') ||
+          loc.startsWith('/recover-password') ||
+          loc.startsWith('/verify-email');
+      final isHomeRoute = loc.startsWith('/home') ||
+          loc.startsWith('/route') ||
+          loc.startsWith('/stop');
+      final isPublicRoute = loc == '/splash' || loc == '/onboarding';
+
+      // Auth routes: redirect to home if already authenticated
+      if (isAuthRoute && isAuth) return '/home/inicio';
+
+      // All existing routes are guestOk for now
+      if (isHomeRoute || isPublicRoute || isAuthRoute) return null;
+
+      // Driver, management, contributions, etc. — guestOk for now
+      return null;
+    },
     routes: [
       GoRoute(
         path: '/splash',
@@ -54,6 +84,28 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/onboarding',
         pageBuilder: (context, state) => _fadeSlow(state, const OnboardingScreen()),
+      ),
+
+      // ── Auth routes ──
+      GoRoute(
+        path: '/sign-in',
+        pageBuilder: (context, state) => _slide(state, const SignInScreen()),
+      ),
+      GoRoute(
+        path: '/sign-up',
+        pageBuilder: (context, state) => _slide(state, const SignUpScreen()),
+      ),
+      GoRoute(
+        path: '/magic-link',
+        pageBuilder: (context, state) => _slide(state, const MagicLinkScreen()),
+      ),
+      GoRoute(
+        path: '/recover-password',
+        pageBuilder: (context, state) => _slide(state, const RecoverPasswordScreen()),
+      ),
+      GoRoute(
+        path: '/verify-email',
+        pageBuilder: (context, state) => _slide(state, const EmailVerifyPendingScreen()),
       ),
 
       // ── Home shell with 5 tabs ──

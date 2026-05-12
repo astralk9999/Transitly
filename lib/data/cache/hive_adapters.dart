@@ -1,6 +1,7 @@
 import 'package:hive/hive.dart';
 
 import '../../shared/models/alert_model.dart';
+import '../../shared/models/feature_request.dart';
 import '../../shared/models/incident_model.dart';
 import '../../shared/models/offline_region.dart';
 import '../../shared/models/operator_model.dart';
@@ -35,6 +36,7 @@ import '../../shared/models/user_preferences.dart';
 /// |   7    | IncidentModel     |
 /// |   8    | RouteFeedbackModel|
 /// |   9    | RouteSuggestionModel |
+/// |  10    | FeatureRequest    |
 ///
 /// Si añades un modelo cacheable nuevo: extiende esta tabla, crea su
 /// adapter abajo y registra en `HiveAdapters.registerAll()`.
@@ -55,6 +57,7 @@ abstract class HiveAdapters {
     if (!Hive.isAdapterRegistered(7)) Hive.registerAdapter(_IncidentModelAdapter());
     if (!Hive.isAdapterRegistered(8)) Hive.registerAdapter(_RouteFeedbackModelAdapter());
     if (!Hive.isAdapterRegistered(9)) Hive.registerAdapter(_RouteSuggestionModelAdapter());
+    if (!Hive.isAdapterRegistered(10)) Hive.registerAdapter(_FeatureRequestAdapter());
   }
 }
 
@@ -195,5 +198,18 @@ class _RouteSuggestionModelAdapter extends TypeAdapter<RouteSuggestionModel> {
 
   @override
   void write(BinaryWriter writer, RouteSuggestionModel obj) =>
+      writer.write(obj.toJson());
+}
+
+class _FeatureRequestAdapter extends TypeAdapter<FeatureRequest> {
+  @override
+  final int typeId = 10;
+
+  @override
+  FeatureRequest read(BinaryReader reader) =>
+      FeatureRequest.fromJson(_readJsonMap(reader));
+
+  @override
+  void write(BinaryWriter writer, FeatureRequest obj) =>
       writer.write(obj.toJson());
 }

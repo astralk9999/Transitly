@@ -1,28 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
+import '../../../features/auth/auth_provider.dart';
+import '../../../features/auth/auth_repository.dart';
 import '../../../shared/models/user_model.dart';
 import '../../../shared/widgets/glass_card.dart';
 import '../../../shared/widgets/reputation_badge.dart';
 
-class ProfileHeaderCard extends StatelessWidget {
+class ProfileHeaderCard extends ConsumerWidget {
   const ProfileHeaderCard({super.key, required this.user});
 
   final UserModel user;
 
   String _initials(String name) {
     final parts = name.trim().split(RegExp(r'\s+'));
-    if (parts.length >= 2) return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
-    if (parts.isNotEmpty && parts[0].isNotEmpty) return parts[0][0].toUpperCase();
+    if (parts.length >= 2) {
+      return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
+    }
+    if (parts.isNotEmpty && parts[0].isNotEmpty) {
+      return parts[0][0].toUpperCase();
+    }
     return '?';
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
+
+    final authState = ref.watch(authStateProvider).valueOrNull;
+    final authUser = authState is AuthAuthenticated ? authState.user : null;
+
+    final displayName = authUser?.userMetadata?['display_name'] as String? ??
+        authUser?.email?.split('@').first ??
+        user.name;
+    final displayEmail = authUser?.email ?? user.email;
+    final initials = _initials(displayName);
 
     return GlassCard(
       blur: 20,
@@ -44,7 +60,7 @@ class ProfileHeaderCard extends StatelessWidget {
             ),
             child: Center(
               child: Text(
-                _initials(user.name),
+                initials,
                 style: GoogleFonts.ibmPlexMono(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
@@ -59,7 +75,7 @@ class ProfileHeaderCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  user.name,
+                  displayName,
                   style: GoogleFonts.dmSans(
                     fontSize: 18,
                     fontWeight: FontWeight.w500,
@@ -67,7 +83,7 @@ class ProfileHeaderCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  user.email,
+                  displayEmail,
                   style: TransitTypography.bodySecondary(c.textMid),
                 ),
               ],

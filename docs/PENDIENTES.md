@@ -107,12 +107,19 @@ Cada entidad necesita el mismo conjunto de 5 archivos: interfaz abstracta + remo
 - ✅ [F3.2] **IncidentReport** — `byAuthor(uid)`, `forRoute(routeId)`, `create(IncidentModel)`. Si red falla, `create` encola `PendingAction(kind=createIncident)` y devuelve copia optimista con UUID v4 estable; `core/utils/uuid.dart` genera el id. Provider registra el executor `createIncident` al instanciarse para drenar cuando vuelva la red. Cache `Box<IncidentModel>` (typeId 7) clave `incident:<id>`.
 - ✅ [F3.2] **RouteFeedback** — `byAuthor(uid)`, `forRoute(routeId)`, `create(RouteFeedbackModel)` con encolado offline (`PendingActionKind.createRouteFeedback`). Cache `Box<RouteFeedbackModel>` (typeId 8) clave `feedback:<id>`. Mapeo FeedbackType (12) → feedback_kind DB (4) + FeedbackStatus (6) → feedback_status DB (4) en remote impl.
 - ✅ [F3.2] **RouteSuggestion** — `list()`, `byId`, `create(...)`, `castVote` (RPC `cast_suggestion_vote`). Encolado offline para `createRouteSuggestion` y `voteSuggestion`. Voto optimista: bump local +1 inmediato; reconcilia con `serverTotal` cuando vuelve (incluso si el server detectó duplicado). Cache `Box<RouteSuggestionModel>` (typeId 9) clave `suggestion:<id>`. Mapeo origin/destination_geom EWKT POINT 4326 + SuggestionStatus (7) → suggestion_status DB (4).
-- [F3.2] **FeatureRequest** — `list()`, `byId`, `create(...)`, `castVote`.
-- [F3.2] **Notification** — `forUser(uid)`, `markRead(id)`, `unreadCount`. Stream con Supabase Realtime cuando F21 se active.
-- [F3.2] **UserPreferences** — `getMine()`, `update(prefs)`. Cache singleton `user:<uid>:pref`.
-- [F3.2] **OfflineRegion** — `forUser(uid)`, `add(region)`, `delete(id)`. Cache primaria local; remoto solo para sincronizar entre dispositivos.
+- ✅ [F3.2] **FeatureRequest** — `list()`, `byId`, `create(...)`, `castVote` (RPC `cast_feature_request_vote`). Voto optimista igual que RouteSuggestion. Cache `Box<FeatureRequest>` (typeId 10) clave `featurerequest:<id>`. Cerrado en `e85925f`.
+- ✅ [F3.2] **Notification** — `forUser(uid)`, `markRead(id)`, `unreadCount`. Encolado offline para `markNotificationRead`. Cache `Box<AppNotification>` (typeId 11) clave `notif:<uid>:<id>`. Stream con Supabase Realtime cuando F21 se active. Cerrado en `36d890a`.
+- ✅ [F3.2] **UserPreferences** — `getMine()`, `update(prefs)`. Encolado offline para `updateUserPrefs`. Cache singleton `user:<uid>:pref` (typeId 4). **Bloquea F4.** Cerrado en `c2d8fe8`.
+- ✅ [F3.2] **OfflineRegion** — `forUser(uid)`, `add(region)`, `delete(id)`. **Patrón local-first**: cache primaria local; remoto solo para sincronizar. Cache `Box<OfflineRegion>` (typeId 5) clave `region:<uid>:<id>`. Cerrado en `83d83a1`.
 
-Implementar en commits independientes para mantener PRs de tamaño revisable.
+✅ F3.2 cerrada — 12/12 repositorios implementados.
+
+### F3.4 — Migración progresiva de providers
+
+- ✅ [F3.4] **`mapDataCacheProvider`** — Dual-source: repos Hive cuando hay sesión, MockDataService en modo invitado. Cerrado en `9664665`.
+- [F13] **`realtimeTripsProvider`** — Migrar a Supabase Realtime vía `BusLocationRepository` (F13).
+- [F4] **`userProvider`, `isDriverProvider`** — Migrar a `AuthRepository` (F4).
+- ✅ Providers derivados (`stopToRouteCodes`, etc.) se mantienen como están — derivados puros.
 
 ### Migraciones programadas (creadas durante F0.5)
 
@@ -138,4 +145,4 @@ Implementar en commits independientes para mantener PRs de tamaño revisable.
 
 ---
 
-**Última actualización:** 2026-05-05 · post F0.5 (A+B+C+D). 15 items cerrados + 2 huérfanos borrados + 1 cierre parcial. F0.5 cerrado completo.
+**Última actualización:** 2026-05-12 · F3.2 cerrada (12/12 repos). Siguiente: F3.4 (migración progresiva de providers).

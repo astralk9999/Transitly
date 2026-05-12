@@ -20,7 +20,9 @@ mixin _$UserModel {
   String get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
+  @Deprecated('Use role instead')
   List<String> get roles => throw _privateConstructorUsedError;
+  UserRole get role => throw _privateConstructorUsedError;
   List<String> get driverOperatorIds => throw _privateConstructorUsedError;
   String? get primaryZoneId => throw _privateConstructorUsedError;
   int get reputationScore => throw _privateConstructorUsedError;
@@ -42,7 +44,8 @@ abstract class $UserModelCopyWith<$Res> {
     String id,
     String name,
     String email,
-    List<String> roles,
+    @Deprecated('Use role instead') List<String> roles,
+    UserRole role,
     List<String> driverOperatorIds,
     String? primaryZoneId,
     int reputationScore,
@@ -69,6 +72,7 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
     Object? name = null,
     Object? email = null,
     Object? roles = null,
+    Object? role = null,
     Object? driverOperatorIds = null,
     Object? primaryZoneId = freezed,
     Object? reputationScore = null,
@@ -92,6 +96,10 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
                 ? _value.roles
                 : roles // ignore: cast_nullable_to_non_nullable
                       as List<String>,
+            role: null == role
+                ? _value.role
+                : role // ignore: cast_nullable_to_non_nullable
+                      as UserRole,
             driverOperatorIds: null == driverOperatorIds
                 ? _value.driverOperatorIds
                 : driverOperatorIds // ignore: cast_nullable_to_non_nullable
@@ -127,7 +135,8 @@ abstract class _$$UserModelImplCopyWith<$Res>
     String id,
     String name,
     String email,
-    List<String> roles,
+    @Deprecated('Use role instead') List<String> roles,
+    UserRole role,
     List<String> driverOperatorIds,
     String? primaryZoneId,
     int reputationScore,
@@ -153,6 +162,7 @@ class __$$UserModelImplCopyWithImpl<$Res>
     Object? name = null,
     Object? email = null,
     Object? roles = null,
+    Object? role = null,
     Object? driverOperatorIds = null,
     Object? primaryZoneId = freezed,
     Object? reputationScore = null,
@@ -176,6 +186,10 @@ class __$$UserModelImplCopyWithImpl<$Res>
             ? _value._roles
             : roles // ignore: cast_nullable_to_non_nullable
                   as List<String>,
+        role: null == role
+            ? _value.role
+            : role // ignore: cast_nullable_to_non_nullable
+                  as UserRole,
         driverOperatorIds: null == driverOperatorIds
             ? _value._driverOperatorIds
             : driverOperatorIds // ignore: cast_nullable_to_non_nullable
@@ -204,7 +218,8 @@ class _$UserModelImpl extends _UserModel {
     required this.id,
     required this.name,
     required this.email,
-    required final List<String> roles,
+    @Deprecated('Use role instead') final List<String> roles = const <String>[],
+    this.role = UserRole.passenger,
     final List<String> driverOperatorIds = const <String>[],
     this.primaryZoneId,
     this.reputationScore = 0,
@@ -221,12 +236,17 @@ class _$UserModelImpl extends _UserModel {
   final String email;
   final List<String> _roles;
   @override
+  @JsonKey()
+  @Deprecated('Use role instead')
   List<String> get roles {
     if (_roles is EqualUnmodifiableListView) return _roles;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_roles);
   }
 
+  @override
+  @JsonKey()
+  final UserRole role;
   final List<String> _driverOperatorIds;
   @override
   @JsonKey()
@@ -248,7 +268,7 @@ class _$UserModelImpl extends _UserModel {
 
   @override
   String toString() {
-    return 'UserModel(id: $id, name: $name, email: $email, roles: $roles, driverOperatorIds: $driverOperatorIds, primaryZoneId: $primaryZoneId, reputationScore: $reputationScore, reputationLevel: $reputationLevel)';
+    return 'UserModel(id: $id, name: $name, email: $email, roles: $roles, role: $role, driverOperatorIds: $driverOperatorIds, primaryZoneId: $primaryZoneId, reputationScore: $reputationScore, reputationLevel: $reputationLevel)';
   }
 
   @override
@@ -260,6 +280,7 @@ class _$UserModelImpl extends _UserModel {
             (identical(other.name, name) || other.name == name) &&
             (identical(other.email, email) || other.email == email) &&
             const DeepCollectionEquality().equals(other._roles, _roles) &&
+            (identical(other.role, role) || other.role == role) &&
             const DeepCollectionEquality().equals(
               other._driverOperatorIds,
               _driverOperatorIds,
@@ -279,6 +300,7 @@ class _$UserModelImpl extends _UserModel {
     name,
     email,
     const DeepCollectionEquality().hash(_roles),
+    role,
     const DeepCollectionEquality().hash(_driverOperatorIds),
     primaryZoneId,
     reputationScore,
@@ -299,7 +321,8 @@ abstract class _UserModel extends UserModel {
     required final String id,
     required final String name,
     required final String email,
-    required final List<String> roles,
+    @Deprecated('Use role instead') final List<String> roles,
+    final UserRole role,
     final List<String> driverOperatorIds,
     final String? primaryZoneId,
     final int reputationScore,
@@ -314,7 +337,10 @@ abstract class _UserModel extends UserModel {
   @override
   String get email;
   @override
+  @Deprecated('Use role instead')
   List<String> get roles;
+  @override
+  UserRole get role;
   @override
   List<String> get driverOperatorIds;
   @override

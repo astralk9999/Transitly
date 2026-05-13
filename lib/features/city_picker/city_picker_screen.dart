@@ -60,7 +60,7 @@ class CityPickerScreen extends ConsumerWidget {
                     },
                     loading: () => const Center(
                         child: CircularProgressIndicator()),
-                    error: (_, __) => Center(
+                    error: (_, __) => const Center(
                       child: Text('Error al cargar operadores',
                           style: TextStyle(color: Colors.redAccent)),
                     ),

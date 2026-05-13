@@ -17,6 +17,7 @@ import '../../../shared/widgets/pressable.dart';
 import '../../../shared/widgets/route_card.dart';
 import '../../map/map_config.dart';
 import '../../map/map_data_cache.dart';
+import '../../map/map_filter_controller.dart';
 import '../../map/sheets/stop_info_sheet.dart';
 import '../../map/sheets/trip_info_sheet.dart';
 import '../../map/transit_map.dart';
@@ -170,11 +171,7 @@ class _MapTabState extends ConsumerState<MapTab> {
                   _mapController.move(
                       MapConfig.defaultCenter, MapConfig.defaultZoom);
                 },
-                onFilter: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Filtros: próximamente')),
-                  );
-                },
+                onFilter: () => showMapFilterSheet(context, ref),
                 onSearch: () {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(

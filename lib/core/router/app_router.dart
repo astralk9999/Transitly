@@ -12,6 +12,7 @@ import '../../features/auth/recover_password_screen.dart';
 import '../../features/auth/activate_driver_screen.dart';
 import '../../features/auth/email_verify_pending_screen.dart';
 import '../theme/transit_animations.dart';
+import '../../features/city_picker/city_picker_screen.dart';
 import '../../features/contributions/my_contributions_screen.dart';
 import '../../features/debug/component_showcase_screen.dart';
 import '../../features/driver/active_route_screen.dart';
@@ -276,6 +277,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/operator-admin',
         pageBuilder: (context, state) =>
             _slide(state, const OperatorDashboardScreen()),
+      ),
+      GoRoute(
+        path: '/city-picker',
+        pageBuilder: (context, state) =>
+            _slide(state, const CityPickerScreen()),
       ),
       GoRoute(
         path: '/operator-admin/invitation-codes',

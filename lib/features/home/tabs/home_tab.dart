@@ -8,6 +8,7 @@ import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../data/mock/mock_data_service.dart';
 import '../../../data/mock/mock_realtime_service.dart';
+import '../../../data/geo/geo_providers.dart';
 import '../../../shared/models/models.dart';
 import '../../../shared/providers/derived/home_providers.dart';
 import '../../../shared/providers/route_lookup_providers.dart';
@@ -103,12 +104,23 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                 ),
               ),
               const SizedBox(height: 4),
-              Text(
-                'Jerez de la Frontera',
-                style: GoogleFonts.dmSans(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  color: c.textMid,
+              GestureDetector(
+                onTap: () => context.push('/city-picker'),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      ref.watch(activeOperatorProvider)?.name ??
+                          'Jerez de la Frontera',
+                      style: GoogleFonts.dmSans(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: c.textMid,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Icon(Icons.arrow_drop_down, size: 18, color: c.textMid),
+                  ],
                 ),
               ),
               const SizedBox(height: 24),

@@ -60,6 +60,11 @@ dependencies:
   path_provider: ^2.1.5
   connectivity_plus: ^6.1.4
 
+  # Geo (F8) — geolocator para posición del usuario,
+  # permission_handler para pedir permisos en runtime.
+  geolocator: ^13.0.0
+  permission_handler: ^11.3.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

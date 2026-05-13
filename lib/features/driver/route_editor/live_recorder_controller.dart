@@ -3,8 +3,11 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../../../../core/utils/app_logger.dart';
+import '../../../../data/geo/location_service.dart';
 import 'recorded_session.dart';
 
 class MarkedStop {
@@ -22,6 +25,7 @@ class MarkedStop {
 }
 
 /// Predefined GPS path based on L1 stops with intermediates.
+/// Fallback para tests y demo cuando no hay GPS disponible.
 const List<LatLng> gpsSimulatedPath = <LatLng>[
   LatLng(36.6819, -6.1365),
   LatLng(36.6826, -6.1357),
@@ -50,18 +54,24 @@ const List<LatLng> gpsSimulatedPath = <LatLng>[
 
 /// Ephemeral state holder for the live recording flow.
 ///
-/// Owns three timers (GPS sim every 2s, clock every 1s, blink every 500ms)
-/// and the derived state consumed by the view. Listen via
-/// [ChangeNotifier] and call [dispose] when the hosting widget unmounts.
+/// Supports two modes:
+/// - **Real GPS** via [LocationService.subscribe] (default, F11).
+/// - **Simulated path** via [gpsSimulatedPath] timer (fallback/demo).
 class LiveRecorderController extends ChangeNotifier {
-  LiveRecorderController({this.path = gpsSimulatedPath});
+  LiveRecorderController({
+    this.path = gpsSimulatedPath,
+    LocationService? locationService,
+  }) : _locationService = locationService;
 
   final List<LatLng> path;
+  final LocationService? _locationService;
 
   final MapController mapController = MapController();
 
   bool isRecording = false;
+  bool isPaused = false;
   final List<LatLng> trace = [];
+  final List<LatLng> lowAccuracyTrace = [];
   final List<MarkedStop> markedStops = [];
   int gpsIndex = 0;
   int elapsedSeconds = 0;
@@ -69,30 +79,23 @@ class LiveRecorderController extends ChangeNotifier {
   bool flashVisible = false;
   bool blinkOn = true;
 
+  /// Precisión GPS actual en metros. Null si no disponible (simulado).
+  double? currentAccuracyM;
+  bool get isRealGps => _locationService != null;
+
   Timer? _gpsTimer;
   Timer? _clockTimer;
   Timer? _blinkTimer;
+  StreamSubscription<Position>? _gpsSub;
 
   /// Callback fired whenever a stop is marked. Use to show snackbars or
   /// haptic feedback — the controller stays view-agnostic.
   void Function(MarkedStop stop)? onStopMarked;
 
-  void start() {
+  Future<void> start() async {
     if (isRecording) return;
     isRecording = true;
     notifyListeners();
-
-    _gpsTimer = Timer.periodic(const Duration(seconds: 2), (_) {
-      if (gpsIndex >= path.length) return;
-      final point = path[gpsIndex];
-      if (trace.isNotEmpty) {
-        totalDistanceKm += _distKm(trace.last, point);
-      }
-      trace.add(point);
-      gpsIndex++;
-      mapController.move(point, 15);
-      notifyListeners();
-    });
 
     _clockTimer = Timer.periodic(const Duration(seconds: 1), (_) {
       elapsedSeconds++;
@@ -103,6 +106,87 @@ class LiveRecorderController extends ChangeNotifier {
       blinkOn = !blinkOn;
       notifyListeners();
     });
+
+    if (_locationService != null) {
+      await _startRealGps();
+    } else {
+      _startSimulatedGps();
+    }
+  }
+
+  Future<void> _startRealGps() async {
+    try {
+      final positionStream = _locationService!.subscribe(
+        settings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          distanceFilter: 5,
+        ),
+      );
+
+      _gpsSub = positionStream.listen(
+        (pos) {
+          if (!isRecording || isPaused) return;
+
+          final point = LatLng(pos.latitude, pos.longitude);
+          final accuracyM = pos.accuracy;
+
+          currentAccuracyM = accuracyM;
+
+          // Ignorar posiciones con precisión muy mala (> 100m).
+          if (accuracyM > 100) return;
+
+          if (accuracyM > 50) {
+            // Baja precisión: guardar en traza separada (color amarillo).
+            lowAccuracyTrace.add(point);
+          }
+
+          // Only add to trace if accuracy is acceptable (< 50m).
+          if (accuracyM <= 50) {
+            if (trace.isNotEmpty) {
+              totalDistanceKm += _distKm(trace.last, point);
+            }
+            trace.add(point);
+          }
+
+          mapController.move(point, 15);
+          notifyListeners();
+        },
+        onError: (e) {
+          AppLogger.warn('LiveRecorder', 'GPS stream error', e);
+        },
+      );
+    } on LocationServiceException catch (e) {
+      AppLogger.warn('LiveRecorder', 'GPS permission error, falling back to simulated', e);
+      _startSimulatedGps();
+    }
+  }
+
+  void _startSimulatedGps() {
+    _gpsTimer = Timer.periodic(const Duration(seconds: 2), (_) {
+      if (!isRecording || isPaused) return;
+      if (gpsIndex >= path.length) return;
+      final point = path[gpsIndex];
+      if (trace.isNotEmpty) {
+        totalDistanceKm += _distKm(trace.last, point);
+      }
+      trace.add(point);
+      gpsIndex++;
+      currentAccuracyM = 5.0;
+      mapController.move(point, 15);
+      notifyListeners();
+    });
+  }
+
+  void pause() {
+    if (!isRecording || isPaused) return;
+    isPaused = true;
+    notifyListeners();
+  }
+
+  void resume() {
+    if (!isRecording || !isPaused) return;
+    isPaused = false;
+    notifyListeners();
   }
 
   void markStop() {
@@ -133,15 +217,19 @@ class LiveRecorderController extends ChangeNotifier {
 
   void stop() {
     _gpsTimer?.cancel();
+    _gpsSub?.cancel();
     _clockTimer?.cancel();
     _blinkTimer?.cancel();
     _gpsTimer = null;
+    _gpsSub = null;
     _clockTimer = null;
     _blinkTimer = null;
+    isRecording = false;
+    isPaused = false;
+    notifyListeners();
   }
 
-  /// Snapshot inmutable del estado actual de la grabación. Pensado para
-  /// pasarse al editor post-grabación o serializarse a disco.
+  /// Snapshot inmutable del estado actual de la grabación.
   RecordedSession getCurrentSession() => RecordedSession(
         trace: List<LatLng>.unmodifiable(trace),
         stops: markedStops

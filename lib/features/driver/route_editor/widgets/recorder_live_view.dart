@@ -15,18 +15,30 @@ class RecorderLiveView extends StatelessWidget {
     required this.isDark,
     required this.controller,
     required this.onStopPressed,
+    this.onPausePressed,
+    this.onResumePressed,
   });
 
   final TransitColorScheme c;
   final bool isDark;
   final LiveRecorderController controller;
   final VoidCallback onStopPressed;
+  final VoidCallback? onPausePressed;
+  final VoidCallback? onResumePressed;
 
   String _formatTime(int seconds) {
     final h = seconds ~/ 3600;
     final m = (seconds % 3600) ~/ 60;
     final s = seconds % 60;
     return '${h.toString().padLeft(2, '0')}:${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
+  }
+
+  Color _accuracyColor() {
+    final acc = controller.currentAccuracyM;
+    if (acc == null) return Colors.grey;
+    if (acc <= 10) return Colors.greenAccent;
+    if (acc <= 30) return Colors.yellowAccent;
+    return Colors.orangeAccent;
   }
 
   @override
@@ -43,7 +55,11 @@ class RecorderLiveView extends StatelessWidget {
           Column(
             children: [
               SizedBox(height: MediaQuery.of(context).padding.top),
-              _Header(c: c, controller: controller, formatTime: _formatTime),
+              _Header(
+                  c: c,
+                  controller: controller,
+                  formatTime: _formatTime,
+                  accuracyColor: _accuracyColor()),
               SizedBox(
                 height: MediaQuery.sizeOf(context).height * 0.35,
                 child:
@@ -55,20 +71,26 @@ class RecorderLiveView extends StatelessWidget {
                 lastStopDistKm: lastStopDist,
                 speedKmh: speed,
                 totalKm: controller.totalDistanceKm,
+                accuracyM: controller.currentAccuracyM,
+                isPaused: controller.isPaused,
               ),
               Expanded(
                 child: GestureDetector(
                   onTap: controller.markStop,
                   child: Container(
                     width: double.infinity,
-                    color: c.accent,
+                    color: controller.isPaused
+                        ? c.textLo.withValues(alpha: 0.3)
+                        : c.accent,
                     alignment: Alignment.center,
                     child: Text(
-                      '＋ MARCAR PARADA',
+                      controller.isPaused
+                          ? '⏸ PAUSADO'
+                          : '＋ MARCAR PARADA',
                       style: GoogleFonts.ibmPlexMono(
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
-                        color: c.bgRoot,
+                        color: controller.isPaused ? c.textMid : c.bgRoot,
                       ),
                     ),
                   ),
@@ -78,24 +100,59 @@ class RecorderLiveView extends StatelessWidget {
                 top: false,
                 child: Padding(
                   padding: const EdgeInsets.all(16),
-                  child: GestureDetector(
-                    onTap: onStopPressed,
-                    child: Container(
-                      height: 36,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: c.stateCancelled, width: 1),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        '■ DETENER',
-                        style: GoogleFonts.ibmPlexMono(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: c.stateCancelled,
+                  child: Row(
+                    children: [
+                      if (onPausePressed != null ||
+                          onResumePressed != null) ...[
+                        GestureDetector(
+                          onTap: controller.isPaused
+                              ? onResumePressed
+                              : onPausePressed,
+                          child: Container(
+                            height: 36,
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: Colors.orangeAccent, width: 1),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              controller.isPaused ? '▶ REANUDAR' : '⏸ PAUSAR',
+                              style: GoogleFonts.ibmPlexMono(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.orangeAccent,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                      ],
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: onStopPressed,
+                          child: Container(
+                            height: 36,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: c.stateCancelled, width: 1),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              '■ DETENER',
+                              style: GoogleFonts.ibmPlexMono(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: c.stateCancelled,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
                 ),
               ),
@@ -114,11 +171,13 @@ class _Header extends StatelessWidget {
     required this.c,
     required this.controller,
     required this.formatTime,
+    required this.accuracyColor,
   });
 
   final TransitColorScheme c;
   final LiveRecorderController controller;
   final String Function(int) formatTime;
+  final Color accuracyColor;
 
   @override
   Widget build(BuildContext context) {
@@ -134,20 +193,52 @@ class _Header extends StatelessWidget {
               width: 8,
               height: 8,
               decoration: BoxDecoration(
-                color: c.stateCancelled,
+                color: controller.isPaused
+                    ? Colors.orangeAccent
+                    : c.stateCancelled,
                 shape: BoxShape.circle,
               ),
             ),
           ),
           const SizedBox(width: 8),
-          Text(
-            'GRABANDO RUTA',
-            style: GoogleFonts.ibmPlexMono(
-              fontSize: 10,
-              fontWeight: FontWeight.w500,
-              letterSpacing: 1.0,
-              color: c.stateCancelled,
-            ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                controller.isPaused ? 'PAUSADO' : 'GRABANDO RUTA',
+                style: GoogleFonts.ibmPlexMono(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: 1.0,
+                  color: controller.isPaused
+                      ? Colors.orangeAccent
+                      : c.stateCancelled,
+                ),
+              ),
+              if (controller.currentAccuracyM != null)
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 6,
+                      height: 6,
+                      decoration: BoxDecoration(
+                        color: accuracyColor,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      'GPS ${controller.currentAccuracyM!.toStringAsFixed(1)}m',
+                      style: GoogleFonts.ibmPlexMono(
+                        fontSize: 9,
+                        color: c.textLo,
+                      ),
+                    ),
+                  ],
+                ),
+            ],
           ),
           const Spacer(),
           Text(
@@ -196,6 +287,16 @@ class _MiniMap extends StatelessWidget {
                 points: controller.trace,
                 color: c.accent,
                 strokeWidth: 3,
+              ),
+            ],
+          ),
+        if (controller.lowAccuracyTrace.length >= 2)
+          PolylineLayer(
+            polylines: [
+              Polyline(
+                points: controller.lowAccuracyTrace,
+                color: Colors.yellowAccent.withValues(alpha: 0.5),
+                strokeWidth: 2,
               ),
             ],
           ),
@@ -253,6 +354,8 @@ class _StatsStrip extends StatelessWidget {
     required this.lastStopDistKm,
     required this.speedKmh,
     required this.totalKm,
+    this.accuracyM,
+    this.isPaused = false,
   });
 
   final TransitColorScheme c;
@@ -260,6 +363,8 @@ class _StatsStrip extends StatelessWidget {
   final double lastStopDistKm;
   final double speedKmh;
   final double totalKm;
+  final double? accuracyM;
+  final bool isPaused;
 
   @override
   Widget build(BuildContext context) {

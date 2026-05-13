@@ -17,6 +17,7 @@ import '../../features/contributions/my_contributions_screen.dart';
 import '../../features/debug/component_showcase_screen.dart';
 import '../../features/driver/active_route_screen.dart';
 import '../../features/driver/ai_schedule_import.dart';
+import '../../features/driver/driver_dashboard_screen.dart';
 import '../../features/driver/driver_history_screen.dart';
 import '../../features/driver/driver_stats_screen.dart';
 import '../../features/driver/route_editor/live_route_recorder.dart';
@@ -187,6 +188,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         ),
       ),
       // ── Driver screens ──
+      GoRoute(
+        path: '/driver/dashboard',
+        pageBuilder: (context, state) =>
+            _slide(state, const DriverDashboardScreen()),
+      ),
       GoRoute(
         path: '/driver/start',
         pageBuilder: (context, state) =>

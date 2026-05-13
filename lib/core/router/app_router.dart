@@ -30,6 +30,9 @@ import '../../features/home/tabs/map_tab.dart';
 import '../../features/home/tabs/profile_tab.dart';
 import '../../features/home/tabs/search_tab.dart';
 import '../../features/management/manager_inbox_screen.dart';
+import '../../features/operator_admin/operator_dashboard_screen.dart';
+import '../../features/operator_admin/invitation_codes_screen.dart';
+import '../../features/operator_admin/drivers_screen.dart';
 import '../../features/onboarding/onboarding_screen.dart';
 import '../../features/profile/accessibility_settings_screen.dart';
 import '../../features/profile/achievements_screen.dart';
@@ -261,6 +264,23 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/management/inbox',
         pageBuilder: (context, state) =>
             _slide(state, const ManagerInboxScreen()),
+      ),
+
+      // ── Operator Admin ──
+      GoRoute(
+        path: '/operator-admin',
+        pageBuilder: (context, state) =>
+            _slide(state, const OperatorDashboardScreen()),
+      ),
+      GoRoute(
+        path: '/operator-admin/invitation-codes',
+        pageBuilder: (context, state) =>
+            _slide(state, const InvitationCodesScreen()),
+      ),
+      GoRoute(
+        path: '/operator-admin/drivers',
+        pageBuilder: (context, state) =>
+            _slide(state, const DriversScreen()),
       ),
 
       // ── Contributions ──

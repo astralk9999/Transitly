@@ -367,3 +367,9 @@ enum AchievementCategory {
             .firstWhere((e) => e.name == v, orElse: () => usage),
       };
 }
+
+/// Origen de una ruta: oficial (operador) o comunitaria (usuario).
+enum RouteSource { official, community }
+
+/// Fuente del dato de posición de un bus.
+enum BusPositionSource { gtfsRealtime, driver, estimated }

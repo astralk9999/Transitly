@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/transit_colors.dart';
@@ -8,7 +9,7 @@ import '../../../../shared/widgets/transit_button.dart';
 import '../../../map/map_config.dart';
 import '../editor_controller.dart';
 
-class StepReview extends StatelessWidget {
+class StepReview extends ConsumerWidget {
   const StepReview({
     super.key,
     required this.controller,
@@ -25,7 +26,7 @@ class StepReview extends StatelessWidget {
       };
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final c = TransitColorScheme.of(isDark);
     final tracePoints = controller.tracePoints;
     final stops = controller.stops;
@@ -116,11 +117,15 @@ class StepReview extends StatelessWidget {
                     child: TransitButton(
                       label: 'GUARDAR BORRADOR',
                       isPrimary: false,
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Borrador guardado')),
-                        );
-                        context.pop();
+                      onPressed: () async {
+                        await controller.saveDraft();
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Borrador guardado')),
+                          );
+                          context.pop();
+                        }
                       },
                     ),
                   ),
@@ -128,11 +133,28 @@ class StepReview extends StatelessWidget {
                   Expanded(
                     child: TransitButton(
                       label: 'PUBLICAR',
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Ruta publicada')),
-                        );
-                        context.go('/home/mapa');
+                      onPressed: () async {
+                        // F15: conectar a RouteRepository.create() para
+                        // persistir ruta comunitaria en Supabase + cola offline.
+                        if (controller.codeCtrl.text.isEmpty ||
+                            controller.nameCtrl.text.isEmpty ||
+                            controller.stops.length < 2) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text(
+                                    'Código, nombre y al menos 2 paradas son obligatorios')),
+                          );
+                          return;
+                        }
+                        await controller.saveDraft();
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text(
+                                    'Ruta guardada como borrador. La publicación se habilitará en F15.')),
+                          );
+                          context.go('/home/mapa');
+                        }
                       },
                     ),
                   ),

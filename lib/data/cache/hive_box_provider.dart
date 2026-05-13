@@ -94,3 +94,8 @@ final deadLetterActionsBoxProvider = Provider<Box<Map<dynamic, dynamic>>>(
 final authSessionMetaBoxProvider = Provider<Box<Map<dynamic, dynamic>>>(
   (_) => Hive.box<Map<dynamic, dynamic>>(HiveBoxes.authSessionMeta),
 );
+
+/// Borradores del editor de rutas. Clave por código de ruta.
+final editorDraftsBoxProvider = Provider<Box<Map<dynamic, dynamic>>>(
+  (_) => Hive.box<Map<dynamic, dynamic>>(HiveBoxes.editorDrafts),
+);

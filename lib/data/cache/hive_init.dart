@@ -34,6 +34,7 @@ abstract class HiveBoxes {
   static const routeSuggestions = 'route_suggestions';
   static const featureRequests = 'feature_requests';
   static const notifications = 'notifications';
+  static const editorDrafts = 'editor_drafts';
 
   /// Cola de mutaciones offline. Cada entrada es la serialización
   /// JSON de `PendingAction` (`lib/data/sync/pending_action.dart`).
@@ -80,6 +81,7 @@ abstract class HiveInit {
     await _open<RouteSuggestionModel>(HiveBoxes.routeSuggestions);
     await _open<FeatureRequest>(HiveBoxes.featureRequests);
     await _open<AppNotification>(HiveBoxes.notifications);
+    await _open<Map<dynamic, dynamic>>(HiveBoxes.editorDrafts);
 
     // Cajas sin tipo fijado: cada entrada es `Map<dynamic, dynamic>`
     // serializable directamente por Hive (los maps se cargan así por

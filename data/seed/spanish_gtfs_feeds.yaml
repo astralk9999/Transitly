@@ -1,0 +1,65 @@
+# Operadores españoles con feeds GTFS abiertos.
+# Fuente: https://data.mobilitydcat-ap.net y portales open data de cada operador.
+# El campo `gtfs_url` puede estar vacío si el operador no publica GTFS (datos manuales).
+# El campo `region` sigue la nomenclatura NUTS-2/CCAA.
+
+operators:
+  - slug: comujesa
+    name: Consorcio de Transportes de la Bahía de Cádiz - Jerez
+    region: Andalucía
+    website: https://www.comujesa.es
+    # gtfs_url: — sin feed GTFS público. Los datos vienen de comujesa_data.json (F7.3).
+
+  - slug: emt-madrid
+    name: EMT Madrid
+    region: Madrid
+    website: https://www.emtmadrid.es
+    # gtfs_url: — fuente: datos abiertos EMT (requiere API key)
+
+  - slug: tmb
+    name: TMB Barcelona
+    region: Cataluña
+    website: https://www.tmb.cat
+    # gtfs_url: — fuente: Open Data BCN
+
+  - slug: tussam
+    name: TUSSAM Sevilla
+    region: Andalucía
+    website: https://www.tussam.es
+    # gtfs_url: — fuente: datos abiertos Sevilla
+
+  - slug: emt-malaga
+    name: EMT Málaga
+    region: Andalucía
+    website: https://www.emtmalaga.es
+    # gtfs_url: — fuente: datos abiertos Málaga
+
+  - slug: emt-valencia
+    name: EMT Valencia
+    region: Comunidad Valenciana
+    website: https://www.emtvalencia.es
+    # gtfs_url: — fuente: datos abiertos Valencia
+
+  - slug: auvasa
+    name: AUVASA Valladolid
+    region: Castilla y León
+    website: https://www.auvasa.es
+    # gtfs_url: — fuente: datos abiertos Valladolid
+
+  - slug: bilbobus
+    name: Bilbobus
+    region: País Vasco
+    website: https://www.bilbao.eus/bilbobus
+    # gtfs_url: — fuente: datos abiertos Bilbao
+
+  - slug: titsa
+    name: TITSA Tenerife
+    region: Canarias
+    website: https://www.titsa.com
+    # gtfs_url: — fuente: datos abiertos Tenerife
+
+  - slug: avanza-zaragoza
+    name: Avanza Zaragoza
+    region: Aragón
+    website: https://zaragoza.avanzagrupo.com
+    # gtfs_url: — fuente: datos abiertos Zaragoza

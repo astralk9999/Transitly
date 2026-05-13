@@ -218,7 +218,7 @@ class StopDetailScreen extends ConsumerWidget {
                       c,
                       Icons.warning_amber,
                       'Reportar',
-                      onTap: () => showReportIncidentSheet(context, stop: stop),
+                      onTap: () => showReportIncidentSheet(context, ref: ref, stop: stop),
                     ),
                     _actionButton(context, c, Icons.edit, 'Mejorar'),
                     _actionButton(context, c, Icons.share, 'Compartir'),

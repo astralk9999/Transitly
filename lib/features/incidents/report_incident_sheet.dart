@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
+import '../../core/utils/uuid.dart';
+import '../../data/incident/incident_repository_provider.dart';
+import '../../shared/models/enums.dart';
+import '../../shared/models/incident_model.dart';
 import '../../shared/models/route_model.dart';
 import '../../shared/models/stop_model.dart';
+import '../../shared/providers/user_provider.dart';
 import '../../shared/widgets/transit_button.dart';
 import '../../shared/widgets/transit_input.dart';
 
 void showReportIncidentSheet(
   BuildContext context, {
+  required WidgetRef ref,
   RouteModel? route,
   StopModel? stop,
 }) {
@@ -26,6 +33,7 @@ void showReportIncidentSheet(
     builder: (ctx) {
       return _ReportIncidentContent(
         c: c,
+        ref: ref,
         route: route,
         stop: stop,
       );
@@ -33,30 +41,109 @@ void showReportIncidentSheet(
   );
 }
 
-class _ReportIncidentContent extends StatefulWidget {
+class _ReportIncidentContent extends ConsumerStatefulWidget {
   const _ReportIncidentContent({
     required this.c,
+    required this.ref,
     this.route,
     this.stop,
   });
 
   final TransitColorScheme c;
+  final WidgetRef ref;
   final RouteModel? route;
   final StopModel? stop;
 
   @override
-  State<_ReportIncidentContent> createState() =>
+  ConsumerState<_ReportIncidentContent> createState() =>
       _ReportIncidentContentState();
 }
 
-class _ReportIncidentContentState extends State<_ReportIncidentContent> {
+class _ReportIncidentContentState
+    extends ConsumerState<_ReportIncidentContent> {
   String? _selected;
   final _commentCtrl = TextEditingController();
+  bool _submitting = false;
 
   @override
   void dispose() {
     _commentCtrl.dispose();
     super.dispose();
+  }
+
+  Future<void> _submit() async {
+    if (_selected == null) return;
+
+    setState(() => _submitting = true);
+
+    try {
+      final user = ref.read(currentUserProvider);
+      final repo = ref.read(incidentRepositoryProvider);
+
+      IncidentType type;
+      IncidentCategory category;
+      switch (_selected) {
+        case 'delay':
+          type = IncidentType.delay;
+          category = IncidentCategory.service;
+        case 'no_show':
+          type = IncidentType.busNoShow;
+          category = IncidentCategory.service;
+        case 'full':
+          type = IncidentType.busFull;
+          category = IncidentCategory.service;
+        case 'detour':
+          type = IncidentType.detour;
+          category = IncidentCategory.service;
+        case 'breakdown':
+          type = IncidentType.dangerousDriving;
+          category = IncidentCategory.service;
+        case 'punctual':
+          type = IncidentType.punctual;
+          category = IncidentCategory.positive;
+        case 'kind':
+          type = IncidentType.driverKind;
+          category = IncidentCategory.positive;
+        case 'clean':
+          type = IncidentType.stopClean;
+          category = IncidentCategory.positive;
+        default:
+          type = IncidentType.delay;
+          category = IncidentCategory.service;
+      }
+
+      final incident = IncidentModel(
+        id: generateUuidV4(),
+        reporterId: user.id,
+        routeId: widget.route?.id ?? '',
+        stopId: widget.stop?.id,
+        incidentType: type,
+        category: category,
+        comment: _commentCtrl.text.trim().isEmpty
+            ? null
+            : _commentCtrl.text.trim(),
+        status: 'open',
+        createdAt: DateTime.now().toUtc(),
+      );
+
+      await repo.create(incident);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('Reporte enviado. Gracias por tu colaboración.')),
+        );
+        Navigator.of(context).pop();
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al enviar: ${e.toString()}')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _submitting = false);
+    }
   }
 
   @override
@@ -70,7 +157,6 @@ class _ReportIncidentContentState extends State<_ReportIncidentContent> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Handle
           Center(
             child: Container(
               width: 32,
@@ -82,8 +168,6 @@ class _ReportIncidentContentState extends State<_ReportIncidentContent> {
               ),
             ),
           ),
-
-          // Title
           Text(
             '¿QUÉ HA PASADO?',
             style: GoogleFonts.ibmPlexMono(
@@ -93,8 +177,6 @@ class _ReportIncidentContentState extends State<_ReportIncidentContent> {
             ),
           ),
           const SizedBox(height: 4),
-
-          // Context
           if (widget.route != null)
             Text(
               '${widget.route!.code} · ${widget.route!.name}',
@@ -107,7 +189,6 @@ class _ReportIncidentContentState extends State<_ReportIncidentContent> {
             ),
           const SizedBox(height: 16),
 
-          // Negative options
           GridView.count(
             crossAxisCount: 3,
             shrinkWrap: true,
@@ -124,12 +205,10 @@ class _ReportIncidentContentState extends State<_ReportIncidentContent> {
               _optionCell(c, 'other', Icons.more_horiz, 'Otro'),
             ],
           ),
-
           const SizedBox(height: 12),
           Divider(height: 1, thickness: 0.5, color: c.border),
           const SizedBox(height: 12),
 
-          // Positive options
           Text(
             'POSITIVO:',
             style: GoogleFonts.ibmPlexMono(
@@ -155,30 +234,19 @@ class _ReportIncidentContentState extends State<_ReportIncidentContent> {
                       c, 'clean', Icons.cleaning_services, 'Limpio')),
             ],
           ),
-
           const SizedBox(height: 16),
-
-          // Comment
           TransitInput(
             hint: 'Comentario (opcional)',
             controller: _commentCtrl,
           ),
           const SizedBox(height: 16),
 
-          // Submit
           SizedBox(
             width: double.infinity,
             child: TransitButton(
-              label: 'ENVIAR',
-              onPressed: _selected != null
-                  ? () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content:
-                                Text('Reporte enviado · Gracias')),
-                      );
-                      Navigator.of(context).pop();
-                    }
+              label: _submitting ? 'ENVIANDO...' : 'ENVIAR',
+              onPressed: _selected != null && !_submitting
+                  ? _submit
                   : null,
             ),
           ),
@@ -205,7 +273,9 @@ class _ReportIncidentContentState extends State<_ReportIncidentContent> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 28, color: isSelected ? c.accent : c.textMid),
+            Icon(icon,
+                size: 28,
+                color: isSelected ? c.accent : c.textMid),
             const SizedBox(height: 2),
             Text(
               label,

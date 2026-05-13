@@ -246,6 +246,7 @@ class _ActiveRouteScreenState extends ConsumerState<ActiveRouteScreen> {
                 isSmall: true,
                 onPressed: () => showReportIncidentSheet(
                   context,
+                  ref: ref,
                   route: route,
                   stop: nextStop,
                 ),

@@ -7,6 +7,8 @@ import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../features/auth/auth_provider.dart';
 import '../../../features/auth/auth_repository.dart';
+import '../../../shared/models/user_role.dart';
+import '../../../shared/providers/user_provider.dart';
 import '../../../shared/widgets/glass_card.dart';
 import '../../../shared/widgets/gradient_text.dart';
 import '../../../shared/widgets/transit_button.dart';
@@ -111,6 +113,8 @@ class _ProfileAboutSectionState extends ConsumerState<ProfileAboutSection> {
 
     final authState = ref.watch(authStateProvider).valueOrNull;
     final isAuth = authState is AuthAuthenticated;
+    final user = ref.watch(currentUserProvider);
+    final isPassenger = user.role == UserRole.passenger;
 
     return GlassCard(
       blur: 16,
@@ -156,6 +160,14 @@ class _ProfileAboutSectionState extends ConsumerState<ProfileAboutSection> {
             color: Colors.white.withValues(alpha: 0.06),
           ),
           if (isAuth) ...[
+            if (isPassenger) ...[
+              GestureDetector(
+                onTap: () => context.go('/activate-driver'),
+                child: Text('Activar modo conductor',
+                    style: TransitTypography.bodySecondary(c.accent)),
+              ),
+              const SizedBox(height: 8),
+            ],
             GestureDetector(
               onTap: () => _showSignOutConfirmation(context, c),
               child: Text('Cerrar sesión',

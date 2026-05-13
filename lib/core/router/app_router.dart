@@ -9,6 +9,7 @@ import '../../features/auth/signin_screen.dart';
 import '../../features/auth/signup_screen.dart';
 import '../../features/auth/magic_link_screen.dart';
 import '../../features/auth/recover_password_screen.dart';
+import '../../features/auth/activate_driver_screen.dart';
 import '../../features/auth/email_verify_pending_screen.dart';
 import '../theme/transit_animations.dart';
 import '../../features/contributions/my_contributions_screen.dart';
@@ -109,6 +110,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/verify-email',
         pageBuilder: (context, state) => _slide(state, const EmailVerifyPendingScreen()),
+      ),
+      GoRoute(
+        path: '/activate-driver',
+        pageBuilder: (context, state) => _slide(state, const ActivateDriverScreen()),
       ),
 
       // ── Home shell with 5 tabs ──

@@ -20,6 +20,8 @@ import 'widgets/route_detail_feedback_section.dart';
 import 'widgets/route_detail_header.dart';
 import 'widgets/route_detail_schedule_section.dart';
 import 'widgets/route_detail_timeline.dart';
+import 'widgets/route_share_sheet.dart';
+import 'widgets/route_officialize_modal.dart';
 
 class RouteDetailScreen extends ConsumerWidget {
   const RouteDetailScreen({super.key, required this.routeId});
@@ -100,13 +102,36 @@ class RouteDetailScreen extends ConsumerWidget {
                       sliver: SliverList(
                         delegate: SliverChildListDelegate([
                           const SizedBox(height: 48),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: GestureDetector(
-                              onTap: () => context.pop(),
-                              child: Icon(Icons.arrow_back,
-                                  size: 24, color: c.textMid),
-                            ),
+                          Row(
+                            children: [
+                              GestureDetector(
+                                onTap: () => context.pop(),
+                                child: Icon(Icons.arrow_back,
+                                    size: 24, color: c.textMid),
+                              ),
+                              const Spacer(),
+                              IconButton(
+                                icon: Icon(Icons.share,
+                                    size: 22, color: c.textMid),
+                                onPressed: () => showRouteShareSheet(
+                                  context, ref,
+                                  routeId: routeId,
+                                  routeName: route.name,
+                                ),
+                                tooltip: 'Compartir',
+                              ),
+                              if (route.status == RouteStatus.draft)
+                                IconButton(
+                                  icon: Icon(Icons.verified_outlined,
+                                      size: 22, color: c.textMid),
+                                  onPressed: () => showRouteOfficializeModal(
+                                    context, ref,
+                                    routeId: routeId,
+                                    routeName: route.name,
+                                  ),
+                                  tooltip: 'Solicitar oficialización',
+                                ),
+                            ],
                           ),
                           const SizedBox(height: 16),
                           RouteDetailHeader(

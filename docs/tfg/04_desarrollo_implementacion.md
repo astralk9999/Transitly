@@ -25,7 +25,7 @@
 ✅✅✅✅✅✅✅✅✅✅⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜  17/28 fases (60.7%)
 
 Completado: F0 → F15
-En progreso: F16 (Panel admin)
+En progreso: F16 (Panel admin) — 4/5 tareas
 Pendiente: F17 → F27
 ```
 
@@ -33,8 +33,8 @@ Pendiente: F17 → F27
 
 | Indicador | Valor |
 |-----------|-------|
-| Commits totales | ~55 |
-| Tests | 120 pasando, 0 fallando |
+| Commits totales | ~56 |
+| Tests | 129 pasando, 0 fallando |
 | Lint | 5 info (prefer_const_constructors), 0 warnings, 0 errors |
 | Líneas de código | ~25,000+ |
 | Modelos @freezed | 20+ |
@@ -50,6 +50,7 @@ Pendiente: F17 → F27
 
 | Hash | Fecha | Fase | Descripción |
 |------|-------|------|-------------|
+| `d09706a` | 2026-05-14 | F16 | feat(admin): wire ManagerInboxScreen to real repositories with moderation actions |
 | `852ef25` | 2026-05-14 | F16 | feat(admin): add operator CRUD |
 | `182b442` | 2026-05-14 | F16 | feat(admin): add user list with role filter and search |
 | `4d08467` | 2026-05-14 | F16 | feat(admin): add admin panel base screen with RoleGate |
@@ -81,8 +82,8 @@ Pendiente: F17 → F27
 | features/admin | 13 | Admin users + operator CRUD screen |
 | widgets compartidos | 15 | GlassCard, TransitAppBar, etc. |
 | Otros | 50 | NFC, sync, router, etc. |
-| **Total** | **120** | — |
+| **Total** | **129** | — |
 
 ---
 
-**Última actualización:** 2026-05-14 · Documentation Agent · Commit `852ef25`
+**Última actualización:** 2026-05-14 · Documentation Agent · Commit `d09706a`

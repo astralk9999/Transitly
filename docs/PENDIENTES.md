@@ -71,7 +71,7 @@
 - ✅ [F12] **`1.16c` — Acción "Compartir" en `stop_detail_screen.dart`.** `L`. Cerrado con share sheet + officialize request modal. `d856cfc`.
 - ✅ [F15] **`1.16d` — Acción "Mejorar" en `stop_detail_screen.dart`.** `L`. Cerrado con `showRouteFeedbackSheet` → `RouteFeedbackRepository`. `252a422`.
 - ✅ [F8] **`1.16e` — Acción "Cómo llegar" en `stop_detail_screen.dart`.** `L`. Cerrado con búsqueda + ruta en F8 (city picker + active operator). `75d56cb`.
-- [F16] **`1.18` — `ManagerInboxScreen` handlers `SnackBar` en `manager_inbox_screen.dart:87-91, :156-160`.** `L`. Cierra con panel admin (F16).
+- ✅ [F16] **`1.18` — `ManagerInboxScreen` handlers `SnackBar` en `manager_inbox_screen.dart:87-91, :156-160`.** `L`. Cerrado con F16-004 (handlers reales para approve/reject/resolve). `d09706a`.
 - ✅ [F9] **`1.19` — `MapTab` filtros + búsqueda inertes en `map_tab.dart:173-183`.** `M` · `posponer`. Cerrado con MapFilterState + filter controller + filter bottom sheet. `2c52f25`.
 
 ### Deuda técnica estructural
@@ -207,6 +207,10 @@ Cada entidad necesita el mismo conjunto de 5 archivos: interfaz abstracta + remo
 
 ✅ Completado — CRUD de operadores con remote/local/mock repository y admin UI.
 
+#### F16-004 — ManagerInboxScreen handlers reales (`d09706a`)
+
+✅ Completado — Botones de approve/reject/resolve en ManagerInboxScreen con llamadas reales a repositorios y feedback visual.
+
 ##### Issues de revisión de código (F16-003)
 
 > Registrados desde el Review Agent. Prioridad: I = importante, M = menor.
@@ -218,6 +222,18 @@ Cada entidad necesita el mismo conjunto de 5 archivos: interfaz abstracta + remo
 - [F16] **M1 — Unused `_mockData` field.** `lib/data/operator/local/operator_mock_repository.dart`.
 - [F16] **M2 — `shortName` derivation duplicated in 4 places.** Extraer a método helper.
 - [F16] **M3 — `phone` field always hardcoded to empty string.** Asignar desde modelo o UI.
+
+##### Issues de revisión de código (F16-004)
+
+> Registrados desde el Tracker Agent. Prioridad: I = importante, M = menor.
+
+- [F22] **I1 — `updateStatus` lacks offline queue.** `manager_inbox_screen.dart`. Los cambios de estado (approve/reject/resolve) no se encolan cuando no hay conexión.
+- [F22] **I2 — No loading on status update buttons.** `manager_inbox_screen.dart`. Los botones de cambio de estado no muestran indicador de carga durante la operación.
+- [F22] **I3 — Full `_loadData()` after each status update.** `manager_inbox_screen.dart`. Se recargan todos los datos tras cada cambio de estado en lugar de hacer actualización optimista.
+- [F22] **M1 — `_feedbackStatusFromString` duplicated.** `manager_inbox_screen.dart`. Método duplicado; extraer a helper compartido en `data/route_feedback/`.
+- [F22] **M2 — 3 l10n keys unused.** Claves de localización definidas en ARB pero sin consumidor en la UI.
+- [F22] **M3 — `Color.mix` should be in `core/theme`.** Uso de `Color.mix` inline en la UI; mover a helper de tokens de diseño.
+- [F22] **M4 — Suggestions tab lacks resolve/reject.** La pestaña de sugerencias en `ManagerInboxScreen` no tiene acciones de resolver/rechazar como feedback e incidents.
 
 ---
 
@@ -238,4 +254,4 @@ Cada entidad necesita el mismo conjunto de 5 archivos: interfaz abstracta + remo
 
 ---
 
-**Última actualización:** 2026-05-14 · F16 en progreso (F16-003 CRUD operadores en `852ef25`). F4→F15 cerradas. Pendientes de revisión: I2-I5, M1-M3.
+**Última actualización:** 2026-05-14 · F16 en progreso (F16-003 CRUD operadores en `852ef25`, F16-004 ManagerInboxScreen handlers en `d09706a`). F4→F15 cerradas. Issues F16-004 registrados como [F22]: I1-I3, M1-M4.

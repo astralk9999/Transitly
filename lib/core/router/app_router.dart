@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import '../../data/mock/mock_data_service.dart';
 import '../../features/auth/auth_provider.dart';
 import '../../features/auth/auth_repository.dart';
+import '../../shared/providers/user_provider.dart';
+import '../../shared/models/user_role.dart';
 import '../../features/auth/signin_screen.dart';
 import '../../features/auth/signup_screen.dart';
 import '../../features/auth/magic_link_screen.dart';
@@ -75,9 +77,21 @@ final routerProvider = Provider<GoRouter>((ref) {
           loc.startsWith('/route') ||
           loc.startsWith('/stop');
       final isPublicRoute = loc == '/splash' || loc == '/onboarding';
+      final isAdminRoute = loc.startsWith('/admin');
+      final isManagementRoute = loc.startsWith('/management');
 
       // Auth routes: redirect to home if already authenticated
       if (isAuthRoute && isAuth) return '/home/inicio';
+
+      // Admin/management routes require auth + role
+      if (isAdminRoute || isManagementRoute) {
+        if (!isAuth) return '/home/inicio';
+        final role = ref.read(currentUserProvider).role;
+        if (isAdminRoute && role != UserRole.admin) return '/home/inicio';
+        if (isManagementRoute && role != UserRole.admin && role != UserRole.moderator) {
+          return '/home/inicio';
+        }
+      }
 
       // All existing routes are guestOk for now
       if (isHomeRoute || isPublicRoute || isAuthRoute) return null;

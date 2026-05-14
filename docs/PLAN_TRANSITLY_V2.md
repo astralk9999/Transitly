@@ -2891,8 +2891,8 @@ Read-only (RLS: solo SELECT para admin).
 
 ### Hecho cuando
 
-- [ ] Bandeja unificada muestra todo lo abierto con filtros y SLA.
-- [ ] Cada tipo se puede gestionar desde su detalle.
+- [x] Bandeja unificada muestra todo lo abierto con filtros y SLA. ManagerInboxScreen con handlers reales en `d09706a` (F16-004).
+- [~] Cada tipo se puede gestionar desde su detalle. Incidents/feedback: approve/reject/resolve inline. Suggestions: solo vista (M4 pendiente).
 - [ ] Aprobar una solicitud de oficial promueve la ruta correctamente.
 - [ ] Aplicar feedback corrige datos en producción.
 - [ ] Métricas con gráficos funcionando.

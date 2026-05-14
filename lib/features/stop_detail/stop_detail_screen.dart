@@ -59,10 +59,13 @@ class StopDetailScreen extends ConsumerWidget {
                 // ── BACK ──
                 Align(
                   alignment: Alignment.centerLeft,
-                  child: GestureDetector(
-                    onTap: () => context.pop(),
-                    child:
-                        Icon(Icons.arrow_back, size: 24, color: c.textMid),
+                  child: Tooltip(
+                    message: 'Volver',
+                    child: GestureDetector(
+                      onTap: () => context.pop(),
+                      child:
+                          Icon(Icons.arrow_back, size: 24, color: c.textMid),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -285,7 +288,14 @@ class StopDetailScreen extends ConsumerWidget {
           onTap: onTap ??
               () {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('$label: próximamente')),
+                  SnackBar(
+                    content: Semantics(
+                      liveRegion: true,
+                      label: '$label: próximamente',
+                      child: Text('$label: próximamente'),
+                    ),
+                    behavior: SnackBarBehavior.floating,
+                  ),
                 );
               },
           child: Column(

@@ -94,33 +94,40 @@ class _HomeTabState extends ConsumerState<HomeTab> {
           sliver: SliverList(
             delegate: SliverChildListDelegate([
               // ── Header ──
-              Text(
-                'TRANSITLY',
-                style: GoogleFonts.ibmPlexMono(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 2,
-                  color: c.textHi,
+              Semantics(
+                header: true,
+                label: 'Transitly',
+                child: Text(
+                  'TRANSITLY',
+                  style: GoogleFonts.ibmPlexMono(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 2,
+                    color: c.textHi,
+                  ),
                 ),
               ),
               const SizedBox(height: 4),
-              GestureDetector(
-                onTap: () => context.push('/city-picker'),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      ref.watch(activeOperatorProvider)?.name ??
-                          'Jerez de la Frontera',
-                      style: GoogleFonts.dmSans(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                        color: c.textMid,
+              Tooltip(
+                message: 'Cambiar ciudad',
+                child: GestureDetector(
+                  onTap: () => context.push('/city-picker'),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        ref.watch(activeOperatorProvider)?.name ??
+                            'Jerez de la Frontera',
+                        style: GoogleFonts.dmSans(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: c.textMid,
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 4),
-                    Icon(Icons.arrow_drop_down, size: 18, color: c.textMid),
-                  ],
+                      const SizedBox(width: 4),
+                      Icon(Icons.arrow_drop_down, size: 18, color: c.textMid),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 24),
@@ -199,9 +206,12 @@ class _HomeTabState extends ConsumerState<HomeTab> {
     final mins =
         next.isNotEmpty ? _minutesUntil(next.first.departureTime) : null;
 
-    return GestureDetector(
-      onTap: () => context.push('/route/${route.id}'),
-      child: GlassCard(
+    return Semantics(
+      button: true,
+      label: 'Tu próximo bus, ${route.code}',
+      child: GestureDetector(
+        onTap: () => context.push('/route/${route.id}'),
+        child: GlassCard(
         blur: 28,
         fillOpacity: 0.10,
         borderRadius: 20,
@@ -254,6 +264,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
           ],
         ),
       ),
+      ),
     );
   }
 
@@ -301,9 +312,12 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                   ? _minutesUntil(next.first.departureTime)
                   : null;
 
-              return GestureDetector(
-                onTap: () => context.push('/route/$routeId'),
-                child: Row(
+              return Semantics(
+                button: true,
+                label: '${route.code}, $time',
+                child: GestureDetector(
+                  onTap: () => context.push('/route/$routeId'),
+                  child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     TransitChip(route.code, color: route.routeColor),
@@ -325,6 +339,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                     Icon(Icons.notifications_none, size: 14, color: c.textLo),
                   ],
                 ),
+              ),
               );
             }).toList(),
           ),

@@ -79,29 +79,36 @@ class DriverPanel extends StatelessWidget {
 
   Widget _option(BuildContext context, TransitColorScheme c, IconData icon,
       String label, String route) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.of(context).pop();
-        context.push(route);
-      },
-      child: Container(
-        height: 48,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(color: c.border, width: 0.5),
-          ),
-        ),
-        child: Row(
-          children: [
-            Icon(icon, size: 20, color: c.accent),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(label,
-                  style: TransitTypography.bodyPrimary(c.textHi)),
+    return Semantics(
+      button: true,
+      label: label,
+      child: Tooltip(
+        message: label,
+        child: GestureDetector(
+          onTap: () {
+            Navigator.of(context).pop();
+            context.push(route);
+          },
+          child: Container(
+            height: 48,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(color: c.border, width: 0.5),
+              ),
             ),
-            Icon(Icons.chevron_right, size: 20, color: c.textLo),
-          ],
+            child: Row(
+              children: [
+                Icon(icon, size: 20, color: c.accent),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(label,
+                      style: TransitTypography.bodyPrimary(c.textHi)),
+                ),
+                Icon(Icons.chevron_right, size: 20, color: c.textLo),
+              ],
+            ),
+          ),
         ),
       ),
     );

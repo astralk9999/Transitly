@@ -65,6 +65,7 @@ class RouteDetailHeader extends StatelessWidget {
                 children: [
                   Semantics(
                     header: true,
+                    label: route.name.toUpperCase(),
                     child: Text(
                       route.name.toUpperCase(),
                       style: TransitTypography.heading(c.textHi),

@@ -39,7 +39,10 @@ class OfflineBanner extends ConsumerWidget {
     final c = TransitColorScheme.of(isDark);
     final message = _buildMessage(isOffline, pendingCount);
 
-    return Material(
+    return Semantics(
+      liveRegion: true,
+      label: message,
+      child: Material(
       color: c.stateDelay,
       child: SafeArea(
         bottom: false,
@@ -64,6 +67,7 @@ class OfflineBanner extends ConsumerWidget {
             ],
           ),
         ),
+      ),
       ),
     );
   }

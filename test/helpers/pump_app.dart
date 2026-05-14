@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:transitly/core/theme/transit_colors.dart';
 import 'package:transitly/core/theme/transit_theme.dart';
 import 'package:transitly/data/mock/mock_data_service.dart';
 import 'package:transitly/l10n/generated/app_localizations.dart';
@@ -18,6 +19,7 @@ Future<void> pumpApp(
   bool disableAnimations = true,
   Locale locale = const Locale('es'),
 }) async {
+  final scheme = TransitColorScheme.of(themeDark);
   await tester.pumpWidget(
     ProviderScope(
       overrides: overrides,
@@ -28,7 +30,7 @@ Future<void> pumpApp(
         data: MediaQueryData(disableAnimations: disableAnimations),
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
-          theme: buildTransitTheme(themeDark),
+          theme: buildTransitTheme(scheme),
           locale: locale,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,

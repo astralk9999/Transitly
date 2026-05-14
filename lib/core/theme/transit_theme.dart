@@ -3,9 +3,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'transit_colors.dart';
 import 'transit_spacing.dart';
 
-ThemeData buildTransitTheme(bool isDark) {
-  final c = TransitColorScheme.of(isDark);
-  final brightness = isDark ? Brightness.dark : Brightness.light;
+ThemeData buildTransitTheme(TransitColorScheme c, {double fontScale = 1.0}) {
+  final brightness = switch (c) {
+    TransitLightColors() => Brightness.light,
+    _ => Brightness.dark,
+  };
 
   return ThemeData(
     useMaterial3: true,
@@ -32,10 +34,13 @@ ThemeData buildTransitTheme(bool isDark) {
     ),
 
     textTheme: GoogleFonts.dmSansTextTheme(
-      isDark ? ThemeData.dark().textTheme : ThemeData.light().textTheme,
+      brightness == Brightness.dark
+          ? ThemeData.dark().textTheme
+          : ThemeData.light().textTheme,
     ).apply(
       bodyColor: c.textHi,
       displayColor: c.textHi,
+      fontSizeFactor: fontScale,
     ),
 
     appBarTheme: AppBarTheme(

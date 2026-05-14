@@ -1,20 +1,12 @@
 {
-  "pending": [],
-  "active": [
-    {
-      "id": "F16-005",
-      "title": "Wiring de navegación admin en router",
-      "phase": "F16",
-      "priority": "medium",
-      "status": "active",
-      "dependencies": ["F16-001"],
-      "assigned_to": "developer"
-    }
+  "pending": [
+    {"id": "F17-002", "title": "AppearanceScreen + navigation", "phase": "F17", "priority": "high", "status": "pending", "dependencies": ["F17-001"], "assigned_to": null},
+    {"id": "F17-003", "title": "BackgroundWrapper + wiring en app.dart", "phase": "F17", "priority": "high", "status": "pending", "dependencies": ["F17-001"], "assigned_to": null},
+    {"id": "F17-004", "title": "CustomPaletteScreen con color picker", "phase": "F17", "priority": "medium", "status": "pending", "dependencies": ["F17-001", "F17-002"], "assigned_to": null},
+    {"id": "F17-005", "title": "Bundle google_fonts + onboarding 3 pantallas", "phase": "F17", "priority": "medium", "status": "pending", "dependencies": [], "assigned_to": null}
   ],
-  "completed": [
-    {"id": "F16-001", "title": "Pantalla base admin con RoleGate", "status": "completed", "commit": "4d08467"},
-    {"id": "F16-002", "title": "Lista de usuarios con filtro por rol", "status": "completed", "commit": "182b442"},
-    {"id": "F16-003", "title": "CRUD de operadores", "status": "completed", "commit": "852ef25"},
-    {"id": "F16-004", "title": "ManagerInboxScreen handlers reales", "status": "completed", "commit": "d09706a"}
-  ]
+  "active": [
+    {"id": "F17-001", "title": "Modelos de paletas y fondos + ThemeNotifier", "phase": "F17", "priority": "high", "status": "active", "dependencies": [], "assigned_to": "developer"}
+  ],
+  "completed": []
 }

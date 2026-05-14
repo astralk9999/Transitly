@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:transitly/core/router/app_router.dart';
+import 'package:transitly/core/theme/transit_colors.dart';
 import 'package:transitly/core/theme/transit_theme.dart';
 import 'package:transitly/data/mock/mock_data_service.dart';
 import 'package:transitly/data/mock/mock_realtime_service.dart';
@@ -41,7 +42,7 @@ Future<GoRouter> pumpRouter(
             data: const MediaQueryData(disableAnimations: true),
             child: MaterialApp.router(
               debugShowCheckedModeBanner: false,
-              theme: buildTransitTheme(true),
+              theme: buildTransitTheme(const TransitDarkColors()),
               localizationsDelegates: AppLocalizations.localizationsDelegates,
               supportedLocales: AppLocalizations.supportedLocales,
               routerConfig: router,

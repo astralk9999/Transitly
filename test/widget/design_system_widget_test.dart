@@ -17,10 +17,11 @@ Future<void> pumpDesign(
   required Widget child,
   required bool isDark,
 }) async {
+  final scheme = TransitColorScheme.of(isDark);
   await tester.pumpWidget(
     MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: buildTransitTheme(isDark),
+      theme: buildTransitTheme(scheme),
       home: Scaffold(
         body: Center(
           child: Padding(

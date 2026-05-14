@@ -44,7 +44,7 @@
 | F12 — Compartir + oficializar | ✅ Cerrado (share sheet + officialize modal) | 1 |
 | F13 — Estimación de bus | ✅ Cerrado (bus_estimator + BusOriginLabel) | 1 |
 | F14 — Driver en vivo | ✅ Cerrado (DriverDashboard + bus_positions) | 1 |
-| F15 — Contribuciones | 🟨 En curso (incident wired a repo) | 1 |
+| F15 — Contribuciones | ✅ Cerrado (suggestions + feedback + incidents + hub) | 2 |
 | F16+ | ⏳ Sin empezar | — |
 
 **Total commits en la sesión:** 64 sobre `master`.
@@ -246,12 +246,14 @@ Estructura por entidad: 5 archivos en `lib/data/<entity>/` (domain abstract + re
 - Panel de control: iniciar/detener tracking, ver ruta asignada, cambiar estado.
 - Cierra `1.6a` (DriverHistoryScreen placeholder).
 
-### 2.16 F15 — Contribuciones (en progreso, `e16af43`)
+### 2.16 F15 — Contribuciones (completada, `e16af43`, `252a422`)
 
-- ✅ `ReportIncidentSheet` ahora persiste vía `IncidentRepository.create()` con cola offline.
-- ⏳ `SuggestionDetailScreen` y `SuggestionContributeScreen` pendientes de conectar a repos.
-- ⏳ Migrar `local_feedback_drafts` a `RouteFeedbackRepository`.
-- ⏳ Hub unificado de contribuciones.
+- ✅ `SuggestRouteScreen` submit wired to `RouteSuggestionRepository.create()`.
+- ✅ `SuggestionDetailScreen` rebuilt: loads real data + vote via RPC `cast_suggestion_vote`.
+- ✅ `showRouteFeedbackSheet` created (mirrors `showReportIncidentSheet`) + wired to "Mejorar" button in `StopDetailScreen`.
+- ✅ `FeedbackScreen` dual-writes: `LocalFeedbackNotifier` (draft) + `RouteFeedbackRepository.create()`.
+- ✅ `MyContributionsScreen` rewired: suggestions/feedback/incidents loaded from repos via `Future.wait`. Local drafts shown alongside backend data. Real stat counts replace hardcoded values.
+- ⏸️ `SuggestionContributeScreen` and `FeedbackMessageModel` pospuestos (post-MVP).
 
 ---
 
@@ -286,7 +288,7 @@ Aplicado vía MCP a `mmzahxtiaurkgtmtehxk` (`https://mmzahxtiaurkgtmtehxk.supaba
 
 | Métrica | Inicio sesión | Fin sesión | Δ |
 |---------|--------------:|-----------:|---:|
-| Commits sobre `master` | (al inicio del corte) | +64 | — |
+| Commits sobre `master` | (al inicio del corte) | +66 | — |
 | Tests verde | 56 | 107 | +51 |
 | `flutter analyze` issues | 0 | 0 | — |
 | Modelos `@freezed` | 0 | 20 (13 migrados + 7 nuevos) | +20 |
@@ -316,16 +318,9 @@ Los 12 repositorios están implementados: Operator, Stop, Route, Schedule, BusLo
 
 Auth, roles, códigos de conductor, GTFS, geo-detección, filtros, editor, GPS live, sharing, estimación, driver dashboard. Ver secciones 2.5–2.15 arriba para detalle.
 
-### 5.4 F15 — Contribuciones (en progreso 🟨)
+### 5.4 F15 — Completado ✅
 
-| Subtarea | Estado |
-|----------|--------|
-| Incident wired a `IncidentRepository` + cola offline | ✅ `e16af43` |
-| `SuggestionDetailScreen` y `SuggestionContributeScreen` → conectar a repos | ⏳ |
-| Acción "Mejorar" en `stop_detail_screen.dart` (`1.16d`) | ⏳ |
-| Migrar `local_feedback_drafts` → `RouteFeedbackRepository` real | ⏳ |
-| Hub unificado de contribuciones (incidents + suggestions + feedback) | ⏳ |
-| `FeedbackMessageModel` threading | ⏳ |
+Todas las subtareas completadas (ver sección 2.16). `SuggestionContributeScreen` y `FeedbackMessageModel` pospuestos a post-MVP.
 
 ### 5.5 F16–F27 (sin empezar)
 

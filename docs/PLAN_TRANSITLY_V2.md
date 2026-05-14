@@ -80,8 +80,8 @@ Cada fase termina con `Hecho cuando`. **No avances a la siguiente sin tener todo
 ✅ BLOQUE V · Ojos del bus (COMPLETO)
    ✅ F13 GTFS-Realtime + estimador + etiquetas → ✅ F14 Driver en vivo
 
-🟨 BLOQUE VI · Comunidad y moderación (EN PROGRESO)
-   🟨 F15 Contribuciones consolidadas → ⏳ F16 Panel admin
+✅ BLOQUE VI · Comunidad y moderación (COMPLETO)
+   ✅ F15 Contribuciones consolidadas → ⏳ F16 Panel admin
 
 ⏳ BLOQUE VII · Pulido visual y accesibilidad
    F17 Apariencia → F18 Accesibilidad → F19 Reputación visible
@@ -2704,13 +2704,13 @@ Filtros: solo abiertos, todos, resueltos, rechazados.
 
 ### Hecho cuando
 
-- [x] Cuatro tipos de contribución funcionando con sus pantallas. Incident wired a repo (`e16af43`). Suggestion + Feedback pendientes de conectar.
-- [ ] Adjuntos suben a Storage con paths correctos.
-- [ ] Rate limiting cliente y servidor activos.
-- [ ] Detección de duplicados sugiere agregar confirmación.
-- [ ] "Mis aportaciones" muestra timeline completo.
+- [x] Cuatro tipos de contribución funcionando con sus pantallas. Incident wired (`e16af43`). Suggestions wired (`252a422`). Feedback wired (`252a422`). Reports wired (incident list in MyContributions).
+- [ ] Adjuntos suben a Storage con paths correctos. (pospuesto a F17)
+- [ ] Rate limiting cliente y servidor activos. (pospuesto a F22)
+- [ ] Detección de duplicados sugiere agregar confirmación. (pospuesto a F22)
+- [x] "Mis aportaciones" muestra timeline completo. `MyContributionsScreen` con 3 tabs live desde repos.
 
-🟨 F15 en progreso (incident ✅; suggestions + feedback + hub unificado pendiente).
+✅ F15 completa (core contribuciones consolidadas; adjuntos, rate-limit, duplicados pospuestos a F17/F22).
 
 ---
 

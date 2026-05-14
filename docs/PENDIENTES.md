@@ -191,13 +191,15 @@ Cada entidad necesita el mismo conjunto de 5 archivos: interfaz abstracta + remo
 - `bus_positions` insert cada 5s vía Supabase
 - Cierra `1.6a`
 
-### 🟨 F15 — Contribuciones consolidadas (en progreso)
+### ✅ F15 — Contribuciones consolidadas (completada)
 - ✅ Incident report wired a `IncidentRepository` + cola offline (`e16af43`)
-- ⏳ `SuggestionDetailScreen` y `SuggestionContributeScreen` → conectar a repositorios reales
-- ⏳ Acción "Mejorar" en `stop_detail_screen.dart` (`1.16d`)
-- ⏳ Migrar `local_feedback_drafts` → `RouteFeedbackRepository` real
-- ⏳ Unificar hub de contribuciones (incidents + suggestions + feedback)
-- ⏳ `FeedbackMessageModel` threading
+- ✅ `SuggestRouteScreen` wired to `RouteSuggestionRepository.create()` (`252a422`)
+- ✅ `SuggestionDetailScreen` built with real data + vote via RPC `cast_suggestion_vote` (`252a422`)
+- ✅ Acción "Mejorar" en `stop_detail_screen.dart` wired to `showRouteFeedbackSheet` → `RouteFeedbackRepository` (`252a422`)
+- ✅ `FeedbackScreen` dual-writes to `LocalFeedbackNotifier` + `RouteFeedbackRepository` (`252a422`)
+- ✅ `MyContributionsScreen` rewired: suggestions/feedback/incidents from repos + local drafts (`252a422`)
+- ⏸️ `SuggestionContributeScreen` — pospuesto (enriquecimiento de sugerencias post-MVP)
+- ⏸️ `FeedbackMessageModel` threading — pospuesto (mensajería gestor↔usuario post-F16)
 
 ---
 

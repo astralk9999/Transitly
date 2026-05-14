@@ -84,6 +84,7 @@ flutter:
   assets:
     - assets/mock/
     - assets/branding/
+    - assets/achievements.json
     # TODO F26: Bundle google_fonts dmSans + ibmPlexMono as local assets
     # Steps:
     # 1. Download from https://fonts.google.com/specimen/DM+Sans and IBM+Plex+Mono

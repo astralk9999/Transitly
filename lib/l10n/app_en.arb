@@ -187,6 +187,9 @@
   "achievementsTitle": "Achievements",
   "achievementsLevel": "Level: {level} · {xp} XP",
 
+  "achievementsCategoryContribution": "Contribution",
+  "achievementsCategoryUsage": "Usage",
+
   "reputationTitle": "Reputation",
   "reputationHowToEarn": "How to earn",
   "reputationRanks": "Ranks",

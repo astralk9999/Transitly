@@ -120,3 +120,109 @@ DROP TRIGGER IF EXISTS trg_suggestion_reputation_after ON route_suggestions;
 CREATE TRIGGER trg_suggestion_reputation_after
   AFTER INSERT OR UPDATE OF status ON route_suggestions
   FOR EACH ROW EXECUTE FUNCTION trg_suggestion_reputation();
+
+-- =============================================================
+-- ACHIEVEMENT TRIGGERS (F19 — catalog ready, triggers are
+-- commented out until achievement tracking infra is built)
+-- =============================================================
+-- 
+-- CREATE OR REPLACE FUNCTION check_achievement_first_report()
+-- RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER SET search_path = public
+-- AS $$
+-- BEGIN
+--   IF (SELECT COUNT(*) FROM incidents WHERE author_id = NEW.author_id) >= 1 THEN
+--     INSERT INTO user_achievements (profile_id, code, unlocked_at)
+--     VALUES (NEW.author_id, 'first_report', NOW())
+--     ON CONFLICT (profile_id, code) DO NOTHING;
+--   END IF;
+--   RETURN NEW;
+-- END;
+-- $$;
+-- 
+-- CREATE OR REPLACE FUNCTION check_achievement_first_route_created()
+-- RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER SET search_path = public
+-- AS $$
+-- BEGIN
+--   IF (SELECT COUNT(*) FROM routes WHERE author_id = NEW.author_id AND source = 'community') >= 1 THEN
+--     INSERT INTO user_achievements (profile_id, code, unlocked_at)
+--     VALUES (NEW.author_id, 'first_route_created', NOW())
+--     ON CONFLICT (profile_id, code) DO NOTHING;
+--   END IF;
+--   RETURN NEW;
+-- END;
+-- $$;
+-- 
+-- CREATE OR REPLACE FUNCTION check_achievement_first_route_verified()
+-- RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER SET search_path = public
+-- AS $$
+-- BEGIN
+--   IF NEW.status = 'verified' THEN
+--     INSERT INTO user_achievements (profile_id, code, unlocked_at)
+--     VALUES (NEW.author_id, 'first_route_verified', NOW())
+--     ON CONFLICT (profile_id, code) DO NOTHING;
+--   END IF;
+--   RETURN NEW;
+-- END;
+-- $$;
+-- 
+-- CREATE OR REPLACE FUNCTION check_achievement_first_route_official()
+-- RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER SET search_path = public
+-- AS $$
+-- BEGIN
+--   IF NEW.status = 'official' THEN
+--     INSERT INTO user_achievements (profile_id, code, unlocked_at)
+--     VALUES (NEW.author_id, 'first_route_official', NOW())
+--     ON CONFLICT (profile_id, code) DO NOTHING;
+--   END IF;
+--   RETURN NEW;
+-- END;
+-- $$;
+-- 
+-- CREATE OR REPLACE FUNCTION check_achievement_100_votes()
+-- RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER SET search_path = public
+-- AS $$
+-- DECLARE v_count INT;
+-- BEGIN
+--   SELECT COUNT(*) INTO v_count FROM suggestion_votes WHERE voter_id = NEW.voter_id;
+--   IF v_count >= 100 THEN
+--     INSERT INTO user_achievements (profile_id, code, unlocked_at)
+--     VALUES (NEW.voter_id, '100_votes_cast', NOW())
+--     ON CONFLICT (profile_id, code) DO NOTHING;
+--   END IF;
+--   RETURN NEW;
+-- END;
+-- $$;
+-- 
+-- CREATE OR REPLACE FUNCTION check_achievement_10_corrections()
+-- RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER SET search_path = public
+-- AS $$
+-- DECLARE v_count INT;
+-- BEGIN
+--   SELECT COUNT(*) INTO v_count FROM route_feedback WHERE author_id = NEW.author_id AND status = 'accepted';
+--   IF v_count >= 10 THEN
+--     INSERT INTO user_achievements (profile_id, code, unlocked_at)
+--     VALUES (NEW.author_id, '10_corrections', NOW())
+--     ON CONFLICT (profile_id, code) DO NOTHING;
+--   END IF;
+--   RETURN NEW;
+-- END;
+-- $$;
+-- 
+-- CREATE OR REPLACE FUNCTION check_achievement_cartographer()
+-- RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER SET search_path = public
+-- AS $$
+-- DECLARE v_count INT;
+-- BEGIN
+--   SELECT COUNT(*) INTO v_count FROM routes WHERE author_id = NEW.author_id AND status = 'verified';
+--   IF v_count >= 5 THEN
+--     INSERT INTO user_achievements (profile_id, code, unlocked_at)
+--     VALUES (NEW.author_id, 'cartographer_default', NOW())
+--     ON CONFLICT (profile_id, code) DO NOTHING;
+--   END IF;
+--   RETURN NEW;
+-- END;
+-- $$;
+-- 
+-- TODO: bus_finder and early_adopter require client-side or
+-- separate tracking (bus_view events, app_open events). These
+-- will be handled by the achievement service in a later phase.

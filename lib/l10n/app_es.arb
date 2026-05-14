@@ -286,6 +286,11 @@
     }
   },
 
+  "achievementsCategoryContribution": "Contribución",
+  "@achievementsCategoryContribution": { "description": "Achievement category: contribution" },
+  "achievementsCategoryUsage": "Uso",
+  "@achievementsCategoryUsage": { "description": "Achievement category: usage" },
+
   "reputationTitle": "Reputación",
   "@reputationTitle": { "description": "Reputation screen title" },
   "reputationHowToEarn": "Cómo subir",

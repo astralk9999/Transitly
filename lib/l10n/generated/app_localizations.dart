@@ -1124,6 +1124,18 @@ abstract class AppLocalizations {
   /// **'Nivel: {level} · {xp} XP'**
   String achievementsLevel(String level, int xp);
 
+  /// Achievement category: contribution
+  ///
+  /// In es, this message translates to:
+  /// **'Contribución'**
+  String get achievementsCategoryContribution;
+
+  /// Achievement category: usage
+  ///
+  /// In es, this message translates to:
+  /// **'Uso'**
+  String get achievementsCategoryUsage;
+
   /// Reputation screen title
   ///
   /// In es, this message translates to:

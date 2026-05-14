@@ -539,6 +539,12 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get achievementsCategoryContribution => 'Contribución';
+
+  @override
+  String get achievementsCategoryUsage => 'Uso';
+
+  @override
   String get reputationTitle => 'Reputación';
 
   @override

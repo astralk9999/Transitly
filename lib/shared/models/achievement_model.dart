@@ -21,13 +21,13 @@ class AchievementModel {
 
   factory AchievementModel.fromJson(Map<String, dynamic> j) =>
       AchievementModel(
-        id: j['id'] as String,
-        code: j['id'] as String,
+        id: (j['code'] ?? j['id']) as String,
+        code: (j['code'] ?? j['id']) as String,
         name: j['name'] as String,
         description: j['description'] as String,
         icon: j['icon'] as String? ?? 'award',
         category:
             AchievementCategory.fromString(j['category'] as String? ?? 'usage'),
-        threshold: j['requirement'] as int? ?? 1,
+        threshold: (j['threshold'] ?? j['requirement']) as int? ?? 1,
       );
 }

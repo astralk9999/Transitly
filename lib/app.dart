@@ -5,6 +5,7 @@ import 'core/router/app_router.dart';
 import 'l10n/generated/app_localizations.dart';
 import 'shared/providers/locale_provider.dart';
 import 'shared/providers/theme_notifier.dart';
+import 'shared/widgets/background_wrapper.dart';
 
 class TransitlyApp extends ConsumerWidget {
   const TransitlyApp({super.key});
@@ -27,6 +28,7 @@ class TransitlyApp extends ConsumerWidget {
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       routerConfig: router,
+      builder: (context, child) => BackgroundWrapper(child: child!),
     );
   }
 }

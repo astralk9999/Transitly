@@ -7,16 +7,23 @@ import 'package:flutter/scheduler.dart';
 ///
 /// In dark mode: purple smoke on near-black base.
 /// In light mode: purple smoke on white base.
+///
+/// [opacity] controls overall visibility (0.0 = hidden, 1.0 = full).
+/// [reduceMotion] pauses the animation ticker when true.
 class SmokeBackground extends StatefulWidget {
   const SmokeBackground({
     super.key,
     this.color = const Color(0xFF977DDF),
     this.isDark = true,
+    this.opacity = 1.0,
+    this.reduceMotion = false,
     this.child,
   });
 
   final Color color;
   final bool isDark;
+  final double opacity;
+  final bool reduceMotion;
   final Widget? child;
 
   @override
@@ -36,8 +43,21 @@ class _SmokeBackgroundState extends State<SmokeBackground>
   @override
   void initState() {
     super.initState();
-    _ticker = createTicker(_onTick)..start();
+    _ticker = createTicker(_onTick);
+    if (!widget.reduceMotion) _ticker.start();
     _loadShader();
+  }
+
+  @override
+  void didUpdateWidget(SmokeBackground oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.reduceMotion != oldWidget.reduceMotion) {
+      if (widget.reduceMotion) {
+        _ticker.stop();
+      } else {
+        _ticker.start();
+      }
+    }
   }
 
   void _onTick(Duration elapsed) {
@@ -83,7 +103,7 @@ class _SmokeBackgroundState extends State<SmokeBackground>
             isDark: widget.isDark,
           );
 
-    return RepaintBoundary(
+    final content = RepaintBoundary(
       child: SizedBox.expand(
         child: CustomPaint(
           painter: painter,
@@ -91,6 +111,11 @@ class _SmokeBackgroundState extends State<SmokeBackground>
         ),
       ),
     );
+
+    if (widget.opacity < 1.0) {
+      return Opacity(opacity: widget.opacity, child: content);
+    }
+    return content;
   }
 }
 

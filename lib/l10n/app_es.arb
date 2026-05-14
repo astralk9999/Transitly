@@ -255,5 +255,23 @@
   "onboardingPage3Title": "Funciona sin internet",
   "@onboardingPage3Title": { "description": "Onboarding page 3 title" },
   "onboardingPage3Description": "Descarga tus rutas y consulta horarios incluso sin conexión.",
-  "@onboardingPage3Description": { "description": "Onboarding page 3 description" }
+  "@onboardingPage3Description": { "description": "Onboarding page 3 description" },
+
+  "reputationRankNone": "Sin rango",
+  "reputationRankNovice": "Novato",
+  "reputationRankContributor": "Colaborador",
+  "reputationRankAdvocate": "Defensor",
+  "reputationRankCartographer": "Cartógrafo",
+  "reputationRankGuardian": "Guardián",
+  "reputationRankLegend": "Leyenda",
+
+  "reputationEventIncidentCreated": "Reporte creado",
+  "reputationEventIncidentRejectedSpam": "Reporte rechazado (spam)",
+  "reputationEventFeedbackSubmitted": "Feedback enviado",
+  "reputationEventFeedbackAccepted": "Feedback aceptado",
+  "reputationEventSuggestionCreated": "Sugerencia creada",
+  "reputationEventSuggestionVoteReceived": "Voto recibido",
+  "reputationEventSuggestionVerified": "Sugerencia verificada",
+  "reputationEventSuggestionOfficial": "Sugerencia oficializada",
+  "reputationEventDuplicateReport": "Reporte duplicado"
 }

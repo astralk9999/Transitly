@@ -164,5 +164,23 @@
   "onboardingPage2Title": "Your community helps you",
   "onboardingPage2Description": "Report incidents, suggest routes and help other passengers like you.",
   "onboardingPage3Title": "Works offline",
-  "onboardingPage3Description": "Download your routes and check schedules even without connection."
+  "onboardingPage3Description": "Download your routes and check schedules even without connection.",
+
+  "reputationRankNone": "No rank",
+  "reputationRankNovice": "Novice",
+  "reputationRankContributor": "Contributor",
+  "reputationRankAdvocate": "Advocate",
+  "reputationRankCartographer": "Cartographer",
+  "reputationRankGuardian": "Guardian",
+  "reputationRankLegend": "Legend",
+
+  "reputationEventIncidentCreated": "Report created",
+  "reputationEventIncidentRejectedSpam": "Report rejected (spam)",
+  "reputationEventFeedbackSubmitted": "Feedback submitted",
+  "reputationEventFeedbackAccepted": "Feedback accepted",
+  "reputationEventSuggestionCreated": "Suggestion created",
+  "reputationEventSuggestionVoteReceived": "Vote received",
+  "reputationEventSuggestionVerified": "Suggestion verified",
+  "reputationEventSuggestionOfficial": "Suggestion officialized",
+  "reputationEventDuplicateReport": "Duplicate report"
 }

@@ -27,5 +27,6 @@ export 'bus_location.dart';
 export 'driver_invitation_code.dart';
 export 'feature_request.dart';
 export 'offline_region.dart';
+export 'reputation.dart';
 export 'route_share.dart';
 export 'user_preferences.dart';

@@ -1015,6 +1015,102 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Descarga tus rutas y consulta horarios incluso sin conexión.'**
   String get onboardingPage3Description;
+
+  /// No description provided for @reputationRankNone.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin rango'**
+  String get reputationRankNone;
+
+  /// No description provided for @reputationRankNovice.
+  ///
+  /// In es, this message translates to:
+  /// **'Novato'**
+  String get reputationRankNovice;
+
+  /// No description provided for @reputationRankContributor.
+  ///
+  /// In es, this message translates to:
+  /// **'Colaborador'**
+  String get reputationRankContributor;
+
+  /// No description provided for @reputationRankAdvocate.
+  ///
+  /// In es, this message translates to:
+  /// **'Defensor'**
+  String get reputationRankAdvocate;
+
+  /// No description provided for @reputationRankCartographer.
+  ///
+  /// In es, this message translates to:
+  /// **'Cartógrafo'**
+  String get reputationRankCartographer;
+
+  /// No description provided for @reputationRankGuardian.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardián'**
+  String get reputationRankGuardian;
+
+  /// No description provided for @reputationRankLegend.
+  ///
+  /// In es, this message translates to:
+  /// **'Leyenda'**
+  String get reputationRankLegend;
+
+  /// No description provided for @reputationEventIncidentCreated.
+  ///
+  /// In es, this message translates to:
+  /// **'Reporte creado'**
+  String get reputationEventIncidentCreated;
+
+  /// No description provided for @reputationEventIncidentRejectedSpam.
+  ///
+  /// In es, this message translates to:
+  /// **'Reporte rechazado (spam)'**
+  String get reputationEventIncidentRejectedSpam;
+
+  /// No description provided for @reputationEventFeedbackSubmitted.
+  ///
+  /// In es, this message translates to:
+  /// **'Feedback enviado'**
+  String get reputationEventFeedbackSubmitted;
+
+  /// No description provided for @reputationEventFeedbackAccepted.
+  ///
+  /// In es, this message translates to:
+  /// **'Feedback aceptado'**
+  String get reputationEventFeedbackAccepted;
+
+  /// No description provided for @reputationEventSuggestionCreated.
+  ///
+  /// In es, this message translates to:
+  /// **'Sugerencia creada'**
+  String get reputationEventSuggestionCreated;
+
+  /// No description provided for @reputationEventSuggestionVoteReceived.
+  ///
+  /// In es, this message translates to:
+  /// **'Voto recibido'**
+  String get reputationEventSuggestionVoteReceived;
+
+  /// No description provided for @reputationEventSuggestionVerified.
+  ///
+  /// In es, this message translates to:
+  /// **'Sugerencia verificada'**
+  String get reputationEventSuggestionVerified;
+
+  /// No description provided for @reputationEventSuggestionOfficial.
+  ///
+  /// In es, this message translates to:
+  /// **'Sugerencia oficializada'**
+  String get reputationEventSuggestionOfficial;
+
+  /// No description provided for @reputationEventDuplicateReport.
+  ///
+  /// In es, this message translates to:
+  /// **'Reporte duplicado'**
+  String get reputationEventDuplicateReport;
 }
 
 class _AppLocalizationsDelegate

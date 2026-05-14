@@ -1,12 +1,10 @@
 {
   "pending": [
-    {"id": "F18-002", "title": "Semantics pass: liveRegion, tooltips, OfflineBanner", "status": "pending", "dependencies": []},
-    {"id": "F18-003", "title": "accessible_buses_screen.dart", "status": "pending", "dependencies": []},
-    {"id": "F18-004", "title": "High contrast mode + fontScale MediaQuery", "status": "pending", "dependencies": ["F18-001"]},
-    {"id": "F18-005", "title": "A11Y audit document + final polish", "status": "pending", "dependencies": ["F18-001","F18-002","F18-003","F18-004"]}
+    {"id": "F19-002", "title": "ReputationScreen UI + wiring badge tap", "status": "pending", "dependencies": ["F19-001"]},
+    {"id": "F19-003", "title": "Achievements catalog JSON + trigger logic", "status": "pending", "dependencies": []}
   ],
   "active": [
-    {"id": "F18-001", "title": "Color blind matrix + dyslexia font + reduceMotion fixes", "status": "active", "dependencies": []}
+    {"id": "F19-001", "title": "Reputation system: ranks, events, migration", "status": "active", "dependencies": []}
   ],
   "completed": []
 }

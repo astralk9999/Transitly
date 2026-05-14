@@ -479,4 +479,52 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get onboardingPage3Description =>
       'Download your routes and check schedules even without connection.';
+
+  @override
+  String get reputationRankNone => 'No rank';
+
+  @override
+  String get reputationRankNovice => 'Novice';
+
+  @override
+  String get reputationRankContributor => 'Contributor';
+
+  @override
+  String get reputationRankAdvocate => 'Advocate';
+
+  @override
+  String get reputationRankCartographer => 'Cartographer';
+
+  @override
+  String get reputationRankGuardian => 'Guardian';
+
+  @override
+  String get reputationRankLegend => 'Legend';
+
+  @override
+  String get reputationEventIncidentCreated => 'Report created';
+
+  @override
+  String get reputationEventIncidentRejectedSpam => 'Report rejected (spam)';
+
+  @override
+  String get reputationEventFeedbackSubmitted => 'Feedback submitted';
+
+  @override
+  String get reputationEventFeedbackAccepted => 'Feedback accepted';
+
+  @override
+  String get reputationEventSuggestionCreated => 'Suggestion created';
+
+  @override
+  String get reputationEventSuggestionVoteReceived => 'Vote received';
+
+  @override
+  String get reputationEventSuggestionVerified => 'Suggestion verified';
+
+  @override
+  String get reputationEventSuggestionOfficial => 'Suggestion officialized';
+
+  @override
+  String get reputationEventDuplicateReport => 'Duplicate report';
 }

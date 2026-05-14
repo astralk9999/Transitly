@@ -7,6 +7,7 @@ import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../data/mock/mock_data_service.dart';
 import '../../shared/providers/route_lookup_providers.dart';
+import '../feedback/route_feedback_sheet.dart';
 import '../incidents/report_incident_sheet.dart';
 import '../../shared/widgets/responsive_scaffold.dart';
 import '../../shared/widgets/capacity_indicator.dart';
@@ -220,7 +221,13 @@ class StopDetailScreen extends ConsumerWidget {
                       'Reportar',
                       onTap: () => showReportIncidentSheet(context, ref: ref, stop: stop),
                     ),
-                    _actionButton(context, c, Icons.edit, 'Mejorar'),
+                    _actionButton(
+                      context,
+                      c,
+                      Icons.edit,
+                      'Mejorar',
+                      onTap: () => showRouteFeedbackSheet(context, ref: ref, stop: stop),
+                    ),
                     _actionButton(context, c, Icons.share, 'Compartir'),
                     _actionButton(
                         context, c, Icons.navigation, 'Cómo llegar'),

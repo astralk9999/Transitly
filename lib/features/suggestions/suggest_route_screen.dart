@@ -1,22 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
+import '../../core/utils/uuid.dart';
+import '../../data/route_suggestion/route_suggestion_repository_provider.dart';
+import '../../shared/models/enums.dart';
+import '../../shared/models/route_suggestion_model.dart';
+import '../../shared/providers/user_provider.dart';
 import '../../shared/widgets/single_field_dialog.dart';
 import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_button.dart';
 import '../../shared/widgets/transit_input.dart';
 
-class SuggestRouteScreen extends StatefulWidget {
+class SuggestRouteScreen extends ConsumerStatefulWidget {
   const SuggestRouteScreen({super.key});
 
   @override
-  State<SuggestRouteScreen> createState() => _SuggestRouteScreenState();
+  ConsumerState<SuggestRouteScreen> createState() =>
+      _SuggestRouteScreenState();
 }
 
-class _SuggestRouteScreenState extends State<SuggestRouteScreen> {
+class _SuggestRouteScreenState extends ConsumerState<SuggestRouteScreen> {
   final _fromCtrl = TextEditingController();
   final _toCtrl = TextEditingController();
   final _codeCtrl = TextEditingController();
@@ -271,14 +278,7 @@ class _SuggestRouteScreenState extends State<SuggestRouteScreen> {
                 label: 'ENVIAR SUGERENCIA',
                 onPressed:
                     _fromCtrl.text.isNotEmpty && _toCtrl.text.isNotEmpty
-                        ? () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text(
-                                      'Sugerencia enviada · Te avisaremos')),
-                            );
-                            context.pop();
-                          }
+                        ? () => _submitSuggestion(context, c)
                         : null,
               ),
             ),
@@ -289,6 +289,45 @@ class _SuggestRouteScreenState extends State<SuggestRouteScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> _submitSuggestion(
+      BuildContext context, TransitColorScheme c) async {
+    final user = ref.read(currentUserProvider);
+    final repo = ref.read(routeSuggestionRepositoryProvider);
+    final messenger = ScaffoldMessenger.of(context);
+    final nav = Navigator.of(context);
+
+    final suggestion = RouteSuggestionModel(
+      id: generateUuidV4(),
+      suggestedBy: user.id,
+      originText: _fromCtrl.text.trim(),
+      destinationText: _toCtrl.text.trim(),
+      routeCode: _codeCtrl.text.trim().isEmpty
+          ? null
+          : _codeCtrl.text.trim(),
+      operatorName: _operator.isNotEmpty ? _operator : null,
+      notes: _notesCtrl.text.trim().isEmpty ? null : _notesCtrl.text.trim(),
+      source: _source.isNotEmpty ? _source : null,
+      status: SuggestionStatus.idea,
+      createdAt: DateTime.now(),
+    );
+
+    try {
+      await repo.create(suggestion);
+      if (mounted) {
+        messenger.showSnackBar(
+          const SnackBar(content: Text('Sugerencia enviada · Te avisaremos')),
+        );
+        nav.pop();
+      }
+    } on Exception catch (e) {
+      if (mounted) {
+        messenger.showSnackBar(
+          SnackBar(content: Text('Error al enviar: $e')),
+        );
+      }
+    }
   }
 
   Future<void> _addHourDialog(TransitColorScheme c) async {

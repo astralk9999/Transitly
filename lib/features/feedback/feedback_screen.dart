@@ -4,8 +4,13 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
+import '../../core/utils/uuid.dart';
 import '../../data/mock/mock_data_service.dart';
+import '../../data/route_feedback/route_feedback_repository_provider.dart';
+import '../../shared/models/enums.dart';
+import '../../shared/models/route_feedback_model.dart';
 import '../../shared/providers/local_feedback_provider.dart';
+import '../../shared/providers/user_provider.dart';
 import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_button.dart';
 import '../../shared/widgets/transit_input.dart';
@@ -29,6 +34,16 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
     super.dispose();
   }
 
+  bool _submitting = false;
+
+  FeedbackType _categoryToFeedbackType(FeedbackCategory cat) => switch (cat) {
+        FeedbackCategory.route => FeedbackType.routePath,
+        FeedbackCategory.stops => FeedbackType.stopMissing,
+        FeedbackCategory.schedules => FeedbackType.scheduleOutdated,
+        FeedbackCategory.info => FeedbackType.generalInfo,
+        FeedbackCategory.suggestion => FeedbackType.suggestion,
+      };
+
   Future<void> _submit() async {
     final cat = _selected;
     if (cat == null) {
@@ -45,6 +60,9 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
       return;
     }
 
+    setState(() => _submitting = true);
+
+    final localNotifier = ref.read(localFeedbackProvider.notifier);
     final entry = LocalFeedbackEntry(
       id: 'local-${DateTime.now().millisecondsSinceEpoch}',
       routeId: widget.routeId,
@@ -52,8 +70,27 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
       description: desc,
       createdAt: DateTime.now(),
     );
-    await ref.read(localFeedbackProvider.notifier).add(entry);
+    await localNotifier.add(entry);
+
+    final user = ref.read(currentUserProvider);
+    final repo = ref.read(routeFeedbackRepositoryProvider);
+    final feedback = RouteFeedbackModel(
+      id: generateUuidV4(),
+      userId: user.id,
+      routeId: widget.routeId,
+      feedbackType: _categoryToFeedbackType(cat),
+      description: desc,
+      status: FeedbackStatus.submitted,
+      createdAt: DateTime.now(),
+    );
+    try {
+      await repo.create(feedback);
+    } on Exception {
+      // Feedback already persisted locally; remote will sync via offline queue
+    }
+
     if (!mounted) return;
+    setState(() => _submitting = false);
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Feedback enviado · Gracias')),
     );
@@ -111,8 +148,8 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
                 SizedBox(
                   width: double.infinity,
                   child: TransitButton(
-                    label: 'ENVIAR FEEDBACK',
-                    onPressed: _submit,
+                    label: _submitting ? 'ENVIANDO...' : 'ENVIAR FEEDBACK',
+                    onPressed: _submitting ? null : _submit,
                   ),
                 ),
                 const SizedBox(height: 32),

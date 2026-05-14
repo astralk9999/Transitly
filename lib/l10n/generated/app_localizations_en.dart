@@ -177,4 +177,66 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get adminUsersNoMatchRole => 'No users with the selected role';
+
+  @override
+  String get adminOperatorsTitle => 'Operator management';
+
+  @override
+  String get adminOperatorsCreate => 'Create operator';
+
+  @override
+  String get adminOperatorsEdit => 'Edit operator';
+
+  @override
+  String get adminOperatorsDelete => 'Delete';
+
+  @override
+  String get adminOperatorsSlug => 'Slug';
+
+  @override
+  String get adminOperatorsName => 'Name';
+
+  @override
+  String get adminOperatorsRegion => 'Region';
+
+  @override
+  String get adminOperatorsWebsite => 'Website';
+
+  @override
+  String get adminOperatorsEmail => 'Contact email';
+
+  @override
+  String get adminOperatorsDeleteConfirm => 'Delete this operator?';
+
+  @override
+  String get adminOperatorsEmpty => 'No operators registered';
+
+  @override
+  String get adminOperatorsCreated => 'Operator created';
+
+  @override
+  String get adminOperatorsUpdated => 'Operator updated';
+
+  @override
+  String get adminOperatorsDeleted => 'Operator deleted';
+
+  @override
+  String get adminOperatorsError => 'Error loading operators';
+
+  @override
+  String get adminOperatorsNoConnection => 'No connection';
+
+  @override
+  String get adminOperatorsOffline =>
+      'Connect to the internet to manage operators';
+
+  @override
+  String get adminOperatorsErrorDenied =>
+      'Permission denied to manage operators';
+
+  @override
+  String get adminOperatorsErrorNetwork => 'Network error loading operators';
+
+  @override
+  String get adminOperatorsErrorUnknown => 'Unknown error loading operators';
 }

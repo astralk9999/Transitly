@@ -69,6 +69,7 @@ class AdminScreen extends ConsumerWidget {
                             icon: Icons.business,
                             title: 'Gestionar operadores',
                             subtitle: 'Supervisar empresas de transporte',
+                            onTap: () => context.push('/admin/operators'),
                           ),
                           const SizedBox(height: 12),
                           _OptionCard(

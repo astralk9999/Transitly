@@ -20,6 +20,8 @@
 | 2026-05-14 | `DriverHistoryScreen` — historial de viajes del conductor | P2 | M | [F19] | ⏸️ pospuesto |
 | 2026-05-14 | `DriverStatsScreen` — estadísticas de conductor (viajes, puntualidad, reputación) | P2 | M | [F19] | ⏸️ pospuesto |
 | 2026-05-14 | `FilterPresetsScreen` — filtros guardables y compartibles | P2 | M | [F19] | ⏸️ pospuesto |
+| 2026-05-14 | Extraer `_OptionCard` duplicado (admin_screen.dart + operator_dashboard_screen.dart) a `shared/widgets/admin_option_card.dart` y unificar implementación (Pressable vs InkWell) | P1 | S | [F16] | ⏸️ abierto |
+| 2026-05-14 | Cobertura ARB para `features/admin/` y `features/operator_admin/` (~45 strings hardcodeados en español — 10 en admin_screen, 6 en operator_dashboard, ~15 en drivers_screen, ~14 en invitation_codes_screen) | P1 | M | [F16] | ⏸️ abierto |
 
 ---
 
@@ -39,6 +41,9 @@
 
 | Fecha | Idea | Prioridad | Esfuerzo | Tag | Estado |
 |-------|------|-----------|----------|-----|--------|
+| 2026-05-14 | Bug `_error = 'e'` en admin_users_screen.dart:99 — asignar `e.toString()` en lugar del literal `'e'` | P0 | S | [F16] | ⏸️ abierto |
+| 2026-05-14 | Añadir `AppLogger.warn` a 10 `catch (_)` silenciosos en `features/` (auth, driver_dashboard, map_filter_controller, profile_about_section) | P1 | S | [F16] | ⏸️ abierto |
+| 2026-05-14 | Añadir `.limit(50)` a queries Supabase directas sin paginación en `admin_users_screen`, `drivers_screen`, `invitation_codes_screen`, `driver_dashboard_screen` | P1 | M | [F16] | ⏸️ abierto |
 | 2026-05-14 | Edge Function GTFS-realtime — feed real cada 30s metiendo posiciones en `bus_positions` | P0 | L | [F13] | ⏸️ pospuesto (F13 parcial) |
 | 2026-05-14 | Rate-limiting cliente + servidor para contribuciones (evitar spam) | P1 | M | [F22] | ⏸️ pospuesto |
 | 2026-05-14 | Detección de duplicados en sugerencias/feedback (sugerir "¿ya existe?") | P1 | M | [F22] | ⏸️ pospuesto |

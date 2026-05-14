@@ -10,8 +10,10 @@ class OperatorModel with _$OperatorModel {
     required String id,
     required String name,
     required String shortName,
+    required String slug,
     required String region,
     @Default('') String website,
+    @Default('') String contactEmail,
     @Default('') String phone,
   }) = _OperatorModel;
 
@@ -19,8 +21,10 @@ class OperatorModel with _$OperatorModel {
         id: j['id'] as String,
         name: j['name'] as String,
         shortName: j['shortName'] as String,
+        slug: j['slug'] as String? ?? '',
         region: j['region'] as String,
         website: j['website'] as String? ?? '',
+        contactEmail: j['contactEmail'] as String? ?? '',
         phone: j['phone'] as String? ?? '',
       );
 
@@ -28,8 +32,10 @@ class OperatorModel with _$OperatorModel {
         'id': id,
         'name': name,
         'shortName': shortName,
+        'slug': slug,
         'region': region,
         if (website.isNotEmpty) 'website': website,
+        if (contactEmail.isNotEmpty) 'contactEmail': contactEmail,
         if (phone.isNotEmpty) 'phone': phone,
       };
 }

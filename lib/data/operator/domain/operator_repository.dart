@@ -51,4 +51,10 @@ abstract class OperatorRepository {
     LatLng center, {
     double radiusM = 50000,
   });
+
+  Future<OperatorModel> create(OperatorModel operator);
+
+  Future<OperatorModel> update(OperatorModel operator);
+
+  Future<void> delete(String id);
 }

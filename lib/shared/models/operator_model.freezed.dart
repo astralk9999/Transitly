@@ -20,8 +20,10 @@ mixin _$OperatorModel {
   String get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get shortName => throw _privateConstructorUsedError;
+  String get slug => throw _privateConstructorUsedError;
   String get region => throw _privateConstructorUsedError;
   String get website => throw _privateConstructorUsedError;
+  String get contactEmail => throw _privateConstructorUsedError;
   String get phone => throw _privateConstructorUsedError;
 
   /// Create a copy of OperatorModel
@@ -42,8 +44,10 @@ abstract class $OperatorModelCopyWith<$Res> {
     String id,
     String name,
     String shortName,
+    String slug,
     String region,
     String website,
+    String contactEmail,
     String phone,
   });
 }
@@ -66,8 +70,10 @@ class _$OperatorModelCopyWithImpl<$Res, $Val extends OperatorModel>
     Object? id = null,
     Object? name = null,
     Object? shortName = null,
+    Object? slug = null,
     Object? region = null,
     Object? website = null,
+    Object? contactEmail = null,
     Object? phone = null,
   }) {
     return _then(
@@ -84,6 +90,10 @@ class _$OperatorModelCopyWithImpl<$Res, $Val extends OperatorModel>
                 ? _value.shortName
                 : shortName // ignore: cast_nullable_to_non_nullable
                       as String,
+            slug: null == slug
+                ? _value.slug
+                : slug // ignore: cast_nullable_to_non_nullable
+                      as String,
             region: null == region
                 ? _value.region
                 : region // ignore: cast_nullable_to_non_nullable
@@ -91,6 +101,10 @@ class _$OperatorModelCopyWithImpl<$Res, $Val extends OperatorModel>
             website: null == website
                 ? _value.website
                 : website // ignore: cast_nullable_to_non_nullable
+                      as String,
+            contactEmail: null == contactEmail
+                ? _value.contactEmail
+                : contactEmail // ignore: cast_nullable_to_non_nullable
                       as String,
             phone: null == phone
                 ? _value.phone
@@ -115,8 +129,10 @@ abstract class _$$OperatorModelImplCopyWith<$Res>
     String id,
     String name,
     String shortName,
+    String slug,
     String region,
     String website,
+    String contactEmail,
     String phone,
   });
 }
@@ -138,8 +154,10 @@ class __$$OperatorModelImplCopyWithImpl<$Res>
     Object? id = null,
     Object? name = null,
     Object? shortName = null,
+    Object? slug = null,
     Object? region = null,
     Object? website = null,
+    Object? contactEmail = null,
     Object? phone = null,
   }) {
     return _then(
@@ -156,6 +174,10 @@ class __$$OperatorModelImplCopyWithImpl<$Res>
             ? _value.shortName
             : shortName // ignore: cast_nullable_to_non_nullable
                   as String,
+        slug: null == slug
+            ? _value.slug
+            : slug // ignore: cast_nullable_to_non_nullable
+                  as String,
         region: null == region
             ? _value.region
             : region // ignore: cast_nullable_to_non_nullable
@@ -163,6 +185,10 @@ class __$$OperatorModelImplCopyWithImpl<$Res>
         website: null == website
             ? _value.website
             : website // ignore: cast_nullable_to_non_nullable
+                  as String,
+        contactEmail: null == contactEmail
+            ? _value.contactEmail
+            : contactEmail // ignore: cast_nullable_to_non_nullable
                   as String,
         phone: null == phone
             ? _value.phone
@@ -180,8 +206,10 @@ class _$OperatorModelImpl extends _OperatorModel {
     required this.id,
     required this.name,
     required this.shortName,
+    required this.slug,
     required this.region,
     this.website = '',
+    this.contactEmail = '',
     this.phone = '',
   }) : super._();
 
@@ -192,17 +220,22 @@ class _$OperatorModelImpl extends _OperatorModel {
   @override
   final String shortName;
   @override
+  final String slug;
+  @override
   final String region;
   @override
   @JsonKey()
   final String website;
   @override
   @JsonKey()
+  final String contactEmail;
+  @override
+  @JsonKey()
   final String phone;
 
   @override
   String toString() {
-    return 'OperatorModel(id: $id, name: $name, shortName: $shortName, region: $region, website: $website, phone: $phone)';
+    return 'OperatorModel(id: $id, name: $name, shortName: $shortName, slug: $slug, region: $region, website: $website, contactEmail: $contactEmail, phone: $phone)';
   }
 
   @override
@@ -214,14 +247,17 @@ class _$OperatorModelImpl extends _OperatorModel {
             (identical(other.name, name) || other.name == name) &&
             (identical(other.shortName, shortName) ||
                 other.shortName == shortName) &&
+            (identical(other.slug, slug) || other.slug == slug) &&
             (identical(other.region, region) || other.region == region) &&
             (identical(other.website, website) || other.website == website) &&
+            (identical(other.contactEmail, contactEmail) ||
+                other.contactEmail == contactEmail) &&
             (identical(other.phone, phone) || other.phone == phone));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, name, shortName, region, website, phone);
+  int get hashCode => Object.hash(runtimeType, id, name, shortName, slug,
+      region, website, contactEmail, phone);
 
   /// Create a copy of OperatorModel
   /// with the given fields replaced by the non-null parameter values.
@@ -237,8 +273,10 @@ abstract class _OperatorModel extends OperatorModel {
     required final String id,
     required final String name,
     required final String shortName,
+    required final String slug,
     required final String region,
     final String website,
+    final String contactEmail,
     final String phone,
   }) = _$OperatorModelImpl;
   const _OperatorModel._() : super._();
@@ -250,9 +288,13 @@ abstract class _OperatorModel extends OperatorModel {
   @override
   String get shortName;
   @override
+  String get slug;
+  @override
   String get region;
   @override
   String get website;
+  @override
+  String get contactEmail;
   @override
   String get phone;
 

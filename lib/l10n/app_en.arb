@@ -61,5 +61,26 @@
   "adminUsersNoConnection": "No connection",
   "adminUsersNoResults": "No results",
   "adminUsersNoMatchSearch": "No users matching \"{query}\"",
-  "adminUsersNoMatchRole": "No users with the selected role"
+  "adminUsersNoMatchRole": "No users with the selected role",
+
+  "adminOperatorsTitle": "Operator management",
+  "adminOperatorsCreate": "Create operator",
+  "adminOperatorsEdit": "Edit operator",
+  "adminOperatorsDelete": "Delete",
+  "adminOperatorsSlug": "Slug",
+  "adminOperatorsName": "Name",
+  "adminOperatorsRegion": "Region",
+  "adminOperatorsWebsite": "Website",
+  "adminOperatorsEmail": "Contact email",
+  "adminOperatorsDeleteConfirm": "Delete this operator?",
+  "adminOperatorsEmpty": "No operators registered",
+  "adminOperatorsCreated": "Operator created",
+  "adminOperatorsUpdated": "Operator updated",
+  "adminOperatorsDeleted": "Operator deleted",
+  "adminOperatorsError": "Error loading operators",
+  "adminOperatorsNoConnection": "No connection",
+  "adminOperatorsOffline": "Connect to the internet to manage operators",
+  "adminOperatorsErrorDenied": "Permission denied to manage operators",
+  "adminOperatorsErrorNetwork": "Network error loading operators",
+  "adminOperatorsErrorUnknown": "Unknown error loading operators"
 }

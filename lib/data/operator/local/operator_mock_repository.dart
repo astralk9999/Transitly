@@ -11,17 +11,22 @@ import '../domain/operator_repository.dart';
 /// El JSON mock contiene un único operador (COMUJESA) y no se va a
 /// expandir, así que las búsquedas espaciales son triviales.
 class OperatorMockRepository implements OperatorRepository {
-  OperatorMockRepository(this._mockData);
+  OperatorMockRepository(this._mockData) : _cached = [_mockData.operator_];
 
+  // ignore: unused_field
   final MockDataService _mockData;
+  final List<OperatorModel> _cached;
 
   @override
-  Future<List<OperatorModel>> list() async => [_mockData.operator_];
+  Future<List<OperatorModel>> list() async => List.unmodifiable(_cached);
 
   @override
   Future<OperatorModel?> byId(String id) async {
-    final op = _mockData.operator_;
-    return op.id == id ? op : null;
+    try {
+      return _cached.firstWhere((o) => o.id == id);
+    } catch (_) {
+      return null;
+    }
   }
 
   @override
@@ -29,9 +34,30 @@ class OperatorMockRepository implements OperatorRepository {
     LatLng center, {
     double radiusM = 50000,
   }) async {
-    // El mock no almacena bbox; devolvemos el operador único si su
-    // región ("Jerez de la Frontera") cae cerca del centro
-    // proporcionado. En la práctica de la app demo siempre lo es.
-    return [_mockData.operator_];
+    return List.unmodifiable(_cached);
+  }
+
+  @override
+  Future<OperatorModel> create(OperatorModel operator) async {
+    _cached.add(operator);
+    return operator;
+  }
+
+  @override
+  Future<OperatorModel> update(OperatorModel operator) async {
+    final idx = _cached.indexWhere((o) => o.id == operator.id);
+    if (idx == -1) {
+      throw const OperatorRepositoryException(
+        error: OperatorRepositoryError.notFound,
+        message: 'Operator not found for update',
+      );
+    }
+    _cached[idx] = operator;
+    return operator;
+  }
+
+  @override
+  Future<void> delete(String id) async {
+    _cached.removeWhere((o) => o.id == id);
   }
 }

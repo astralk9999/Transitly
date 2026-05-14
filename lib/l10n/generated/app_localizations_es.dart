@@ -178,4 +178,67 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get adminUsersNoMatchRole => 'No hay usuarios con el rol seleccionado';
+
+  @override
+  String get adminOperatorsTitle => 'Gestión de operadores';
+
+  @override
+  String get adminOperatorsCreate => 'Crear operador';
+
+  @override
+  String get adminOperatorsEdit => 'Editar operador';
+
+  @override
+  String get adminOperatorsDelete => 'Eliminar';
+
+  @override
+  String get adminOperatorsSlug => 'Slug';
+
+  @override
+  String get adminOperatorsName => 'Nombre';
+
+  @override
+  String get adminOperatorsRegion => 'Región';
+
+  @override
+  String get adminOperatorsWebsite => 'Sitio web';
+
+  @override
+  String get adminOperatorsEmail => 'Correo de contacto';
+
+  @override
+  String get adminOperatorsDeleteConfirm => '¿Eliminar este operador?';
+
+  @override
+  String get adminOperatorsEmpty => 'No hay operadores registrados';
+
+  @override
+  String get adminOperatorsCreated => 'Operador creado';
+
+  @override
+  String get adminOperatorsUpdated => 'Operador actualizado';
+
+  @override
+  String get adminOperatorsDeleted => 'Operador eliminado';
+
+  @override
+  String get adminOperatorsError => 'Error al cargar operadores';
+
+  @override
+  String get adminOperatorsNoConnection => 'Sin conexión';
+
+  @override
+  String get adminOperatorsOffline =>
+      'Conecta a internet para gestionar operadores';
+
+  @override
+  String get adminOperatorsErrorDenied =>
+      'Permiso denegado para gestionar operadores';
+
+  @override
+  String get adminOperatorsErrorNetwork => 'Error de red al cargar operadores';
+
+  @override
+  String get adminOperatorsErrorUnknown =>
+      'Error desconocido al cargar operadores';
 }

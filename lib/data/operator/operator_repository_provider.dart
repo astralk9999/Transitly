@@ -93,6 +93,26 @@ class OperatorRepositorySwr implements OperatorRepository {
       return local.nearby(center, radiusM: radiusM);
     }
   }
+
+  @override
+  Future<OperatorModel> create(OperatorModel operator) async {
+    final created = await remote.create(operator);
+    await local.upsert(created);
+    return created;
+  }
+
+  @override
+  Future<OperatorModel> update(OperatorModel operator) async {
+    final updated = await remote.update(operator);
+    await local.upsert(updated);
+    return updated;
+  }
+
+  @override
+  Future<void> delete(String id) async {
+    await remote.delete(id);
+    await local.deleteById(id);
+  }
 }
 
 /// Provider Riverpod del repositorio de operadores.

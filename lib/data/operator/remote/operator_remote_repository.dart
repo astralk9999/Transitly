@@ -61,18 +61,69 @@ class OperatorRemoteRepository implements OperatorRepository {
     }
   }
 
+  @override
+  Future<OperatorModel> create(OperatorModel operator) async {
+    try {
+      final row = await _client
+          .from('operators')
+          .insert(<String, dynamic>{
+            'slug': operator.slug,
+            'name': operator.name,
+            'region': operator.region,
+            'website': operator.website,
+            'contact_email': operator.contactEmail,
+          })
+          .select()
+          .single();
+      return _fromRow(row);
+    } catch (e, st) {
+      throw _mapError(e, st, 'create');
+    }
+  }
+
+  @override
+  Future<OperatorModel> update(OperatorModel operator) async {
+    try {
+      final row = await _client
+          .from('operators')
+          .update(<String, dynamic>{
+            'slug': operator.slug,
+            'name': operator.name,
+            'region': operator.region,
+            'website': operator.website,
+            'contact_email': operator.contactEmail,
+            'updated_at': DateTime.now().toUtc().toIso8601String(),
+          })
+          .eq('id', operator.id)
+          .select()
+          .single();
+      return _fromRow(row);
+    } catch (e, st) {
+      throw _mapError(e, st, 'update(${operator.id})');
+    }
+  }
+
+  @override
+  Future<void> delete(String id) async {
+    try {
+      await _client.from('operators').delete().eq('id', id);
+    } catch (e, st) {
+      throw _mapError(e, st, 'delete($id)');
+    }
+  }
+
   /// Mapea una fila de Supabase al modelo Dart. La tabla `operators`
-  /// tiene más columnas que [OperatorModel] (slug, country, gtfs_url,
+  /// tiene más columnas que [OperatorModel] (country, gtfs_url,
   /// bbox, etc.); las omitidas se ignoran o se usan como fallback.
   OperatorModel _fromRow(Map<String, dynamic> row) => OperatorModel(
         id: row['id'] as String,
         name: row['name'] as String,
         shortName: (row['slug'] as String?)?.toUpperCase() ??
             row['name'] as String,
+        slug: row['slug'] as String? ?? '',
         region: row['region'] as String? ?? '',
         website: row['website'] as String? ?? '',
-        // La tabla operators no almacena phone — mantener el campo
-        // del modelo vacío hasta que F8 expanda el schema.
+        contactEmail: row['contact_email'] as String? ?? '',
         phone: '',
       );
 

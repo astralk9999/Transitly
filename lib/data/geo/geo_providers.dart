@@ -110,8 +110,10 @@ OperatorModel _operatorFromRow(Map<String, dynamic> row) {
     id: row['id'] as String,
     name: row['name'] as String? ?? '',
     shortName: row['slug'] as String? ?? '',
+    slug: row['slug'] as String? ?? '',
     region: row['region'] as String? ?? 'ES',
     website: row['website'] as String? ?? '',
-    phone: row['contact_email'] as String? ?? '',
+    contactEmail: row['contact_email'] as String? ?? '',
+    phone: '',
   );
 }

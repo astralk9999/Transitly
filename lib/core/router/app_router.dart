@@ -44,6 +44,7 @@ import '../../features/profile/offline_data_screen.dart';
 import '../../features/profile/planned_trips_screen.dart';
 import '../../features/admin/admin_screen.dart';
 import '../../features/admin/admin_users_screen.dart';
+import '../../features/admin/admin_operators_screen.dart';
 import '../../features/route_detail/route_detail_screen.dart';
 import '../../features/splash/splash_screen.dart';
 import '../../features/stop_detail/stop_detail_screen.dart';
@@ -290,6 +291,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/admin/users',
         pageBuilder: (context, state) =>
             _slide(state, const AdminUsersScreen()),
+      ),
+      GoRoute(
+        path: '/admin/operators',
+        pageBuilder: (context, state) =>
+            _slide(state, const AdminOperatorsScreen()),
       ),
 
       // ── Operator Admin ──

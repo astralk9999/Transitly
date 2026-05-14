@@ -433,6 +433,126 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'No hay usuarios con el rol seleccionado'**
   String get adminUsersNoMatchRole;
+
+  /// Admin operators screen title
+  ///
+  /// In es, this message translates to:
+  /// **'Gestión de operadores'**
+  String get adminOperatorsTitle;
+
+  /// Admin operators create button
+  ///
+  /// In es, this message translates to:
+  /// **'Crear operador'**
+  String get adminOperatorsCreate;
+
+  /// Admin operators edit title
+  ///
+  /// In es, this message translates to:
+  /// **'Editar operador'**
+  String get adminOperatorsEdit;
+
+  /// Admin operators delete button
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar'**
+  String get adminOperatorsDelete;
+
+  /// Admin operators slug field
+  ///
+  /// In es, this message translates to:
+  /// **'Slug'**
+  String get adminOperatorsSlug;
+
+  /// Admin operators name field
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre'**
+  String get adminOperatorsName;
+
+  /// Admin operators region field
+  ///
+  /// In es, this message translates to:
+  /// **'Región'**
+  String get adminOperatorsRegion;
+
+  /// Admin operators website field
+  ///
+  /// In es, this message translates to:
+  /// **'Sitio web'**
+  String get adminOperatorsWebsite;
+
+  /// Admin operators contact email field
+  ///
+  /// In es, this message translates to:
+  /// **'Correo de contacto'**
+  String get adminOperatorsEmail;
+
+  /// Admin operators delete confirmation
+  ///
+  /// In es, this message translates to:
+  /// **'¿Eliminar este operador?'**
+  String get adminOperatorsDeleteConfirm;
+
+  /// Admin operators empty state
+  ///
+  /// In es, this message translates to:
+  /// **'No hay operadores registrados'**
+  String get adminOperatorsEmpty;
+
+  /// Admin operators created toast
+  ///
+  /// In es, this message translates to:
+  /// **'Operador creado'**
+  String get adminOperatorsCreated;
+
+  /// Admin operators updated toast
+  ///
+  /// In es, this message translates to:
+  /// **'Operador actualizado'**
+  String get adminOperatorsUpdated;
+
+  /// Admin operators deleted toast
+  ///
+  /// In es, this message translates to:
+  /// **'Operador eliminado'**
+  String get adminOperatorsDeleted;
+
+  /// Admin operators error loading
+  ///
+  /// In es, this message translates to:
+  /// **'Error al cargar operadores'**
+  String get adminOperatorsError;
+
+  /// Admin operators no connection title
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión'**
+  String get adminOperatorsNoConnection;
+
+  /// Admin operators offline message
+  ///
+  /// In es, this message translates to:
+  /// **'Conecta a internet para gestionar operadores'**
+  String get adminOperatorsOffline;
+
+  /// Admin operators permission denied error
+  ///
+  /// In es, this message translates to:
+  /// **'Permiso denegado para gestionar operadores'**
+  String get adminOperatorsErrorDenied;
+
+  /// Admin operators network error
+  ///
+  /// In es, this message translates to:
+  /// **'Error de red al cargar operadores'**
+  String get adminOperatorsErrorNetwork;
+
+  /// Admin operators unknown error
+  ///
+  /// In es, this message translates to:
+  /// **'Error desconocido al cargar operadores'**
+  String get adminOperatorsErrorUnknown;
 }
 
 class _AppLocalizationsDelegate

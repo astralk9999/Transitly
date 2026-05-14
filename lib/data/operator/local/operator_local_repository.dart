@@ -66,6 +66,23 @@ class OperatorLocalRepository implements OperatorRepository {
     await _box.clear();
   }
 
+  @override
+  Future<OperatorModel> create(OperatorModel op) async {
+    await _box.put(_key(op.id), op);
+    return op;
+  }
+
+  @override
+  Future<OperatorModel> update(OperatorModel op) async {
+    await _box.put(_key(op.id), op);
+    return op;
+  }
+
+  @override
+  Future<void> delete(String id) async {
+    await _box.delete(_key(id));
+  }
+
   /// Calcula distancia haversine entre dos puntos en metros. Helper
   /// para cuando OperatorModel exponga bbox y podamos filtrar
   /// localmente sin SQL.

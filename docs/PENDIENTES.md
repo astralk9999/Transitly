@@ -61,7 +61,7 @@
 - ✅ [F10] **`1.3` — Wizard del editor sin guardar/publicar.** `L`. Cerrado con serialización toJson/fromJson + autosave Hive + validación. `8341490`.
 - ✅ [F14] **`1.6a` — `DriverHistoryScreen` placeholder.** `L`. Cerrado con DriverDashboard + live tracking GPS. `a0055dd`.
 - [F19] **`1.6b` — `DriverStatsScreen` placeholder.** `L`. Cierra con reputación visible.
-- [F15] **`1.8` — `SuggestionDetailScreen` y `SuggestionContributeScreen` placeholders.** `L`. Cierran con consolidación de contribuciones.
+- ✅ [F15] **`1.8` — `SuggestionDetailScreen` y `SuggestionContributeScreen` placeholders.** `L`. `SuggestionDetailScreen` rebuit with live data + vote. `SuggestionContributeScreen` pospuesto post-MVP. `252a422`.
 - [F19] **`1.10a` — `FilterPresetsScreen` placeholder.** `L`. Necesita reputación + UX avanzada de filtros.
 - [F44+] **`1.10b` — `PlannedTripsScreen` placeholder.** `L`. Planificación de viajes — feature post-MVP.
 - ✅ [F8] **`1.13` — Zona principal sin handler en `home_tab` / perfil.** `L`. Cerrado con LocationService + currentLocationProvider + city picker + active operator. `75d56cb`.
@@ -69,7 +69,7 @@
 ### Wirings y handlers diferidos
 
 - ✅ [F12] **`1.16c` — Acción "Compartir" en `stop_detail_screen.dart`.** `L`. Cerrado con share sheet + officialize request modal. `d856cfc`.
-- [F15] **`1.16d` — Acción "Mejorar" en `stop_detail_screen.dart`.** `L`. Cierra con F15 "Contribuciones consolidadas" (pendiente wiring a RouteFeedbackRepository).
+- ✅ [F15] **`1.16d` — Acción "Mejorar" en `stop_detail_screen.dart`.** `L`. Cerrado con `showRouteFeedbackSheet` → `RouteFeedbackRepository`. `252a422`.
 - ✅ [F8] **`1.16e` — Acción "Cómo llegar" en `stop_detail_screen.dart`.** `L`. Cerrado con búsqueda + ruta en F8 (city picker + active operator). `75d56cb`.
 - [F16] **`1.18` — `ManagerInboxScreen` handlers `SnackBar` en `manager_inbox_screen.dart:87-91, :156-160`.** `L`. Cierra con panel admin (F16).
 - ✅ [F9] **`1.19` — `MapTab` filtros + búsqueda inertes en `map_tab.dart:173-183`.** `M` · `posponer`. Cerrado con MapFilterState + filter controller + filter bottom sheet. `2c52f25`.
@@ -124,7 +124,7 @@ Cada entidad necesita el mismo conjunto de 5 archivos: interfaz abstracta + remo
 ### Migraciones programadas (creadas durante F0.5)
 
 - [SIN ASIGNAR] **Migrar `live_recorder_draft` de `shared_preferences` a Hive con cifrado AES.** `M`. Generado por F0.5.C como solución temporal. F3 ya cerrado; esta migración quedó fuera del scope de F3.
-- [F15] **Migrar `local_feedback_drafts` de `shared_preferences` al `RouteFeedbackRepository` real + cola `pending_actions`.** `M`. Generado por F0.5.C.
+- ✅ [F15] **Migrar `local_feedback_drafts` de `shared_preferences` al `RouteFeedbackRepository` real + cola `pending_actions`.** `M`. `FeedbackScreen` ahora hace dual-write: `LocalFeedbackNotifier` + `RouteFeedbackRepository.create()`. `252a422`.
 
 ---
 

@@ -3,11 +3,31 @@ import 'package:google_fonts/google_fonts.dart';
 import 'transit_colors.dart';
 import 'transit_spacing.dart';
 
-ThemeData buildTransitTheme(TransitColorScheme c, {double fontScale = 1.0}) {
+ThemeData buildTransitTheme(
+  TransitColorScheme c, {
+  double fontScale = 1.0,
+  bool dyslexiaFontEnabled = false,
+}) {
   final brightness = switch (c) {
     TransitLightColors() => Brightness.light,
     _ => Brightness.dark,
   };
+
+  final textTheme = dyslexiaFontEnabled
+      ? GoogleFonts.atkinsonHyperlegibleTextTheme(
+          brightness == Brightness.dark
+              ? ThemeData.dark().textTheme
+              : ThemeData.light().textTheme,
+        )
+      : GoogleFonts.dmSansTextTheme(
+          brightness == Brightness.dark
+              ? ThemeData.dark().textTheme
+              : ThemeData.light().textTheme,
+        );
+
+  final bodyFont = dyslexiaFontEnabled
+      ? GoogleFonts.atkinsonHyperlegible
+      : GoogleFonts.dmSans;
 
   return ThemeData(
     useMaterial3: true,
@@ -33,11 +53,7 @@ ThemeData buildTransitTheme(TransitColorScheme c, {double fontScale = 1.0}) {
       surfaceContainerHighest: c.bgRaised,
     ),
 
-    textTheme: GoogleFonts.dmSansTextTheme(
-      brightness == Brightness.dark
-          ? ThemeData.dark().textTheme
-          : ThemeData.light().textTheme,
-    ).apply(
+    textTheme: textTheme.apply(
       bodyColor: c.textHi,
       displayColor: c.textHi,
       fontSizeFactor: fontScale,
@@ -120,7 +136,7 @@ ThemeData buildTransitTheme(TransitColorScheme c, {double fontScale = 1.0}) {
 
     snackBarTheme: SnackBarThemeData(
       backgroundColor: c.bgRaised,
-      contentTextStyle: GoogleFonts.dmSans(color: c.textHi, fontSize: 13),
+      contentTextStyle: bodyFont(color: c.textHi, fontSize: 13),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(TransitSpacing.radiusSm),
       ),

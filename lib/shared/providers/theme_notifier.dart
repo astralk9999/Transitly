@@ -152,8 +152,11 @@ class ThemeNotifier extends ChangeNotifier {
 
   // ── Theme building ───────────────────────────────────────
 
-  ThemeData buildTheme(Brightness brightness) =>
-      buildTransitTheme(palette.scheme, fontScale: _fontScale);
+  ThemeData buildTheme(Brightness brightness) => buildTransitTheme(
+        palette.scheme,
+        fontScale: _fontScale,
+        dyslexiaFontEnabled: _dyslexiaFontEnabled,
+      );
 
   // ── Preferences I/O ─────────────────────────────────────
 

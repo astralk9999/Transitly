@@ -44,6 +44,7 @@ import '../../features/profile/achievements_screen.dart';
 import '../../features/profile/filter_presets_screen.dart';
 import '../../features/profile/offline_data_screen.dart';
 import '../../features/profile/planned_trips_screen.dart';
+import '../../features/profile/reputation_screen.dart';
 import '../../features/admin/admin_screen.dart';
 import '../../features/admin/admin_users_screen.dart';
 import '../../features/accessible_buses/accessible_buses_screen.dart';
@@ -345,6 +346,11 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
 
       // ── Profile sub-screens ──
+      GoRoute(
+        path: '/profile/reputation',
+        pageBuilder: (context, state) =>
+            _slide(state, const ReputationScreen()),
+      ),
       GoRoute(
         path: '/profile/achievements',
         pageBuilder: (context, state) =>

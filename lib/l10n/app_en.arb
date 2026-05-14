@@ -182,5 +182,16 @@
   "reputationEventSuggestionVoteReceived": "Vote received",
   "reputationEventSuggestionVerified": "Suggestion verified",
   "reputationEventSuggestionOfficial": "Suggestion officialized",
-  "reputationEventDuplicateReport": "Duplicate report"
+  "reputationEventDuplicateReport": "Duplicate report",
+
+  "achievementsTitle": "Achievements",
+  "achievementsLevel": "Level: {level} · {xp} XP",
+
+  "reputationTitle": "Reputation",
+  "reputationHowToEarn": "How to earn",
+  "reputationRanks": "Ranks",
+  "reputationTooltip": "Reputation is decorative. It will unlock privileges later.",
+  "reputationPoints": "points",
+  "reputationNextRank": "Next rank",
+  "reputationMaxRank": "Max rank reached"
 }

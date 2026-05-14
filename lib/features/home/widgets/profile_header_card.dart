@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/theme/transit_colors.dart';
@@ -89,7 +90,11 @@ class ProfileHeaderCard extends ConsumerWidget {
               ],
             ),
           ),
-          ReputationBadge(user.reputationLevel),
+          GestureDetector(
+            onTap: () => context.push('/profile/reputation'),
+            child: ReputationBadge(user.reputationLevel,
+                score: user.reputationScore),
+          ),
         ],
       ),
     );

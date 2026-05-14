@@ -273,5 +273,31 @@
   "reputationEventSuggestionVoteReceived": "Voto recibido",
   "reputationEventSuggestionVerified": "Sugerencia verificada",
   "reputationEventSuggestionOfficial": "Sugerencia oficializada",
-  "reputationEventDuplicateReport": "Reporte duplicado"
+  "reputationEventDuplicateReport": "Reporte duplicado",
+
+  "achievementsTitle": "Logros",
+  "@achievementsTitle": { "description": "Achievements screen title" },
+  "achievementsLevel": "Nivel: {level} · {xp} XP",
+  "@achievementsLevel": {
+    "description": "Achievements level display with level name and XP",
+    "placeholders": {
+      "level": { "type": "String", "example": "VIAJERO" },
+      "xp": { "type": "int", "example": "450" }
+    }
+  },
+
+  "reputationTitle": "Reputación",
+  "@reputationTitle": { "description": "Reputation screen title" },
+  "reputationHowToEarn": "Cómo subir",
+  "@reputationHowToEarn": { "description": "Reputation how to earn section header" },
+  "reputationRanks": "Rangos",
+  "@reputationRanks": { "description": "Reputation ranks section header" },
+  "reputationTooltip": "La reputación es decorativa. Más adelante desbloqueará privilegios.",
+  "@reputationTooltip": { "description": "Reputation screen decorative tooltip" },
+  "reputationPoints": "puntos",
+  "@reputationPoints": { "description": "Points unit label" },
+  "reputationNextRank": "Siguiente rango",
+  "@reputationNextRank": { "description": "Next rank label in reputation progress" },
+  "reputationMaxRank": "Rango máximo alcanzado",
+  "@reputationMaxRank": { "description": "Max rank reached label" }
 }

@@ -527,4 +527,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reputationEventDuplicateReport => 'Duplicate report';
+
+  @override
+  String get achievementsTitle => 'Achievements';
+
+  @override
+  String achievementsLevel(String level, int xp) {
+    return 'Level: $level · $xp XP';
+  }
+
+  @override
+  String get reputationTitle => 'Reputation';
+
+  @override
+  String get reputationHowToEarn => 'How to earn';
+
+  @override
+  String get reputationRanks => 'Ranks';
+
+  @override
+  String get reputationTooltip =>
+      'Reputation is decorative. It will unlock privileges later.';
+
+  @override
+  String get reputationPoints => 'points';
+
+  @override
+  String get reputationNextRank => 'Next rank';
+
+  @override
+  String get reputationMaxRank => 'Max rank reached';
 }

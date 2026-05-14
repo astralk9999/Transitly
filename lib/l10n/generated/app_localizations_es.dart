@@ -529,4 +529,34 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get reputationEventDuplicateReport => 'Reporte duplicado';
+
+  @override
+  String get achievementsTitle => 'Logros';
+
+  @override
+  String achievementsLevel(String level, int xp) {
+    return 'Nivel: $level · $xp XP';
+  }
+
+  @override
+  String get reputationTitle => 'Reputación';
+
+  @override
+  String get reputationHowToEarn => 'Cómo subir';
+
+  @override
+  String get reputationRanks => 'Rangos';
+
+  @override
+  String get reputationTooltip =>
+      'La reputación es decorativa. Más adelante desbloqueará privilegios.';
+
+  @override
+  String get reputationPoints => 'puntos';
+
+  @override
+  String get reputationNextRank => 'Siguiente rango';
+
+  @override
+  String get reputationMaxRank => 'Rango máximo alcanzado';
 }

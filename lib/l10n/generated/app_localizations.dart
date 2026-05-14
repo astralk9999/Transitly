@@ -1111,6 +1111,60 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Reporte duplicado'**
   String get reputationEventDuplicateReport;
+
+  /// Achievements screen title
+  ///
+  /// In es, this message translates to:
+  /// **'Logros'**
+  String get achievementsTitle;
+
+  /// Achievements level display with level name and XP
+  ///
+  /// In es, this message translates to:
+  /// **'Nivel: {level} · {xp} XP'**
+  String achievementsLevel(String level, int xp);
+
+  /// Reputation screen title
+  ///
+  /// In es, this message translates to:
+  /// **'Reputación'**
+  String get reputationTitle;
+
+  /// Reputation how to earn section header
+  ///
+  /// In es, this message translates to:
+  /// **'Cómo subir'**
+  String get reputationHowToEarn;
+
+  /// Reputation ranks section header
+  ///
+  /// In es, this message translates to:
+  /// **'Rangos'**
+  String get reputationRanks;
+
+  /// Reputation screen decorative tooltip
+  ///
+  /// In es, this message translates to:
+  /// **'La reputación es decorativa. Más adelante desbloqueará privilegios.'**
+  String get reputationTooltip;
+
+  /// Points unit label
+  ///
+  /// In es, this message translates to:
+  /// **'puntos'**
+  String get reputationPoints;
+
+  /// Next rank label in reputation progress
+  ///
+  /// In es, this message translates to:
+  /// **'Siguiente rango'**
+  String get reputationNextRank;
+
+  /// Max rank reached label
+  ///
+  /// In es, this message translates to:
+  /// **'Rango máximo alcanzado'**
+  String get reputationMaxRank;
 }
 
 class _AppLocalizationsDelegate

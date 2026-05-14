@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../data/mock/mock_data_service.dart';
+import '../../l10n/generated/app_localizations.dart';
 import '../../shared/models/user_achievement_model.dart';
 import '../../shared/widgets/responsive_scaffold.dart';
 import '../../shared/widgets/smoke_background.dart';
@@ -33,6 +34,7 @@ class AchievementsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
+    final l10n = AppLocalizations.of(context);
     final mockData = ref.watch(mockDataServiceProvider);
     final achievements = mockData.achievements;
     final userAchievements = mockData.userAchievements;
@@ -51,7 +53,7 @@ class AchievementsScreen extends ConsumerWidget {
           icon: Icon(Icons.arrow_back, color: c.textMid),
           onPressed: () => context.pop(),
         ),
-        title: Text('LOGROS',
+        title: Text(l10n.achievementsTitle,
             style: TransitTypography.sectionTitle(c.textHi)),
         centerTitle: false,
       ),
@@ -68,7 +70,7 @@ class AchievementsScreen extends ConsumerWidget {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: padding),
             child: Text(
-              'Nivel: VIAJERO · 450 XP',
+              l10n.achievementsLevel('VIAJERO', 450),
               style: GoogleFonts.dmSans(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,

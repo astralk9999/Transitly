@@ -126,6 +126,24 @@ class _PalettesSection extends ConsumerWidget {
               );
             },
           ),
+          const SizedBox(height: 10),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: () => context.push('/appearance/custom'),
+              icon: const Icon(Icons.add, size: 18),
+              label: Text(l10n.appearanceCustomPaletteAdd,
+                  style: TransitTypography.bodyPrimary(c.accent)),
+              style: OutlinedButton.styleFrom(
+                side: BorderSide(color: c.accent.withValues(alpha: 0.3)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+              ),
+            ),
+          ),
         ],
       ),
     );

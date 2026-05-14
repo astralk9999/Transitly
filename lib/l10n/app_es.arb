@@ -199,5 +199,16 @@
   "appearanceBgGradient": "Degradado",
   "appearanceBgGrid": "Cuadrícula",
   "appearanceBgTopo": "Topografía",
-  "appearanceTextPreview": "El rápido zorro marrón salta sobre el perro perezoso. Este texto de muestra te permite ver cómo se ve la tipografía con los ajustes actuales."
+  "appearanceTextPreview": "El rápido zorro marrón salta sobre el perro perezoso. Este texto de muestra te permite ver cómo se ve la tipografía con los ajustes actuales.",
+  "appearanceCustomPaletteTitle": "Paleta personalizada",
+  "appearanceCustomPalettePrimary": "Primario",
+  "appearanceCustomPaletteSecondary": "Secundario",
+  "appearanceCustomPaletteBgRoot": "Fondo raíz",
+  "appearanceCustomPaletteBgSurface": "Fondo superficie",
+  "appearanceCustomPaletteTextHi": "Texto principal",
+  "appearanceCustomPalettePreview": "Vista previa",
+  "appearanceCustomPaletteContrastPass": "Contraste AA",
+  "appearanceCustomPaletteContrastFail": "Contraste bajo",
+  "appearanceCustomPaletteSaved": "Paleta guardada",
+  "appearanceCustomPaletteAdd": "Crear paleta"
 }

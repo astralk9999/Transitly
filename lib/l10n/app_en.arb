@@ -129,5 +129,16 @@
   "appearanceBgGradient": "Gradient",
   "appearanceBgGrid": "Grid",
   "appearanceBgTopo": "Topography",
-  "appearanceTextPreview": "The quick brown fox jumps over the lazy dog. This sample text lets you preview how the typography looks with the current settings."
+  "appearanceTextPreview": "The quick brown fox jumps over the lazy dog. This sample text lets you preview how the typography looks with the current settings.",
+  "appearanceCustomPaletteTitle": "Custom palette",
+  "appearanceCustomPalettePrimary": "Primary",
+  "appearanceCustomPaletteSecondary": "Secondary",
+  "appearanceCustomPaletteBgRoot": "Root background",
+  "appearanceCustomPaletteBgSurface": "Surface background",
+  "appearanceCustomPaletteTextHi": "Primary text",
+  "appearanceCustomPalettePreview": "Preview",
+  "appearanceCustomPaletteContrastPass": "AA Contrast",
+  "appearanceCustomPaletteContrastFail": "Low contrast",
+  "appearanceCustomPaletteSaved": "Palette saved",
+  "appearanceCustomPaletteAdd": "Create palette"
 }

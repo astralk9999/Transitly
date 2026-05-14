@@ -823,6 +823,72 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'El rápido zorro marrón salta sobre el perro perezoso. Este texto de muestra te permite ver cómo se ve la tipografía con los ajustes actuales.'**
   String get appearanceTextPreview;
+
+  /// No description provided for @appearanceCustomPaletteTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Paleta personalizada'**
+  String get appearanceCustomPaletteTitle;
+
+  /// No description provided for @appearanceCustomPalettePrimary.
+  ///
+  /// In es, this message translates to:
+  /// **'Primario'**
+  String get appearanceCustomPalettePrimary;
+
+  /// No description provided for @appearanceCustomPaletteSecondary.
+  ///
+  /// In es, this message translates to:
+  /// **'Secundario'**
+  String get appearanceCustomPaletteSecondary;
+
+  /// No description provided for @appearanceCustomPaletteBgRoot.
+  ///
+  /// In es, this message translates to:
+  /// **'Fondo raíz'**
+  String get appearanceCustomPaletteBgRoot;
+
+  /// No description provided for @appearanceCustomPaletteBgSurface.
+  ///
+  /// In es, this message translates to:
+  /// **'Fondo superficie'**
+  String get appearanceCustomPaletteBgSurface;
+
+  /// No description provided for @appearanceCustomPaletteTextHi.
+  ///
+  /// In es, this message translates to:
+  /// **'Texto principal'**
+  String get appearanceCustomPaletteTextHi;
+
+  /// No description provided for @appearanceCustomPalettePreview.
+  ///
+  /// In es, this message translates to:
+  /// **'Vista previa'**
+  String get appearanceCustomPalettePreview;
+
+  /// No description provided for @appearanceCustomPaletteContrastPass.
+  ///
+  /// In es, this message translates to:
+  /// **'Contraste AA'**
+  String get appearanceCustomPaletteContrastPass;
+
+  /// No description provided for @appearanceCustomPaletteContrastFail.
+  ///
+  /// In es, this message translates to:
+  /// **'Contraste bajo'**
+  String get appearanceCustomPaletteContrastFail;
+
+  /// No description provided for @appearanceCustomPaletteSaved.
+  ///
+  /// In es, this message translates to:
+  /// **'Paleta guardada'**
+  String get appearanceCustomPaletteSaved;
+
+  /// No description provided for @appearanceCustomPaletteAdd.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear paleta'**
+  String get appearanceCustomPaletteAdd;
 }
 
 class _AppLocalizationsDelegate

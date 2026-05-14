@@ -7,6 +7,7 @@ import 'package:hive/hive.dart';
 import '../../core/theme/backgrounds/app_background.dart';
 import '../../core/theme/backgrounds/prefab_backgrounds.dart';
 import '../../core/theme/palettes/app_palette.dart';
+import '../../core/theme/palettes/custom_colors.dart';
 import '../../core/theme/palettes/prefab_palettes.dart';
 import '../../core/theme/transit_theme.dart';
 import '../../core/utils/app_logger.dart';
@@ -33,6 +34,9 @@ class ThemeNotifier extends ChangeNotifier {
   bool _dyslexiaFontEnabled = false;
   bool _reduceMotion = false;
 
+  Map<String, Color> _customColors = <String, Color>{};
+  static const _customPaletteId = 'custom';
+
   Box<Map<dynamic, dynamic>>? _guestBox;
   bool _initialized = false;
 
@@ -48,7 +52,27 @@ class ThemeNotifier extends ChangeNotifier {
   bool get dyslexiaFontEnabled => _dyslexiaFontEnabled;
   bool get reduceMotion => _reduceMotion;
 
-  AppPalette get palette => paletteFromId(_paletteId);
+  Map<String, Color> get customColors => Map.unmodifiable(_customColors);
+
+  bool get isCustomPalette => _paletteId == _customPaletteId;
+
+  AppPalette get palette {
+    if (_paletteId == _customPaletteId && _customColors.isNotEmpty) {
+      return AppPalette(
+        id: _customPaletteId,
+        name: 'Custom',
+        isDark: true,
+        scheme: TransitCustomColors(
+          primary: _customColors['primary'] ?? const Color(0xFF977DDF),
+          secondary: _customColors['secondary'] ?? const Color(0xFF6C63FF),
+          bgRoot: _customColors['bgRoot'] ?? const Color(0xFF08081A),
+          bgSurface: _customColors['bgSurface'] ?? const Color(0xFF10102A),
+          textHi: _customColors['textHi'] ?? const Color(0xFFF0F0FA),
+        ),
+      );
+    }
+    return paletteFromId(_paletteId);
+  }
 
   AppBackground get background => backgroundFromId(_backgroundId);
 
@@ -57,7 +81,7 @@ class ThemeNotifier extends ChangeNotifier {
   set paletteId(String value) {
     if (_paletteId == value) return;
     _paletteId = value;
-    _brightness = paletteFromId(value).brightness;
+    _brightness = palette.brightness;
     notifyListeners();
     unawaited(_persist());
   }
@@ -118,6 +142,14 @@ class ThemeNotifier extends ChangeNotifier {
     unawaited(_persist());
   }
 
+  void setCustomPalette(Map<String, Color> colors) {
+    _customColors = Map.of(colors);
+    _paletteId = _customPaletteId;
+    _brightness = Brightness.dark;
+    notifyListeners();
+    unawaited(_persist());
+  }
+
   // ── Theme building ───────────────────────────────────────
 
   ThemeData buildTheme(Brightness brightness) =>
@@ -134,6 +166,7 @@ class ThemeNotifier extends ChangeNotifier {
     _colorBlindMode = prefs.colorBlindMode;
     _dyslexiaFontEnabled = prefs.dyslexiaFontEnabled;
     _reduceMotion = prefs.reduceMotion;
+    _customColors = _parseCustomColors(prefs.customColors);
     _initialized = true;
     notifyListeners();
   }
@@ -148,6 +181,9 @@ class ThemeNotifier extends ChangeNotifier {
         colorBlindMode: _colorBlindMode,
         dyslexiaFontEnabled: _dyslexiaFontEnabled,
         reduceMotion: _reduceMotion,
+        customColors: _customColors.isEmpty
+            ? null
+            : _customColors.map((k, v) => MapEntry(k, _colorToHex(v))),
       );
 
   /// Load saved preferences. Called once at startup.
@@ -189,6 +225,14 @@ class ThemeNotifier extends ChangeNotifier {
         _colorBlindMode = _parseColorBlindMode(data['colorBlindMode'] as String?);
         _dyslexiaFontEnabled = data['dyslexiaFontEnabled'] as bool? ?? false;
         _reduceMotion = data['reduceMotion'] as bool? ?? false;
+        final rawCustom = data['customColors'] as Map<dynamic, dynamic>?;
+        if (rawCustom != null) {
+          _customColors = <String, Color>{};
+          for (final entry in rawCustom.entries) {
+            final c = _parseHexColor(entry.value.toString());
+            if (c != null) _customColors[entry.key.toString()] = c;
+          }
+        }
       }
     } catch (e) {
       AppLogger.warn(_logTag, 'guest prefs load failed; using defaults', e);
@@ -218,6 +262,7 @@ class ThemeNotifier extends ChangeNotifier {
         'colorBlindMode': _colorBlindMode.name,
         'dyslexiaFontEnabled': _dyslexiaFontEnabled,
         'reduceMotion': _reduceMotion,
+        'customColors': _customColors.map((k, v) => MapEntry(k, _colorToHex(v))),
       });
     } catch (e) {
       AppLogger.warn(_logTag, 'guest prefs persist failed', e);
@@ -230,6 +275,39 @@ class ThemeNotifier extends ChangeNotifier {
       (e) => e.name == value,
       orElse: () => ColorBlindMode.none,
     );
+  }
+
+  Map<String, Color> _parseCustomColors(Map<String, String>? raw) {
+    if (raw == null) return <String, Color>{};
+    final result = <String, Color>{};
+    for (final entry in raw.entries) {
+      final c = _parseHexColor(entry.value);
+      if (c != null) result[entry.key] = c;
+    }
+    return result;
+  }
+
+  Color? _parseHexColor(String hex) {
+    try {
+      final s = hex.replaceFirst('#', '');
+      if (s.length == 6) {
+        return Color(int.parse('FF$s', radix: 16));
+      }
+      if (s.length == 8) {
+        return Color(int.parse(s, radix: 16));
+      }
+      return null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  String _colorToHex(Color c) {
+    final r = ((c.r * 255).round() & 0xff).toRadixString(16).padLeft(2, '0');
+    final g = ((c.g * 255).round() & 0xff).toRadixString(16).padLeft(2, '0');
+    final b = ((c.b * 255).round() & 0xff).toRadixString(16).padLeft(2, '0');
+    final a = ((c.a * 255).round() & 0xff).toRadixString(16).padLeft(2, '0');
+    return '$a$r$g$b';
   }
 
   static Future<Box<Map<dynamic, dynamic>>> _openGuestBox() async {

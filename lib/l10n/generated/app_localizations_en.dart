@@ -378,4 +378,37 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get appearanceTextPreview =>
       'The quick brown fox jumps over the lazy dog. This sample text lets you preview how the typography looks with the current settings.';
+
+  @override
+  String get appearanceCustomPaletteTitle => 'Custom palette';
+
+  @override
+  String get appearanceCustomPalettePrimary => 'Primary';
+
+  @override
+  String get appearanceCustomPaletteSecondary => 'Secondary';
+
+  @override
+  String get appearanceCustomPaletteBgRoot => 'Root background';
+
+  @override
+  String get appearanceCustomPaletteBgSurface => 'Surface background';
+
+  @override
+  String get appearanceCustomPaletteTextHi => 'Primary text';
+
+  @override
+  String get appearanceCustomPalettePreview => 'Preview';
+
+  @override
+  String get appearanceCustomPaletteContrastPass => 'AA Contrast';
+
+  @override
+  String get appearanceCustomPaletteContrastFail => 'Low contrast';
+
+  @override
+  String get appearanceCustomPaletteSaved => 'Palette saved';
+
+  @override
+  String get appearanceCustomPaletteAdd => 'Create palette';
 }

@@ -380,4 +380,37 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get appearanceTextPreview =>
       'El rápido zorro marrón salta sobre el perro perezoso. Este texto de muestra te permite ver cómo se ve la tipografía con los ajustes actuales.';
+
+  @override
+  String get appearanceCustomPaletteTitle => 'Paleta personalizada';
+
+  @override
+  String get appearanceCustomPalettePrimary => 'Primario';
+
+  @override
+  String get appearanceCustomPaletteSecondary => 'Secundario';
+
+  @override
+  String get appearanceCustomPaletteBgRoot => 'Fondo raíz';
+
+  @override
+  String get appearanceCustomPaletteBgSurface => 'Fondo superficie';
+
+  @override
+  String get appearanceCustomPaletteTextHi => 'Texto principal';
+
+  @override
+  String get appearanceCustomPalettePreview => 'Vista previa';
+
+  @override
+  String get appearanceCustomPaletteContrastPass => 'Contraste AA';
+
+  @override
+  String get appearanceCustomPaletteContrastFail => 'Contraste bajo';
+
+  @override
+  String get appearanceCustomPaletteSaved => 'Paleta guardada';
+
+  @override
+  String get appearanceCustomPaletteAdd => 'Crear paleta';
 }

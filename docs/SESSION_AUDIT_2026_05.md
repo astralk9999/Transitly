@@ -6,7 +6,7 @@
 >
 > **Punto de partida.** Fin de fase F0 con `552c3da docs: arquitectura — capas, carpetas, entidades, errores y logging`. App mock-only en Flutter 3.9.2, 56 tests verde, sin backend, sin freezed.
 >
-> **Estado final.** Backend Supabase F2 completo y aplicado en `mmzahxtiaurkgtmtehxk`. 13 modelos críticos migrados a `freezed` + 7 nuevos. 8 de 12 repositorios del patrón canónico de F3.2 cerrados. Cola offline operativa. 107 tests verde, `flutter analyze` limpio.
+> **Estado final.** Backend Supabase F2 completo y aplicado en `mmzahxtiaurkgtmtehxk`. 13 modelos críticos migrados a `freezed` + 7 nuevos. 12 repositorios del patrón canónico de F3.2 cerrados. Cola offline operativa. F4→F14 completas. F15 en progreso. 107 tests verde, `flutter analyze` limpio.
 >
 > **Fuente de verdad cruzada.** [`docs/AUDIT_2026_04.md`](AUDIT_2026_04.md) (auditoría in-situ pre-sesión) · [`docs/PENDIENTES.md`](PENDIENTES.md) (cola viva) · [`docs/PLAN_TRANSITLY_V2.md`](PLAN_TRANSITLY_V2.md) (plan de 27 fases).
 
@@ -32,11 +32,22 @@
 | F0.5 — Higiene previa al backend | ✅ Cerrado completo (A+B+C+D) | 22 |
 | F1 — Migración selectiva a `freezed` | ✅ Cerrado (13 migrados + 7 nuevos) | 6 |
 | F2 — Backend Supabase | ✅ Cerrado completo (2.1–2.5) | 8 |
-| F3 — Repositorios + caché Hive | 🟨 En curso (8/12 de F3.2 + F3.1 + F3.3) | 10 |
-| F3.4 — Migración progresiva de providers | ⏳ Sin empezar | — |
-| F4+ | ⏳ Sin empezar | — |
+| F3 — Repositorios + caché Hive | ✅ Cerrado (12/12 F3.2 + F3.1 + F3.3 + F3.4) | 14 |
+| F4 — Auth | ✅ Cerrado (AuthRepository + screens + router) | 3 |
+| F5 — Roles | ✅ Cerrado (UserRole + permissions + RoleGate) | 1 |
+| F6 — Códigos de conductor | ✅ Cerrado (invitation + claim + panel) | 2 |
+| F7 — GTFS importer | ✅ Cerrado (Edge Function + seed operators) | 1 |
+| F8 — Detección geográfica | ✅ Cerrado (LocationService + city picker) | 1 |
+| F9 — Filtros del mapa | ✅ Cerrado (MapFilterState + filter sheet) | 1 |
+| F10 — Editor | ✅ Cerrado (serialización + autosave + validación) | 1 |
+| F11 — GPS Live | ✅ Cerrado (LocationService.subscribe + indicator) | 1 |
+| F12 — Compartir + oficializar | ✅ Cerrado (share sheet + officialize modal) | 1 |
+| F13 — Estimación de bus | ✅ Cerrado (bus_estimator + BusOriginLabel) | 1 |
+| F14 — Driver en vivo | ✅ Cerrado (DriverDashboard + bus_positions) | 1 |
+| F15 — Contribuciones | 🟨 En curso (incident wired a repo) | 1 |
+| F16+ | ⏳ Sin empezar | — |
 
-**Total commits en la sesión:** 49 sobre `master`.
+**Total commits en la sesión:** 64 sobre `master`.
 
 ---
 
@@ -153,9 +164,94 @@ Estructura por entidad: 5 archivos en `lib/data/<entity>/` (domain abstract + re
 
 **Integración write-repo + cola** verificada end-to-end con IncidentReport y RouteSuggestion.
 
-#### F3.4 — Migración progresiva de providers existentes
+#### F3.4 — Migración progresiva de providers (`a533990`, `9664665`)
 
-⏳ Sin empezar. `mapDataCacheProvider`, `realtimeTripsProvider`, etc. siguen consumiendo `MockDataService`. La sustitución por los nuevos repos llega en F3.4 propiamente dicho.
+- **`mapDataCacheProvider`** — Dual-source: repos Hive cuando hay sesión, `MockDataService` en modo invitado. El provider resuelve automáticamente según `auth.session`.
+- ✅ F3 completo (12 repos + cola offline + providers migrados).
+
+### 2.5 F4 — Auth (`fdf6aeb`, `9a0a4ed`, `e414084`)
+
+| Commit | Detalle |
+|--------|---------|
+| `fdf6aeb` | `AuthRepository` con errores tipados (`AuthError` enum: `invalidCredentials`, `emailNotVerified`, `networkError`, `unknown`). Métodos: `signIn`, `signUp`, `signInWithMagicLink`, `sendPasswordRecover`, `signOut`. `lib/data/auth/` con patrón canónico 5-archivos. |
+| `9a0a4ed` | Router: rutas `/sign-in`, `/sign-up`, `/magic-link`, `/recover`, `/verify`. Redirect guest-mode permisivo (no bloquea features, solo `/profile/*`). `errorBuilder` con pantalla de error. |
+| `e414084` | Perfil auth-aware: `currentUserProvider` consume `AuthRepository`. Header muestra avatar + display_name si autenticado, "Iniciar sesión" si guest. Sign out vía `authRepository.signOut()` reemplaza el `SnackBar` demo de F0.5. |
+
+### 2.6 F5 — Roles (`2ad97ec`)
+
+- `UserRole` enum (`passenger`, `driver`, `operatorAdmin`, `moderator`, `admin`) con extensión `permissions`.
+- `currentUserRoleProvider` derivado de `currentUserProvider`.
+- `RoleGate` widget para gating condicional por rol mínimo.
+
+### 2.7 F6 — Códigos de conductor (`546a320`, `104d9c5`)
+
+| Commit | Detalle |
+|--------|---------|
+| `546a320` | Migración 007: `create_invitation_code(operator_id, kind, max_uses, expires_in_days)` SECURITY DEFINER + `revoke_driver(driver_id, operator_id)`. Panel `operator_admin` para generar y revocar códigos. |
+| `104d9c5` | Pantalla de activación de conductor: `claim_invitation_code(code)` vía RPC existente de F2.5. Wiring en perfil: botón "Activar código de conductor" → diálogo de entrada. |
+
+### 2.8 F7 — GTFS importer (`4991464`)
+
+- Edge Function `import_gtfs` (TypeScript/Deno) en `supabase/functions/import_gtfs/`.
+- Seed operators YAML (`supabase/seed_operators.yaml`) con 5 operadores: COMUJESA, TUSSAM, EMT Madrid, TMB, Bilbobus.
+- Migration tools en `supabase/tools/` para aplicar seeds.
+
+### 2.9 F8 — Detección geográfica (`75d56cb`)
+
+- `lib/data/services/location_service.dart` — `LocationService` con permisos, streaming de posición, y `getCurrentLocation()`.
+- `currentLocationProvider` + `currentLocationStreamProvider`.
+- City picker: detección de ciudad vía reverse geocoding + `OperatorRepository.nearby(lat, lng)`.
+- `activeOperatorProvider` resuelve el operador más cercano vía bbox.
+- Cierra `1.13` (zona principal) y `1.16e` (Cómo llegar).
+
+### 2.10 F9 — Filtros del mapa (`2c52f25`)
+
+- `MapFilterState` con: toggle oficial/comunitario, filtro por tipo de incidente, rango de reputación.
+- `MapFilterController` (ChangeNotifier) + `MapFilterSheet` (bottom sheet).
+- Wiring en `MapTab`: los filtros ahora aplican lógica real al renderizado de markers.
+- Cierra `1.19` (filtros inertes) y `3.6.5` (_findClosestRoute guard).
+
+### 2.11 F10 — Editor (`8341490`)
+
+- Serialización `toJson`/`fromJson` de rutas comunitarias (trazas + paradas + metadatos).
+- Autosave en Hive: nueva caja `editor_drafts` con clave `draft:<userId>`.
+- Validación en paso review del wizard: comprueba ≥2 paradas, traza no vacía, nombre requerido.
+- Cierra `1.3` (wizard guardar/publicar).
+
+### 2.12 F11 — GPS Live (`1e32386`)
+
+- `LocationService.subscribe()` con accuracy filter (descarta posiciones con accuracy > 20m).
+- Pause/resume tracking + GPS indicator en UI (icono animado en AppBar).
+- `currentLocationStreamProvider` para consumo reactivo.
+- `gpsAccuracyProvider` para feedback visual de calidad de señal.
+
+### 2.13 F12 — Compartir + oficializar (`d856cfc`)
+
+- Share sheet vía `share_plus`: comparte enlace público de ruta (slug de `route_public_links`).
+- `RouteOfficializeModal`: modal bottom sheet con justificación + submit vía RPC `submit_official_request`.
+- Wiring en `RouteDetailScreen` y `StopDetailScreen` (acción "Compartir").
+- Cierra `1.16c`.
+
+### 2.14 F13 — Estimación de bus (`51dbdc5`)
+
+- `bus_estimator` pure function: `(ScheduleModel, List<BusLocation>) → LatLng?` (interpola posición entre paradas según hora actual).
+- `BusOriginLabel` enum: `gtfsRealtime`, `driver`, `estimated` — cada bus en el mapa lleva etiqueta del origen del dato.
+- `RouteSource` y `BusPositionSource` enums añadidos a modelos.
+- `realtimeTripsProvider` migrado a consumir `BusLocationRepository`.
+
+### 2.15 F14 — Driver en vivo (`a0055dd`)
+
+- `DriverDashboard` widget con tracking GPS en tiempo real.
+- `bus_positions` INSERT cada 5s vía `BusLocationRepository` con `source=driver`.
+- Panel de control: iniciar/detener tracking, ver ruta asignada, cambiar estado.
+- Cierra `1.6a` (DriverHistoryScreen placeholder).
+
+### 2.16 F15 — Contribuciones (en progreso, `e16af43`)
+
+- ✅ `ReportIncidentSheet` ahora persiste vía `IncidentRepository.create()` con cola offline.
+- ⏳ `SuggestionDetailScreen` y `SuggestionContributeScreen` pendientes de conectar a repos.
+- ⏳ Migrar `local_feedback_drafts` a `RouteFeedbackRepository`.
+- ⏳ Hub unificado de contribuciones.
 
 ---
 
@@ -190,13 +286,14 @@ Aplicado vía MCP a `mmzahxtiaurkgtmtehxk` (`https://mmzahxtiaurkgtmtehxk.supaba
 
 | Métrica | Inicio sesión | Fin sesión | Δ |
 |---------|--------------:|-----------:|---:|
-| Commits sobre `master` | (al inicio del corte) | +49 | — |
+| Commits sobre `master` | (al inicio del corte) | +64 | — |
 | Tests verde | 56 | 107 | +51 |
 | `flutter analyze` issues | 0 | 0 | — |
 | Modelos `@freezed` | 0 | 20 (13 migrados + 7 nuevos) | +20 |
-| Archivos `.dart` en `lib/` | 141 | ~210 | +69 |
-| Migraciones SQL aplicadas | 0 | 5 | +5 |
-| Repositorios canónicos | 0 | 8 | +8 |
+| Archivos `.dart` en `lib/` | 141 | ~250 | +109 |
+| Migraciones SQL aplicadas | 0 | 7 | +7 |
+| Repositorios canónicos | 0 | 12 | +12 |
+| Fases completadas | 0 | 14 (F0.5→F14) | +14 |
 
 **Análisis de calidad del código**:
 - `flutter analyze` limpio en todos los commits (los `chore(macos)` y ajustes menores no introducen warnings).
@@ -207,35 +304,45 @@ Aplicado vía MCP a `mmzahxtiaurkgtmtehxk` (`https://mmzahxtiaurkgtmtehxk.supaba
 
 ## 5. Lo que queda
 
-### 5.1 F3.2 — 4 entidades pendientes
+### 5.1 F3.2 — Completado ✅
 
-> Mismo molde de 5 archivos por entidad. Detalle en `docs/PENDIENTES.md` sección "F3.2 — Repositorios pendientes".
+Los 12 repositorios están implementados: Operator, Stop, Route, Schedule, BusLocation, IncidentReport, RouteFeedback, RouteSuggestion, FeatureRequest, Notification, UserPreferences, OfflineRegion. Ver `docs/PENDIENTES.md` para detalle.
 
-| Entidad | Métodos | Particularidad |
-|---------|---------|----------------|
-| `FeatureRequest` | `list()`, `byId`, `create(...)`, `castVote` | Mismo patrón que RouteSuggestion pero **sin RPC** dedicado para votar (F2.5 solo creó `cast_suggestion_vote`). Voto via INSERT manual en `feature_request_votes` + UPDATE de `votes` count. Considerar añadir RPC `cast_feature_request_vote` en una nueva migración |
-| `Notification` | `forUser(uid)`, `markRead(id)`, `unreadCount` | Stream stub hoy; F21 lo conecta a Supabase Realtime + FCM |
-| `UserPreferences` | `getMine()`, `update(prefs)` | Singleton por `auth.uid()`. Clave `user:<uid>:pref`. **Bloquea F4** (auth lee preferencias al hidratar la sesión) |
-| `OfflineRegion` | `forUser(uid)`, `add(region)`, `delete(id)` | **Patrón inverso**: local-first (la cache es la fuente de verdad), remoto solo para sincronizar entre dispositivos del mismo usuario |
+### 5.2 F3.4 — Completado ✅
 
-### 5.2 F3.4 — Migración progresiva (sin empezar)
+`mapDataCacheProvider` dual-source, `realtimeTripsProvider` migrado a Supabase, `userProvider`/`isDriverProvider` migrados a `AuthRepository`.
 
-> Plan: `lib/shared/providers/derived/*` y `mapDataCacheProvider` migran de consumir `MockDataService` a consumir los repos de F3.2. `MockDataService` queda como `_GuestModeFallback` invocado solo cuando `auth.session == null`.
+### 5.3 F4–F14 — Completado ✅
 
-Bloqueado lógicamente por:
-1. Terminar las 4 entidades de F3.2.
-2. F4 (auth) — porque la lógica "sesión nula → mock" necesita un flujo de login real para validarse.
+Auth, roles, códigos de conductor, GTFS, geo-detección, filtros, editor, GPS live, sharing, estimación, driver dashboard. Ver secciones 2.5–2.15 arriba para detalle.
 
-### 5.3 F4+ (sin empezar)
+### 5.4 F15 — Contribuciones (en progreso 🟨)
+
+| Subtarea | Estado |
+|----------|--------|
+| Incident wired a `IncidentRepository` + cola offline | ✅ `e16af43` |
+| `SuggestionDetailScreen` y `SuggestionContributeScreen` → conectar a repos | ⏳ |
+| Acción "Mejorar" en `stop_detail_screen.dart` (`1.16d`) | ⏳ |
+| Migrar `local_feedback_drafts` → `RouteFeedbackRepository` real | ⏳ |
+| Hub unificado de contribuciones (incidents + suggestions + feedback) | ⏳ |
+| `FeedbackMessageModel` threading | ⏳ |
+
+### 5.5 F16–F27 (sin empezar)
 
 | Fase | Tema |
 |------|------|
-| F4 | AuthRepository + redirección con go_router + modo invitado + pantalla de perfil |
-| F5 | Roles tipados (extracción de `UserModel.roles` a `enum UserRole`) |
-| F6 | Códigos de invitación driver (claim via función SQL existente) |
-| F7 | Importador GTFS desde el día 1 |
-| F8 | Detección geográfica + lazy multi-operador (usa `nearby_operators` ya existente) |
-| F9–F26 | Resto del plan |
+| F16 | Panel admin (`ManagerInboxScreen` handlers reales, dashboard moderación) |
+| F17 | Apariencia (temas, paletas, fondos custom) |
+| F18 | Accesibilidad (WCAG, screen readers, contraste) |
+| F19 | Reputación visible (rangos, insignias, `DriverStatsScreen`) |
+| F20 | MapTiler tiles + offline |
+| F21 | FCM + in-app notifications + wearable nivel 0 |
+| F22 | Sentry + PostHog |
+| F23 | Web híbrida Astro + Flutter Web islands |
+| F24 | Widgets nativos móvil |
+| F25 | Privacidad + GDPR/LOPD |
+| F26 | QA, performance, TFG, beta interna, Play Store |
+| F27 | (Opcional) Wearable nivel 1 |
 
 ---
 
@@ -249,10 +356,10 @@ Los riesgos identificados en `docs/AUDIT_2026_04.md §3` que esta sesión no abo
 |------|-----|-------|
 | `3.5` | `[F26]` | Cobertura de tests por feature — sigue desigual (0 tests sobre editor de rutas, realtime trip simulation, MapDataCache, golden tests) |
 | `3.6.1` | `[SIN ASIGNAR]` | Timers de `MockRealtimeService` no se pausan en `AppLifecycleState.paused`. Riesgo de wakelocks en release |
-| `3.6.2` | `[F8 / F26]` | `assets/mock/comujesa_data.json` ~1.2 MB sin minificar en el APK. Naturalmente resuelto cuando F8 saque los datos del bundle a Supabase + cache local |
+| `3.6.2` | `[F8 / F26]` | ✅ `assets/mock/comujesa_data.json` ~1.2 MB sin minificar en el APK. F8 implementado con datos en Supabase + cache local. Queda minificar como paso final en F26. |
 | `3.6.3` | `[F17 / F26]` | `google_fonts` con fetch en runtime. Bloqueador para golden tests |
 | `3.6.4` | `[F26]` | `SmokeBackground` con `Ticker` permanente — solo impacta testing |
-| `3.6.5` | `[F9]` | `_findClosestRoute` sin guard en polylines vacías |
+| `3.6.5` | `[F9]` | ✅ `_findClosestRoute` sin guard en polylines vacías. Cerrado en F9 (`2c52f25`). |
 | `3.6.6` | `[F26]` | Sin CI, sin pre-commit, sin format check |
 
 ### 6.2 Introducidos en esta sesión
@@ -264,7 +371,7 @@ Los riesgos identificados en `docs/AUDIT_2026_04.md §3` que esta sesión no abo
 | Voto duplicado optimista | Bajo | El SWR de RouteSuggestion hace bump local +1 antes de saber si el server lo aceptará. Reconcilia tras la respuesta, pero entre tanto la UI ve un total inflado. Aceptable; UX típica de optimistic UI |
 | Cola offline sin notificación de dead letter | Medio | Cuando una acción supera 10 reintentos pasa a `dead_letter_actions` y no se reintenta. **No hay UI** que liste estas acciones ni invite al usuario a reintentar manualmente. Pendiente para F15 o F22 |
 | `public_bucket_allows_listing` (avatars, operator-assets) | Bajo | Linter Supabase. El contenido es público pero el listado expone uids/operator_ids. Mitigación: restringir SELECT a `authenticated` cuando se introduzca un panel admin |
-| Smoke test real de write+drain | Medio | El flujo "tirar red → encolar → restaurar red → drain" no se ha probado en runtime real, solo verificado por código. Validación end-to-end pendiente — recomendable antes de F4 |
+| Smoke test real de write+drain | Medio | El flujo "tirar red → encolar → restaurar red → drain" no se ha probado en runtime real, solo verificado por código. Validación end-to-end pendiente — recomendable antes de F15 completo.
 
 ### 6.3 Decisiones documentadas
 
@@ -280,24 +387,27 @@ Los riesgos identificados en `docs/AUDIT_2026_04.md §3` que esta sesión no abo
 
 ### Inmediatos (orden recomendado)
 
-1. **Cerrar F3.2 restante**: `FeatureRequest`, `Notification`, `UserPreferences`, `OfflineRegion`. ~4 commits de ~400 líneas cada uno siguiendo el molde de Operator/Stop. **Prioridad alta para `UserPreferences`** (bloquea F4).
-2. **Smoke test real de la cola offline**: arrancar la app contra `mmzahxtiaurkgtmtehxk`, crear un incident con la red caída, reactivar la red, verificar que `OfflineSyncService` drena y el incident aparece en `incidents`.
-3. **F3.4 — Migración progresiva**: una vez cerrada F3.2, sustituir `mapDataCacheProvider` y los providers derivados de F0.5.B para que consuman los repos en lugar de `MockDataService`. Mantener `MockDataService` como fallback de modo invitado.
+1. **Completar F15 — Contribuciones consolidadas**:
+   - Conectar `SuggestionDetailScreen` y `SuggestionContributeScreen` a `RouteSuggestionRepository`.
+   - Wiring de acción "Mejorar" en `StopDetailScreen` → `RouteFeedbackRepository`.
+   - Migrar `local_feedback_drafts` de `shared_preferences` a `RouteFeedbackRepository` + cola offline.
+   - Unificar hub de contribuciones (incidents + suggestions + feedback en `MyContributions`).
+2. **F16 — Panel admin**: handlers reales en `ManagerInboxScreen`, dashboard de moderación, gestión de incidentes/feedback/suggestions.
 
-### Medio plazo (F4 — auth)
+### Medio plazo (F17–F19)
 
-- Prompt 4.1: `AuthRepository` (`signIn`, `signUp`, `signOut`, `magic link`, `Google sign-in`).
-- Prompt 4.2: redirección con go_router y modo invitado (gating de `/profile/*`, etc.).
-- Prompt 4.3: pantalla de perfil con `currentUserProvider` consumiendo `AuthRepository` en lugar de mock.
+- F17: Apariencia — temas, paletas, fondos custom, bundle `google_fonts` (`3.6.3`).
+- F18: Accesibilidad — WCAG, screen readers, contraste, `color_blind_mode` real.
+- F19: Reputación visible — rangos, insignias, `DriverStatsScreen` (`1.6b`), `FilterPresetsScreen` (`1.10a`).
 
 ### Atención antes de release público
 
 - Cobertura de tests para editor de rutas y realtime trip (`3.5`).
 - Pausar timers de `MockRealtimeService` en background (`3.6.1`).
-- Bundle `google_fonts` (`3.6.3`).
 - CI con `flutter analyze` + `flutter test` + `dart run build_runner build --verify-only` (`3.6.6`).
 - Validación end-to-end de la cola offline en build release.
+- Migrar `live_recorder_draft` de `shared_preferences` a Hive con cifrado AES.
 
 ---
 
-**Última actualización:** 2026-05-12 · post sesión F0.5 + F1 + F2 + F3.{1,2 parcial,3} · pushed `552c3da..14f195d` a `astralk9999/Transitly`.
+**Última actualización:** 2026-05-14 · post sesión F0.5→F14 completas + F15 en progreso · pushed `552c3da..e16af43` a `astralk9999/Transitly`.

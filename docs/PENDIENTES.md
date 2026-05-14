@@ -58,21 +58,21 @@
 ### Pantallas placeholder grandes
 
 - [F44+] **`1.2` — `AiScheduleImport` placeholder.** `L`. Feature post-MVP, post-Play-Store.
-- [F10] **`1.3` — Wizard del editor sin guardar/publicar.** `L`. Cierra con persistencia real de rutas comunitarias.
-- [F14] **`1.6a` — `DriverHistoryScreen` placeholder.** `L`. Cierra con driver real en vivo.
+- ✅ [F10] **`1.3` — Wizard del editor sin guardar/publicar.** `L`. Cerrado con serialización toJson/fromJson + autosave Hive + validación. `8341490`.
+- ✅ [F14] **`1.6a` — `DriverHistoryScreen` placeholder.** `L`. Cerrado con DriverDashboard + live tracking GPS. `a0055dd`.
 - [F19] **`1.6b` — `DriverStatsScreen` placeholder.** `L`. Cierra con reputación visible.
 - [F15] **`1.8` — `SuggestionDetailScreen` y `SuggestionContributeScreen` placeholders.** `L`. Cierran con consolidación de contribuciones.
 - [F19] **`1.10a` — `FilterPresetsScreen` placeholder.** `L`. Necesita reputación + UX avanzada de filtros.
 - [F44+] **`1.10b` — `PlannedTripsScreen` placeholder.** `L`. Planificación de viajes — feature post-MVP.
-- [F8] **`1.13` — Zona principal sin handler en `home_tab` / perfil.** `L`. Cierra con city picker + detección geográfica.
+- ✅ [F8] **`1.13` — Zona principal sin handler en `home_tab` / perfil.** `L`. Cerrado con LocationService + currentLocationProvider + city picker + active operator. `75d56cb`.
 
 ### Wirings y handlers diferidos
 
-- [F12] **`1.16c` — Acción "Compartir" en `stop_detail_screen.dart`.** `L`. Cierra con F12 "Compartir + oficializar".
-- [F15] **`1.16d` — Acción "Mejorar" en `stop_detail_screen.dart`.** `L`. Cierra con F15 "Contribuciones consolidadas".
-- [F8] **`1.16e` — Acción "Cómo llegar" en `stop_detail_screen.dart`.** `L`. Cierra con búsqueda + ruta en F8.
+- ✅ [F12] **`1.16c` — Acción "Compartir" en `stop_detail_screen.dart`.** `L`. Cerrado con share sheet + officialize request modal. `d856cfc`.
+- [F15] **`1.16d` — Acción "Mejorar" en `stop_detail_screen.dart`.** `L`. Cierra con F15 "Contribuciones consolidadas" (pendiente wiring a RouteFeedbackRepository).
+- ✅ [F8] **`1.16e` — Acción "Cómo llegar" en `stop_detail_screen.dart`.** `L`. Cerrado con búsqueda + ruta en F8 (city picker + active operator). `75d56cb`.
 - [F16] **`1.18` — `ManagerInboxScreen` handlers `SnackBar` en `manager_inbox_screen.dart:87-91, :156-160`.** `L`. Cierra con panel admin (F16).
-- [F9] **`1.19` — `MapTab` filtros + búsqueda inertes en `map_tab.dart:173-183`.** `M` · `posponer`. Cierra con filtros del mapa (F9), que ya depende de `RouteRepository` real (F3).
+- ✅ [F9] **`1.19` — `MapTab` filtros + búsqueda inertes en `map_tab.dart:173-183`.** `M` · `posponer`. Cerrado con MapFilterState + filter controller + filter bottom sheet. `2c52f25`.
 
 ### Deuda técnica estructural
 
@@ -85,14 +85,14 @@
 - [F8 / F26] **`3.6.2` — `assets/mock/comujesa_data.json` ~1.2 MB sin minificar en el APK.** `M`. Resuelto naturalmente cuando F8 saque los datos del bundle a Supabase + cache local. Si no, minificar en F26.
 - [F17 / F26] **`3.6.3` — `google_fonts` con fetch en runtime.** `M`. Bundle obligatorio antes de release público; bloqueador adicional para golden tests. Cierre natural en F17 (apariencia) o F26 (QA).
 - [F26] **`3.6.4` — `SmokeBackground` con `Ticker` permanente.** `S`. Impacto solo en testing (obliga a `disableAnimations: true`). Cierre cosmético en F26.
-- [F9] **`3.6.5` — `_findClosestRoute` sin early return en polylines vacías.** `S`. `map_tab.dart:60-91` no valida `lodData.values.last` no vacío. Cerrar al pasar por F9 (mismo archivo).
+- ✅ [F9] **`3.6.5` — `_findClosestRoute` sin early return en polylines vacías.** `S`. `map_tab.dart:60-91` no valida `lodData.values.last` no vacío. Cerrado al pasar por F9 (mismo archivo). `2c52f25`.
 - [F26] **`3.6.6` — Sin CI, sin pre-commit, sin format check.** `M`. `flutter analyze` y `flutter test` se ejecutan a mano. F26 añade GitHub Actions + pre-commit.
 
 ### Modelos huérfanos a evaluar (audit §1.C)
 
-- [F1] **`UserCardModel`, `ZoneModel`, `OperatorModel`, `HabitualTripModel`, `FeedbackMessageModel`, `RouteChangelogModel`** — 6 modelos en `lib/shared/models/` sin un solo consumidor. `RouteChangelogModel` se cierra al resolver `1.15`. El resto: evaluar en F1 si migrar a `freezed` o borrar. Probable destino:
-    - `UserCardModel` → vivirá tras F4 (auth + perfil).
-    - `ZoneModel`, `OperatorModel` → F8 (multi-operador).
+- [F1] **`UserCardModel`, `ZoneModel`, `OperatorModel`, `HabitualTripModel`, `FeedbackMessageModel`, `RouteChangelogModel`** — 6 modelos en `lib/shared/models/` sin un solo consumidor. `RouteChangelogModel` se cierra al resolver `1.15`. El resto: evaluar en F1 si migrar a `freezed` o borrar. Estado actual:
+    - ✅ `UserCardModel` — vive tras F4 (auth + perfil).
+    - ✅ `ZoneModel`, `OperatorModel` — viven tras F8 (multi-operador + city picker).
     - `HabitualTripModel` → F44+ (planificación).
     - `FeedbackMessageModel` → F15 (threading de feedback).
 
@@ -117,14 +117,87 @@ Cada entidad necesita el mismo conjunto de 5 archivos: interfaz abstracta + remo
 ### F3.4 — Migración progresiva de providers
 
 - ✅ [F3.4] **`mapDataCacheProvider`** — Dual-source: repos Hive cuando hay sesión, MockDataService en modo invitado. Cerrado en `9664665`.
-- [F13] **`realtimeTripsProvider`** — Migrar a Supabase Realtime vía `BusLocationRepository` (F13).
-- [F4] **`userProvider`, `isDriverProvider`** — Migrar a `AuthRepository` (F4).
+- ✅ [F13] **`realtimeTripsProvider`** — Migrado a Supabase Realtime vía `BusLocationRepository` + `bus_estimator`. `51dbdc5`.
+- ✅ [F4] **`userProvider`, `isDriverProvider`** — Migrados a `AuthRepository`. `fdf6aeb`.
 - ✅ Providers derivados (`stopToRouteCodes`, etc.) se mantienen como están — derivados puros.
 
 ### Migraciones programadas (creadas durante F0.5)
 
-- [F3] **Migrar `live_recorder_draft` de `shared_preferences` a Hive con cifrado AES.** `M`. Generado por F0.5.C como solución temporal.
+- [SIN ASIGNAR] **Migrar `live_recorder_draft` de `shared_preferences` a Hive con cifrado AES.** `M`. Generado por F0.5.C como solución temporal. F3 ya cerrado; esta migración quedó fuera del scope de F3.
 - [F15] **Migrar `local_feedback_drafts` de `shared_preferences` al `RouteFeedbackRepository` real + cola `pending_actions`.** `M`. Generado por F0.5.C.
+
+---
+
+## Fases completadas (post F0.5 · sesión mayo 2026)
+
+> Trabajo realizado del 02 al 14 de mayo 2026, documentado en commits `fdf6aeb..e16af43`.
+
+### ✅ F4 — Auth (`fdf6aeb`, `9a0a4ed`, `e414084`)
+- `AuthRepository` con errores tipados (`signIn`, `signUp`, `magicLink`, `recover`, `signOut`)
+- Pantallas: sign-in, sign-up, magic-link, recover, verify
+- Router: rutas auth + redirect guest-mode permisivo
+- Perfil: auth-aware (sign out vía AuthRepository, "Iniciar sesión" cuando guest)
+
+### ✅ F5 — Roles (`2ad97ec`)
+- `UserRole` enum con `permissions` extension
+- `RoleGate` widget para gating condicional
+- `currentUserRoleProvider`
+
+### ✅ F6 — Códigos de conductor (`546a320`, `104d9c5`)
+- Migración 007: `create_invitation_code` RPC + `revoke_driver`
+- Panel `operator_admin` para gestión de códigos
+- Pantalla de activación (`claim_invitation_code`) + wiring en perfil
+
+### ✅ F7 — GTFS importer (`4991464`)
+- Edge Function `import_gtfs` (TypeScript/Deno)
+- Seed operators YAML + migration tools
+- 5 operadores seed: COMUJESA, TUSSAM, EMT Madrid, TMB, Bilbobus
+
+### ✅ F8 — Detección geográfica (`75d56cb`)
+- `LocationService` con permisos y streaming
+- `currentLocationProvider`
+- City picker + detección de operador activo vía bbox
+
+### ✅ F9 — Filtros del mapa (`2c52f25`)
+- `MapFilterState` con toggle comunitario/oficial, tipo de incidente, etc.
+- Filter controller + filter bottom sheet
+- Cierra `1.19` + `3.6.5`
+
+### ✅ F10 — Editor (`8341490`)
+- Serialización `toJson`/`fromJson` de rutas comunitarias
+- Autosave en Hive (`editor_drafts` box)
+- Validación en paso review del wizard
+- Cierra `1.3`
+
+### ✅ F11 — GPS Live (`1e32386`)
+- `LocationService.subscribe` con accuracy filter
+- Pause/resume + GPS indicator en UI
+- `currentLocationStreamProvider`
+
+### ✅ F12 — Compartir + oficializar (`d856cfc`)
+- Share sheet vía `share_plus`
+- `RouteOfficializeModal` para solicitar promoción a oficial
+- Wiring en route detail + stop detail
+- Cierra `1.16c`
+
+### ✅ F13 — Estimación de bus (`51dbdc5`)
+- `bus_estimator` pure function: schedule + posición → posición estimada
+- `BusOriginLabel` enum (`gtfsRealtime`, `driver`, `estimated`)
+- `RouteSource` y `BusPositionSource` enums en modelos
+- Cierra providers `realtimeTripsProvider`
+
+### ✅ F14 — Driver en vivo (`a0055dd`)
+- `DriverDashboard` con tracking GPS en tiempo real
+- `bus_positions` insert cada 5s vía Supabase
+- Cierra `1.6a`
+
+### 🟨 F15 — Contribuciones consolidadas (en progreso)
+- ✅ Incident report wired a `IncidentRepository` + cola offline (`e16af43`)
+- ⏳ `SuggestionDetailScreen` y `SuggestionContributeScreen` → conectar a repositorios reales
+- ⏳ Acción "Mejorar" en `stop_detail_screen.dart` (`1.16d`)
+- ⏳ Migrar `local_feedback_drafts` → `RouteFeedbackRepository` real
+- ⏳ Unificar hub de contribuciones (incidents + suggestions + feedback)
+- ⏳ `FeedbackMessageModel` threading
 
 ---
 
@@ -145,4 +218,4 @@ Cada entidad necesita el mismo conjunto de 5 archivos: interfaz abstracta + remo
 
 ---
 
-**Última actualización:** 2026-05-12 · F3.2 cerrada (12/12 repos). Siguiente: F3.4 (migración progresiva de providers).
+**Última actualización:** 2026-05-14 · F15 en progreso (incident wired a repo). F4→F14 cerradas. Siguiente: completar F15 (suggestions + feedback + hub unificado).

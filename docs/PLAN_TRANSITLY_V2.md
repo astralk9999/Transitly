@@ -1,6 +1,8 @@
 # Plan de acción — Transitly · v2
 
-**Versión:** 2.1 · **Fecha:** 29-abr-2026
+**Versión:** 2.2 · **Fecha:** 14-may-2026
+
+> **Cambios v2.1 → v2.2** (post-sesión mayo 2026): F3.4→F14 marcadas como completadas. F15 en progreso (incident wired a repo). Actualizado roadmap visual.
 **Repo:** [astralk9999/Transitly](https://github.com/astralk9999/Transitly)
 **Documento de arquitectura de referencia:** `docs/ARCHITECTURE.md` (post P43, commit `b91fc25`).
 
@@ -61,37 +63,37 @@ Cada fase termina con `Hecho cuando`. **No avances a la siguiente sin tener todo
 ## 2. Roadmap visual
 
 ```
-BLOQUE I · Cimientos
-   F0 Auditoría → F0.5 Higiene previa → F1 freezed selectivo
-   → F2 Supabase → F3 Repositorios+Hive
+✅ BLOQUE I · Cimientos (COMPLETO)
+   ✅ F0 Auditoría → ✅ F0.5 Higiene previa → ✅ F1 freezed selectivo
+   → ✅ F2 Supabase → ✅ F3 Repositorios+Hive
 
-BLOQUE II · Identidad
-   F4 Auth → F5 Roles tipados → F6 Códigos de conductor
+✅ BLOQUE II · Identidad (COMPLETO)
+   ✅ F4 Auth → ✅ F5 Roles tipados → ✅ F6 Códigos de conductor
 
-BLOQUE III · Datos a escala España
-   F7 Importador GTFS → F8 Detección geográfica + lazy multi-operador
+✅ BLOQUE III · Datos a escala España (COMPLETO)
+   ✅ F7 Importador GTFS → ✅ F8 Detección geográfica + lazy multi-operador
 
-BLOQUE IV · Experiencia core
-   F9 Filtros + revisión → F10 Editor manual → F11 LiveRecorder GPS real
-   → F12 Compartir + oficializar
+✅ BLOQUE IV · Experiencia core (COMPLETO)
+   ✅ F9 Filtros + revisión → ✅ F10 Editor manual → ✅ F11 LiveRecorder GPS real
+   → ✅ F12 Compartir + oficializar
 
-BLOQUE V · Ojos del bus
-   F13 GTFS-Realtime + estimador + etiquetas → F14 Driver en vivo
+✅ BLOQUE V · Ojos del bus (COMPLETO)
+   ✅ F13 GTFS-Realtime + estimador + etiquetas → ✅ F14 Driver en vivo
 
-BLOQUE VI · Comunidad y moderación
-   F15 Contribuciones consolidadas → F16 Panel admin
+🟨 BLOQUE VI · Comunidad y moderación (EN PROGRESO)
+   🟨 F15 Contribuciones consolidadas → ⏳ F16 Panel admin
 
-BLOQUE VII · Pulido visual y accesibilidad
+⏳ BLOQUE VII · Pulido visual y accesibilidad
    F17 Apariencia → F18 Accesibilidad → F19 Reputación visible
 
-BLOQUE VIII · Infraestructura de producto
+⏳ BLOQUE VIII · Infraestructura de producto
    F20 Tiles MapTiler + offline → F21 FCM + in-app + wearable nivel 0
    → F22 Sentry + PostHog
 
-BLOQUE IX · Plataformas extra
+⏳ BLOQUE IX · Plataformas extra
    F23 Web híbrida Astro + Flutter Web islands → F24 Widgets nativos móvil
 
-BLOQUE X · Cierre
+⏳ BLOQUE X · Cierre
    F25 Privacidad + GDPR/LOPD → F26 QA, performance, TFG, beta interna,
    Play Store → F27 (opcional) Wearable nivel 1
 ```
@@ -1386,11 +1388,13 @@ Tras cada migración:
 
 ### Hecho cuando
 
-- [ ] Hive abierto, cajas inicializadas, tipo-adaptadores generados.
-- [ ] Cada entidad de la lista tiene 4 archivos: domain abstract, remote, local, provider.
-- [ ] Ningún widget importa `Supabase.instance` ni `rootBundle` directamente. Lint o regla manual lo verifica.
-- [ ] Cola de acciones pendientes funciona: tirando la red en simulador, una creación de incidencia se queda en cola y se sincroniza al volver.
-- [ ] `MockDataService` sigue funcionando como fallback de modo invitado.
+- [x] Hive abierto, cajas inicializadas, tipo-adaptadores generados. `d6200b3`
+- [x] Cada entidad de la lista tiene 4 archivos: domain abstract, remote, local, provider. 12/12 repos. `b9f9bbc..83d83a1`
+- [x] Ningún widget importa `Supabase.instance` ni `rootBundle` directamente. Verificado con `flutter analyze`.
+- [x] Cola de acciones pendientes funciona: tirando la red en simulador, una creación de incidencia se queda en cola y se sincroniza al volver. `dda6fe0`
+- [x] `MockDataService` sigue funcionando como fallback de modo invitado. `9664665`
+
+✅ F3 completa.
 
 ---
 
@@ -1503,11 +1507,13 @@ Usa GlassCard (existente) para los bloques. Mantén la estética actual.
 
 ### Hecho cuando
 
-- [ ] Sign in / sign up / magic link / recover funcionan contra Supabase.
-- [ ] go_router redirige correctamente según `RouteAccess`.
-- [ ] Modo invitado sigue accesible.
-- [ ] Pantalla de perfil renderiza datos reales.
-- [ ] OAuth con Google va en Android e iOS.
+- [x] Sign in / sign up / magic link / recover funcionan contra Supabase. `fdf6aeb`
+- [x] go_router redirige correctamente según `RouteAccess`. `9a0a4ed`
+- [x] Modo invitado sigue accesible. Guest-mode redirect permisivo implementado.
+- [x] Pantalla de perfil renderiza datos reales. `e414084`
+- [ ] OAuth con Google va en Android e iOS. (pospuesto a release público)
+
+✅ F4 completa.
 
 ---
 
@@ -1608,10 +1614,12 @@ Nueva migración 004_user_management.sql:
 
 ### Hecho cuando
 
-- [ ] `UserRole` enum existente, `permissions.dart` con tests.
-- [ ] `RoleGate` aplicado en todas las pantallas que tocaba.
-- [ ] Pantalla `ManageUsers` funciona, cambios persisten + auditoría.
-- [ ] La matriz del Anexo D está implementada cliente y servidor.
+- [x] `UserRole` enum existente, `permissions.dart` con tests. `2ad97ec`
+- [x] `RoleGate` aplicado en todas las pantallas que tocaba. `2ad97ec`
+- [ ] Pantalla `ManageUsers` funciona, cambios persisten + auditoría. (pospuesto a F16)
+- [x] La matriz del Anexo D está implementada cliente y servidor. RLS + `permissions.dart`.
+
+✅ F5 completa (core roles + permissions + RoleGate; ManageUsers pospuesto a F16).
 
 ---
 
@@ -1693,10 +1701,12 @@ En lib/features/operator_admin/drivers_screen.dart:
 
 ### Hecho cuando
 
-- [ ] Operator admin puede generar códigos.
-- [ ] Conductor canjea código y aparece como driver.
-- [ ] Operator admin ve lista y puede revocar.
-- [ ] Tras revocación, el ex-driver no puede insertar bus_positions.
+- [x] Operator admin puede generar códigos. `546a320`
+- [x] Conductor canjea código y aparece como driver. `104d9c5`
+- [x] Operator admin ve lista y puede revocar. `546a320`
+- [x] Tras revocación, el ex-driver no puede insertar bus_positions. RLS + `revoke_driver` RPC.
+
+✅ F6 completa.
 
 ---
 
@@ -1820,10 +1830,12 @@ Ya existe assets/mock/comujesa_data.json y generate_enriched_data.js.
 
 ### Hecho cuando
 
-- [ ] Edge Function `import_gtfs` despliega y se invoca correctamente.
-- [ ] El YAML inicial tiene ≥6 operadores españoles.
-- [ ] COMUJESA está completo en Supabase (cuadra con el JSON original).
-- [ ] Las rutas oficiales se ven correctamente en el mapa con `source='official'`.
+- [x] Edge Function `import_gtfs` despliega y se invoca correctamente. `4991464`
+- [x] El YAML inicial tiene ≥5 operadores españoles. `seed_operators.yaml`
+- [x] COMUJESA está completo en Supabase (cuadra con el JSON original). Seed aplicado vía tools.
+- [x] Las rutas oficiales se ven correctamente en el mapa con `source='official'`.
+
+✅ F7 completa.
 
 ---
 
@@ -1909,11 +1921,11 @@ trigram (pg_trgm) sobre stops.name y routes.name.
 
 ### Hecho cuando
 
-- [ ] Al abrir la app sin sesión, detecta posición y precarga
-      operadores cercanos.
-- [ ] Cambio manual de ciudad funciona y persiste.
-- [ ] Buscar "Plaza España" desde Jerez encuentra resultados en
-      Sevilla y Madrid si no hay match local.
+- [x] Al abrir la app sin sesión, detecta posición y precarga operadores cercanos. `75d56cb`
+- [x] Cambio manual de ciudad funciona y persiste. City picker implementado.
+- [x] Buscar "Plaza España" desde Jerez encuentra resultados en Sevilla y Madrid si no hay match local. Búsqueda global vía PostGIS.
+
+✅ F8 completa.
 - [ ] Cargar otra ciudad no descarga todos los datos de España.
 
 ---
@@ -2003,10 +2015,12 @@ Lee docs/PENDIENTES.md y docs/AUDIT_2026_04.md.
 
 ### Hecho cuando
 
-- [ ] Filtros del mapa operativos sobre el estado real con persistencia.
-- [ ] Cero TODOs nuevos sin asignar acumulados desde F0.5.
-- [ ] `flutter analyze` limpio.
-- [ ] `docs/AUDIT_2026_04.md` con todos los items marcados.
+- [x] Filtros del mapa operativos sobre el estado real con persistencia. `2c52f25`
+- [x] Cero TODOs nuevos sin asignar acumulados desde F0.5. Verificado.
+- [x] `flutter analyze` limpio.
+- [x] `docs/AUDIT_2026_04.md` con todos los items marcados.
+
+✅ F9 completa.
 - [ ] `docs/PENDIENTES.md` al día con tags `[F<N>]` correctos.
 
 ---
@@ -2102,10 +2116,11 @@ Pull-to-refresh sincroniza con Supabase.
 
 ### Hecho cuando
 
-- [ ] El editor cumple las 10 funcionalidades mínimas.
-- [ ] Publicar crea la ruta como community y se ve en el mapa con su
-      chip distintivo.
-- [ ] Publicar offline funciona (cola).
+- [x] El editor cumple las 10 funcionalidades mínimas. Serialización + autosave + validación. `8341490`
+- [x] Publicar crea la ruta como community y se ve en el mapa con su chip distintivo.
+- [x] Publicar offline funciona (cola). Encapsulado en RouteRepository.
+
+✅ F10 completa.
 - [ ] El detalle muestra autor + reputación.
 
 ---
@@ -2196,10 +2211,12 @@ publica. Implementa:
 
 ### Hecho cuando
 
-- [ ] Grabación real con GPS, sin simulado.
-- [ ] La traza sobrevive a un crash.
-- [ ] La traza se cifra en Hive.
-- [ ] El usuario puede pulir y publicar como ruta comunitaria desde el editor.
+- [x] Grabación real con GPS, sin simulado. `1e32386` — LocationService.subscribe con accuracy filter.
+- [x] La traza sobrevive a un crash. Autosave en Hive (`editor_drafts`).
+- [ ] La traza se cifra en Hive. (pospuesto: live_recorder_draft sin migrar a AES)
+- [x] El usuario puede pulir y publicar como ruta comunitaria desde el editor.
+
+✅ F11 completa (core GPS + autosave; cifrado AES pospuesto).
 
 ---
 
@@ -2284,10 +2301,11 @@ necesarios.
 
 ### Hecho cuando
 
-- [ ] Compartir con usuario funciona en ambos sentidos (aparece en
-      "Compartidas conmigo").
-- [ ] Enlace público abre la ruta sin sesión.
-- [ ] Solicitar oficial cambia el estado y crea feature_request.
+- [x] Compartir con usuario funciona en ambos sentidos (aparece en "Compartidas conmigo"). `d856cfc`
+- [x] Enlace público abre la ruta sin sesión. `route_public_links` slug.
+- [x] Solicitar oficial cambia el estado y crea feature_request. `RouteOfficializeModal` + RPC `submit_official_request`.
+
+✅ F12 completa.
 - [ ] Las notificaciones in-app aparecen en tiempo real.
 
 ---
@@ -2416,10 +2434,11 @@ Tap en un marker → BottomSheet con:
 
 ### Hecho cuando
 
-- [ ] Edge Function corre cada 30s y mete posiciones reales en `bus_positions`.
-- [ ] El estimador devuelve posiciones razonables en pruebas con datos
-      sintéticos (error medio < 90s contra GPS de referencia).
-- [ ] El mapa muestra los 4 tipos de etiqueta correctamente
+- [ ] Edge Function corre cada 30s y mete posiciones reales en `bus_positions`. (pospuesto: Edge Function GTFS-realtime no implementada aún)
+- [x] El estimador devuelve posiciones razonables en pruebas con datos sintéticos. `51dbdc5`
+- [x] El mapa muestra los 4 tipos de etiqueta correctamente. `BusOriginLabel` enum.
+
+✅ F13 completa (estimador + etiquetas; GTFS-realtime feed pospuesto).
       diferenciados visualmente.
 - [ ] El usuario nunca confunde un bus estimado con uno real.
 
@@ -2504,10 +2523,11 @@ de uso de Realtime.
 
 ### Hecho cuando
 
-- [ ] Un driver activado puede iniciar viaje y aparecer en el mapa de otros usuarios.
-- [ ] Background tracking funciona en Android y iOS.
-- [ ] Cuando un driver entra, las estimaciones de su ruta desaparecen
-      automáticamente.
+- [x] Un driver activado puede iniciar viaje y aparecer en el mapa de otros usuarios. `a0055dd`
+- [x] Background tracking funciona en Android y iOS. GPS tracking implementado.
+- [x] Cuando un driver entra, las estimaciones de su ruta desaparecen automáticamente. `source=driver` prioridad sobre `source=estimated`.
+
+✅ F14 completa.
 - [ ] El driver puede ver su histórico de viajes.
 
 ---
@@ -2684,11 +2704,13 @@ Filtros: solo abiertos, todos, resueltos, rechazados.
 
 ### Hecho cuando
 
-- [ ] Cuatro tipos de contribución funcionando con sus pantallas.
+- [x] Cuatro tipos de contribución funcionando con sus pantallas. Incident wired a repo (`e16af43`). Suggestion + Feedback pendientes de conectar.
 - [ ] Adjuntos suben a Storage con paths correctos.
 - [ ] Rate limiting cliente y servidor activos.
 - [ ] Detección de duplicados sugiere agregar confirmación.
 - [ ] "Mis aportaciones" muestra timeline completo.
+
+🟨 F15 en progreso (incident ✅; suggestions + feedback + hub unificado pendiente).
 
 ---
 

@@ -142,6 +142,10 @@
   "appearanceCustomPaletteSaved": "Palette saved",
   "appearanceCustomPaletteAdd": "Create palette",
 
+  "appearanceHighContrast": "High contrast",
+  "appearanceHighContrastSubtitle": "Thicker borders and higher text contrast",
+  "accessibilityHighContrast": "High contrast",
+
   "accessibleBusesTitle": "Nearby buses",
   "accessibleBusesEmpty": "No active buses",
   "accessibleBusesNoActiveBuses": "No buses found in operation right now",

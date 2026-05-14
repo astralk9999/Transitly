@@ -21,6 +21,7 @@ class UserPreferences with _$UserPreferences {
     @Default(ColorBlindMode.none) ColorBlindMode colorBlindMode,
     @Default(false) bool dyslexiaFontEnabled,
     @Default(false) bool reduceMotion,
+    @Default(false) bool highContrast,
   }) = _UserPreferences;
 
   factory UserPreferences.fromJson(Map<String, dynamic> json) =>

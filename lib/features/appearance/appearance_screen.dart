@@ -609,6 +609,8 @@ class _AccessibilitySection extends ConsumerWidget {
         themeNotifierProvider.select((n) => n.colorBlindMode));
     final reduceMotion = ref.watch(
         themeNotifierProvider.select((n) => n.reduceMotion));
+    final highContrast = ref.watch(
+        themeNotifierProvider.select((n) => n.highContrast));
 
     return GlassCard(
       blur: 16,
@@ -679,6 +681,33 @@ class _AccessibilitySection extends ConsumerWidget {
                 activeTrackColor: c.accent,
                 onChanged: (v) {
                   ref.read(themeNotifierProvider).reduceMotion = v;
+                },
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.appearanceHighContrast,
+                      style: TransitTypography.bodyPrimary(c.textHi),
+                    ),
+                    Text(
+                      l10n.appearanceHighContrastSubtitle,
+                      style: TransitTypography.bodySmall(c.textLo),
+                    ),
+                  ],
+                ),
+              ),
+              Switch.adaptive(
+                value: highContrast,
+                activeTrackColor: c.accent,
+                onChanged: (v) {
+                  ref.read(themeNotifierProvider).highContrast = v;
                 },
               ),
             ],
@@ -757,6 +786,7 @@ class _ResetSection extends ConsumerWidget {
               tn.colorBlindMode = ColorBlindMode.none;
               tn.dyslexiaFontEnabled = false;
               tn.reduceMotion = false;
+              tn.highContrast = false;
               ref.read(themeModeProvider.notifier).state = ThemeMode.dark;
               Navigator.of(ctx).pop();
               ScaffoldMessenger.of(context).showSnackBar(

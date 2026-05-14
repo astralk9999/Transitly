@@ -415,6 +415,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get appearanceCustomPaletteAdd => 'Crear paleta';
 
   @override
+  String get appearanceHighContrast => 'Alto contraste';
+
+  @override
+  String get appearanceHighContrastSubtitle =>
+      'Bordes más gruesos y mayor contraste de texto';
+
+  @override
+  String get accessibilityHighContrast => 'Alto contraste';
+
+  @override
   String get accessibleBusesTitle => 'Buses cercanos';
 
   @override

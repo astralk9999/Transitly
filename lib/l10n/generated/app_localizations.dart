@@ -890,6 +890,24 @@ abstract class AppLocalizations {
   /// **'Crear paleta'**
   String get appearanceCustomPaletteAdd;
 
+  /// High contrast mode toggle label
+  ///
+  /// In es, this message translates to:
+  /// **'Alto contraste'**
+  String get appearanceHighContrast;
+
+  /// High contrast mode toggle subtitle
+  ///
+  /// In es, this message translates to:
+  /// **'Bordes más gruesos y mayor contraste de texto'**
+  String get appearanceHighContrastSubtitle;
+
+  /// High contrast mode toggle label in accessibility screen
+  ///
+  /// In es, this message translates to:
+  /// **'Alto contraste'**
+  String get accessibilityHighContrast;
+
   /// Accessible buses screen title
   ///
   /// In es, this message translates to:

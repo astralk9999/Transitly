@@ -256,8 +256,17 @@ class _$OperatorModelImpl extends _OperatorModel {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, shortName, slug,
-      region, website, contactEmail, phone);
+  int get hashCode => Object.hash(
+    runtimeType,
+    id,
+    name,
+    shortName,
+    slug,
+    region,
+    website,
+    contactEmail,
+    phone,
+  );
 
   /// Create a copy of OperatorModel
   /// with the given fields replaced by the non-null parameter values.

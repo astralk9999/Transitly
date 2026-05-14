@@ -9,6 +9,7 @@ import '../../core/theme/backgrounds/prefab_backgrounds.dart';
 import '../../core/theme/palettes/app_palette.dart';
 import '../../core/theme/palettes/custom_colors.dart';
 import '../../core/theme/palettes/prefab_palettes.dart';
+import '../../core/theme/high_contrast_theme.dart';
 import '../../core/theme/transit_theme.dart';
 import '../../core/utils/app_logger.dart';
 import '../../data/user_preferences/domain/user_preferences_repository.dart';
@@ -33,6 +34,7 @@ class ThemeNotifier extends ChangeNotifier {
   ColorBlindMode _colorBlindMode = ColorBlindMode.none;
   bool _dyslexiaFontEnabled = false;
   bool _reduceMotion = false;
+  bool _highContrast = false;
 
   Map<String, Color> _customColors = <String, Color>{};
   static const _customPaletteId = 'custom';
@@ -51,6 +53,7 @@ class ThemeNotifier extends ChangeNotifier {
   ColorBlindMode get colorBlindMode => _colorBlindMode;
   bool get dyslexiaFontEnabled => _dyslexiaFontEnabled;
   bool get reduceMotion => _reduceMotion;
+  bool get highContrast => _highContrast;
 
   Map<String, Color> get customColors => Map.unmodifiable(_customColors);
 
@@ -142,6 +145,13 @@ class ThemeNotifier extends ChangeNotifier {
     unawaited(_persist());
   }
 
+  set highContrast(bool value) {
+    if (_highContrast == value) return;
+    _highContrast = value;
+    notifyListeners();
+    unawaited(_persist());
+  }
+
   void setCustomPalette(Map<String, Color> colors) {
     _customColors = Map.of(colors);
     _paletteId = _customPaletteId;
@@ -152,11 +162,17 @@ class ThemeNotifier extends ChangeNotifier {
 
   // ── Theme building ───────────────────────────────────────
 
-  ThemeData buildTheme(Brightness brightness) => buildTransitTheme(
-        palette.scheme,
-        fontScale: _fontScale,
-        dyslexiaFontEnabled: _dyslexiaFontEnabled,
-      );
+  ThemeData buildTheme(Brightness brightness) {
+    final base = buildTransitTheme(
+      palette.scheme,
+      fontScale: _fontScale,
+      dyslexiaFontEnabled: _dyslexiaFontEnabled,
+    );
+    if (_highContrast) {
+      return HighContrastTheme.apply(base, palette.scheme);
+    }
+    return base;
+  }
 
   // ── Preferences I/O ─────────────────────────────────────
 
@@ -169,6 +185,7 @@ class ThemeNotifier extends ChangeNotifier {
     _colorBlindMode = prefs.colorBlindMode;
     _dyslexiaFontEnabled = prefs.dyslexiaFontEnabled;
     _reduceMotion = prefs.reduceMotion;
+    _highContrast = prefs.highContrast;
     _customColors = _parseCustomColors(prefs.customColors);
     _initialized = true;
     notifyListeners();
@@ -184,6 +201,7 @@ class ThemeNotifier extends ChangeNotifier {
         colorBlindMode: _colorBlindMode,
         dyslexiaFontEnabled: _dyslexiaFontEnabled,
         reduceMotion: _reduceMotion,
+        highContrast: _highContrast,
         customColors: _customColors.isEmpty
             ? null
             : _customColors.map((k, v) => MapEntry(k, _colorToHex(v))),
@@ -228,6 +246,7 @@ class ThemeNotifier extends ChangeNotifier {
         _colorBlindMode = _parseColorBlindMode(data['colorBlindMode'] as String?);
         _dyslexiaFontEnabled = data['dyslexiaFontEnabled'] as bool? ?? false;
         _reduceMotion = data['reduceMotion'] as bool? ?? false;
+        _highContrast = data['highContrast'] as bool? ?? false;
         final rawCustom = data['customColors'] as Map<dynamic, dynamic>?;
         if (rawCustom != null) {
           _customColors = <String, Color>{};
@@ -265,6 +284,7 @@ class ThemeNotifier extends ChangeNotifier {
         'colorBlindMode': _colorBlindMode.name,
         'dyslexiaFontEnabled': _dyslexiaFontEnabled,
         'reduceMotion': _reduceMotion,
+        'highContrast': _highContrast,
         'customColors': _customColors.map((k, v) => MapEntry(k, _colorToHex(v))),
       });
     } catch (e) {

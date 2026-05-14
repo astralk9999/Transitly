@@ -23,6 +23,7 @@ _$UserPreferencesImpl _$$UserPreferencesImplFromJson(
       ColorBlindMode.none,
   dyslexiaFontEnabled: json['dyslexiaFontEnabled'] as bool? ?? false,
   reduceMotion: json['reduceMotion'] as bool? ?? false,
+  highContrast: json['highContrast'] as bool? ?? false,
 );
 
 Map<String, dynamic> _$$UserPreferencesImplToJson(
@@ -38,6 +39,7 @@ Map<String, dynamic> _$$UserPreferencesImplToJson(
   'colorBlindMode': _$ColorBlindModeEnumMap[instance.colorBlindMode]!,
   'dyslexiaFontEnabled': instance.dyslexiaFontEnabled,
   'reduceMotion': instance.reduceMotion,
+  'highContrast': instance.highContrast,
 };
 
 const _$ColorBlindModeEnumMap = {

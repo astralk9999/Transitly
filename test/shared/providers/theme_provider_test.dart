@@ -22,6 +22,7 @@ void main() {
     expect(notifier.colorBlindMode, ColorBlindMode.none);
     expect(notifier.dyslexiaFontEnabled, false);
     expect(notifier.reduceMotion, false);
+    expect(notifier.highContrast, false);
   });
 
   test('set paletteId updates brightness', () {
@@ -69,6 +70,7 @@ void main() {
         colorBlindMode: ColorBlindMode.protanopia,
         dyslexiaFontEnabled: true,
         reduceMotion: true,
+        highContrast: true,
       ),
     );
     expect(notifier.paletteId, 'ocean');
@@ -79,6 +81,7 @@ void main() {
     expect(notifier.colorBlindMode, ColorBlindMode.protanopia);
     expect(notifier.dyslexiaFontEnabled, true);
     expect(notifier.reduceMotion, true);
+    expect(notifier.highContrast, true);
   });
 
   test('prefabPalettes has 6 palettes', () {

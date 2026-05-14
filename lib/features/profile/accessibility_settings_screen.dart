@@ -7,6 +7,7 @@ import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../shared/providers/is_dark_provider.dart';
 import '../../shared/providers/locale_provider.dart';
+import '../../shared/providers/theme_notifier.dart';
 import '../../shared/providers/theme_provider.dart';
 import '../../shared/widgets/glass_card.dart';
 import '../../shared/widgets/gradient_text.dart';
@@ -21,6 +22,8 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
     final c = TransitColorScheme.of(isDark);
     final mode = ref.watch(themeModeProvider);
     final locale = ref.watch(localeProvider);
+    final highContrast = ref.watch(
+        themeNotifierProvider.select((n) => n.highContrast));
     final mq = MediaQuery.of(context);
 
     return Scaffold(
@@ -48,8 +51,11 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
                 _ThemeSection(
                   mode: mode,
                   c: c,
+                  highContrast: highContrast,
                   onChanged: (m) =>
                       ref.read(themeModeProvider.notifier).state = m,
+                  onHighContrastChanged: (v) =>
+                      ref.read(themeNotifierProvider).highContrast = v,
                 ),
                 const SizedBox(height: 16),
                 _SystemPreferencesSection(mq: mq, c: c),
@@ -73,12 +79,16 @@ class _ThemeSection extends StatelessWidget {
   const _ThemeSection({
     required this.mode,
     required this.c,
+    required this.highContrast,
     required this.onChanged,
+    required this.onHighContrastChanged,
   });
 
   final ThemeMode mode;
   final TransitColorScheme c;
+  final bool highContrast;
   final ValueChanged<ThemeMode> onChanged;
+  final ValueChanged<bool> onHighContrastChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -120,6 +130,31 @@ class _ThemeSection extends StatelessWidget {
             selected: mode == ThemeMode.dark,
             c: c,
             onTap: () => onChanged(ThemeMode.dark),
+          ),
+          const Divider(height: 24),
+          Semantics(
+            label: 'Alto contraste',
+            selected: highContrast,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Alto contraste',
+                          style: TransitTypography.bodyPrimary(c.textHi)),
+                      Text('Bordes más gruesos y mayor contraste',
+                          style: TransitTypography.bodySmall(c.textLo)),
+                    ],
+                  ),
+                ),
+                Switch.adaptive(
+                  value: highContrast,
+                  activeTrackColor: c.accent,
+                  onChanged: onHighContrastChanged,
+                ),
+              ],
+            ),
           ),
         ],
       ),

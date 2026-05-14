@@ -212,6 +212,13 @@
   "appearanceCustomPaletteSaved": "Paleta guardada",
   "appearanceCustomPaletteAdd": "Crear paleta",
 
+  "appearanceHighContrast": "Alto contraste",
+  "@appearanceHighContrast": { "description": "High contrast mode toggle label" },
+  "appearanceHighContrastSubtitle": "Bordes más gruesos y mayor contraste de texto",
+  "@appearanceHighContrastSubtitle": { "description": "High contrast mode toggle subtitle" },
+  "accessibilityHighContrast": "Alto contraste",
+  "@accessibilityHighContrast": { "description": "High contrast mode toggle label in accessibility screen" },
+
   "accessibleBusesTitle": "Buses cercanos",
   "@accessibleBusesTitle": { "description": "Accessible buses screen title" },
   "accessibleBusesEmpty": "Sin buses activos",

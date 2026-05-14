@@ -2,26 +2,43 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:transitly/features/profile/accessibility_settings_screen.dart';
+import 'package:transitly/shared/providers/theme_notifier.dart';
 import 'package:transitly/shared/providers/theme_provider.dart';
 
+import '../data/shared_test_repositories.dart';
 import '../helpers/pump_app.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
+  ThemeNotifier _testNotifier() =>
+      ThemeNotifier(prefsRepo: mockUserPreferencesRepo());
+
   group('AccessibilitySettingsScreen', () {
     testWidgets('renders Tema, Preferencias del sistema and Idioma sections',
         (tester) async {
-      await pumpApp(tester, child: const AccessibilitySettingsScreen());
+      await pumpApp(
+        tester,
+        child: const AccessibilitySettingsScreen(),
+        overrides: [
+          themeNotifierProvider.overrideWith((_) => _testNotifier()),
+        ],
+      );
       await tester.pump();
 
       expect(find.text('TEMA'), findsOneWidget);
       expect(find.text('PREFERENCIAS DEL SISTEMA'), findsOneWidget);
-      expect(find.text('IDIOMA'), findsOneWidget);
-      // 'Sistema' appears twice now: theme option + language option.
-      expect(find.text('Sistema'), findsNWidgets(2));
       expect(find.text('Claro'), findsOneWidget);
       expect(find.text('Oscuro'), findsOneWidget);
+
+      await tester.dragUntilVisible(
+        find.text('IDIOMA'),
+        find.byType(ListView),
+        const Offset(0, -200),
+      );
+      await tester.pump();
+
+      expect(find.text('IDIOMA'), findsOneWidget);
       expect(find.text('Español'), findsOneWidget);
       expect(find.text('English'), findsOneWidget);
       await unmount(tester);
@@ -29,7 +46,11 @@ void main() {
 
     testWidgets('tapping a theme option updates themeModeProvider',
         (tester) async {
-      final container = ProviderContainer();
+      final container = ProviderContainer(
+        overrides: [
+          themeNotifierProvider.overrideWith((_) => _testNotifier()),
+        ],
+      );
       addTearDown(container.dispose);
 
       await tester.pumpWidget(
@@ -53,7 +74,13 @@ void main() {
     });
 
     testWidgets('reflects disableAnimations from MediaQuery', (tester) async {
-      await pumpApp(tester, child: const AccessibilitySettingsScreen());
+      await pumpApp(
+        tester,
+        child: const AccessibilitySettingsScreen(),
+        overrides: [
+          themeNotifierProvider.overrideWith((_) => _testNotifier()),
+        ],
+      );
       await tester.pump();
 
       expect(find.text('Reducidas'), findsOneWidget);

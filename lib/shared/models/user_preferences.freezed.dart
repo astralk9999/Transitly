@@ -31,6 +31,7 @@ mixin _$UserPreferences {
   ColorBlindMode get colorBlindMode => throw _privateConstructorUsedError;
   bool get dyslexiaFontEnabled => throw _privateConstructorUsedError;
   bool get reduceMotion => throw _privateConstructorUsedError;
+  bool get highContrast => throw _privateConstructorUsedError;
 
   /// Serializes this UserPreferences to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -60,6 +61,7 @@ abstract class $UserPreferencesCopyWith<$Res> {
     ColorBlindMode colorBlindMode,
     bool dyslexiaFontEnabled,
     bool reduceMotion,
+    bool highContrast,
   });
 }
 
@@ -88,6 +90,7 @@ class _$UserPreferencesCopyWithImpl<$Res, $Val extends UserPreferences>
     Object? colorBlindMode = null,
     Object? dyslexiaFontEnabled = null,
     Object? reduceMotion = null,
+    Object? highContrast = null,
   }) {
     return _then(
       _value.copyWith(
@@ -131,6 +134,10 @@ class _$UserPreferencesCopyWithImpl<$Res, $Val extends UserPreferences>
                 ? _value.reduceMotion
                 : reduceMotion // ignore: cast_nullable_to_non_nullable
                       as bool,
+            highContrast: null == highContrast
+                ? _value.highContrast
+                : highContrast // ignore: cast_nullable_to_non_nullable
+                      as bool,
           )
           as $Val,
     );
@@ -157,6 +164,7 @@ abstract class _$$UserPreferencesImplCopyWith<$Res>
     ColorBlindMode colorBlindMode,
     bool dyslexiaFontEnabled,
     bool reduceMotion,
+    bool highContrast,
   });
 }
 
@@ -184,6 +192,7 @@ class __$$UserPreferencesImplCopyWithImpl<$Res>
     Object? colorBlindMode = null,
     Object? dyslexiaFontEnabled = null,
     Object? reduceMotion = null,
+    Object? highContrast = null,
   }) {
     return _then(
       _$UserPreferencesImpl(
@@ -227,6 +236,10 @@ class __$$UserPreferencesImplCopyWithImpl<$Res>
             ? _value.reduceMotion
             : reduceMotion // ignore: cast_nullable_to_non_nullable
                   as bool,
+        highContrast: null == highContrast
+            ? _value.highContrast
+            : highContrast // ignore: cast_nullable_to_non_nullable
+                  as bool,
       ),
     );
   }
@@ -246,6 +259,7 @@ class _$UserPreferencesImpl implements _UserPreferences {
     this.colorBlindMode = ColorBlindMode.none,
     this.dyslexiaFontEnabled = false,
     this.reduceMotion = false,
+    this.highContrast = false,
   }) : _customColors = customColors;
 
   factory _$UserPreferencesImpl.fromJson(Map<String, dynamic> json) =>
@@ -287,10 +301,13 @@ class _$UserPreferencesImpl implements _UserPreferences {
   @override
   @JsonKey()
   final bool reduceMotion;
+  @override
+  @JsonKey()
+  final bool highContrast;
 
   @override
   String toString() {
-    return 'UserPreferences(userId: $userId, themePaletteId: $themePaletteId, customColors: $customColors, backgroundId: $backgroundId, backgroundEnabled: $backgroundEnabled, backgroundOpacity: $backgroundOpacity, fontScale: $fontScale, colorBlindMode: $colorBlindMode, dyslexiaFontEnabled: $dyslexiaFontEnabled, reduceMotion: $reduceMotion)';
+    return 'UserPreferences(userId: $userId, themePaletteId: $themePaletteId, customColors: $customColors, backgroundId: $backgroundId, backgroundEnabled: $backgroundEnabled, backgroundOpacity: $backgroundOpacity, fontScale: $fontScale, colorBlindMode: $colorBlindMode, dyslexiaFontEnabled: $dyslexiaFontEnabled, reduceMotion: $reduceMotion, highContrast: $highContrast)';
   }
 
   @override
@@ -318,7 +335,9 @@ class _$UserPreferencesImpl implements _UserPreferences {
             (identical(other.dyslexiaFontEnabled, dyslexiaFontEnabled) ||
                 other.dyslexiaFontEnabled == dyslexiaFontEnabled) &&
             (identical(other.reduceMotion, reduceMotion) ||
-                other.reduceMotion == reduceMotion));
+                other.reduceMotion == reduceMotion) &&
+            (identical(other.highContrast, highContrast) ||
+                other.highContrast == highContrast));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -335,6 +354,7 @@ class _$UserPreferencesImpl implements _UserPreferences {
     colorBlindMode,
     dyslexiaFontEnabled,
     reduceMotion,
+    highContrast,
   );
 
   /// Create a copy of UserPreferences
@@ -366,6 +386,7 @@ abstract class _UserPreferences implements UserPreferences {
     final ColorBlindMode colorBlindMode,
     final bool dyslexiaFontEnabled,
     final bool reduceMotion,
+    final bool highContrast,
   }) = _$UserPreferencesImpl;
 
   factory _UserPreferences.fromJson(Map<String, dynamic> json) =
@@ -391,6 +412,8 @@ abstract class _UserPreferences implements UserPreferences {
   bool get dyslexiaFontEnabled;
   @override
   bool get reduceMotion;
+  @override
+  bool get highContrast;
 
   /// Create a copy of UserPreferences
   /// with the given fields replaced by the non-null parameter values.

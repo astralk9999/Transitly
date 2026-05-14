@@ -11,9 +11,16 @@ class IncidentMockRepository implements IncidentRepository {
 
   final MockDataService _mockData;
   final List<IncidentModel> _ephemeralCreates = <IncidentModel>[];
+  final Map<String, IncidentModel> _modifications = <String, IncidentModel>{};
 
-  Iterable<IncidentModel> get _all =>
-      [..._mockData.incidents, ..._ephemeralCreates];
+  Iterable<IncidentModel> get _all sync* {
+    for (final i in _mockData.incidents) {
+      yield _modifications[i.id] ?? i;
+    }
+    for (final i in _ephemeralCreates) {
+      yield _modifications[i.id] ?? i;
+    }
+  }
 
   @override
   Future<List<IncidentModel>> byAuthor(String authorId) async {
@@ -33,5 +40,18 @@ class IncidentMockRepository implements IncidentRepository {
   Future<IncidentModel> create(IncidentModel incident) async {
     _ephemeralCreates.add(incident);
     return incident;
+  }
+
+  @override
+  Future<List<IncidentModel>> listAll() async {
+    return _all.toList(growable: false);
+  }
+
+  @override
+  Future<IncidentModel> updateStatus(String id, String status) async {
+    final existing = _all.firstWhere((i) => i.id == id);
+    final updated = existing.copyWith(status: status);
+    _modifications[id] = updated;
+    return updated;
   }
 }

@@ -78,6 +78,40 @@ class RouteFeedbackRemoteRepository implements RouteFeedbackRepository {
     }
   }
 
+  @override
+  Future<List<RouteFeedbackModel>> listAll() async {
+    try {
+      final rows = await _client
+          .from('route_feedback')
+          .select()
+          .order('created_at', ascending: false);
+      return rows.map(_fromRow).toList();
+    } catch (e, st) {
+      throw _mapError(e, st, 'listAll');
+    }
+  }
+
+  @override
+  Future<RouteFeedbackModel> updateStatus(String id, String status) async {
+    final dbStatus = status == 'resolved' ? 'applied' : status;
+    final payload = <String, dynamic>{
+      'status': dbStatus,
+      if (status == 'resolved')
+        'resolved_at': DateTime.now().toUtc().toIso8601String(),
+    };
+    try {
+      final row = await _client
+          .from('route_feedback')
+          .update(payload)
+          .eq('id', id)
+          .select()
+          .single();
+      return _fromRow(row);
+    } catch (e, st) {
+      throw _mapError(e, st, 'updateStatus($id)');
+    }
+  }
+
   RouteFeedbackModel _fromRow(Map<String, dynamic> row) {
     final attachments = (row['attachments'] as List<dynamic>?)
             ?.map((e) => e as String)

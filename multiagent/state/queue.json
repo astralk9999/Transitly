@@ -1,0 +1,29 @@
+{
+  "pending": [
+    {
+      "id": "F16-005",
+      "title": "Wiring de navegación admin en router",
+      "phase": "F16",
+      "priority": "medium",
+      "status": "pending",
+      "dependencies": ["F16-001"],
+      "assigned_to": null
+    }
+  ],
+  "active": [
+    {
+      "id": "F16-004",
+      "title": "ManagerInboxScreen handlers reales",
+      "phase": "F16",
+      "priority": "medium",
+      "status": "active",
+      "dependencies": ["F16-001"],
+      "assigned_to": "developer"
+    }
+  ],
+  "completed": [
+    {"id": "F16-001", "title": "Pantalla base admin con RoleGate", "phase": "F16", "status": "completed", "commit": "4d08467"},
+    {"id": "F16-002", "title": "Lista de usuarios con filtro por rol", "phase": "F16", "status": "completed", "commit": "182b442"},
+    {"id": "F16-003", "title": "CRUD de operadores", "phase": "F16", "status": "completed", "commit": "852ef25"}
+  ]
+}

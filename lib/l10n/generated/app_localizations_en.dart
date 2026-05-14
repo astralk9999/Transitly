@@ -239,4 +239,54 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get adminOperatorsErrorUnknown => 'Unknown error loading operators';
+
+  @override
+  String get managerInboxTitle => 'Management inbox';
+
+  @override
+  String get managerInboxFeedback => 'Feedback';
+
+  @override
+  String get managerInboxSuggestions => 'Suggestions';
+
+  @override
+  String get managerInboxResolved => 'Resolved';
+
+  @override
+  String managerInboxPending(int count) {
+    return '$count pending';
+  }
+
+  @override
+  String get managerInboxMarkInReview => 'Mark in review';
+
+  @override
+  String get managerInboxResolve => 'Resolve';
+
+  @override
+  String get managerInboxReject => 'Reject';
+
+  @override
+  String get managerInboxEmptyFeedback => 'No pending feedback';
+
+  @override
+  String get managerInboxEmptySuggestions => 'No suggestions';
+
+  @override
+  String get managerInboxEmptyResolved => 'No resolved items';
+
+  @override
+  String get managerInboxOpen => 'Open';
+
+  @override
+  String get managerInboxStatus => 'Status';
+
+  @override
+  String get managerInboxItemDescription => 'Description';
+
+  @override
+  String get managerInboxItemDate => 'Date';
+
+  @override
+  String get managerInboxItemType => 'Type';
 }

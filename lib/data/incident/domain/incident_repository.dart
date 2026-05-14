@@ -41,4 +41,8 @@ abstract class IncidentRepository {
   /// `pending_actions` y devuelve `incident` con el id que tendrá
   /// cuando el drainer lo sincronice (UUID v4 generado en cliente).
   Future<IncidentModel> create(IncidentModel incident);
+
+  Future<List<IncidentModel>> listAll();
+
+  Future<IncidentModel> updateStatus(String id, String status);
 }

@@ -77,6 +77,34 @@ class IncidentRepositorySwr implements IncidentRepository {
     await local.upsert(saved);
     return saved;
   }
+
+  @override
+  Future<List<IncidentModel>> listAll() async {
+    final cached = await local.listAll();
+    if (cached.isNotEmpty) {
+      unawaited(_refreshListAll());
+      return cached;
+    }
+    final fresh = await remote.listAll();
+    await local.upsertAll(fresh);
+    return fresh;
+  }
+
+  Future<void> _refreshListAll() async {
+    try {
+      final fresh = await remote.listAll();
+      await local.upsertAll(fresh);
+    } on IncidentRepositoryException catch (e) {
+      AppLogger.warn(_logTag, 'background refresh listAll', e);
+    }
+  }
+
+  @override
+  Future<IncidentModel> updateStatus(String id, String status) async {
+    final updated = await remote.updateStatus(id, status);
+    await local.upsert(updated);
+    return updated;
+  }
 }
 
 /// Provider Riverpod del repositorio de incidents. Registra al

@@ -77,6 +77,7 @@ class AdminScreen extends ConsumerWidget {
                             icon: Icons.inbox,
                             title: 'Bandeja de moderación',
                             subtitle: 'Revisar reportes y contenido',
+                            onTap: () => context.push('/management/inbox'),
                           ),
                           const SizedBox(height: 32),
                         ],

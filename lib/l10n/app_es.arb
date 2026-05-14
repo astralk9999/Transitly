@@ -131,5 +131,43 @@
   "adminOperatorsErrorNetwork": "Error de red al cargar operadores",
   "@adminOperatorsErrorNetwork": { "description": "Admin operators network error" },
   "adminOperatorsErrorUnknown": "Error desconocido al cargar operadores",
-  "@adminOperatorsErrorUnknown": { "description": "Admin operators unknown error" }
+  "@adminOperatorsErrorUnknown": { "description": "Admin operators unknown error" },
+
+  "managerInboxTitle": "Bandeja de gestión",
+  "@managerInboxTitle": { "description": "Manager inbox screen title" },
+  "managerInboxFeedback": "Feedback",
+  "@managerInboxFeedback": { "description": "Manager inbox: feedback tab label" },
+  "managerInboxSuggestions": "Sugerencias",
+  "@managerInboxSuggestions": { "description": "Manager inbox: suggestions tab label" },
+  "managerInboxResolved": "Resueltos",
+  "@managerInboxResolved": { "description": "Manager inbox: resolved tab label" },
+  "managerInboxPending": "{count} pendientes",
+  "@managerInboxPending": {
+    "description": "Manager inbox pending count",
+    "placeholders": {
+      "count": { "type": "int", "example": "5" }
+    }
+  },
+  "managerInboxMarkInReview": "Marcar en revisión",
+  "@managerInboxMarkInReview": { "description": "Manager inbox: mark in review button" },
+  "managerInboxResolve": "Resolver",
+  "@managerInboxResolve": { "description": "Manager inbox: resolve button" },
+  "managerInboxReject": "Rechazar",
+  "@managerInboxReject": { "description": "Manager inbox: reject button" },
+  "managerInboxEmptyFeedback": "No hay feedback pendiente",
+  "@managerInboxEmptyFeedback": { "description": "Manager inbox: empty feedback state" },
+  "managerInboxEmptySuggestions": "No hay sugerencias",
+  "@managerInboxEmptySuggestions": { "description": "Manager inbox: empty suggestions state" },
+  "managerInboxEmptyResolved": "No hay elementos resueltos",
+  "@managerInboxEmptyResolved": { "description": "Manager inbox: empty resolved state" },
+  "managerInboxOpen": "Abrir",
+  "@managerInboxOpen": { "description": "Manager inbox: open button" },
+  "managerInboxStatus": "Estado",
+  "@managerInboxStatus": { "description": "Manager inbox: status label" },
+  "managerInboxItemDescription": "Descripción",
+  "@managerInboxItemDescription": { "description": "Manager inbox: description label" },
+  "managerInboxItemDate": "Fecha",
+  "@managerInboxItemDate": { "description": "Manager inbox: date label" },
+  "managerInboxItemType": "Tipo",
+  "@managerInboxItemType": { "description": "Manager inbox: type label" }
 }

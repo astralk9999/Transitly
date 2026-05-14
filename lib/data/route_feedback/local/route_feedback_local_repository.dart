@@ -1,5 +1,6 @@
 import 'package:hive/hive.dart';
 
+import '../../../shared/models/enums.dart';
 import '../../../shared/models/route_feedback_model.dart';
 import '../domain/route_feedback_repository.dart';
 
@@ -30,6 +31,34 @@ class RouteFeedbackLocalRepository implements RouteFeedbackRepository {
     await _box.put(_key(feedback.id), feedback);
     return feedback;
   }
+
+  @override
+  Future<List<RouteFeedbackModel>> listAll() async {
+    return _box.values.toList(growable: false);
+  }
+
+  @override
+  Future<RouteFeedbackModel> updateStatus(String id, String status) async {
+    final existing = _box.get(_key(id));
+    if (existing == null) {
+      throw RouteFeedbackRepositoryException(
+        error: RouteFeedbackRepositoryError.notFound,
+        message: 'Feedback not found: $id',
+      );
+    }
+    final fbStatus = _feedbackStatusFromString(status);
+    final updated = existing.copyWith(status: fbStatus);
+    await _box.put(_key(id), updated);
+    return updated;
+  }
+
+  static FeedbackStatus _feedbackStatusFromString(String s) => switch (s) {
+        'open' => FeedbackStatus.submitted,
+        'in_review' => FeedbackStatus.inReview,
+        'resolved' || 'applied' => FeedbackStatus.applied,
+        'rejected' => FeedbackStatus.rejected,
+        _ => FeedbackStatus.submitted,
+      };
 
   Future<void> upsert(RouteFeedbackModel f) async {
     await _box.put(_key(f.id), f);

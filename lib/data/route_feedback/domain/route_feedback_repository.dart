@@ -39,4 +39,8 @@ abstract class RouteFeedbackRepository {
   Future<List<RouteFeedbackModel>> forRoute(String routeId);
 
   Future<RouteFeedbackModel> create(RouteFeedbackModel feedback);
+
+  Future<List<RouteFeedbackModel>> listAll();
+
+  Future<RouteFeedbackModel> updateStatus(String id, String status);
 }

@@ -82,5 +82,22 @@
   "adminOperatorsOffline": "Connect to the internet to manage operators",
   "adminOperatorsErrorDenied": "Permission denied to manage operators",
   "adminOperatorsErrorNetwork": "Network error loading operators",
-  "adminOperatorsErrorUnknown": "Unknown error loading operators"
+  "adminOperatorsErrorUnknown": "Unknown error loading operators",
+
+  "managerInboxTitle": "Management inbox",
+  "managerInboxFeedback": "Feedback",
+  "managerInboxSuggestions": "Suggestions",
+  "managerInboxResolved": "Resolved",
+  "managerInboxPending": "{count} pending",
+  "managerInboxMarkInReview": "Mark in review",
+  "managerInboxResolve": "Resolve",
+  "managerInboxReject": "Reject",
+  "managerInboxEmptyFeedback": "No pending feedback",
+  "managerInboxEmptySuggestions": "No suggestions",
+  "managerInboxEmptyResolved": "No resolved items",
+  "managerInboxOpen": "Open",
+  "managerInboxStatus": "Status",
+  "managerInboxItemDescription": "Description",
+  "managerInboxItemDate": "Date",
+  "managerInboxItemType": "Type"
 }

@@ -31,6 +31,25 @@ class IncidentLocalRepository implements IncidentRepository {
     return incident;
   }
 
+  @override
+  Future<List<IncidentModel>> listAll() async {
+    return _box.values.toList(growable: false);
+  }
+
+  @override
+  Future<IncidentModel> updateStatus(String id, String status) async {
+    final existing = _box.get(_key(id));
+    if (existing == null) {
+      throw IncidentRepositoryException(
+        error: IncidentRepositoryError.notFound,
+        message: 'Incident not found: $id',
+      );
+    }
+    final updated = existing.copyWith(status: status);
+    await _box.put(_key(id), updated);
+    return updated;
+  }
+
   Future<void> upsert(IncidentModel incident) async {
     await _box.put(_key(incident.id), incident);
   }

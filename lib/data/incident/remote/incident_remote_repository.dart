@@ -88,6 +88,39 @@ class IncidentRemoteRepository implements IncidentRepository {
     }
   }
 
+  @override
+  Future<List<IncidentModel>> listAll() async {
+    try {
+      final rows = await _client
+          .from('incidents')
+          .select()
+          .order('created_at', ascending: false);
+      return rows.map(_fromRow).toList();
+    } catch (e, st) {
+      throw _mapError(e, st, 'listAll');
+    }
+  }
+
+  @override
+  Future<IncidentModel> updateStatus(String id, String status) async {
+    final payload = <String, dynamic>{
+      'status': status,
+      if (status == 'resolved')
+        'resolved_at': DateTime.now().toUtc().toIso8601String(),
+    };
+    try {
+      final row = await _client
+          .from('incidents')
+          .update(payload)
+          .eq('id', id)
+          .select()
+          .single();
+      return _fromRow(row);
+    } catch (e, st) {
+      throw _mapError(e, st, 'updateStatus($id)');
+    }
+  }
+
   /// Convierte una fila Supabase a [IncidentModel].
   IncidentModel _fromRow(Map<String, dynamic> row) {
     return IncidentModel(

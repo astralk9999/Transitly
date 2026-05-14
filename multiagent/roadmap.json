@@ -1,0 +1,26 @@
+{
+  "version": "1.0",
+  "project": "Transitly",
+  "plan_ref": "docs/PLAN_TRANSITLY_V2.md",
+  "last_sync": "2026-05-14",
+  "phases": {
+    "completed": ["F0", "F0.5", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12", "F13", "F14", "F15"],
+    "in_progress": "F16",
+    "pending": ["F17", "F18", "F19", "F20", "F21", "F22", "F23", "F24", "F25", "F26", "F27"]
+  },
+  "current_sprint": {
+    "phase": "F16",
+    "goal": "Panel admin: gestión de usuarios, operadores, y moderación",
+    "tasks": [
+      {"id": "F16-001", "title": "Pantalla base admin con RoleGate", "status": "pending"},
+      {"id": "F16-002", "title": "Lista de usuarios con filtro por rol", "status": "pending"},
+      {"id": "F16-003", "title": "CRUD de operadores", "status": "pending"},
+      {"id": "F16-004", "title": "ManagerInboxScreen handlers reales", "status": "pending"},
+      {"id": "F16-005", "title": "Wiring de navegación admin en router", "status": "pending"}
+    ]
+  },
+  "agent_system_phases": {
+    "mvp": ["Queen", "Developer", "Review", "Git"],
+    "next": ["Innovation", "Documentation"]
+  }
+}

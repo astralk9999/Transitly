@@ -201,6 +201,24 @@ Cada entidad necesita el mismo conjunto de 5 archivos: interfaz abstracta + remo
 - ⏸️ `SuggestionContributeScreen` — pospuesto (enriquecimiento de sugerencias post-MVP)
 - ⏸️ `FeedbackMessageModel` threading — pospuesto (mensajería gestor↔usuario post-F16)
 
+### ⏳ F16 — Panel admin (en progreso)
+
+#### F16-003 — CRUD de operadores (`852ef25`)
+
+✅ Completado — CRUD de operadores con remote/local/mock repository y admin UI.
+
+##### Issues de revisión de código (F16-003)
+
+> Registrados desde el Review Agent. Prioridad: I = importante, M = menor.
+
+- [F16] **I2 — Form missing inline validation.** `lib/features/admin/widgets/operator_form_dialog.dart`. Campos sin validación en tiempo real.
+- [F16] **I3 — No unique constraint violation handling.** `lib/data/operator/remote/operator_remote_repository.dart`. Errores de slug duplicado no se capturan con mensaje amigable.
+- [F16] **I4 — Row-to-model mapping duplicated.** `operator_remote_repository.dart` y `admin_operators_screen.dart`. Extraer helper compartido.
+- [F16] **I5 — Local repo has redundant create/update alongside upsert.** Simplificar API en `lib/data/operator/`.
+- [F16] **M1 — Unused `_mockData` field.** `lib/data/operator/local/operator_mock_repository.dart`.
+- [F16] **M2 — `shortName` derivation duplicated in 4 places.** Extraer a método helper.
+- [F16] **M3 — `phone` field always hardcoded to empty string.** Asignar desde modelo o UI.
+
 ---
 
 ## Ideas para v3
@@ -220,4 +238,4 @@ Cada entidad necesita el mismo conjunto de 5 archivos: interfaz abstracta + remo
 
 ---
 
-**Última actualización:** 2026-05-14 · F15 en progreso (incident wired a repo). F4→F14 cerradas. Siguiente: completar F15 (suggestions + feedback + hub unificado).
+**Última actualización:** 2026-05-14 · F16 en progreso (F16-003 CRUD operadores en `852ef25`). F4→F15 cerradas. Pendientes de revisión: I2-I5, M1-M3.

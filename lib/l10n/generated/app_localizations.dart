@@ -553,6 +553,102 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Error desconocido al cargar operadores'**
   String get adminOperatorsErrorUnknown;
+
+  /// Manager inbox screen title
+  ///
+  /// In es, this message translates to:
+  /// **'Bandeja de gestión'**
+  String get managerInboxTitle;
+
+  /// Manager inbox: feedback tab label
+  ///
+  /// In es, this message translates to:
+  /// **'Feedback'**
+  String get managerInboxFeedback;
+
+  /// Manager inbox: suggestions tab label
+  ///
+  /// In es, this message translates to:
+  /// **'Sugerencias'**
+  String get managerInboxSuggestions;
+
+  /// Manager inbox: resolved tab label
+  ///
+  /// In es, this message translates to:
+  /// **'Resueltos'**
+  String get managerInboxResolved;
+
+  /// Manager inbox pending count
+  ///
+  /// In es, this message translates to:
+  /// **'{count} pendientes'**
+  String managerInboxPending(int count);
+
+  /// Manager inbox: mark in review button
+  ///
+  /// In es, this message translates to:
+  /// **'Marcar en revisión'**
+  String get managerInboxMarkInReview;
+
+  /// Manager inbox: resolve button
+  ///
+  /// In es, this message translates to:
+  /// **'Resolver'**
+  String get managerInboxResolve;
+
+  /// Manager inbox: reject button
+  ///
+  /// In es, this message translates to:
+  /// **'Rechazar'**
+  String get managerInboxReject;
+
+  /// Manager inbox: empty feedback state
+  ///
+  /// In es, this message translates to:
+  /// **'No hay feedback pendiente'**
+  String get managerInboxEmptyFeedback;
+
+  /// Manager inbox: empty suggestions state
+  ///
+  /// In es, this message translates to:
+  /// **'No hay sugerencias'**
+  String get managerInboxEmptySuggestions;
+
+  /// Manager inbox: empty resolved state
+  ///
+  /// In es, this message translates to:
+  /// **'No hay elementos resueltos'**
+  String get managerInboxEmptyResolved;
+
+  /// Manager inbox: open button
+  ///
+  /// In es, this message translates to:
+  /// **'Abrir'**
+  String get managerInboxOpen;
+
+  /// Manager inbox: status label
+  ///
+  /// In es, this message translates to:
+  /// **'Estado'**
+  String get managerInboxStatus;
+
+  /// Manager inbox: description label
+  ///
+  /// In es, this message translates to:
+  /// **'Descripción'**
+  String get managerInboxItemDescription;
+
+  /// Manager inbox: date label
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha'**
+  String get managerInboxItemDate;
+
+  /// Manager inbox: type label
+  ///
+  /// In es, this message translates to:
+  /// **'Tipo'**
+  String get managerInboxItemType;
 }
 
 class _AppLocalizationsDelegate

@@ -84,6 +84,14 @@ flutter:
   assets:
     - assets/mock/
     - assets/branding/
+    # TODO F26: Bundle google_fonts dmSans + ibmPlexMono as local assets
+    # Steps:
+    # 1. Download from https://fonts.google.com/specimen/DM+Sans and IBM+Plex+Mono
+    # 2. Copy .ttf files to assets/fonts/dm_sans/ and assets/fonts/ibm_plex_mono/
+    # 3. Add here: - assets/fonts/
+    # 4. In main.dart, call GoogleFonts.config.allowRuntimeFetching = false;
+    # 5. Register font files with GoogleFonts.registerFontFamily(...)
+    # Meanwhile, google_fonts falls back to network fetch.
     # flutter_dotenv carga el .env local como un asset bundleado en
     # debug. En release, sustituir por --dart-define o un .env por
     # plataforma (F22 lo formaliza).

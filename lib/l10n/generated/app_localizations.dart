@@ -889,6 +889,60 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Crear paleta'**
   String get appearanceCustomPaletteAdd;
+
+  /// Onboarding skip button
+  ///
+  /// In es, this message translates to:
+  /// **'Saltar'**
+  String get onboardingSkip;
+
+  /// Onboarding next button
+  ///
+  /// In es, this message translates to:
+  /// **'Siguiente'**
+  String get onboardingNext;
+
+  /// Onboarding get started button
+  ///
+  /// In es, this message translates to:
+  /// **'Empezar'**
+  String get onboardingGetStarted;
+
+  /// Onboarding page 1 title
+  ///
+  /// In es, this message translates to:
+  /// **'Transporte en tiempo real'**
+  String get onboardingPage1Title;
+
+  /// Onboarding page 1 description
+  ///
+  /// In es, this message translates to:
+  /// **'Consulta dónde está tu autobús ahora mismo, sin esperas innecesarias.'**
+  String get onboardingPage1Description;
+
+  /// Onboarding page 2 title
+  ///
+  /// In es, this message translates to:
+  /// **'Tu comunidad te ayuda'**
+  String get onboardingPage2Title;
+
+  /// Onboarding page 2 description
+  ///
+  /// In es, this message translates to:
+  /// **'Reporta incidencias, sugiere rutas y ayuda a otros pasajeros como tú.'**
+  String get onboardingPage2Description;
+
+  /// Onboarding page 3 title
+  ///
+  /// In es, this message translates to:
+  /// **'Funciona sin internet'**
+  String get onboardingPage3Title;
+
+  /// Onboarding page 3 description
+  ///
+  /// In es, this message translates to:
+  /// **'Descarga tus rutas y consulta horarios incluso sin conexión.'**
+  String get onboardingPage3Description;
 }
 
 class _AppLocalizationsDelegate

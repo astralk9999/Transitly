@@ -210,5 +210,24 @@
   "appearanceCustomPaletteContrastPass": "Contraste AA",
   "appearanceCustomPaletteContrastFail": "Contraste bajo",
   "appearanceCustomPaletteSaved": "Paleta guardada",
-  "appearanceCustomPaletteAdd": "Crear paleta"
+  "appearanceCustomPaletteAdd": "Crear paleta",
+
+  "onboardingSkip": "Saltar",
+  "@onboardingSkip": { "description": "Onboarding skip button" },
+  "onboardingNext": "Siguiente",
+  "@onboardingNext": { "description": "Onboarding next button" },
+  "onboardingGetStarted": "Empezar",
+  "@onboardingGetStarted": { "description": "Onboarding get started button" },
+  "onboardingPage1Title": "Transporte en tiempo real",
+  "@onboardingPage1Title": { "description": "Onboarding page 1 title" },
+  "onboardingPage1Description": "Consulta dónde está tu autobús ahora mismo, sin esperas innecesarias.",
+  "@onboardingPage1Description": { "description": "Onboarding page 1 description" },
+  "onboardingPage2Title": "Tu comunidad te ayuda",
+  "@onboardingPage2Title": { "description": "Onboarding page 2 title" },
+  "onboardingPage2Description": "Reporta incidencias, sugiere rutas y ayuda a otros pasajeros como tú.",
+  "@onboardingPage2Description": { "description": "Onboarding page 2 description" },
+  "onboardingPage3Title": "Funciona sin internet",
+  "@onboardingPage3Title": { "description": "Onboarding page 3 title" },
+  "onboardingPage3Description": "Descarga tus rutas y consulta horarios incluso sin conexión.",
+  "@onboardingPage3Description": { "description": "Onboarding page 3 description" }
 }

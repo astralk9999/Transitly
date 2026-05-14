@@ -413,4 +413,34 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get appearanceCustomPaletteAdd => 'Crear paleta';
+
+  @override
+  String get onboardingSkip => 'Saltar';
+
+  @override
+  String get onboardingNext => 'Siguiente';
+
+  @override
+  String get onboardingGetStarted => 'Empezar';
+
+  @override
+  String get onboardingPage1Title => 'Transporte en tiempo real';
+
+  @override
+  String get onboardingPage1Description =>
+      'Consulta dónde está tu autobús ahora mismo, sin esperas innecesarias.';
+
+  @override
+  String get onboardingPage2Title => 'Tu comunidad te ayuda';
+
+  @override
+  String get onboardingPage2Description =>
+      'Reporta incidencias, sugiere rutas y ayuda a otros pasajeros como tú.';
+
+  @override
+  String get onboardingPage3Title => 'Funciona sin internet';
+
+  @override
+  String get onboardingPage3Description =>
+      'Descarga tus rutas y consulta horarios incluso sin conexión.';
 }

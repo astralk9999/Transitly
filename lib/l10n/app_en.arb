@@ -140,5 +140,15 @@
   "appearanceCustomPaletteContrastPass": "AA Contrast",
   "appearanceCustomPaletteContrastFail": "Low contrast",
   "appearanceCustomPaletteSaved": "Palette saved",
-  "appearanceCustomPaletteAdd": "Create palette"
+  "appearanceCustomPaletteAdd": "Create palette",
+
+  "onboardingSkip": "Skip",
+  "onboardingNext": "Next",
+  "onboardingGetStarted": "Get started",
+  "onboardingPage1Title": "Real-time transport",
+  "onboardingPage1Description": "Check where your bus is right now, without unnecessary waiting.",
+  "onboardingPage2Title": "Your community helps you",
+  "onboardingPage2Description": "Report incidents, suggest routes and help other passengers like you.",
+  "onboardingPage3Title": "Works offline",
+  "onboardingPage3Description": "Download your routes and check schedules even without connection."
 }

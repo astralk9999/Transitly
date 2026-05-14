@@ -411,4 +411,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appearanceCustomPaletteAdd => 'Create palette';
+
+  @override
+  String get onboardingSkip => 'Skip';
+
+  @override
+  String get onboardingNext => 'Next';
+
+  @override
+  String get onboardingGetStarted => 'Get started';
+
+  @override
+  String get onboardingPage1Title => 'Real-time transport';
+
+  @override
+  String get onboardingPage1Description =>
+      'Check where your bus is right now, without unnecessary waiting.';
+
+  @override
+  String get onboardingPage2Title => 'Your community helps you';
+
+  @override
+  String get onboardingPage2Description =>
+      'Report incidents, suggest routes and help other passengers like you.';
+
+  @override
+  String get onboardingPage3Title => 'Works offline';
+
+  @override
+  String get onboardingPage3Description =>
+      'Download your routes and check schedules even without connection.';
 }

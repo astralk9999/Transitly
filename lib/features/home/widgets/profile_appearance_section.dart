@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/theme/transit_colors.dart';
@@ -62,6 +63,23 @@ class ProfileAppearanceSection extends ConsumerWidget {
                 },
               ),
             ],
+          ),
+          const SizedBox(height: 12),
+          InkWell(
+            borderRadius: BorderRadius.circular(8),
+            onTap: () => context.push('/appearance'),
+            child: Row(
+              children: [
+                Icon(Icons.palette_outlined, size: 18, color: c.accent),
+                const SizedBox(width: 8),
+                Text(
+                  l10n.appearanceLinkAppearance,
+                  style: TransitTypography.bodyPrimary(c.accent),
+                ),
+                const Spacer(),
+                Icon(Icons.chevron_right, size: 20, color: c.accent),
+              ],
+            ),
           ),
           Divider(
             height: 24,

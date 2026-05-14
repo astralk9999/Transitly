@@ -289,4 +289,93 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get managerInboxItemType => 'Type';
+
+  @override
+  String get appearanceTitle => 'Appearance';
+
+  @override
+  String get appearancePalettesSection => 'PALETTES';
+
+  @override
+  String get appearanceBrightnessSection => 'BRIGHTNESS';
+
+  @override
+  String get appearanceBackgroundSection => 'BACKGROUND';
+
+  @override
+  String get appearanceTextSection => 'TEXT';
+
+  @override
+  String get appearanceAccessibilitySection => 'VISUAL ACCESSIBILITY';
+
+  @override
+  String get appearanceShowBackground => 'Show decorative background';
+
+  @override
+  String get appearanceBackgroundOpacity => 'Background opacity';
+
+  @override
+  String get appearanceFontScale => 'Font scale';
+
+  @override
+  String get appearanceDyslexiaFont => 'Dyslexia-friendly font';
+
+  @override
+  String get appearanceColorBlindMode => 'Color blind mode';
+
+  @override
+  String get appearanceReduceMotion => 'Reduce motion';
+
+  @override
+  String get appearanceResetButton => 'Restore defaults';
+
+  @override
+  String get appearanceResetConfirm =>
+      'Restore all appearance settings to their defaults?';
+
+  @override
+  String get appearanceResetDone => 'Settings restored';
+
+  @override
+  String get appearanceColorBlindNone => 'None';
+
+  @override
+  String get appearanceColorBlindProtanopia => 'Protanopia';
+
+  @override
+  String get appearanceColorBlindDeuteranopia => 'Deuteranopia';
+
+  @override
+  String get appearanceColorBlindTritanopia => 'Tritanopia';
+
+  @override
+  String get appearanceBrightnessSystem => 'System';
+
+  @override
+  String get appearanceBrightnessLight => 'Light';
+
+  @override
+  String get appearanceBrightnessDark => 'Dark';
+
+  @override
+  String get appearanceLinkAppearance => 'Customize appearance';
+
+  @override
+  String get appearanceBgNone => 'None';
+
+  @override
+  String get appearanceBgSmoke => 'Smoke';
+
+  @override
+  String get appearanceBgGradient => 'Gradient';
+
+  @override
+  String get appearanceBgGrid => 'Grid';
+
+  @override
+  String get appearanceBgTopo => 'Topography';
+
+  @override
+  String get appearanceTextPreview =>
+      'The quick brown fox jumps over the lazy dog. This sample text lets you preview how the typography looks with the current settings.';
 }

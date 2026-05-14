@@ -649,6 +649,180 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Tipo'**
   String get managerInboxItemType;
+
+  /// No description provided for @appearanceTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Apariencia'**
+  String get appearanceTitle;
+
+  /// No description provided for @appearancePalettesSection.
+  ///
+  /// In es, this message translates to:
+  /// **'PALETAS'**
+  String get appearancePalettesSection;
+
+  /// No description provided for @appearanceBrightnessSection.
+  ///
+  /// In es, this message translates to:
+  /// **'BRILLO'**
+  String get appearanceBrightnessSection;
+
+  /// No description provided for @appearanceBackgroundSection.
+  ///
+  /// In es, this message translates to:
+  /// **'FONDO'**
+  String get appearanceBackgroundSection;
+
+  /// No description provided for @appearanceTextSection.
+  ///
+  /// In es, this message translates to:
+  /// **'TEXTO'**
+  String get appearanceTextSection;
+
+  /// No description provided for @appearanceAccessibilitySection.
+  ///
+  /// In es, this message translates to:
+  /// **'ACCESIBILIDAD VISUAL'**
+  String get appearanceAccessibilitySection;
+
+  /// No description provided for @appearanceShowBackground.
+  ///
+  /// In es, this message translates to:
+  /// **'Mostrar fondo decorativo'**
+  String get appearanceShowBackground;
+
+  /// No description provided for @appearanceBackgroundOpacity.
+  ///
+  /// In es, this message translates to:
+  /// **'Opacidad del fondo'**
+  String get appearanceBackgroundOpacity;
+
+  /// No description provided for @appearanceFontScale.
+  ///
+  /// In es, this message translates to:
+  /// **'Tamaño de texto'**
+  String get appearanceFontScale;
+
+  /// No description provided for @appearanceDyslexiaFont.
+  ///
+  /// In es, this message translates to:
+  /// **'Fuente para dislexia'**
+  String get appearanceDyslexiaFont;
+
+  /// No description provided for @appearanceColorBlindMode.
+  ///
+  /// In es, this message translates to:
+  /// **'Modo daltónico'**
+  String get appearanceColorBlindMode;
+
+  /// No description provided for @appearanceReduceMotion.
+  ///
+  /// In es, this message translates to:
+  /// **'Reducir animaciones'**
+  String get appearanceReduceMotion;
+
+  /// No description provided for @appearanceResetButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Restaurar valores por defecto'**
+  String get appearanceResetButton;
+
+  /// No description provided for @appearanceResetConfirm.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Restaurar todos los ajustes de apariencia a sus valores por defecto?'**
+  String get appearanceResetConfirm;
+
+  /// No description provided for @appearanceResetDone.
+  ///
+  /// In es, this message translates to:
+  /// **'Ajustes restaurados'**
+  String get appearanceResetDone;
+
+  /// No description provided for @appearanceColorBlindNone.
+  ///
+  /// In es, this message translates to:
+  /// **'Ninguno'**
+  String get appearanceColorBlindNone;
+
+  /// No description provided for @appearanceColorBlindProtanopia.
+  ///
+  /// In es, this message translates to:
+  /// **'Protanopia'**
+  String get appearanceColorBlindProtanopia;
+
+  /// No description provided for @appearanceColorBlindDeuteranopia.
+  ///
+  /// In es, this message translates to:
+  /// **'Deuteranopia'**
+  String get appearanceColorBlindDeuteranopia;
+
+  /// No description provided for @appearanceColorBlindTritanopia.
+  ///
+  /// In es, this message translates to:
+  /// **'Tritanopia'**
+  String get appearanceColorBlindTritanopia;
+
+  /// No description provided for @appearanceBrightnessSystem.
+  ///
+  /// In es, this message translates to:
+  /// **'Sistema'**
+  String get appearanceBrightnessSystem;
+
+  /// No description provided for @appearanceBrightnessLight.
+  ///
+  /// In es, this message translates to:
+  /// **'Claro'**
+  String get appearanceBrightnessLight;
+
+  /// No description provided for @appearanceBrightnessDark.
+  ///
+  /// In es, this message translates to:
+  /// **'Oscuro'**
+  String get appearanceBrightnessDark;
+
+  /// No description provided for @appearanceLinkAppearance.
+  ///
+  /// In es, this message translates to:
+  /// **'Personalizar apariencia'**
+  String get appearanceLinkAppearance;
+
+  /// No description provided for @appearanceBgNone.
+  ///
+  /// In es, this message translates to:
+  /// **'Ninguno'**
+  String get appearanceBgNone;
+
+  /// No description provided for @appearanceBgSmoke.
+  ///
+  /// In es, this message translates to:
+  /// **'Humo'**
+  String get appearanceBgSmoke;
+
+  /// No description provided for @appearanceBgGradient.
+  ///
+  /// In es, this message translates to:
+  /// **'Degradado'**
+  String get appearanceBgGradient;
+
+  /// No description provided for @appearanceBgGrid.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuadrícula'**
+  String get appearanceBgGrid;
+
+  /// No description provided for @appearanceBgTopo.
+  ///
+  /// In es, this message translates to:
+  /// **'Topografía'**
+  String get appearanceBgTopo;
+
+  /// No description provided for @appearanceTextPreview.
+  ///
+  /// In es, this message translates to:
+  /// **'El rápido zorro marrón salta sobre el perro perezoso. Este texto de muestra te permite ver cómo se ve la tipografía con los ajustes actuales.'**
+  String get appearanceTextPreview;
 }
 
 class _AppLocalizationsDelegate

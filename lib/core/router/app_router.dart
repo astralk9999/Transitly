@@ -47,6 +47,7 @@ import '../../features/profile/planned_trips_screen.dart';
 import '../../features/admin/admin_screen.dart';
 import '../../features/admin/admin_users_screen.dart';
 import '../../features/admin/admin_operators_screen.dart';
+import '../../features/appearance/appearance_screen.dart';
 import '../../features/route_detail/route_detail_screen.dart';
 import '../../features/splash/splash_screen.dart';
 import '../../features/stop_detail/stop_detail_screen.dart';
@@ -366,6 +367,13 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/profile/trips',
         pageBuilder: (context, state) =>
             _slide(state, const PlannedTripsScreen()),
+      ),
+
+      // ── Appearance ──
+      GoRoute(
+        path: '/appearance',
+        pageBuilder: (context, state) =>
+            _slide(state, const AppearanceScreen()),
       ),
 
       // ── Debug ──

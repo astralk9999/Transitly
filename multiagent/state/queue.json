@@ -1,12 +1,13 @@
 {
   "pending": [
-    {"id": "F17-002", "title": "AppearanceScreen + navigation", "phase": "F17", "priority": "high", "status": "pending", "dependencies": ["F17-001"], "assigned_to": null},
-    {"id": "F17-003", "title": "BackgroundWrapper + wiring en app.dart", "phase": "F17", "priority": "high", "status": "pending", "dependencies": ["F17-001"], "assigned_to": null},
-    {"id": "F17-004", "title": "CustomPaletteScreen con color picker", "phase": "F17", "priority": "medium", "status": "pending", "dependencies": ["F17-001", "F17-002"], "assigned_to": null},
-    {"id": "F17-005", "title": "Bundle google_fonts + onboarding 3 pantallas", "phase": "F17", "priority": "medium", "status": "pending", "dependencies": [], "assigned_to": null}
+    {"id": "F17-003", "title": "BackgroundWrapper + wiring en app.dart", "status": "pending", "dependencies": ["F17-001"]},
+    {"id": "F17-004", "title": "CustomPaletteScreen con color picker", "status": "pending", "dependencies": ["F17-001", "F17-002"]},
+    {"id": "F17-005", "title": "Bundle google_fonts + onboarding 3 pantallas", "status": "pending", "dependencies": []}
   ],
   "active": [
-    {"id": "F17-001", "title": "Modelos de paletas y fondos + ThemeNotifier", "phase": "F17", "priority": "high", "status": "active", "dependencies": [], "assigned_to": "developer"}
+    {"id": "F17-002", "title": "AppearanceScreen + navigation", "status": "active", "dependencies": ["F17-001"]}
   ],
-  "completed": []
+  "completed": [
+    {"id": "F17-001", "title": "Modelos de paletas y fondos + ThemeNotifier", "status": "completed", "commit": "e009c8a"}
+  ]
 }

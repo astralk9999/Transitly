@@ -291,4 +291,93 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get managerInboxItemType => 'Tipo';
+
+  @override
+  String get appearanceTitle => 'Apariencia';
+
+  @override
+  String get appearancePalettesSection => 'PALETAS';
+
+  @override
+  String get appearanceBrightnessSection => 'BRILLO';
+
+  @override
+  String get appearanceBackgroundSection => 'FONDO';
+
+  @override
+  String get appearanceTextSection => 'TEXTO';
+
+  @override
+  String get appearanceAccessibilitySection => 'ACCESIBILIDAD VISUAL';
+
+  @override
+  String get appearanceShowBackground => 'Mostrar fondo decorativo';
+
+  @override
+  String get appearanceBackgroundOpacity => 'Opacidad del fondo';
+
+  @override
+  String get appearanceFontScale => 'Tamaño de texto';
+
+  @override
+  String get appearanceDyslexiaFont => 'Fuente para dislexia';
+
+  @override
+  String get appearanceColorBlindMode => 'Modo daltónico';
+
+  @override
+  String get appearanceReduceMotion => 'Reducir animaciones';
+
+  @override
+  String get appearanceResetButton => 'Restaurar valores por defecto';
+
+  @override
+  String get appearanceResetConfirm =>
+      '¿Restaurar todos los ajustes de apariencia a sus valores por defecto?';
+
+  @override
+  String get appearanceResetDone => 'Ajustes restaurados';
+
+  @override
+  String get appearanceColorBlindNone => 'Ninguno';
+
+  @override
+  String get appearanceColorBlindProtanopia => 'Protanopia';
+
+  @override
+  String get appearanceColorBlindDeuteranopia => 'Deuteranopia';
+
+  @override
+  String get appearanceColorBlindTritanopia => 'Tritanopia';
+
+  @override
+  String get appearanceBrightnessSystem => 'Sistema';
+
+  @override
+  String get appearanceBrightnessLight => 'Claro';
+
+  @override
+  String get appearanceBrightnessDark => 'Oscuro';
+
+  @override
+  String get appearanceLinkAppearance => 'Personalizar apariencia';
+
+  @override
+  String get appearanceBgNone => 'Ninguno';
+
+  @override
+  String get appearanceBgSmoke => 'Humo';
+
+  @override
+  String get appearanceBgGradient => 'Degradado';
+
+  @override
+  String get appearanceBgGrid => 'Cuadrícula';
+
+  @override
+  String get appearanceBgTopo => 'Topografía';
+
+  @override
+  String get appearanceTextPreview =>
+      'El rápido zorro marrón salta sobre el perro perezoso. Este texto de muestra te permite ver cómo se ve la tipografía con los ajustes actuales.';
 }

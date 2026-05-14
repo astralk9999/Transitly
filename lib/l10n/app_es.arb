@@ -52,5 +52,43 @@
   "actionClose": "Cerrar",
   "actionRetry": "Reintentar",
   "actionCancel": "Cancelar",
-  "actionSave": "Guardar"
+  "actionSave": "Guardar",
+
+  "adminUsersTitle": "Gestión de usuarios",
+  "@adminUsersTitle": { "description": "Admin users screen title" },
+  "adminUsersSearchHint": "Buscar usuario...",
+  "@adminUsersSearchHint": { "description": "Admin users search hint" },
+  "adminUsersFilterAll": "Todos",
+  "@adminUsersFilterAll": { "description": "Admin users filter: all roles" },
+  "adminUsersEmpty": "No se encontraron usuarios",
+  "@adminUsersEmpty": { "description": "Admin users empty state" },
+  "adminUsersOffline": "Conecta a internet para gestionar usuarios",
+  "@adminUsersOffline": { "description": "Admin users offline message" },
+  "adminUsersRoleAdmin": "Admin",
+  "@adminUsersRoleAdmin": { "description": "Role label: Admin" },
+  "adminUsersRoleModerator": "Moderador",
+  "@adminUsersRoleModerator": { "description": "Role label: Moderator" },
+  "adminUsersRoleOperatorAdmin": "Operador Admin",
+  "@adminUsersRoleOperatorAdmin": { "description": "Role label: Operator Admin" },
+  "adminUsersRoleDriver": "Conductor",
+  "@adminUsersRoleDriver": { "description": "Role label: Driver" },
+  "adminUsersRolePassenger": "Pasajero",
+  "@adminUsersRolePassenger": { "description": "Role label: Passenger" },
+  "adminUsersRoleAll": "Todos",
+  "@adminUsersRoleAll": { "description": "Role filter label: All roles" },
+  "adminUsersError": "Error al cargar usuarios",
+  "@adminUsersError": { "description": "Admin users error loading" },
+  "adminUsersNoConnection": "Sin conexión",
+  "@adminUsersNoConnection": { "description": "Admin users no connection title" },
+  "adminUsersNoResults": "Sin resultados",
+  "@adminUsersNoResults": { "description": "Admin users no search results title" },
+  "adminUsersNoMatchSearch": "No hay usuarios que coincidan con \"{query}\"",
+  "@adminUsersNoMatchSearch": {
+    "description": "Admin users search no match text",
+    "placeholders": {
+      "query": { "type": "String", "example": "Juan" }
+    }
+  },
+  "adminUsersNoMatchRole": "No hay usuarios con el rol seleccionado",
+  "@adminUsersNoMatchRole": { "description": "Admin users role filter no match text" }
 }

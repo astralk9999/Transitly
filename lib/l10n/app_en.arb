@@ -44,5 +44,22 @@
   "actionClose": "Close",
   "actionRetry": "Retry",
   "actionCancel": "Cancel",
-  "actionSave": "Save"
+  "actionSave": "Save",
+
+  "adminUsersTitle": "User management",
+  "adminUsersSearchHint": "Search user...",
+  "adminUsersFilterAll": "All",
+  "adminUsersEmpty": "No users found",
+  "adminUsersOffline": "Connect to the internet to manage users",
+  "adminUsersRoleAdmin": "Admin",
+  "adminUsersRoleModerator": "Moderator",
+  "adminUsersRoleOperatorAdmin": "Operator Admin",
+  "adminUsersRoleDriver": "Driver",
+  "adminUsersRolePassenger": "Passenger",
+  "adminUsersRoleAll": "All",
+  "adminUsersError": "Error loading users",
+  "adminUsersNoConnection": "No connection",
+  "adminUsersNoResults": "No results",
+  "adminUsersNoMatchSearch": "No users matching \"{query}\"",
+  "adminUsersNoMatchRole": "No users with the selected role"
 }

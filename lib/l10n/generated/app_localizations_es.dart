@@ -128,4 +128,54 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get actionSave => 'Guardar';
+
+  @override
+  String get adminUsersTitle => 'Gestión de usuarios';
+
+  @override
+  String get adminUsersSearchHint => 'Buscar usuario...';
+
+  @override
+  String get adminUsersFilterAll => 'Todos';
+
+  @override
+  String get adminUsersEmpty => 'No se encontraron usuarios';
+
+  @override
+  String get adminUsersOffline => 'Conecta a internet para gestionar usuarios';
+
+  @override
+  String get adminUsersRoleAdmin => 'Admin';
+
+  @override
+  String get adminUsersRoleModerator => 'Moderador';
+
+  @override
+  String get adminUsersRoleOperatorAdmin => 'Operador Admin';
+
+  @override
+  String get adminUsersRoleDriver => 'Conductor';
+
+  @override
+  String get adminUsersRolePassenger => 'Pasajero';
+
+  @override
+  String get adminUsersRoleAll => 'Todos';
+
+  @override
+  String get adminUsersError => 'Error al cargar usuarios';
+
+  @override
+  String get adminUsersNoConnection => 'Sin conexión';
+
+  @override
+  String get adminUsersNoResults => 'Sin resultados';
+
+  @override
+  String adminUsersNoMatchSearch(String query) {
+    return 'No hay usuarios que coincidan con \"$query\"';
+  }
+
+  @override
+  String get adminUsersNoMatchRole => 'No hay usuarios con el rol seleccionado';
 }

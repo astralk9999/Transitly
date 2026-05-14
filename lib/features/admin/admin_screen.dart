@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../shared/models/user_role.dart';
 import '../../shared/widgets/glass_card.dart';
+import '../../shared/widgets/pressable.dart';
 import '../../shared/widgets/role_gate.dart';
 import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_app_bar.dart';
@@ -59,6 +61,7 @@ class AdminScreen extends ConsumerWidget {
                             icon: Icons.people,
                             title: 'Gestionar usuarios',
                             subtitle: 'Administrar cuentas y roles',
+                            onTap: () => context.push('/admin/users'),
                           ),
                           const SizedBox(height: 12),
                           _OptionCard(
@@ -95,16 +98,18 @@ class _OptionCard extends StatelessWidget {
     required this.icon,
     required this.title,
     required this.subtitle,
+    this.onTap,
   });
 
   final TransitColorScheme c;
   final IconData icon;
   final String title;
   final String subtitle;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return GlassCard(
+    final card = GlassCard(
       blur: 16,
       fillOpacity: 0.05,
       borderRadius: 14,
@@ -129,5 +134,10 @@ class _OptionCard extends StatelessWidget {
         ],
       ),
     );
+
+    if (onTap != null) {
+      return Pressable(onTap: onTap, child: card);
+    }
+    return card;
   }
 }

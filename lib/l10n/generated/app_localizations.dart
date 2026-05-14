@@ -337,6 +337,102 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Guardar'**
   String get actionSave;
+
+  /// Admin users screen title
+  ///
+  /// In es, this message translates to:
+  /// **'Gestión de usuarios'**
+  String get adminUsersTitle;
+
+  /// Admin users search hint
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar usuario...'**
+  String get adminUsersSearchHint;
+
+  /// Admin users filter: all roles
+  ///
+  /// In es, this message translates to:
+  /// **'Todos'**
+  String get adminUsersFilterAll;
+
+  /// Admin users empty state
+  ///
+  /// In es, this message translates to:
+  /// **'No se encontraron usuarios'**
+  String get adminUsersEmpty;
+
+  /// Admin users offline message
+  ///
+  /// In es, this message translates to:
+  /// **'Conecta a internet para gestionar usuarios'**
+  String get adminUsersOffline;
+
+  /// Role label: Admin
+  ///
+  /// In es, this message translates to:
+  /// **'Admin'**
+  String get adminUsersRoleAdmin;
+
+  /// Role label: Moderator
+  ///
+  /// In es, this message translates to:
+  /// **'Moderador'**
+  String get adminUsersRoleModerator;
+
+  /// Role label: Operator Admin
+  ///
+  /// In es, this message translates to:
+  /// **'Operador Admin'**
+  String get adminUsersRoleOperatorAdmin;
+
+  /// Role label: Driver
+  ///
+  /// In es, this message translates to:
+  /// **'Conductor'**
+  String get adminUsersRoleDriver;
+
+  /// Role label: Passenger
+  ///
+  /// In es, this message translates to:
+  /// **'Pasajero'**
+  String get adminUsersRolePassenger;
+
+  /// Role filter label: All roles
+  ///
+  /// In es, this message translates to:
+  /// **'Todos'**
+  String get adminUsersRoleAll;
+
+  /// Admin users error loading
+  ///
+  /// In es, this message translates to:
+  /// **'Error al cargar usuarios'**
+  String get adminUsersError;
+
+  /// Admin users no connection title
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión'**
+  String get adminUsersNoConnection;
+
+  /// Admin users no search results title
+  ///
+  /// In es, this message translates to:
+  /// **'Sin resultados'**
+  String get adminUsersNoResults;
+
+  /// Admin users search no match text
+  ///
+  /// In es, this message translates to:
+  /// **'No hay usuarios que coincidan con \"{query}\"'**
+  String adminUsersNoMatchSearch(String query);
+
+  /// Admin users role filter no match text
+  ///
+  /// In es, this message translates to:
+  /// **'No hay usuarios con el rol seleccionado'**
+  String get adminUsersNoMatchRole;
 }
 
 class _AppLocalizationsDelegate

@@ -415,6 +415,34 @@ class AppLocalizationsEs extends AppLocalizations {
   String get appearanceCustomPaletteAdd => 'Crear paleta';
 
   @override
+  String get accessibleBusesTitle => 'Buses cercanos';
+
+  @override
+  String get accessibleBusesEmpty => 'Sin buses activos';
+
+  @override
+  String get accessibleBusesNoActiveBuses =>
+      'No se encontraron buses en operación en este momento';
+
+  @override
+  String get accessibleBusesError => 'Error al cargar buses';
+
+  @override
+  String get accessibleBusesNextStop => 'Próxima parada';
+
+  @override
+  String get accessibleBusesSourceEstimated => 'Estimado';
+
+  @override
+  String get accessibleBusesSourceDriver => 'Conductor';
+
+  @override
+  String get accessibleBusesSourceOfficial => 'Oficial';
+
+  @override
+  String get accessibleBusesLinkLabel => 'Ver lista de buses';
+
+  @override
   String get onboardingSkip => 'Saltar';
 
   @override

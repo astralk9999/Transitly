@@ -142,6 +142,16 @@
   "appearanceCustomPaletteSaved": "Palette saved",
   "appearanceCustomPaletteAdd": "Create palette",
 
+  "accessibleBusesTitle": "Nearby buses",
+  "accessibleBusesEmpty": "No active buses",
+  "accessibleBusesNoActiveBuses": "No buses found in operation right now",
+  "accessibleBusesError": "Error loading buses",
+  "accessibleBusesNextStop": "Next stop",
+  "accessibleBusesSourceEstimated": "Estimated",
+  "accessibleBusesSourceDriver": "Driver",
+  "accessibleBusesSourceOfficial": "Official",
+  "accessibleBusesLinkLabel": "View bus list",
+
   "onboardingSkip": "Skip",
   "onboardingNext": "Next",
   "onboardingGetStarted": "Get started",

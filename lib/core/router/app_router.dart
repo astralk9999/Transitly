@@ -46,6 +46,7 @@ import '../../features/profile/offline_data_screen.dart';
 import '../../features/profile/planned_trips_screen.dart';
 import '../../features/admin/admin_screen.dart';
 import '../../features/admin/admin_users_screen.dart';
+import '../../features/accessible_buses/accessible_buses_screen.dart';
 import '../../features/admin/admin_operators_screen.dart';
 import '../../features/appearance/appearance_screen.dart';
 import '../../features/appearance/custom_palette_screen.dart';
@@ -380,6 +381,13 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/appearance/custom',
         pageBuilder: (context, state) =>
             _slide(state, const CustomPaletteScreen()),
+      ),
+
+      // ── Accessible buses ──
+      GoRoute(
+        path: '/accessible-buses',
+        pageBuilder: (context, state) =>
+            _slide(state, const AccessibleBusesScreen()),
       ),
 
       // ── Debug ──

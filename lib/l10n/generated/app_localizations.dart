@@ -890,6 +890,60 @@ abstract class AppLocalizations {
   /// **'Crear paleta'**
   String get appearanceCustomPaletteAdd;
 
+  /// Accessible buses screen title
+  ///
+  /// In es, this message translates to:
+  /// **'Buses cercanos'**
+  String get accessibleBusesTitle;
+
+  /// Accessible buses empty state title
+  ///
+  /// In es, this message translates to:
+  /// **'Sin buses activos'**
+  String get accessibleBusesEmpty;
+
+  /// Accessible buses empty state subtitle
+  ///
+  /// In es, this message translates to:
+  /// **'No se encontraron buses en operación en este momento'**
+  String get accessibleBusesNoActiveBuses;
+
+  /// Accessible buses error message
+  ///
+  /// In es, this message translates to:
+  /// **'Error al cargar buses'**
+  String get accessibleBusesError;
+
+  /// Accessible buses next stop label
+  ///
+  /// In es, this message translates to:
+  /// **'Próxima parada'**
+  String get accessibleBusesNextStop;
+
+  /// Accessible buses source tag: estimated
+  ///
+  /// In es, this message translates to:
+  /// **'Estimado'**
+  String get accessibleBusesSourceEstimated;
+
+  /// Accessible buses source tag: driver
+  ///
+  /// In es, this message translates to:
+  /// **'Conductor'**
+  String get accessibleBusesSourceDriver;
+
+  /// Accessible buses source tag: official
+  ///
+  /// In es, this message translates to:
+  /// **'Oficial'**
+  String get accessibleBusesSourceOfficial;
+
+  /// Accessible buses link in home tab
+  ///
+  /// In es, this message translates to:
+  /// **'Ver lista de buses'**
+  String get accessibleBusesLinkLabel;
+
   /// Onboarding skip button
   ///
   /// In es, this message translates to:

@@ -19,6 +19,8 @@ import '../../../shared/widgets/stagger_list.dart';
 import '../../../shared/widgets/transit_button.dart';
 import '../../../shared/widgets/transit_chip.dart';
 
+import '../../../l10n/generated/app_localizations.dart';
+
 const _jerezCenter = LatLng(36.6850, -6.1261);
 const _nearbyCount = 3;
 
@@ -187,6 +189,34 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                       .toList(),
                 ),
               ],
+
+              // ── 5) ACCESIBLE BUSES LINK ──
+              const SizedBox(height: 28),
+              _sectionTitle(c, 'ACCESIBILIDAD'),
+              const SizedBox(height: 10),
+              Semantics(
+                label: AppLocalizations.of(context).accessibleBusesLinkLabel,
+                child: GlassCard(
+                  blur: 16,
+                  fillOpacity: 0.05,
+                  borderRadius: 12,
+                  padding: const EdgeInsets.all(12),
+                  child: ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: Icon(Icons.list_alt, size: 24, color: c.accent),
+                    title: Text(
+                      AppLocalizations.of(context).accessibleBusesLinkLabel,
+                      style: TransitTypography.bodyPrimary(c.textHi),
+                    ),
+                    subtitle: Text(
+                      AppLocalizations.of(context).accessibleBusesEmpty,
+                      style: TransitTypography.bodySecondary(c.textMid),
+                    ),
+                    trailing: Icon(Icons.chevron_right, color: c.textMid),
+                    onTap: () => context.push('/accessible-buses'),
+                  ),
+                ),
+              ),
               const SizedBox(height: 100),
             ]),
           ),

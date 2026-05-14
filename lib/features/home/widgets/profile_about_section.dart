@@ -11,6 +11,7 @@ import '../../../shared/models/user_role.dart';
 import '../../../shared/providers/user_provider.dart';
 import '../../../shared/widgets/glass_card.dart';
 import '../../../shared/widgets/gradient_text.dart';
+import '../../../shared/widgets/role_gate.dart';
 import '../../../shared/widgets/transit_button.dart';
 
 class ProfileAboutSection extends ConsumerStatefulWidget {
@@ -160,6 +161,36 @@ class _ProfileAboutSectionState extends ConsumerState<ProfileAboutSection> {
             color: Colors.white.withValues(alpha: 0.06),
           ),
           if (isAuth) ...[
+            RoleGate(
+              allow: const [UserRole.admin],
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('ADMINISTRACIÓN',
+                      style: TransitTypography.sectionTitle(c.accent)),
+                  const SizedBox(height: 8),
+                  GestureDetector(
+                    onTap: () => context.push('/admin'),
+                    child: Row(
+                      children: [
+                        Icon(Icons.admin_panel_settings,
+                            size: 20, color: c.accent),
+                        const SizedBox(width: 12),
+                        Text('Panel de administración',
+                            style:
+                                TransitTypography.bodyPrimary(c.textHi)),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Divider(
+                    height: 1,
+                    thickness: 0.5,
+                    color: Colors.white.withValues(alpha: 0.06),
+                  ),
+                ],
+              ),
+            ),
             if (isPassenger) ...[
               GestureDetector(
                 onTap: () => context.go('/activate-driver'),

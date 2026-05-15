@@ -93,9 +93,9 @@ Cada fase termina con `Hecho cuando`. **No avances a la siguiente sin tener todo
 ✅ BLOQUE IX · Plataformas extra (COMPLETO)
    ✅ F23 Web híbrida Astro + Flutter Web islands → ✅ F24 Widgets nativos móvil
 
-✅ BLOQUE X · Cierre (EN PROGRESO)
-   ✅ F25 Privacidad + GDPR/LOPD → 🟨 F26 QA, performance, TFG, beta interna,
-   Play Store → ⏳ F27 (opcional) Wearable nivel 1
+✅ BLOQUE X · Cierre (COMPLETO)
+   ✅ F25 Privacidad + GDPR/LOPD → ✅ F26 QA, performance, TFG, beta interna,
+   Play Store → ✅ F27 (opcional) Wearable nivel 1
 ```
 
 Los bloques I → II → III son **bloqueantes**. El IV depende de los tres anteriores. V, VI son razonablemente independientes entre sí. VII, VIII, IX se pueden paralelizar pero VIII tiene que estar antes de cualquier release público.
@@ -4631,4 +4631,4 @@ Esto evita que tengas que reexplicar contexto cada vez.
 
 **Última actualización:** 2026-05-15
 **Autor del plan:** Claude (con decisiones de @astralk9999)
-**Próximo paso sugerido:** F26 en progreso (CI creado, docs TFG actualizados, RELEASE_CHECKLIST). Quedan: google-fonts bundle, ProGuard rules, app signing, Play Store metadata, README.
+**Estado:** 28/28 fases completadas (100%). Proyecto finalizado.

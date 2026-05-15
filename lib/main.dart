@@ -9,8 +9,10 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'app.dart';
 import 'core/env.dart';
 import 'core/utils/app_logger.dart';
+import 'core/utils/sentry_setup.dart';
 import 'data/cache/hive_init.dart';
 import 'data/mock/mock_data_service.dart';
+import 'data/privacy_consent/privacy_consent_repository.dart';
 import 'data/push/firebase_setup.dart';
 import 'features/error/env_error_screen.dart';
 
@@ -54,6 +56,37 @@ void main() async {
       }
     } catch (e) {
       AppLogger.warn('Analytics', 'PostHog init failed — analytics unavailable', e);
+    }
+
+    final sentryDsn = Env.sentryDsn;
+    if (sentryDsn != null && sentryDsn.isNotEmpty) {
+      final consentRepo = PrivacyConsentRepository(Supabase.instance.client);
+      bool crashReportingOk = true;
+
+      final session = Supabase.instance.client.auth.currentSession;
+      if (session?.user != null) {
+        try {
+          final consents = await consentRepo.getConsents(session!.user.id);
+          crashReportingOk = consents['crash_reporting'] != false;
+        } catch (_) {}
+      }
+
+      await SentrySetup.init(dsn: sentryDsn, enabled: crashReportingOk);
+      AppLogger.info('Sentry', 'init enabled=$crashReportingOk');
+
+      Supabase.instance.client.auth.onAuthStateChange.listen((data) async {
+        if (data.event == AuthChangeEvent.signedIn &&
+            data.session?.user != null) {
+          try {
+            final c = await consentRepo.getConsents(data.session!.user.id);
+            if (c['crash_reporting'] != false) {
+              await SentrySetup.init(dsn: sentryDsn, enabled: true);
+            }
+          } catch (_) {
+            await SentrySetup.init(dsn: sentryDsn, enabled: true);
+          }
+        }
+      });
     }
   } on EnvException catch (e, st) {
     AppLogger.error('Env', 'failed to load critical key', e, st);

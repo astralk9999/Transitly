@@ -1,0 +1,162 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
+const supabaseKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
+
+let operatorsCount = 0;
+let routesCount = 0;
+let stopsCount = 0;
+
+if (supabaseUrl && supabaseKey) {
+  try {
+    const headers: Record<string, string> = {
+      apikey: supabaseKey,
+      Authorization: `Bearer ${supabaseKey}`,
+    };
+
+    const [opRes, rtRes, stRes] = await Promise.all([
+      fetch(`${supabaseUrl}/rest/v1/operators?select=count`, { headers }),
+      fetch(`${supabaseUrl}/rest/v1/routes?select=count`, { headers }),
+      fetch(`${supabaseUrl}/rest/v1/stops?select=count`, { headers }),
+    ]);
+
+    if (opRes.ok) {
+      const data = await opRes.json();
+      operatorsCount = data[0]?.count || 0;
+    }
+    if (rtRes.ok) {
+      const data = await rtRes.json();
+      routesCount = data[0]?.count || 0;
+    }
+    if (stRes.ok) {
+      const data = await stRes.json();
+      stopsCount = data[0]?.count || 0;
+    }
+  } catch {
+    // Stats unavailable — show placeholder
+  }
+}
+---
+
+<Layout
+  title="Tu transporte público, simple"
+  description="Rutas, horarios y paradas de autobús en España. Consulta rutas oficiales, reporta incidencias y viaja informado con Transitly."
+>
+  <section class="relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-b from-transit-neon-purple/5 via-transparent to-transparent pointer-events-none" />
+    <div class="max-w-6xl mx-auto px-6 py-28 md:py-40 text-center relative">
+      <h1 class="text-4xl md:text-6xl font-bold tracking-tight leading-tight">
+        Tu transporte público, <br />
+        <span class="bg-gradient-neon bg-clip-text text-transparent">simple.</span>
+      </h1>
+      <p class="text-text-mid text-lg md:text-xl mt-6 max-w-2xl mx-auto leading-relaxed">
+        Rutas, horarios y paradas de autobús en España. Consulta, reporta
+        y viaja informado. Sin complicaciones.
+      </p>
+
+      <div class="flex flex-col md:flex-row gap-4 justify-center mt-10">
+        <a
+          href="/app/map"
+          class="px-8 py-3 rounded-full bg-gradient-accent text-white font-semibold text-sm hover:opacity-90 transition-all shadow-lg shadow-transit-accent/25"
+        >
+          Ver en navegador
+        </a>
+        <a
+          href="/ciudades"
+          class="px-8 py-3 rounded-full border border-transit-border text-text-mid font-semibold text-sm hover:border-transit-accent hover:text-text-hi transition-all"
+        >
+          Descubrir ciudades
+        </a>
+      </div>
+
+      <div class="grid grid-cols-3 gap-8 mt-20 max-w-lg mx-auto">
+        <div class="text-center">
+          <div class="text-3xl font-bold font-mono text-transit-neon-cyan">
+            {operatorsCount || '—'}
+          </div>
+          <div class="text-text-lo text-xs mt-1">Operadores</div>
+        </div>
+        <div class="text-center">
+          <div class="text-3xl font-bold font-mono text-transit-neon-magenta">
+            {routesCount || '—'}
+          </div>
+          <div class="text-text-lo text-xs mt-1">Rutas</div>
+        </div>
+        <div class="text-center">
+          <div class="text-3xl font-bold font-mono text-transit-neon-purple">
+            {stopsCount || '—'}
+          </div>
+          <div class="text-text-lo text-xs mt-1">Paradas</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="max-w-6xl mx-auto px-6 py-24">
+    <h2 class="text-2xl md:text-3xl font-bold text-center mb-14">
+      ¿Por qué <span class="text-transit-accent">Transitly</span>?
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="p-8 rounded-2xl bg-transit-surface border border-transit-border hover:border-transit-accent/30 transition-colors">
+        <div class="w-12 h-12 rounded-xl bg-transit-accent-bg flex items-center justify-center mb-5">
+          <span class="text-transit-accent text-xl font-mono font-bold">01</span>
+        </div>
+        <h3 class="text-lg font-semibold mb-2">Información en tiempo real</h3>
+        <p class="text-text-lo text-sm leading-relaxed">
+          Horarios actualizados al segundo con datos oficiales de los operadores
+          y contribuciones de la comunidad.
+        </p>
+      </div>
+
+      <div class="p-8 rounded-2xl bg-transit-surface border border-transit-border hover:border-transit-accent/30 transition-colors">
+        <div class="w-12 h-12 rounded-xl bg-transit-accent-bg flex items-center justify-center mb-5">
+          <span class="text-transit-accent text-xl font-mono font-bold">02</span>
+        </div>
+        <h3 class="text-lg font-semibold mb-2">Multiciudad</h3>
+        <p class="text-text-lo text-sm leading-relaxed">
+          Una sola app para toda España. Cambia de ciudad sin cambiar
+          de aplicación. Tu perfil te sigue.
+        </p>
+      </div>
+
+      <div class="p-8 rounded-2xl bg-transit-surface border border-transit-border hover:border-transit-accent/30 transition-colors">
+        <div class="w-12 h-12 rounded-xl bg-transit-accent-bg flex items-center justify-center mb-5">
+          <span class="text-transit-accent text-xl font-mono font-bold">03</span>
+        </div>
+        <h3 class="text-lg font-semibold mb-2">Comunidad activa</h3>
+        <p class="text-text-lo text-sm leading-relaxed">
+          Reporta incidencias, comparte rutas y ayuda a otros viajeros.
+          Juntos construimos un transporte público mejor.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="max-w-6xl mx-auto px-6 pb-28 text-center">
+    <div class="p-10 md:p-16 rounded-3xl bg-gradient-to-br from-transit-surface to-transit-raised border border-transit-border relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-r from-transit-neon-cyan/5 via-transparent to-transit-neon-purple/5 pointer-events-none" />
+      <h2 class="text-2xl md:text-3xl font-bold relative z-10">
+        ¿Listo para empezar?
+      </h2>
+      <p class="text-text-mid mt-4 max-w-md mx-auto relative z-10">
+        Abre Transitly en tu navegador o descarga la app para iOS y Android.
+      </p>
+      <div class="flex flex-col md:flex-row gap-4 justify-center mt-8 relative z-10">
+        <a
+          href="/app/map"
+          class="px-8 py-3 rounded-full bg-white text-transit-bg font-semibold text-sm hover:opacity-90 transition-all"
+        >
+          Abrir en navegador
+        </a>
+        <a
+          href="/ciudades"
+          class="px-8 py-3 rounded-full border border-transit-border text-text-mid font-semibold text-sm hover:border-transit-accent hover:text-text-hi transition-all"
+        >
+          Explorar ciudades
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>

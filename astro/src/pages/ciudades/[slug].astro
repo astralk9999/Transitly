@@ -1,0 +1,175 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+
+export interface Props {
+  slug: string;
+}
+
+const { slug } = Astro.params;
+
+const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
+const supabaseKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
+
+interface OperatorDetail {
+  id: string;
+  name: string;
+  slug: string;
+  region: string;
+  description?: string;
+  bbox?: { xmin: number; ymin: number; xmax: number; ymax: number };
+  logo_url?: string;
+  website?: string;
+}
+
+interface RouteSummary {
+  id: string;
+  name: string;
+  code: string;
+  color: string;
+  public_link_slug?: string;
+  status: string;
+  source: string;
+}
+
+let operator: OperatorDetail | null = null;
+let routes: RouteSummary[] = [];
+let mapUrl: string | null = null;
+
+if (supabaseUrl && supabaseKey) {
+  try {
+    const headers: Record<string, string> = {
+      apikey: supabaseKey,
+      Authorization: `Bearer ${supabaseKey}`,
+    };
+
+    const opRes = await fetch(
+      `${supabaseUrl}/rest/v1/operators?select=id,name,slug,region,description,bbox,logo_url,website&slug=eq.${encodeURIComponent(slug)}`,
+      { headers }
+    );
+
+    if (opRes.ok) {
+      const data = await opRes.json();
+      if (data.length > 0) {
+        operator = data[0];
+
+        const rtRes = await fetch(
+          `${supabaseUrl}/rest/v1/routes?select=id,name,code,color,public_link_slug,status,source&operator_id=eq.${operator.id}&status=in.(official,verified)&order=name.asc`,
+          { headers }
+        );
+        if (rtRes.ok) {
+          routes = await rtRes.json();
+        }
+
+        if (operator.bbox) {
+          const centerLng = (operator.bbox.xmin + operator.bbox.xmax) / 2;
+          const centerLat = (operator.bbox.ymin + operator.bbox.ymax) / 2;
+          mapUrl = `https://api.maptiler.com/maps/streets-v2/static/${centerLng},${centerLat},12/600x400.png?key=${import.meta.env.PUBLIC_MAPTILER_API_KEY || ''}`;
+        }
+      }
+    }
+  } catch {
+    // Data unavailable
+  }
+}
+
+const title = operator ? `${operator.name} · Transitly` : 'Operador no encontrado · Transitly';
+const description = operator?.description || `Rutas y horarios de ${operator?.name || 'transporte público'}.`;
+---
+
+<Layout title={title} description={description} ogImage={mapUrl || undefined}>
+  {!operator ? (
+    <section class="max-w-4xl mx-auto px-6 py-20 text-center">
+      <h1 class="text-3xl font-bold mb-4">Operador no encontrado</h1>
+      <p class="text-text-mid">El operador que buscas no existe o ha sido eliminado.</p>
+      <a href="/ciudades" class="inline-block mt-6 text-transit-accent hover:underline">← Volver a ciudades</a>
+    </section>
+  ) : (
+    <>
+      <section class="max-w-6xl mx-auto px-6 py-12">
+        <a href="/ciudades" class="text-text-lo text-sm hover:text-text-hi transition-colors">← Ciudades</a>
+
+        <div class="mt-6 flex flex-col md:flex-row gap-8">
+          <div class="flex-1">
+            <div class="flex items-center gap-4">
+              {operator.logo_url && (
+                <img src={operator.logo_url} alt={operator.name} class="w-14 h-14 rounded-xl object-contain bg-transit-surface" />
+              )}
+              <div>
+                <h1 class="text-3xl font-bold">{operator.name}</h1>
+                <p class="text-text-lo text-sm">{operator.region}</p>
+              </div>
+            </div>
+            {operator.description && (
+              <p class="text-text-mid mt-6 leading-relaxed">{operator.description}</p>
+            )}
+            {operator.website && (
+              <a href={operator.website} target="_blank" rel="noopener noreferrer"
+                 class="inline-block mt-4 text-transit-neon-cyan text-sm hover:underline">
+                Sitio web oficial →
+              </a>
+            )}
+          </div>
+
+          {mapUrl && (
+            <div class="flex-1 min-h-48">
+              <img
+                src={mapUrl}
+                alt={`Mapa de ${operator.name}`}
+                class="w-full rounded-2xl border border-transit-border object-cover h-64"
+                loading="lazy"
+              />
+            </div>
+          )}
+        </div>
+      </section>
+
+      <section class="max-w-6xl mx-auto px-6 pb-20">
+        <h2 class="text-xl font-semibold mb-6">Rutas ({routes.length})</h2>
+        {routes.length === 0 ? (
+          <p class="text-text-lo">No hay rutas disponibles para este operador.</p>
+        ) : (
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {routes.map((route) => (
+              <a
+                href={route.public_link_slug ? `/rutas/${route.public_link_slug}` : `#route-${route.id}`}
+                class="p-5 rounded-2xl bg-transit-surface border border-transit-border hover:border-transit-accent/30 transition-all group"
+              >
+                <div class="flex items-center gap-3">
+                  <span
+                    class="inline-flex items-center justify-center w-14 h-14 rounded-xl font-mono font-bold text-sm"
+                    style={{
+                      backgroundColor: route.color || '#5A4A9A',
+                      color: '#FFFFFF',
+                    }}
+                  >
+                    {route.code}
+                  </span>
+                  <div>
+                    <h3 class="font-semibold group-hover:text-transit-accent transition-colors">
+                      {route.name}
+                    </h3>
+                    <p class="text-text-lo text-xs mt-0.5">
+                      {route.source === 'official' ? 'Ruta oficial' : 'Ruta comunitaria'}
+                    </p>
+                  </div>
+                </div>
+              </a>
+            ))}
+          </div>
+        )}
+      </section>
+    </>
+  )}
+</Layout>
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BusOrCoachStation",
+    "name": "{operator?.name || slug}",
+    "address": {
+      "@type": "PostalAddress",
+      "addressRegion": "{operator?.region || ''}"
+    }
+  }
+</script>

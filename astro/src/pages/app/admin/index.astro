@@ -1,0 +1,44 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+const FLUTTER_BUILD_PATH = '/flutter-web-build';
+---
+<Layout title="Panel de administración" description="Administra operadores, rutas y usuarios de Transitly.">
+  <section class="min-h-[calc(100vh-12rem)] flex flex-col">
+    <div class="bg-transit-surface border-b border-transit-border px-6 py-4">
+      <a href="/" class="text-text-lo text-sm hover:text-text-hi transition-colors">← Volver a Transitly</a>
+    </div>
+    <div id="flutter-admin" class="flex-1 flex items-center justify-center">
+      <div class="text-center text-text-lo">
+        <p>El panel de administración requiere Flutter Web.</p>
+        <p class="text-sm mt-2">Compila la app con:</p>
+        <code class="inline-block mt-2 px-3 py-1.5 rounded-lg bg-transit-input text-xs font-mono text-transit-neon-cyan">
+          flutter build web --release --base-href "/app/admin/" --pwa-strategy none
+        </code>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<!-- Flutter bootstrap (uncomment when build is available in public/flutter-web-build/admin/)
+<script is:inline>
+  (function() {
+    var s = document.createElement('script');
+    s.src = '{FLUTTER_BUILD_PATH}/admin/flutter_bootstrap.js';
+    s.type = 'module';
+    document.body.appendChild(s);
+
+    window.addEventListener('load', function() {
+      _flutter.loader.load({
+        config: {},
+        onEntrypointLoaded: async function(engineInitializer) {
+          var appRunner = await engineInitializer.initializeEngine({
+            hostElement: document.getElementById('flutter-admin'),
+            assetBase: '{FLUTTER_BUILD_PATH}/admin/',
+          });
+          await appRunner.runApp();
+        },
+      });
+    })();
+  })();
+</script>
+-->

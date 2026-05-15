@@ -1,0 +1,99 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="Política de privacidad"
+  description="Política de privacidad de Transitly. Cómo tratamos tus datos personales según el RGPD y la LOPDGDD."
+>
+  <section class="max-w-4xl mx-auto px-6 py-20">
+    <h1 class="text-3xl md:text-4xl font-bold mb-6">
+      Política de <span class="text-transit-accent">privacidad</span>
+    </h1>
+    <p class="text-text-lo text-sm mb-10">Última actualización: mayo 2026</p>
+
+    <div class="prose prose-invert prose-p:text-text-mid prose-headings:text-text-hi max-w-none space-y-6">
+
+      <h2 class="text-xl font-semibold mt-10 text-text-hi">1. Quiénes somos</h2>
+      <p class="text-text-mid leading-relaxed">
+        Transitly es una plataforma de información de transporte público operada como
+        proyecto académico (TFG). El responsable del tratamiento de datos es el equipo
+        de Transitly, con domicilio a efectos de protección de datos en España.
+      </p>
+
+      <h2 class="text-xl font-semibold mt-10 text-text-hi">2. Datos que recogemos</h2>
+      <p class="text-text-mid leading-relaxed">Recogemos los siguientes datos personales:</p>
+      <ul class="list-disc pl-5 space-y-2 text-text-mid">
+        <li><strong>Cuenta:</strong> email, nombre de usuario (display name), avatar (opcional).</li>
+        <li><strong>Ubicación:</strong> en primer plano al abrir el mapa; en segundo plano solo si activas grabar ruta o modo conductor.</li>
+        <li><strong>Telemetría:</strong> datos de uso anonimizados, solo con consentimiento explícito.</li>
+        <li><strong>Contenido:</strong> incidencias, reportes, rutas comunitarias y sugerencias que publiques voluntariamente.</li>
+      </ul>
+
+      <h2 class="text-xl font-semibold mt-10 text-text-hi">3. Finalidad del tratamiento</h2>
+      <ul class="list-disc pl-5 space-y-2 text-text-mid">
+        <li>Proporcionar información de transporte público en tiempo real.</li>
+        <li>Gestionar tu cuenta de usuario y tus preferencias.</li>
+        <li>Procesar tus contribuciones (rutas, incidencias, sugerencias).</li>
+        <li>Mejorar el servicio mediante analítica anonimizada (solo con consentimiento).</li>
+        <li>Cumplir con obligaciones legales.</li>
+      </ul>
+
+      <h2 class="text-xl font-semibold mt-10 text-text-hi">4. Base legal</h2>
+      <p class="text-text-mid leading-relaxed">
+        Tratamos tus datos bajo las siguientes bases legales del RGPD:
+        consentimiento (art. 6.1.a), ejecución del servicio (art. 6.1.b),
+        e interés legítimo (art. 6.1.f) para mejoras del servicio y seguridad.
+      </p>
+
+      <h2 class="text-xl font-semibold mt-10 text-text-hi">5. Compartición de datos</h2>
+      <p class="text-text-mid leading-relaxed">
+        Compartimos datos con los siguientes proveedores de infraestructura,
+        todos con servidores en la UE o con cláusulas contractuales tipo (SCC):
+      </p>
+      <ul class="list-disc pl-5 space-y-2 text-text-mid">
+        <li><strong>Supabase</strong> (hosting de base de datos y autenticación, región UE).</li>
+        <li><strong>MapTiler</strong> (servicio de mapas, solo datos de bounding box).</li>
+        <li><strong>Firebase Cloud Messaging</strong> (notificaciones push, solo token de dispositivo).</li>
+        <li><strong>Sentry</strong> (monitorización de errores, solo con consentimiento).</li>
+        <li><strong>PostHog</strong> (analítica de producto, solo con consentimiento).</li>
+      </ul>
+
+      <h2 class="text-xl font-semibold mt-10 text-text-hi">6. Conservación de datos</h2>
+      <ul class="list-disc pl-5 space-y-2 text-text-mid">
+        <li>Datos de cuenta: mientras la cuenta esté activa + 30 días tras eliminación.</li>
+        <li>Datos de ubicación de conductor: 90 días.</li>
+        <li>Grabaciones de ruta locales: se purgan al publicar.</li>
+        <li>Telemetría: 24 meses en forma agregada/anonimizada.</li>
+      </ul>
+
+      <h2 class="text-xl font-semibold mt-10 text-text-hi">7. Tus derechos</h2>
+      <p class="text-text-mid leading-relaxed">
+        Tienes derecho de acceso, rectificación, supresión, oposición, portabilidad
+        y limitación del tratamiento. Para ejercerlos, contacta a través de la pantalla
+        de privacidad en la app o escribe a nuestro email de contacto.
+      </p>
+
+      <h2 class="text-xl font-semibold mt-10 text-text-hi">8. Cómo ejercer tus derechos</h2>
+      <p class="text-text-mid leading-relaxed">
+        Puedes gestionar tus preferencias de privacidad desde la app (Perfil → Privacidad).
+        Para solicitudes de acceso, rectificación o supresión, contacta por email.
+        Responderemos en un plazo máximo de 30 días.
+      </p>
+
+      <h2 class="text-xl font-semibold mt-10 text-text-hi">9. Menores</h2>
+      <p class="text-text-mid leading-relaxed">
+        Nuestros servicios no están dirigidos a menores de 14 años. Si eres padre/madre
+        o tutor y crees que tu hijo nos ha proporcionado datos personales, contáctanos.
+      </p>
+
+      <h2 class="text-xl font-semibold mt-10 text-text-hi">10. Cambios en esta política</h2>
+      <p class="text-text-mid leading-relaxed">
+        Notificaremos cualquier cambio en esta política a través de la app y/o por email
+        con al menos 15 días de antelación. La fecha de última actualización se refleja
+        al inicio de esta página.
+      </p>
+
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,52 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="Acerca de Transitly"
+  description="Conoce Transitly, la app que simplifica el transporte público en España con rutas, horarios y paradas en tiempo real."
+>
+  <section class="max-w-4xl mx-auto px-6 py-20">
+    <h1 class="text-3xl md:text-4xl font-bold mb-6">
+      Acerca de <span class="text-transit-accent">Transitly</span>
+    </h1>
+
+    <div class="prose prose-invert prose-p:text-text-mid prose-headings:text-text-hi max-w-none space-y-6">
+      <p class="text-text-mid leading-relaxed text-lg">
+        Transitly nace de una necesidad real: consultar el transporte público en España
+        debería ser tan fácil como abrir una app y ver cuándo llega tu autobús. Sin
+        tener que buscar en webs distintas, sin descargar PDFs, sin sorpresas.
+      </p>
+
+      <h2 class="text-xl font-semibold mt-12 text-text-hi">Nuestra misión</h2>
+      <p class="text-text-mid leading-relaxed">
+        Unificar la información del transporte público español en una sola plataforma,
+        combinando datos oficiales (GTFS) con contribuciones de la comunidad para ofrecer
+        información precisa y actualizada.
+      </p>
+
+      <h2 class="text-xl font-semibold mt-12 text-text-hi">¿Qué ofrecemos?</h2>
+      <ul class="list-disc pl-5 space-y-2 text-text-mid">
+        <li>Rutas y horarios de autobuses urbanos e interurbanos</li>
+        <li>Información en tiempo real procedente de feeds GTFS-Realtime</li>
+        <li>Seguimiento de autobuses en vivo (conductor y comunidad)</li>
+        <li>Reporte de incidencias en tiempo real</li>
+        <li>Rutas comunitarias creadas y validadas por usuarios</li>
+        <li>Accesible vía web y app nativa (iOS y Android)</li>
+      </ul>
+
+      <h2 class="text-xl font-semibold mt-12 text-text-hi">El equipo</h2>
+      <p class="text-text-mid leading-relaxed">
+        Transitly es un proyecto desarrollado como Trabajo de Fin de Grado (TFG) en
+        Ingeniería Informática, con la ambición de convertirse en un producto útil
+        y de código abierto para la comunidad.
+      </p>
+
+      <h2 class="text-xl font-semibold mt-12 text-text-hi">Tecnología</h2>
+      <p class="text-text-mid leading-relaxed">
+        Construida con Flutter para las apps nativas, Astro para la web, Supabase como
+        backend y PostgreSQL+PostGIS para datos geoespaciales. Código abierto en GitHub.
+      </p>
+    </div>
+  </section>
+</Layout>

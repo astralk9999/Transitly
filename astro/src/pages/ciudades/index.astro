@@ -1,0 +1,92 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+interface Operator {
+  id: string;
+  name: string;
+  slug: string;
+  region: string;
+  logo_url?: string;
+}
+
+const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
+const supabaseKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
+let operators: Operator[] = [];
+let error: string | null = null;
+
+if (supabaseUrl && supabaseKey) {
+  try {
+    const headers: Record<string, string> = {
+      apikey: supabaseKey,
+      Authorization: `Bearer ${supabaseKey}`,
+    };
+
+    const res = await fetch(
+      `${supabaseUrl}/rest/v1/operators?select=id,name,slug,region,logo_url&order=name.asc`,
+      { headers }
+    );
+
+    if (res.ok) {
+      operators = await res.json();
+    } else {
+      error = `Error al cargar operadores: ${res.status}`;
+    }
+  } catch (e) {
+    error = `No se pudieron cargar los operadores.`;
+  }
+}
+---
+
+<Layout
+  title="Ciudades y operadores"
+  description="Descubre todos los operadores de transporte público disponibles en Transitly. Consulta rutas, horarios y paradas por ciudad."
+>
+  <section class="max-w-6xl mx-auto px-6 py-20">
+    <h1 class="text-3xl md:text-4xl font-bold mb-2">
+      Ciudades y <span class="text-transit-accent">operadores</span>
+    </h1>
+    <p class="text-text-mid mb-12">Transporte público en España, ciudad a ciudad.</p>
+
+    {
+      error ? (
+        <div class="p-8 rounded-2xl bg-transit-surface border border-transit-state-delay/30 text-center">
+          <p class="text-text-mid">{error}</p>
+          <p class="text-text-lo text-sm mt-2">Verifica que las variables de entorno PUBLIC_SUPABASE_URL y PUBLIC_SUPABASE_ANON_KEY estén configuradas.</p>
+        </div>
+      ) : operators.length === 0 ? (
+        <div class="p-8 rounded-2xl bg-transit-surface border border-transit-border text-center">
+          <p class="text-text-mid">No hay operadores disponibles todavía.</p>
+        </div>
+      ) : (
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {operators.map((op) => (
+            <a
+              href={`/ciudades/${op.slug}`}
+              class="p-6 rounded-2xl bg-transit-surface border border-transit-border hover:border-transit-accent/30 hover:bg-transit-raised transition-all group"
+            >
+              <div class="flex items-start justify-between">
+                <div>
+                  <h2 class="text-lg font-semibold group-hover:text-transit-accent transition-colors">
+                    {op.name}
+                  </h2>
+                  <p class="text-text-lo text-sm mt-1">{op.region}</p>
+                </div>
+                {op.logo_url && (
+                  <img
+                    src={op.logo_url}
+                    alt={`Logo ${op.name}`}
+                    class="w-10 h-10 rounded-lg object-contain bg-transit-bg/50"
+                  />
+                )}
+              </div>
+              <div class="mt-4 flex items-center gap-2 text-text-lo text-xs">
+                <span class="text-transit-neon-cyan">→</span>
+                Ver rutas
+              </div>
+            </a>
+          ))}
+        </div>
+      )
+    }
+  </section>
+</Layout>

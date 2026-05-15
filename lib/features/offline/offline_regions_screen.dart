@@ -305,6 +305,33 @@ class _RegionCard extends StatelessWidget {
                   const SizedBox(width: 16),
                 ],
               ),
+              if (region.dataSyncedAt != null) ...[
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Icon(Icons.sync, size: 12, color: c.stateOnTime),
+                    const SizedBox(width: 4),
+                    Text(
+                      l10n.offlineRegionsDataSynced,
+                      style: GoogleFonts.ibmPlexMono(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w600,
+                        color: c.stateOnTime,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      DateFormat.yMMMd()
+                          .add_jm()
+                          .format(region.dataSyncedAt!.toLocal()),
+                      style: GoogleFonts.ibmPlexMono(
+                        fontSize: 9,
+                        color: c.textLo,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ],
           ),
         ),

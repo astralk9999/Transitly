@@ -64,6 +64,9 @@ class OfflineRegionRemoteRepository implements OfflineRegionRepository {
           : DateTime.now(),
       sizeBytes: row['size_bytes'] as int? ?? 0,
       status: _parseStatus(row['status'] as String?),
+      dataSyncedAt: row['data_synced_at'] != null
+          ? DateTime.parse(row['data_synced_at'] as String)
+          : null,
     );
   }
 
@@ -77,6 +80,8 @@ class OfflineRegionRemoteRepository implements OfflineRegionRepository {
       'size_bytes': r.sizeBytes,
       'status': r.status.name,
       'downloaded_at': r.downloadedAt.toIso8601String(),
+      if (r.dataSyncedAt != null)
+        'data_synced_at': r.dataSyncedAt!.toIso8601String(),
     };
   }
 

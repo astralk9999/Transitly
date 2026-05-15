@@ -645,5 +645,44 @@ class AppLocalizationsEn extends AppLocalizations {
   String get offlineRegionsSelectArea => 'Move the map to select an area';
 
   @override
+  String get offlineRegionsDataSynced => 'Data synced';
+
+  @override
+  String offlineRegionsDataSyncedAt(String date) {
+    return 'Synced on $date';
+  }
+
+  @override
   String get offlineRegionsMapLink => 'Offline maps';
+
+  @override
+  String get appearanceStorageSection => 'OFFLINE STORAGE';
+
+  @override
+  String get appearanceStorageTotal => 'Storage used';
+
+  @override
+  String get appearanceStorageFmtc => 'FMTC maps';
+
+  @override
+  String get appearanceStorageHive => 'Local data';
+
+  @override
+  String get appearanceStoragePending => 'Pending uploads';
+
+  @override
+  String get appearanceStorageClearCache => 'Clear map cache';
+
+  @override
+  String get appearanceStorageClearCacheConfirm =>
+      'Delete all downloaded offline maps?';
+
+  @override
+  String get appearanceStorageClearCacheDone => 'Map cache cleared';
+
+  @override
+  String get appearanceStorageMaxInfo => 'Maximum storage: 500 MB';
+
+  @override
+  String get appearanceStorageNotAvailable => 'Not available';
 }

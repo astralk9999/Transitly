@@ -36,6 +36,9 @@ _$OfflineRegionImpl _$$OfflineRegionImplFromJson(Map<String, dynamic> json) =>
       downloadedAt: DateTime.parse(json['downloadedAt'] as String),
       sizeBytes: (json['sizeBytes'] as num).toInt(),
       status: $enumDecode(_$OfflineRegionStatusEnumMap, json['status']),
+      dataSyncedAt: json['dataSyncedAt'] == null
+          ? null
+          : DateTime.parse(json['dataSyncedAt'] as String),
     );
 
 Map<String, dynamic> _$$OfflineRegionImplToJson(_$OfflineRegionImpl instance) =>
@@ -48,6 +51,8 @@ Map<String, dynamic> _$$OfflineRegionImplToJson(_$OfflineRegionImpl instance) =>
       'downloadedAt': instance.downloadedAt.toIso8601String(),
       'sizeBytes': instance.sizeBytes,
       'status': _$OfflineRegionStatusEnumMap[instance.status]!,
+      if (instance.dataSyncedAt?.toIso8601String() case final value?)
+        'dataSyncedAt': value,
     };
 
 const _$OfflineRegionStatusEnumMap = {

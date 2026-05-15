@@ -33,6 +33,7 @@ class OfflineRegion with _$OfflineRegion {
     required DateTime downloadedAt,
     required int sizeBytes,
     required OfflineRegionStatus status,
+    DateTime? dataSyncedAt,
   }) = _OfflineRegion;
 
   factory OfflineRegion.fromJson(Map<String, dynamic> json) =>

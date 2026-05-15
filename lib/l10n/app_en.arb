@@ -225,5 +225,18 @@
   "offlineRegionsZoomMax": "Max zoom",
   "offlineRegionsEstimatedSize": "Estimated size",
   "offlineRegionsSelectArea": "Move the map to select an area",
-  "offlineRegionsMapLink": "Offline maps"
+  "offlineRegionsDataSynced": "Data synced",
+  "offlineRegionsDataSyncedAt": "Synced on {date}",
+  "offlineRegionsMapLink": "Offline maps",
+
+  "appearanceStorageSection": "OFFLINE STORAGE",
+  "appearanceStorageTotal": "Storage used",
+  "appearanceStorageFmtc": "FMTC maps",
+  "appearanceStorageHive": "Local data",
+  "appearanceStoragePending": "Pending uploads",
+  "appearanceStorageClearCache": "Clear map cache",
+  "appearanceStorageClearCacheConfirm": "Delete all downloaded offline maps?",
+  "appearanceStorageClearCacheDone": "Map cache cleared",
+  "appearanceStorageMaxInfo": "Maximum storage: 500 MB",
+  "appearanceStorageNotAvailable": "Not available"
 }

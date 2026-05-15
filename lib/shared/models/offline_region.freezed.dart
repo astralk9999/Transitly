@@ -248,6 +248,7 @@ mixin _$OfflineRegion {
   DateTime get downloadedAt => throw _privateConstructorUsedError;
   int get sizeBytes => throw _privateConstructorUsedError;
   OfflineRegionStatus get status => throw _privateConstructorUsedError;
+  DateTime? get dataSyncedAt => throw _privateConstructorUsedError;
 
   /// Serializes this OfflineRegion to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -275,6 +276,7 @@ abstract class $OfflineRegionCopyWith<$Res> {
     DateTime downloadedAt,
     int sizeBytes,
     OfflineRegionStatus status,
+    DateTime? dataSyncedAt,
   });
 
   $OfflineRegionBoundsCopyWith<$Res> get bounds;
@@ -303,6 +305,7 @@ class _$OfflineRegionCopyWithImpl<$Res, $Val extends OfflineRegion>
     Object? downloadedAt = null,
     Object? sizeBytes = null,
     Object? status = null,
+    Object? dataSyncedAt = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -338,6 +341,10 @@ class _$OfflineRegionCopyWithImpl<$Res, $Val extends OfflineRegion>
                 ? _value.status
                 : status // ignore: cast_nullable_to_non_nullable
                       as OfflineRegionStatus,
+            dataSyncedAt: freezed == dataSyncedAt
+                ? _value.dataSyncedAt
+                : dataSyncedAt // ignore: cast_nullable_to_non_nullable
+                      as DateTime?,
           )
           as $Val,
     );
@@ -372,6 +379,7 @@ abstract class _$$OfflineRegionImplCopyWith<$Res>
     DateTime downloadedAt,
     int sizeBytes,
     OfflineRegionStatus status,
+    DateTime? dataSyncedAt,
   });
 
   @override
@@ -400,6 +408,7 @@ class __$$OfflineRegionImplCopyWithImpl<$Res>
     Object? downloadedAt = null,
     Object? sizeBytes = null,
     Object? status = null,
+    Object? dataSyncedAt = freezed,
   }) {
     return _then(
       _$OfflineRegionImpl(
@@ -435,6 +444,10 @@ class __$$OfflineRegionImplCopyWithImpl<$Res>
             ? _value.status
             : status // ignore: cast_nullable_to_non_nullable
                   as OfflineRegionStatus,
+        dataSyncedAt: freezed == dataSyncedAt
+            ? _value.dataSyncedAt
+            : dataSyncedAt // ignore: cast_nullable_to_non_nullable
+                  as DateTime?,
       ),
     );
   }
@@ -452,6 +465,7 @@ class _$OfflineRegionImpl implements _OfflineRegion {
     required this.downloadedAt,
     required this.sizeBytes,
     required this.status,
+    this.dataSyncedAt,
   });
 
   factory _$OfflineRegionImpl.fromJson(Map<String, dynamic> json) =>
@@ -473,10 +487,12 @@ class _$OfflineRegionImpl implements _OfflineRegion {
   final int sizeBytes;
   @override
   final OfflineRegionStatus status;
+  @override
+  final DateTime? dataSyncedAt;
 
   @override
   String toString() {
-    return 'OfflineRegion(id: $id, label: $label, bounds: $bounds, zoomMin: $zoomMin, zoomMax: $zoomMax, downloadedAt: $downloadedAt, sizeBytes: $sizeBytes, status: $status)';
+    return 'OfflineRegion(id: $id, label: $label, bounds: $bounds, zoomMin: $zoomMin, zoomMax: $zoomMax, downloadedAt: $downloadedAt, sizeBytes: $sizeBytes, status: $status, dataSyncedAt: $dataSyncedAt)';
   }
 
   @override
@@ -493,7 +509,9 @@ class _$OfflineRegionImpl implements _OfflineRegion {
                 other.downloadedAt == downloadedAt) &&
             (identical(other.sizeBytes, sizeBytes) ||
                 other.sizeBytes == sizeBytes) &&
-            (identical(other.status, status) || other.status == status));
+            (identical(other.status, status) || other.status == status) &&
+            (identical(other.dataSyncedAt, dataSyncedAt) ||
+                other.dataSyncedAt == dataSyncedAt));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -508,6 +526,7 @@ class _$OfflineRegionImpl implements _OfflineRegion {
     downloadedAt,
     sizeBytes,
     status,
+    dataSyncedAt,
   );
 
   /// Create a copy of OfflineRegion
@@ -534,6 +553,7 @@ abstract class _OfflineRegion implements OfflineRegion {
     required final DateTime downloadedAt,
     required final int sizeBytes,
     required final OfflineRegionStatus status,
+    final DateTime? dataSyncedAt,
   }) = _$OfflineRegionImpl;
 
   factory _OfflineRegion.fromJson(Map<String, dynamic> json) =
@@ -555,6 +575,8 @@ abstract class _OfflineRegion implements OfflineRegion {
   int get sizeBytes;
   @override
   OfflineRegionStatus get status;
+  @override
+  DateTime? get dataSyncedAt;
 
   /// Create a copy of OfflineRegion
   /// with the given fields replaced by the non-null parameter values.

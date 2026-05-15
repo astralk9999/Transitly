@@ -1334,11 +1334,83 @@ abstract class AppLocalizations {
   /// **'Mueve el mapa para seleccionar un área'**
   String get offlineRegionsSelectArea;
 
+  /// Data synced indicator in region card
+  ///
+  /// In es, this message translates to:
+  /// **'Datos sincronizados'**
+  String get offlineRegionsDataSynced;
+
+  /// Data sync date indicator
+  ///
+  /// In es, this message translates to:
+  /// **'Sincronizado el {date}'**
+  String offlineRegionsDataSyncedAt(String date);
+
   /// Profile link to offline maps
   ///
   /// In es, this message translates to:
   /// **'Mapas offline'**
   String get offlineRegionsMapLink;
+
+  /// Appearance storage section header
+  ///
+  /// In es, this message translates to:
+  /// **'ALMACENAMIENTO OFF LINE'**
+  String get appearanceStorageSection;
+
+  /// Total storage used label
+  ///
+  /// In es, this message translates to:
+  /// **'Espacio usado'**
+  String get appearanceStorageTotal;
+
+  /// FMTC maps storage label
+  ///
+  /// In es, this message translates to:
+  /// **'Mapas FMTC'**
+  String get appearanceStorageFmtc;
+
+  /// Hive local data storage label
+  ///
+  /// In es, this message translates to:
+  /// **'Datos locales'**
+  String get appearanceStorageHive;
+
+  /// Pending uploads storage label
+  ///
+  /// In es, this message translates to:
+  /// **'Adjuntos pendientes'**
+  String get appearanceStoragePending;
+
+  /// Clear map cache button
+  ///
+  /// In es, this message translates to:
+  /// **'Limpiar caché de mapas'**
+  String get appearanceStorageClearCache;
+
+  /// Clear map cache confirmation message
+  ///
+  /// In es, this message translates to:
+  /// **'¿Eliminar todos los mapas offline descargados?'**
+  String get appearanceStorageClearCacheConfirm;
+
+  /// Map cache cleared confirmation
+  ///
+  /// In es, this message translates to:
+  /// **'Caché de mapas eliminada'**
+  String get appearanceStorageClearCacheDone;
+
+  /// Maximum storage info text
+  ///
+  /// In es, this message translates to:
+  /// **'Almacenamiento máximo: 500 MB'**
+  String get appearanceStorageMaxInfo;
+
+  /// Not available label
+  ///
+  /// In es, this message translates to:
+  /// **'No disponible'**
+  String get appearanceStorageNotAvailable;
 }
 
 class _AppLocalizationsDelegate

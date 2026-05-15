@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'app.dart';
@@ -40,6 +41,19 @@ void main() async {
       AppLogger.info('Firebase', 'initialized');
     } catch (e) {
       AppLogger.warn('Firebase', 'init failed — push unavailable', e);
+    }
+    try {
+      final postHogKey = Env.postHogApiKey;
+      if (postHogKey != null && postHogKey.isNotEmpty) {
+        final config = PostHogConfig(postHogKey);
+        config.host = Env.postHogHost;
+        await Posthog().setup(config);
+        AppLogger.info('Analytics', 'PostHog initialized host=${Env.postHogHost}');
+      } else {
+        AppLogger.info('Analytics', 'PostHog skipped — no API key');
+      }
+    } catch (e) {
+      AppLogger.warn('Analytics', 'PostHog init failed — analytics unavailable', e);
     }
   } on EnvException catch (e, st) {
     AppLogger.error('Env', 'failed to load critical key', e, st);

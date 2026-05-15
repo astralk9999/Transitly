@@ -1,12 +1,11 @@
 {
   "pending": [
-    {"id": "F21-002", "title": "PushService + device_tokens + token management", "status": "pending", "dependencies": ["F21-001"]},
-    {"id": "F21-003", "title": "Edge Function send_notification + push triggers", "status": "pending", "dependencies": ["F21-001"]},
-    {"id": "F21-004", "title": "In-app notification UI: stream, bell badge, inbox", "status": "pending", "dependencies": ["F21-001"]},
-    {"id": "F21-005", "title": "Notification preferences + quiet hours + wearable", "status": "pending", "dependencies": ["F21-001"]}
+    {"id": "F22-003", "title": "Consent gating + privacy_consents repo", "status": "pending", "dependencies": ["F22-001","F22-002"]},
+    {"id": "F22-004", "title": "Smoke test offline queue + F22 issues cleanup", "status": "pending", "dependencies": []}
   ],
   "active": [
-    {"id": "F21-001", "title": "Firebase setup + pubspec + main.dart init", "status": "active", "dependencies": []}
+    {"id": "F22-001", "title": "Sentry integration + AppLogger hooks + PII scrubbing", "status": "active", "dependencies": []},
+    {"id": "F22-002", "title": "PostHog analytics + AnalyticsService + event tracking", "status": "active", "dependencies": []}
   ],
   "completed": []
 }

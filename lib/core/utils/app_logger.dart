@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import 'sentry_setup.dart';
+
 /// Thin logging wrapper around [debugPrint] + [assert].
 ///
 /// Kept dependency-free on purpose: swapping to `logger` later is a drop-in
@@ -23,6 +25,7 @@ class AppLogger {
     if (!_enabled) return;
     final suffix = error == null ? '' : ' — $error';
     debugPrint('[WARN ][$tag] $message$suffix');
+    if (error != null) SentrySetup.addBreadcrumb('[$tag] $message — $error', category: 'warn');
   }
 
   static void error(String tag, String message, [Object? error, StackTrace? st]) {
@@ -30,5 +33,6 @@ class AppLogger {
     final suffix = error == null ? '' : ' — $error';
     debugPrint('[ERROR][$tag] $message$suffix');
     if (st != null) debugPrint(st.toString());
+    SentrySetup.captureException(error ?? message, st);
   }
 }

@@ -688,4 +688,74 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get appearanceStorageNotAvailable => 'No disponible';
+
+  @override
+  String get notificationsTitle => 'Notificaciones';
+
+  @override
+  String get notificationsEmpty => 'No tienes notificaciones';
+
+  @override
+  String get notificationsMarkAllRead => 'Marcar todo leído';
+
+  @override
+  String get notificationsAllRead => 'Todo leído';
+
+  @override
+  String get notificationTypeIncidentResolved => 'Incidencia resuelta';
+
+  @override
+  String get notificationTypeRoutePromoted => 'Ruta promocionada';
+
+  @override
+  String get notificationTypeShareReceived => 'Ruta compartida contigo';
+
+  @override
+  String get notificationTypeFeatureRequestReplied =>
+      'Respuesta a tu solicitud';
+
+  @override
+  String get notificationTypeBusApproaching => 'Bus acercándose';
+
+  @override
+  String get notificationTypeCustom => 'Aviso';
+
+  @override
+  String get notificationTimeNow => 'Ahora';
+
+  @override
+  String notificationTimeMinutes(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Hace $n min',
+      one: 'Hace 1 min',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String notificationTimeHours(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Hace $n h',
+      one: 'Hace 1 h',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String notificationTimeDays(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Hace $n d',
+      one: 'Hace 1 d',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get notificationSwipeToRead => 'Desliza para marcar como leído';
 }

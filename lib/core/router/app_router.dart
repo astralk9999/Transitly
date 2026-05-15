@@ -59,6 +59,7 @@ import '../../features/suggestions/suggest_route_screen.dart';
 import '../../features/suggestions/suggestion_contribute_screen.dart';
 import '../../features/error/not_found_screen.dart';
 import '../../features/suggestions/suggestion_detail_screen.dart';
+import '../../features/notifications/notifications_screen.dart';
 
 /// Initial location of the app router. Overridable in tests to bypass the
 /// splash screen (which holds a real `Future.delayed(3s)` timer).
@@ -400,6 +401,13 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/accessible-buses',
         pageBuilder: (context, state) =>
             _slide(state, const AccessibleBusesScreen()),
+      ),
+
+      // ── Notifications ──
+      GoRoute(
+        path: '/notifications',
+        pageBuilder: (context, state) =>
+            _slide(state, const NotificationsScreen()),
       ),
 
       // ── Debug ──

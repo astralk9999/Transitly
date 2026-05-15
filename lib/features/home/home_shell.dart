@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_spacing.dart';
 import '../../l10n/generated/app_localizations.dart';
+import '../../shared/providers/notification_stream_provider.dart';
 import '../../shared/providers/user_provider.dart';
 import '../../shared/widgets/responsive_scaffold.dart';
 import '../../shared/widgets/smoke_background.dart';
@@ -28,6 +29,7 @@ class HomeShell extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isDriver = ref.watch(isDriverModeProvider);
+    final unreadCount = ref.watch(unreadCountProvider);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
     final screen = ResponsiveScaffold.screenSizeOf(context);
@@ -55,6 +57,15 @@ class HomeShell extends ConsumerWidget {
                   child: Stack(
                     children: [
                       ResponsiveScaffold(child: navigationShell),
+                      Positioned(
+                        top: TransitSpacing.space8,
+                        right: TransitSpacing.space16,
+                        child: _NotificationBell(
+                          unreadCount: unreadCount,
+                          c: c,
+                          onTap: () => context.push('/notifications'),
+                        ),
+                      ),
                       if (isDriver)
                         Positioned(
                           bottom: TransitSpacing.space16,
@@ -80,6 +91,18 @@ class HomeShell extends ConsumerWidget {
             child: SmokeBackground(color: c.accent, isDark: isDark),
           ),
           navigationShell,
+          Positioned(
+            top: TransitSpacing.space8,
+            right: TransitSpacing.space16,
+            child: SafeArea(
+              bottom: false,
+              child: _NotificationBell(
+                unreadCount: unreadCount,
+                c: c,
+                onTap: () => context.push('/notifications'),
+              ),
+            ),
+          ),
           if (isDriver)
             Positioned(
               bottom: 80,
@@ -124,6 +147,72 @@ class _DriverFab extends StatelessWidget {
           width: 52,
           height: 52,
           child: Icon(Icons.directions_bus, color: color.accent, size: 24),
+        ),
+      ),
+    );
+  }
+}
+
+class _NotificationBell extends StatelessWidget {
+  const _NotificationBell({
+    required this.unreadCount,
+    required this.c,
+    required this.onTap,
+  });
+
+  final int unreadCount;
+  final TransitColorScheme c;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: c.bgSurface.withValues(alpha: 0.6),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
+        side: BorderSide(color: c.border, width: 0.5),
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(14),
+        onTap: onTap,
+        child: SizedBox(
+          width: 44,
+          height: 44,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Icon(
+                unreadCount > 0
+                    ? Icons.notifications_active
+                    : Icons.notifications_outlined,
+                color: c.textHi,
+                size: 22,
+              ),
+              if (unreadCount > 0)
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 4, vertical: 1),
+                    decoration: BoxDecoration(
+                      color: c.accent,
+                      borderRadius: BorderRadius.circular(9),
+                    ),
+                    constraints: const BoxConstraints(minWidth: 16),
+                    child: Text(
+                      unreadCount > 99 ? '99+' : '$unreadCount',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );

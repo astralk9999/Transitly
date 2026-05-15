@@ -685,4 +685,74 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appearanceStorageNotAvailable => 'Not available';
+
+  @override
+  String get notificationsTitle => 'Notifications';
+
+  @override
+  String get notificationsEmpty => 'You have no notifications';
+
+  @override
+  String get notificationsMarkAllRead => 'Mark all as read';
+
+  @override
+  String get notificationsAllRead => 'All read';
+
+  @override
+  String get notificationTypeIncidentResolved => 'Incident resolved';
+
+  @override
+  String get notificationTypeRoutePromoted => 'Route promoted';
+
+  @override
+  String get notificationTypeShareReceived => 'Route shared with you';
+
+  @override
+  String get notificationTypeFeatureRequestReplied =>
+      'Response to your request';
+
+  @override
+  String get notificationTypeBusApproaching => 'Bus approaching';
+
+  @override
+  String get notificationTypeCustom => 'Notice';
+
+  @override
+  String get notificationTimeNow => 'Now';
+
+  @override
+  String notificationTimeMinutes(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n min ago',
+      one: '1 min ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String notificationTimeHours(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n h ago',
+      one: '1 h ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String notificationTimeDays(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n d ago',
+      one: '1 d ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get notificationSwipeToRead => 'Swipe to mark as read';
 }

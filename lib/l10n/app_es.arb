@@ -385,5 +385,45 @@
   "appearanceStorageMaxInfo": "Almacenamiento máximo: 500 MB",
   "@appearanceStorageMaxInfo": { "description": "Maximum storage info text" },
   "appearanceStorageNotAvailable": "No disponible",
-  "@appearanceStorageNotAvailable": { "description": "Not available label" }
+  "@appearanceStorageNotAvailable": { "description": "Not available label" },
+
+  "notificationsTitle": "Notificaciones",
+  "@notificationsTitle": { "description": "Notifications screen title" },
+  "notificationsEmpty": "No tienes notificaciones",
+  "@notificationsEmpty": { "description": "Notifications empty state" },
+  "notificationsMarkAllRead": "Marcar todo leído",
+  "@notificationsMarkAllRead": { "description": "Mark all notifications as read button" },
+  "notificationsAllRead": "Todo leído",
+  "@notificationsAllRead": { "description": "All notifications marked as read toast" },
+  "notificationTypeIncidentResolved": "Incidencia resuelta",
+  "@notificationTypeIncidentResolved": { "description": "Notification type: incident resolved" },
+  "notificationTypeRoutePromoted": "Ruta promocionada",
+  "@notificationTypeRoutePromoted": { "description": "Notification type: route promoted" },
+  "notificationTypeShareReceived": "Ruta compartida contigo",
+  "@notificationTypeShareReceived": { "description": "Notification type: share received" },
+  "notificationTypeFeatureRequestReplied": "Respuesta a tu solicitud",
+  "@notificationTypeFeatureRequestReplied": { "description": "Notification type: feature request replied" },
+  "notificationTypeBusApproaching": "Bus acercándose",
+  "@notificationTypeBusApproaching": { "description": "Notification type: bus approaching" },
+  "notificationTypeCustom": "Aviso",
+  "@notificationTypeCustom": { "description": "Notification type: custom/fallback" },
+  "notificationTimeNow": "Ahora",
+  "@notificationTimeNow": { "description": "Relative time: just now" },
+  "notificationTimeMinutes": "{n, plural, =1{Hace 1 min} other{Hace {n} min}}",
+  "@notificationTimeMinutes": {
+    "description": "Relative time: n minutes ago",
+    "placeholders": { "n": { "type": "int", "example": "5" } }
+  },
+  "notificationTimeHours": "{n, plural, =1{Hace 1 h} other{Hace {n} h}}",
+  "@notificationTimeHours": {
+    "description": "Relative time: n hours ago",
+    "placeholders": { "n": { "type": "int", "example": "3" } }
+  },
+  "notificationTimeDays": "{n, plural, =1{Hace 1 d} other{Hace {n} d}}",
+  "@notificationTimeDays": {
+    "description": "Relative time: n days ago",
+    "placeholders": { "n": { "type": "int", "example": "2" } }
+  },
+  "notificationSwipeToRead": "Desliza para marcar como leído",
+  "@notificationSwipeToRead": { "description": "Hint: swipe to mark notification as read" }
 }

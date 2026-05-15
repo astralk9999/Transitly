@@ -238,5 +238,21 @@
   "appearanceStorageClearCacheConfirm": "Delete all downloaded offline maps?",
   "appearanceStorageClearCacheDone": "Map cache cleared",
   "appearanceStorageMaxInfo": "Maximum storage: 500 MB",
-  "appearanceStorageNotAvailable": "Not available"
+  "appearanceStorageNotAvailable": "Not available",
+
+  "notificationsTitle": "Notifications",
+  "notificationsEmpty": "You have no notifications",
+  "notificationsMarkAllRead": "Mark all as read",
+  "notificationsAllRead": "All read",
+  "notificationTypeIncidentResolved": "Incident resolved",
+  "notificationTypeRoutePromoted": "Route promoted",
+  "notificationTypeShareReceived": "Route shared with you",
+  "notificationTypeFeatureRequestReplied": "Response to your request",
+  "notificationTypeBusApproaching": "Bus approaching",
+  "notificationTypeCustom": "Notice",
+  "notificationTimeNow": "Now",
+  "notificationTimeMinutes": "{n, plural, =1{1 min ago} other{{n} min ago}}",
+  "notificationTimeHours": "{n, plural, =1{1 h ago} other{{n} h ago}}",
+  "notificationTimeDays": "{n, plural, =1{1 d ago} other{{n} d ago}}",
+  "notificationSwipeToRead": "Swipe to mark as read"
 }

@@ -1411,6 +1411,96 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'No disponible'**
   String get appearanceStorageNotAvailable;
+
+  /// Notifications screen title
+  ///
+  /// In es, this message translates to:
+  /// **'Notificaciones'**
+  String get notificationsTitle;
+
+  /// Notifications empty state
+  ///
+  /// In es, this message translates to:
+  /// **'No tienes notificaciones'**
+  String get notificationsEmpty;
+
+  /// Mark all notifications as read button
+  ///
+  /// In es, this message translates to:
+  /// **'Marcar todo leído'**
+  String get notificationsMarkAllRead;
+
+  /// All notifications marked as read toast
+  ///
+  /// In es, this message translates to:
+  /// **'Todo leído'**
+  String get notificationsAllRead;
+
+  /// Notification type: incident resolved
+  ///
+  /// In es, this message translates to:
+  /// **'Incidencia resuelta'**
+  String get notificationTypeIncidentResolved;
+
+  /// Notification type: route promoted
+  ///
+  /// In es, this message translates to:
+  /// **'Ruta promocionada'**
+  String get notificationTypeRoutePromoted;
+
+  /// Notification type: share received
+  ///
+  /// In es, this message translates to:
+  /// **'Ruta compartida contigo'**
+  String get notificationTypeShareReceived;
+
+  /// Notification type: feature request replied
+  ///
+  /// In es, this message translates to:
+  /// **'Respuesta a tu solicitud'**
+  String get notificationTypeFeatureRequestReplied;
+
+  /// Notification type: bus approaching
+  ///
+  /// In es, this message translates to:
+  /// **'Bus acercándose'**
+  String get notificationTypeBusApproaching;
+
+  /// Notification type: custom/fallback
+  ///
+  /// In es, this message translates to:
+  /// **'Aviso'**
+  String get notificationTypeCustom;
+
+  /// Relative time: just now
+  ///
+  /// In es, this message translates to:
+  /// **'Ahora'**
+  String get notificationTimeNow;
+
+  /// Relative time: n minutes ago
+  ///
+  /// In es, this message translates to:
+  /// **'{n, plural, =1{Hace 1 min} other{Hace {n} min}}'**
+  String notificationTimeMinutes(int n);
+
+  /// Relative time: n hours ago
+  ///
+  /// In es, this message translates to:
+  /// **'{n, plural, =1{Hace 1 h} other{Hace {n} h}}'**
+  String notificationTimeHours(int n);
+
+  /// Relative time: n days ago
+  ///
+  /// In es, this message translates to:
+  /// **'{n, plural, =1{Hace 1 d} other{Hace {n} d}}'**
+  String notificationTimeDays(int n);
+
+  /// Hint: swipe to mark notification as read
+  ///
+  /// In es, this message translates to:
+  /// **'Desliza para marcar como leído'**
+  String get notificationSwipeToRead;
 }
 
 class _AppLocalizationsDelegate

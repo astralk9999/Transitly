@@ -10,6 +10,7 @@ import 'core/env.dart';
 import 'core/utils/app_logger.dart';
 import 'data/cache/hive_init.dart';
 import 'data/mock/mock_data_service.dart';
+import 'data/push/firebase_setup.dart';
 import 'features/error/env_error_screen.dart';
 
 void main() async {
@@ -34,6 +35,12 @@ void main() async {
       anonKey: Env.supabaseAnonKey,
     );
     AppLogger.info('Supabase', 'initialized url=${Env.supabaseUrl}');
+    try {
+      await FirebaseSetup.init();
+      AppLogger.info('Firebase', 'initialized');
+    } catch (e, st) {
+      AppLogger.warn('Firebase', 'init failed — push unavailable', e);
+    }
   } on EnvException catch (e, st) {
     AppLogger.error('Env', 'failed to load critical key', e, st);
     runApp(EnvErrorApp(exception: e));

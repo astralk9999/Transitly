@@ -1,11 +1,12 @@
 {
   "pending": [
-    {"id": "F20-002", "title": "FMTC tile caching + offline regions screen + download", "status": "pending", "dependencies": ["F20-001"]},
-    {"id": "F20-003", "title": "export_region_data RPC + data sync to Hive", "status": "pending", "dependencies": ["F20-002"]},
-    {"id": "F20-004", "title": "Storage settings UI en Apariencia", "status": "pending", "dependencies": ["F20-002"]}
+    {"id": "F21-002", "title": "PushService + device_tokens + token management", "status": "pending", "dependencies": ["F21-001"]},
+    {"id": "F21-003", "title": "Edge Function send_notification + push triggers", "status": "pending", "dependencies": ["F21-001"]},
+    {"id": "F21-004", "title": "In-app notification UI: stream, bell badge, inbox", "status": "pending", "dependencies": ["F21-001"]},
+    {"id": "F21-005", "title": "Notification preferences + quiet hours + wearable", "status": "pending", "dependencies": ["F21-001"]}
   ],
   "active": [
-    {"id": "F20-001", "title": "MapTiler integration + style selector + attribution", "status": "active", "dependencies": []}
+    {"id": "F21-001", "title": "Firebase setup + pubspec + main.dart init", "status": "active", "dependencies": []}
   ],
   "completed": []
 }

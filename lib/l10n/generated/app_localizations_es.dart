@@ -583,4 +583,70 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get reputationMaxRank => 'Rango máximo alcanzado';
+
+  @override
+  String get offlineRegionsTitle => 'Mapas offline';
+
+  @override
+  String get offlineRegionsAddRegion => 'Añadir región';
+
+  @override
+  String get offlineRegionsEmpty => 'No hay mapas descargados';
+
+  @override
+  String get offlineRegionsEmptySubtitle =>
+      'Descarga zonas del mapa para usarlas sin conexión';
+
+  @override
+  String get offlineRegionsDeleteConfirm => '¿Eliminar esta región?';
+
+  @override
+  String get offlineRegionsDeleteDesc =>
+      'Los tiles descargados se perderán y deberás volver a descargarlos para usar el mapa sin conexión';
+
+  @override
+  String get offlineRegionsStatusReady => 'Listo';
+
+  @override
+  String get offlineRegionsStatusDownloading => 'Descargando';
+
+  @override
+  String get offlineRegionsStatusError => 'Error';
+
+  @override
+  String get offlineRegionsStatusStale => 'Desactualizado';
+
+  @override
+  String get offlineRegionsDownloaded => 'Descargado';
+
+  @override
+  String get offlineRegionsSize => 'Tamaño';
+
+  @override
+  String get offlineRegionsActionDownload => 'Descargar';
+
+  @override
+  String get offlineRegionsActionDelete => 'Eliminar';
+
+  @override
+  String get offlineRegionsRegionName => 'Nombre de la región';
+
+  @override
+  String get offlineRegionsRegionNameHint => 'Ej. Centro de Jerez';
+
+  @override
+  String get offlineRegionsZoomMin => 'Zoom mínimo';
+
+  @override
+  String get offlineRegionsZoomMax => 'Zoom máximo';
+
+  @override
+  String get offlineRegionsEstimatedSize => 'Tamaño estimado';
+
+  @override
+  String get offlineRegionsSelectArea =>
+      'Mueve el mapa para seleccionar un área';
+
+  @override
+  String get offlineRegionsMapLink => 'Mapas offline';
 }

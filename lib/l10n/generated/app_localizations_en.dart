@@ -581,4 +581,69 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reputationMaxRank => 'Max rank reached';
+
+  @override
+  String get offlineRegionsTitle => 'Offline maps';
+
+  @override
+  String get offlineRegionsAddRegion => 'Add region';
+
+  @override
+  String get offlineRegionsEmpty => 'No offline maps downloaded';
+
+  @override
+  String get offlineRegionsEmptySubtitle =>
+      'Download map areas to use them without connection';
+
+  @override
+  String get offlineRegionsDeleteConfirm => 'Delete this region?';
+
+  @override
+  String get offlineRegionsDeleteDesc =>
+      'Downloaded tiles will be lost and you will need to download them again to use the map offline';
+
+  @override
+  String get offlineRegionsStatusReady => 'Ready';
+
+  @override
+  String get offlineRegionsStatusDownloading => 'Downloading';
+
+  @override
+  String get offlineRegionsStatusError => 'Error';
+
+  @override
+  String get offlineRegionsStatusStale => 'Stale';
+
+  @override
+  String get offlineRegionsDownloaded => 'Downloaded';
+
+  @override
+  String get offlineRegionsSize => 'Size';
+
+  @override
+  String get offlineRegionsActionDownload => 'Download';
+
+  @override
+  String get offlineRegionsActionDelete => 'Delete';
+
+  @override
+  String get offlineRegionsRegionName => 'Region name';
+
+  @override
+  String get offlineRegionsRegionNameHint => 'e.g. Downtown Jerez';
+
+  @override
+  String get offlineRegionsZoomMin => 'Min zoom';
+
+  @override
+  String get offlineRegionsZoomMax => 'Max zoom';
+
+  @override
+  String get offlineRegionsEstimatedSize => 'Estimated size';
+
+  @override
+  String get offlineRegionsSelectArea => 'Move the map to select an area';
+
+  @override
+  String get offlineRegionsMapLink => 'Offline maps';
 }

@@ -203,5 +203,27 @@
   "reputationTooltip": "Reputation is decorative. It will unlock privileges later.",
   "reputationPoints": "points",
   "reputationNextRank": "Next rank",
-  "reputationMaxRank": "Max rank reached"
+  "reputationMaxRank": "Max rank reached",
+
+  "offlineRegionsTitle": "Offline maps",
+  "offlineRegionsAddRegion": "Add region",
+  "offlineRegionsEmpty": "No offline maps downloaded",
+  "offlineRegionsEmptySubtitle": "Download map areas to use them without connection",
+  "offlineRegionsDeleteConfirm": "Delete this region?",
+  "offlineRegionsDeleteDesc": "Downloaded tiles will be lost and you will need to download them again to use the map offline",
+  "offlineRegionsStatusReady": "Ready",
+  "offlineRegionsStatusDownloading": "Downloading",
+  "offlineRegionsStatusError": "Error",
+  "offlineRegionsStatusStale": "Stale",
+  "offlineRegionsDownloaded": "Downloaded",
+  "offlineRegionsSize": "Size",
+  "offlineRegionsActionDownload": "Download",
+  "offlineRegionsActionDelete": "Delete",
+  "offlineRegionsRegionName": "Region name",
+  "offlineRegionsRegionNameHint": "e.g. Downtown Jerez",
+  "offlineRegionsZoomMin": "Min zoom",
+  "offlineRegionsZoomMax": "Max zoom",
+  "offlineRegionsEstimatedSize": "Estimated size",
+  "offlineRegionsSelectArea": "Move the map to select an area",
+  "offlineRegionsMapLink": "Offline maps"
 }

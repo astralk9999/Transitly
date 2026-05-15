@@ -1213,6 +1213,132 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Rango máximo alcanzado'**
   String get reputationMaxRank;
+
+  /// Offline regions screen title
+  ///
+  /// In es, this message translates to:
+  /// **'Mapas offline'**
+  String get offlineRegionsTitle;
+
+  /// FAB tooltip to add an offline region
+  ///
+  /// In es, this message translates to:
+  /// **'Añadir región'**
+  String get offlineRegionsAddRegion;
+
+  /// Empty state title for offline regions
+  ///
+  /// In es, this message translates to:
+  /// **'No hay mapas descargados'**
+  String get offlineRegionsEmpty;
+
+  /// Empty state subtitle for offline regions
+  ///
+  /// In es, this message translates to:
+  /// **'Descarga zonas del mapa para usarlas sin conexión'**
+  String get offlineRegionsEmptySubtitle;
+
+  /// Delete region confirmation message
+  ///
+  /// In es, this message translates to:
+  /// **'¿Eliminar esta región?'**
+  String get offlineRegionsDeleteConfirm;
+
+  /// Delete region description
+  ///
+  /// In es, this message translates to:
+  /// **'Los tiles descargados se perderán y deberás volver a descargarlos para usar el mapa sin conexión'**
+  String get offlineRegionsDeleteDesc;
+
+  /// Region status: ready
+  ///
+  /// In es, this message translates to:
+  /// **'Listo'**
+  String get offlineRegionsStatusReady;
+
+  /// Region status: downloading
+  ///
+  /// In es, this message translates to:
+  /// **'Descargando'**
+  String get offlineRegionsStatusDownloading;
+
+  /// Region status: error
+  ///
+  /// In es, this message translates to:
+  /// **'Error'**
+  String get offlineRegionsStatusError;
+
+  /// Region status: stale
+  ///
+  /// In es, this message translates to:
+  /// **'Desactualizado'**
+  String get offlineRegionsStatusStale;
+
+  /// Downloaded date label prefix
+  ///
+  /// In es, this message translates to:
+  /// **'Descargado'**
+  String get offlineRegionsDownloaded;
+
+  /// Size label prefix
+  ///
+  /// In es, this message translates to:
+  /// **'Tamaño'**
+  String get offlineRegionsSize;
+
+  /// Download button label
+  ///
+  /// In es, this message translates to:
+  /// **'Descargar'**
+  String get offlineRegionsActionDownload;
+
+  /// Delete button label
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar'**
+  String get offlineRegionsActionDelete;
+
+  /// Region name input label
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre de la región'**
+  String get offlineRegionsRegionName;
+
+  /// Region name input hint
+  ///
+  /// In es, this message translates to:
+  /// **'Ej. Centro de Jerez'**
+  String get offlineRegionsRegionNameHint;
+
+  /// Min zoom selector label
+  ///
+  /// In es, this message translates to:
+  /// **'Zoom mínimo'**
+  String get offlineRegionsZoomMin;
+
+  /// Max zoom selector label
+  ///
+  /// In es, this message translates to:
+  /// **'Zoom máximo'**
+  String get offlineRegionsZoomMax;
+
+  /// Estimated download size label
+  ///
+  /// In es, this message translates to:
+  /// **'Tamaño estimado'**
+  String get offlineRegionsEstimatedSize;
+
+  /// Instruction to select area on map
+  ///
+  /// In es, this message translates to:
+  /// **'Mueve el mapa para seleccionar un área'**
+  String get offlineRegionsSelectArea;
+
+  /// Profile link to offline maps
+  ///
+  /// In es, this message translates to:
+  /// **'Mapas offline'**
+  String get offlineRegionsMapLink;
 }
 
 class _AppLocalizationsDelegate

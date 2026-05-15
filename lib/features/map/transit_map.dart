@@ -46,6 +46,7 @@ class TransitMap extends StatefulWidget {
     this.onTripTap,
     this.overlayWidgets = const [],
     this.onMapTap,
+    this.fmtcTileProvider,
   });
 
   final bool isDark;
@@ -67,6 +68,12 @@ class TransitMap extends StatefulWidget {
   final ValueChanged<ActiveTripModel>? onTripTap;
   final List<Widget> overlayWidgets;
   final void Function(TapPosition, LatLng)? onMapTap;
+
+  /// Optional FMTC tile provider for offline-cached tiles. When null,
+  /// tiles are fetched from MapTiler URLs directly. When set, the
+  /// provider serves cached tiles when offline and acts as a transparent
+  /// cache when online. Set from F20 region download flow.
+  final TileProvider? fmtcTileProvider;
 
   @override
   State<TransitMap> createState() => _TransitMapState();
@@ -194,10 +201,13 @@ class _TransitMapState extends State<TransitMap> {
           ),
           children: [
             TileLayer(
-              urlTemplate: MapConfig.tileUrl(
-                widget.mapStyle ?? (widget.isDark ? 'dark' : 'light'),
-                apiKey: Env.mapTilerApiKey,
-              ),
+              urlTemplate: widget.fmtcTileProvider == null
+                  ? MapConfig.tileUrl(
+                      widget.mapStyle ?? (widget.isDark ? 'dark' : 'light'),
+                      apiKey: Env.mapTilerApiKey,
+                    )
+                  : '',
+              tileProvider: widget.fmtcTileProvider,
               subdomains: MapConfig.subdomains,
               retinaMode: false,
               userAgentPackageName: 'com.transitly.transitly',

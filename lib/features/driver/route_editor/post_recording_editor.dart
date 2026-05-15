@@ -105,7 +105,7 @@ class _PostRecordingEditorState extends State<PostRecordingEditor> {
                   ),
                   children: [
                     TileLayer(
-                      urlTemplate: MapConfig.tileUrl(isDark),
+                      urlTemplate: MapConfig.tileUrl(isDark ? 'dark' : 'light'),
                       subdomains: MapConfig.subdomains,
                       retinaMode: true,
                     ),

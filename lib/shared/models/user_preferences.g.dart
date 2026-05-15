@@ -24,6 +24,7 @@ _$UserPreferencesImpl _$$UserPreferencesImplFromJson(
   dyslexiaFontEnabled: json['dyslexiaFontEnabled'] as bool? ?? false,
   reduceMotion: json['reduceMotion'] as bool? ?? false,
   highContrast: json['highContrast'] as bool? ?? false,
+  mapStyle: json['mapStyle'] as String? ?? 'streets',
 );
 
 Map<String, dynamic> _$$UserPreferencesImplToJson(
@@ -40,6 +41,7 @@ Map<String, dynamic> _$$UserPreferencesImplToJson(
   'dyslexiaFontEnabled': instance.dyslexiaFontEnabled,
   'reduceMotion': instance.reduceMotion,
   'highContrast': instance.highContrast,
+  'mapStyle': instance.mapStyle,
 };
 
 const _$ColorBlindModeEnumMap = {

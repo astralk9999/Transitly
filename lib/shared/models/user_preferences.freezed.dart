@@ -32,6 +32,7 @@ mixin _$UserPreferences {
   bool get dyslexiaFontEnabled => throw _privateConstructorUsedError;
   bool get reduceMotion => throw _privateConstructorUsedError;
   bool get highContrast => throw _privateConstructorUsedError;
+  String get mapStyle => throw _privateConstructorUsedError;
 
   /// Serializes this UserPreferences to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -62,6 +63,7 @@ abstract class $UserPreferencesCopyWith<$Res> {
     bool dyslexiaFontEnabled,
     bool reduceMotion,
     bool highContrast,
+    String mapStyle,
   });
 }
 
@@ -91,6 +93,7 @@ class _$UserPreferencesCopyWithImpl<$Res, $Val extends UserPreferences>
     Object? dyslexiaFontEnabled = null,
     Object? reduceMotion = null,
     Object? highContrast = null,
+    Object? mapStyle = null,
   }) {
     return _then(
       _value.copyWith(
@@ -138,6 +141,10 @@ class _$UserPreferencesCopyWithImpl<$Res, $Val extends UserPreferences>
                 ? _value.highContrast
                 : highContrast // ignore: cast_nullable_to_non_nullable
                       as bool,
+            mapStyle: null == mapStyle
+                ? _value.mapStyle
+                : mapStyle // ignore: cast_nullable_to_non_nullable
+                      as String,
           )
           as $Val,
     );
@@ -165,6 +172,7 @@ abstract class _$$UserPreferencesImplCopyWith<$Res>
     bool dyslexiaFontEnabled,
     bool reduceMotion,
     bool highContrast,
+    String mapStyle,
   });
 }
 
@@ -193,6 +201,7 @@ class __$$UserPreferencesImplCopyWithImpl<$Res>
     Object? dyslexiaFontEnabled = null,
     Object? reduceMotion = null,
     Object? highContrast = null,
+    Object? mapStyle = null,
   }) {
     return _then(
       _$UserPreferencesImpl(
@@ -240,6 +249,10 @@ class __$$UserPreferencesImplCopyWithImpl<$Res>
             ? _value.highContrast
             : highContrast // ignore: cast_nullable_to_non_nullable
                   as bool,
+        mapStyle: null == mapStyle
+            ? _value.mapStyle
+            : mapStyle // ignore: cast_nullable_to_non_nullable
+                  as String,
       ),
     );
   }
@@ -260,6 +273,7 @@ class _$UserPreferencesImpl implements _UserPreferences {
     this.dyslexiaFontEnabled = false,
     this.reduceMotion = false,
     this.highContrast = false,
+    this.mapStyle = 'streets',
   }) : _customColors = customColors;
 
   factory _$UserPreferencesImpl.fromJson(Map<String, dynamic> json) =>
@@ -304,10 +318,13 @@ class _$UserPreferencesImpl implements _UserPreferences {
   @override
   @JsonKey()
   final bool highContrast;
+  @override
+  @JsonKey()
+  final String mapStyle;
 
   @override
   String toString() {
-    return 'UserPreferences(userId: $userId, themePaletteId: $themePaletteId, customColors: $customColors, backgroundId: $backgroundId, backgroundEnabled: $backgroundEnabled, backgroundOpacity: $backgroundOpacity, fontScale: $fontScale, colorBlindMode: $colorBlindMode, dyslexiaFontEnabled: $dyslexiaFontEnabled, reduceMotion: $reduceMotion, highContrast: $highContrast)';
+    return 'UserPreferences(userId: $userId, themePaletteId: $themePaletteId, customColors: $customColors, backgroundId: $backgroundId, backgroundEnabled: $backgroundEnabled, backgroundOpacity: $backgroundOpacity, fontScale: $fontScale, colorBlindMode: $colorBlindMode, dyslexiaFontEnabled: $dyslexiaFontEnabled, reduceMotion: $reduceMotion, highContrast: $highContrast, mapStyle: $mapStyle)';
   }
 
   @override
@@ -337,7 +354,9 @@ class _$UserPreferencesImpl implements _UserPreferences {
             (identical(other.reduceMotion, reduceMotion) ||
                 other.reduceMotion == reduceMotion) &&
             (identical(other.highContrast, highContrast) ||
-                other.highContrast == highContrast));
+                other.highContrast == highContrast) &&
+            (identical(other.mapStyle, mapStyle) ||
+                other.mapStyle == mapStyle));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -355,6 +374,7 @@ class _$UserPreferencesImpl implements _UserPreferences {
     dyslexiaFontEnabled,
     reduceMotion,
     highContrast,
+    mapStyle,
   );
 
   /// Create a copy of UserPreferences
@@ -387,6 +407,7 @@ abstract class _UserPreferences implements UserPreferences {
     final bool dyslexiaFontEnabled,
     final bool reduceMotion,
     final bool highContrast,
+    final String mapStyle,
   }) = _$UserPreferencesImpl;
 
   factory _UserPreferences.fromJson(Map<String, dynamic> json) =
@@ -414,6 +435,8 @@ abstract class _UserPreferences implements UserPreferences {
   bool get reduceMotion;
   @override
   bool get highContrast;
+  @override
+  String get mapStyle;
 
   /// Create a copy of UserPreferences
   /// with the given fields replaced by the non-null parameter values.

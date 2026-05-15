@@ -22,6 +22,7 @@ class UserPreferences with _$UserPreferences {
     @Default(false) bool dyslexiaFontEnabled,
     @Default(false) bool reduceMotion,
     @Default(false) bool highContrast,
+    @Default('streets') String mapStyle,
   }) = _UserPreferences;
 
   factory UserPreferences.fromJson(Map<String, dynamic> json) =>

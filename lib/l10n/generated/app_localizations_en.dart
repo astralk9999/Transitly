@@ -413,6 +413,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appearanceCustomPaletteAdd => 'Create palette';
 
   @override
+  String get appearanceMapStyleSection => 'MAP STYLE';
+
+  @override
+  String get mapStyleStreets => 'Streets';
+
+  @override
+  String get mapStyleBasic => 'Basic';
+
+  @override
+  String get mapStyleBright => 'Bright';
+
+  @override
+  String get mapStyleDark => 'Dark';
+
+  @override
+  String get mapStyleLight => 'Light';
+
+  @override
   String get appearanceHighContrast => 'High contrast';
 
   @override

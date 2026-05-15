@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../../core/env.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../shared/models/active_trip_model.dart';
 import '../../shared/models/enums.dart';
@@ -27,6 +28,7 @@ class TransitMap extends StatefulWidget {
   const TransitMap({
     super.key,
     required this.isDark,
+    this.mapStyle,
     this.center,
     this.zoom,
     this.controller,
@@ -47,6 +49,7 @@ class TransitMap extends StatefulWidget {
   });
 
   final bool isDark;
+  final String? mapStyle;
   final LatLng? center;
   final double? zoom;
   final MapController? controller;
@@ -191,13 +194,12 @@ class _TransitMapState extends State<TransitMap> {
           ),
           children: [
             TileLayer(
-              urlTemplate: MapConfig.tileUrl(widget.isDark),
+              urlTemplate: MapConfig.tileUrl(
+                widget.mapStyle ?? (widget.isDark ? 'dark' : 'light'),
+                apiKey: Env.mapTilerApiKey,
+              ),
               subdomains: MapConfig.subdomains,
-              // Retina off on slow connections — @2x doubles bandwidth and
-              // causes the load → evict → reload churn the user reported.
               retinaMode: false,
-              // CartoDB ToS requires a real package id; placeholder values
-              // (`com.example.*`) get throttled or 403'd.
               userAgentPackageName: 'com.transitly.transitly',
               tileDisplay: const TileDisplay.fadeIn(
                 duration: Duration(milliseconds: 200),
@@ -210,6 +212,25 @@ class _TransitMapState extends State<TransitMap> {
           ],
         ),
         ...widget.overlayWidgets,
+        Positioned(
+          right: 4,
+          bottom: 4,
+          child: ColoredBox(
+            color: const Color(0x88000000),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              child: Text(
+                '\u00a9 MapTiler \u00a9 OpenStreetMap contributors',
+                style: TextStyle(
+                  fontSize: 9,
+                  color: widget.isDark
+                      ? const Color(0xCCFFFFFF)
+                      : const Color(0xCC222222),
+                ),
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }

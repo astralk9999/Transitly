@@ -1,10 +1,11 @@
 {
   "pending": [
-    {"id": "F19-002", "title": "ReputationScreen UI + wiring badge tap", "status": "pending", "dependencies": ["F19-001"]},
-    {"id": "F19-003", "title": "Achievements catalog JSON + trigger logic", "status": "pending", "dependencies": []}
+    {"id": "F20-002", "title": "FMTC tile caching + offline regions screen + download", "status": "pending", "dependencies": ["F20-001"]},
+    {"id": "F20-003", "title": "export_region_data RPC + data sync to Hive", "status": "pending", "dependencies": ["F20-002"]},
+    {"id": "F20-004", "title": "Storage settings UI en Apariencia", "status": "pending", "dependencies": ["F20-002"]}
   ],
   "active": [
-    {"id": "F19-001", "title": "Reputation system: ranks, events, migration", "status": "active", "dependencies": []}
+    {"id": "F20-001", "title": "MapTiler integration + style selector + attribution", "status": "active", "dependencies": []}
   ],
   "completed": []
 }

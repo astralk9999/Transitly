@@ -379,7 +379,7 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen> {
             ),
             children: [
               TileLayer(
-                urlTemplate: MapConfig.tileUrl(false),
+                urlTemplate: MapConfig.tileUrl('light'),
                 subdomains: MapConfig.subdomains,
                 retinaMode: true,
               ),

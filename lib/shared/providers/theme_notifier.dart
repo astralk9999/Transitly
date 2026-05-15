@@ -35,6 +35,7 @@ class ThemeNotifier extends ChangeNotifier {
   bool _dyslexiaFontEnabled = false;
   bool _reduceMotion = false;
   bool _highContrast = false;
+  String _mapStyle = 'streets';
 
   Map<String, Color> _customColors = <String, Color>{};
   static const _customPaletteId = 'custom';
@@ -54,6 +55,7 @@ class ThemeNotifier extends ChangeNotifier {
   bool get dyslexiaFontEnabled => _dyslexiaFontEnabled;
   bool get reduceMotion => _reduceMotion;
   bool get highContrast => _highContrast;
+  String get mapStyle => _mapStyle;
 
   Map<String, Color> get customColors => Map.unmodifiable(_customColors);
 
@@ -152,6 +154,13 @@ class ThemeNotifier extends ChangeNotifier {
     unawaited(_persist());
   }
 
+  set mapStyle(String value) {
+    if (_mapStyle == value) return;
+    _mapStyle = value;
+    notifyListeners();
+    unawaited(_persist());
+  }
+
   void setCustomPalette(Map<String, Color> colors) {
     _customColors = Map.of(colors);
     _paletteId = _customPaletteId;
@@ -186,6 +195,7 @@ class ThemeNotifier extends ChangeNotifier {
     _dyslexiaFontEnabled = prefs.dyslexiaFontEnabled;
     _reduceMotion = prefs.reduceMotion;
     _highContrast = prefs.highContrast;
+    _mapStyle = prefs.mapStyle;
     _customColors = _parseCustomColors(prefs.customColors);
     _initialized = true;
     notifyListeners();
@@ -202,6 +212,7 @@ class ThemeNotifier extends ChangeNotifier {
         dyslexiaFontEnabled: _dyslexiaFontEnabled,
         reduceMotion: _reduceMotion,
         highContrast: _highContrast,
+        mapStyle: _mapStyle,
         customColors: _customColors.isEmpty
             ? null
             : _customColors.map((k, v) => MapEntry(k, _colorToHex(v))),
@@ -247,6 +258,7 @@ class ThemeNotifier extends ChangeNotifier {
         _dyslexiaFontEnabled = data['dyslexiaFontEnabled'] as bool? ?? false;
         _reduceMotion = data['reduceMotion'] as bool? ?? false;
         _highContrast = data['highContrast'] as bool? ?? false;
+        _mapStyle = data['mapStyle'] as String? ?? 'streets';
         final rawCustom = data['customColors'] as Map<dynamic, dynamic>?;
         if (rawCustom != null) {
           _customColors = <String, Color>{};
@@ -285,6 +297,7 @@ class ThemeNotifier extends ChangeNotifier {
         'dyslexiaFontEnabled': _dyslexiaFontEnabled,
         'reduceMotion': _reduceMotion,
         'highContrast': _highContrast,
+        'mapStyle': _mapStyle,
         'customColors': _customColors.map((k, v) => MapEntry(k, _colorToHex(v))),
       });
     } catch (e) {

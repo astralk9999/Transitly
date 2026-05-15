@@ -890,6 +890,42 @@ abstract class AppLocalizations {
   /// **'Crear paleta'**
   String get appearanceCustomPaletteAdd;
 
+  /// Appearance map style section header
+  ///
+  /// In es, this message translates to:
+  /// **'ESTILO DE MAPA'**
+  String get appearanceMapStyleSection;
+
+  /// Map style: Streets
+  ///
+  /// In es, this message translates to:
+  /// **'Calles'**
+  String get mapStyleStreets;
+
+  /// Map style: Basic
+  ///
+  /// In es, this message translates to:
+  /// **'Básico'**
+  String get mapStyleBasic;
+
+  /// Map style: Bright
+  ///
+  /// In es, this message translates to:
+  /// **'Brillante'**
+  String get mapStyleBright;
+
+  /// Map style: Dark
+  ///
+  /// In es, this message translates to:
+  /// **'Oscuro'**
+  String get mapStyleDark;
+
+  /// Map style: Light
+  ///
+  /// In es, this message translates to:
+  /// **'Claro'**
+  String get mapStyleLight;
+
   /// High contrast mode toggle label
   ///
   /// In es, this message translates to:

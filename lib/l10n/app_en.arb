@@ -142,6 +142,13 @@
   "appearanceCustomPaletteSaved": "Palette saved",
   "appearanceCustomPaletteAdd": "Create palette",
 
+  "appearanceMapStyleSection": "MAP STYLE",
+  "mapStyleStreets": "Streets",
+  "mapStyleBasic": "Basic",
+  "mapStyleBright": "Bright",
+  "mapStyleDark": "Dark",
+  "mapStyleLight": "Light",
+
   "appearanceHighContrast": "High contrast",
   "appearanceHighContrastSubtitle": "Thicker borders and higher text contrast",
   "accessibilityHighContrast": "High contrast",

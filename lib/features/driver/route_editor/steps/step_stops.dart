@@ -54,7 +54,7 @@ class StepStops extends StatelessWidget {
                 ),
                 children: [
                   TileLayer(
-                    urlTemplate: MapConfig.tileUrl(isDark),
+                    urlTemplate: MapConfig.tileUrl(isDark ? 'dark' : 'light'),
                     subdomains: MapConfig.subdomains,
                     retinaMode: true,
                   ),

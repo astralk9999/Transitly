@@ -1,8 +1,8 @@
 # Plan de acción — Transitly · v2
 
-**Versión:** 2.2 · **Fecha:** 14-may-2026
+**Versión:** 2.3 · **Fecha:** 15-may-2026
 
-> **Cambios v2.1 → v2.2** (post-sesión mayo 2026): F3.4→F14 marcadas como completadas. F15 en progreso (incident wired a repo). Actualizado roadmap visual.
+> **Cambios v2.2 → v2.3** (post-F26): F16→F25 marcadas como completadas en roadmap visual. CI creado. 26/28 fases (92.9%). 137 tests.
 **Repo:** [astralk9999/Transitly](https://github.com/astralk9999/Transitly)
 **Documento de arquitectura de referencia:** `docs/ARCHITECTURE.md` (post P43, commit `b91fc25`).
 
@@ -81,21 +81,21 @@ Cada fase termina con `Hecho cuando`. **No avances a la siguiente sin tener todo
    ✅ F13 GTFS-Realtime + estimador + etiquetas → ✅ F14 Driver en vivo
 
 ✅ BLOQUE VI · Comunidad y moderación (COMPLETO)
-   ✅ F15 Contribuciones consolidadas → ⏳ F16 Panel admin
+   ✅ F15 Contribuciones consolidadas → ✅ F16 Panel admin
 
-⏳ BLOQUE VII · Pulido visual y accesibilidad
-   F17 Apariencia → F18 Accesibilidad → F19 Reputación visible
+✅ BLOQUE VII · Pulido visual y accesibilidad (COMPLETO)
+   ✅ F17 Apariencia → ✅ F18 Accesibilidad → ✅ F19 Reputación visible
 
-⏳ BLOQUE VIII · Infraestructura de producto
-   F20 Tiles MapTiler + offline → F21 FCM + in-app + wearable nivel 0
-   → F22 Sentry + PostHog
+✅ BLOQUE VIII · Infraestructura de producto (COMPLETO)
+   ✅ F20 Tiles MapTiler + offline → ✅ F21 FCM + in-app + wearable nivel 0
+   → ✅ F22 Sentry + PostHog
 
-⏳ BLOQUE IX · Plataformas extra
-   F23 Web híbrida Astro + Flutter Web islands → F24 Widgets nativos móvil
+✅ BLOQUE IX · Plataformas extra (COMPLETO)
+   ✅ F23 Web híbrida Astro + Flutter Web islands → ✅ F24 Widgets nativos móvil
 
-⏳ BLOQUE X · Cierre
-   F25 Privacidad + GDPR/LOPD → F26 QA, performance, TFG, beta interna,
-   Play Store → F27 (opcional) Wearable nivel 1
+✅ BLOQUE X · Cierre (EN PROGRESO)
+   ✅ F25 Privacidad + GDPR/LOPD → 🟨 F26 QA, performance, TFG, beta interna,
+   Play Store → ⏳ F27 (opcional) Wearable nivel 1
 ```
 
 Los bloques I → II → III son **bloqueantes**. El IV depende de los tres anteriores. V, VI son razonablemente independientes entre sí. VII, VIII, IX se pueden paralelizar pero VIII tiene que estar antes de cualquier release público.
@@ -4629,6 +4629,6 @@ Esto evita que tengas que reexplicar contexto cada vez.
 
 ---
 
-**Última actualización:** 2026-04-29
+**Última actualización:** 2026-05-15
 **Autor del plan:** Claude (con decisiones de @astralk9999)
-**Próximo paso sugerido:** F0 ya está completada (tienes `docs/AUDIT_2026_04.md`). Ejecuta **Prompt 0.5.A** en una nueva sesión de Claude Code para arrancar la fase de higiene previa.
+**Próximo paso sugerido:** F26 en progreso (CI creado, docs TFG actualizados, RELEASE_CHECKLIST). Quedan: google-fonts bundle, ProGuard rules, app signing, Play Store metadata, README.

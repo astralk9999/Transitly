@@ -1,5 +1,5 @@
 name: transitly
-description: "Next-generation urban transit companion for Jerez de la Frontera"
+description: "Transporte publico en tiempo real multioperador para toda Espana. Tracking hibrido (GTFS-Realtime + GPS conductor + estimacion horaria), comunidad activa (incidencias, sugerencias, votos), offline-first, accesibilidad WCAG 2.1 AA, panel de administracion y moderacion."
 publish_to: 'none'
 version: 1.0.0+1
 

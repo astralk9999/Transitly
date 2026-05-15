@@ -86,7 +86,7 @@
 - [F17 / F26] **`3.6.3` — `google_fonts` con fetch en runtime.** `M`. Bundle obligatorio antes de release público; bloqueador adicional para golden tests. Cierre natural en F17 (apariencia) o F26 (QA).
 - [F26] **`3.6.4` — `SmokeBackground` con `Ticker` permanente.** `S`. Impacto solo en testing (obliga a `disableAnimations: true`). Cierre cosmético en F26.
 - ✅ [F9] **`3.6.5` — `_findClosestRoute` sin early return en polylines vacías.** `S`. `map_tab.dart:60-91` no valida `lodData.values.last` no vacío. Cerrado al pasar por F9 (mismo archivo). `2c52f25`.
-- [F26] **`3.6.6` — Sin CI, sin pre-commit, sin format check.** `M`. `flutter analyze` y `flutter test` se ejecutan a mano. F26 añade GitHub Actions + pre-commit.
+- ✅ [F26] **`3.6.6` — Sin CI, sin pre-commit, sin format check.** `M`. Cerrado con `.github/workflows/ci.yml`: `flutter analyze` en PR, `flutter test` en push a main/master.
 
 ### Modelos huérfanos a evaluar (audit §1.C)
 
@@ -254,4 +254,4 @@ Cada entidad necesita el mismo conjunto de 5 archivos: interfaz abstracta + remo
 
 ---
 
-**Última actualización:** 2026-05-14 · F16 en progreso (F16-003 CRUD operadores en `852ef25`, F16-004 ManagerInboxScreen handlers en `d09706a`). F4→F15 cerradas. Issues F16-004 registrados como [F22]: I1-I3, M1-M4.
+**Última actualización:** 2026-05-15 · F26 en progreso (CI creado, docs TFG actualizados, RELEASE_CHECKLIST creado). F0→F25 completadas (26/28 fases, 92.9%). 137 tests pasando. F27 pendiente (opcional).

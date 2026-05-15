@@ -50,8 +50,12 @@
 - **Tracking híbrido:** GTFS-Realtime + GPS conductor + estimación horaria
 - **Comunidad activa:** Incidencias, sugerencias, votos, reputación
 - **Offline-first:** Caché local + cola de acciones pendientes
-- **Accesibilidad:** WCAG 2.1 AA, alto contraste, fuente dislexia
+- **Accesibilidad:** WCAG 2.1 AA, alto contraste, fuente dislexia, color-blind
 - **Admin panel:** Gestión de usuarios, operadores, moderación
+- **Apariencia:** 6 paletas, 5 fondos, tema custom con validación WCAG AA
+- **Notificaciones push:** FCM + in-app con quiet hours y preferencias
+- **Web híbrida:** Astro SSR con páginas públicas SEO-friendly
+- **Privacidad GDPR:** Consentimientos, exportación/borrado de datos
 
 ### Diapositiva 8 — Sistema multiagente (innovación)
 - 5 agentes autónomos para desarrollo con IA
@@ -61,12 +65,13 @@
 
 ### Diapositiva 9 — Planificación
 - Mostrar Gantt con 27 fases completadas/restantes
-- 17/28 fases completadas (60.7%)
-- ~55 commits, 112 tests, 25k+ líneas de código
+- 26/28 fases completadas (92.9%)
+- ~80 commits, 137 tests, 35k+ líneas de código
 
 ### Diapositiva 10 — Métricas y calidad
-- 112 tests pasando
+- 137 tests pasando, 0 fallando
 - flutter analyze: 0 errors, 0 warnings
+- CI/CD con GitHub Actions (analyze + test en push/PR)
 - 27 widgets compartidos reusables
 - 12 repositorios con patrón canónico
 - 20+ modelos @freezed tipados
@@ -77,13 +82,14 @@
 - **Offline-first:** Más complejo pero esencial para transporte público
 - **RLS en Supabase:** 102 policies = seguridad granular sin código backend
 - **Comunidad:** Los datos de usuarios son tan valiosos como los oficiales
+- **Accesibilidad desde el inicio:** Integrar WCAG AA evita retrabajo masivo
 
 ### Diapositiva 12 — Trabajo futuro
-- F17-F19: Pulido visual, accesibilidad, reputación
-- F20-F22: Mapas offline, notificaciones push, monitoring
-- F23-F24: Versión web + widgets nativos
-- F25-F27: GDPR, QA, publicación en stores
-- **Post-TFG:** Monetización (B2C premium, B2B operadores)
+- F27: Wearables nivel 1 (Apple Watch complications, Wear OS tiles)
+- Post-TFG: Publicación en Play Store (internal testing → beta)
+- App Store: iOS release con TestFlight
+- Monetización: B2C premium, B2B operadores
+- Comunidad: gamificación de contribuciones, moderadores comunitarios
 
 ### Diapositiva 13 — Agradecimientos y preguntas
 - Gracias
@@ -118,4 +124,4 @@
 
 ---
 
-**Última actualización:** 2026-05-14 · Documentation Agent
+**Última actualización:** 2026-05-15 · F26 · Documentation Agent

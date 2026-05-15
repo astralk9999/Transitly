@@ -1,14 +1,14 @@
 # 05 — Seguimiento, Evaluación y Documentación
 
 **Proyecto:** Transitly
-**Fecha:** 2026-05-14
+**Fecha:** 2026-05-15
 
 ---
 
 ## 1. Procedimientos de control y seguimiento
 
 ### Control diario
-- `flutter analyze` → 0 issues requerido
+- `flutter analyze` → 0 errors requerido
 - `flutter test` → 100% pass requerido
 - Git status → sin cambios sin commitear al final de sesión
 
@@ -37,12 +37,12 @@
 | 3.6.5 | 2026-05-10 | _findClosestRoute sin early return | S | ✅ Cerrado `2c52f25` |
 | 3.6.1 | 2026-05-14 | MockRealtimeService no pausa timers en background | M | ⏸️ [F26] |
 | 3.6.2 | 2026-05-14 | comujesa_data.json ~1.2 MB sin minificar | M | ⏸️ [F26] |
-| 3.6.3 | 2026-05-14 | google_fonts con fetch en runtime | M | ⏸️ [F17/F26] |
+| 3.6.3 | 2026-05-14 | google_fonts con fetch en runtime | M | ⏸️ [F26] |
 | 3.6.4 | 2026-05-14 | SmokeBackground con Ticker permanente | S | ⏸️ [F26] |
-| 3.6.6 | 2026-05-14 | Sin CI, sin pre-commit hook | M | ⏸️ [F26] |
+| 3.6.6 | 2026-05-14 | Sin CI, sin pre-commit hook | M | ✅ Cerrado F26 (`.github/workflows/ci.yml`) |
 | — | 2026-05-14 | live_recorder_draft en shared_preferences (no Hive) | M | ⏸️ [SIN ASIGNAR] |
 
-**Totales:** 7 abiertas / 6 cerradas = 13 incidencias registradas
+**Totales:** 13 incidencias registradas — 7 cerradas / 6 abiertas
 
 ---
 
@@ -61,11 +61,23 @@
 - SWR (stale-while-revalidate) en providers
 
 ### Mejoras de producto (F4-F15)
-- Auth multi-método (email, magic link, OAuth planificado)
+- Auth multi-método (email, magic link)
 - 5 roles con permisos granulares
 - 10 operadores españoles con GTFS
 - Sistema de contribuciones comunitarias
 - Tracking GPS de conductor en vivo
+
+### Mejoras de experiencia (F16-F25)
+- Panel admin con CRUD de operadores, usuarios, moderación
+- Sistema de apariencia: 6 paletas, 5 fondos, custom palette con validación WCAG AA
+- Accesibilidad: alto contraste, color-blind, OpenDyslexic, screen reader
+- Reputación: 7 rangos, 9 logros, barra de progreso
+- Mapas offline: MapTiler, FMTC tile caching, region data export
+- Notificaciones push: FCM + in-app, quiet hours, toggles por categoría
+- Telemetría: Sentry + PostHog con consent gating
+- Web híbrida: Astro SSR con 10 páginas + Flutter Web islands
+- Widgets nativos: Android home widget + iOS widget
+- Privacidad GDPR: consentimientos, exportación de datos, borrado de cuenta
 
 ---
 
@@ -85,13 +97,14 @@
 | Indicador | Objetivo | Actual | Estado |
 |-----------|----------|--------|:---:|
 | Cobertura de tests | > 60% | ~45% | 🟨 |
-| Issues de lint | 0 | 5 info | 🟩 |
+| Issues de lint | 0 errors | 0 errors, 6 info | 🟩 |
 | Build time (debug) | < 3 min | ~2 min | 🟩 |
 | Tamaño APK (release) | < 50 MB | Por medir | ⬜ |
 | Crash-free rate | > 99% | Por medir (Sentry F22) | ⬜ |
-| Accesibilidad WCAG 2.1 AA | 0 errores | Por auditar (F18) | ⬜ |
-| i18n cobertura | 100% strings | ~80% | 🟨 |
+| Accesibilidad WCAG 2.1 AA | 0 errores | Auditado (F18), 29 Semantics nodes | 🟩 |
+| i18n cobertura | 100% strings | ~90% | 🟩 |
+| CI/CD | GitHub Actions | `flutter analyze` + `flutter test` en push/PR | ✅ F26 |
 
 ---
 
-**Última actualización:** 2026-05-14 · Documentation Agent
+**Última actualización:** 2026-05-15 · F26 · Documentation Agent

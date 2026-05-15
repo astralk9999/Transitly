@@ -36,6 +36,13 @@ class ThemeNotifier extends ChangeNotifier {
   bool _reduceMotion = false;
   bool _highContrast = false;
   String _mapStyle = 'streets';
+  bool _notifIncidentResolved = true;
+  bool _notifRoutePromoted = true;
+  bool _notifBusApproaching = true;
+  bool _notifFeatureRequestReplied = true;
+  bool _quietHoursEnabled = false;
+  String? _quietHoursStart;
+  String? _quietHoursEnd;
 
   Map<String, Color> _customColors = <String, Color>{};
   static const _customPaletteId = 'custom';
@@ -56,6 +63,14 @@ class ThemeNotifier extends ChangeNotifier {
   bool get reduceMotion => _reduceMotion;
   bool get highContrast => _highContrast;
   String get mapStyle => _mapStyle;
+
+  bool get notifIncidentResolved => _notifIncidentResolved;
+  bool get notifRoutePromoted => _notifRoutePromoted;
+  bool get notifBusApproaching => _notifBusApproaching;
+  bool get notifFeatureRequestReplied => _notifFeatureRequestReplied;
+  bool get quietHoursEnabled => _quietHoursEnabled;
+  String? get quietHoursStart => _quietHoursStart;
+  String? get quietHoursEnd => _quietHoursEnd;
 
   Map<String, Color> get customColors => Map.unmodifiable(_customColors);
 
@@ -161,6 +176,55 @@ class ThemeNotifier extends ChangeNotifier {
     unawaited(_persist());
   }
 
+  set notifIncidentResolved(bool value) {
+    if (_notifIncidentResolved == value) return;
+    _notifIncidentResolved = value;
+    notifyListeners();
+    unawaited(_persist());
+  }
+
+  set notifRoutePromoted(bool value) {
+    if (_notifRoutePromoted == value) return;
+    _notifRoutePromoted = value;
+    notifyListeners();
+    unawaited(_persist());
+  }
+
+  set notifBusApproaching(bool value) {
+    if (_notifBusApproaching == value) return;
+    _notifBusApproaching = value;
+    notifyListeners();
+    unawaited(_persist());
+  }
+
+  set notifFeatureRequestReplied(bool value) {
+    if (_notifFeatureRequestReplied == value) return;
+    _notifFeatureRequestReplied = value;
+    notifyListeners();
+    unawaited(_persist());
+  }
+
+  set quietHoursEnabled(bool value) {
+    if (_quietHoursEnabled == value) return;
+    _quietHoursEnabled = value;
+    notifyListeners();
+    unawaited(_persist());
+  }
+
+  set quietHoursStart(String? value) {
+    if (_quietHoursStart == value) return;
+    _quietHoursStart = value;
+    notifyListeners();
+    unawaited(_persist());
+  }
+
+  set quietHoursEnd(String? value) {
+    if (_quietHoursEnd == value) return;
+    _quietHoursEnd = value;
+    notifyListeners();
+    unawaited(_persist());
+  }
+
   void setCustomPalette(Map<String, Color> colors) {
     _customColors = Map.of(colors);
     _paletteId = _customPaletteId;
@@ -196,6 +260,13 @@ class ThemeNotifier extends ChangeNotifier {
     _reduceMotion = prefs.reduceMotion;
     _highContrast = prefs.highContrast;
     _mapStyle = prefs.mapStyle;
+    _notifIncidentResolved = prefs.notifIncidentResolved;
+    _notifRoutePromoted = prefs.notifRoutePromoted;
+    _notifBusApproaching = prefs.notifBusApproaching;
+    _notifFeatureRequestReplied = prefs.notifFeatureRequestReplied;
+    _quietHoursEnabled = prefs.quietHoursEnabled;
+    _quietHoursStart = prefs.quietHoursStart;
+    _quietHoursEnd = prefs.quietHoursEnd;
     _customColors = _parseCustomColors(prefs.customColors);
     _initialized = true;
     notifyListeners();
@@ -213,6 +284,13 @@ class ThemeNotifier extends ChangeNotifier {
         reduceMotion: _reduceMotion,
         highContrast: _highContrast,
         mapStyle: _mapStyle,
+        notifIncidentResolved: _notifIncidentResolved,
+        notifRoutePromoted: _notifRoutePromoted,
+        notifBusApproaching: _notifBusApproaching,
+        notifFeatureRequestReplied: _notifFeatureRequestReplied,
+        quietHoursEnabled: _quietHoursEnabled,
+        quietHoursStart: _quietHoursStart,
+        quietHoursEnd: _quietHoursEnd,
         customColors: _customColors.isEmpty
             ? null
             : _customColors.map((k, v) => MapEntry(k, _colorToHex(v))),
@@ -259,6 +337,13 @@ class ThemeNotifier extends ChangeNotifier {
         _reduceMotion = data['reduceMotion'] as bool? ?? false;
         _highContrast = data['highContrast'] as bool? ?? false;
         _mapStyle = data['mapStyle'] as String? ?? 'streets';
+        _notifIncidentResolved = data['notifIncidentResolved'] as bool? ?? true;
+        _notifRoutePromoted = data['notifRoutePromoted'] as bool? ?? true;
+        _notifBusApproaching = data['notifBusApproaching'] as bool? ?? true;
+        _notifFeatureRequestReplied = data['notifFeatureRequestReplied'] as bool? ?? true;
+        _quietHoursEnabled = data['quietHoursEnabled'] as bool? ?? false;
+        _quietHoursStart = data['quietHoursStart'] as String?;
+        _quietHoursEnd = data['quietHoursEnd'] as String?;
         final rawCustom = data['customColors'] as Map<dynamic, dynamic>?;
         if (rawCustom != null) {
           _customColors = <String, Color>{};
@@ -298,6 +383,13 @@ class ThemeNotifier extends ChangeNotifier {
         'reduceMotion': _reduceMotion,
         'highContrast': _highContrast,
         'mapStyle': _mapStyle,
+        'notifIncidentResolved': _notifIncidentResolved,
+        'notifRoutePromoted': _notifRoutePromoted,
+        'notifBusApproaching': _notifBusApproaching,
+        'notifFeatureRequestReplied': _notifFeatureRequestReplied,
+        'quietHoursEnabled': _quietHoursEnabled,
+        'quietHoursStart': _quietHoursStart,
+        'quietHoursEnd': _quietHoursEnd,
         'customColors': _customColors.map((k, v) => MapEntry(k, _colorToHex(v))),
       });
     } catch (e) {

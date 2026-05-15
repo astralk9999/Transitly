@@ -8,7 +8,9 @@ import 'package:transitly/features/home/tabs/home_tab.dart';
 import 'package:transitly/features/home/tabs/profile_tab.dart';
 import 'package:transitly/features/home/tabs/search_tab.dart';
 import 'package:transitly/shared/models/active_trip_model.dart';
+import 'package:transitly/shared/providers/theme_notifier.dart';
 
+import '../data/shared_test_repositories.dart';
 import '../helpers/pump_app.dart';
 
 void main() {
@@ -26,6 +28,9 @@ void main() {
         ),
         realtimeClockProvider.overrideWith(
           (ref) => const Stream<DateTime>.empty(),
+        ),
+        themeNotifierProvider.overrideWith(
+          (_) => ThemeNotifier(prefsRepo: mockUserPreferencesRepo()),
         ),
       ];
 

@@ -33,6 +33,13 @@ mixin _$UserPreferences {
   bool get reduceMotion => throw _privateConstructorUsedError;
   bool get highContrast => throw _privateConstructorUsedError;
   String get mapStyle => throw _privateConstructorUsedError;
+  bool get notifIncidentResolved => throw _privateConstructorUsedError;
+  bool get notifRoutePromoted => throw _privateConstructorUsedError;
+  bool get notifBusApproaching => throw _privateConstructorUsedError;
+  bool get notifFeatureRequestReplied => throw _privateConstructorUsedError;
+  bool get quietHoursEnabled => throw _privateConstructorUsedError;
+  String? get quietHoursStart => throw _privateConstructorUsedError;
+  String? get quietHoursEnd => throw _privateConstructorUsedError;
 
   /// Serializes this UserPreferences to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -64,6 +71,13 @@ abstract class $UserPreferencesCopyWith<$Res> {
     bool reduceMotion,
     bool highContrast,
     String mapStyle,
+    bool notifIncidentResolved,
+    bool notifRoutePromoted,
+    bool notifBusApproaching,
+    bool notifFeatureRequestReplied,
+    bool quietHoursEnabled,
+    String? quietHoursStart,
+    String? quietHoursEnd,
   });
 }
 
@@ -94,6 +108,13 @@ class _$UserPreferencesCopyWithImpl<$Res, $Val extends UserPreferences>
     Object? reduceMotion = null,
     Object? highContrast = null,
     Object? mapStyle = null,
+    Object? notifIncidentResolved = null,
+    Object? notifRoutePromoted = null,
+    Object? notifBusApproaching = null,
+    Object? notifFeatureRequestReplied = null,
+    Object? quietHoursEnabled = null,
+    Object? quietHoursStart = freezed,
+    Object? quietHoursEnd = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -145,6 +166,34 @@ class _$UserPreferencesCopyWithImpl<$Res, $Val extends UserPreferences>
                 ? _value.mapStyle
                 : mapStyle // ignore: cast_nullable_to_non_nullable
                       as String,
+            notifIncidentResolved: null == notifIncidentResolved
+                ? _value.notifIncidentResolved
+                : notifIncidentResolved // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            notifRoutePromoted: null == notifRoutePromoted
+                ? _value.notifRoutePromoted
+                : notifRoutePromoted // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            notifBusApproaching: null == notifBusApproaching
+                ? _value.notifBusApproaching
+                : notifBusApproaching // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            notifFeatureRequestReplied: null == notifFeatureRequestReplied
+                ? _value.notifFeatureRequestReplied
+                : notifFeatureRequestReplied // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            quietHoursEnabled: null == quietHoursEnabled
+                ? _value.quietHoursEnabled
+                : quietHoursEnabled // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            quietHoursStart: freezed == quietHoursStart
+                ? _value.quietHoursStart
+                : quietHoursStart // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            quietHoursEnd: freezed == quietHoursEnd
+                ? _value.quietHoursEnd
+                : quietHoursEnd // ignore: cast_nullable_to_non_nullable
+                      as String?,
           )
           as $Val,
     );
@@ -173,6 +222,13 @@ abstract class _$$UserPreferencesImplCopyWith<$Res>
     bool reduceMotion,
     bool highContrast,
     String mapStyle,
+    bool notifIncidentResolved,
+    bool notifRoutePromoted,
+    bool notifBusApproaching,
+    bool notifFeatureRequestReplied,
+    bool quietHoursEnabled,
+    String? quietHoursStart,
+    String? quietHoursEnd,
   });
 }
 
@@ -202,6 +258,13 @@ class __$$UserPreferencesImplCopyWithImpl<$Res>
     Object? reduceMotion = null,
     Object? highContrast = null,
     Object? mapStyle = null,
+    Object? notifIncidentResolved = null,
+    Object? notifRoutePromoted = null,
+    Object? notifBusApproaching = null,
+    Object? notifFeatureRequestReplied = null,
+    Object? quietHoursEnabled = null,
+    Object? quietHoursStart = freezed,
+    Object? quietHoursEnd = freezed,
   }) {
     return _then(
       _$UserPreferencesImpl(
@@ -253,6 +316,34 @@ class __$$UserPreferencesImplCopyWithImpl<$Res>
             ? _value.mapStyle
             : mapStyle // ignore: cast_nullable_to_non_nullable
                   as String,
+        notifIncidentResolved: null == notifIncidentResolved
+            ? _value.notifIncidentResolved
+            : notifIncidentResolved // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        notifRoutePromoted: null == notifRoutePromoted
+            ? _value.notifRoutePromoted
+            : notifRoutePromoted // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        notifBusApproaching: null == notifBusApproaching
+            ? _value.notifBusApproaching
+            : notifBusApproaching // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        notifFeatureRequestReplied: null == notifFeatureRequestReplied
+            ? _value.notifFeatureRequestReplied
+            : notifFeatureRequestReplied // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        quietHoursEnabled: null == quietHoursEnabled
+            ? _value.quietHoursEnabled
+            : quietHoursEnabled // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        quietHoursStart: freezed == quietHoursStart
+            ? _value.quietHoursStart
+            : quietHoursStart // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        quietHoursEnd: freezed == quietHoursEnd
+            ? _value.quietHoursEnd
+            : quietHoursEnd // ignore: cast_nullable_to_non_nullable
+                  as String?,
       ),
     );
   }
@@ -274,6 +365,13 @@ class _$UserPreferencesImpl implements _UserPreferences {
     this.reduceMotion = false,
     this.highContrast = false,
     this.mapStyle = 'streets',
+    this.notifIncidentResolved = true,
+    this.notifRoutePromoted = true,
+    this.notifBusApproaching = true,
+    this.notifFeatureRequestReplied = true,
+    this.quietHoursEnabled = false,
+    this.quietHoursStart,
+    this.quietHoursEnd,
   }) : _customColors = customColors;
 
   factory _$UserPreferencesImpl.fromJson(Map<String, dynamic> json) =>
@@ -321,10 +419,29 @@ class _$UserPreferencesImpl implements _UserPreferences {
   @override
   @JsonKey()
   final String mapStyle;
+  @override
+  @JsonKey()
+  final bool notifIncidentResolved;
+  @override
+  @JsonKey()
+  final bool notifRoutePromoted;
+  @override
+  @JsonKey()
+  final bool notifBusApproaching;
+  @override
+  @JsonKey()
+  final bool notifFeatureRequestReplied;
+  @override
+  @JsonKey()
+  final bool quietHoursEnabled;
+  @override
+  final String? quietHoursStart;
+  @override
+  final String? quietHoursEnd;
 
   @override
   String toString() {
-    return 'UserPreferences(userId: $userId, themePaletteId: $themePaletteId, customColors: $customColors, backgroundId: $backgroundId, backgroundEnabled: $backgroundEnabled, backgroundOpacity: $backgroundOpacity, fontScale: $fontScale, colorBlindMode: $colorBlindMode, dyslexiaFontEnabled: $dyslexiaFontEnabled, reduceMotion: $reduceMotion, highContrast: $highContrast, mapStyle: $mapStyle)';
+    return 'UserPreferences(userId: $userId, themePaletteId: $themePaletteId, customColors: $customColors, backgroundId: $backgroundId, backgroundEnabled: $backgroundEnabled, backgroundOpacity: $backgroundOpacity, fontScale: $fontScale, colorBlindMode: $colorBlindMode, dyslexiaFontEnabled: $dyslexiaFontEnabled, reduceMotion: $reduceMotion, highContrast: $highContrast, mapStyle: $mapStyle, notifIncidentResolved: $notifIncidentResolved, notifRoutePromoted: $notifRoutePromoted, notifBusApproaching: $notifBusApproaching, notifFeatureRequestReplied: $notifFeatureRequestReplied, quietHoursEnabled: $quietHoursEnabled, quietHoursStart: $quietHoursStart, quietHoursEnd: $quietHoursEnd)';
   }
 
   @override
@@ -356,12 +473,30 @@ class _$UserPreferencesImpl implements _UserPreferences {
             (identical(other.highContrast, highContrast) ||
                 other.highContrast == highContrast) &&
             (identical(other.mapStyle, mapStyle) ||
-                other.mapStyle == mapStyle));
+                other.mapStyle == mapStyle) &&
+            (identical(other.notifIncidentResolved, notifIncidentResolved) ||
+                other.notifIncidentResolved == notifIncidentResolved) &&
+            (identical(other.notifRoutePromoted, notifRoutePromoted) ||
+                other.notifRoutePromoted == notifRoutePromoted) &&
+            (identical(other.notifBusApproaching, notifBusApproaching) ||
+                other.notifBusApproaching == notifBusApproaching) &&
+            (identical(
+                  other.notifFeatureRequestReplied,
+                  notifFeatureRequestReplied,
+                ) ||
+                other.notifFeatureRequestReplied ==
+                    notifFeatureRequestReplied) &&
+            (identical(other.quietHoursEnabled, quietHoursEnabled) ||
+                other.quietHoursEnabled == quietHoursEnabled) &&
+            (identical(other.quietHoursStart, quietHoursStart) ||
+                other.quietHoursStart == quietHoursStart) &&
+            (identical(other.quietHoursEnd, quietHoursEnd) ||
+                other.quietHoursEnd == quietHoursEnd));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
+  int get hashCode => Object.hashAll([
     runtimeType,
     userId,
     themePaletteId,
@@ -375,7 +510,14 @@ class _$UserPreferencesImpl implements _UserPreferences {
     reduceMotion,
     highContrast,
     mapStyle,
-  );
+    notifIncidentResolved,
+    notifRoutePromoted,
+    notifBusApproaching,
+    notifFeatureRequestReplied,
+    quietHoursEnabled,
+    quietHoursStart,
+    quietHoursEnd,
+  ]);
 
   /// Create a copy of UserPreferences
   /// with the given fields replaced by the non-null parameter values.
@@ -408,6 +550,13 @@ abstract class _UserPreferences implements UserPreferences {
     final bool reduceMotion,
     final bool highContrast,
     final String mapStyle,
+    final bool notifIncidentResolved,
+    final bool notifRoutePromoted,
+    final bool notifBusApproaching,
+    final bool notifFeatureRequestReplied,
+    final bool quietHoursEnabled,
+    final String? quietHoursStart,
+    final String? quietHoursEnd,
   }) = _$UserPreferencesImpl;
 
   factory _UserPreferences.fromJson(Map<String, dynamic> json) =
@@ -437,6 +586,20 @@ abstract class _UserPreferences implements UserPreferences {
   bool get highContrast;
   @override
   String get mapStyle;
+  @override
+  bool get notifIncidentResolved;
+  @override
+  bool get notifRoutePromoted;
+  @override
+  bool get notifBusApproaching;
+  @override
+  bool get notifFeatureRequestReplied;
+  @override
+  bool get quietHoursEnabled;
+  @override
+  String? get quietHoursStart;
+  @override
+  String? get quietHoursEnd;
 
   /// Create a copy of UserPreferences
   /// with the given fields replaced by the non-null parameter values.

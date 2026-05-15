@@ -425,5 +425,30 @@
     "placeholders": { "n": { "type": "int", "example": "2" } }
   },
   "notificationSwipeToRead": "Desliza para marcar como leído",
-  "@notificationSwipeToRead": { "description": "Hint: swipe to mark notification as read" }
+  "@notificationSwipeToRead": { "description": "Hint: swipe to mark notification as read" },
+
+  "notifPrefSectionTitle": "NOTIFICACIONES",
+  "@notifPrefSectionTitle": { "description": "Profile notifications section header" },
+  "notifPrefIncidentResolved": "Reportes resueltos",
+  "@notifPrefIncidentResolved": { "description": "Notification toggle: incident resolved" },
+  "notifPrefRoutePromoted": "Mis rutas",
+  "@notifPrefRoutePromoted": { "description": "Notification toggle: route promoted and shares" },
+  "notifPrefBusApproaching": "Buses cerca",
+  "@notifPrefBusApproaching": { "description": "Notification toggle: bus approaching favorite stop" },
+  "notifPrefFeatureRequestReplied": "Sugerencias",
+  "@notifPrefFeatureRequestReplied": { "description": "Notification toggle: feature request replied" },
+  "notifPrefQuietHoursSection": "HORARIO SILENCIOSO",
+  "@notifPrefQuietHoursSection": { "description": "Quiet hours section header" },
+  "notifPrefQuietHoursEnabled": "Activar horario silencioso",
+  "@notifPrefQuietHoursEnabled": { "description": "Quiet hours enable toggle label" },
+  "notifPrefQuietHoursDescription": "Durante este horario no recibirás notificaciones sonoras. Las notificaciones seguirán apareciendo en el centro de notificaciones.",
+  "@notifPrefQuietHoursDescription": { "description": "Quiet hours description text" },
+  "notifPrefQuietHoursStart": "Desde",
+  "@notifPrefQuietHoursStart": { "description": "Quiet hours start time label" },
+  "notifPrefQuietHoursEnd": "Hasta",
+  "@notifPrefQuietHoursEnd": { "description": "Quiet hours end time label" },
+  "notifPrefQuietHoursNotSet": "No configurado",
+  "@notifPrefQuietHoursNotSet": { "description": "Quiet hours time not set placeholder" },
+  "notifPrefSelectTime": "Seleccionar hora",
+  "@notifPrefSelectTime": { "description": "Time picker dialog title" }
 }

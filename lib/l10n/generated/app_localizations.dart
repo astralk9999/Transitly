@@ -1501,6 +1501,78 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Desliza para marcar como leído'**
   String get notificationSwipeToRead;
+
+  /// Profile notifications section header
+  ///
+  /// In es, this message translates to:
+  /// **'NOTIFICACIONES'**
+  String get notifPrefSectionTitle;
+
+  /// Notification toggle: incident resolved
+  ///
+  /// In es, this message translates to:
+  /// **'Reportes resueltos'**
+  String get notifPrefIncidentResolved;
+
+  /// Notification toggle: route promoted and shares
+  ///
+  /// In es, this message translates to:
+  /// **'Mis rutas'**
+  String get notifPrefRoutePromoted;
+
+  /// Notification toggle: bus approaching favorite stop
+  ///
+  /// In es, this message translates to:
+  /// **'Buses cerca'**
+  String get notifPrefBusApproaching;
+
+  /// Notification toggle: feature request replied
+  ///
+  /// In es, this message translates to:
+  /// **'Sugerencias'**
+  String get notifPrefFeatureRequestReplied;
+
+  /// Quiet hours section header
+  ///
+  /// In es, this message translates to:
+  /// **'HORARIO SILENCIOSO'**
+  String get notifPrefQuietHoursSection;
+
+  /// Quiet hours enable toggle label
+  ///
+  /// In es, this message translates to:
+  /// **'Activar horario silencioso'**
+  String get notifPrefQuietHoursEnabled;
+
+  /// Quiet hours description text
+  ///
+  /// In es, this message translates to:
+  /// **'Durante este horario no recibirás notificaciones sonoras. Las notificaciones seguirán apareciendo en el centro de notificaciones.'**
+  String get notifPrefQuietHoursDescription;
+
+  /// Quiet hours start time label
+  ///
+  /// In es, this message translates to:
+  /// **'Desde'**
+  String get notifPrefQuietHoursStart;
+
+  /// Quiet hours end time label
+  ///
+  /// In es, this message translates to:
+  /// **'Hasta'**
+  String get notifPrefQuietHoursEnd;
+
+  /// Quiet hours time not set placeholder
+  ///
+  /// In es, this message translates to:
+  /// **'No configurado'**
+  String get notifPrefQuietHoursNotSet;
+
+  /// Time picker dialog title
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar hora'**
+  String get notifPrefSelectTime;
 }
 
 class _AppLocalizationsDelegate

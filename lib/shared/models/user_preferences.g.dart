@@ -25,6 +25,14 @@ _$UserPreferencesImpl _$$UserPreferencesImplFromJson(
   reduceMotion: json['reduceMotion'] as bool? ?? false,
   highContrast: json['highContrast'] as bool? ?? false,
   mapStyle: json['mapStyle'] as String? ?? 'streets',
+  notifIncidentResolved: json['notifIncidentResolved'] as bool? ?? true,
+  notifRoutePromoted: json['notifRoutePromoted'] as bool? ?? true,
+  notifBusApproaching: json['notifBusApproaching'] as bool? ?? true,
+  notifFeatureRequestReplied:
+      json['notifFeatureRequestReplied'] as bool? ?? true,
+  quietHoursEnabled: json['quietHoursEnabled'] as bool? ?? false,
+  quietHoursStart: json['quietHoursStart'] as String?,
+  quietHoursEnd: json['quietHoursEnd'] as String?,
 );
 
 Map<String, dynamic> _$$UserPreferencesImplToJson(
@@ -42,6 +50,13 @@ Map<String, dynamic> _$$UserPreferencesImplToJson(
   'reduceMotion': instance.reduceMotion,
   'highContrast': instance.highContrast,
   'mapStyle': instance.mapStyle,
+  'notifIncidentResolved': instance.notifIncidentResolved,
+  'notifRoutePromoted': instance.notifRoutePromoted,
+  'notifBusApproaching': instance.notifBusApproaching,
+  'notifFeatureRequestReplied': instance.notifFeatureRequestReplied,
+  'quietHoursEnabled': instance.quietHoursEnabled,
+  if (instance.quietHoursStart case final value?) 'quietHoursStart': value,
+  if (instance.quietHoursEnd case final value?) 'quietHoursEnd': value,
 };
 
 const _$ColorBlindModeEnumMap = {

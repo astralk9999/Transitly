@@ -758,4 +758,41 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get notificationSwipeToRead => 'Desliza para marcar como leído';
+
+  @override
+  String get notifPrefSectionTitle => 'NOTIFICACIONES';
+
+  @override
+  String get notifPrefIncidentResolved => 'Reportes resueltos';
+
+  @override
+  String get notifPrefRoutePromoted => 'Mis rutas';
+
+  @override
+  String get notifPrefBusApproaching => 'Buses cerca';
+
+  @override
+  String get notifPrefFeatureRequestReplied => 'Sugerencias';
+
+  @override
+  String get notifPrefQuietHoursSection => 'HORARIO SILENCIOSO';
+
+  @override
+  String get notifPrefQuietHoursEnabled => 'Activar horario silencioso';
+
+  @override
+  String get notifPrefQuietHoursDescription =>
+      'Durante este horario no recibirás notificaciones sonoras. Las notificaciones seguirán apareciendo en el centro de notificaciones.';
+
+  @override
+  String get notifPrefQuietHoursStart => 'Desde';
+
+  @override
+  String get notifPrefQuietHoursEnd => 'Hasta';
+
+  @override
+  String get notifPrefQuietHoursNotSet => 'No configurado';
+
+  @override
+  String get notifPrefSelectTime => 'Seleccionar hora';
 }

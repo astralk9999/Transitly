@@ -23,6 +23,13 @@ class UserPreferences with _$UserPreferences {
     @Default(false) bool reduceMotion,
     @Default(false) bool highContrast,
     @Default('streets') String mapStyle,
+    @Default(true) bool notifIncidentResolved,
+    @Default(true) bool notifRoutePromoted,
+    @Default(true) bool notifBusApproaching,
+    @Default(true) bool notifFeatureRequestReplied,
+    @Default(false) bool quietHoursEnabled,
+    String? quietHoursStart,
+    String? quietHoursEnd,
   }) = _UserPreferences;
 
   factory UserPreferences.fromJson(Map<String, dynamic> json) =>

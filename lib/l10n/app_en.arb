@@ -254,5 +254,18 @@
   "notificationTimeMinutes": "{n, plural, =1{1 min ago} other{{n} min ago}}",
   "notificationTimeHours": "{n, plural, =1{1 h ago} other{{n} h ago}}",
   "notificationTimeDays": "{n, plural, =1{1 d ago} other{{n} d ago}}",
-  "notificationSwipeToRead": "Swipe to mark as read"
+  "notificationSwipeToRead": "Swipe to mark as read",
+
+  "notifPrefSectionTitle": "NOTIFICATIONS",
+  "notifPrefIncidentResolved": "Resolved reports",
+  "notifPrefRoutePromoted": "My routes",
+  "notifPrefBusApproaching": "Nearby buses",
+  "notifPrefFeatureRequestReplied": "Suggestions",
+  "notifPrefQuietHoursSection": "QUIET HOURS",
+  "notifPrefQuietHoursEnabled": "Enable quiet hours",
+  "notifPrefQuietHoursDescription": "During this time you will not receive sound notifications. Notifications will still appear in the notification center.",
+  "notifPrefQuietHoursStart": "From",
+  "notifPrefQuietHoursEnd": "To",
+  "notifPrefQuietHoursNotSet": "Not set",
+  "notifPrefSelectTime": "Select time"
 }

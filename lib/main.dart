@@ -38,7 +38,7 @@ void main() async {
     try {
       await FirebaseSetup.init();
       AppLogger.info('Firebase', 'initialized');
-    } catch (e, st) {
+    } catch (e) {
       AppLogger.warn('Firebase', 'init failed — push unavailable', e);
     }
   } on EnvException catch (e, st) {

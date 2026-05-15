@@ -7,6 +7,7 @@ import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../features/auth/auth_provider.dart';
 import '../../../features/auth/auth_repository.dart';
+import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/models/user_role.dart';
 import '../../../shared/providers/user_provider.dart';
 import '../../../shared/widgets/glass_card.dart';
@@ -116,6 +117,7 @@ class _ProfileAboutSectionState extends ConsumerState<ProfileAboutSection> {
     final isAuth = authState is AuthAuthenticated;
     final user = ref.watch(currentUserProvider);
     final isPassenger = user.role == UserRole.passenger;
+    final l10n = AppLocalizations.of(context);
 
     return GlassCard(
       blur: 16,
@@ -203,6 +205,12 @@ class _ProfileAboutSectionState extends ConsumerState<ProfileAboutSection> {
               onTap: () => _showSignOutConfirmation(context, c),
               child: Text('Cerrar sesión',
                   style: TransitTypography.bodySecondary(c.textMid)),
+            ),
+            const SizedBox(height: 8),
+            GestureDetector(
+              onTap: () => context.push('/profile/privacy'),
+              child: Text(l10n.privacyLinkLabel,
+                  style: TransitTypography.bodySecondary(c.accent)),
             ),
             const SizedBox(height: 8),
             GestureDetector(

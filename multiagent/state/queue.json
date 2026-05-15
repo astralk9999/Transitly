@@ -1,10 +1,17 @@
 {
-  "pending": [
-    {"id": "F23-002", "title": "Astro project + public pages (SSR)", "status": "pending", "dependencies": ["F23-001"]},
-    {"id": "F23-003", "title": "Flutter Web islands + build script", "status": "pending", "dependencies": ["F23-001","F23-002"]}
-  ],
+  "pending": [{"id": "F26", "title": "QA + Performance + TFG polish", "status": "pending", "dependencies": []}],
   "active": [
-    {"id": "F23-001", "title": "Enable Flutter web + web entry points", "status": "active", "dependencies": []}
+    {"id": "F24", "title": "Widgets nativos movil", "status": "active", "dependencies": []},
+    {"id": "F25", "title": "Privacidad + GDPR + consentimientos", "status": "active", "dependencies": ["F22"]}
   ],
-  "completed": []
+  "completed": [
+    {"id": "F16", "title": "Panel admin", "status": "completed", "commit": "a9c2447"},
+    {"id": "F17", "title": "Apariencia", "status": "completed", "commit": "bff7288"},
+    {"id": "F18", "title": "Accesibilidad", "status": "completed", "commit": "2a076f0"},
+    {"id": "F19", "title": "Reputacion", "status": "completed", "commit": "4897404"},
+    {"id": "F20", "title": "Mapas offline", "status": "completed", "commit": "a015a9a"},
+    {"id": "F21", "title": "Push + Realtime", "status": "completed", "commit": "62c6387"},
+    {"id": "F22", "title": "Sentry + PostHog", "status": "completed", "commit": "f972d49"},
+    {"id": "F23", "title": "Web hibrida", "status": "completed", "commit": "254b551"}
+  ]
 }

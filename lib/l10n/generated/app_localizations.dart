@@ -1573,6 +1573,180 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Seleccionar hora'**
   String get notifPrefSelectTime;
+
+  /// Privacy screen title
+  ///
+  /// In es, this message translates to:
+  /// **'Privacidad'**
+  String get privacyTitle;
+
+  /// Privacy consents section header
+  ///
+  /// In es, this message translates to:
+  /// **'CONSENTIMIENTOS'**
+  String get privacySectionConsents;
+
+  /// Privacy toggle: analytics
+  ///
+  /// In es, this message translates to:
+  /// **'Analíticas'**
+  String get privacyConsentAnalytics;
+
+  /// Privacy toggle description: analytics
+  ///
+  /// In es, this message translates to:
+  /// **'Datos anónimos de uso para mejorar la app'**
+  String get privacyConsentAnalyticsDesc;
+
+  /// Privacy toggle: crash reporting
+  ///
+  /// In es, this message translates to:
+  /// **'Informes de fallos'**
+  String get privacyConsentCrashReporting;
+
+  /// Privacy toggle description: crash reporting
+  ///
+  /// In es, this message translates to:
+  /// **'Envía informes automáticos cuando la app falla'**
+  String get privacyConsentCrashReportingDesc;
+
+  /// Privacy toggle: marketing
+  ///
+  /// In es, this message translates to:
+  /// **'Marketing'**
+  String get privacyConsentMarketing;
+
+  /// Privacy toggle description: marketing
+  ///
+  /// In es, this message translates to:
+  /// **'Recibe novedades y promociones sobre Transitly'**
+  String get privacyConsentMarketingDesc;
+
+  /// Privacy my data section header
+  ///
+  /// In es, this message translates to:
+  /// **'MIS DATOS'**
+  String get privacySectionMyData;
+
+  /// Privacy button: download my data
+  ///
+  /// In es, this message translates to:
+  /// **'Descargar mis datos'**
+  String get privacyDownloadData;
+
+  /// Privacy button: request account deletion
+  ///
+  /// In es, this message translates to:
+  /// **'Solicitar borrado de cuenta'**
+  String get privacyRequestDeletion;
+
+  /// Privacy legal section header
+  ///
+  /// In es, this message translates to:
+  /// **'LEGAL'**
+  String get privacySectionLegal;
+
+  /// Privacy link: terms of service
+  ///
+  /// In es, this message translates to:
+  /// **'Términos de servicio'**
+  String get privacyTermsOfService;
+
+  /// Privacy link: privacy policy
+  ///
+  /// In es, this message translates to:
+  /// **'Política de privacidad'**
+  String get privacyPrivacyPolicy;
+
+  /// Privacy toast: data export requested
+  ///
+  /// In es, this message translates to:
+  /// **'Solicitud de exportación enviada. Recibirás un enlace cuando esté lista.'**
+  String get privacyDataExportRequested;
+
+  /// Privacy toast: deletion requested
+  ///
+  /// In es, this message translates to:
+  /// **'Solicitud de borrado enviada. Tus datos se eliminarán en 30 días.'**
+  String get privacyDeletionRequested;
+
+  /// Privacy deletion confirmation dialog title
+  ///
+  /// In es, this message translates to:
+  /// **'¿Solicitar borrado de cuenta?'**
+  String get privacyDeleteConfirmTitle;
+
+  /// Privacy deletion confirmation dialog message
+  ///
+  /// In es, this message translates to:
+  /// **'Tus datos se eliminarán tras un periodo de espera de 30 días.'**
+  String get privacyDeleteConfirmMessage;
+
+  /// Privacy deletion dialog cancel
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelar'**
+  String get privacyDeleteConfirmCancel;
+
+  /// Privacy deletion dialog confirm
+  ///
+  /// In es, this message translates to:
+  /// **'Solicitar borrado'**
+  String get privacyDeleteConfirmAction;
+
+  /// Profile link to privacy screen
+  ///
+  /// In es, this message translates to:
+  /// **'Privacidad'**
+  String get privacyLinkLabel;
+
+  /// Widgets settings screen title
+  ///
+  /// In es, this message translates to:
+  /// **'Widgets'**
+  String get widgetsTitle;
+
+  /// Widgets settings instructions section header
+  ///
+  /// In es, this message translates to:
+  /// **'INSTRUCCIONES'**
+  String get widgetsSectionInstructions;
+
+  /// Widget add instructions for Android
+  ///
+  /// In es, this message translates to:
+  /// **'En Android, mantén pulsado en la pantalla de inicio y selecciona \"Añadir widget\". Busca Transitly en la lista.'**
+  String get widgetsInstructionsAndroid;
+
+  /// Widget add instructions for iOS
+  ///
+  /// In es, this message translates to:
+  /// **'En iOS, mantén pulsado en la pantalla de inicio, pulsa el botón + y busca Transitly.'**
+  String get widgetsInstructionsIos;
+
+  /// Favorite stop selector label
+  ///
+  /// In es, this message translates to:
+  /// **'Parada favorita'**
+  String get widgetsFavoriteStop;
+
+  /// Favorite line selector label
+  ///
+  /// In es, this message translates to:
+  /// **'Línea favorita'**
+  String get widgetsFavoriteLine;
+
+  /// How to add widget info button
+  ///
+  /// In es, this message translates to:
+  /// **'Cómo añadir el widget'**
+  String get widgetsHowToAdd;
+
+  /// Widget config saved toast
+  ///
+  /// In es, this message translates to:
+  /// **'Configuración guardada'**
+  String get widgetsConfigSaved;
 }
 
 class _AppLocalizationsDelegate

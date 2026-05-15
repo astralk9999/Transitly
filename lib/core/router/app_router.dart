@@ -60,6 +60,8 @@ import '../../features/suggestions/suggestion_contribute_screen.dart';
 import '../../features/error/not_found_screen.dart';
 import '../../features/suggestions/suggestion_detail_screen.dart';
 import '../../features/notifications/notifications_screen.dart';
+import '../../features/privacy/privacy_screen.dart';
+import '../../features/widgets_native/widgets_settings_screen.dart';
 
 /// Initial location of the app router. Overridable in tests to bypass the
 /// splash screen (which holds a real `Future.delayed(3s)` timer).
@@ -349,6 +351,11 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       // ── Profile sub-screens ──
       GoRoute(
+        path: '/profile/privacy',
+        pageBuilder: (context, state) =>
+            _slide(state, const PrivacyScreen()),
+      ),
+      GoRoute(
         path: '/profile/reputation',
         pageBuilder: (context, state) =>
             _slide(state, const ReputationScreen()),
@@ -408,6 +415,13 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/notifications',
         pageBuilder: (context, state) =>
             _slide(state, const NotificationsScreen()),
+      ),
+
+      // ── Widgets ──
+      GoRoute(
+        path: '/profile/widgets',
+        pageBuilder: (context, state) =>
+            _slide(state, const WidgetsSettingsScreen()),
       ),
 
       // ── Debug ──

@@ -71,6 +71,8 @@ dependencies:
   flutter_local_notifications: ^20.1.0
   sentry_flutter: ^8.14.2
   posthog_flutter: ^5.24.2
+  home_widget: ^0.7.0
+  workmanager: ^0.5.2
 
 dev_dependencies:
   flutter_test:

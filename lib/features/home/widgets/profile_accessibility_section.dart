@@ -71,6 +71,28 @@ class ProfileAccessibilitySection extends ConsumerWidget {
               ],
             ),
           ),
+          const SizedBox(height: 12),
+          Divider(
+            height: 1,
+            thickness: 0.5,
+            color: Colors.white.withValues(alpha: 0.06),
+          ),
+          const SizedBox(height: 12),
+          GestureDetector(
+            onTap: () => context.push('/profile/widgets'),
+            child: Row(
+              children: [
+                Icon(Icons.widgets_outlined, size: 18, color: c.accent),
+                const SizedBox(width: 8),
+                Text(
+                  l10n.widgetsTitle,
+                  style: TransitTypography.bodyPrimary(c.accent),
+                ),
+                const Spacer(),
+                Icon(Icons.chevron_right, size: 20, color: c.accent),
+              ],
+            ),
+          ),
         ],
       ),
     );

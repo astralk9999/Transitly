@@ -792,4 +792,99 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notifPrefSelectTime => 'Select time';
+
+  @override
+  String get privacyTitle => 'Privacy';
+
+  @override
+  String get privacySectionConsents => 'CONSENTS';
+
+  @override
+  String get privacyConsentAnalytics => 'Analytics';
+
+  @override
+  String get privacyConsentAnalyticsDesc =>
+      'Anonymous usage data to improve the app';
+
+  @override
+  String get privacyConsentCrashReporting => 'Crash reporting';
+
+  @override
+  String get privacyConsentCrashReportingDesc =>
+      'Send automatic reports when the app crashes';
+
+  @override
+  String get privacyConsentMarketing => 'Marketing';
+
+  @override
+  String get privacyConsentMarketingDesc =>
+      'Receive news and promotions about Transitly';
+
+  @override
+  String get privacySectionMyData => 'MY DATA';
+
+  @override
+  String get privacyDownloadData => 'Download my data';
+
+  @override
+  String get privacyRequestDeletion => 'Request account deletion';
+
+  @override
+  String get privacySectionLegal => 'LEGAL';
+
+  @override
+  String get privacyTermsOfService => 'Terms of service';
+
+  @override
+  String get privacyPrivacyPolicy => 'Privacy policy';
+
+  @override
+  String get privacyDataExportRequested =>
+      'Export request sent. You will receive a link when ready.';
+
+  @override
+  String get privacyDeletionRequested =>
+      'Deletion request sent. Your data will be deleted in 30 days.';
+
+  @override
+  String get privacyDeleteConfirmTitle => 'Request account deletion?';
+
+  @override
+  String get privacyDeleteConfirmMessage =>
+      'Your data will be deleted after a 30-day waiting period.';
+
+  @override
+  String get privacyDeleteConfirmCancel => 'Cancel';
+
+  @override
+  String get privacyDeleteConfirmAction => 'Request deletion';
+
+  @override
+  String get privacyLinkLabel => 'Privacy';
+
+  @override
+  String get widgetsTitle => 'Widgets';
+
+  @override
+  String get widgetsSectionInstructions => 'INSTRUCTIONS';
+
+  @override
+  String get widgetsInstructionsAndroid =>
+      'On Android, long-press the home screen and select \"Add widget\". Find Transitly in the list.';
+
+  @override
+  String get widgetsInstructionsIos =>
+      'On iOS, long-press the home screen, tap the + button, and find Transitly.';
+
+  @override
+  String get widgetsFavoriteStop => 'Favorite stop';
+
+  @override
+  String get widgetsFavoriteLine => 'Favorite line';
+
+  @override
+  String get widgetsHowToAdd => 'How to add the widget';
+
+  @override
+  String get widgetsConfigSaved => 'Settings saved';
 }

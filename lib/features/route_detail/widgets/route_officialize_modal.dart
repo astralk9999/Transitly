@@ -173,12 +173,12 @@ class _OfficializeModalState extends ConsumerState<_OfficializeModal> {
                 color: Colors.orangeAccent.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Row(
+              child: const Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.info_outline,
+                  Icon(Icons.info_outline,
                       color: Colors.orangeAccent, size: 18),
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       'Solo el equipo de moderación puede aprobar la conversión a oficial. Recibirás una notificación cuando se resuelva.',

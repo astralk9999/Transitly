@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/theme/transit_colors.dart';
-import '../../../core/theme/transit_typography.dart';
-import '../../../shared/widgets/smoke_background.dart';
+import '../../core/theme/transit_colors.dart';
+import '../../core/theme/transit_typography.dart';
+import '../../core/utils/app_logger.dart';
+import '../../data/auth/auth_repository.dart';
+import '../../l10n/generated/app_localizations.dart';
+import '../../shared/widgets/smoke_background.dart';
 import 'auth_provider.dart';
-import 'auth_repository.dart';
 import 'widgets/auth_field.dart';
 import 'widgets/auth_submit_button.dart';
 
@@ -49,7 +51,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           );
     } on AuthRepoException catch (e) {
       setState(() => _error = e.message ?? 'Error al registrarse');
-    } catch (_) {
+    } catch (e) {
+      AppLogger.warn('SignUp', 'sign up error', e);
       setState(() => _error = 'Error de conexión');
     } finally {
       if (mounted) setState(() => _isLoading = false);
@@ -60,6 +63,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: c.bgRoot,
@@ -76,10 +80,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text('Crear cuenta',
+                      Text(l10n.authSignUpTitle,
                           style: TransitTypography.heading(c.textHi)),
                       const SizedBox(height: 8),
-                      Text('Únete a Transitly',
+                      Text(l10n.authSignUpSubtitle,
                           style: TransitTypography.bodySecondary(c.textMid)),
                       const SizedBox(height: 32),
 
@@ -98,44 +102,44 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       ],
 
                       AuthField(
-                        label: 'Nombre',
-                        hint: 'Tu nombre',
+                        label: l10n.authName,
+                        hint: l10n.authNameHint,
                         controller: _nameController,
                         textInputAction: TextInputAction.next,
                         validator: (v) =>
-                            (v == null || v.isEmpty) ? 'Requerido' : null,
+                            (v == null || v.isEmpty) ? l10n.authRequired : null,
                       ),
                       const SizedBox(height: 16),
                       AuthField(
-                        label: 'Email',
-                        hint: 'tu@email.com',
+                        label: l10n.authEmail,
+                        hint: l10n.authEmailHint,
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
                         textInputAction: TextInputAction.next,
                         validator: (v) {
-                          if (v == null || v.isEmpty) return 'Requerido';
-                          if (!v.contains('@')) return 'Email inválido';
+                          if (v == null || v.isEmpty) return l10n.authRequired;
+                          if (!v.contains('@')) return l10n.authInvalidEmail;
                           return null;
                         },
                       ),
                       const SizedBox(height: 16),
                       AuthField(
-                        label: 'Contraseña',
-                        hint: 'Mínimo 6 caracteres',
+                        label: l10n.authPassword,
+                        hint: l10n.authPasswordMinHint,
                         controller: _passwordController,
                         obscureText: true,
                         textInputAction: TextInputAction.done,
                         onSubmitted: (_) => _submit(),
                         validator: (v) {
-                          if (v == null || v.isEmpty) return 'Requerida';
-                          if (v.length < 6) return 'Mínimo 6 caracteres';
+                          if (v == null || v.isEmpty) return l10n.authRequiredField;
+                          if (v.length < 6) return l10n.authMinChars;
                           return null;
                         },
                       ),
                       const SizedBox(height: 24),
 
                       AuthSubmitButton(
-                        label: 'CREAR CUENTA',
+                        label: l10n.authSignUpButton,
                         isLoading: _isLoading,
                         onPressed: _submit,
                       ),
@@ -144,12 +148,12 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('¿Ya tienes cuenta?',
+                          Text(l10n.authAlreadyHaveAccount,
                               style:
                                   TransitTypography.bodySecondary(c.textMid)),
                           TextButton(
                             onPressed: () => context.go('/sign-in'),
-                            child: Text('Inicia sesión',
+                            child: Text(l10n.authSignInLink,
                                 style: TransitTypography.bodySecondary(
                                     c.accent)),
                           ),

@@ -913,4 +913,204 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return 'Syncing $_temp0…';
   }
+
+  @override
+  String get authEmail => 'Email';
+
+  @override
+  String get authEmailHint => 'you@email.com';
+
+  @override
+  String get authPassword => 'Password';
+
+  @override
+  String get authPasswordHint => '••••••••';
+
+  @override
+  String get authPasswordMinHint => 'Minimum 6 characters';
+
+  @override
+  String get authName => 'Name';
+
+  @override
+  String get authNameHint => 'Your name';
+
+  @override
+  String get authRequired => 'Required';
+
+  @override
+  String get authRequiredField => 'Required';
+
+  @override
+  String get authInvalidEmail => 'Invalid email';
+
+  @override
+  String get authMinChars => 'Minimum 6 characters';
+
+  @override
+  String get authEnterValidEmail => 'Enter a valid email';
+
+  @override
+  String get authErrorConnection => 'Connection error';
+
+  @override
+  String get authErrorGoogle => 'Google connection error';
+
+  @override
+  String get authSignInSubtitle => 'Sign in to continue';
+
+  @override
+  String get authSignInButton => 'SIGN IN';
+
+  @override
+  String get authSignInError => 'Error signing in';
+
+  @override
+  String get authNoAccount => 'Don\'t have an account?';
+
+  @override
+  String get authRegister => 'Register';
+
+  @override
+  String get authForgotPassword => 'Forgot your password?';
+
+  @override
+  String get authOrContinue => 'or continue with';
+
+  @override
+  String get authGoogleButton => 'GOOGLE';
+
+  @override
+  String get authMagicLink => 'Access with magic link';
+
+  @override
+  String get authSignUpTitle => 'Create account';
+
+  @override
+  String get authSignUpSubtitle => 'Join Transitly';
+
+  @override
+  String get authSignUpButton => 'CREATE ACCOUNT';
+
+  @override
+  String get authSignUpError => 'Error signing up';
+
+  @override
+  String get authAlreadyHaveAccount => 'Already have an account?';
+
+  @override
+  String get authSignInLink => 'Sign in';
+
+  @override
+  String get authRecoverTitle => 'Recover password';
+
+  @override
+  String get authRecoverSent =>
+      'If the email exists, you will receive a link to reset your password.';
+
+  @override
+  String get authRecoverHint => 'Enter your email and we\'ll send you a link';
+
+  @override
+  String get authSendLinkButton => 'SEND LINK';
+
+  @override
+  String get authBackToSignIn => 'Back to sign in';
+
+  @override
+  String get authRecoverError => 'Error sending recovery';
+
+  @override
+  String get authMagicLinkTitle => 'Magic link';
+
+  @override
+  String get authMagicLinkSent =>
+      'Check your email. We\'ve sent you an access link.';
+
+  @override
+  String get authMagicLinkHint => 'We\'ll send an access link to your email';
+
+  @override
+  String get authMagicLinkError => 'Error sending the link';
+
+  @override
+  String get authVerifyTitle => 'Verify your email';
+
+  @override
+  String get authVerifyMessage =>
+      'We\'ve sent you a verification email. Check your inbox and click the link to continue.';
+
+  @override
+  String get authResendButton => 'RESEND EMAIL';
+
+  @override
+  String get authSignOutAndBack => 'Sign out and go back';
+
+  @override
+  String get authResendSuccess => 'Verification email resent.';
+
+  @override
+  String get authResendError => 'Error resending';
+
+  @override
+  String get authActivateDriverTitle => 'Activate driver mode';
+
+  @override
+  String get authActivateDriverHint =>
+      'Your company gave you a code.\nEnter it here to activate driver mode.';
+
+  @override
+  String get authActivateNeedLogin =>
+      'You need to sign in to activate driver mode.';
+
+  @override
+  String get authActivateButton => 'ACTIVATE';
+
+  @override
+  String get authActivateEnterCode => 'Enter the code';
+
+  @override
+  String get authActivateCodeNotFound => 'Code not found';
+
+  @override
+  String get authActivateCodeExpired => 'The code has expired';
+
+  @override
+  String get authActivateCodeDepleted => 'The code has no more uses available';
+
+  @override
+  String get authActivateError => 'Error activating the code';
+
+  @override
+  String get authActivateNeedSession => 'You need to sign in first';
+
+  @override
+  String get authActivateSuccess => 'Welcome. You can now use driver mode.';
+
+  @override
+  String get authSignOutTitle => 'Sign out?';
+
+  @override
+  String get authSignOutMessage => 'You will return to the sign in screen.';
+
+  @override
+  String get authSignOutCancel => 'CANCEL';
+
+  @override
+  String get authSignOutConfirm => 'SIGN OUT';
+
+  @override
+  String get authDeleteAccountTitle => 'Delete account?';
+
+  @override
+  String get authDeleteAccountMessage => 'This action is irreversible.';
+
+  @override
+  String get authDeleteAccountButton => 'DELETE';
+
+  @override
+  String get authDeleteAccountError => 'Could not delete the account';
+
+  @override
+  String get authDeleteAccountCancel => 'CANCEL';
 }

@@ -1,5 +1,6 @@
 import 'package:latlong2/latlong.dart';
 
+import '../../../core/utils/app_logger.dart';
 import '../../../shared/models/operator_model.dart';
 import '../../mock/mock_data_service.dart';
 import '../domain/operator_repository.dart';
@@ -24,7 +25,8 @@ class OperatorMockRepository implements OperatorRepository {
   Future<OperatorModel?> byId(String id) async {
     try {
       return _cached.firstWhere((o) => o.id == id);
-    } catch (_) {
+    } catch (e) {
+      AppLogger.warn('OperatorMockRepo', 'byId failed', e);
       return null;
     }
   }

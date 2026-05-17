@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/theme/transit_colors.dart';
-import '../../../core/theme/transit_typography.dart';
-import '../../../shared/widgets/smoke_background.dart';
+import '../../core/theme/transit_colors.dart';
+import '../../core/theme/transit_typography.dart';
+import '../../core/utils/app_logger.dart';
+import '../../data/auth/auth_repository.dart';
+import '../../l10n/generated/app_localizations.dart';
+import '../../shared/widgets/smoke_background.dart';
 import 'auth_provider.dart';
-import 'auth_repository.dart';
 import 'widgets/auth_submit_button.dart';
 
 class EmailVerifyPendingScreen extends ConsumerStatefulWidget {
@@ -30,11 +32,12 @@ class _EmailVerifyPendingScreenState
 
     try {
       await ref.read(authRepositoryProvider).resendVerification();
-      setState(() => _feedback = 'Email de verificación reenviado.');
+      setState(() => _feedback = AppLocalizations.of(context).authResendSuccess);
     } on AuthRepoException catch (e) {
-      setState(() => _feedback = e.message ?? 'Error al reenviar');
-    } catch (_) {
-      setState(() => _feedback = 'Error de conexión');
+      setState(() => _feedback = e.message ?? AppLocalizations.of(context).authResendError);
+    } catch (e) {
+      AppLogger.warn('EmailVerify', 'resend verification error', e);
+      setState(() => _feedback = AppLocalizations.of(context).authErrorConnection);
     } finally {
       if (mounted) setState(() => _isResending = false);
     }
@@ -44,6 +47,7 @@ class _EmailVerifyPendingScreenState
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: c.bgRoot,
@@ -61,12 +65,11 @@ class _EmailVerifyPendingScreenState
                     const Icon(Icons.mark_email_unread_outlined,
                         size: 64, color: Colors.white70),
                     const SizedBox(height: 16),
-                    Text('Verifica tu email',
+                    Text(l10n.authVerifyTitle,
                         style: TransitTypography.heading(c.textHi)),
                     const SizedBox(height: 12),
                     Text(
-                      'Te hemos enviado un email de verificación. '
-                      'Revisa tu bandeja de entrada y haz clic en el enlace para continuar.',
+                      l10n.authVerifyMessage,
                       style: TransitTypography.bodySecondary(c.textMid),
                       textAlign: TextAlign.center,
                     ),
@@ -87,7 +90,7 @@ class _EmailVerifyPendingScreenState
                     ],
 
                     AuthSubmitButton(
-                      label: 'REENVIAR EMAIL',
+                      label: l10n.authResendButton,
                       isLoading: _isResending,
                       onPressed: _resend,
                     ),
@@ -98,7 +101,7 @@ class _EmailVerifyPendingScreenState
                         ref.read(authRepositoryProvider).signOut();
                         if (context.mounted) context.go('/sign-in');
                       },
-                      child: Text('Cerrar sesión y volver',
+                      child: Text(l10n.authSignOutAndBack,
                           style: TransitTypography.bodySmall(c.textMid)),
                     ),
                     const SizedBox(height: 32),

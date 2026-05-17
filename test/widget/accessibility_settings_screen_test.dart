@@ -11,7 +11,7 @@ import '../helpers/pump_app.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  ThemeNotifier _testNotifier() =>
+  ThemeNotifier testNotifier() =>
       ThemeNotifier(prefsRepo: mockUserPreferencesRepo());
 
   group('AccessibilitySettingsScreen', () {
@@ -21,7 +21,7 @@ void main() {
         tester,
         child: const AccessibilitySettingsScreen(),
         overrides: [
-          themeNotifierProvider.overrideWith((_) => _testNotifier()),
+          themeNotifierProvider.overrideWith((_) => testNotifier()),
         ],
       );
       await tester.pump();
@@ -48,7 +48,7 @@ void main() {
         (tester) async {
       final container = ProviderContainer(
         overrides: [
-          themeNotifierProvider.overrideWith((_) => _testNotifier()),
+          themeNotifierProvider.overrideWith((_) => testNotifier()),
         ],
       );
       addTearDown(container.dispose);
@@ -78,7 +78,7 @@ void main() {
         tester,
         child: const AccessibilitySettingsScreen(),
         overrides: [
-          themeNotifierProvider.overrideWith((_) => _testNotifier()),
+          themeNotifierProvider.overrideWith((_) => testNotifier()),
         ],
       );
       await tester.pump();

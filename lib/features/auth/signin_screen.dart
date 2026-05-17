@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/theme/transit_colors.dart';
-import '../../../core/theme/transit_typography.dart';
-import '../../../shared/widgets/smoke_background.dart';
-import '../../../shared/widgets/transit_button.dart';
+import '../../core/theme/transit_colors.dart';
+import '../../core/theme/transit_typography.dart';
+import '../../core/utils/app_logger.dart';
+import '../../data/auth/auth_repository.dart';
+import '../../l10n/generated/app_localizations.dart';
+import '../../shared/widgets/smoke_background.dart';
+import '../../shared/widgets/transit_button.dart';
 import 'auth_provider.dart';
-import 'auth_repository.dart';
 import 'widgets/auth_field.dart';
 import 'widgets/auth_submit_button.dart';
 
@@ -46,7 +48,8 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
           .signInWithEmail(_emailController.text, _passwordController.text);
     } on AuthRepoException catch (e) {
       setState(() => _error = e.message ?? 'Error al iniciar sesión');
-    } catch (_) {
+    } catch (e) {
+      AppLogger.warn('SignIn', 'sign in error', e);
       setState(() => _error = 'Error de conexión');
     } finally {
       if (mounted) setState(() => _isLoading = false);
@@ -57,6 +60,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: c.bgRoot,
@@ -76,7 +80,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                       Text('Transitly',
                           style: TransitTypography.heading(c.textHi)),
                       const SizedBox(height: 8),
-                      Text('Inicia sesión para continuar',
+                      Text(l10n.authSignInSubtitle,
                           style:
                               TransitTypography.bodySecondary(c.textMid)),
                       const SizedBox(height: 32),
@@ -97,29 +101,29 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                       ],
 
                       AuthField(
-                        label: 'Email',
-                        hint: 'tu@email.com',
+                        label: l10n.authEmail,
+                        hint: l10n.authEmailHint,
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
                         textInputAction: TextInputAction.next,
                         validator: (v) =>
-                            (v == null || v.isEmpty) ? 'Requerido' : null,
+                            (v == null || v.isEmpty) ? l10n.authRequired : null,
                       ),
                       const SizedBox(height: 16),
                       AuthField(
-                        label: 'Contraseña',
-                        hint: '••••••••',
+                        label: l10n.authPassword,
+                        hint: l10n.authPasswordHint,
                         controller: _passwordController,
                         obscureText: true,
                         textInputAction: TextInputAction.done,
                         onSubmitted: (_) => _submit(),
                         validator: (v) =>
-                            (v == null || v.isEmpty) ? 'Requerida' : null,
+                            (v == null || v.isEmpty) ? l10n.authRequiredField : null,
                       ),
                       const SizedBox(height: 24),
 
                       AuthSubmitButton(
-                        label: 'INICIAR SESIÓN',
+                        label: l10n.authSignInButton,
                         isLoading: _isLoading,
                         onPressed: _submit,
                       ),
@@ -128,12 +132,12 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('¿No tienes cuenta?',
+                          Text(l10n.authNoAccount,
                               style: TransitTypography.bodySecondary(
                                   c.textMid)),
                           TextButton(
                             onPressed: () => context.go('/sign-up'),
-                            child: Text('Regístrate',
+                            child: Text(l10n.authRegister,
                                 style: TransitTypography.bodySecondary(
                                     c.accent)),
                           ),
@@ -143,7 +147,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
 
                       TextButton(
                         onPressed: () => context.push('/recover-password'),
-                        child: Text('¿Olvidaste tu contraseña?',
+                        child: Text(l10n.authForgotPassword,
                             style:
                                 TransitTypography.bodySmall(c.textMid)),
                       ),
@@ -157,7 +161,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                           Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 12),
-                            child: Text('o continúa con',
+                            child: Text(l10n.authOrContinue,
                                 style: TransitTypography.bodySmall(
                                     c.textLo)),
                           ),
@@ -169,7 +173,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                       const SizedBox(height: 12),
 
                       TransitButton(
-                        label: 'GOOGLE',
+                        label: l10n.authGoogleButton,
                         onPressed: () async {
                           try {
                             await ref
@@ -179,10 +183,11 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                             if (mounted) {
                               setState(() => _error = e.message);
                             }
-                          } catch (_) {
+                          } catch (e) {
+                            AppLogger.warn('SignIn', 'Google sign in error', e);
                             if (mounted) {
                               setState(() =>
-                                  _error = 'Error de conexión con Google');
+                                  _error = l10n.authErrorGoogle);
                             }
                           }
                         },
@@ -192,7 +197,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
 
                       TextButton(
                         onPressed: () => context.go('/magic-link'),
-                        child: Text('Acceder con enlace mágico',
+                        child: Text(l10n.authMagicLink,
                             style:
                                 TransitTypography.bodySmall(c.accent)),
                       ),

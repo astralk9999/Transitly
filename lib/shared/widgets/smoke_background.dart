@@ -3,6 +3,8 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
+import '../../core/utils/app_logger.dart';
+
 /// Smoke/fog animated background using a GLSL fragment shader (FBM noise).
 ///
 /// In dark mode: purple smoke on near-black base.
@@ -75,7 +77,8 @@ class _SmokeBackgroundState extends State<SmokeBackground>
       if (mounted) {
         setState(() => _shader = program.fragmentShader());
       }
-    } catch (_) {
+    } catch (e) {
+      AppLogger.warn('SmokeBackground', 'shader load failed', e);
       if (mounted) setState(() => _shaderFailed = true);
     }
   }

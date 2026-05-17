@@ -1,17 +1,1 @@
-{
-  "pending": [],
-  "active": [{"id": "F27", "title": "Wearables nivel 1 (complications + tiles)", "status": "active", "dependencies": ["F24"]}],
-  "completed": [
-    {"id": "F16", "title": "Panel admin", "status": "completed", "commit": "a9c2447"},
-    {"id": "F17", "title": "Apariencia", "status": "completed", "commit": "bff7288"},
-    {"id": "F18", "title": "Accesibilidad", "status": "completed", "commit": "2a076f0"},
-    {"id": "F19", "title": "Reputacion", "status": "completed", "commit": "4897404"},
-    {"id": "F20", "title": "Mapas offline", "status": "completed", "commit": "a015a9a"},
-    {"id": "F21", "title": "Push + Realtime", "status": "completed", "commit": "62c6387"},
-    {"id": "F22", "title": "Sentry + PostHog", "status": "completed", "commit": "f972d49"},
-    {"id": "F23", "title": "Web hibrida", "status": "completed", "commit": "254b551"},
-    {"id": "F24", "title": "Widgets nativos", "status": "completed", "commit": "bee9094"},
-    {"id": "F25", "title": "Privacidad GDPR", "status": "completed", "commit": "bee9094"},
-    {"id": "F26", "title": "QA + TFG + release", "status": "completed", "commit": "de55cb6"}
-  ]
-}
+{"pending":[],"active":[],"completed":[{"id":"REV-C1-C2-C3","title":"Auth l10n + catch blocks + repo migration + lint","status":"completed"},{"id":"REV-I1-I2","title":"Decompose screens + auth tests","status":"completed"}]}

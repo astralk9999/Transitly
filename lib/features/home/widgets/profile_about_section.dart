@@ -5,8 +5,9 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
+import '../../../core/utils/app_logger.dart';
+import '../../../data/auth/auth_repository.dart';
 import '../../../features/auth/auth_provider.dart';
-import '../../../features/auth/auth_repository.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/models/user_role.dart';
 import '../../../shared/providers/user_provider.dart';
@@ -93,7 +94,8 @@ class _ProfileAboutSectionState extends ConsumerState<ProfileAboutSection> {
               try {
                 await ref.read(authRepositoryProvider).deleteAccount();
                 if (context.mounted) context.go('/sign-in');
-              } catch (_) {
+              } catch (e) {
+                AppLogger.warn('ProfileAbout', 'delete account failed', e);
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(

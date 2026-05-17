@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../data/mock/mock_data_service.dart';
 import '../../features/auth/auth_provider.dart';
-import '../../features/auth/auth_repository.dart';
+import '../../data/auth/auth_repository.dart';
 import '../../shared/providers/user_provider.dart';
 import '../../shared/models/user_role.dart';
 import '../../features/auth/signin_screen.dart';

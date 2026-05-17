@@ -82,7 +82,8 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen> {
       } else {
         _availableRoutes = mockData.routes;
       }
-    } catch (_) {
+    } catch (e) {
+      AppLogger.warn('DriverDashboard', 'load routes failed, using mock', e);
       final mockData = ref.read(mockDataServiceProvider);
       _availableRoutes = mockData.routes;
     } finally {
@@ -102,7 +103,8 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen> {
       LocationPermission perm;
       try {
         perm = await Geolocator.checkPermission();
-      } catch (_) {
+      } catch (e) {
+        AppLogger.warn('DriverDashboard', 'check permission failed', e);
         perm = LocationPermission.denied;
       }
 
@@ -250,9 +252,7 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen> {
     final user = ref.watch(currentUserProvider);
     final mockData = ref.watch(mockDataServiceProvider);
 
-    if (_selectedOperator == null) {
-      _selectedOperator = mockData.operator_;
-    }
+    _selectedOperator ??= mockData.operator_;
 
     return Scaffold(
       backgroundColor: c.bgRoot,

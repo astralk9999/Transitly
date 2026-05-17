@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/theme/transit_colors.dart';
-import '../../../core/theme/transit_typography.dart';
-import '../../../core/utils/app_logger.dart';
-import '../../../data/supabase/supabase_client_provider.dart';
-import '../../../shared/providers/user_provider.dart';
-import '../../../shared/widgets/smoke_background.dart';
-import '../../../shared/widgets/transit_button.dart';
+import '../../core/theme/transit_colors.dart';
+import '../../core/theme/transit_typography.dart';
+import '../../core/utils/app_logger.dart';
+import '../../data/auth/auth_repository.dart';
+import '../../data/supabase/supabase_client_provider.dart';
+import '../../l10n/generated/app_localizations.dart';
+import '../../shared/providers/user_provider.dart';
+import '../../shared/widgets/smoke_background.dart';
+import '../../shared/widgets/transit_button.dart';
 import 'auth_provider.dart';
-import 'auth_repository.dart';
 
 class ActivateDriverScreen extends ConsumerStatefulWidget {
   const ActivateDriverScreen({super.key});
@@ -39,9 +40,10 @@ class _ActivateDriverScreenState extends ConsumerState<ActivateDriverScreen> {
   }
 
   Future<void> _activate() async {
+    final l10n = AppLocalizations.of(context);
     final code = _codeController.text.trim().toUpperCase();
     if (code.isEmpty) {
-      setState(() => _error = 'Introduce el código');
+      setState(() => _error = l10n.authActivateEnterCode);
       return;
     }
 
@@ -55,7 +57,7 @@ class _ActivateDriverScreenState extends ConsumerState<ActivateDriverScreen> {
       final client = ref.read(supabaseClientProvider);
       final session = client.auth.currentSession;
       if (session == null) {
-        setState(() => _error = 'Necesitas iniciar sesión primero');
+        setState(() => _error = l10n.authActivateNeedSession);
         _isLoading = false;
         return;
       }
@@ -65,19 +67,20 @@ class _ActivateDriverScreenState extends ConsumerState<ActivateDriverScreen> {
 
       if (result != null) {
         ref.read(isDriverModeProvider.notifier).state = true;
-        setState(() => _success = 'Bienvenido. Ya puedes usar el modo conductor.');
+        setState(() => _success = l10n.authActivateSuccess);
         AppLogger.info('ActivateDriver', 'code claimed successfully');
       }
     } catch (e) {
+      AppLogger.warn('ActivateDriver', 'code claim error', e);
       final msg = e.toString().toLowerCase();
       if (msg.contains('not found') || msg.contains('no encontrado')) {
-        setState(() => _error = 'Código no encontrado');
+        setState(() => _error = l10n.authActivateCodeNotFound);
       } else if (msg.contains('expired') || msg.contains('expirado')) {
-        setState(() => _error = 'El código ha expirado');
+        setState(() => _error = l10n.authActivateCodeExpired);
       } else if (msg.contains('max_uses') || msg.contains('agotado')) {
-        setState(() => _error = 'El código ya no tiene usos disponibles');
+        setState(() => _error = l10n.authActivateCodeDepleted);
       } else {
-        setState(() => _error = 'Error al activar el código');
+        setState(() => _error = l10n.authActivateError);
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);
@@ -88,6 +91,7 @@ class _ActivateDriverScreenState extends ConsumerState<ActivateDriverScreen> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
+    final l10n = AppLocalizations.of(context);
 
     final authState = ref.watch(authStateProvider).valueOrNull;
     final isAuth = authState is AuthAuthenticated;
@@ -107,11 +111,11 @@ class _ActivateDriverScreenState extends ConsumerState<ActivateDriverScreen> {
                   children: [
                     const Icon(Icons.directions_bus, size: 64, color: Colors.white70),
                     const SizedBox(height: 16),
-                    Text('Activar modo conductor',
+                    Text(l10n.authActivateDriverTitle,
                         style: TransitTypography.heading(c.textHi)),
                     const SizedBox(height: 8),
                     Text(
-                      'Tu compañía te ha dado un código.\nIntrodúcelo aquí para activar el modo conductor.',
+                      l10n.authActivateDriverHint,
                       style: TransitTypography.bodySecondary(c.textMid),
                       textAlign: TextAlign.center,
                     ),
@@ -125,9 +129,9 @@ class _ActivateDriverScreenState extends ConsumerState<ActivateDriverScreen> {
                           color: Colors.orangeAccent.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: const Text(
-                          'Necesitas iniciar sesión para activar el modo conductor.',
-                          style: TextStyle(color: Colors.orangeAccent),
+                        child: Text(
+                          l10n.authActivateNeedLogin,
+                          style: const TextStyle(color: Colors.orangeAccent),
                         ),
                       ),
                       const SizedBox(height: 16),
@@ -206,7 +210,7 @@ class _ActivateDriverScreenState extends ConsumerState<ActivateDriverScreen> {
                     const SizedBox(height: 24),
 
                     TransitButton(
-                      label: 'ACTIVAR',
+                      label: l10n.authActivateButton,
                       isPrimary: isAuth,
                       onPressed: isAuth ? _activate : null,
                     ),

@@ -1,5 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 
+import '../../core/utils/app_logger.dart';
+
 class FirebaseSetup {
   static bool _initialized = false;
 
@@ -8,9 +10,8 @@ class FirebaseSetup {
     try {
       await Firebase.initializeApp();
       _initialized = true;
-    } catch (_) {
-      // Firebase not configured yet — push will be unavailable
-      // App continues without push (graceful degradation)
+    } catch (e) {
+      AppLogger.warn('FirebaseSetup', 'Firebase init failed; push unavailable', e);
     }
   }
 

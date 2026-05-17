@@ -916,4 +916,207 @@ class AppLocalizationsEs extends AppLocalizations {
     );
     return 'Sincronizando $_temp0…';
   }
+
+  @override
+  String get authEmail => 'Email';
+
+  @override
+  String get authEmailHint => 'tu@email.com';
+
+  @override
+  String get authPassword => 'Contraseña';
+
+  @override
+  String get authPasswordHint => '••••••••';
+
+  @override
+  String get authPasswordMinHint => 'Mínimo 6 caracteres';
+
+  @override
+  String get authName => 'Nombre';
+
+  @override
+  String get authNameHint => 'Tu nombre';
+
+  @override
+  String get authRequired => 'Requerido';
+
+  @override
+  String get authRequiredField => 'Requerida';
+
+  @override
+  String get authInvalidEmail => 'Email inválido';
+
+  @override
+  String get authMinChars => 'Mínimo 6 caracteres';
+
+  @override
+  String get authEnterValidEmail => 'Introduce un email válido';
+
+  @override
+  String get authErrorConnection => 'Error de conexión';
+
+  @override
+  String get authErrorGoogle => 'Error de conexión con Google';
+
+  @override
+  String get authSignInSubtitle => 'Inicia sesión para continuar';
+
+  @override
+  String get authSignInButton => 'INICIAR SESIÓN';
+
+  @override
+  String get authSignInError => 'Error al iniciar sesión';
+
+  @override
+  String get authNoAccount => '¿No tienes cuenta?';
+
+  @override
+  String get authRegister => 'Regístrate';
+
+  @override
+  String get authForgotPassword => '¿Olvidaste tu contraseña?';
+
+  @override
+  String get authOrContinue => 'o continúa con';
+
+  @override
+  String get authGoogleButton => 'GOOGLE';
+
+  @override
+  String get authMagicLink => 'Acceder con enlace mágico';
+
+  @override
+  String get authSignUpTitle => 'Crear cuenta';
+
+  @override
+  String get authSignUpSubtitle => 'Únete a Transitly';
+
+  @override
+  String get authSignUpButton => 'CREAR CUENTA';
+
+  @override
+  String get authSignUpError => 'Error al registrarse';
+
+  @override
+  String get authAlreadyHaveAccount => '¿Ya tienes cuenta?';
+
+  @override
+  String get authSignInLink => 'Inicia sesión';
+
+  @override
+  String get authRecoverTitle => 'Recuperar contraseña';
+
+  @override
+  String get authRecoverSent =>
+      'Si el email existe, recibirás un enlace para restablecer tu contraseña.';
+
+  @override
+  String get authRecoverHint => 'Introduce tu email y te enviaremos un enlace';
+
+  @override
+  String get authSendLinkButton => 'ENVIAR ENLACE';
+
+  @override
+  String get authBackToSignIn => 'Volver al inicio de sesión';
+
+  @override
+  String get authRecoverError => 'Error al enviar la recuperación';
+
+  @override
+  String get authMagicLinkTitle => 'Enlace mágico';
+
+  @override
+  String get authMagicLinkSent =>
+      'Revisa tu email. Te hemos enviado un enlace para acceder.';
+
+  @override
+  String get authMagicLinkHint => 'Te enviamos un enlace de acceso a tu email';
+
+  @override
+  String get authMagicLinkError => 'Error al enviar el enlace';
+
+  @override
+  String get authVerifyTitle => 'Verifica tu email';
+
+  @override
+  String get authVerifyMessage =>
+      'Te hemos enviado un email de verificación. Revisa tu bandeja de entrada y haz clic en el enlace para continuar.';
+
+  @override
+  String get authResendButton => 'REENVIAR EMAIL';
+
+  @override
+  String get authSignOutAndBack => 'Cerrar sesión y volver';
+
+  @override
+  String get authResendSuccess => 'Email de verificación reenviado.';
+
+  @override
+  String get authResendError => 'Error al reenviar';
+
+  @override
+  String get authActivateDriverTitle => 'Activar modo conductor';
+
+  @override
+  String get authActivateDriverHint =>
+      'Tu compañía te ha dado un código.\nIntrodúcelo aquí para activar el modo conductor.';
+
+  @override
+  String get authActivateNeedLogin =>
+      'Necesitas iniciar sesión para activar el modo conductor.';
+
+  @override
+  String get authActivateButton => 'ACTIVAR';
+
+  @override
+  String get authActivateEnterCode => 'Introduce el código';
+
+  @override
+  String get authActivateCodeNotFound => 'Código no encontrado';
+
+  @override
+  String get authActivateCodeExpired => 'El código ha expirado';
+
+  @override
+  String get authActivateCodeDepleted =>
+      'El código ya no tiene usos disponibles';
+
+  @override
+  String get authActivateError => 'Error al activar el código';
+
+  @override
+  String get authActivateNeedSession => 'Necesitas iniciar sesión primero';
+
+  @override
+  String get authActivateSuccess =>
+      'Bienvenido. Ya puedes usar el modo conductor.';
+
+  @override
+  String get authSignOutTitle => '¿Cerrar sesión?';
+
+  @override
+  String get authSignOutMessage =>
+      'Volverás a la pantalla de inicio de sesión.';
+
+  @override
+  String get authSignOutCancel => 'CANCELAR';
+
+  @override
+  String get authSignOutConfirm => 'CERRAR SESIÓN';
+
+  @override
+  String get authDeleteAccountTitle => '¿Eliminar cuenta?';
+
+  @override
+  String get authDeleteAccountMessage => 'Esta acción es irreversible.';
+
+  @override
+  String get authDeleteAccountButton => 'ELIMINAR';
+
+  @override
+  String get authDeleteAccountError => 'No se pudo eliminar la cuenta';
+
+  @override
+  String get authDeleteAccountCancel => 'CANCELAR';
 }

@@ -425,7 +425,8 @@ class ThemeNotifier extends ChangeNotifier {
         return Color(int.parse(s, radix: 16));
       }
       return null;
-    } catch (_) {
+    } catch (e) {
+      AppLogger.warn(_logTag, 'parseHexColor failed', e);
       return null;
     }
   }

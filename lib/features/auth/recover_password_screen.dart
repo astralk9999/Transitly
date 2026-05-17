@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/theme/transit_colors.dart';
-import '../../../core/theme/transit_typography.dart';
-import '../../../shared/widgets/smoke_background.dart';
+import '../../core/theme/transit_colors.dart';
+import '../../core/theme/transit_typography.dart';
+import '../../core/utils/app_logger.dart';
+import '../../data/auth/auth_repository.dart';
+import '../../l10n/generated/app_localizations.dart';
+import '../../shared/widgets/smoke_background.dart';
 import 'auth_provider.dart';
-import 'auth_repository.dart';
 import 'widgets/auth_field.dart';
 import 'widgets/auth_submit_button.dart';
 
@@ -32,8 +34,9 @@ class _RecoverPasswordScreenState extends ConsumerState<RecoverPasswordScreen> {
 
   Future<void> _submit() async {
     final email = _emailController.text.trim();
+    final l10n = AppLocalizations.of(context);
     if (email.isEmpty || !email.contains('@')) {
-      setState(() => _error = 'Introduce un email válido');
+      setState(() => _error = l10n.authEnterValidEmail);
       return;
     }
 
@@ -46,9 +49,10 @@ class _RecoverPasswordScreenState extends ConsumerState<RecoverPasswordScreen> {
       await ref.read(authRepositoryProvider).recoverPassword(email);
       setState(() => _sent = true);
     } on AuthRepoException catch (e) {
-      setState(() => _error = e.message ?? 'Error al enviar la recuperación');
-    } catch (_) {
-      setState(() => _error = 'Error de conexión');
+      setState(() => _error = e.message ?? l10n.authRecoverError);
+    } catch (e) {
+      AppLogger.warn('RecoverPassword', 'recover password error', e);
+      setState(() => _error = l10n.authErrorConnection);
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -58,6 +62,7 @@ class _RecoverPasswordScreenState extends ConsumerState<RecoverPasswordScreen> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: c.bgRoot,
@@ -72,13 +77,13 @@ class _RecoverPasswordScreenState extends ConsumerState<RecoverPasswordScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text('Recuperar contraseña',
+                    Text(l10n.authRecoverTitle,
                         style: TransitTypography.heading(c.textHi)),
                     const SizedBox(height: 8),
                     Text(
                       _sent
-                          ? 'Si el email existe, recibirás un enlace para restablecer tu contraseña.'
-                          : 'Introduce tu email y te enviaremos un enlace',
+                          ? l10n.authRecoverSent
+                          : l10n.authRecoverHint,
                       style: TransitTypography.bodySecondary(c.textMid),
                       textAlign: TextAlign.center,
                     ),
@@ -100,8 +105,8 @@ class _RecoverPasswordScreenState extends ConsumerState<RecoverPasswordScreen> {
 
                     if (!_sent) ...[
                       AuthField(
-                        label: 'Email',
-                        hint: 'tu@email.com',
+                        label: l10n.authEmail,
+                        hint: l10n.authEmailHint,
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
                         textInputAction: TextInputAction.done,
@@ -109,7 +114,7 @@ class _RecoverPasswordScreenState extends ConsumerState<RecoverPasswordScreen> {
                       ),
                       const SizedBox(height: 24),
                       AuthSubmitButton(
-                        label: 'ENVIAR ENLACE',
+                        label: l10n.authSendLinkButton,
                         isLoading: _isLoading,
                         onPressed: _submit,
                       ),
@@ -118,7 +123,7 @@ class _RecoverPasswordScreenState extends ConsumerState<RecoverPasswordScreen> {
                     const SizedBox(height: 16),
                     TextButton(
                       onPressed: () => context.go('/sign-in'),
-                      child: Text('Volver al inicio de sesión',
+                      child: Text(l10n.authBackToSignIn,
                           style: TransitTypography.bodySmall(c.accent)),
                     ),
                     const SizedBox(height: 32),

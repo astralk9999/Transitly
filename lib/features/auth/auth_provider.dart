@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' show User;
 
+import '../../data/auth/auth_repository.dart';
+import '../../data/auth/auth_repository_supabase.dart';
 import '../../data/supabase/supabase_client_provider.dart';
-import 'auth_repository.dart';
-import 'auth_repository_supabase.dart';
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
   final client = ref.watch(supabaseClientProvider);

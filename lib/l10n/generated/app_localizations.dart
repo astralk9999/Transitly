@@ -1765,6 +1765,396 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Sincronizando {count, plural, =1{1 acción pendiente} other{{count} acciones pendientes}}…'**
   String offlineBannerSyncing(int count);
+
+  /// Auth: email field label
+  ///
+  /// In es, this message translates to:
+  /// **'Email'**
+  String get authEmail;
+
+  /// Auth: email field hint
+  ///
+  /// In es, this message translates to:
+  /// **'tu@email.com'**
+  String get authEmailHint;
+
+  /// Auth: password field label
+  ///
+  /// In es, this message translates to:
+  /// **'Contraseña'**
+  String get authPassword;
+
+  /// Auth: password field hint
+  ///
+  /// In es, this message translates to:
+  /// **'••••••••'**
+  String get authPasswordHint;
+
+  /// Auth: password minimum length hint
+  ///
+  /// In es, this message translates to:
+  /// **'Mínimo 6 caracteres'**
+  String get authPasswordMinHint;
+
+  /// Auth: name field label
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre'**
+  String get authName;
+
+  /// Auth: name field hint
+  ///
+  /// In es, this message translates to:
+  /// **'Tu nombre'**
+  String get authNameHint;
+
+  /// Auth: required field validation
+  ///
+  /// In es, this message translates to:
+  /// **'Requerido'**
+  String get authRequired;
+
+  /// Auth: required field validation (feminine)
+  ///
+  /// In es, this message translates to:
+  /// **'Requerida'**
+  String get authRequiredField;
+
+  /// Auth: invalid email validation
+  ///
+  /// In es, this message translates to:
+  /// **'Email inválido'**
+  String get authInvalidEmail;
+
+  /// Auth: minimum 6 characters validation
+  ///
+  /// In es, this message translates to:
+  /// **'Mínimo 6 caracteres'**
+  String get authMinChars;
+
+  /// Auth: enter valid email error
+  ///
+  /// In es, this message translates to:
+  /// **'Introduce un email válido'**
+  String get authEnterValidEmail;
+
+  /// Auth: connection error
+  ///
+  /// In es, this message translates to:
+  /// **'Error de conexión'**
+  String get authErrorConnection;
+
+  /// Auth: Google connection error
+  ///
+  /// In es, this message translates to:
+  /// **'Error de conexión con Google'**
+  String get authErrorGoogle;
+
+  /// Auth: sign in screen subtitle
+  ///
+  /// In es, this message translates to:
+  /// **'Inicia sesión para continuar'**
+  String get authSignInSubtitle;
+
+  /// Auth: sign in button
+  ///
+  /// In es, this message translates to:
+  /// **'INICIAR SESIÓN'**
+  String get authSignInButton;
+
+  /// Auth: sign in error fallback
+  ///
+  /// In es, this message translates to:
+  /// **'Error al iniciar sesión'**
+  String get authSignInError;
+
+  /// Auth: no account question
+  ///
+  /// In es, this message translates to:
+  /// **'¿No tienes cuenta?'**
+  String get authNoAccount;
+
+  /// Auth: register link
+  ///
+  /// In es, this message translates to:
+  /// **'Regístrate'**
+  String get authRegister;
+
+  /// Auth: forgot password link
+  ///
+  /// In es, this message translates to:
+  /// **'¿Olvidaste tu contraseña?'**
+  String get authForgotPassword;
+
+  /// Auth: or continue with divider
+  ///
+  /// In es, this message translates to:
+  /// **'o continúa con'**
+  String get authOrContinue;
+
+  /// Auth: Google sign in button
+  ///
+  /// In es, this message translates to:
+  /// **'GOOGLE'**
+  String get authGoogleButton;
+
+  /// Auth: magic link access button
+  ///
+  /// In es, this message translates to:
+  /// **'Acceder con enlace mágico'**
+  String get authMagicLink;
+
+  /// Auth: sign up screen title
+  ///
+  /// In es, this message translates to:
+  /// **'Crear cuenta'**
+  String get authSignUpTitle;
+
+  /// Auth: sign up screen subtitle
+  ///
+  /// In es, this message translates to:
+  /// **'Únete a Transitly'**
+  String get authSignUpSubtitle;
+
+  /// Auth: sign up button
+  ///
+  /// In es, this message translates to:
+  /// **'CREAR CUENTA'**
+  String get authSignUpButton;
+
+  /// Auth: sign up error fallback
+  ///
+  /// In es, this message translates to:
+  /// **'Error al registrarse'**
+  String get authSignUpError;
+
+  /// Auth: already have account question
+  ///
+  /// In es, this message translates to:
+  /// **'¿Ya tienes cuenta?'**
+  String get authAlreadyHaveAccount;
+
+  /// Auth: sign in link
+  ///
+  /// In es, this message translates to:
+  /// **'Inicia sesión'**
+  String get authSignInLink;
+
+  /// Auth: recover password screen title
+  ///
+  /// In es, this message translates to:
+  /// **'Recuperar contraseña'**
+  String get authRecoverTitle;
+
+  /// Auth: recover password sent message
+  ///
+  /// In es, this message translates to:
+  /// **'Si el email existe, recibirás un enlace para restablecer tu contraseña.'**
+  String get authRecoverSent;
+
+  /// Auth: recover password hint
+  ///
+  /// In es, this message translates to:
+  /// **'Introduce tu email y te enviaremos un enlace'**
+  String get authRecoverHint;
+
+  /// Auth: send link button
+  ///
+  /// In es, this message translates to:
+  /// **'ENVIAR ENLACE'**
+  String get authSendLinkButton;
+
+  /// Auth: back to sign in link
+  ///
+  /// In es, this message translates to:
+  /// **'Volver al inicio de sesión'**
+  String get authBackToSignIn;
+
+  /// Auth: recover password error fallback
+  ///
+  /// In es, this message translates to:
+  /// **'Error al enviar la recuperación'**
+  String get authRecoverError;
+
+  /// Auth: magic link screen title
+  ///
+  /// In es, this message translates to:
+  /// **'Enlace mágico'**
+  String get authMagicLinkTitle;
+
+  /// Auth: magic link sent message
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa tu email. Te hemos enviado un enlace para acceder.'**
+  String get authMagicLinkSent;
+
+  /// Auth: magic link hint
+  ///
+  /// In es, this message translates to:
+  /// **'Te enviamos un enlace de acceso a tu email'**
+  String get authMagicLinkHint;
+
+  /// Auth: magic link error fallback
+  ///
+  /// In es, this message translates to:
+  /// **'Error al enviar el enlace'**
+  String get authMagicLinkError;
+
+  /// Auth: email verification screen title
+  ///
+  /// In es, this message translates to:
+  /// **'Verifica tu email'**
+  String get authVerifyTitle;
+
+  /// Auth: email verification message
+  ///
+  /// In es, this message translates to:
+  /// **'Te hemos enviado un email de verificación. Revisa tu bandeja de entrada y haz clic en el enlace para continuar.'**
+  String get authVerifyMessage;
+
+  /// Auth: resend verification button
+  ///
+  /// In es, this message translates to:
+  /// **'REENVIAR EMAIL'**
+  String get authResendButton;
+
+  /// Auth: sign out and go back
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar sesión y volver'**
+  String get authSignOutAndBack;
+
+  /// Auth: resend success toast
+  ///
+  /// In es, this message translates to:
+  /// **'Email de verificación reenviado.'**
+  String get authResendSuccess;
+
+  /// Auth: resend error fallback
+  ///
+  /// In es, this message translates to:
+  /// **'Error al reenviar'**
+  String get authResendError;
+
+  /// Auth: activate driver screen title
+  ///
+  /// In es, this message translates to:
+  /// **'Activar modo conductor'**
+  String get authActivateDriverTitle;
+
+  /// Auth: activate driver hint text
+  ///
+  /// In es, this message translates to:
+  /// **'Tu compañía te ha dado un código.\nIntrodúcelo aquí para activar el modo conductor.'**
+  String get authActivateDriverHint;
+
+  /// Auth: activate driver need login message
+  ///
+  /// In es, this message translates to:
+  /// **'Necesitas iniciar sesión para activar el modo conductor.'**
+  String get authActivateNeedLogin;
+
+  /// Auth: activate driver button
+  ///
+  /// In es, this message translates to:
+  /// **'ACTIVAR'**
+  String get authActivateButton;
+
+  /// Auth: activate driver enter code error
+  ///
+  /// In es, this message translates to:
+  /// **'Introduce el código'**
+  String get authActivateEnterCode;
+
+  /// Auth: activate driver code not found
+  ///
+  /// In es, this message translates to:
+  /// **'Código no encontrado'**
+  String get authActivateCodeNotFound;
+
+  /// Auth: activate driver code expired
+  ///
+  /// In es, this message translates to:
+  /// **'El código ha expirado'**
+  String get authActivateCodeExpired;
+
+  /// Auth: activate driver code depleted
+  ///
+  /// In es, this message translates to:
+  /// **'El código ya no tiene usos disponibles'**
+  String get authActivateCodeDepleted;
+
+  /// Auth: activate driver error fallback
+  ///
+  /// In es, this message translates to:
+  /// **'Error al activar el código'**
+  String get authActivateError;
+
+  /// Auth: activate driver need session error
+  ///
+  /// In es, this message translates to:
+  /// **'Necesitas iniciar sesión primero'**
+  String get authActivateNeedSession;
+
+  /// Auth: activate driver success message
+  ///
+  /// In es, this message translates to:
+  /// **'Bienvenido. Ya puedes usar el modo conductor.'**
+  String get authActivateSuccess;
+
+  /// Auth: sign out confirmation title
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cerrar sesión?'**
+  String get authSignOutTitle;
+
+  /// Auth: sign out confirmation message
+  ///
+  /// In es, this message translates to:
+  /// **'Volverás a la pantalla de inicio de sesión.'**
+  String get authSignOutMessage;
+
+  /// Auth: sign out cancel button
+  ///
+  /// In es, this message translates to:
+  /// **'CANCELAR'**
+  String get authSignOutCancel;
+
+  /// Auth: sign out confirm button
+  ///
+  /// In es, this message translates to:
+  /// **'CERRAR SESIÓN'**
+  String get authSignOutConfirm;
+
+  /// Auth: delete account confirmation title
+  ///
+  /// In es, this message translates to:
+  /// **'¿Eliminar cuenta?'**
+  String get authDeleteAccountTitle;
+
+  /// Auth: delete account confirmation message
+  ///
+  /// In es, this message translates to:
+  /// **'Esta acción es irreversible.'**
+  String get authDeleteAccountMessage;
+
+  /// Auth: delete account button
+  ///
+  /// In es, this message translates to:
+  /// **'ELIMINAR'**
+  String get authDeleteAccountButton;
+
+  /// Auth: delete account error toast
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo eliminar la cuenta'**
+  String get authDeleteAccountError;
+
+  /// Auth: delete account cancel button
+  ///
+  /// In es, this message translates to:
+  /// **'CANCELAR'**
+  String get authDeleteAccountCancel;
 }
 
 class _AppLocalizationsDelegate

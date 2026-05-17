@@ -37,6 +37,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
 
+    final l10n = AppLocalizations.of(context);
     setState(() {
       _isLoading = true;
       _error = null;
@@ -47,10 +48,10 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
           .read(authRepositoryProvider)
           .signInWithEmail(_emailController.text, _passwordController.text);
     } on AuthRepoException catch (e) {
-      setState(() => _error = e.message ?? 'Error al iniciar sesión');
+      setState(() => _error = e.message ?? l10n.authSignInError);
     } catch (e) {
       AppLogger.warn('SignIn', 'sign in error', e);
-      setState(() => _error = 'Error de conexión');
+      setState(() => _error = l10n.authErrorConnection);
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }

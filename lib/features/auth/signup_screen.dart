@@ -38,6 +38,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
 
+    final l10n = AppLocalizations.of(context);
     setState(() {
       _isLoading = true;
       _error = null;
@@ -50,10 +51,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             _nameController.text,
           );
     } on AuthRepoException catch (e) {
-      setState(() => _error = e.message ?? 'Error al registrarse');
+      setState(() => _error = e.message ?? l10n.authSignUpError);
     } catch (e) {
       AppLogger.warn('SignUp', 'sign up error', e);
-      setState(() => _error = 'Error de conexión');
+      setState(() => _error = l10n.authErrorConnection);
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }

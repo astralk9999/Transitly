@@ -52,13 +52,13 @@ Verified quality metrics (2026-05-15):
 - **Flutter** 3.9.2+ / **Dart** 3 (strict casts + strict raw types)
 - **Riverpod** 2.6 (StateProviders, derived providers, `overrideWith` in tests)
 - **go_router** 14.8 with `StatefulShellRoute` and per-route `redirect`
-- **Supabase** (`supabase_flutter` 2.8) — auth, 16 SQL migrations, 2 Edge
+- **Supabase** (`supabase_flutter` 2.8) — auth, 13 SQL migrations, 2 Edge
   Functions; `domain/local/mock/remote` repository pattern per entity
 - **Firebase / FCM** (`firebase_messaging`) — push, with graceful degradation
 - **Sentry + PostHog** — crash reporting / analytics, consent-gated
 - **flutter_map** 7.0 + `latlong2`; **MapTiler** + FMTC offline tile caching
 - **nfc_manager** 3.5 over Mifare Classic (sector keys via `--dart-define`)
-- **Astro** SSR marketing site + Flutter Web islands (`astro/`, `lib/web_entry/`)
+- **Astro** SSR marketing site (`astro/`)
 - Native Android/iOS home widgets (`home_widget`, `workmanager`)
 - **google_fonts** for IBM Plex Mono + DM Sans (runtime fetch; bundling = TODO F26)
 - **flutter_localizations** + ARB generation (`flutter gen-l10n`)
@@ -123,7 +123,7 @@ realistic. Structural assertions cover the same surface.
 Strings live in `lib/l10n/app_es.arb` (template) and `lib/l10n/app_en.arb`,
 generated into `lib/l10n/generated/`. The selector is at **Profile →
 Accessibility → Idioma** (`localeProvider`). Both ARB files are **complete and
-in sync** (275 keys each, verified by key — the earlier "~60 %" figure was a
+in sync** (343 keys each, verified by key — the earlier "~60 %" figure was a
 miscount of a multiline ARB by line, not by key). A few widgets still build
 Spanish strings inline rather than via l10n; the driver-side route editor is
 also single-locale (`es`) — internal tooling for the demo persona.

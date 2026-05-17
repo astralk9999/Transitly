@@ -14,21 +14,64 @@
 
 ---
 
-## 1. Hechos duros verificados (ejecutados en `master @ 5077099`)
+## 1. Hechos duros verificados (ejecutados localmente; CI verificado en GitHub)
 
 | Verificación | Resultado real | Estado anterior | Δ |
 |---|---|---|:--:|
-| `flutter analyze` | **0 issues** ("No issues found", 19,4 s) | 6 info | ✅ **Mejora real** |
+| `flutter analyze` | **0 issues** ("No issues found") | 6 info | ✅ **Mejora real** |
 | `flutter test` | **148 / 148 passing** (suite completa, exit 0) | 143 | ✅ +5 |
 | Cobertura de líneas | **24,74 %** (LH=3860 / LF=15605) | 23,22 % | ✅ +1,52 pp |
 | i18n ES/EN | **343 / 343 claves**, 0 diferencias | 278/278 | ✅ +65, sincronizado |
 | Auth en capa correcta | `lib/data/auth/` con imports íntegros | en `features/` | ✅ Corregido |
+| **CI GitHub Actions** | **`success`** los 3 jobs (`@62f5ee0`) | **rojo desde `de55cb6`** (jamás verde) | ✅ **Arreglado (ver §1bis)** |
 
 **Conclusión:** el commit `5077099` es **trabajo legítimo y verificable**, no
 cosmético. Lint a cero, +5 tests, cobertura al alza, i18n ampliado y
 sincronizado, y la violación de capas de `auth` corregida. La afirmación
 "resolve **all** P0/P1" es, no obstante, **exagerada**: C1 e I2 quedaron
 incompletos (ver §3).
+
+---
+
+## 1bis. Hallazgo nuevo (3.ª pasada): el CI **nunca había pasado**
+
+**Severidad: 🟠 Alto (de proceso) — descubierto y resuelto en esta pasada.**
+
+Al verificar el CI en GitHub Actions se descubrió que **todas** las
+ejecuciones desde que se añadió el pipeline (`de55cb6 chore(release): add
+CI pipeline`) estaban en **rojo** — incluidas las de las dos rondas de
+remediación previas. El "CI verde" nunca existió; los "hechos duros" de las
+pasadas 1 y 2 eran **solo locales**.
+
+**Causa raíz** (de los logs de Actions, descargados con autenticación
+porque la API pública devolvía 403):
+
+```
+warning • The asset file '.env' doesn't exist • pubspec.yaml:102:7
+Error: Failed to build asset bundle
+##[error]Process completed with exit code 1
+```
+
+`pubspec.yaml:102` declara `- .env` como **asset bundleado**, pero `.env`
+está (correctamente) gitignored → en una checkout limpia de CI no existe →
+`flutter analyze`, `flutter test` y `flutter build web` **fallan los tres**
+al construir el asset bundle. Es el **mismo anti-patrón SEC2** ya señalado
+en este informe; tenía además este efecto colateral oculto que invalidaba
+el pipeline entero. Agravante de proceso: `AGENTS.md` y los commits exigían
+"`flutter analyze` limpio y tests verdes" por commit, pero **sin CI
+operativo** esa garantía nunca se ejerció de forma reproducible.
+
+**Fix aplicado** (`62f5ee0`): paso `cp .env.example .env` antes de instalar
+dependencias en los 3 jobs. Se verificó previamente que **ningún test
+referencia `Env`/`dotenv`**, por lo que materializar la plantilla no altera
+el comportamiento de los 148 tests. Resultado verificado en GitHub: run
+`26004101903`, **3/3 jobs `success`** — CI **verde por primera vez en la
+historia del repositorio**.
+
+**Deuda residual:** el fix de CI es pragmático y correcto, pero **no cierra
+SEC2**: `.env` se sigue bundleando como asset. Lo correcto a futuro sigue
+siendo no bundlearlo y pasar a `--dart-define` (documentado en `ci.yml` y en
+§5/SEC2).
 
 ---
 
@@ -102,7 +145,7 @@ incompletos (ver §3).
 | Backend / seguridad | **7.5** | +0.5 | S1: `redirect:"manual"` + IPv6 privado + DNS anti-rebinding. S2: fail-closed. Resta TOCTOU residual (documentado) y DNS best-effort. |
 | Privacidad / GDPR | **8.0** | +1.0 | Revocación efectiva en caliente (`Posthog().disable()`/`SentrySetup.close()` + invalidación de provider); `deleteAccount` roto eliminado, borrado por flujo real. Resta UI `?? true` cosmética. |
 | Pruebas | **5.0** | = | 148 reales, `bus_estimator` ejemplar; pero auth + 7 repos `remote` siguen a **0 %**; ~40 % smoke. |
-| CI | **6.5** | +2.0 | Flutter 3.35.x alineado a Dart `^3.9.2`, `--coverage` + artefacto, build web release. Sin gate de umbral (decisión: evita falsos rojos) ni `dart format` (el proyecto no lo usa). |
+| CI | **6.5** | +2.0 | Flutter 3.35.x alineado a Dart `^3.9.2`, `--coverage` + artefacto, build web release. **Descubierto: el CI nunca había pasado** (asset `.env` ausente, ver §1bis) → arreglado y **verde verificado en GitHub** (`@62f5ee0`). La nota no sube más porque el verde es reciente y sin gate de umbral; penaliza que el rojo perduró sin detectarse en 2 rondas previas. |
 | Documentación / coherencia | **7.5** | = | README honesto y verificable; commits trazables. Resta F26 abierto. |
 | Accesibilidad | **6.5** | = | Esfuerzo real; "AA parcial" defendible, "AA" pleno no. |
 | Rendimiento | **6.5** | = | `smoke_background` cuidado; falta `RepaintBoundary` en `features/`. |
@@ -164,8 +207,10 @@ server-side.
 - **SEC2. `.env` empaquetado como asset** (`pubspec.yaml:102`) — extraíble del
   APK. Riesgo bajo hoy (solo `ANON_KEY` público) pero anti-patrón; mover a
   `--dart-define` antes de añadir cualquier clave con coste.
-- **CI1. Pipeline incompleto** — sin coverage gate, sin `dart format
-  --set-exit-if-changed`, sin build de release, Flutter 3.32.x vs Dart `^3.9.2`.
+- ~~**CI1. Pipeline incompleto**~~ → **RESUELTO + agravante descubierto**: no
+  solo estaba incompleto, **nunca había pasado** (asset `.env` ausente, ver
+  §1bis). Arreglado: Flutter 3.35.x, `--coverage`+artefacto, build release,
+  `.env` provisionado → **CI verde verificado en GitHub** (`@62f5ee0`).
 - **C1-resid. 4 strings ES de error en pantallas auth** (ver §3).
 - **U2. "WCAG AA" defendible solo como "parcial"** — mapa sin `Semantics`,
   Semantics en ES hardcodeado, `Pressable` sin suelo 48 dp, `textScaler` pisa
@@ -214,10 +259,13 @@ server-side.
   `analyticsServiceProvider` (P1-GDPR); `deleteAccount()` roto **eliminado**
   del interface/impl y el caller redirigido al flujo real
   `data_deletion_requests` + `signOut` + l10n (P2-GDPR).
-- ✅ **HECHO:** CI — Flutter alineado a `3.35.x` (Dart 3.9 ↔ `^3.9.2`),
-  `flutter test --coverage` + artefacto lcov, job de `flutter build web
-  --release`. **NO** se añadió gate de `dart format`: el proyecto no lo usa
-  (AGENTS.md) y forzarlo reformatearía 260 ficheros (ruido/riesgo) (CI1).
+- ✅ **HECHO + verificado en GitHub:** CI — Flutter `3.35.x` (Dart 3.9 ↔
+  `^3.9.2`), `flutter test --coverage` + artefacto lcov, build web release.
+  **Hallazgo clave (§1bis):** el CI **nunca había pasado** por el asset
+  `.env` ausente; provisionado desde plantilla → **3/3 jobs `success`**
+  (`@62f5ee0`, run `26004101903`). **NO** se añadió gate de `dart format`:
+  el proyecto no lo usa (AGENTS.md) y forzarlo reformatearía 260 ficheros
+  (ruido/riesgo) (CI1).
 - ⏳ **PENDIENTE (decisión de diseño):** unificar modelo de usuario
   mock↔Supabase (C2-EST); tests reales de `auth_repository_supabase`.
 
@@ -239,6 +287,10 @@ i18n 343/343, y en la 3.ª pasada — GDPR con revocación efectiva en caliente,
 `deleteAccount` roto eliminado, SSRF de `import_gtfs` endurecido,
 `send_notification` fail-closed, CI alineado con cobertura y build de release.
 `web_entry/` muerto y los 4 strings ES residuales también quedaron resueltos.
+La 3.ª pasada destapó además un fallo de proceso relevante: **el CI nunca
+había estado verde** (asset `.env` ausente) — las garantías de "tests verdes
+por commit" eran solo locales; ya está arreglado y **verificado verde en
+GitHub**.
 
 La nota pasa a **7.7/10**. El +0.2 (no más) es deliberado: las correcciones
 fueron numerosas y reales, pero las tres barreras de fondo siguen intactas y

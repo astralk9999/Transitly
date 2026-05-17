@@ -65,6 +65,4 @@ abstract class AuthRepository {
   Future<void> resendVerification();
 
   Future<void> signOut();
-
-  Future<void> deleteAccount();
 }

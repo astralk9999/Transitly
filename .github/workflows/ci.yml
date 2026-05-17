@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [main, master]
 
+env:
+  # Alineado con pubspec `sdk: ^3.9.2`. Flutter 3.35.x trae Dart 3.9;
+  # 3.32.x traía Dart 3.8 → fallaba la resolución del constraint.
+  FLUTTER_VERSION: "3.35.x"
+
 jobs:
   analyze:
     name: Flutter Analyze
@@ -16,7 +21,7 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.32.x"
+          flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: stable
           cache: true
 
@@ -41,7 +46,7 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.32.x"
+          flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: stable
           cache: true
 
@@ -54,5 +59,40 @@ jobs:
       - name: Run build_runner
         run: dart run build_runner build --delete-conflicting-outputs
 
-      - name: Flutter test
-        run: flutter test
+      - name: Flutter test (with coverage)
+        run: flutter test --coverage
+
+      - name: Upload coverage artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lcov
+          path: coverage/lcov.info
+          if-no-files-found: warn
+
+  build:
+    name: Build Web (release)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Generate l10n
+        run: flutter gen-l10n
+
+      - name: Run build_runner
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      # Valida que la app compila en release (el CI verde no lo garantizaba).
+      # `.env` es obligatorio en arranque pero NO en build; se omite aquí.
+      - name: Flutter build web (release)
+        run: flutter build web --release

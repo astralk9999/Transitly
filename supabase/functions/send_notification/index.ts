@@ -89,6 +89,12 @@ serve(async (req: Request) => {
     );
 
     // Rate-limit: cuenta notificaciones del usuario en los últimos 60s.
+    // NOTA (deuda conocida): el conteo no es atómico respecto al INSERT
+    // posterior — bajo ráfaga concurrente de triggers puede superarse el
+    // límite (TOCTOU). Un límite estricto exigiría un contador con lock
+    // en BD; aquí es best-effort por destinatario. Lo que SÍ se cierra
+    // abajo: si el INSERT falla no se envía push (fail-closed), de modo
+    // que el limitador no queda ciego ante inserts fallidos.
     const since = new Date(Date.now() - 60_000).toISOString();
     const { count: recentCount } = await supabase
       .from("notifications")
@@ -121,7 +127,14 @@ serve(async (req: Request) => {
       });
 
     if (notifError) {
+      // Fail-closed: sin fila en `notifications` el rate-limit (que cuenta
+      // esas filas) quedaría ciego y el push se enviaría igualmente,
+      // haciendo el límite evadible. Abortamos en su lugar.
       console.error("[send_notification] insert error:", notifError);
+      return new Response(
+        JSON.stringify({ error: "Failed to persist notification" }),
+        { status: 502, headers: JSON_HEADERS },
+      );
     }
 
     // 2 ── Buscar device_tokens del usuario ─────────────────────────

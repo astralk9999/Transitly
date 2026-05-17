@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../core/utils/app_logger.dart';
+import '../../core/utils/sentry_setup.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../features/auth/auth_provider.dart';
@@ -51,6 +53,19 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen> {
     if (authState is! AuthAuthenticated) return;
     final repo = ref.read(privacyConsentRepositoryProvider);
     await repo.setConsent(authState.user.id, kind, value);
+
+    // GDPR: la retirada del consentimiento debe ser tan efectiva como
+    // otorgarlo. Aplicar el cambio en caliente, sin esperar a reiniciar.
+    if (kind == 'analytics' && !value) {
+      await Posthog().disable();
+    }
+    if (kind == 'crash_reporting' && !value) {
+      await SentrySetup.close();
+    }
+    // Reconstruye analyticsServiceProvider (observa privacyConsentsProvider):
+    // al re-otorgar 'analytics' volverá a instanciar PostHog (que llama
+    // a enable()); al revocar, devolverá NoopAnalyticsService.
+    ref.invalidate(privacyConsentsProvider);
   }
 
   Future<void> _requestDataExport() async {

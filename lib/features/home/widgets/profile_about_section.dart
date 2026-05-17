@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
@@ -64,6 +65,7 @@ class _ProfileAboutSectionState extends ConsumerState<ProfileAboutSection> {
   }
 
   void _showDeleteConfirmation(BuildContext context, TransitColorScheme c) {
+    final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -71,35 +73,57 @@ class _ProfileAboutSectionState extends ConsumerState<ProfileAboutSection> {
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
         title: Text(
-          '¿Eliminar cuenta?',
+          l10n.privacyDeleteConfirmTitle,
           style: TransitTypography.heading(c.textHi),
         ),
         content: Text(
-          'Esta acción es irreversible.',
+          l10n.privacyDeleteConfirmMessage,
           style: TransitTypography.bodySecondary(c.textMid),
         ),
         actions: [
           TransitButton(
-            label: 'CANCELAR',
+            label: l10n.privacyDeleteConfirmCancel,
             isPrimary: false,
             isSmall: true,
             onPressed: () => Navigator.of(ctx).pop(),
           ),
           TransitButton(
-            label: 'ELIMINAR',
+            label: l10n.privacyDeleteConfirmAction,
             isDanger: true,
             isSmall: true,
             onPressed: () async {
               Navigator.of(ctx).pop();
+              // El borrado real es una solicitud diferida (30 días) vía
+              // `data_deletion_requests` — el mismo flujo que la pantalla
+              // de Privacidad. No se usa la admin API (requiere
+              // service_role; inaccesible desde el cliente).
+              final authState = ref.read(authStateProvider).valueOrNull;
+              if (authState is! AuthAuthenticated) return;
               try {
-                await ref.read(authRepositoryProvider).deleteAccount();
-                if (context.mounted) context.go('/sign-in');
+                await Supabase.instance.client
+                    .from('data_deletion_requests')
+                    .insert({
+                  'user_id': authState.user.id,
+                  'status': 'requested',
+                  'requested_at':
+                      DateTime.now().toUtc().toIso8601String(),
+                  'scheduled_at': DateTime.now()
+                      .toUtc()
+                      .add(const Duration(days: 30))
+                      .toIso8601String(),
+                });
+                await ref.read(authRepositoryProvider).signOut();
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(l10n.privacyDeletionRequested)),
+                  );
+                  context.go('/sign-in');
+                }
               } catch (e) {
                 AppLogger.warn('ProfileAbout', 'delete account failed', e);
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content: Text('No se pudo eliminar la cuenta')),
+                    SnackBar(content: Text(l10n.authDeleteAccountError)),
                   );
                 }
               }

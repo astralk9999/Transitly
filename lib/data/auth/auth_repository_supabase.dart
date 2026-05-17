@@ -168,16 +168,6 @@ class AuthRepositorySupabase implements AuthRepository {
     }
   }
 
-  @override
-  Future<void> deleteAccount() async {
-    try {
-      await _client.auth.admin.deleteUser(currentUser!.id);
-    } catch (e, st) {
-      AppLogger.error(_logTag, 'deleteAccount failed', e, st);
-      rethrow;
-    }
-  }
-
   AuthRepoException _mapError(Exception e) {
     AppLogger.warn(_logTag, 'auth error', e);
 

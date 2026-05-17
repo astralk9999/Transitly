@@ -196,18 +196,32 @@ server-side.
   notificaciones.
 
 **P1 — calidad/seguridad (días):**
-- Endurecer `import_gtfs` (resolver IP final + `redirect:"manual"`) (S1) y
-  rate-limit atómico en `send_notification` (S2).
-- GDPR: `Posthog().disable()` + invalidar `analyticsServiceProvider` al revocar;
-  eliminar/reubicar `deleteAccount()` (P1/P2-GDPR).
-- Unificar modelo de usuario mock↔Supabase (C2-EST).
-- CI: coverage gate + `dart format` + build release + alinear Flutter/Dart.
-- Tests reales de `auth_repository_supabase` (cierra el gap irónico de C3/I2).
+- ✅ **HECHO:** `import_gtfs` endurecido — `redirect:"manual"` (rechaza 3xx),
+  rangos IPv6 privados/ULA/link-local + IPv4-mapped, y resolución DNS A/AAAA
+  best-effort anti-rebinding (S1).
+- ✅ **HECHO (parcial):** `send_notification` ahora es **fail-closed** — si el
+  INSERT en `notifications` falla, aborta y NO envía push (cierra la evasión
+  del rate-limit); el TOCTOU residual queda documentado como deuda conocida
+  (un límite estrictamente atómico exigiría contador con lock en BD) (S2).
+- ✅ **HECHO:** GDPR revocación efectiva en caliente — `Posthog().disable()`
+  al revocar analytics, `SentrySetup.close()` al revocar crash_reporting, e
+  `ref.invalidate(privacyConsentsProvider)` para reconstruir
+  `analyticsServiceProvider` (P1-GDPR); `deleteAccount()` roto **eliminado**
+  del interface/impl y el caller redirigido al flujo real
+  `data_deletion_requests` + `signOut` + l10n (P2-GDPR).
+- ✅ **HECHO:** CI — Flutter alineado a `3.35.x` (Dart 3.9 ↔ `^3.9.2`),
+  `flutter test --coverage` + artefacto lcov, job de `flutter build web
+  --release`. **NO** se añadió gate de `dart format`: el proyecto no lo usa
+  (AGENTS.md) y forzarlo reformatearía 260 ficheros (ruido/riesgo) (CI1).
+- ⏳ **PENDIENTE (decisión de diseño):** unificar modelo de usuario
+  mock↔Supabase (C2-EST); tests reales de `auth_repository_supabase`.
 
-**P2 — deuda (semanas):**
-- Tests de los 7 repos `remote/` (T1); migrar tokens empezando por
-  `shared/widgets/` (U1); cerrar F26; 7 modelos a freezed (A3); `autoDispose`
-  (A2); Semantics vía l10n + suelo 48 dp en `Pressable` (U2).
+**P2 — deuda (semanas), no abordada (requiere decisión/alto riesgo visual):**
+- Tests de los 7 repos `remote/` (T1); migrar tokens en `shared/widgets/`
+  (U1, riesgo de regresión visual); cerrar F26 (necesita binarios de fuente);
+  7 modelos a freezed (A3, codegen masivo); `autoDispose` (A2, riesgo de
+  ciclo de vida); Semantics vía l10n + suelo 48 dp en `Pressable` (U2).
+- **F13 Realtime** (C1-EST): decisión de alcance, no se implementa a ciegas.
 
 ---
 

@@ -14,6 +14,14 @@ class SentrySetup {
     _initialized = true;
   }
 
+  /// GDPR: revocación efectiva en caliente. Cierra el cliente Sentry y
+  /// permite re-`init()` si el usuario vuelve a otorgar consentimiento.
+  static Future<void> close() async {
+    if (!_initialized) return;
+    await Sentry.close();
+    _initialized = false;
+  }
+
   static SentryEvent? _scrubPII(SentryEvent event, Hint hint) {
     event = event.copyWith(user: event.user?.copyWith(ipAddress: null));
     return event;

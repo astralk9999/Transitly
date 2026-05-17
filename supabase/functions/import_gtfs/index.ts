@@ -24,10 +24,42 @@ function corsFor(req: Request): Record<string, string> {
   };
 }
 
+// ¿Es una IP (literal v4/v6) de un rango privado/loopback/link-local?
+// Cubre IPv4 RFC1918/loopback/link-local + IPv6 ::1, ULA (fc00::/7),
+// link-local (fe80::/10) y IPv4-mapped (::ffff:10.x …).
+function isBlockedIp(ip: string): boolean {
+  const v = ip.toLowerCase().replace(/^\[|\]$/g, "");
+  // IPv4 (incl. IPv4-mapped IPv6 ::ffff:a.b.c.d)
+  const v4 = v.replace(/^::ffff:/, "");
+  if (/^\d+\.\d+\.\d+\.\d+$/.test(v4)) {
+    return (
+      v4 === "0.0.0.0" ||
+      /^127\./.test(v4) ||
+      /^10\./.test(v4) ||
+      /^192\.168\./.test(v4) ||
+      /^169\.254\./.test(v4) ||
+      /^172\.(1[6-9]|2\d|3[0-1])\./.test(v4)
+    );
+  }
+  // IPv6
+  return (
+    v === "::1" ||
+    v === "::" ||
+    v.startsWith("fc") ||
+    v.startsWith("fd") ||
+    v.startsWith("fe80:") ||
+    v.startsWith("fe9") ||
+    v.startsWith("fea") ||
+    v.startsWith("feb")
+  );
+}
+
 // Protección SSRF: solo https, host público, y allowlist opcional de
 // hosts (env GTFS_ALLOWED_HOSTS, separada por comas). Bloquea loopback
 // y rangos privados/link-local para impedir pivotar a la red interna.
-function assertSafeGtfsUrl(raw: string): URL {
+// Además resuelve DNS (best-effort) para mitigar DNS rebinding: un
+// dominio público que apunte a una IP interna se rechaza.
+async function assertSafeGtfsUrl(raw: string): Promise<URL> {
   let url: URL;
   try {
     url = new URL(raw);
@@ -40,15 +72,9 @@ function assertSafeGtfsUrl(raw: string): URL {
   const host = url.hostname.toLowerCase();
   const isPrivate =
     host === "localhost" ||
-    host === "0.0.0.0" ||
-    host === "::1" ||
     host.endsWith(".localhost") ||
     host.endsWith(".internal") ||
-    /^127\./.test(host) ||
-    /^10\./.test(host) ||
-    /^192\.168\./.test(host) ||
-    /^169\.254\./.test(host) ||
-    /^172\.(1[6-9]|2\d|3[0-1])\./.test(host);
+    isBlockedIp(host);
   if (isPrivate) {
     throw new Error("gtfsUrl host is not allowed (private/loopback)");
   }
@@ -58,6 +84,27 @@ function assertSafeGtfsUrl(raw: string): URL {
     .filter((h) => h.length > 0);
   if (allowHosts.length > 0 && !allowHosts.includes(host)) {
     throw new Error("gtfsUrl host is not in GTFS_ALLOWED_HOSTS allowlist");
+  }
+  // Anti DNS-rebinding (best-effort): si el host no es ya una IP literal,
+  // resolver A/AAAA y rechazar si alguna apunta a un rango interno.
+  if (!/^\d+\.\d+\.\d+\.\d+$/.test(host) && !host.includes(":")) {
+    try {
+      const records = (
+        await Promise.all([
+          Deno.resolveDns(host, "A").catch(() => [] as string[]),
+          Deno.resolveDns(host, "AAAA").catch(() => [] as string[]),
+        ])
+      ).flat();
+      if (records.some((ip) => isBlockedIp(ip))) {
+        throw new Error("gtfsUrl host resolves to a private address");
+      }
+    } catch (e) {
+      // Solo re-lanzamos nuestro propio rechazo; un fallo de resolución
+      // (sin permiso net, NXDOMAIN) se deja pasar y fallará en fetch.
+      if (e instanceof Error && e.message.includes("private address")) {
+        throw e;
+      }
+    }
   }
   return url;
 }
@@ -94,7 +141,7 @@ serve(async (req: Request) => {
 
     let safeGtfsUrl: URL;
     try {
-      safeGtfsUrl = assertSafeGtfsUrl(String(gtfsUrl));
+      safeGtfsUrl = await assertSafeGtfsUrl(String(gtfsUrl));
     } catch (e) {
       return new Response(
         JSON.stringify({ error: (e as Error).message }),
@@ -225,9 +272,15 @@ async function importGtfsFeed(
   const timer = setTimeout(() => ac.abort(), 30_000);
   let response: Response;
   try {
-    response = await fetch(url, { signal: ac.signal, redirect: "follow" });
+    // redirect:"manual" — no seguir 3xx: un host permitido no puede
+    // redirigir a una IP interna (vector SSRF clásico). Validamos el
+    // status explícitamente.
+    response = await fetch(url, { signal: ac.signal, redirect: "manual" });
   } finally {
     clearTimeout(timer);
+  }
+  if (response.status >= 300 && response.status < 400) {
+    throw new Error("GTFS feed responded with a redirect, which is not allowed");
   }
   if (!response.ok) {
     throw new Error(`Failed to download GTFS feed: ${response.status} ${response.statusText}`);

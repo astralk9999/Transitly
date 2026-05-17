@@ -1,9 +1,9 @@
 # Revisión independiente integral — Transitly (`nexto-stop-v2`)
 
 > **Óptica:** TFG académico, lente de tribunal, criterio profesional.
-> **Fecha:** 2026-05-17 (2.ª pasada, *post* commit `5077099`).
-> **Rama / commit auditado:** `master` @ `5077099`
-> *("fix(review): resolve all P0/P1 issues from independent code review")*.
+> **Fecha:** 2026-05-17 (3.ª pasada, *post* commit `2b1ddf6`).
+> **Rama / commit auditado:** `master` @ `2b1ddf6`
+> *(remediación P0 → `5077099`/`001e3cf`; P1 seguridad/GDPR/CI → `2b1ddf6`)*.
 > **Método:** auditoría escéptica con verificación de **hechos duros
 > ejecutados** (`flutter analyze`, `flutter test`, cobertura calculada sobre
 > `lcov.info`, `git show` de los fixes, parseo de ARB por clave) + auditoría de
@@ -77,16 +77,21 @@ incompletos (ver §3).
 
 ---
 
-## 4. Puntuación global: **7.5 / 10**
+## 4. Puntuación global: **7.7 / 10**
 
-> *Notable técnico, en trayectoria de mejora demostrada. Las dos rondas de
-> remediación elevaron higiene (lint 0), mantenibilidad (descomposición real),
-> capas (auth corregido), honestidad documental e i18n. La nota sube de 7.0 a
-> 7.5. El techo en 7.5 (no 8+) lo fijan tres lastres **que ninguna ronda
-> tocó**: (a) la funcionalidad central "tiempo real" (F13) **no existe**; (b)
-> cobertura 24,7 % con auth y la capa `remote` a 0 %; (c) deuda estructural
-> viva (doble modelo de usuario, código muerto `web_entry/`, tokens
-> incumplidos en la capa compartida, GDPR sin revocación efectiva).*
+> *Notable técnico, en trayectoria de mejora demostrada. Tres rondas de
+> remediación (`f53d822`, `5077099`, `2b1ddf6`) elevaron higiene (lint 0),
+> mantenibilidad (descomposición real), capas (auth corregido), honestidad
+> documental, i18n, y —en la 3.ª pasada— **seguridad backend, GDPR y CI**.
+> La nota pasa 7.0 → 7.5 → **7.7**. El incremento es moderado (+0.2, no más)
+> a propósito: las mejoras de la 3.ª ronda son reales pero caen en
+> dimensiones intermedias (seguridad/GDPR/CI), **no en los tres lastres que
+> fijan el techo y que ninguna ronda ha tocado**: (a) la funcionalidad
+> central "tiempo real" (F13) **no existe** (0/12 repos); (b) cobertura
+> 24,7 % con auth y la capa `remote` a 0 %; (c) deuda estructural viva
+> (doble modelo de usuario, tokens incumplidos en la capa compartida). Hasta
+> que no se ataquen esos tres —que exigen *implementar*, no *redactar* ni
+> *endurecer*— el techo realista se mantiene por debajo de 8.*
 
 ### Desglose por dimensión
 
@@ -94,10 +99,10 @@ incompletos (ver §3).
 |---|---:|:--:|---|
 | Arquitectura y código | **7.5** | +0.5 | Auth recolocado, screens descompuestos. Sigue: `web_entry/` muerto, 0 `autoDispose`, 7 modelos manuales. |
 | Calidad de implementación | **7.0** | +0.5 | Lint 0, catch logueados. DS aún incumplido en `shared/widgets/` (7 con `GoogleFonts` inline). |
-| Backend / seguridad | **7.0** | = | RLS default-deny coherente, `search_path` fijado. Restan SSRF incompleto y rate-limit con fuga. |
-| Privacidad / GDPR | **7.0** | = | Opt-out real verificado. Baja por revocación sin efecto hasta reiniciar y `deleteAccount` roto. |
-| Pruebas | **5.0** | +0.5 | 148 reales, `bus_estimator` ejemplar; pero auth + 7 repos `remote` siguen a **0 %**; ~40 % smoke. |
-| CI | **4.5** | = | Sin coverage gate, sin `dart format`, sin build release, Flutter 3.32.x vs Dart `^3.9.2`. |
+| Backend / seguridad | **7.5** | +0.5 | S1: `redirect:"manual"` + IPv6 privado + DNS anti-rebinding. S2: fail-closed. Resta TOCTOU residual (documentado) y DNS best-effort. |
+| Privacidad / GDPR | **8.0** | +1.0 | Revocación efectiva en caliente (`Posthog().disable()`/`SentrySetup.close()` + invalidación de provider); `deleteAccount` roto eliminado, borrado por flujo real. Resta UI `?? true` cosmética. |
+| Pruebas | **5.0** | = | 148 reales, `bus_estimator` ejemplar; pero auth + 7 repos `remote` siguen a **0 %**; ~40 % smoke. |
+| CI | **6.5** | +2.0 | Flutter 3.35.x alineado a Dart `^3.9.2`, `--coverage` + artefacto, build web release. Sin gate de umbral (decisión: evita falsos rojos) ni `dart format` (el proyecto no lo usa). |
 | Documentación / coherencia | **7.5** | = | README honesto y verificable; commits trazables. Resta F26 abierto. |
 | Accesibilidad | **6.5** | = | Esfuerzo real; "AA parcial" defendible, "AA" pleno no. |
 | Rendimiento | **6.5** | = | `smoke_background` cuidado; falta `RepaintBoundary` en `features/`. |
@@ -227,19 +232,21 @@ server-side.
 
 ## 7. Veredicto
 
-El proyecto **ha mejorado de forma medible y honesta** entre rondas: lint 0
-(verificado), 148 tests verdes (+5), cobertura 24,7 % (+1,5 pp), `auth`
-recolocado con integridad de imports, screens descompuestos sin regresión, i18n
-ampliado y sincronizado (343/343). El commit `5077099` es trabajo real; su
-único pecado es el rótulo "**all** P0/P1" cuando C1 (4 strings) e I2 (4/5 tests
-smoke, sin cubrir el repo Supabase) quedaron a medias.
+El proyecto **ha mejorado de forma medible y honesta** a lo largo de tres
+rondas: lint 0 (verificado), 148 tests verdes, cobertura 24,7 %, `auth`
+recolocado con integridad de imports, screens descompuestos sin regresión,
+i18n 343/343, y en la 3.ª pasada — GDPR con revocación efectiva en caliente,
+`deleteAccount` roto eliminado, SSRF de `import_gtfs` endurecido,
+`send_notification` fail-closed, CI alineado con cobertura y build de release.
+`web_entry/` muerto y los 4 strings ES residuales también quedaron resueltos.
 
-La nota sube a **7.5/10**. No llega a 8+ porque las tres barreras de fondo
-siguen intactas y **no son redactables, hay que implementarlas**: la
-funcionalidad "tiempo real" que titula el proyecto no existe (F13, 0/12 repos),
-la capa de datos de producción está a 0 % de tests, y persiste deuda
-estructural (doble modelo de usuario, `web_entry/` muerto, tokens incumplidos
-en la capa canónica, GDPR sin revocación efectiva). Para el tribunal: la
-honestidad documental ya conseguida convierte F13 y la cobertura en decisiones
-de alcance defendibles; el mayor riesgo restante no es el código, es no
-anticipar esas dos preguntas.
+La nota pasa a **7.7/10**. El +0.2 (no más) es deliberado: las correcciones
+fueron numerosas y reales, pero las tres barreras de fondo siguen intactas y
+**no son redactables ni endurecibles, hay que implementarlas**: la
+funcionalidad "tiempo real" que titula el proyecto no existe (F13, 0/12
+repos), la capa de datos de producción está a 0 % de tests, y persiste el
+doble modelo de usuario. Para el tribunal: la honestidad documental ya
+conseguida convierte F13 y la cobertura en decisiones de alcance defendibles;
+el mayor riesgo restante no es el código, es no anticipar esas dos preguntas.
+Subir de 7.7 a 8.5 ya no es trabajo de remediación documental o de seguridad
+—agotado— sino de implementar Realtime y cobertura de la capa de datos.

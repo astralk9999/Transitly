@@ -25,6 +25,14 @@ jobs:
           channel: stable
           cache: true
 
+      # `.env` está gitignored pero pubspec.yaml lo declara como asset
+      # bundleado; sin el fichero, `flutter analyze/test/build` fallan con
+      # "Failed to build asset bundle". Los tests no leen Env (verificado),
+      # así que basta con materializarlo desde la plantilla. (Deuda SEC2:
+      # lo correcto a futuro es NO bundlear .env y pasar a --dart-define.)
+      - name: Provision .env from template
+        run: cp .env.example .env
+
       - name: Install dependencies
         run: flutter pub get
 
@@ -49,6 +57,14 @@ jobs:
           flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: stable
           cache: true
+
+      # `.env` está gitignored pero pubspec.yaml lo declara como asset
+      # bundleado; sin el fichero, `flutter analyze/test/build` fallan con
+      # "Failed to build asset bundle". Los tests no leen Env (verificado),
+      # así que basta con materializarlo desde la plantilla. (Deuda SEC2:
+      # lo correcto a futuro es NO bundlear .env y pasar a --dart-define.)
+      - name: Provision .env from template
+        run: cp .env.example .env
 
       - name: Install dependencies
         run: flutter pub get
@@ -82,6 +98,14 @@ jobs:
           flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: stable
           cache: true
+
+      # `.env` está gitignored pero pubspec.yaml lo declara como asset
+      # bundleado; sin el fichero, `flutter analyze/test/build` fallan con
+      # "Failed to build asset bundle". Los tests no leen Env (verificado),
+      # así que basta con materializarlo desde la plantilla. (Deuda SEC2:
+      # lo correcto a futuro es NO bundlear .env y pasar a --dart-define.)
+      - name: Provision .env from template
+        run: cp .env.example .env
 
       - name: Install dependencies
         run: flutter pub get

@@ -87,16 +87,33 @@ final routerProvider = Provider<GoRouter>((ref) {
       final isPublicRoute = loc == '/splash' || loc == '/onboarding';
       final isAdminRoute = loc.startsWith('/admin');
       final isManagementRoute = loc.startsWith('/management');
+      final isOperatorAdminRoute = loc.startsWith('/operator-admin');
 
       // Auth routes: redirect to home if already authenticated
       if (isAuthRoute && isAuth) return '/home/inicio';
 
-      // Admin/management routes require auth + role
-      if (isAdminRoute || isManagementRoute) {
+      // Privileged routes require auth + role.
+      //
+      // NOTE: this is a UX guard, not the security boundary. `currentUserRole`
+      // is mock-derived in the demo (only `passenger`/`driver` exist in the
+      // seed), so admin/operator panels are intentionally unreachable without
+      // a real Supabase session. The actual authorization boundary is
+      // server-side: Postgres Row-Level Security in `002_rls.sql`. Full
+      // unification of the mock vs. Supabase user model is tracked as debt in
+      // docs/REVISION_CRITICA.md. `ref.read` (not `watch`) is correct here:
+      // redirect is re-evaluated by go_router on every navigation.
+      if (isAdminRoute || isManagementRoute || isOperatorAdminRoute) {
         if (!isAuth) return '/home/inicio';
-        final role = ref.read(currentUserProvider).role;
+        final role = ref.read(currentUserRoleProvider);
         if (isAdminRoute && role != UserRole.admin) return '/home/inicio';
-        if (isManagementRoute && role != UserRole.admin && role != UserRole.moderator) {
+        if (isManagementRoute &&
+            role != UserRole.admin &&
+            role != UserRole.moderator) {
+          return '/home/inicio';
+        }
+        if (isOperatorAdminRoute &&
+            role != UserRole.admin &&
+            role != UserRole.operatorAdmin) {
           return '/home/inicio';
         }
       }

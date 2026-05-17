@@ -3,6 +3,7 @@
 **Versión:** 2.3 · **Fecha:** 15-may-2026
 
 > **Cambios v2.2 → v2.3** (post-F26): F16→F25 marcadas como completadas en roadmap visual. CI creado. 26/28 fases (92.9%). 137 tests.
+> **v2.4 (2026-05-17, post-repaso):** remediación P0/P1/P2 aplicada (ver `docs/REVISION_CRITICA.md`); **143 tests**, cobertura ~23,2 %.
 **Repo:** [astralk9999/Transitly](https://github.com/astralk9999/Transitly)
 **Documento de arquitectura de referencia:** `docs/ARCHITECTURE.md` (post P43, commit `b91fc25`).
 

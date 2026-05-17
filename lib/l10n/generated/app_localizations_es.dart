@@ -890,4 +890,30 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get widgetsConfigSaved => 'Configuración guardada';
+
+  @override
+  String get offlineBannerOffline =>
+      'Sin conexión. Los cambios se guardarán y se enviarán al volver.';
+
+  @override
+  String offlineBannerQueued(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count acciones en cola',
+      one: '1 acción en cola',
+    );
+    return 'Sin conexión · $_temp0.';
+  }
+
+  @override
+  String offlineBannerSyncing(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count acciones pendientes',
+      one: '1 acción pendiente',
+    );
+    return 'Sincronizando $_temp0…';
+  }
 }

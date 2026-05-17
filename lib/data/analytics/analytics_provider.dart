@@ -13,9 +13,15 @@ final analyticsServiceProvider = Provider<AnalyticsService>((ref) {
     return NoopAnalyticsService();
   }
 
+  // GDPR: default-deny. Solo se devuelve el servicio real cuando hay un
+  // consentimiento EXPLÍCITO y positivo de analítica. Invitados (consents
+  // == {}) o ausencia de la clave → Noop. El SDK además arranca con
+  // optOut=true y sin autocapture (ver main.dart), de modo que nada se
+  // envía hasta que este provider construya PostHogAnalyticsService.
   final consents = ref.watch(privacyConsentsProvider).valueOrNull;
-  if (consents != null && consents['analytics'] == false) {
-    AppLogger.info('Analytics', 'provider returning NoopAnalyticsService (consent denied)');
+  if (consents == null || consents['analytics'] != true) {
+    AppLogger.info('Analytics',
+        'provider returning NoopAnalyticsService (no explicit consent)');
     return NoopAnalyticsService();
   }
 

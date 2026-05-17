@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../core/utils/app_logger.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../features/auth/auth_provider.dart';
@@ -67,7 +68,9 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen> {
           SnackBar(content: Text(l10n.privacyDataExportRequested)),
         );
       }
-    } catch (_) {}
+    } catch (e, st) {
+      AppLogger.error('Privacy', 'data export request failed', e, st);
+    }
   }
 
   Future<void> _showDeletionRequestDialog() async {
@@ -117,7 +120,9 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen> {
           SnackBar(content: Text(l10n.privacyDeletionRequested)),
         );
       }
-    } catch (_) {}
+    } catch (e, st) {
+      AppLogger.error('Privacy', 'data deletion request failed', e, st);
+    }
   }
 
   @override

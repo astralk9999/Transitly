@@ -254,4 +254,5 @@ Cada entidad necesita el mismo conjunto de 5 archivos: interfaz abstracta + remo
 
 ---
 
-**Última actualización:** 2026-05-15 · F26 en progreso (CI creado, docs TFG actualizados, RELEASE_CHECKLIST creado). F0→F25 completadas (26/28 fases, 92.9%). 137 tests pasando. F27 pendiente (opcional).
+**Última actualización:** 2026-05-17 · Tras revisión crítica + remediación P0/P1/P2 (ver `docs/REVISION_CRITICA.md`). **143 tests** pasando, cobertura ~23,2 %. F26 sigue como deuda acotada y documentada (`docs/FONTS_F26.md`).
+_Snapshot anterior (2026-05-15): F0→F25 completadas (26/28 fases, 92.9%), 137 tests._

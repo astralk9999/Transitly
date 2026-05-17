@@ -307,5 +307,8 @@
   "widgetsFavoriteStop": "Favorite stop",
   "widgetsFavoriteLine": "Favorite line",
   "widgetsHowToAdd": "How to add the widget",
-  "widgetsConfigSaved": "Settings saved"
+  "widgetsConfigSaved": "Settings saved",
+  "offlineBannerOffline": "Offline. Changes will be saved and sent when you're back.",
+  "offlineBannerQueued": "Offline · {count, plural, =1{1 action queued} other{{count} actions queued}}.",
+  "offlineBannerSyncing": "Syncing {count, plural, =1{1 pending action} other{{count} pending actions}}…"
 }

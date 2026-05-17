@@ -1,5 +1,5 @@
 name: transitly
-description: "Transporte publico en tiempo real multioperador para toda Espana. Tracking hibrido (GTFS-Realtime + GPS conductor + estimacion horaria), comunidad activa (incidencias, sugerencias, votos), offline-first, accesibilidad WCAG 2.1 AA, panel de administracion y moderacion."
+description: "Demo academica (TFG) de companion de transporte publico. Datos mock de COMUJESA (Jerez) con capa Supabase opcional (auth, repos, push, telemetria). Tracking estimado + GPS de conductor (GTFS-Realtime es trabajo futuro), comunidad (incidencias, sugerencias, votos), offline-first, accesibilidad WCAG 2.1 AA parcial, panel de administracion y moderacion."
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -93,14 +93,9 @@ flutter:
     - assets/mock/
     - assets/branding/
     - assets/achievements.json
-    # TODO F26: Bundle google_fonts dmSans + ibmPlexMono as local assets
-    # Steps:
-    # 1. Download from https://fonts.google.com/specimen/DM+Sans and IBM+Plex+Mono
-    # 2. Copy .ttf files to assets/fonts/dm_sans/ and assets/fonts/ibm_plex_mono/
-    # 3. Add here: - assets/fonts/
-    # 4. In main.dart, call GoogleFonts.config.allowRuntimeFetching = false;
-    # 5. Register font files with GoogleFonts.registerFontFamily(...)
-    # Meanwhile, google_fonts falls back to network fetch.
+    # TODO F26: empaquetar dmSans + ibmPlexMono como assets locales.
+    # Pasos exactos y switch en docs/FONTS_F26.md (seam: `_fontsBundled`
+    # en lib/main.dart). Mientras, google_fonts resuelve por red.
     # flutter_dotenv carga el .env local como un asset bundleado en
     # debug. En release, sustituir por --dart-define o un .env por
     # plataforma (F22 lo formaliza).

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../data/sync/offline_sync_provider.dart';
+import '../../l10n/generated/app_localizations.dart';
 import '../providers/connectivity_provider.dart';
 
 /// Banner que se asoma cuando la conectividad está caída o la cola
@@ -37,7 +38,8 @@ class OfflineBanner extends ConsumerWidget {
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
-    final message = _buildMessage(isOffline, pendingCount);
+    final l10n = AppLocalizations.of(context);
+    final message = _buildMessage(l10n, isOffline, pendingCount);
 
     return Semantics(
       liveRegion: true,
@@ -72,13 +74,13 @@ class OfflineBanner extends ConsumerWidget {
     );
   }
 
-  String _buildMessage(bool offline, int pending) {
+  String _buildMessage(AppLocalizations l10n, bool offline, int pending) {
     if (offline && pending > 0) {
-      return 'Sin conexión · $pending acción${pending == 1 ? '' : 'es'} en cola.';
+      return l10n.offlineBannerQueued(pending);
     }
     if (offline) {
-      return 'Sin conexión. Los cambios se guardarán y se enviarán al volver.';
+      return l10n.offlineBannerOffline;
     }
-    return 'Sincronizando $pending acción${pending == 1 ? '' : 'es'} pendiente${pending == 1 ? '' : 's'}…';
+    return l10n.offlineBannerSyncing(pending);
   }
 }

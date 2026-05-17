@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/utils/app_logger.dart';
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../shared/widgets/transit_button.dart';
@@ -32,7 +33,10 @@ class MapFilterController extends StateNotifier<MapFilterState> {
         final json = jsonDecode(raw) as Map<String, dynamic>;
         state = MapFilterState.fromJson(json);
       }
-    } catch (_) {}
+    } catch (e) {
+      AppLogger.warn('MapFilter',
+          'failed to load filters from prefs — using defaults', e);
+    }
   }
 
   Future<void> _saveToPrefs() async {
@@ -94,6 +98,13 @@ class MapFilterController extends StateNotifier<MapFilterState> {
 
   void reset() {
     state = const MapFilterState();
+    _saveToPrefs();
+  }
+
+  /// Aplica un estado completo de filtros (usado por los presets
+  /// guardados en [FilterPresetsScreen]).
+  void applyState(MapFilterState next) {
+    state = next;
     _saveToPrefs();
   }
 }

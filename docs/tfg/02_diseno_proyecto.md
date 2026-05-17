@@ -88,7 +88,7 @@ lib/
 - **Offline-first:** Funcionalidad básica sin conexión, sincronización al reconectar
 - **Escalabilidad:** Soporte para 100+ operadores, 10k+ rutas, RLS en 25 tablas
 - **Seguridad:** Row-Level Security en PostgreSQL, cifrado AES en caché local
-- **Accesibilidad:** WCAG 2.1 AA, contraste 4.5:1, fuente dislexia, lector de pantalla
+- **Accesibilidad:** WCAG 2.1 AA parcial — contraste 4.5:1 validado, fuente dislexia, color-blind, soporte lector de pantalla; sin verificación manual TalkBack/VoiceOver (gaps en `docs/A11Y_AUDIT.md`)
 - **i18n:** Español + Inglés (ARB),arquitectura preparada para más idiomas
 
 ---
@@ -103,7 +103,7 @@ Ver `docs/tfg/03_planificacion.md` para el diagrama de Gantt completo.
 | II. Identidad | F4 → F6 | Auth, roles, códigos conductor | ✅ |
 | III. Datos | F7 → F8 | GTFS importer, multioperador | ✅ |
 | IV. Experiencia | F9 → F12 | Filtros, editor, GPS, compartir | ✅ |
-| V. Ojos del bus | F13 → F14 | Estimación, driver en vivo | ✅ |
+| V. Ojos del bus | F13 → F14 | Estimación + driver en vivo ✅; **GTFS-Realtime de buses pendiente** (stub snapshot+refresh) | 🟨 |
 | VI. Comunidad | F15 → F16 | Contribuciones, panel admin | 🟨 |
 | VII. Pulido | F17 → F19 | Apariencia, accesibilidad, reputación | ⏳ |
 | VIII. Infra | F20 → F22 | Mapas offline, push, monitoring | ⏳ |
@@ -138,7 +138,7 @@ Ver `docs/tfg/03_planificacion.md` para el diagrama de Gantt completo.
 | Tiempo de build | < 5 min | flutter build apk --release |
 | Tamaño APK | < 50 MB | flutter build apk --analyze-size |
 | Crash-free rate | > 99% | Sentry |
-| Accesibilidad | 0 errores WCAG 2.1 AA | Audit manual |
+| Accesibilidad | WCAG 2.1 AA parcial (sin pase manual TalkBack/VoiceOver) | Audit `docs/A11Y_AUDIT.md` |
 
 ---
 

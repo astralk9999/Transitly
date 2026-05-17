@@ -159,7 +159,7 @@ supabase migration list
 | Servicio | Uso | Endpoint/Clave |
 |----------|-----|---------------|
 | Supabase | Backend principal | `.env` (`SUPABASE_URL`) |
-| Supabase Realtime | Streaming de bus_positions | Canal `public:bus_positions` |
+| Supabase Realtime | Activo en notificaciones (`notification_stream_provider`). **El streaming de `bus_positions` es trabajo futuro (F13)**: los repos `remote` emiten snapshot + refresh manual, no suscripción en vivo. | Canal `public:notifications` (activo) / `public:bus_positions` (pendiente) |
 | Supabase Storage | Avatares, adjuntos | 5 buckets |
 | MapTiler | Tiles de mapa | `maptiler_api_key` (planificado F20) |
 | Google Fonts | Fuentes (dmSans, ibmPlexMono) | Runtime fetch → bundle F17 |

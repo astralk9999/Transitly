@@ -34,7 +34,7 @@ Pendiente: F27 (Wearables nivel 1, opcional)
 | Indicador | Valor |
 |-----------|-------|
 | Commits totales | ~80 |
-| Tests | 137 pasando, 0 fallando |
+| Tests | 143 pasando, 0 fallando (tras P1/P2, 2026-05-17) |
 | Lint | 0 errors, 0 warnings, 6 info (prefer_const_constructors) |
 | Líneas de código | ~35,000+ |
 | Modelos @freezed | 20+ |
@@ -113,7 +113,7 @@ Pendiente: F27 (Wearables nivel 1, opcional)
 | widgets compartidos | 15 | GlassCard, TransitAppBar, design system |
 | router | 8 | Deeplinks, shell branches |
 | accessibility | 5 | Settings screen |
-| **Total** | **137** | — |
+| **Total** | **143** | +6 `bus_estimation` (P2) |
 
 ---
 

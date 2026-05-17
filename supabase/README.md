@@ -59,6 +59,31 @@ WHERE proname IN ('handle_new_user','touch_updated_at','cleanup_expired_bus_posi
   AND pronamespace = 'public'::regnamespace;  -- esperado: 3
 ```
 
+## Configuración de Edge Functions y triggers (endurecimiento P1)
+
+Tras el endurecimiento de seguridad, hay configuración **obligatoria** sin
+la cual algunas funciones degradan a propósito (no fallan ruidosamente):
+
+- **`functions_url`** (Vault `functions_url` o `app.settings.functions_url`):
+  base URL de las Edge Functions, p. ej.
+  `https://<project-ref>.supabase.co/functions/v1`. Sin esto,
+  `invoke_send_notification` (migración `015`) **no envía push** y registra
+  un `WARNING` (ya no hay project-ref hardcodeada). Ejemplo:
+  ```sql
+  ALTER DATABASE postgres SET app.settings.functions_url =
+    'https://<project-ref>.supabase.co/functions/v1';
+  ```
+- **`service_role_key`** (Vault o `app.settings.service_role_key`): ya
+  requerido previamente por `invoke_send_notification`.
+- **Edge `send_notification`** exige `Authorization: Bearer <service_role>`
+  (lo aporta el trigger). Llamadas externas con `anon` → `403`. Aplica
+  rate-limit de 20 notificaciones/usuario/min.
+- **Edge `import_gtfs`**: CORS por allowlist en la env var
+  `ALLOWED_ORIGINS` (lista separada por comas, **sin wildcard**). Origen no
+  listado → sin cabecera CORS (el navegador lo bloquea). Opcional:
+  `GTFS_ALLOWED_HOSTS` restringe los hosts de `gtfsUrl` (anti-SSRF; además
+  se bloquean loopback/rangos privados y se exige https).
+
 ## Notas operativas
 
 - Las migraciones SOLO contienen DDL. Los datos (seeds, fixtures) van

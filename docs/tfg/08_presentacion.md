@@ -50,7 +50,7 @@
 - **Tracking híbrido:** GTFS-Realtime + GPS conductor + estimación horaria
 - **Comunidad activa:** Incidencias, sugerencias, votos, reputación
 - **Offline-first:** Caché local + cola de acciones pendientes
-- **Accesibilidad:** WCAG 2.1 AA, alto contraste, fuente dislexia, color-blind
+- **Accesibilidad:** WCAG 2.1 AA parcial — alto contraste, fuente dislexia, color-blind (sin pase manual de lector de pantalla)
 - **Admin panel:** Gestión de usuarios, operadores, moderación
 - **Apariencia:** 6 paletas, 5 fondos, tema custom con validación WCAG AA
 - **Notificaciones push:** FCM + in-app con quiet hours y preferencias
@@ -66,10 +66,10 @@
 ### Diapositiva 9 — Planificación
 - Mostrar Gantt con 27 fases completadas/restantes
 - 26/28 fases completadas (92.9%)
-- ~80 commits, 137 tests, 35k+ líneas de código
+- ~80 commits, 143 tests, 35k+ líneas de código
 
 ### Diapositiva 10 — Métricas y calidad
-- 137 tests pasando, 0 fallando
+- 143 tests pasando, 0 fallando
 - flutter analyze: 0 errors, 0 warnings
 - CI/CD con GitHub Actions (analyze + test en push/PR)
 - 27 widgets compartidos reusables

@@ -510,5 +510,11 @@
   "widgetsHowToAdd": "C\u00f3mo a\u00f1adir el widget",
   "@widgetsHowToAdd": { "description": "How to add widget info button" },
   "widgetsConfigSaved": "Configuraci\u00f3n guardada",
-  "@widgetsConfigSaved": { "description": "Widget config saved toast" }
+  "@widgetsConfigSaved": { "description": "Widget config saved toast" },
+  "offlineBannerOffline": "Sin conexi\u00f3n. Los cambios se guardar\u00e1n y se enviar\u00e1n al volver.",
+  "@offlineBannerOffline": { "description": "Offline banner: no connectivity, no pending actions" },
+  "offlineBannerQueued": "Sin conexi\u00f3n \u00b7 {count, plural, =1{1 acci\u00f3n en cola} other{{count} acciones en cola}}.",
+  "@offlineBannerQueued": { "description": "Offline banner: offline with queued actions", "placeholders": { "count": { "type": "int", "example": "3" } } },
+  "offlineBannerSyncing": "Sincronizando {count, plural, =1{1 acci\u00f3n pendiente} other{{count} acciones pendientes}}\u2026",
+  "@offlineBannerSyncing": { "description": "Offline banner: syncing pending actions", "placeholders": { "count": { "type": "int", "example": "3" } } }
 }

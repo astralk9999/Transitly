@@ -48,6 +48,9 @@ migrate_working_dir/
 /build/
 /coverage/
 
+# Hive temp dir created by tests (see test/helpers Hive setup)
+/test/hive_temp/
+
 # Symbolication related
 app.*.symbols
 

@@ -151,9 +151,9 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
 
                       Row(
                         children: [
-                          const Expanded(
+                          Expanded(
                               child:
-                                  Divider(color: Color(0x30FFFFFF))),
+                                  Divider(color: c.border)),
                           Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 12),
@@ -161,9 +161,9 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                                 style: TransitTypography.bodySmall(
                                     c.textLo)),
                           ),
-                          const Expanded(
+                          Expanded(
                               child:
-                                  Divider(color: Color(0x30FFFFFF))),
+                                  Divider(color: c.border)),
                         ],
                       ),
                       const SizedBox(height: 12),

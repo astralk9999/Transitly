@@ -29,6 +29,13 @@ abstract class AnalyticsService {
 }
 
 class PostHogAnalyticsService implements AnalyticsService {
+  /// Solo se instancia bajo consentimiento explícito (ver
+  /// `analyticsServiceProvider`). El SDK arranca con `optOut=true`
+  /// en main.dart; aquí lo habilitamos porque ya hay consentimiento.
+  PostHogAnalyticsService() {
+    Posthog().enable();
+  }
+
   @override
   void track(AnalyticsEvent event, {Map<String, String>? properties}) {
     AppLogger.debug('Analytics', 'track ${event.name}');

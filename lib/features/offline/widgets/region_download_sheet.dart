@@ -460,7 +460,7 @@ class _AreaSelectorPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: isDark ? const Color(0xFF0A0A20) : const Color(0xFFE8E8F0),
+      color: c.bgRoot,
       child: Stack(
         children: [
           Center(

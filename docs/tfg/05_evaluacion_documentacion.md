@@ -96,13 +96,13 @@
 
 | Indicador | Objetivo | Actual | Estado |
 |-----------|----------|--------|:---:|
-| Cobertura de tests | > 60% | ~45% | 🟨 |
+| Cobertura de tests | > 60% | **~23%** (3 580/15 424 líneas, `flutter test --coverage` 2026-05-17; 143 tests verdes) | 🟥 |
 | Issues de lint | 0 errors | 0 errors, 6 info | 🟩 |
 | Build time (debug) | < 3 min | ~2 min | 🟩 |
 | Tamaño APK (release) | < 50 MB | Por medir | ⬜ |
 | Crash-free rate | > 99% | Por medir (Sentry F22) | ⬜ |
-| Accesibilidad WCAG 2.1 AA | 0 errores | Auditado (F18), 29 Semantics nodes | 🟩 |
-| i18n cobertura | 100% strings | ~90% | 🟩 |
+| Accesibilidad WCAG 2.1 AA **parcial** | Cumplir AA en lo razonable | Auditado (F18), 29 Semantics nodes; **sin verificación manual TalkBack/VoiceOver, mapa no accesible** (gaps en `docs/A11Y_AUDIT.md`) | 🟨 |
+| i18n cobertura | 100% claves ES/EN | **100%** (275/275 claves ES↔EN sincronizadas); quedan pocos strings inline en widgets | 🟩 |
 | CI/CD | GitHub Actions | `flutter analyze` + `flutter test` en push/PR | ✅ F26 |
 
 ---

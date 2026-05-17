@@ -56,6 +56,42 @@ BEGIN
 END;
 $$;
 
+-- Helper que obtiene la base URL de las Edge Functions sin hardcodear
+-- el project-ref. Orden: Vault ('functions_url') → setting de BD
+-- ('app.settings.functions_url'). Devuelve '' si no está configurado;
+-- el caller debe abortar la invocación en ese caso.
+CREATE OR REPLACE FUNCTION get_supabase_functions_url()
+RETURNS TEXT
+LANGUAGE plpgsql
+STABLE
+SECURITY DEFINER
+SET search_path = ''
+AS $$
+DECLARE
+  v_url TEXT;
+BEGIN
+  BEGIN
+    SELECT decrypted_secret INTO v_url
+    FROM vault.decrypted_secrets
+    WHERE name = 'functions_url'
+    LIMIT 1;
+    IF v_url IS NOT NULL AND v_url != '' THEN
+      RETURN rtrim(v_url, '/');
+    END IF;
+  EXCEPTION
+    WHEN OTHERS THEN NULL;
+  END;
+
+  v_url := current_setting('app.settings.functions_url', true);
+  IF v_url IS NOT NULL AND v_url != '' THEN
+    RETURN rtrim(v_url, '/');
+  END IF;
+
+  RAISE WARNING 'functions_url not found in vault or settings';
+  RETURN '';
+END;
+$$;
+
 -- Helper que invoca la Edge Function de forma asíncrona.
 -- Los errores de red NO revierten la transacción disparadora.
 CREATE OR REPLACE FUNCTION invoke_send_notification(
@@ -81,8 +117,13 @@ BEGIN
     RETURN;
   END IF;
 
-  -- Construir URL de la Edge Function
-  v_url := 'https://mmzahxtiaurkgtmtehxk.supabase.co/functions/v1/send_notification';
+  -- Construir URL de la Edge Function sin hardcodear el project-ref.
+  v_url := get_supabase_functions_url();
+  IF v_url = '' THEN
+    RAISE WARNING 'Cannot invoke send_notification: functions_url not configured';
+    RETURN;
+  END IF;
+  v_url := v_url || '/send_notification';
 
   SELECT net.http_post(
     url := v_url,

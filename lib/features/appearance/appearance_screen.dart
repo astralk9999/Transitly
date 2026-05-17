@@ -8,6 +8,7 @@ import 'package:hive/hive.dart';
 
 import '../../core/theme/backgrounds/prefab_backgrounds.dart';
 import '../../core/theme/palettes/prefab_palettes.dart';
+import '../../core/utils/app_logger.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../data/cache/hive_init.dart';
@@ -1008,7 +1009,9 @@ class _StorageSection extends ConsumerWidget {
     try {
       final path = Hive.box(boxName).path;
       if (path != null) return File(path).lengthSync();
-    } catch (_) {}
+    } catch (e) {
+      AppLogger.warn('Appearance', 'file size unavailable for $boxName', e);
+    }
     return 0;
   }
 
@@ -1019,7 +1022,9 @@ class _StorageSection extends ConsumerWidget {
       for (final entity in dir.listSync(recursive: true)) {
         if (entity is File) total += entity.lengthSync();
       }
-    } catch (_) {}
+    } catch (e) {
+      AppLogger.warn('Appearance', 'directory size scan failed', e);
+    }
     return total;
   }
 
@@ -1063,7 +1068,8 @@ class _StorageSection extends ConsumerWidget {
       final fmtcDir = Directory('${appDir.path}${Platform.pathSeparator}fmtc${Platform.pathSeparator}store');
       if (!fmtcDir.existsSync()) return (sizeBytes: 0, available: false);
       return (sizeBytes: _directorySize(fmtcDir), available: true);
-    } catch (_) {
+    } catch (e) {
+      AppLogger.warn('Appearance', 'FMTC size unavailable', e);
       return (sizeBytes: 0, available: false);
     }
   }
@@ -1100,7 +1106,9 @@ class _StorageSection extends ConsumerWidget {
 
     try {
       await Hive.box<OfflineRegion>(HiveBoxes.offlineRegions).clear();
-    } catch (_) {}
+    } catch (e) {
+      AppLogger.warn('Appearance', 'offline regions box clear failed', e);
+    }
 
     try {
       final hivePath = Hive.box(HiveBoxes.routes).path;
@@ -1112,7 +1120,9 @@ class _StorageSection extends ConsumerWidget {
           await fmtcDir.delete(recursive: true);
         }
       }
-    } catch (_) {}
+    } catch (e) {
+      AppLogger.warn('Appearance', 'FMTC cache delete failed', e);
+    }
 
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(

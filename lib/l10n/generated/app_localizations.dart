@@ -1747,6 +1747,24 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Configuración guardada'**
   String get widgetsConfigSaved;
+
+  /// Offline banner: no connectivity, no pending actions
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. Los cambios se guardarán y se enviarán al volver.'**
+  String get offlineBannerOffline;
+
+  /// Offline banner: offline with queued actions
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión · {count, plural, =1{1 acción en cola} other{{count} acciones en cola}}.'**
+  String offlineBannerQueued(int count);
+
+  /// Offline banner: syncing pending actions
+  ///
+  /// In es, this message translates to:
+  /// **'Sincronizando {count, plural, =1{1 acción pendiente} other{{count} acciones pendientes}}…'**
+  String offlineBannerSyncing(int count);
 }
 
 class _AppLocalizationsDelegate

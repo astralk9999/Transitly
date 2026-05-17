@@ -18,14 +18,68 @@
 import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
+const JSON_HEADERS = { "Content-Type": "application/json" };
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+// Esta función se invoca server-side (trigger SQL vía pg_net) con el
+// service_role key. Exigimos ese bearer para impedir que un cliente con
+// la anon key haga spam/phishing a usuarios arbitrarios.
+function isServiceRoleCaller(req: Request): boolean {
+  const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+  if (!serviceKey) return false;
+  const auth = req.headers.get("Authorization") ?? "";
+  const bearer = auth.startsWith("Bearer ") ? auth.slice(7) : "";
+  if (bearer.length !== serviceKey.length) return false;
+  let diff = 0;
+  for (let i = 0; i < bearer.length; i++) {
+    diff |= bearer.charCodeAt(i) ^ serviceKey.charCodeAt(i);
+  }
+  return diff === 0;
+}
+
+// Ventana de rate-limit: máx. notificaciones por usuario y minuto.
+const RATE_LIMIT_PER_MIN = 20;
+
 serve(async (req: Request) => {
   try {
+    if (req.method !== "POST") {
+      return new Response(
+        JSON.stringify({ error: "Method not allowed" }),
+        { status: 405, headers: JSON_HEADERS },
+      );
+    }
+
+    if (!isServiceRoleCaller(req)) {
+      return new Response(
+        JSON.stringify({ error: "Forbidden" }),
+        { status: 403, headers: JSON_HEADERS },
+      );
+    }
+
     const { user_id, title, body, deeplink, data, type } = await req.json();
 
     if (!user_id || !title || !body) {
       return new Response(
         JSON.stringify({ error: "user_id, title, and body are required" }),
-        { status: 400, headers: { "Content-Type": "application/json" } },
+        { status: 400, headers: JSON_HEADERS },
+      );
+    }
+
+    if (typeof user_id !== "string" || !UUID_RE.test(user_id)) {
+      return new Response(
+        JSON.stringify({ error: "user_id must be a valid UUID" }),
+        { status: 400, headers: JSON_HEADERS },
+      );
+    }
+
+    if (
+      typeof title !== "string" || title.length > 200 ||
+      typeof body !== "string" || body.length > 2000
+    ) {
+      return new Response(
+        JSON.stringify({ error: "title (<=200) or body (<=2000) invalid" }),
+        { status: 400, headers: JSON_HEADERS },
       );
     }
 
@@ -33,6 +87,24 @@ serve(async (req: Request) => {
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
     );
+
+    // Rate-limit: cuenta notificaciones del usuario en los últimos 60s.
+    const since = new Date(Date.now() - 60_000).toISOString();
+    const { count: recentCount } = await supabase
+      .from("notifications")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user_id)
+      .gte("created_at", since);
+
+    if ((recentCount ?? 0) >= RATE_LIMIT_PER_MIN) {
+      console.warn(
+        `[send_notification] rate limit hit user=${user_id} count=${recentCount}`,
+      );
+      return new Response(
+        JSON.stringify({ error: "Rate limit exceeded", retry_after_s: 60 }),
+        { status: 429, headers: { ...JSON_HEADERS, "Retry-After": "60" } },
+      );
+    }
 
     // 1 ── Insertar notificación in-app ────────────────────────────
     const { error: notifError } = await supabase

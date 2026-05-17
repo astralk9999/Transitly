@@ -5,14 +5,74 @@
 import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+// CORS restringido por allowlist (env ALLOWED_ORIGINS, separada por comas).
+// Sin wildcard: solo se refleja el Origin si está en la lista.
+const ALLOWED_ORIGINS = (Deno.env.get("ALLOWED_ORIGINS") ?? "")
+  .split(",")
+  .map((o) => o.trim())
+  .filter((o) => o.length > 0);
+
+function corsFor(req: Request): Record<string, string> {
+  const origin = req.headers.get("Origin") ?? "";
+  const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : "";
+  return {
+    "Access-Control-Allow-Origin": allowed,
+    "Vary": "Origin",
+    "Access-Control-Allow-Headers":
+      "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+  };
+}
+
+// Protección SSRF: solo https, host público, y allowlist opcional de
+// hosts (env GTFS_ALLOWED_HOSTS, separada por comas). Bloquea loopback
+// y rangos privados/link-local para impedir pivotar a la red interna.
+function assertSafeGtfsUrl(raw: string): URL {
+  let url: URL;
+  try {
+    url = new URL(raw);
+  } catch {
+    throw new Error("gtfsUrl is not a valid URL");
+  }
+  if (url.protocol !== "https:") {
+    throw new Error("gtfsUrl must use https");
+  }
+  const host = url.hostname.toLowerCase();
+  const isPrivate =
+    host === "localhost" ||
+    host === "0.0.0.0" ||
+    host === "::1" ||
+    host.endsWith(".localhost") ||
+    host.endsWith(".internal") ||
+    /^127\./.test(host) ||
+    /^10\./.test(host) ||
+    /^192\.168\./.test(host) ||
+    /^169\.254\./.test(host) ||
+    /^172\.(1[6-9]|2\d|3[0-1])\./.test(host);
+  if (isPrivate) {
+    throw new Error("gtfsUrl host is not allowed (private/loopback)");
+  }
+  const allowHosts = (Deno.env.get("GTFS_ALLOWED_HOSTS") ?? "")
+    .split(",")
+    .map((h) => h.trim().toLowerCase())
+    .filter((h) => h.length > 0);
+  if (allowHosts.length > 0 && !allowHosts.includes(host)) {
+    throw new Error("gtfsUrl host is not in GTFS_ALLOWED_HOSTS allowlist");
+  }
+  return url;
+}
 
 serve(async (req: Request) => {
+  const corsHeaders = corsFor(req);
+
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
+  }
+  if (req.method !== "POST") {
+    return new Response(
+      JSON.stringify({ error: "Method not allowed" }),
+      { status: 405, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
   }
 
   try {
@@ -21,6 +81,23 @@ serve(async (req: Request) => {
     if (!operatorSlug || !gtfsUrl) {
       return new Response(
         JSON.stringify({ error: "operatorSlug and gtfsUrl are required" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    if (typeof operatorSlug !== "string" || !/^[a-z0-9_-]{2,40}$/.test(operatorSlug)) {
+      return new Response(
+        JSON.stringify({ error: "operatorSlug must match ^[a-z0-9_-]{2,40}$" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    let safeGtfsUrl: URL;
+    try {
+      safeGtfsUrl = assertSafeGtfsUrl(String(gtfsUrl));
+    } catch (e) {
+      return new Response(
+        JSON.stringify({ error: (e as Error).message }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -67,7 +144,7 @@ serve(async (req: Request) => {
       .from("gtfs_imports")
       .insert({
         operator_id: null,
-        gtfs_url: gtfsUrl,
+        gtfs_url: safeGtfsUrl.toString(),
         status: "running",
         triggered_by: user.id,
       })
@@ -78,7 +155,7 @@ serve(async (req: Request) => {
 
     try {
       // Descargar y parsear GTFS
-      const stats = await importGtfsFeed(supabase, operatorSlug, gtfsUrl, dryRun === true);
+      const stats = await importGtfsFeed(supabase, operatorSlug, safeGtfsUrl.toString(), dryRun === true);
 
       await supabase
         .from("gtfs_imports")
@@ -141,13 +218,29 @@ async function importGtfsFeed(
     errors: [],
   };
 
-  // Descargar ZIP
-  const response = await fetch(url);
+  // Descargar ZIP con timeout (30s) y límite de tamaño (50 MB) para
+  // acotar el impacto de un endpoint malicioso o lento.
+  const MAX_BYTES = 50 * 1024 * 1024;
+  const ac = new AbortController();
+  const timer = setTimeout(() => ac.abort(), 30_000);
+  let response: Response;
+  try {
+    response = await fetch(url, { signal: ac.signal, redirect: "follow" });
+  } finally {
+    clearTimeout(timer);
+  }
   if (!response.ok) {
     throw new Error(`Failed to download GTFS feed: ${response.status} ${response.statusText}`);
   }
+  const declaredLen = Number(response.headers.get("content-length") ?? "0");
+  if (declaredLen > MAX_BYTES) {
+    throw new Error(`GTFS feed too large: ${declaredLen} bytes (max ${MAX_BYTES})`);
+  }
 
   const zipData = await response.arrayBuffer();
+  if (zipData.byteLength > MAX_BYTES) {
+    throw new Error(`GTFS feed too large: ${zipData.byteLength} bytes (max ${MAX_BYTES})`);
+  }
   const zip = await parseZip(zipData);
 
   // Leer CSVs

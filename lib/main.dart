@@ -16,14 +16,25 @@ import 'data/privacy_consent/privacy_consent_repository.dart';
 import 'data/push/firebase_setup.dart';
 import 'features/error/env_error_screen.dart';
 
+/// F26 switch point: cuando las fuentes se empaqueten como assets locales,
+/// poner `true` (y seguir `docs/FONTS_F26.md`). Mientras es `false`,
+/// `google_fonts` resuelve por red (comportamiento actual).
+const bool _fontsBundled = false;
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Preload fonts in the background; we don't block app start on this.
-  unawaited(GoogleFonts.pendingFonts([
-    GoogleFonts.ibmPlexMono(),
-    GoogleFonts.dmSans(),
-  ]));
+  // F26: con fuentes empaquetadas se desactiva el fetch por red (privacidad
+  // + offline). Sin empaquetar, se precargan en segundo plano sin bloquear
+  // el arranque. Pasos exactos para cerrar F26: docs/FONTS_F26.md.
+  if (_fontsBundled) {
+    GoogleFonts.config.allowRuntimeFetching = false;
+  } else {
+    unawaited(GoogleFonts.pendingFonts([
+      GoogleFonts.ibmPlexMono(),
+      GoogleFonts.dmSans(),
+    ]));
+  }
 
   // Cargar .env e inicializar Supabase ANTES de cualquier ProviderScope.
   // Si esto falla, la app se monta con una pantalla de error explicativa
@@ -49,8 +60,14 @@ void main() async {
       if (postHogKey != null && postHogKey.isNotEmpty) {
         final config = PostHogConfig(postHogKey);
         config.host = Env.postHogHost;
+        // GDPR: arrancar SIN autocapture y en opt-out. El SDK no envía
+        // nada (ni "Application Opened") hasta que haya consentimiento
+        // explícito; entonces PostHogAnalyticsService llama a enable().
+        config.captureApplicationLifecycleEvents = false;
+        config.optOut = true;
         await Posthog().setup(config);
-        AppLogger.info('Analytics', 'PostHog initialized host=${Env.postHogHost}');
+        AppLogger.info('Analytics',
+            'PostHog initialized (opt-out until consent) host=${Env.postHogHost}');
       } else {
         AppLogger.info('Analytics', 'PostHog skipped — no API key');
       }
@@ -61,14 +78,20 @@ void main() async {
     final sentryDsn = Env.sentryDsn;
     if (sentryDsn != null && sentryDsn.isNotEmpty) {
       final consentRepo = PrivacyConsentRepository(Supabase.instance.client);
-      bool crashReportingOk = true;
+      // GDPR: default-deny. Sin sesión (invitado) NO se inicializa Sentry;
+      // se activa más abajo en onAuthStateChange tras leer el consentimiento.
+      // Si la lectura de consentimiento falla, se mantiene desactivado.
+      bool crashReportingOk = false;
 
       final session = Supabase.instance.client.auth.currentSession;
       if (session?.user != null) {
         try {
           final consents = await consentRepo.getConsents(session!.user.id);
           crashReportingOk = consents['crash_reporting'] != false;
-        } catch (_) {}
+        } catch (e) {
+          AppLogger.warn('Sentry',
+              'consent read failed — keeping crash reporting OFF', e);
+        }
       }
 
       await SentrySetup.init(dsn: sentryDsn, enabled: crashReportingOk);
@@ -82,8 +105,10 @@ void main() async {
             if (c['crash_reporting'] != false) {
               await SentrySetup.init(dsn: sentryDsn, enabled: true);
             }
-          } catch (_) {
-            await SentrySetup.init(dsn: sentryDsn, enabled: true);
+          } catch (e) {
+            AppLogger.warn('Sentry',
+                'consent read on sign-in failed — keeping crash reporting OFF',
+                e);
           }
         }
       });

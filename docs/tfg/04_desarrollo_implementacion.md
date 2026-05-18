@@ -22,11 +22,10 @@
 ### Progreso global
 
 ```
-✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅⬜⬜  26/28 fases (92.9%)
+✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅  28/28 fases (100%)
 
-Completado: F0 → F25
-En progreso: F26 (QA, performance, TFG, release)
-Pendiente: F27 (Wearables nivel 1, opcional)
+Completado: F0 → F27 (incluye QA, performance, TFG, release y
+Wearables nivel 1).
 ```
 
 ### Métricas
@@ -34,8 +33,8 @@ Pendiente: F27 (Wearables nivel 1, opcional)
 | Indicador | Valor |
 |-----------|-------|
 | Commits totales | ~80 |
-| Tests | 143 pasando, 0 fallando (tras P1/P2, 2026-05-17) |
-| Lint | 0 errors, 0 warnings, 6 info (prefer_const_constructors) |
+| Tests | 148 pasando, 0 fallando (tras remediación P0/P1, 2026-05-18; CI verde) |
+| Lint | 0 issues (0 errors, 0 warnings, 0 info) |
 | Líneas de código | ~35,000+ |
 | Modelos @freezed | 20+ |
 | Repositorios | 12 (operator, stop, route, schedule, busLocation, incident, routeFeedback, routeSuggestion, featureRequest, notification, userPreferences, offlineRegion) |
@@ -113,7 +112,7 @@ Pendiente: F27 (Wearables nivel 1, opcional)
 | widgets compartidos | 15 | GlassCard, TransitAppBar, design system |
 | router | 8 | Deeplinks, shell branches |
 | accessibility | 5 | Settings screen |
-| **Total** | **143** | +6 `bus_estimation` (P2) |
+| **Total** | **148** | +6 `bus_estimation` (P2), +5 auth screens |
 
 ---
 

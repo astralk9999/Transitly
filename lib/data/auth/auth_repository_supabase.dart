@@ -41,7 +41,11 @@ class AuthRepositorySupabase implements AuthRepository {
                   i.identityData?['email_verified'] == true) == true;
           if (emailVerified) {
             _stateController.add(AuthAuthenticated(user));
-            AppLogger.info(_logTag, 'signed in uid=${user.id}');
+            // PII: no loguear el UUID completo; prefijo suficiente para correlacionar.
+            final uidShort = user.id.length >= 8
+                ? user.id.substring(0, 8)
+                : user.id;
+            AppLogger.info(_logTag, 'signed in uid=$uidShort…');
           } else {
             _stateController.add(AuthEmailVerificationPending(user));
           }

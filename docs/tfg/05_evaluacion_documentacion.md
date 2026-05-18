@@ -96,8 +96,8 @@
 
 | Indicador | Objetivo | Actual | Estado |
 |-----------|----------|--------|:---:|
-| Cobertura de tests | > 60% | **~23%** (3 580/15 424 líneas, `flutter test --coverage` 2026-05-17; 143 tests verdes) | 🟥 |
-| Issues de lint | 0 errors | 0 errors, 6 info | 🟩 |
+| Cobertura de tests | > 60% | **24,7%** (3 860/15 605 líneas, `flutter test --coverage` 2026-05-18; 148 tests verdes, CI verde) | 🟥 |
+| Issues de lint | 0 errors | 0 issues (0 errors, 0 warnings, 0 info) | 🟩 |
 | Build time (debug) | < 3 min | ~2 min | 🟩 |
 | Tamaño APK (release) | < 50 MB | Por medir | ⬜ |
 | Crash-free rate | > 99% | Por medir (Sentry F22) | ⬜ |

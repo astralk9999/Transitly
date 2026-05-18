@@ -21,14 +21,23 @@
 
 ## P0 — Antes de la defensa (horas, casi sin riesgo)
 
+> **Estado de ejecución (2026-05-18):** P0-2…P0-7 ✅ aplicados y verificados
+> (`flutter analyze` 0 issues, `flutter test` **148/148**, `flutter build
+> apk --release` **OK 73 MB**). **Solo P0-1 ⏳ pendiente** (rotar PAT —
+> acción externa en el dashboard de Supabase, no automatizable).
+> **Hallazgo grave de la ejecución:** el APK de release **nunca había
+> compilado** (P0-7) — había quedado oculto porque el CI solo construye web
+> y nadie había ejecutado `flutter build apk --release` con Flutter 3.x.
+
 | ID | Acción | Tipo | Esf. | Riesgo | Criterio de aceptación |
 |----|--------|------|------|--------|------------------------|
-| P0-1 | **Rotar el PAT de Supabase** de `.mcp.json` en el dashboard (`supabase.com/dashboard/account/tokens`); invalidar `sbp_e514…`; regenerar con alcance mínimo | ops | S | 🟢 | El token viejo no autentica; `.mcp.json` local actualizado (sigue gitignored) |
-| P0-2 | **`setState` sin `mounted` en `catch`** de `signin_screen.dart:51,54` y `signup_screen.dart:54,57` → envolver en `if (mounted)` | fix | S | 🟢 | Los 4 `setState` de los `catch` guardados; tests verdes |
-| P0-3 | **`send_notification` 502→500** en fallo de INSERT propio (`index.ts`) | fix | S | 🟢 | Status 500; comentario fail-closed intacto |
-| P0-4 | **Actualizar métricas en `docs/tfg/`**: `04_…:37` (148 tests), `05_…:99` (24,74 %), `08_presentacion.md` (28/28 fases, 148 tests, 0 issues) | doc | S | 🟢 | Cifras coinciden con el informe y con CI |
-| P0-5 | **APK release para demo presencial** (`flutter build apk --release` con `.env` real); marcar checkbox en `08_presentacion.md:117` | ops | S | 🟢 | APK instalable generado y archivado |
-| P0-6 | **Truncar `uid` en log** `auth_repository_supabase.dart:44` → `uid=${user.id.substring(0,8)}` | fix | S | 🟢 | No se loguea el UUID completo |
+| P0-1 | ⏳ **Rotar el PAT de Supabase** de `.mcp.json` en el dashboard (`supabase.com/dashboard/account/tokens`); invalidar `sbp_e514…`; regenerar con alcance mínimo | ops | S | 🟢 | El token viejo no autentica; `.mcp.json` local actualizado (sigue gitignored) |
+| P0-2 | ✅ **`setState` sin `mounted` en `catch`** de `signin_screen.dart` y `signup_screen.dart` → envuelto en `if (mounted)` | fix | S | 🟢 | Hecho; 148 tests verdes |
+| P0-3 | ✅ **`send_notification` 502→500** en fallo de INSERT propio | fix | S | 🟢 | Hecho; status 500, comentario fail-closed intacto |
+| P0-4 | ✅ **Métricas en `docs/tfg/`** (04/05/08): 28/28 fases (100%), 148 tests, 24,7 % cobertura, 0 issues lint | doc | S | 🟢 | Hecho; cifras coinciden con informe y CI |
+| P0-5 | ✅ **APK release para demo** generado (73 MB, `app-release.apk`, 2026-05-18); checkbox marcado en `08_presentacion.md` | ops | S | 🟢 | Hecho tras desbloquear P0-7 |
+| P0-6 | ✅ **Truncar `uid` en log** `auth_repository_supabase.dart` (prefijo 8 chars) | fix | S | 🟢 | Hecho; no se loguea el UUID completo |
+| **P0-7** | 🆕✅ **El APK release NUNCA compilaba** (hallazgo grave). 3 causas encadenadas: (a) `workmanager 0.5.2` usa la API **v1-embedding** (`ShimPluginRegistry`/`Registrar`) **removida en Flutter 3.x** → `:workmanager:compileReleaseKotlin` falla; el plugin estaba **declarado pero nunca cableado** en Dart → **eliminado** de `pubspec.yaml`; (b) `flutter_local_notifications` exige **core library desugaring** → habilitado en `build.gradle.kts` + `desugar_jdk_libs:2.1.4`; (c) daemon Gradle "desaparecía" por OOM (`-Xmx8G+4G`) → `gradle.properties` a `-Xmx4G`, `daemon=false`, `workers.max=2` | fix | M | 🟡 | `flutter build apk --release` produce APK; `analyze` 0; 148 tests verdes |
 
 **Salida P0:** documentación coherente con el código, sin defectos triviales
 de UX/seguridad, demo lista. La nota esperada se consolida sin tocar

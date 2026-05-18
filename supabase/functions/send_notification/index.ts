@@ -131,9 +131,12 @@ serve(async (req: Request) => {
       // esas filas) quedaría ciego y el push se enviaría igualmente,
       // haciendo el límite evadible. Abortamos en su lugar.
       console.error("[send_notification] insert error:", notifError);
+      // 500 (no 502): es un fallo de la propia función al escribir en su
+      // BD, no de un upstream/gateway. pg_net (015) no reintenta según
+      // status, así que esto es semántica/observabilidad correcta.
       return new Response(
         JSON.stringify({ error: "Failed to persist notification" }),
-        { status: 502, headers: JSON_HEADERS },
+        { status: 500, headers: JSON_HEADERS },
       );
     }
 

@@ -51,10 +51,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             _nameController.text,
           );
     } on AuthRepoException catch (e) {
-      setState(() => _error = e.message ?? l10n.authSignUpError);
+      if (mounted) setState(() => _error = e.message ?? l10n.authSignUpError);
     } catch (e) {
       AppLogger.warn('SignUp', 'sign up error', e);
-      setState(() => _error = l10n.authErrorConnection);
+      if (mounted) setState(() => _error = l10n.authErrorConnection);
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }

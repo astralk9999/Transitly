@@ -75,6 +75,46 @@ siendo no bundlearlo y pasar a `--dart-define` (documentado en `ci.yml` y en
 
 ---
 
+## 1ter. Hallazgo nuevo (al ejecutar P0): el APK de release **nunca compilaba**
+
+**Severidad: 🔴 Crítico (entrega) — descubierto y resuelto.**
+
+Al ejecutar el plan (P0-5, generar el APK para la demo) se descubrió que
+`flutter build apk --release` **fallaba**, y llevaba haciéndolo desde el
+salto a Flutter 3.x. Quedó oculto porque el CI solo construye **web**
+(`flutter build web`) y nadie había ejecutado el build de Android release.
+Para un TFG cuya defensa incluye una demo en dispositivo, **no tener APK
+release es crítico**. Tres causas encadenadas, todas reales y verificadas:
+
+1. **`workmanager 0.5.2` incompatible con Flutter 3.x.** El plugin usa la
+   API *v1-embedding* (`ShimPluginRegistry`, `PluginRegistry.Registrar`,
+   `registerWith`, `PluginRegistrantCallback`), **eliminada** del motor →
+   `:workmanager:compileReleaseKotlin` falla con 9 `Unresolved reference`.
+   Además **`workmanager` estaba declarado en `pubspec.yaml` pero jamás
+   cableado en Dart** (0 usos; solo aparecía en registrants autogenerados y
+   en un plan de `docs/HOME_WIDGETS.md`). **Acción:** eliminado del
+   `pubspec.yaml` (dependencia muerta). El refresco de widget en segundo
+   plano queda como trabajo futuro documentado.
+2. **`flutter_local_notifications` exige core library desugaring**, no
+   habilitado → `:app:checkReleaseAarMetadata` falla. **Acción:**
+   `isCoreLibraryDesugaringEnabled = true` + `desugar_jdk_libs:2.1.4` en
+   `android/app/build.gradle.kts`.
+3. **Daemon Gradle "desaparecía" por OOM**: `gradle.properties` pedía
+   `-Xmx8G -XX:MaxMetaspaceSize=4G` (>12 GB) y saturaba el host.
+   **Acción:** `-Xmx4G`, `MaxMetaspaceSize=1G`, `org.gradle.daemon=false`,
+   `workers.max=2`.
+
+**Resultado verificado:** `flutter build apk --release` → **`√ Built
+app-release.apk (73 MB)`**, `flutter analyze` 0 issues, `flutter test`
+**148/148**. APK archivado y checkbox de `08_presentacion.md` marcado.
+
+> Este hallazgo, junto con §1bis (CI nunca verde), confirma el patrón ya
+> señalado en el informe: las garantías de calidad ("compila", "tests
+> verdes") eran **solo locales y parciales** — nadie había validado ni CI ni
+> build de release. Ambos cerrados ahora.
+
+---
+
 ## 2. Remediaciones que SÍ se sostienen (verificadas)
 
 - **C3 — Reubicación de `auth` a `lib/data/auth/`: SÓLIDA.** Rename puro;

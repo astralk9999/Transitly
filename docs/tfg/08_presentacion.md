@@ -64,14 +64,14 @@
 - Commits semánticos + push automático
 
 ### Diapositiva 9 — Planificación
-- Mostrar Gantt con 27 fases completadas/restantes
-- 26/28 fases completadas (92.9%)
-- ~80 commits, 143 tests, 35k+ líneas de código
+- Mostrar Gantt con las 28 fases completadas
+- 28/28 fases completadas (100%)
+- ~80 commits, 148 tests, 35k+ líneas de código
 
 ### Diapositiva 10 — Métricas y calidad
-- 143 tests pasando, 0 fallando
-- flutter analyze: 0 errors, 0 warnings
-- CI/CD con GitHub Actions (analyze + test en push/PR)
+- 148 tests pasando, 0 fallando
+- flutter analyze: 0 issues (0 errors, 0 warnings, 0 info)
+- CI/CD con GitHub Actions (analyze + test + build web en push/PR) — verde
 - 27 widgets compartidos reusables
 - 12 repositorios con patrón canónico
 - 20+ modelos @freezed tipados
@@ -114,7 +114,8 @@
 
 ## 3. Recursos a preparar
 
-- [ ] App compilada en APK para demo rápida
+- [x] App compilada en APK para demo rápida (`flutter build apk --release`,
+      73 MB, 2026-05-18; `build/app/outputs/flutter-apk/app-release.apk`)
 - [ ] Datos de prueba cargados (modo invitado)
 - [ ] Conexión a internet para mostrar modo online
 - [ ] Modo avión para mostrar funcionamiento offline

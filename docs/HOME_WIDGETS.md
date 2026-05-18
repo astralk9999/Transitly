@@ -68,9 +68,14 @@ Claves en `SharedPreferences` (gestionadas por la pantalla de ajustes):
 ## 4. Flujo de actualización
 
 1. El usuario configura parada/línea favorita en **Perfil → Widgets**.
-2. Un `Workmanager` periodic task (cada 15 min) consulta la API y llama a
-   `WidgetDataWriter.writeNextBus()` / `writeMyLineStatus()`.
-3. Los datos se persisten en `SharedPreferences`.
+2. **[Trabajo futuro]** un refresco periódico en segundo plano (cada ~15 min)
+   consultaría la API y llamaría a `WidgetDataWriter.writeNextBus()` /
+   `writeMyLineStatus()`. **No implementado**: la dependencia `workmanager`
+   se eliminó (la 0.5.2 usaba la API v1-embedding removida en Flutter 3.x y
+   rompía el build de release; nunca llegó a cablearse en Dart). El refresco
+   futuro debe usar `workmanager` ≥0.9 o el callback de fondo de
+   `home_widget`.
+3. Hoy los datos se persisten en `SharedPreferences` al configurar el widget.
 4. El widget nativo lee `SharedPreferences` (Android) o `UserDefaults` con
    App Group (iOS) y se renderiza.
 5. Opcionalmente, `HomeWidget.updateWidget()` fuerza el refresco del widget

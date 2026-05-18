@@ -48,10 +48,10 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
           .read(authRepositoryProvider)
           .signInWithEmail(_emailController.text, _passwordController.text);
     } on AuthRepoException catch (e) {
-      setState(() => _error = e.message ?? l10n.authSignInError);
+      if (mounted) setState(() => _error = e.message ?? l10n.authSignInError);
     } catch (e) {
       AppLogger.warn('SignIn', 'sign in error', e);
-      setState(() => _error = l10n.authErrorConnection);
+      if (mounted) setState(() => _error = l10n.authErrorConnection);
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }

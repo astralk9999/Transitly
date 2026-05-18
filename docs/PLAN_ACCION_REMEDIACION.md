@@ -2,13 +2,27 @@
 
 > **Origen:** `docs/REVISION_INDEPENDIENTE_2026_05_17.md` (4 pasadas) + revisión
 > multi-agente skill `code-review` (rango `f53d822~1..19bbd47`).
-> **Estado base:** `master @ 19bbd47` · `flutter analyze` 0 issues ·
-> `flutter test` 148/148 · cobertura 24,74 % · **CI verde verificado**.
-> **Objetivo:** hoja de ruta priorizada para cerrar **todos** los problemas y
-> requisitos pendientes, con esfuerzo, riesgo sobre la build verde,
-> dependencias y criterio de aceptación por ítem.
+> **Estado base:** `master @ b0fd7dc` (2026-05-18) · `flutter analyze` 0 issues ·
+> `flutter test` 148/148 · `flutter build apk --release` OK (73 MB) ·
+> cobertura 24,74 % · **CI verde verificado en GitHub**.
+> **Objetivo:** documento único — todos los problemas y requisitos, con su
+> plan de acción por parte (esfuerzo, riesgo sobre la build verde,
+> dependencias y criterio de aceptación), estado vivo y orden de ejecución.
 > **Regla transversal:** cada ítem se cierra solo si tras él
 > `flutter analyze` = 0 y `flutter test` sigue verde (y CI en GitHub).
+
+## Cuadro de mando (estado vivo · 2026-05-18)
+
+| Bloque | Total | ✅ Hechos | ⏳ Pendientes | Resumen |
+|--------|------:|---------:|-------------:|---------|
+| **P0** — antes de defensa | 7 | 6 | 1 | Solo falta **P0-1** (rotar PAT, acción externa). APK release + CI verdes. |
+| **P1** — calidad/a11y/req | 11 | 0 | 11 | Quick wins listos para arrancar (P1-1/2/9/10). |
+| **P2** — núcleo + cobertura | 7 | 0 | 7 | Mueve la nota 7,7 → ~8,5 (F13, modelo usuario, tests, SEC2). |
+| **P3** — deuda de fondo | 8 | 0 | 8 | Valor marginal TFG; algunos = deuda asumida. |
+| **TOTAL** | **33** | **6** | **27** | Nota actual **7,7/10**; techo lo fija P2. |
+
+> Leyenda de estado por ítem: ✅ hecho y verificado · ⏳ pendiente ·
+> 🆕 hallazgo nuevo de la ejecución. Detalle y evidencia, en cada tabla.
 
 ## Leyenda
 

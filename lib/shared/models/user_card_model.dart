@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'user_card_model.freezed.dart';
 
 @freezed
-class UserCardModel with _$UserCardModel {
+abstract class UserCardModel with _$UserCardModel {
   const UserCardModel._();
 
   const factory UserCardModel({

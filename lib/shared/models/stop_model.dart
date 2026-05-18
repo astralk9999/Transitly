@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'stop_model.freezed.dart';
 
 @freezed
-class StopModel with _$StopModel {
+abstract class StopModel with _$StopModel {
   const StopModel._();
 
   const factory StopModel({

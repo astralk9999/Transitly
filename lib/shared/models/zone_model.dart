@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'zone_model.freezed.dart';
 
 @freezed
-class ZoneModel with _$ZoneModel {
+abstract class ZoneModel with _$ZoneModel {
   const ZoneModel._();
 
   const factory ZoneModel({

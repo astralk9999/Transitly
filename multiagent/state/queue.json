@@ -1,1 +1,5 @@
-{"pending":[],"active":[],"completed":[{"id":"REV-C1-C2-C3","title":"Auth l10n + catch blocks + repo migration + lint","status":"completed"},{"id":"REV-I1-I2","title":"Decompose screens + auth tests","status":"completed"}]}
+{
+  "pending": [{"id": "R3", "title": "Rest packages + verificacion final", "status": "pending", "dependencies": ["R2"]}],
+  "active": [{"id": "R2", "title": "Router split + placeholders + test warnings", "status": "active", "dependencies": ["R1"]}],
+  "completed": [{"id": "R1", "title": "Paquetes criticos + lint", "status": "completed"}]
+}

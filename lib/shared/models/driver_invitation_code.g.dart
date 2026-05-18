@@ -6,9 +6,9 @@ part of 'driver_invitation_code.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$DriverInvitationCodeImpl _$$DriverInvitationCodeImplFromJson(
+_DriverInvitationCode _$DriverInvitationCodeFromJson(
   Map<String, dynamic> json,
-) => _$DriverInvitationCodeImpl(
+) => _DriverInvitationCode(
   code: json['code'] as String,
   operatorId: json['operatorId'] as String,
   createdBy: json['createdBy'] as String,
@@ -20,8 +20,8 @@ _$DriverInvitationCodeImpl _$$DriverInvitationCodeImplFromJson(
       InvitationKind.driver,
 );
 
-Map<String, dynamic> _$$DriverInvitationCodeImplToJson(
-  _$DriverInvitationCodeImpl instance,
+Map<String, dynamic> _$DriverInvitationCodeToJson(
+  _DriverInvitationCode instance,
 ) => <String, dynamic>{
   'code': instance.code,
   'operatorId': instance.operatorId,

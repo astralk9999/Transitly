@@ -27,7 +27,7 @@ enum FeatureRequestStatus {
 /// ruta nueva (correcciones de datos, mejoras de la app, oficialización
 /// de rutas comunitarias, etc.).
 @freezed
-class FeatureRequest with _$FeatureRequest {
+abstract class FeatureRequest with _$FeatureRequest {
   const factory FeatureRequest({
     required String id,
     required String title,

@@ -15,13 +15,13 @@ dependencies:
   cupertino_icons: ^1.0.8
 
   # State management
-  flutter_riverpod: ^2.6.1
+  flutter_riverpod: 2.6.1
 
   # Navigation
-  go_router: ^14.8.1
+  go_router: 17.2.3
 
   # Fonts
-  google_fonts: ^6.2.1
+  google_fonts: 6.3.3
 
   # Maps
   flutter_map: ^7.0.2
@@ -43,8 +43,8 @@ dependencies:
   shared_preferences: ^2.3.4
 
   # Codegen — value-class models con igualdad por valor + copyWith.
-  freezed_annotation: ^2.4.4
-  json_annotation: ^4.9.0
+  freezed_annotation: ^3.1.0
+  json_annotation: ^4.12.0
 
   # Backend (F2). supabase_flutter ya incluye postgrest, gotrue,
   # realtime_client y storage_client como deps transitivas.
@@ -69,9 +69,10 @@ dependencies:
   firebase_core: ^4.9.0
   firebase_messaging: ^16.2.2
   flutter_local_notifications: ^20.1.0
-  sentry_flutter: ^8.14.2
+  sentry_flutter: 8.14.2
   posthog_flutter: ^5.24.2
   home_widget: ^0.7.0
+  riverpod: 2.6.1
   # workmanager eliminado: declarado pero nunca cableado en Dart, y la
   # 0.5.2 usa la API v1-embedding (ShimPluginRegistry/Registrar) removida
   # en Flutter 3.x → rompía `flutter build apk --release`. El refresco
@@ -85,8 +86,8 @@ dev_dependencies:
 
   # Codegen runner + freezed/json_serializable generadores.
   build_runner: ^2.4.13
-  freezed: ^2.5.7
-  json_serializable: ^6.8.0
+  freezed: ^3.2.5
+  json_serializable: ^6.14.0
 
 flutter:
   uses-material-design: true

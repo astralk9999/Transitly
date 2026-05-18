@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,579 +9,583 @@ part of 'offline_region.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
-);
-
-OfflineRegionBounds _$OfflineRegionBoundsFromJson(Map<String, dynamic> json) {
-  return _OfflineRegionBounds.fromJson(json);
-}
 
 /// @nodoc
 mixin _$OfflineRegionBounds {
-  double get northLat => throw _privateConstructorUsedError;
-  double get southLat => throw _privateConstructorUsedError;
-  double get eastLng => throw _privateConstructorUsedError;
-  double get westLng => throw _privateConstructorUsedError;
+
+ double get northLat; double get southLat; double get eastLng; double get westLng;
+/// Create a copy of OfflineRegionBounds
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$OfflineRegionBoundsCopyWith<OfflineRegionBounds> get copyWith => _$OfflineRegionBoundsCopyWithImpl<OfflineRegionBounds>(this as OfflineRegionBounds, _$identity);
 
   /// Serializes this OfflineRegionBounds to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of OfflineRegionBounds
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $OfflineRegionBoundsCopyWith<OfflineRegionBounds> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OfflineRegionBounds&&(identical(other.northLat, northLat) || other.northLat == northLat)&&(identical(other.southLat, southLat) || other.southLat == southLat)&&(identical(other.eastLng, eastLng) || other.eastLng == eastLng)&&(identical(other.westLng, westLng) || other.westLng == westLng));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,northLat,southLat,eastLng,westLng);
+
+@override
+String toString() {
+  return 'OfflineRegionBounds(northLat: $northLat, southLat: $southLat, eastLng: $eastLng, westLng: $westLng)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $OfflineRegionBoundsCopyWith<$Res> {
-  factory $OfflineRegionBoundsCopyWith(
-    OfflineRegionBounds value,
-    $Res Function(OfflineRegionBounds) then,
-  ) = _$OfflineRegionBoundsCopyWithImpl<$Res, OfflineRegionBounds>;
-  @useResult
-  $Res call({double northLat, double southLat, double eastLng, double westLng});
-}
+abstract mixin class $OfflineRegionBoundsCopyWith<$Res>  {
+  factory $OfflineRegionBoundsCopyWith(OfflineRegionBounds value, $Res Function(OfflineRegionBounds) _then) = _$OfflineRegionBoundsCopyWithImpl;
+@useResult
+$Res call({
+ double northLat, double southLat, double eastLng, double westLng
+});
 
+
+
+
+}
 /// @nodoc
-class _$OfflineRegionBoundsCopyWithImpl<$Res, $Val extends OfflineRegionBounds>
+class _$OfflineRegionBoundsCopyWithImpl<$Res>
     implements $OfflineRegionBoundsCopyWith<$Res> {
-  _$OfflineRegionBoundsCopyWithImpl(this._value, this._then);
+  _$OfflineRegionBoundsCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final OfflineRegionBounds _self;
+  final $Res Function(OfflineRegionBounds) _then;
 
-  /// Create a copy of OfflineRegionBounds
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? northLat = null,
-    Object? southLat = null,
-    Object? eastLng = null,
-    Object? westLng = null,
-  }) {
-    return _then(
-      _value.copyWith(
-            northLat: null == northLat
-                ? _value.northLat
-                : northLat // ignore: cast_nullable_to_non_nullable
-                      as double,
-            southLat: null == southLat
-                ? _value.southLat
-                : southLat // ignore: cast_nullable_to_non_nullable
-                      as double,
-            eastLng: null == eastLng
-                ? _value.eastLng
-                : eastLng // ignore: cast_nullable_to_non_nullable
-                      as double,
-            westLng: null == westLng
-                ? _value.westLng
-                : westLng // ignore: cast_nullable_to_non_nullable
-                      as double,
-          )
-          as $Val,
-    );
-  }
+/// Create a copy of OfflineRegionBounds
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? northLat = null,Object? southLat = null,Object? eastLng = null,Object? westLng = null,}) {
+  return _then(_self.copyWith(
+northLat: null == northLat ? _self.northLat : northLat // ignore: cast_nullable_to_non_nullable
+as double,southLat: null == southLat ? _self.southLat : southLat // ignore: cast_nullable_to_non_nullable
+as double,eastLng: null == eastLng ? _self.eastLng : eastLng // ignore: cast_nullable_to_non_nullable
+as double,westLng: null == westLng ? _self.westLng : westLng // ignore: cast_nullable_to_non_nullable
+as double,
+  ));
 }
 
-/// @nodoc
-abstract class _$$OfflineRegionBoundsImplCopyWith<$Res>
-    implements $OfflineRegionBoundsCopyWith<$Res> {
-  factory _$$OfflineRegionBoundsImplCopyWith(
-    _$OfflineRegionBoundsImpl value,
-    $Res Function(_$OfflineRegionBoundsImpl) then,
-  ) = __$$OfflineRegionBoundsImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({double northLat, double southLat, double eastLng, double westLng});
 }
 
-/// @nodoc
-class __$$OfflineRegionBoundsImplCopyWithImpl<$Res>
-    extends _$OfflineRegionBoundsCopyWithImpl<$Res, _$OfflineRegionBoundsImpl>
-    implements _$$OfflineRegionBoundsImplCopyWith<$Res> {
-  __$$OfflineRegionBoundsImplCopyWithImpl(
-    _$OfflineRegionBoundsImpl _value,
-    $Res Function(_$OfflineRegionBoundsImpl) _then,
-  ) : super(_value, _then);
 
-  /// Create a copy of OfflineRegionBounds
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? northLat = null,
-    Object? southLat = null,
-    Object? eastLng = null,
-    Object? westLng = null,
-  }) {
-    return _then(
-      _$OfflineRegionBoundsImpl(
-        northLat: null == northLat
-            ? _value.northLat
-            : northLat // ignore: cast_nullable_to_non_nullable
-                  as double,
-        southLat: null == southLat
-            ? _value.southLat
-            : southLat // ignore: cast_nullable_to_non_nullable
-                  as double,
-        eastLng: null == eastLng
-            ? _value.eastLng
-            : eastLng // ignore: cast_nullable_to_non_nullable
-                  as double,
-        westLng: null == westLng
-            ? _value.westLng
-            : westLng // ignore: cast_nullable_to_non_nullable
-                  as double,
-      ),
-    );
-  }
+/// Adds pattern-matching-related methods to [OfflineRegionBounds].
+extension OfflineRegionBoundsPatterns on OfflineRegionBounds {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _OfflineRegionBounds value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _OfflineRegionBounds() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _OfflineRegionBounds value)  $default,){
+final _that = this;
+switch (_that) {
+case _OfflineRegionBounds():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _OfflineRegionBounds value)?  $default,){
+final _that = this;
+switch (_that) {
+case _OfflineRegionBounds() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( double northLat,  double southLat,  double eastLng,  double westLng)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _OfflineRegionBounds() when $default != null:
+return $default(_that.northLat,_that.southLat,_that.eastLng,_that.westLng);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( double northLat,  double southLat,  double eastLng,  double westLng)  $default,) {final _that = this;
+switch (_that) {
+case _OfflineRegionBounds():
+return $default(_that.northLat,_that.southLat,_that.eastLng,_that.westLng);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( double northLat,  double southLat,  double eastLng,  double westLng)?  $default,) {final _that = this;
+switch (_that) {
+case _OfflineRegionBounds() when $default != null:
+return $default(_that.northLat,_that.southLat,_that.eastLng,_that.westLng);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$OfflineRegionBoundsImpl implements _OfflineRegionBounds {
-  const _$OfflineRegionBoundsImpl({
-    required this.northLat,
-    required this.southLat,
-    required this.eastLng,
-    required this.westLng,
-  });
 
-  factory _$OfflineRegionBoundsImpl.fromJson(Map<String, dynamic> json) =>
-      _$$OfflineRegionBoundsImplFromJson(json);
+class _OfflineRegionBounds implements OfflineRegionBounds {
+  const _OfflineRegionBounds({required this.northLat, required this.southLat, required this.eastLng, required this.westLng});
+  factory _OfflineRegionBounds.fromJson(Map<String, dynamic> json) => _$OfflineRegionBoundsFromJson(json);
 
-  @override
-  final double northLat;
-  @override
-  final double southLat;
-  @override
-  final double eastLng;
-  @override
-  final double westLng;
+@override final  double northLat;
+@override final  double southLat;
+@override final  double eastLng;
+@override final  double westLng;
 
-  @override
-  String toString() {
-    return 'OfflineRegionBounds(northLat: $northLat, southLat: $southLat, eastLng: $eastLng, westLng: $westLng)';
-  }
+/// Create a copy of OfflineRegionBounds
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$OfflineRegionBoundsCopyWith<_OfflineRegionBounds> get copyWith => __$OfflineRegionBoundsCopyWithImpl<_OfflineRegionBounds>(this, _$identity);
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$OfflineRegionBoundsImpl &&
-            (identical(other.northLat, northLat) ||
-                other.northLat == northLat) &&
-            (identical(other.southLat, southLat) ||
-                other.southLat == southLat) &&
-            (identical(other.eastLng, eastLng) || other.eastLng == eastLng) &&
-            (identical(other.westLng, westLng) || other.westLng == westLng));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode =>
-      Object.hash(runtimeType, northLat, southLat, eastLng, westLng);
-
-  /// Create a copy of OfflineRegionBounds
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$OfflineRegionBoundsImplCopyWith<_$OfflineRegionBoundsImpl> get copyWith =>
-      __$$OfflineRegionBoundsImplCopyWithImpl<_$OfflineRegionBoundsImpl>(
-        this,
-        _$identity,
-      );
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$OfflineRegionBoundsImplToJson(this);
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$OfflineRegionBoundsToJson(this, );
 }
 
-abstract class _OfflineRegionBounds implements OfflineRegionBounds {
-  const factory _OfflineRegionBounds({
-    required final double northLat,
-    required final double southLat,
-    required final double eastLng,
-    required final double westLng,
-  }) = _$OfflineRegionBoundsImpl;
-
-  factory _OfflineRegionBounds.fromJson(Map<String, dynamic> json) =
-      _$OfflineRegionBoundsImpl.fromJson;
-
-  @override
-  double get northLat;
-  @override
-  double get southLat;
-  @override
-  double get eastLng;
-  @override
-  double get westLng;
-
-  /// Create a copy of OfflineRegionBounds
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$OfflineRegionBoundsImplCopyWith<_$OfflineRegionBoundsImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OfflineRegionBounds&&(identical(other.northLat, northLat) || other.northLat == northLat)&&(identical(other.southLat, southLat) || other.southLat == southLat)&&(identical(other.eastLng, eastLng) || other.eastLng == eastLng)&&(identical(other.westLng, westLng) || other.westLng == westLng));
 }
 
-OfflineRegion _$OfflineRegionFromJson(Map<String, dynamic> json) {
-  return _OfflineRegion.fromJson(json);
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,northLat,southLat,eastLng,westLng);
+
+@override
+String toString() {
+  return 'OfflineRegionBounds(northLat: $northLat, southLat: $southLat, eastLng: $eastLng, westLng: $westLng)';
 }
+
+
+}
+
+/// @nodoc
+abstract mixin class _$OfflineRegionBoundsCopyWith<$Res> implements $OfflineRegionBoundsCopyWith<$Res> {
+  factory _$OfflineRegionBoundsCopyWith(_OfflineRegionBounds value, $Res Function(_OfflineRegionBounds) _then) = __$OfflineRegionBoundsCopyWithImpl;
+@override @useResult
+$Res call({
+ double northLat, double southLat, double eastLng, double westLng
+});
+
+
+
+
+}
+/// @nodoc
+class __$OfflineRegionBoundsCopyWithImpl<$Res>
+    implements _$OfflineRegionBoundsCopyWith<$Res> {
+  __$OfflineRegionBoundsCopyWithImpl(this._self, this._then);
+
+  final _OfflineRegionBounds _self;
+  final $Res Function(_OfflineRegionBounds) _then;
+
+/// Create a copy of OfflineRegionBounds
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? northLat = null,Object? southLat = null,Object? eastLng = null,Object? westLng = null,}) {
+  return _then(_OfflineRegionBounds(
+northLat: null == northLat ? _self.northLat : northLat // ignore: cast_nullable_to_non_nullable
+as double,southLat: null == southLat ? _self.southLat : southLat // ignore: cast_nullable_to_non_nullable
+as double,eastLng: null == eastLng ? _self.eastLng : eastLng // ignore: cast_nullable_to_non_nullable
+as double,westLng: null == westLng ? _self.westLng : westLng // ignore: cast_nullable_to_non_nullable
+as double,
+  ));
+}
+
+
+}
+
 
 /// @nodoc
 mixin _$OfflineRegion {
-  String get id => throw _privateConstructorUsedError;
-  String get label => throw _privateConstructorUsedError;
-  OfflineRegionBounds get bounds => throw _privateConstructorUsedError;
-  int get zoomMin => throw _privateConstructorUsedError;
-  int get zoomMax => throw _privateConstructorUsedError;
-  DateTime get downloadedAt => throw _privateConstructorUsedError;
-  int get sizeBytes => throw _privateConstructorUsedError;
-  OfflineRegionStatus get status => throw _privateConstructorUsedError;
-  DateTime? get dataSyncedAt => throw _privateConstructorUsedError;
+
+ String get id; String get label; OfflineRegionBounds get bounds; int get zoomMin; int get zoomMax; DateTime get downloadedAt; int get sizeBytes; OfflineRegionStatus get status; DateTime? get dataSyncedAt;
+/// Create a copy of OfflineRegion
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$OfflineRegionCopyWith<OfflineRegion> get copyWith => _$OfflineRegionCopyWithImpl<OfflineRegion>(this as OfflineRegion, _$identity);
 
   /// Serializes this OfflineRegion to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of OfflineRegion
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $OfflineRegionCopyWith<OfflineRegion> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OfflineRegion&&(identical(other.id, id) || other.id == id)&&(identical(other.label, label) || other.label == label)&&(identical(other.bounds, bounds) || other.bounds == bounds)&&(identical(other.zoomMin, zoomMin) || other.zoomMin == zoomMin)&&(identical(other.zoomMax, zoomMax) || other.zoomMax == zoomMax)&&(identical(other.downloadedAt, downloadedAt) || other.downloadedAt == downloadedAt)&&(identical(other.sizeBytes, sizeBytes) || other.sizeBytes == sizeBytes)&&(identical(other.status, status) || other.status == status)&&(identical(other.dataSyncedAt, dataSyncedAt) || other.dataSyncedAt == dataSyncedAt));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,label,bounds,zoomMin,zoomMax,downloadedAt,sizeBytes,status,dataSyncedAt);
+
+@override
+String toString() {
+  return 'OfflineRegion(id: $id, label: $label, bounds: $bounds, zoomMin: $zoomMin, zoomMax: $zoomMax, downloadedAt: $downloadedAt, sizeBytes: $sizeBytes, status: $status, dataSyncedAt: $dataSyncedAt)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $OfflineRegionCopyWith<$Res> {
-  factory $OfflineRegionCopyWith(
-    OfflineRegion value,
-    $Res Function(OfflineRegion) then,
-  ) = _$OfflineRegionCopyWithImpl<$Res, OfflineRegion>;
-  @useResult
-  $Res call({
-    String id,
-    String label,
-    OfflineRegionBounds bounds,
-    int zoomMin,
-    int zoomMax,
-    DateTime downloadedAt,
-    int sizeBytes,
-    OfflineRegionStatus status,
-    DateTime? dataSyncedAt,
-  });
+abstract mixin class $OfflineRegionCopyWith<$Res>  {
+  factory $OfflineRegionCopyWith(OfflineRegion value, $Res Function(OfflineRegion) _then) = _$OfflineRegionCopyWithImpl;
+@useResult
+$Res call({
+ String id, String label, OfflineRegionBounds bounds, int zoomMin, int zoomMax, DateTime downloadedAt, int sizeBytes, OfflineRegionStatus status, DateTime? dataSyncedAt
+});
 
-  $OfflineRegionBoundsCopyWith<$Res> get bounds;
+
+$OfflineRegionBoundsCopyWith<$Res> get bounds;
+
 }
-
 /// @nodoc
-class _$OfflineRegionCopyWithImpl<$Res, $Val extends OfflineRegion>
+class _$OfflineRegionCopyWithImpl<$Res>
     implements $OfflineRegionCopyWith<$Res> {
-  _$OfflineRegionCopyWithImpl(this._value, this._then);
+  _$OfflineRegionCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final OfflineRegion _self;
+  final $Res Function(OfflineRegion) _then;
 
-  /// Create a copy of OfflineRegion
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-    Object? label = null,
-    Object? bounds = null,
-    Object? zoomMin = null,
-    Object? zoomMax = null,
-    Object? downloadedAt = null,
-    Object? sizeBytes = null,
-    Object? status = null,
-    Object? dataSyncedAt = freezed,
-  }) {
-    return _then(
-      _value.copyWith(
-            id: null == id
-                ? _value.id
-                : id // ignore: cast_nullable_to_non_nullable
-                      as String,
-            label: null == label
-                ? _value.label
-                : label // ignore: cast_nullable_to_non_nullable
-                      as String,
-            bounds: null == bounds
-                ? _value.bounds
-                : bounds // ignore: cast_nullable_to_non_nullable
-                      as OfflineRegionBounds,
-            zoomMin: null == zoomMin
-                ? _value.zoomMin
-                : zoomMin // ignore: cast_nullable_to_non_nullable
-                      as int,
-            zoomMax: null == zoomMax
-                ? _value.zoomMax
-                : zoomMax // ignore: cast_nullable_to_non_nullable
-                      as int,
-            downloadedAt: null == downloadedAt
-                ? _value.downloadedAt
-                : downloadedAt // ignore: cast_nullable_to_non_nullable
-                      as DateTime,
-            sizeBytes: null == sizeBytes
-                ? _value.sizeBytes
-                : sizeBytes // ignore: cast_nullable_to_non_nullable
-                      as int,
-            status: null == status
-                ? _value.status
-                : status // ignore: cast_nullable_to_non_nullable
-                      as OfflineRegionStatus,
-            dataSyncedAt: freezed == dataSyncedAt
-                ? _value.dataSyncedAt
-                : dataSyncedAt // ignore: cast_nullable_to_non_nullable
-                      as DateTime?,
-          )
-          as $Val,
-    );
-  }
-
-  /// Create a copy of OfflineRegion
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $OfflineRegionBoundsCopyWith<$Res> get bounds {
-    return $OfflineRegionBoundsCopyWith<$Res>(_value.bounds, (value) {
-      return _then(_value.copyWith(bounds: value) as $Val);
-    });
-  }
+/// Create a copy of OfflineRegion
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? label = null,Object? bounds = null,Object? zoomMin = null,Object? zoomMax = null,Object? downloadedAt = null,Object? sizeBytes = null,Object? status = null,Object? dataSyncedAt = freezed,}) {
+  return _then(_self.copyWith(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,label: null == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
+as String,bounds: null == bounds ? _self.bounds : bounds // ignore: cast_nullable_to_non_nullable
+as OfflineRegionBounds,zoomMin: null == zoomMin ? _self.zoomMin : zoomMin // ignore: cast_nullable_to_non_nullable
+as int,zoomMax: null == zoomMax ? _self.zoomMax : zoomMax // ignore: cast_nullable_to_non_nullable
+as int,downloadedAt: null == downloadedAt ? _self.downloadedAt : downloadedAt // ignore: cast_nullable_to_non_nullable
+as DateTime,sizeBytes: null == sizeBytes ? _self.sizeBytes : sizeBytes // ignore: cast_nullable_to_non_nullable
+as int,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as OfflineRegionStatus,dataSyncedAt: freezed == dataSyncedAt ? _self.dataSyncedAt : dataSyncedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
+  ));
 }
-
-/// @nodoc
-abstract class _$$OfflineRegionImplCopyWith<$Res>
-    implements $OfflineRegionCopyWith<$Res> {
-  factory _$$OfflineRegionImplCopyWith(
-    _$OfflineRegionImpl value,
-    $Res Function(_$OfflineRegionImpl) then,
-  ) = __$$OfflineRegionImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({
-    String id,
-    String label,
-    OfflineRegionBounds bounds,
-    int zoomMin,
-    int zoomMax,
-    DateTime downloadedAt,
-    int sizeBytes,
-    OfflineRegionStatus status,
-    DateTime? dataSyncedAt,
+/// Create a copy of OfflineRegion
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$OfflineRegionBoundsCopyWith<$Res> get bounds {
+  
+  return $OfflineRegionBoundsCopyWith<$Res>(_self.bounds, (value) {
+    return _then(_self.copyWith(bounds: value));
   });
-
-  @override
-  $OfflineRegionBoundsCopyWith<$Res> get bounds;
+}
 }
 
-/// @nodoc
-class __$$OfflineRegionImplCopyWithImpl<$Res>
-    extends _$OfflineRegionCopyWithImpl<$Res, _$OfflineRegionImpl>
-    implements _$$OfflineRegionImplCopyWith<$Res> {
-  __$$OfflineRegionImplCopyWithImpl(
-    _$OfflineRegionImpl _value,
-    $Res Function(_$OfflineRegionImpl) _then,
-  ) : super(_value, _then);
 
-  /// Create a copy of OfflineRegion
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-    Object? label = null,
-    Object? bounds = null,
-    Object? zoomMin = null,
-    Object? zoomMax = null,
-    Object? downloadedAt = null,
-    Object? sizeBytes = null,
-    Object? status = null,
-    Object? dataSyncedAt = freezed,
-  }) {
-    return _then(
-      _$OfflineRegionImpl(
-        id: null == id
-            ? _value.id
-            : id // ignore: cast_nullable_to_non_nullable
-                  as String,
-        label: null == label
-            ? _value.label
-            : label // ignore: cast_nullable_to_non_nullable
-                  as String,
-        bounds: null == bounds
-            ? _value.bounds
-            : bounds // ignore: cast_nullable_to_non_nullable
-                  as OfflineRegionBounds,
-        zoomMin: null == zoomMin
-            ? _value.zoomMin
-            : zoomMin // ignore: cast_nullable_to_non_nullable
-                  as int,
-        zoomMax: null == zoomMax
-            ? _value.zoomMax
-            : zoomMax // ignore: cast_nullable_to_non_nullable
-                  as int,
-        downloadedAt: null == downloadedAt
-            ? _value.downloadedAt
-            : downloadedAt // ignore: cast_nullable_to_non_nullable
-                  as DateTime,
-        sizeBytes: null == sizeBytes
-            ? _value.sizeBytes
-            : sizeBytes // ignore: cast_nullable_to_non_nullable
-                  as int,
-        status: null == status
-            ? _value.status
-            : status // ignore: cast_nullable_to_non_nullable
-                  as OfflineRegionStatus,
-        dataSyncedAt: freezed == dataSyncedAt
-            ? _value.dataSyncedAt
-            : dataSyncedAt // ignore: cast_nullable_to_non_nullable
-                  as DateTime?,
-      ),
-    );
-  }
+/// Adds pattern-matching-related methods to [OfflineRegion].
+extension OfflineRegionPatterns on OfflineRegion {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _OfflineRegion value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _OfflineRegion() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _OfflineRegion value)  $default,){
+final _that = this;
+switch (_that) {
+case _OfflineRegion():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _OfflineRegion value)?  $default,){
+final _that = this;
+switch (_that) {
+case _OfflineRegion() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String label,  OfflineRegionBounds bounds,  int zoomMin,  int zoomMax,  DateTime downloadedAt,  int sizeBytes,  OfflineRegionStatus status,  DateTime? dataSyncedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _OfflineRegion() when $default != null:
+return $default(_that.id,_that.label,_that.bounds,_that.zoomMin,_that.zoomMax,_that.downloadedAt,_that.sizeBytes,_that.status,_that.dataSyncedAt);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String label,  OfflineRegionBounds bounds,  int zoomMin,  int zoomMax,  DateTime downloadedAt,  int sizeBytes,  OfflineRegionStatus status,  DateTime? dataSyncedAt)  $default,) {final _that = this;
+switch (_that) {
+case _OfflineRegion():
+return $default(_that.id,_that.label,_that.bounds,_that.zoomMin,_that.zoomMax,_that.downloadedAt,_that.sizeBytes,_that.status,_that.dataSyncedAt);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String label,  OfflineRegionBounds bounds,  int zoomMin,  int zoomMax,  DateTime downloadedAt,  int sizeBytes,  OfflineRegionStatus status,  DateTime? dataSyncedAt)?  $default,) {final _that = this;
+switch (_that) {
+case _OfflineRegion() when $default != null:
+return $default(_that.id,_that.label,_that.bounds,_that.zoomMin,_that.zoomMax,_that.downloadedAt,_that.sizeBytes,_that.status,_that.dataSyncedAt);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$OfflineRegionImpl implements _OfflineRegion {
-  const _$OfflineRegionImpl({
-    required this.id,
-    required this.label,
-    required this.bounds,
-    required this.zoomMin,
-    required this.zoomMax,
-    required this.downloadedAt,
-    required this.sizeBytes,
-    required this.status,
-    this.dataSyncedAt,
+
+class _OfflineRegion implements OfflineRegion {
+  const _OfflineRegion({required this.id, required this.label, required this.bounds, required this.zoomMin, required this.zoomMax, required this.downloadedAt, required this.sizeBytes, required this.status, this.dataSyncedAt});
+  factory _OfflineRegion.fromJson(Map<String, dynamic> json) => _$OfflineRegionFromJson(json);
+
+@override final  String id;
+@override final  String label;
+@override final  OfflineRegionBounds bounds;
+@override final  int zoomMin;
+@override final  int zoomMax;
+@override final  DateTime downloadedAt;
+@override final  int sizeBytes;
+@override final  OfflineRegionStatus status;
+@override final  DateTime? dataSyncedAt;
+
+/// Create a copy of OfflineRegion
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$OfflineRegionCopyWith<_OfflineRegion> get copyWith => __$OfflineRegionCopyWithImpl<_OfflineRegion>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$OfflineRegionToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OfflineRegion&&(identical(other.id, id) || other.id == id)&&(identical(other.label, label) || other.label == label)&&(identical(other.bounds, bounds) || other.bounds == bounds)&&(identical(other.zoomMin, zoomMin) || other.zoomMin == zoomMin)&&(identical(other.zoomMax, zoomMax) || other.zoomMax == zoomMax)&&(identical(other.downloadedAt, downloadedAt) || other.downloadedAt == downloadedAt)&&(identical(other.sizeBytes, sizeBytes) || other.sizeBytes == sizeBytes)&&(identical(other.status, status) || other.status == status)&&(identical(other.dataSyncedAt, dataSyncedAt) || other.dataSyncedAt == dataSyncedAt));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,label,bounds,zoomMin,zoomMax,downloadedAt,sizeBytes,status,dataSyncedAt);
+
+@override
+String toString() {
+  return 'OfflineRegion(id: $id, label: $label, bounds: $bounds, zoomMin: $zoomMin, zoomMax: $zoomMax, downloadedAt: $downloadedAt, sizeBytes: $sizeBytes, status: $status, dataSyncedAt: $dataSyncedAt)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$OfflineRegionCopyWith<$Res> implements $OfflineRegionCopyWith<$Res> {
+  factory _$OfflineRegionCopyWith(_OfflineRegion value, $Res Function(_OfflineRegion) _then) = __$OfflineRegionCopyWithImpl;
+@override @useResult
+$Res call({
+ String id, String label, OfflineRegionBounds bounds, int zoomMin, int zoomMax, DateTime downloadedAt, int sizeBytes, OfflineRegionStatus status, DateTime? dataSyncedAt
+});
+
+
+@override $OfflineRegionBoundsCopyWith<$Res> get bounds;
+
+}
+/// @nodoc
+class __$OfflineRegionCopyWithImpl<$Res>
+    implements _$OfflineRegionCopyWith<$Res> {
+  __$OfflineRegionCopyWithImpl(this._self, this._then);
+
+  final _OfflineRegion _self;
+  final $Res Function(_OfflineRegion) _then;
+
+/// Create a copy of OfflineRegion
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? label = null,Object? bounds = null,Object? zoomMin = null,Object? zoomMax = null,Object? downloadedAt = null,Object? sizeBytes = null,Object? status = null,Object? dataSyncedAt = freezed,}) {
+  return _then(_OfflineRegion(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,label: null == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
+as String,bounds: null == bounds ? _self.bounds : bounds // ignore: cast_nullable_to_non_nullable
+as OfflineRegionBounds,zoomMin: null == zoomMin ? _self.zoomMin : zoomMin // ignore: cast_nullable_to_non_nullable
+as int,zoomMax: null == zoomMax ? _self.zoomMax : zoomMax // ignore: cast_nullable_to_non_nullable
+as int,downloadedAt: null == downloadedAt ? _self.downloadedAt : downloadedAt // ignore: cast_nullable_to_non_nullable
+as DateTime,sizeBytes: null == sizeBytes ? _self.sizeBytes : sizeBytes // ignore: cast_nullable_to_non_nullable
+as int,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as OfflineRegionStatus,dataSyncedAt: freezed == dataSyncedAt ? _self.dataSyncedAt : dataSyncedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
+  ));
+}
+
+/// Create a copy of OfflineRegion
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$OfflineRegionBoundsCopyWith<$Res> get bounds {
+  
+  return $OfflineRegionBoundsCopyWith<$Res>(_self.bounds, (value) {
+    return _then(_self.copyWith(bounds: value));
   });
-
-  factory _$OfflineRegionImpl.fromJson(Map<String, dynamic> json) =>
-      _$$OfflineRegionImplFromJson(json);
-
-  @override
-  final String id;
-  @override
-  final String label;
-  @override
-  final OfflineRegionBounds bounds;
-  @override
-  final int zoomMin;
-  @override
-  final int zoomMax;
-  @override
-  final DateTime downloadedAt;
-  @override
-  final int sizeBytes;
-  @override
-  final OfflineRegionStatus status;
-  @override
-  final DateTime? dataSyncedAt;
-
-  @override
-  String toString() {
-    return 'OfflineRegion(id: $id, label: $label, bounds: $bounds, zoomMin: $zoomMin, zoomMax: $zoomMax, downloadedAt: $downloadedAt, sizeBytes: $sizeBytes, status: $status, dataSyncedAt: $dataSyncedAt)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$OfflineRegionImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.label, label) || other.label == label) &&
-            (identical(other.bounds, bounds) || other.bounds == bounds) &&
-            (identical(other.zoomMin, zoomMin) || other.zoomMin == zoomMin) &&
-            (identical(other.zoomMax, zoomMax) || other.zoomMax == zoomMax) &&
-            (identical(other.downloadedAt, downloadedAt) ||
-                other.downloadedAt == downloadedAt) &&
-            (identical(other.sizeBytes, sizeBytes) ||
-                other.sizeBytes == sizeBytes) &&
-            (identical(other.status, status) || other.status == status) &&
-            (identical(other.dataSyncedAt, dataSyncedAt) ||
-                other.dataSyncedAt == dataSyncedAt));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    id,
-    label,
-    bounds,
-    zoomMin,
-    zoomMax,
-    downloadedAt,
-    sizeBytes,
-    status,
-    dataSyncedAt,
-  );
-
-  /// Create a copy of OfflineRegion
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$OfflineRegionImplCopyWith<_$OfflineRegionImpl> get copyWith =>
-      __$$OfflineRegionImplCopyWithImpl<_$OfflineRegionImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$OfflineRegionImplToJson(this);
-  }
+}
 }
 
-abstract class _OfflineRegion implements OfflineRegion {
-  const factory _OfflineRegion({
-    required final String id,
-    required final String label,
-    required final OfflineRegionBounds bounds,
-    required final int zoomMin,
-    required final int zoomMax,
-    required final DateTime downloadedAt,
-    required final int sizeBytes,
-    required final OfflineRegionStatus status,
-    final DateTime? dataSyncedAt,
-  }) = _$OfflineRegionImpl;
-
-  factory _OfflineRegion.fromJson(Map<String, dynamic> json) =
-      _$OfflineRegionImpl.fromJson;
-
-  @override
-  String get id;
-  @override
-  String get label;
-  @override
-  OfflineRegionBounds get bounds;
-  @override
-  int get zoomMin;
-  @override
-  int get zoomMax;
-  @override
-  DateTime get downloadedAt;
-  @override
-  int get sizeBytes;
-  @override
-  OfflineRegionStatus get status;
-  @override
-  DateTime? get dataSyncedAt;
-
-  /// Create a copy of OfflineRegion
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$OfflineRegionImplCopyWith<_$OfflineRegionImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
+// dart format on

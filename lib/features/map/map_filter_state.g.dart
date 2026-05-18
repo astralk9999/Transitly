@@ -6,8 +6,8 @@ part of 'map_filter_state.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$MapFilterStateImpl _$$MapFilterStateImplFromJson(Map<String, dynamic> json) =>
-    _$MapFilterStateImpl(
+_MapFilterState _$MapFilterStateFromJson(Map<String, dynamic> json) =>
+    _MapFilterState(
       showOfficial: json['showOfficial'] as bool? ?? true,
       showCommunity: json['showCommunity'] as bool? ?? true,
       activeOperators:
@@ -26,15 +26,14 @@ _$MapFilterStateImpl _$$MapFilterStateImplFromJson(Map<String, dynamic> json) =>
       radiusMeters: (json['radiusMeters'] as num?)?.toDouble() ?? 5000,
     );
 
-Map<String, dynamic> _$$MapFilterStateImplToJson(
-  _$MapFilterStateImpl instance,
-) => <String, dynamic>{
-  'showOfficial': instance.showOfficial,
-  'showCommunity': instance.showCommunity,
-  'activeOperators': instance.activeOperators.toList(),
-  'activeKinds': instance.activeKinds.toList(),
-  'nextMinutes': instance.nextMinutes,
-  'onlyAccessible': instance.onlyAccessible,
-  'onlyFavorites': instance.onlyFavorites,
-  'radiusMeters': instance.radiusMeters,
-};
+Map<String, dynamic> _$MapFilterStateToJson(_MapFilterState instance) =>
+    <String, dynamic>{
+      'showOfficial': instance.showOfficial,
+      'showCommunity': instance.showCommunity,
+      'activeOperators': instance.activeOperators.toList(),
+      'activeKinds': instance.activeKinds.toList(),
+      'nextMinutes': instance.nextMinutes,
+      'onlyAccessible': instance.onlyAccessible,
+      'onlyFavorites': instance.onlyFavorites,
+      'radiusMeters': instance.radiusMeters,
+    };

@@ -1113,4 +1113,137 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get authDeleteAccountCancel => 'CANCEL';
+
+  @override
+  String get filterPresetsTitle => 'Filter presets';
+
+  @override
+  String get filterPresetsEmptyTitle => 'No saved presets';
+
+  @override
+  String get filterPresetsEmptySubtitle =>
+      'Save your most-used map filter combination to apply it with one tap.';
+
+  @override
+  String get filterPresetsActionSave => 'SAVE CURRENT FILTERS';
+
+  @override
+  String get filterPresetsTileHint => 'Tap to apply';
+
+  @override
+  String get filterPresetsTileDelete => 'Delete';
+
+  @override
+  String get filterPresetsDialogTitle => 'Save filters';
+
+  @override
+  String get filterPresetsDialogHint => 'Preset name';
+
+  @override
+  String get filterPresetsDialogConfirm => 'SAVE';
+
+  @override
+  String filterPresetsApplied(String name) {
+    return 'Filters \"$name\" applied';
+  }
+
+  @override
+  String get driverStatsTitle => 'Statistics';
+
+  @override
+  String get driverStatsEmptyTitle => 'No data yet';
+
+  @override
+  String get driverStatsEmptySubtitle =>
+      'Your statistics are calculated from your trip history.';
+
+  @override
+  String get driverStatsTrips => 'Trips';
+
+  @override
+  String get driverStatsDistinctLines => 'Distinct lines';
+
+  @override
+  String get driverStatsTotalCost => 'Total cost';
+
+  @override
+  String get driverStatsDistance => 'Distance';
+
+  @override
+  String get driverStatsCo2Saved => 'CO₂ saved';
+
+  @override
+  String get driverHistoryTitle => 'Driver history';
+
+  @override
+  String get driverHistoryEmptyTitle => 'No trips yet';
+
+  @override
+  String get driverHistoryEmptySubtitle =>
+      'When you complete routes they will appear here with their route and cost.';
+
+  @override
+  String get driverHistoryUnknownRoute => 'Unknown route';
+
+  @override
+  String get plannedTripsTitle => 'Planned trips';
+
+  @override
+  String get plannedTripsEmptyTitle => 'No planned trips';
+
+  @override
+  String get plannedTripsEmptySubtitle =>
+      'Mark a route as favorite and set an alert to see it here as a regular trip.';
+
+  @override
+  String get plannedTripsNoStop => 'Stop not defined';
+
+  @override
+  String plannedTripsFrom(String stop) {
+    return 'From $stop';
+  }
+
+  @override
+  String get aiScheduleImportTitle => 'Import schedule';
+
+  @override
+  String get aiScheduleImportEmptyTitle => 'Import schedules';
+
+  @override
+  String get aiScheduleImportEmptySubtitle =>
+      'Paste schedule text to automatically extract departure times.';
+
+  @override
+  String get aiScheduleImportHint =>
+      'Paste the schedule and departure times will be extracted. Parsing is local (demo): detects HH:MM patterns, no AI or backend used.';
+
+  @override
+  String get aiScheduleImportFieldHint => 'e.g. 06:00  06:30  07:00 ...';
+
+  @override
+  String get aiScheduleImportAnalyze => 'ANALYZE';
+
+  @override
+  String get aiScheduleImportNoTimes => 'No times detected';
+
+  @override
+  String aiScheduleImportDetected(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count departures detected',
+      one: '1 departure detected',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get suggestionContributeTitle => 'Contribute to suggestions';
+
+  @override
+  String get suggestionContributeEmptyTitle => 'Nothing to contribute now';
+
+  @override
+  String get suggestionContributeEmptySubtitle =>
+      'No open suggestions. Check back later or propose a new route from the suggestions tab.';
 }

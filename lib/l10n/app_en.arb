@@ -440,5 +440,49 @@
   "authDeleteAccountError": "Could not delete the account",
   "@authDeleteAccountError": { "description": "Auth: delete account error toast" },
   "authDeleteAccountCancel": "CANCEL",
-  "@authDeleteAccountCancel": { "description": "Auth: delete account cancel button" }
+  "@authDeleteAccountCancel": { "description": "Auth: delete account cancel button" },
+
+  "filterPresetsTitle": "Filter presets",
+  "filterPresetsEmptyTitle": "No saved presets",
+  "filterPresetsEmptySubtitle": "Save your most-used map filter combination to apply it with one tap.",
+  "filterPresetsActionSave": "SAVE CURRENT FILTERS",
+  "filterPresetsTileHint": "Tap to apply",
+  "filterPresetsTileDelete": "Delete",
+  "filterPresetsDialogTitle": "Save filters",
+  "filterPresetsDialogHint": "Preset name",
+  "filterPresetsDialogConfirm": "SAVE",
+  "filterPresetsApplied": "Filters \"{name}\" applied",
+
+  "driverStatsTitle": "Statistics",
+  "driverStatsEmptyTitle": "No data yet",
+  "driverStatsEmptySubtitle": "Your statistics are calculated from your trip history.",
+  "driverStatsTrips": "Trips",
+  "driverStatsDistinctLines": "Distinct lines",
+  "driverStatsTotalCost": "Total cost",
+  "driverStatsDistance": "Distance",
+  "driverStatsCo2Saved": "CO₂ saved",
+
+  "driverHistoryTitle": "Driver history",
+  "driverHistoryEmptyTitle": "No trips yet",
+  "driverHistoryEmptySubtitle": "When you complete routes they will appear here with their route and cost.",
+  "driverHistoryUnknownRoute": "Unknown route",
+
+  "plannedTripsTitle": "Planned trips",
+  "plannedTripsEmptyTitle": "No planned trips",
+  "plannedTripsEmptySubtitle": "Mark a route as favorite and set an alert to see it here as a regular trip.",
+  "plannedTripsNoStop": "Stop not defined",
+  "plannedTripsFrom": "From {stop}",
+
+  "aiScheduleImportTitle": "Import schedule",
+  "aiScheduleImportEmptyTitle": "Import schedules",
+  "aiScheduleImportEmptySubtitle": "Paste schedule text to automatically extract departure times.",
+  "aiScheduleImportHint": "Paste the schedule and departure times will be extracted. Parsing is local (demo): detects HH:MM patterns, no AI or backend used.",
+  "aiScheduleImportFieldHint": "e.g. 06:00  06:30  07:00 ...",
+  "aiScheduleImportAnalyze": "ANALYZE",
+  "aiScheduleImportNoTimes": "No times detected",
+  "aiScheduleImportDetected": "{count, plural, =1{1 departure detected} other{{count} departures detected}}",
+
+  "suggestionContributeTitle": "Contribute to suggestions",
+  "suggestionContributeEmptyTitle": "Nothing to contribute now",
+  "suggestionContributeEmptySubtitle": "No open suggestions. Check back later or propose a new route from the suggestions tab."
 }

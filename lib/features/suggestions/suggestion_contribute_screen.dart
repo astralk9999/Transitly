@@ -6,9 +6,11 @@ import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_spacing.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../data/mock/mock_data_service.dart';
+import '../../l10n/generated/app_localizations.dart';
 import '../../shared/models/enums.dart';
 import '../../shared/models/route_suggestion_model.dart';
 import '../../shared/widgets/empty_state.dart';
+import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_app_bar.dart';
 
 /// Lista de sugerencias de ruta abiertas a contribución de la comunidad.
@@ -27,6 +29,7 @@ class SuggestionContributeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
+    final l10n = AppLocalizations.of(context);
     final mock = ref.watch(mockDataServiceProvider);
 
     final open = mock.routeSuggestions
@@ -36,17 +39,21 @@ class SuggestionContributeScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: c.bgRoot,
-      body: Column(
+      body: Stack(
         children: [
-          const TransitAppBar(title: 'Contribuir a sugerencias'),
-          Expanded(
-            child: open.isEmpty
-                ? const EmptyState(
-                    'Nada que contribuir ahora',
-                    'No hay sugerencias abiertas. Vuelve más tarde o propón '
-                    'una ruta nueva desde la pestaña de sugerencias.',
-                    icon: Icons.volunteer_activism,
-                  )
+          Positioned.fill(
+            child: SmokeBackground(color: c.accent, isDark: isDark),
+          ),
+          Column(
+            children: [
+              TransitAppBar(title: l10n.suggestionContributeTitle),
+              Expanded(
+                child: open.isEmpty
+                    ? EmptyState(
+                        l10n.suggestionContributeEmptyTitle,
+                        l10n.suggestionContributeEmptySubtitle,
+                        icon: Icons.volunteer_activism,
+                      )
                 : ListView.separated(
                     padding: const EdgeInsets.all(TransitSpacing.space16),
                     itemCount: open.length,
@@ -63,6 +70,8 @@ class SuggestionContributeScreen extends ConsumerWidget {
                   ),
           ),
         ],
+      ),
+      ],
       ),
     );
   }

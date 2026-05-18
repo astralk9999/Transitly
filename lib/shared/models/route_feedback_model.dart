@@ -5,7 +5,7 @@ import 'enums.dart';
 part 'route_feedback_model.freezed.dart';
 
 @freezed
-class RouteFeedbackModel with _$RouteFeedbackModel {
+abstract class RouteFeedbackModel with _$RouteFeedbackModel {
   const RouteFeedbackModel._();
 
   const factory RouteFeedbackModel({

@@ -5,7 +5,7 @@ import 'enums.dart';
 part 'incident_model.freezed.dart';
 
 @freezed
-class IncidentModel with _$IncidentModel {
+abstract class IncidentModel with _$IncidentModel {
   const IncidentModel._();
 
   const factory IncidentModel({

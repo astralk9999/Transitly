@@ -5,7 +5,7 @@ import 'enums.dart';
 part 'active_trip_model.freezed.dart';
 
 @freezed
-class ActiveTripModel with _$ActiveTripModel {
+abstract class ActiveTripModel with _$ActiveTripModel {
   const ActiveTripModel._();
 
   const factory ActiveTripModel({

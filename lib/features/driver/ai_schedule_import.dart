@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_spacing.dart';
 import '../../core/theme/transit_typography.dart';
+import '../../l10n/generated/app_localizations.dart';
+import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_app_bar.dart';
 import '../../shared/widgets/transit_button.dart';
 
@@ -52,93 +54,100 @@ class _AiScheduleImportState extends State<AiScheduleImport> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: c.bgRoot,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      body: Stack(
         children: [
-          const TransitAppBar(title: 'Importar horario'),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(TransitSpacing.space16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(TransitSpacing.space12),
-                    decoration: BoxDecoration(
-                      color: c.accent.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Text(
-                      'Pega el horario y se extraerán las horas de salida. '
-                      'El análisis es local (demo): detecta patrones HH:MM, '
-                      'no usa IA ni backend.',
-                      style: TransitTypography.bodySecondary(c.textMid),
-                    ),
-                  ),
-                  const SizedBox(height: TransitSpacing.space16),
-                  TextField(
-                    controller: _controller,
-                    maxLines: 8,
-                    style: TransitTypography.bodyPrimary(c.textHi),
-                    decoration: InputDecoration(
-                      hintText: 'Ej.: 06:00  06:30  07:00 ...',
-                      hintStyle: TransitTypography.bodySecondary(c.textLo),
-                      filled: true,
-                      fillColor: c.bgSurface,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(color: c.border, width: 0.5),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(color: c.border, width: 0.5),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: TransitSpacing.space16),
-                  TransitButton(
-                    label: 'ANALIZAR',
-                    onPressed: _controller.text.trim().isEmpty ? null : _parse,
-                  ),
-                  const SizedBox(height: TransitSpacing.space24),
-                  if (_parsed) ...[
-                    Text(
-                      _times.isEmpty
-                          ? 'No se detectaron horas'
-                          : '${_times.length} salidas detectadas',
-                      style: TransitTypography.sectionTitle(c.textHi),
-                    ),
-                    const SizedBox(height: TransitSpacing.space12),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: [
-                        for (final t in _times)
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 14, vertical: 8),
-                            decoration: BoxDecoration(
-                              color: c.bgSurface,
-                              borderRadius: BorderRadius.circular(20),
-                              border:
-                                  Border.all(color: c.border, width: 0.5),
-                            ),
-                            child: Text(t,
-                                style:
-                                    TransitTypography.bodyPrimary(c.textHi)),
-                          ),
-                      ],
-                    ),
-                  ],
-                ],
-              ),
-            ),
+          Positioned.fill(
+            child: SmokeBackground(color: c.accent, isDark: isDark),
           ),
-        ],
-      ),
-    );
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TransitAppBar(title: l10n.aiScheduleImportTitle),
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(TransitSpacing.space16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(TransitSpacing.space12),
+                        decoration: BoxDecoration(
+                          color: c.accent.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Text(
+                          l10n.aiScheduleImportHint,
+                          style: TransitTypography.bodySecondary(c.textMid),
+                        ),
+                      ),
+                      const SizedBox(height: TransitSpacing.space16),
+                      TextField(
+                        controller: _controller,
+                        maxLines: 8,
+                        style: TransitTypography.bodyPrimary(c.textHi),
+                        decoration: InputDecoration(
+                          hintText: l10n.aiScheduleImportFieldHint,
+                          hintStyle: TransitTypography.bodySecondary(c.textLo),
+                          filled: true,
+                          fillColor: c.bgSurface,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: c.border, width: 0.5),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: c.border, width: 0.5),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: TransitSpacing.space16),
+                      TransitButton(
+                        label: l10n.aiScheduleImportAnalyze,
+                        onPressed:
+                            _controller.text.trim().isEmpty ? null : _parse,
+                      ),
+                      const SizedBox(height: TransitSpacing.space24),
+                      if (_parsed) ...[
+                        Text(
+                          _times.isEmpty
+                              ? l10n.aiScheduleImportNoTimes
+                              : l10n.aiScheduleImportDetected(_times.length),
+                          style: TransitTypography.sectionTitle(c.textHi),
+                        ),
+                        const SizedBox(height: TransitSpacing.space12),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: [
+                            for (final t in _times)
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 14, vertical: 8),
+                                decoration: BoxDecoration(
+                                  color: c.bgSurface,
+                                  borderRadius: BorderRadius.circular(20),
+                                  border:
+                                      Border.all(color: c.border, width: 0.5),
+                                ),
+                                child: Text(t,
+                                    style:
+                                        TransitTypography.bodyPrimary(c.textHi)),
+                              ),
+                          ],
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          ],
+        ),
+      );
+    }
   }
-}

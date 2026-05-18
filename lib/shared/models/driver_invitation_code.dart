@@ -9,7 +9,7 @@ enum InvitationKind { driver, operatorAdmin }
 /// operador genera para que un conductor o administrador secundario se
 /// vincule a la organización en F6.
 @freezed
-class DriverInvitationCode with _$DriverInvitationCode {
+abstract class DriverInvitationCode with _$DriverInvitationCode {
   const factory DriverInvitationCode({
     required String code,
     required String operatorId,

@@ -6,8 +6,8 @@ part of 'feature_request.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$FeatureRequestImpl _$$FeatureRequestImplFromJson(Map<String, dynamic> json) =>
-    _$FeatureRequestImpl(
+_FeatureRequest _$FeatureRequestFromJson(Map<String, dynamic> json) =>
+    _FeatureRequest(
       id: json['id'] as String,
       title: json['title'] as String,
       description: json['description'] as String,
@@ -30,23 +30,22 @@ _$FeatureRequestImpl _$$FeatureRequestImplFromJson(Map<String, dynamic> json) =>
       assigneeId: json['assigneeId'] as String?,
     );
 
-Map<String, dynamic> _$$FeatureRequestImplToJson(
-  _$FeatureRequestImpl instance,
-) => <String, dynamic>{
-  'id': instance.id,
-  'title': instance.title,
-  'description': instance.description,
-  'submittedBy': instance.submittedBy,
-  'category': _$FeatureRequestCategoryEnumMap[instance.category]!,
-  'priority': _$FeatureRequestPriorityEnumMap[instance.priority]!,
-  'status': _$FeatureRequestStatusEnumMap[instance.status]!,
-  'votes': instance.votes,
-  if (instance.payload case final value?) 'payload': value,
-  'createdAt': instance.createdAt.toIso8601String(),
-  'updatedAt': instance.updatedAt.toIso8601String(),
-  if (instance.adminNotes case final value?) 'adminNotes': value,
-  if (instance.assigneeId case final value?) 'assigneeId': value,
-};
+Map<String, dynamic> _$FeatureRequestToJson(_FeatureRequest instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'title': instance.title,
+      'description': instance.description,
+      'submittedBy': instance.submittedBy,
+      'category': _$FeatureRequestCategoryEnumMap[instance.category]!,
+      'priority': _$FeatureRequestPriorityEnumMap[instance.priority]!,
+      'status': _$FeatureRequestStatusEnumMap[instance.status]!,
+      'votes': instance.votes,
+      'payload': ?instance.payload,
+      'createdAt': instance.createdAt.toIso8601String(),
+      'updatedAt': instance.updatedAt.toIso8601String(),
+      'adminNotes': ?instance.adminNotes,
+      'assigneeId': ?instance.assigneeId,
+    };
 
 const _$FeatureRequestCategoryEnumMap = {
   FeatureRequestCategory.newRoute: 'newRoute',

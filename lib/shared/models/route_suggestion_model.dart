@@ -5,7 +5,7 @@ import 'enums.dart';
 part 'route_suggestion_model.freezed.dart';
 
 @freezed
-class RouteSuggestionModel with _$RouteSuggestionModel {
+abstract class RouteSuggestionModel with _$RouteSuggestionModel {
   const RouteSuggestionModel._();
 
   const factory RouteSuggestionModel({

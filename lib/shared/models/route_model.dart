@@ -7,7 +7,7 @@ import 'enums.dart';
 part 'route_model.freezed.dart';
 
 @freezed
-class RouteModel with _$RouteModel {
+abstract class RouteModel with _$RouteModel {
   const RouteModel._();
 
   const factory RouteModel({

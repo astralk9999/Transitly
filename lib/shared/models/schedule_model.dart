@@ -5,7 +5,7 @@ import 'enums.dart';
 part 'schedule_model.freezed.dart';
 
 @freezed
-class ScheduleModel with _$ScheduleModel {
+abstract class ScheduleModel with _$ScheduleModel {
   const ScheduleModel._();
 
   const factory ScheduleModel({

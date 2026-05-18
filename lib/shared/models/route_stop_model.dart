@@ -5,7 +5,7 @@ import 'enums.dart';
 part 'route_stop_model.freezed.dart';
 
 @freezed
-class RouteStopModel with _$RouteStopModel {
+abstract class RouteStopModel with _$RouteStopModel {
   const RouteStopModel._();
 
   const factory RouteStopModel({

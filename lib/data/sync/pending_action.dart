@@ -28,7 +28,7 @@ enum PendingActionKind {
 /// la caja Hive `pending_actions` (o `dead_letter_actions` cuando
 /// supera 10 intentos fallidos).
 @freezed
-class PendingAction with _$PendingAction {
+abstract class PendingAction with _$PendingAction {
   const factory PendingAction({
     required String id,
     required PendingActionKind kind,

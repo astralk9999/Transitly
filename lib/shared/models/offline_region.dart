@@ -8,7 +8,7 @@ enum OfflineRegionStatus { downloading, ready, stale, error }
 /// Bounding box geográfico que delimita una región offline. Equivalente
 /// a `LatLngBounds` pero con campos explícitos serializables a JSON.
 @freezed
-class OfflineRegionBounds with _$OfflineRegionBounds {
+abstract class OfflineRegionBounds with _$OfflineRegionBounds {
   const factory OfflineRegionBounds({
     required double northLat,
     required double southLat,
@@ -23,7 +23,7 @@ class OfflineRegionBounds with _$OfflineRegionBounds {
 /// Una región del mapa descargada para uso offline (tiles + datos).
 /// Habilitada en F20 cuando se introduzcan los tiles MapTiler.
 @freezed
-class OfflineRegion with _$OfflineRegion {
+abstract class OfflineRegion with _$OfflineRegion {
   const factory OfflineRegion({
     required String id,
     required String label,

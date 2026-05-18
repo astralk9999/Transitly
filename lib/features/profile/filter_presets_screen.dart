@@ -10,8 +10,10 @@ import '../../core/theme/transit_typography.dart';
 import '../../core/utils/app_logger.dart';
 import '../../features/map/map_filter_controller.dart';
 import '../../features/map/map_filter_state.dart';
+import '../../l10n/generated/app_localizations.dart';
 import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/single_field_dialog.dart';
+import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_app_bar.dart';
 import '../../shared/widgets/transit_button.dart';
 
@@ -75,11 +77,12 @@ class _FilterPresetsScreenState extends ConsumerState<FilterPresetsScreen> {
   }
 
   Future<void> _saveCurrent() async {
+    final l10n = AppLocalizations.of(context);
     final name = await showSingleFieldDialog(
       context,
-      title: 'Guardar filtros',
-      hint: 'Nombre del preset',
-      confirmLabel: 'GUARDAR',
+      title: l10n.filterPresetsDialogTitle,
+      hint: l10n.filterPresetsDialogHint,
+      confirmLabel: l10n.filterPresetsDialogConfirm,
     );
     if (name == null || name.isEmpty) return;
     final current = ref.read(mapFilterControllerProvider);
@@ -91,8 +94,9 @@ class _FilterPresetsScreenState extends ConsumerState<FilterPresetsScreen> {
     final preset = _presets[name];
     if (preset == null) return;
     ref.read(mapFilterControllerProvider.notifier).applyState(preset);
+    final l10n = AppLocalizations.of(context);
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Filtros «$name» aplicados')),
+      SnackBar(content: Text(l10n.filterPresetsApplied(name))),
     );
   }
 
@@ -106,25 +110,30 @@ class _FilterPresetsScreenState extends ConsumerState<FilterPresetsScreen> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
+    final l10n = AppLocalizations.of(context);
     final names = _presets.keys.toList();
 
     return Scaffold(
       backgroundColor: c.bgRoot,
-      body: Column(
+      body: Stack(
         children: [
-          const TransitAppBar(title: 'Filtros predefinidos'),
-          Expanded(
-            child: !_loaded
-                ? const Center(child: CircularProgressIndicator())
-                : names.isEmpty
-                    ? EmptyState(
-                        'Sin presets guardados',
-                        'Guarda la combinación de filtros del mapa que más uses '
-                        'para aplicarla con un toque.',
-                        icon: Icons.tune,
-                        actionLabel: 'GUARDAR FILTROS ACTUALES',
-                        onAction: _saveCurrent,
-                      )
+          Positioned.fill(
+            child: SmokeBackground(color: c.accent, isDark: isDark),
+          ),
+          Column(
+            children: [
+              TransitAppBar(title: l10n.filterPresetsTitle),
+              Expanded(
+                child: !_loaded
+                    ? const Center(child: CircularProgressIndicator())
+                    : names.isEmpty
+                        ? EmptyState(
+                            l10n.filterPresetsEmptyTitle,
+                            l10n.filterPresetsEmptySubtitle,
+                            icon: Icons.tune,
+                            actionLabel: l10n.filterPresetsActionSave,
+                            onAction: _saveCurrent,
+                          )
                     : ListView.separated(
                         padding: const EdgeInsets.all(TransitSpacing.space16),
                         itemCount: names.length,
@@ -145,12 +154,14 @@ class _FilterPresetsScreenState extends ConsumerState<FilterPresetsScreen> {
             Padding(
               padding: const EdgeInsets.all(TransitSpacing.space16),
               child: TransitButton(
-                label: 'GUARDAR FILTROS ACTUALES',
+                label: l10n.filterPresetsActionSave,
                 isPrimary: false,
                 onPressed: _saveCurrent,
               ),
             ),
         ],
+      ),
+      ],
       ),
     );
   }
@@ -171,6 +182,7 @@ class _PresetTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Container(
       decoration: BoxDecoration(
         color: c.bgSurface,
@@ -181,10 +193,10 @@ class _PresetTile extends StatelessWidget {
         onTap: onApply,
         leading: Icon(Icons.tune, color: c.accent),
         title: Text(name, style: TransitTypography.bodyPrimary(c.textHi)),
-        subtitle: Text('Tocar para aplicar',
+        subtitle: Text(l10n.filterPresetsTileHint,
             style: TransitTypography.bodySecondary(c.textMid)),
         trailing: IconButton(
-          tooltip: 'Eliminar',
+          tooltip: l10n.filterPresetsTileDelete,
           icon: Icon(Icons.delete_outline, color: c.textMid),
           onPressed: onDelete,
         ),

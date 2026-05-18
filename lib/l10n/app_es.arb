@@ -654,5 +654,64 @@
   "authDeleteAccountError": "No se pudo eliminar la cuenta",
   "@authDeleteAccountError": { "description": "Auth: delete account error toast" },
   "authDeleteAccountCancel": "CANCELAR",
-  "@authDeleteAccountCancel": { "description": "Auth: delete account cancel button" }
+  "@authDeleteAccountCancel": { "description": "Auth: delete account cancel button" },
+
+  "filterPresetsTitle": "Filtros predefinidos",
+  "filterPresetsEmptyTitle": "Sin presets guardados",
+  "filterPresetsEmptySubtitle": "Guarda la combinación de filtros del mapa que más uses para aplicarla con un toque.",
+  "filterPresetsActionSave": "GUARDAR FILTROS ACTUALES",
+  "filterPresetsTileHint": "Tocar para aplicar",
+  "filterPresetsTileDelete": "Eliminar",
+  "filterPresetsDialogTitle": "Guardar filtros",
+  "filterPresetsDialogHint": "Nombre del preset",
+  "filterPresetsDialogConfirm": "GUARDAR",
+  "filterPresetsApplied": "Filtros «{name}» aplicados",
+  "@filterPresetsApplied": {
+    "placeholders": {
+      "name": { "type": "String", "example": "Mañana" }
+    }
+  },
+
+  "driverStatsTitle": "Estadísticas",
+  "driverStatsEmptyTitle": "Sin datos aún",
+  "driverStatsEmptySubtitle": "Tus estadísticas se calculan a partir del historial de viajes.",
+  "driverStatsTrips": "Viajes",
+  "driverStatsDistinctLines": "Líneas distintas",
+  "driverStatsTotalCost": "Coste total",
+  "driverStatsDistance": "Distancia",
+  "driverStatsCo2Saved": "CO₂ ahorrado",
+
+  "driverHistoryTitle": "Historial de conductor",
+  "driverHistoryEmptyTitle": "Sin viajes todavía",
+  "driverHistoryEmptySubtitle": "Cuando completes rutas aparecerán aquí con su trayecto y coste.",
+  "driverHistoryUnknownRoute": "Ruta desconocida",
+
+  "plannedTripsTitle": "Viajes planificados",
+  "plannedTripsEmptyTitle": "Sin viajes planificados",
+  "plannedTripsEmptySubtitle": "Marca una ruta como favorita y configura un aviso para verla aquí como viaje habitual.",
+  "plannedTripsNoStop": "Parada no definida",
+  "plannedTripsFrom": "Desde {stop}",
+  "@plannedTripsFrom": {
+    "placeholders": {
+      "stop": { "type": "String", "example": "Plaza Mayor" }
+    }
+  },
+
+  "aiScheduleImportTitle": "Importar horario",
+  "aiScheduleImportEmptyTitle": "Importar horarios",
+  "aiScheduleImportEmptySubtitle": "Pega el texto de un horario para extraer las horas de salida automáticamente.",
+  "aiScheduleImportHint": "Pega el horario y se extraerán las horas de salida. El análisis es local (demo): detecta patrones HH:MM, no usa IA ni backend.",
+  "aiScheduleImportFieldHint": "Ej.: 06:00  06:30  07:00 ...",
+  "aiScheduleImportAnalyze": "ANALIZAR",
+  "aiScheduleImportNoTimes": "No se detectaron horas",
+  "aiScheduleImportDetected": "{count, plural, =1{1 salida detectada} other{{count} salidas detectadas}}",
+  "@aiScheduleImportDetected": {
+    "placeholders": {
+      "count": { "type": "int", "example": "8" }
+    }
+  },
+
+  "suggestionContributeTitle": "Contribuir a sugerencias",
+  "suggestionContributeEmptyTitle": "Nada que contribuir ahora",
+  "suggestionContributeEmptySubtitle": "No hay sugerencias abiertas. Vuelve más tarde o propón una ruta nueva desde la pestaña de sugerencias."
 }

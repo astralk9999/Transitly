@@ -6,9 +6,11 @@ import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_spacing.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../data/mock/mock_data_service.dart';
+import '../../l10n/generated/app_localizations.dart';
 import '../../shared/models/route_model.dart';
 import '../../shared/models/trip_history_model.dart';
 import '../../shared/widgets/empty_state.dart';
+import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_app_bar.dart';
 
 /// Historial de actividad del conductor: cada viaje registrado, con la
@@ -20,6 +22,7 @@ class DriverHistoryScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
+    final l10n = AppLocalizations.of(context);
     final mock = ref.watch(mockDataServiceProvider);
 
     final trips = [...mock.tripHistory]
@@ -34,16 +37,21 @@ class DriverHistoryScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: c.bgRoot,
-      body: Column(
+      body: Stack(
         children: [
-          const TransitAppBar(title: 'Historial de conductor'),
-          Expanded(
-            child: trips.isEmpty
-                ? const EmptyState(
-                    'Sin viajes todavía',
-                    'Cuando completes rutas aparecerán aquí con su trayecto y coste.',
-                    icon: Icons.history,
-                  )
+          Positioned.fill(
+            child: SmokeBackground(color: c.accent, isDark: isDark),
+          ),
+          Column(
+            children: [
+              TransitAppBar(title: l10n.driverHistoryTitle),
+              Expanded(
+                child: trips.isEmpty
+                    ? EmptyState(
+                        l10n.driverHistoryEmptyTitle,
+                        l10n.driverHistoryEmptySubtitle,
+                        icon: Icons.history,
+                      )
                 : ListView.separated(
                     padding: const EdgeInsets.all(TransitSpacing.space16),
                     itemCount: trips.length,
@@ -57,6 +65,8 @@ class DriverHistoryScreen extends ConsumerWidget {
                   ),
           ),
         ],
+      ),
+      ],
       ),
     );
   }
@@ -72,8 +82,9 @@ class _TripTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final df = DateFormat('d MMM yyyy · HH:mm');
+    final l10n = AppLocalizations.of(context);
     final code = route?.code ?? trip.routeId;
-    final name = route?.name ?? 'Ruta desconocida';
+    final name = route?.name ?? l10n.driverHistoryUnknownRoute;
 
     return Container(
       padding: const EdgeInsets.all(TransitSpacing.space16),

@@ -5,9 +5,11 @@ import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_spacing.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../data/mock/mock_data_service.dart';
+import '../../l10n/generated/app_localizations.dart';
 import '../../shared/models/route_model.dart';
 import '../../shared/models/user_favorite_model.dart';
 import '../../shared/widgets/empty_state.dart';
+import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_app_bar.dart';
 
 /// Viajes planificados / habituales del usuario, derivados de sus rutas
@@ -19,6 +21,7 @@ class PlannedTripsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
+    final l10n = AppLocalizations.of(context);
     final mock = ref.watch(mockDataServiceProvider);
     final favs = mock.favorites;
 
@@ -31,17 +34,21 @@ class PlannedTripsScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: c.bgRoot,
-      body: Column(
+      body: Stack(
         children: [
-          const TransitAppBar(title: 'Viajes planificados'),
-          Expanded(
-            child: favs.isEmpty
-                ? const EmptyState(
-                    'Sin viajes planificados',
-                    'Marca una ruta como favorita y configura un aviso para '
-                    'verla aquí como viaje habitual.',
-                    icon: Icons.event_repeat,
-                  )
+          Positioned.fill(
+            child: SmokeBackground(color: c.accent, isDark: isDark),
+          ),
+          Column(
+            children: [
+              TransitAppBar(title: l10n.plannedTripsTitle),
+              Expanded(
+                child: favs.isEmpty
+                    ? EmptyState(
+                        l10n.plannedTripsEmptyTitle,
+                        l10n.plannedTripsEmptySubtitle,
+                        icon: Icons.event_repeat,
+                      )
                 : ListView.separated(
                     padding: const EdgeInsets.all(TransitSpacing.space16),
                     itemCount: favs.length,
@@ -58,12 +65,14 @@ class PlannedTripsScreen extends ConsumerWidget {
                       );
                     },
                   ),
+              ),
+            ],
           ),
         ],
       ),
     );
   }
-}
+  }
 
 class _PlannedTile extends StatelessWidget {
   const _PlannedTile({
@@ -80,8 +89,9 @@ class _PlannedTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final code = route?.code ?? fav.routeId;
-    final name = route?.name ?? 'Ruta desconocida';
+    final name = route?.name ?? l10n.driverHistoryUnknownRoute;
 
     return Container(
       padding: const EdgeInsets.all(TransitSpacing.space16),
@@ -115,7 +125,9 @@ class _PlannedTile extends StatelessWidget {
                     overflow: TextOverflow.ellipsis),
                 const SizedBox(height: 2),
                 Text(
-                  stopName == null ? 'Parada no definida' : 'Desde $stopName',
+                  stopName == null
+                      ? l10n.plannedTripsNoStop
+                      : l10n.plannedTripsFrom(stopName!),
                   style: TransitTypography.bodySecondary(c.textMid),
                 ),
               ],
@@ -130,7 +142,7 @@ class _PlannedTile extends StatelessWidget {
                 Text('${fav.alarmMinutesBefore} min',
                     style: TransitTypography.bodySecondary(c.accent)),
               ],
-            ),
+          ),
         ],
       ),
     );

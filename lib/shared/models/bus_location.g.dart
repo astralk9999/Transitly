@@ -6,20 +6,19 @@ part of 'bus_location.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$BusLocationImpl _$$BusLocationImplFromJson(Map<String, dynamic> json) =>
-    _$BusLocationImpl(
-      lat: (json['lat'] as num).toDouble(),
-      lng: (json['lng'] as num).toDouble(),
-      bearing: (json['bearing'] as num?)?.toDouble(),
-      recordedAt: DateTime.parse(json['recordedAt'] as String),
-      accuracy: (json['accuracy'] as num?)?.toDouble(),
-    );
+_BusLocation _$BusLocationFromJson(Map<String, dynamic> json) => _BusLocation(
+  lat: (json['lat'] as num).toDouble(),
+  lng: (json['lng'] as num).toDouble(),
+  bearing: (json['bearing'] as num?)?.toDouble(),
+  recordedAt: DateTime.parse(json['recordedAt'] as String),
+  accuracy: (json['accuracy'] as num?)?.toDouble(),
+);
 
-Map<String, dynamic> _$$BusLocationImplToJson(_$BusLocationImpl instance) =>
+Map<String, dynamic> _$BusLocationToJson(_BusLocation instance) =>
     <String, dynamic>{
       'lat': instance.lat,
       'lng': instance.lng,
-      if (instance.bearing case final value?) 'bearing': value,
+      'bearing': ?instance.bearing,
       'recordedAt': instance.recordedAt.toIso8601String(),
-      if (instance.accuracy case final value?) 'accuracy': value,
+      'accuracy': ?instance.accuracy,
     };

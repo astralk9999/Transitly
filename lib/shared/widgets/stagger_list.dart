@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/transit_animations.dart';
-import '../../core/utils/app_logger.dart';
 import '../providers/theme_notifier.dart';
 
 class StaggerList extends StatefulWidget {
@@ -83,8 +82,8 @@ class _StaggerListState extends State<StaggerList>
       final container = ProviderScope.containerOf(context);
       final tn = container.read(themeNotifierProvider);
       reduceMotion = tn.reduceMotion;
-    } catch (e) {
-      AppLogger.warn('StaggerList', 'reduceMotion unavailable', e);
+    } catch (_) {
+      // reduceMotion unavailable (no ProviderScope in tests) — silent
     }
     final animate = TransitAnimations.shouldAnimate(context) && !reduceMotion;
 

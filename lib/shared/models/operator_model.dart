@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'operator_model.freezed.dart';
 
 @freezed
-class OperatorModel with _$OperatorModel {
+abstract class OperatorModel with _$OperatorModel {
   const OperatorModel._();
 
   const factory OperatorModel({

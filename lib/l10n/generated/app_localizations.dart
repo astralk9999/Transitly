@@ -2155,6 +2155,234 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'CANCELAR'**
   String get authDeleteAccountCancel;
+
+  /// No description provided for @filterPresetsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Filtros predefinidos'**
+  String get filterPresetsTitle;
+
+  /// No description provided for @filterPresetsEmptyTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin presets guardados'**
+  String get filterPresetsEmptyTitle;
+
+  /// No description provided for @filterPresetsEmptySubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Guarda la combinación de filtros del mapa que más uses para aplicarla con un toque.'**
+  String get filterPresetsEmptySubtitle;
+
+  /// No description provided for @filterPresetsActionSave.
+  ///
+  /// In es, this message translates to:
+  /// **'GUARDAR FILTROS ACTUALES'**
+  String get filterPresetsActionSave;
+
+  /// No description provided for @filterPresetsTileHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Tocar para aplicar'**
+  String get filterPresetsTileHint;
+
+  /// No description provided for @filterPresetsTileDelete.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar'**
+  String get filterPresetsTileDelete;
+
+  /// No description provided for @filterPresetsDialogTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar filtros'**
+  String get filterPresetsDialogTitle;
+
+  /// No description provided for @filterPresetsDialogHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre del preset'**
+  String get filterPresetsDialogHint;
+
+  /// No description provided for @filterPresetsDialogConfirm.
+  ///
+  /// In es, this message translates to:
+  /// **'GUARDAR'**
+  String get filterPresetsDialogConfirm;
+
+  /// No description provided for @filterPresetsApplied.
+  ///
+  /// In es, this message translates to:
+  /// **'Filtros «{name}» aplicados'**
+  String filterPresetsApplied(String name);
+
+  /// No description provided for @driverStatsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Estadísticas'**
+  String get driverStatsTitle;
+
+  /// No description provided for @driverStatsEmptyTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin datos aún'**
+  String get driverStatsEmptyTitle;
+
+  /// No description provided for @driverStatsEmptySubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tus estadísticas se calculan a partir del historial de viajes.'**
+  String get driverStatsEmptySubtitle;
+
+  /// No description provided for @driverStatsTrips.
+  ///
+  /// In es, this message translates to:
+  /// **'Viajes'**
+  String get driverStatsTrips;
+
+  /// No description provided for @driverStatsDistinctLines.
+  ///
+  /// In es, this message translates to:
+  /// **'Líneas distintas'**
+  String get driverStatsDistinctLines;
+
+  /// No description provided for @driverStatsTotalCost.
+  ///
+  /// In es, this message translates to:
+  /// **'Coste total'**
+  String get driverStatsTotalCost;
+
+  /// No description provided for @driverStatsDistance.
+  ///
+  /// In es, this message translates to:
+  /// **'Distancia'**
+  String get driverStatsDistance;
+
+  /// No description provided for @driverStatsCo2Saved.
+  ///
+  /// In es, this message translates to:
+  /// **'CO₂ ahorrado'**
+  String get driverStatsCo2Saved;
+
+  /// No description provided for @driverHistoryTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Historial de conductor'**
+  String get driverHistoryTitle;
+
+  /// No description provided for @driverHistoryEmptyTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin viajes todavía'**
+  String get driverHistoryEmptyTitle;
+
+  /// No description provided for @driverHistoryEmptySubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuando completes rutas aparecerán aquí con su trayecto y coste.'**
+  String get driverHistoryEmptySubtitle;
+
+  /// No description provided for @driverHistoryUnknownRoute.
+  ///
+  /// In es, this message translates to:
+  /// **'Ruta desconocida'**
+  String get driverHistoryUnknownRoute;
+
+  /// No description provided for @plannedTripsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Viajes planificados'**
+  String get plannedTripsTitle;
+
+  /// No description provided for @plannedTripsEmptyTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin viajes planificados'**
+  String get plannedTripsEmptyTitle;
+
+  /// No description provided for @plannedTripsEmptySubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Marca una ruta como favorita y configura un aviso para verla aquí como viaje habitual.'**
+  String get plannedTripsEmptySubtitle;
+
+  /// No description provided for @plannedTripsNoStop.
+  ///
+  /// In es, this message translates to:
+  /// **'Parada no definida'**
+  String get plannedTripsNoStop;
+
+  /// No description provided for @plannedTripsFrom.
+  ///
+  /// In es, this message translates to:
+  /// **'Desde {stop}'**
+  String plannedTripsFrom(String stop);
+
+  /// No description provided for @aiScheduleImportTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Importar horario'**
+  String get aiScheduleImportTitle;
+
+  /// No description provided for @aiScheduleImportEmptyTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Importar horarios'**
+  String get aiScheduleImportEmptyTitle;
+
+  /// No description provided for @aiScheduleImportEmptySubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Pega el texto de un horario para extraer las horas de salida automáticamente.'**
+  String get aiScheduleImportEmptySubtitle;
+
+  /// No description provided for @aiScheduleImportHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Pega el horario y se extraerán las horas de salida. El análisis es local (demo): detecta patrones HH:MM, no usa IA ni backend.'**
+  String get aiScheduleImportHint;
+
+  /// No description provided for @aiScheduleImportFieldHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej.: 06:00  06:30  07:00 ...'**
+  String get aiScheduleImportFieldHint;
+
+  /// No description provided for @aiScheduleImportAnalyze.
+  ///
+  /// In es, this message translates to:
+  /// **'ANALIZAR'**
+  String get aiScheduleImportAnalyze;
+
+  /// No description provided for @aiScheduleImportNoTimes.
+  ///
+  /// In es, this message translates to:
+  /// **'No se detectaron horas'**
+  String get aiScheduleImportNoTimes;
+
+  /// No description provided for @aiScheduleImportDetected.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{1 salida detectada} other{{count} salidas detectadas}}'**
+  String aiScheduleImportDetected(int count);
+
+  /// No description provided for @suggestionContributeTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Contribuir a sugerencias'**
+  String get suggestionContributeTitle;
+
+  /// No description provided for @suggestionContributeEmptyTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Nada que contribuir ahora'**
+  String get suggestionContributeEmptyTitle;
+
+  /// No description provided for @suggestionContributeEmptySubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay sugerencias abiertas. Vuelve más tarde o propón una ruta nueva desde la pestaña de sugerencias.'**
+  String get suggestionContributeEmptySubtitle;
 }
 
 class _AppLocalizationsDelegate

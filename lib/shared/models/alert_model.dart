@@ -5,7 +5,7 @@ import 'enums.dart';
 part 'alert_model.freezed.dart';
 
 @freezed
-class AlertModel with _$AlertModel {
+abstract class AlertModel with _$AlertModel {
   const AlertModel._();
 
   const factory AlertModel({

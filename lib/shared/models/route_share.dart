@@ -9,7 +9,7 @@ enum RouteSharePermission { view, edit }
 /// los flujos de F12 (compartir + oficializar) cuando el tomador puede
 /// editar o solo visualizar.
 @freezed
-class RouteShare with _$RouteShare {
+abstract class RouteShare with _$RouteShare {
   const factory RouteShare({
     required String routeId,
     required String sharedWithId,

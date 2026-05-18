@@ -6,58 +6,59 @@ part of 'user_preferences.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$UserPreferencesImpl _$$UserPreferencesImplFromJson(
-  Map<String, dynamic> json,
-) => _$UserPreferencesImpl(
-  userId: json['userId'] as String,
-  themePaletteId: json['themePaletteId'] as String? ?? 'default',
-  customColors: (json['customColors'] as Map<String, dynamic>?)?.map(
-    (k, e) => MapEntry(k, e as String),
-  ),
-  backgroundId: json['backgroundId'] as String? ?? 'smoke',
-  backgroundEnabled: json['backgroundEnabled'] as bool? ?? true,
-  backgroundOpacity: (json['backgroundOpacity'] as num?)?.toDouble() ?? 1.0,
-  fontScale: (json['fontScale'] as num?)?.toDouble() ?? 1.0,
-  colorBlindMode:
-      $enumDecodeNullable(_$ColorBlindModeEnumMap, json['colorBlindMode']) ??
-      ColorBlindMode.none,
-  dyslexiaFontEnabled: json['dyslexiaFontEnabled'] as bool? ?? false,
-  reduceMotion: json['reduceMotion'] as bool? ?? false,
-  highContrast: json['highContrast'] as bool? ?? false,
-  mapStyle: json['mapStyle'] as String? ?? 'streets',
-  notifIncidentResolved: json['notifIncidentResolved'] as bool? ?? true,
-  notifRoutePromoted: json['notifRoutePromoted'] as bool? ?? true,
-  notifBusApproaching: json['notifBusApproaching'] as bool? ?? true,
-  notifFeatureRequestReplied:
-      json['notifFeatureRequestReplied'] as bool? ?? true,
-  quietHoursEnabled: json['quietHoursEnabled'] as bool? ?? false,
-  quietHoursStart: json['quietHoursStart'] as String?,
-  quietHoursEnd: json['quietHoursEnd'] as String?,
-);
+_UserPreferences _$UserPreferencesFromJson(Map<String, dynamic> json) =>
+    _UserPreferences(
+      userId: json['userId'] as String,
+      themePaletteId: json['themePaletteId'] as String? ?? 'default',
+      customColors: (json['customColors'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, e as String),
+      ),
+      backgroundId: json['backgroundId'] as String? ?? 'smoke',
+      backgroundEnabled: json['backgroundEnabled'] as bool? ?? true,
+      backgroundOpacity: (json['backgroundOpacity'] as num?)?.toDouble() ?? 1.0,
+      fontScale: (json['fontScale'] as num?)?.toDouble() ?? 1.0,
+      colorBlindMode:
+          $enumDecodeNullable(
+            _$ColorBlindModeEnumMap,
+            json['colorBlindMode'],
+          ) ??
+          ColorBlindMode.none,
+      dyslexiaFontEnabled: json['dyslexiaFontEnabled'] as bool? ?? false,
+      reduceMotion: json['reduceMotion'] as bool? ?? false,
+      highContrast: json['highContrast'] as bool? ?? false,
+      mapStyle: json['mapStyle'] as String? ?? 'streets',
+      notifIncidentResolved: json['notifIncidentResolved'] as bool? ?? true,
+      notifRoutePromoted: json['notifRoutePromoted'] as bool? ?? true,
+      notifBusApproaching: json['notifBusApproaching'] as bool? ?? true,
+      notifFeatureRequestReplied:
+          json['notifFeatureRequestReplied'] as bool? ?? true,
+      quietHoursEnabled: json['quietHoursEnabled'] as bool? ?? false,
+      quietHoursStart: json['quietHoursStart'] as String?,
+      quietHoursEnd: json['quietHoursEnd'] as String?,
+    );
 
-Map<String, dynamic> _$$UserPreferencesImplToJson(
-  _$UserPreferencesImpl instance,
-) => <String, dynamic>{
-  'userId': instance.userId,
-  'themePaletteId': instance.themePaletteId,
-  if (instance.customColors case final value?) 'customColors': value,
-  'backgroundId': instance.backgroundId,
-  'backgroundEnabled': instance.backgroundEnabled,
-  'backgroundOpacity': instance.backgroundOpacity,
-  'fontScale': instance.fontScale,
-  'colorBlindMode': _$ColorBlindModeEnumMap[instance.colorBlindMode]!,
-  'dyslexiaFontEnabled': instance.dyslexiaFontEnabled,
-  'reduceMotion': instance.reduceMotion,
-  'highContrast': instance.highContrast,
-  'mapStyle': instance.mapStyle,
-  'notifIncidentResolved': instance.notifIncidentResolved,
-  'notifRoutePromoted': instance.notifRoutePromoted,
-  'notifBusApproaching': instance.notifBusApproaching,
-  'notifFeatureRequestReplied': instance.notifFeatureRequestReplied,
-  'quietHoursEnabled': instance.quietHoursEnabled,
-  if (instance.quietHoursStart case final value?) 'quietHoursStart': value,
-  if (instance.quietHoursEnd case final value?) 'quietHoursEnd': value,
-};
+Map<String, dynamic> _$UserPreferencesToJson(_UserPreferences instance) =>
+    <String, dynamic>{
+      'userId': instance.userId,
+      'themePaletteId': instance.themePaletteId,
+      'customColors': ?instance.customColors,
+      'backgroundId': instance.backgroundId,
+      'backgroundEnabled': instance.backgroundEnabled,
+      'backgroundOpacity': instance.backgroundOpacity,
+      'fontScale': instance.fontScale,
+      'colorBlindMode': _$ColorBlindModeEnumMap[instance.colorBlindMode]!,
+      'dyslexiaFontEnabled': instance.dyslexiaFontEnabled,
+      'reduceMotion': instance.reduceMotion,
+      'highContrast': instance.highContrast,
+      'mapStyle': instance.mapStyle,
+      'notifIncidentResolved': instance.notifIncidentResolved,
+      'notifRoutePromoted': instance.notifRoutePromoted,
+      'notifBusApproaching': instance.notifBusApproaching,
+      'notifFeatureRequestReplied': instance.notifFeatureRequestReplied,
+      'quietHoursEnabled': instance.quietHoursEnabled,
+      'quietHoursStart': ?instance.quietHoursStart,
+      'quietHoursEnd': ?instance.quietHoursEnd,
+    };
 
 const _$ColorBlindModeEnumMap = {
   ColorBlindMode.none: 'none',

@@ -6,8 +6,8 @@ part of 'pending_action.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$PendingActionImpl _$$PendingActionImplFromJson(Map<String, dynamic> json) =>
-    _$PendingActionImpl(
+_PendingAction _$PendingActionFromJson(Map<String, dynamic> json) =>
+    _PendingAction(
       id: json['id'] as String,
       kind: $enumDecode(_$PendingActionKindEnumMap, json['kind']),
       payload:
@@ -17,14 +17,14 @@ _$PendingActionImpl _$$PendingActionImplFromJson(Map<String, dynamic> json) =>
       lastError: json['lastError'] as String?,
     );
 
-Map<String, dynamic> _$$PendingActionImplToJson(_$PendingActionImpl instance) =>
+Map<String, dynamic> _$PendingActionToJson(_PendingAction instance) =>
     <String, dynamic>{
       'id': instance.id,
       'kind': _$PendingActionKindEnumMap[instance.kind]!,
       'payload': instance.payload,
       'createdAt': instance.createdAt.toIso8601String(),
       'attempts': instance.attempts,
-      if (instance.lastError case final value?) 'lastError': value,
+      'lastError': ?instance.lastError,
     };
 
 const _$PendingActionKindEnumMap = {

@@ -7,7 +7,7 @@ part 'bus_location.g.dart';
 /// móvil con orientación opcional. Pensado para extraerse de
 /// [ActiveTripModel] cuando F4-F12 introduzcan telemetría real.
 @freezed
-class BusLocation with _$BusLocation {
+abstract class BusLocation with _$BusLocation {
   const factory BusLocation({
     required double lat,
     required double lng,

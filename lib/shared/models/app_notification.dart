@@ -15,7 +15,7 @@ enum AppNotificationType {
 /// Notificación in-app dirigida a un usuario. F21 la conecta con FCM
 /// para entrega push y con un inbox dentro de la app.
 @freezed
-class AppNotification with _$AppNotification {
+abstract class AppNotification with _$AppNotification {
   const factory AppNotification({
     required String id,
     required String userId,

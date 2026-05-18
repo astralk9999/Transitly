@@ -5,7 +5,9 @@ import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_spacing.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../data/mock/mock_data_service.dart';
+import '../../l10n/generated/app_localizations.dart';
 import '../../shared/widgets/empty_state.dart';
+import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_app_bar.dart';
 
 /// Estadísticas agregadas del conductor, calculadas sobre el historial
@@ -17,21 +19,29 @@ class DriverStatsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
+    final l10n = AppLocalizations.of(context);
     final mock = ref.watch(mockDataServiceProvider);
     final trips = mock.tripHistory;
 
     if (trips.isEmpty) {
       return Scaffold(
         backgroundColor: c.bgRoot,
-        body: const Column(
+        body: Stack(
           children: [
-            TransitAppBar(title: 'Estadísticas'),
-            Expanded(
-              child: EmptyState(
-                'Sin datos aún',
-                'Tus estadísticas se calculan a partir del historial de viajes.',
-                icon: Icons.insights,
-              ),
+            Positioned.fill(
+              child: SmokeBackground(color: c.accent, isDark: isDark),
+            ),
+            Column(
+              children: [
+                TransitAppBar(title: l10n.driverStatsTitle),
+                const Expanded(
+                  child: EmptyState(
+                    'Sin datos aún',
+                    'Tus estadísticas se calculan a partir del historial de viajes.',
+                    icon: Icons.insights,
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -45,31 +55,38 @@ class DriverStatsScreen extends ConsumerWidget {
     final distinctRoutes = trips.map((t) => t.routeId).toSet().length;
 
     final cards = <_StatData>[
-      _StatData('Viajes', '$totalTrips', Icons.directions_bus),
-      _StatData('Líneas distintas', '$distinctRoutes', Icons.alt_route),
+      _StatData(l10n.driverStatsTrips, '$totalTrips', Icons.directions_bus),
+      _StatData(l10n.driverStatsDistinctLines, '$distinctRoutes', Icons.alt_route),
       _StatData(
-          'Coste total', '${totalCost.toStringAsFixed(2)} €', Icons.payments),
+          l10n.driverStatsTotalCost, '${totalCost.toStringAsFixed(2)} €', Icons.payments),
       _StatData(
-          'Distancia', '${totalKm.toStringAsFixed(1)} km', Icons.straighten),
-      _StatData('CO₂ ahorrado', '${co2.toStringAsFixed(1)} kg', Icons.eco),
+          l10n.driverStatsDistance, '${totalKm.toStringAsFixed(1)} km', Icons.straighten),
+      _StatData(l10n.driverStatsCo2Saved, '${co2.toStringAsFixed(1)} kg', Icons.eco),
     ];
 
     return Scaffold(
       backgroundColor: c.bgRoot,
-      body: Column(
+      body: Stack(
         children: [
-          const TransitAppBar(title: 'Estadísticas'),
-          Expanded(
-            child: GridView.count(
-              padding: const EdgeInsets.all(TransitSpacing.space16),
-              crossAxisCount: 2,
-              mainAxisSpacing: TransitSpacing.space12,
-              crossAxisSpacing: TransitSpacing.space12,
-              childAspectRatio: 1.3,
-              children: [
-                for (final s in cards) _StatCard(c: c, data: s),
-              ],
-            ),
+          Positioned.fill(
+            child: SmokeBackground(color: c.accent, isDark: isDark),
+          ),
+          Column(
+            children: [
+              TransitAppBar(title: l10n.driverStatsTitle),
+              Expanded(
+                child: GridView.count(
+                  padding: const EdgeInsets.all(TransitSpacing.space16),
+                  crossAxisCount: 2,
+                  mainAxisSpacing: TransitSpacing.space12,
+                  crossAxisSpacing: TransitSpacing.space12,
+                  childAspectRatio: 1.3,
+                  children: [
+                    for (final s in cards) _StatCard(c: c, data: s),
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
       ),

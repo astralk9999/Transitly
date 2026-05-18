@@ -1119,4 +1119,137 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get authDeleteAccountCancel => 'CANCELAR';
+
+  @override
+  String get filterPresetsTitle => 'Filtros predefinidos';
+
+  @override
+  String get filterPresetsEmptyTitle => 'Sin presets guardados';
+
+  @override
+  String get filterPresetsEmptySubtitle =>
+      'Guarda la combinación de filtros del mapa que más uses para aplicarla con un toque.';
+
+  @override
+  String get filterPresetsActionSave => 'GUARDAR FILTROS ACTUALES';
+
+  @override
+  String get filterPresetsTileHint => 'Tocar para aplicar';
+
+  @override
+  String get filterPresetsTileDelete => 'Eliminar';
+
+  @override
+  String get filterPresetsDialogTitle => 'Guardar filtros';
+
+  @override
+  String get filterPresetsDialogHint => 'Nombre del preset';
+
+  @override
+  String get filterPresetsDialogConfirm => 'GUARDAR';
+
+  @override
+  String filterPresetsApplied(String name) {
+    return 'Filtros «$name» aplicados';
+  }
+
+  @override
+  String get driverStatsTitle => 'Estadísticas';
+
+  @override
+  String get driverStatsEmptyTitle => 'Sin datos aún';
+
+  @override
+  String get driverStatsEmptySubtitle =>
+      'Tus estadísticas se calculan a partir del historial de viajes.';
+
+  @override
+  String get driverStatsTrips => 'Viajes';
+
+  @override
+  String get driverStatsDistinctLines => 'Líneas distintas';
+
+  @override
+  String get driverStatsTotalCost => 'Coste total';
+
+  @override
+  String get driverStatsDistance => 'Distancia';
+
+  @override
+  String get driverStatsCo2Saved => 'CO₂ ahorrado';
+
+  @override
+  String get driverHistoryTitle => 'Historial de conductor';
+
+  @override
+  String get driverHistoryEmptyTitle => 'Sin viajes todavía';
+
+  @override
+  String get driverHistoryEmptySubtitle =>
+      'Cuando completes rutas aparecerán aquí con su trayecto y coste.';
+
+  @override
+  String get driverHistoryUnknownRoute => 'Ruta desconocida';
+
+  @override
+  String get plannedTripsTitle => 'Viajes planificados';
+
+  @override
+  String get plannedTripsEmptyTitle => 'Sin viajes planificados';
+
+  @override
+  String get plannedTripsEmptySubtitle =>
+      'Marca una ruta como favorita y configura un aviso para verla aquí como viaje habitual.';
+
+  @override
+  String get plannedTripsNoStop => 'Parada no definida';
+
+  @override
+  String plannedTripsFrom(String stop) {
+    return 'Desde $stop';
+  }
+
+  @override
+  String get aiScheduleImportTitle => 'Importar horario';
+
+  @override
+  String get aiScheduleImportEmptyTitle => 'Importar horarios';
+
+  @override
+  String get aiScheduleImportEmptySubtitle =>
+      'Pega el texto de un horario para extraer las horas de salida automáticamente.';
+
+  @override
+  String get aiScheduleImportHint =>
+      'Pega el horario y se extraerán las horas de salida. El análisis es local (demo): detecta patrones HH:MM, no usa IA ni backend.';
+
+  @override
+  String get aiScheduleImportFieldHint => 'Ej.: 06:00  06:30  07:00 ...';
+
+  @override
+  String get aiScheduleImportAnalyze => 'ANALIZAR';
+
+  @override
+  String get aiScheduleImportNoTimes => 'No se detectaron horas';
+
+  @override
+  String aiScheduleImportDetected(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count salidas detectadas',
+      one: '1 salida detectada',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get suggestionContributeTitle => 'Contribuir a sugerencias';
+
+  @override
+  String get suggestionContributeEmptyTitle => 'Nada que contribuir ahora';
+
+  @override
+  String get suggestionContributeEmptySubtitle =>
+      'No hay sugerencias abiertas. Vuelve más tarde o propón una ruta nueva desde la pestaña de sugerencias.';
 }

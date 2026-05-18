@@ -9,7 +9,7 @@ enum ColorBlindMode { none, protanopia, deuteranopia, tritanopia }
 /// el panel custom de F17 (apariencia) y la accesibilidad ampliada de
 /// F18, manteniendo la configuración persistente entre sesiones.
 @freezed
-class UserPreferences with _$UserPreferences {
+abstract class UserPreferences with _$UserPreferences {
   const factory UserPreferences({
     required String userId,
     @Default('default') String themePaletteId,

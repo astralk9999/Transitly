@@ -6,17 +6,16 @@ part of 'offline_region.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$OfflineRegionBoundsImpl _$$OfflineRegionBoundsImplFromJson(
-  Map<String, dynamic> json,
-) => _$OfflineRegionBoundsImpl(
-  northLat: (json['northLat'] as num).toDouble(),
-  southLat: (json['southLat'] as num).toDouble(),
-  eastLng: (json['eastLng'] as num).toDouble(),
-  westLng: (json['westLng'] as num).toDouble(),
-);
+_OfflineRegionBounds _$OfflineRegionBoundsFromJson(Map<String, dynamic> json) =>
+    _OfflineRegionBounds(
+      northLat: (json['northLat'] as num).toDouble(),
+      southLat: (json['southLat'] as num).toDouble(),
+      eastLng: (json['eastLng'] as num).toDouble(),
+      westLng: (json['westLng'] as num).toDouble(),
+    );
 
-Map<String, dynamic> _$$OfflineRegionBoundsImplToJson(
-  _$OfflineRegionBoundsImpl instance,
+Map<String, dynamic> _$OfflineRegionBoundsToJson(
+  _OfflineRegionBounds instance,
 ) => <String, dynamic>{
   'northLat': instance.northLat,
   'southLat': instance.southLat,
@@ -24,8 +23,8 @@ Map<String, dynamic> _$$OfflineRegionBoundsImplToJson(
   'westLng': instance.westLng,
 };
 
-_$OfflineRegionImpl _$$OfflineRegionImplFromJson(Map<String, dynamic> json) =>
-    _$OfflineRegionImpl(
+_OfflineRegion _$OfflineRegionFromJson(Map<String, dynamic> json) =>
+    _OfflineRegion(
       id: json['id'] as String,
       label: json['label'] as String,
       bounds: OfflineRegionBounds.fromJson(
@@ -41,7 +40,7 @@ _$OfflineRegionImpl _$$OfflineRegionImplFromJson(Map<String, dynamic> json) =>
           : DateTime.parse(json['dataSyncedAt'] as String),
     );
 
-Map<String, dynamic> _$$OfflineRegionImplToJson(_$OfflineRegionImpl instance) =>
+Map<String, dynamic> _$OfflineRegionToJson(_OfflineRegion instance) =>
     <String, dynamic>{
       'id': instance.id,
       'label': instance.label,
@@ -51,8 +50,7 @@ Map<String, dynamic> _$$OfflineRegionImplToJson(_$OfflineRegionImpl instance) =>
       'downloadedAt': instance.downloadedAt.toIso8601String(),
       'sizeBytes': instance.sizeBytes,
       'status': _$OfflineRegionStatusEnumMap[instance.status]!,
-      if (instance.dataSyncedAt?.toIso8601String() case final value?)
-        'dataSyncedAt': value,
+      'dataSyncedAt': ?instance.dataSyncedAt?.toIso8601String(),
     };
 
 const _$OfflineRegionStatusEnumMap = {

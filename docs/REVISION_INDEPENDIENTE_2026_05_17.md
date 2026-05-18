@@ -278,6 +278,64 @@ server-side.
 
 ---
 
+## 6bis. 4.ª pasada — revisión multi-agente (skill `code-review`)
+
+**Método:** se aplicó la metodología de la skill `code-review` (sin PR
+abierto: el trabajo fue directo a `master`, así que no hubo comentario `gh`).
+4 agentes Sonnet en paralelo revisaron el rango de remediación
+`f53d822~1..19bbd47` (88 ficheros, +12 323/−2 111) — adherencia a AGENTS.md,
+escaneo de bugs, y un agente de **verificación con scoring 0-100** que filtra
+falsos positivos (umbral de la skill: 80).
+
+**Resultado: ningún hallazgo alcanzó ≥80** → no hay *blocker*. El trabajo de
+remediación es sólido. Detalle de lo verificado:
+
+### Autocorrección (integridad): falsos positivos sobre mi propio fix S1
+- **`isBlockedIp` rango `fe80::/10`** (score **30**, FALSO): `fe8`–`feb`
+  cubre correctamente link-local; `fec`–`fef` es site-local **deprecado**
+  (RFC 4291), no es vector. Mi fix S1 era correcto.
+- **`catch` que re-lanza solo "private address"** (score **5**, FALSO): el
+  `throw` interno dice "…resolves to a private address", el filtro lo deja
+  pasar correctamente; los fallos DNS caen en fail-open **documentado**. Mi
+  fix S1 era correcto.
+- **Doble navegación en `profile_about_section`** (score **25**, FALSO): el
+  router (`app_router.dart:122`) no redirige en `AuthUnauthenticated`, así
+  que el `context.go('/sign-in')` manual es necesario, sin doble push.
+
+### Deuda nueva introducida por la remediación (real, no *blocker*)
+- 🟡 **Tokens duplicados en widgets extraídos** (score **65**): ~15 widgets
+  nuevos en `features/appearance/widgets/` y `features/management/widgets/`
+  usan `GoogleFonts.ibmPlexMono(...)` inline en vez de `TransitTypography`.
+  Es **extracción fiel** del código original (no clon nuevo), pero ningún
+  token existente cubre `(11,w700,ls:1.5)`/`(10,w600)` → la descomposición I1
+  propagó la deuda en vez de saldarla. AGENTS.md:114.
+- 🟡 **`ActionButton` recrea `TransitButton`** (score **60**):
+  `features/management/widgets/action_button.dart` reimplementa un botón
+  outlined que `TransitButton(isPrimary:false, isSmall:true)` ya cubre.
+  AGENTS.md lista `TransitButton` como widget compartido a no recrear.
+- 🔵 **`inbox_action_sheets.dart` usa `showModalBottomSheet` inline** (score
+  **50**) en vez de `showTransitBottomSheet` (3 sitios).
+- 🔵 **`signin/signup` `_submit`: `setState` en `catch` sin `if (mounted)`**
+  (score **70**, real): el `finally` sí lo tiene, los `catch` no → posible
+  `setState() called after dispose()` con red lenta + navegación rápida.
+  Verificado real; corrección trivial (envolver en `if (mounted)`).
+- 🔵 **`send_notification` devuelve 502 en fallo de INSERT propio** (score
+  **55**): debería ser **500** (error propio, no de gateway). `pg_net` no
+  reintenta (verificado en `015`), así que solo afecta a observabilidad.
+- ⚪ **PII `uid` en log** (score **35**, matiz): `auth_repository_supabase.dart:44`
+  loguea `uid=${user.id}`. El UUID **no** está en la lista literal de
+  AGENTS.md ("tarjeta, lat/lng, email, NFC UID") → no es incumplimiento
+  estricto, pero es buena práctica truncarlo.
+
+**Impacto en la nota:** neutro. La deuda nueva (tokens en widgets extraídos)
+tempera levemente "Calidad de implementación", pero se compensa con la
+confirmación —vía scoring independiente— de que S1/S2 eran correctos y de que
+no hay ningún defecto de severidad alta introducido. **Se mantiene 7.7/10.**
+Todas estas partidas se trasladan al **plan de acción**
+(`docs/PLAN_ACCION_REMEDIACION.md`).
+
+---
+
 ## 7. Veredicto
 
 El proyecto **ha mejorado de forma medible y honesta** a lo largo de tres

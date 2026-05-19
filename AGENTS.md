@@ -24,7 +24,7 @@ flutter run                               # Dispositivo Android o iOS conectado
 
 ```bash
 flutter analyze          # 0 issues — no commits con warnings
-flutter test             # 107 tests, ~15 s
+flutter test             # 148 tests
 flutter test --coverage  # Escribe coverage/lcov.info
 ```
 
@@ -198,10 +198,13 @@ Formato: `[Tag] mensaje (key=value)`. Ejemplo: `[NfcCardService] read failed (se
 ## Supabase
 
 - Proyecto remoto: `mmzahxtiaurkgtmtehxk` (https://mmzahxtiaurkgtmtehxk.supabase.co)
-- 5 migraciones SQL en `supabase/migrations/`. Aplicar con `supabase db push`.
+- 13 migraciones SQL en `supabase/migrations/`. Aplicar con `supabase db push`.
 - MCP supabase (si configurado) permite `apply_migration` + `execute_sql` vía `@supabase/mcp-server-supabase`.
 - Nunca commitear `.env` ni `.mcp.json`. `.mcp.json.example` como plantilla.
-- RLS activo en 25 tablas con 102 policies. 5 buckets de Storage.
+- RLS default-deny activo (recuento exacto de tablas/policies a re-verificar
+  tras las últimas migraciones; ver `docs/SCALABILITY.md §B`). Storage con
+  buckets configurados. `workmanager` fue eliminado; stack en freezed 3 /
+  go_router 17 (ver `docs/00_MAESTRO.md`).
 
 ---
 

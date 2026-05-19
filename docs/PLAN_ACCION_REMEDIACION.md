@@ -1,7 +1,7 @@
 # Plan de acción — remediación integral de Transitly
 
-> **Origen:** `docs/REVISION_INDEPENDIENTE_2026_05_17.md` (4 pasadas) + revisión
-> multi-agente skill `code-review` (rango `f53d822~1..19bbd47`).
+> **Origen:** `docs/00_MAESTRO.md` (índice) + `REVISION_INDEPENDIENTE_2026_05_17.md`
+> (4 pasadas) + `SCALABILITY.md` + `ACCESSIBILITY.md` (óptica producción).
 > **Estado base:** `master @ 396a1e6` (2026-05-18) · `flutter analyze` 0 issues ·
 > `flutter test` 148/148 · `flutter build apk --release` OK (73 MB) ·
 > cobertura ~24,7 % · **CI verde verificado en GitHub** · stack actualizado
@@ -21,7 +21,9 @@
 | **P1** — calidad/a11y/req | 11 | 0 | 11 | Sin empezar. Quick wins listos (P1-1/2/9/10). **NO** cubierto por R. |
 | **P2** — núcleo + cobertura | 7 | 0 | 7 | Mueve la nota 7,7 → ~8,5 (F13, modelo usuario, tests, SEC2). |
 | **P3** — deuda de fondo | 8 | 0 | 8 | Sin empezar (el split de router de R-4 es ítem propio, no P3-7). |
-| **TOTAL** | **37** | **10** | **27** | Nota actual **~7,8/10**; techo lo sigue fijando P2. |
+| **PROD** — producción a escala 🆕 | 10 | 0 | 10 | Bloqueadores de producción (`SCALABILITY.md`). Imprescindibles si deja de ser TFG. |
+| **A11Y** — accesibilidad WCAG 🆕 | 10 | 0 | 10 | Barreras inclusivas (`ACCESSIBILITY.md`). "AA" no defendible sin esto. |
+| **TOTAL** | **57** | **10** | **47** | TFG ≈7,8/10 · **Producción ≈4,5/10**; techo lo fijan PROD+A11Y+P2. |
 
 > ⚠️ **Corrección de integridad (2026-05-18):** una versión anterior de este
 > documento afirmaba *"Estado P0+P1: ✅ Resuelto (commit 5077099)"*. Es
@@ -150,6 +152,44 @@ no se bundlean. **Es el bloque que sube de 7.7 a ~8.5.**
 | P3-6 | Completar el patrón canónico de `data/auth/` (faltan `local`/`mock`/`provider`, nomenclatura `abstract_…`) o documentar la excepción en AGENTS.md | debt | M | 🟡 |
 | P3-7 | Descomponer `privacy_screen.dart` (406 LoC) y dejar `manager_inbox_screen.dart` bajo 300 | debt | S-M | 🟢 |
 | P3-8 | Dependabot/Renovate + build APK/iOS en CI | ops | M | 🟢 |
+
+---
+
+## Bloque PROD — bloqueadores de producción a escala 🆕
+
+> Solo aplica si el proyecto deja de ser un TFG demostrable y aspira a
+> servicio real. Detalle y evidencia: `docs/SCALABILITY.md`.
+
+| ID | Acción | Tipo | Esf. | Riesgo | Criterio de aceptación |
+|----|--------|------|------|--------|------------------------|
+| PROD-1 | **Firma de release real**: keystore propio + Play App Signing; CI con secrets; quitar `signingConfigs.getByName("debug")` de `build.gradle.kts:39` | fix | M | 🟡 | APK/AAB firmado release; verificable; no debug keys |
+| PROD-2 | **Paginación/keyset** en todos los repos `remote/` + listas virtualizadas + prefetch por viewport | req | L | 🟡 | Sin `select` sin `range`; listas no materializan todo |
+| PROD-3 | **F13 Realtime escalable**: suscripción multiplexada por operador/área, backpressure, reconexión con jitter | req | XL | 🔴 | Bus en vivo real; coste de canales acotado |
+| PROD-4 | **SEC1**: rotar PAT Supabase (externo) · **SEC2**: `.env`→`--dart-define`/secret manager | ops/fix | M | 🔴 | PAT viejo inválido; `.env` no en bundle; CI con secrets |
+| PROD-5 | **`autoDispose` selectivo** + `keepAlive` explícito; auditar streams/timers | debt | L | 🟡 | Sin fugas; providers de pantalla liberan |
+| PROD-6 | **Mapa a escala**: clustering por zoom, `RepaintBoundary`, LOD de markers | req | L | 🟡 | 60 fps con miles de paradas |
+| PROD-7 | **Observabilidad**: tracing cliente↔Edge↔DB, métricas de negocio, SLO/alertas, logs estructurados | req | L | 🟢 | Dashboards + alertas operables |
+| PROD-8 | **CI producción**: build Android/iOS firmado, gate de cobertura, SAST, Dependabot, smoke E2E | ops | L | 🟢 | Pipeline completo verde |
+| PROD-9 | **Caché/tenant a escala**: tamaño/evicción/cifrado Hive; partición por `operator_id`; `live_recorder_draft` cifrado | fix | M | 🟡 | Caché acotada y cifrada |
+| PROD-10 | **Backend a escala**: FORCE RLS + auditoría, pooling, idempotencia Edge, GTFS streaming, plan no-free/multi-región | req | L | 🟡 | Carga sostenida sin degradar |
+
+## Bloque A11Y — accesibilidad WCAG 2.2 AA 🆕
+
+> "WCAG 2.1 AA" no es defendible hoy. Detalle por criterio:
+> `docs/ACCESSIBILITY.md`.
+
+| ID | Acción | WCAG | Esf. | Riesgo | Criterio de aceptación |
+|----|--------|------|------|--------|------------------------|
+| A11Y-1 | Alternativa accesible al mapa (lista equivalente enlazada) + semántica del mapa | 1.1.1/1.3.1 | L | 🟡 | Lector cubre la función nuclear |
+| A11Y-2 | `Pressable` ≥48 dp (`kMinInteractiveDimension`) | 2.5.5/2.5.8 | S | 🟡 | Todos los táctiles ≥48 dp |
+| A11Y-3 | Verificación real con TalkBack/VoiceOver/Switch + checklist por release | 4.1.2 | M | 🟢 | Informe de pruebas con producto de apoyo |
+| A11Y-4 | `Semantics` ES hardcodeado → l10n (≈10 archivos) | 1.3.1/4.1.2 | M | 🟢 | Lector anuncia en idioma activo |
+| A11Y-5 | `textScaler` compone el del SO (clamp), 200 % sin overflow | 1.4.4 | M | 🟡 | Texto del SO respetado |
+| A11Y-6 | Errores accesibles y claros (no `e.toString()`), foco al error | 3.3.1/3.3.3 | M | 🟢 | Mensajes l10n + `Semantics` de error |
+| A11Y-7 | Contraste de tokens base verificado con herramienta; no solo-color | 1.4.3/1.4.1 | M | 🟢 | Ratios AA documentados |
+| A11Y-8 | Fuentes locales (F26) + reducir tamaño APK (bundle/splits) | 1.4.12 | M | 🟢 | Sin red, tipografía OK; APK menor |
+| A11Y-9 | Foco: orden, visibilidad, `FocusTraversalGroup`, teclado/switch | 2.4.3/2.4.7 | M | 🟡 | Navegación por foco completa |
+| A11Y-10 | i18n inclusivo: RTL + lectura fácil + localización num/fecha/moneda | 3.1 | L | 🟡 | RTL funcional; lenguaje claro |
 
 ---
 

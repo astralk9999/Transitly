@@ -5,7 +5,7 @@ import '../../data/nfc/nfc_card_service.dart';
 
 /// The service instance. Override in tests with a fake.
 final nfcCardServiceProvider =
-    Provider<NfcCardService>((ref) => NfcCardService());
+    Provider.autoDispose<NfcCardService>((ref) => NfcCardService());
 
 /// Whether NFC hardware is available on this device.
 final nfcAvailableProvider = FutureProvider<bool>((ref) async {

@@ -38,7 +38,7 @@ final homeHabitualStopProvider = Provider<StopModel?>((ref) {
 /// Wrapper Riverpod sobre `MockDataService.getNearbyStops` para que el
 /// widget no llame al servicio dentro de su `build()`.
 final homeNearbyStopsProvider =
-    Provider.family<List<StopModel>, ({LatLng center, int count})>(
+    Provider.autoDispose.family<List<StopModel>, ({LatLng center, int count})>(
         (ref, args) {
   final mockData = ref.watch(mockDataServiceProvider);
   return mockData.getNearbyStops(

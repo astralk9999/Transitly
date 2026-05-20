@@ -254,6 +254,15 @@ Cada entidad en `lib/data/<entity>/` con 5 archivos:
 
 Template de referencia: `lib/data/operator/` (el primero implementado).
 
+**Excepción: `data/auth/`** — Auth no sigue el patrón de 5 archivos porque:
+- El estado de sesión es efímero (tokens, no datos persistentes).
+- `AuthRepositorySupabase` usa `onAuthStateChange` de Supabase internamente.
+- El provider ya existe en `features/auth/auth_provider.dart` (no en `data/`).
+- No hay versión mock: el modo invitado no simula sesión; los repos de datos
+  seleccionan mock cuando `currentSession == null`.
+- No hay versión Hive: los tokens de sesión los gestiona Supabase SDK.
+Esta excepción está documentada y es intencional (no es deuda pendiente).
+
 ---
 
 ## Git

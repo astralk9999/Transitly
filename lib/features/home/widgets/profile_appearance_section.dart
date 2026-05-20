@@ -43,7 +43,7 @@ class ProfileAppearanceSection extends ConsumerWidget {
           Row(
             children: [
               Expanded(
-                child: Text('Modo oscuro',
+                child: Text(l10n.profileDarkMode,
                     style: TransitTypography.bodyPrimary(c.textHi)),
               ),
               Text(
@@ -99,7 +99,7 @@ class ProfileAppearanceSection extends ConsumerWidget {
           Row(
             children: [
               Expanded(
-                child: Text('Modo conductor',
+                child: Text(l10n.driverModeLabel,
                     style: TransitTypography.bodyPrimary(c.textHi)),
               ),
               Switch.adaptive(

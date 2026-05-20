@@ -2510,6 +2510,198 @@ abstract class AppLocalizations {
     String status,
     String minutes,
   );
+
+  /// No description provided for @adminPanelTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Panel de administración'**
+  String get adminPanelTitle;
+
+  /// No description provided for @adminPanelSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Gestiona la plataforma'**
+  String get adminPanelSubtitle;
+
+  /// No description provided for @cityPickerSelectOperator.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar operador'**
+  String get cityPickerSelectOperator;
+
+  /// No description provided for @driverPermissionRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Permiso de ubicación requerido'**
+  String get driverPermissionRequired;
+
+  /// No description provided for @driverModeLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Modo conductor'**
+  String get driverModeLabel;
+
+  /// No description provided for @driverGreeting.
+  ///
+  /// In es, this message translates to:
+  /// **'Hola {name}'**
+  String driverGreeting(String name);
+
+  /// No description provided for @driverCurrentOperator.
+  ///
+  /// In es, this message translates to:
+  /// **'Operador: {name}'**
+  String driverCurrentOperator(String name);
+
+  /// No description provided for @driverSelectRoute.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar ruta'**
+  String get driverSelectRoute;
+
+  /// No description provided for @driverNoRoutesLoaded.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin rutas cargadas'**
+  String get driverNoRoutesLoaded;
+
+  /// No description provided for @driverChooseAnother.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegir otra'**
+  String get driverChooseAnother;
+
+  /// No description provided for @envErrorLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Error: {name}'**
+  String envErrorLabel(String name);
+
+  /// No description provided for @envKeyLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Clave: {key}'**
+  String envKeyLabel(String key);
+
+  /// No description provided for @feedbackSelectCategoryFirst.
+  ///
+  /// In es, this message translates to:
+  /// **'Selecciona una categoría primero'**
+  String get feedbackSelectCategoryFirst;
+
+  /// No description provided for @feedbackEnterDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe una descripción'**
+  String get feedbackEnterDescription;
+
+  /// No description provided for @feedbackSent.
+  ///
+  /// In es, this message translates to:
+  /// **'Feedback enviado · Gracias'**
+  String get feedbackSent;
+
+  /// No description provided for @routeFeedbackImprovementSent.
+  ///
+  /// In es, this message translates to:
+  /// **'Mejora enviada. ¡Gracias!'**
+  String get routeFeedbackImprovementSent;
+
+  /// No description provided for @mapSearchComingSoon.
+  ///
+  /// In es, this message translates to:
+  /// **'Búsqueda en mapa: próximamente'**
+  String get mapSearchComingSoon;
+
+  /// No description provided for @profileDeleteAccount.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar cuenta'**
+  String get profileDeleteAccount;
+
+  /// No description provided for @profileCreateAccount.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear cuenta'**
+  String get profileCreateAccount;
+
+  /// No description provided for @profileColorBlindModeNone.
+  ///
+  /// In es, this message translates to:
+  /// **'Modo: Ninguno'**
+  String get profileColorBlindModeNone;
+
+  /// No description provided for @profileDarkMode.
+  ///
+  /// In es, this message translates to:
+  /// **'Modo oscuro'**
+  String get profileDarkMode;
+
+  /// No description provided for @incidentReportSent.
+  ///
+  /// In es, this message translates to:
+  /// **'Reporte enviado. Gracias por tu colaboración.'**
+  String get incidentReportSent;
+
+  /// No description provided for @inviteCodeGenerated.
+  ///
+  /// In es, this message translates to:
+  /// **'Código generado: {code}'**
+  String inviteCodeGenerated(String code);
+
+  /// No description provided for @inviteGenerateCode.
+  ///
+  /// In es, this message translates to:
+  /// **'Generar código'**
+  String get inviteGenerateCode;
+
+  /// No description provided for @operatorPanelTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Panel del operador'**
+  String get operatorPanelTitle;
+
+  /// No description provided for @operatorPanelSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Gestiona tu operador de transporte'**
+  String get operatorPanelSubtitle;
+
+  /// No description provided for @routeChangelogEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin cambios recientes'**
+  String get routeChangelogEmpty;
+
+  /// No description provided for @routeFeedbackThanksConfirming.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Gracias por confirmar!'**
+  String get routeFeedbackThanksConfirming;
+
+  /// No description provided for @routeNoUpcomingSchedules.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin horarios próximos'**
+  String get routeNoUpcomingSchedules;
+
+  /// No description provided for @stopNoLinesRegistered.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin líneas registradas'**
+  String get stopNoLinesRegistered;
+
+  /// No description provided for @suggestRouteSent.
+  ///
+  /// In es, this message translates to:
+  /// **'Sugerencia enviada · Te avisaremos'**
+  String get suggestRouteSent;
+
+  /// No description provided for @suggestRouteSubmitError.
+  ///
+  /// In es, this message translates to:
+  /// **'Error al enviar: {error}'**
+  String suggestRouteSubmitError(String error);
 }
 
 class _AppLocalizationsDelegate

@@ -1332,4 +1332,112 @@ class AppLocalizationsAr extends AppLocalizations {
   ) {
     return 'Línea $code, $name$status$minutes';
   }
+
+  @override
+  String get adminPanelTitle => 'لوحة الإدارة';
+
+  @override
+  String get adminPanelSubtitle => 'إدارة المنصة';
+
+  @override
+  String get cityPickerSelectOperator => 'اختر المشغل';
+
+  @override
+  String get driverPermissionRequired => 'إذن الموقع مطلوب';
+
+  @override
+  String get driverModeLabel => 'وضع السائق';
+
+  @override
+  String driverGreeting(String name) {
+    return 'مرحبا $name';
+  }
+
+  @override
+  String driverCurrentOperator(String name) {
+    return 'المشغل: $name';
+  }
+
+  @override
+  String get driverSelectRoute => 'اختر الخط';
+
+  @override
+  String get driverNoRoutesLoaded => 'لا توجد خطوط';
+
+  @override
+  String get driverChooseAnother => 'اختر آخر';
+
+  @override
+  String envErrorLabel(String name) {
+    return 'خطأ: $name';
+  }
+
+  @override
+  String envKeyLabel(String key) {
+    return 'المفتاح: $key';
+  }
+
+  @override
+  String get feedbackSelectCategoryFirst => 'اختر فئة أولا';
+
+  @override
+  String get feedbackEnterDescription => 'اكتب وصفا';
+
+  @override
+  String get feedbackSent => 'تم إرسال التعليق · شكرا';
+
+  @override
+  String get routeFeedbackImprovementSent => 'تم إرسال التحسين. شكرا!';
+
+  @override
+  String get mapSearchComingSoon => 'البحث في الخريطة: قريبا';
+
+  @override
+  String get profileDeleteAccount => 'حذف الحساب';
+
+  @override
+  String get profileCreateAccount => 'إنشاء حساب';
+
+  @override
+  String get profileColorBlindModeNone => 'الوضع: لا شيء';
+
+  @override
+  String get profileDarkMode => 'الوضع الداكن';
+
+  @override
+  String get incidentReportSent => 'تم إرسال التقرير. شكرا لمساهمتك.';
+
+  @override
+  String inviteCodeGenerated(String code) {
+    return 'تم إنشاء الرمز: $code';
+  }
+
+  @override
+  String get inviteGenerateCode => 'إنشاء رمز';
+
+  @override
+  String get operatorPanelTitle => 'لوحة المشغل';
+
+  @override
+  String get operatorPanelSubtitle => 'إدارة شركة النقل الخاصة بك';
+
+  @override
+  String get routeChangelogEmpty => 'لا تغييرات حديثة';
+
+  @override
+  String get routeFeedbackThanksConfirming => 'شكرا للتأكيد!';
+
+  @override
+  String get routeNoUpcomingSchedules => 'لا توجد جداول قريبة';
+
+  @override
+  String get stopNoLinesRegistered => 'لا توجد خطوط مسجلة';
+
+  @override
+  String get suggestRouteSent => 'تم إرسال الاقتراح · سنخبرك';
+
+  @override
+  String suggestRouteSubmitError(String error) {
+    return 'خطأ في الإرسال: $error';
+  }
 }

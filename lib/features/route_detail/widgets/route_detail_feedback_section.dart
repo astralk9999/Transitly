@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
+import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/transit_button.dart';
 
 class RouteDetailFeedbackSection extends StatelessWidget {
@@ -41,8 +42,8 @@ class RouteDetailFeedbackSection extends StatelessWidget {
                       size: 20, color: c.accent),
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text('¡Gracias por confirmar!')),
+                      SnackBar(
+                          content: Text(AppLocalizations.of(context).routeFeedbackThanksConfirming)),
                     );
                   },
                 ),

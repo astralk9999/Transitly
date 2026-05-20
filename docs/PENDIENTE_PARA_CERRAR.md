@@ -93,12 +93,20 @@ recursos vivos verificados con `analyze` 0 / `test` 175/175:
 - `realtime_channel_manager` (ya tiene tests; añadir más casos de
   reconexión/backoff)
 
-### 2.3 ⏳ Strings ES + issues F16/F22 residuales (P1-1, P1-11)
+### 2.3 ⚠️ Strings ES residuales + issues F16/F22 (P1-1, P1-11) — **P1-1 hecho; P1-11 pendiente**
 
-- **P1-1:** los 6 sitios más visibles con `e.toString()` ya están
-  localizados; queda barrer pantallas secundarias con
-  `grep -rnE "Text\(['\"][A-ZÁÉÍÓÚ]"` y migrar a l10n.
-- **P1-11:** issues F16/F22 de `docs/PENDIENTES.md` (validación inline,
+- ✅ **P1-1:** 33 strings ES migrados a l10n en 19 ficheros (admin,
+  city_picker, driver_dashboard, start_route, feedback, route_feedback_sheet,
+  map_tab, profile_*, incidents/report_incident_sheet, operator_admin
+  invitations + dashboard, route_detail changelog/feedback/schedule,
+  stop_detail, suggestions, suggest_route). 32 nuevas claves añadidas a
+  `app_es.arb` (template), `app_en.arb` y `app_ar.arb` con placeholders
+  ICU donde aplica. **Excepción documentada:** `env_error_screen.dart` no
+  se migra — su `MaterialApp` se monta antes del bootstrap normal y no
+  tiene `localizationsDelegates`; los strings son diagnósticos para
+  desarrolladores. Verificado: `flutter analyze` 0, `flutter test`
+  175/175.
+- ⏳ **P1-11:** issues F16/F22 de `docs/PENDIENTES.md` (validación inline,
   unique-violation, dedupe mapping, loading en botones, cola offline en
   `updateStatus`).
 

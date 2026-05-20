@@ -7,6 +7,7 @@ import '../../core/theme/transit_typography.dart';
 import '../../core/utils/uuid.dart';
 import '../../data/mock/mock_data_service.dart';
 import '../../data/route_feedback/route_feedback_repository_provider.dart';
+import '../../l10n/generated/app_localizations.dart';
 import '../../shared/models/enums.dart';
 import '../../shared/models/route_feedback_model.dart';
 import '../../shared/providers/local_feedback_provider.dart';
@@ -48,14 +49,14 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
     final cat = _selected;
     if (cat == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Selecciona una categoría primero')),
+        SnackBar(content: Text(AppLocalizations.of(context).feedbackSelectCategoryFirst)),
       );
       return;
     }
     final desc = _descCtrl.text.trim();
     if (desc.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Escribe una descripción')),
+        SnackBar(content: Text(AppLocalizations.of(context).feedbackEnterDescription)),
       );
       return;
     }
@@ -92,7 +93,7 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
     if (!mounted) return;
     setState(() => _submitting = false);
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Feedback enviado · Gracias')),
+      SnackBar(content: Text(AppLocalizations.of(context).feedbackSent)),
     );
     context.pop();
   }

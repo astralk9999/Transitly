@@ -131,8 +131,8 @@ class _ReportIncidentContentState
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('Reporte enviado. Gracias por tu colaboración.')),
+          SnackBar(
+              content: Text(AppLocalizations.of(context).incidentReportSent)),
         );
         Navigator.of(context).pop();
       }

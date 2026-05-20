@@ -204,7 +204,7 @@ class _ProfileAboutSectionState extends ConsumerState<ProfileAboutSection> {
                         Icon(Icons.admin_panel_settings,
                             size: 20, color: c.accent),
                         const SizedBox(width: 12),
-                        Text('Panel de administración',
+                        Text(l10n.adminPanelTitle,
                             style:
                                 TransitTypography.bodyPrimary(c.textHi)),
                       ],
@@ -241,7 +241,7 @@ class _ProfileAboutSectionState extends ConsumerState<ProfileAboutSection> {
             const SizedBox(height: 8),
             GestureDetector(
               onTap: () => _showDeleteConfirmation(context, c),
-              child: Text('Eliminar cuenta',
+              child: Text(l10n.profileDeleteAccount,
                   style: TransitTypography.bodySecondary(c.stateCancelled)),
             ),
           ] else ...[
@@ -253,7 +253,7 @@ class _ProfileAboutSectionState extends ConsumerState<ProfileAboutSection> {
             const SizedBox(height: 8),
             GestureDetector(
               onTap: () => context.go('/sign-up'),
-              child: Text('Crear cuenta',
+              child: Text(l10n.profileCreateAccount,
                   style: TransitTypography.bodySecondary(c.textMid)),
             ),
           ],

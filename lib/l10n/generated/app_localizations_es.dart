@@ -1333,4 +1333,113 @@ class AppLocalizationsEs extends AppLocalizations {
   ) {
     return 'Línea $code, $name$status$minutes';
   }
+
+  @override
+  String get adminPanelTitle => 'Panel de administración';
+
+  @override
+  String get adminPanelSubtitle => 'Gestiona la plataforma';
+
+  @override
+  String get cityPickerSelectOperator => 'Seleccionar operador';
+
+  @override
+  String get driverPermissionRequired => 'Permiso de ubicación requerido';
+
+  @override
+  String get driverModeLabel => 'Modo conductor';
+
+  @override
+  String driverGreeting(String name) {
+    return 'Hola $name';
+  }
+
+  @override
+  String driverCurrentOperator(String name) {
+    return 'Operador: $name';
+  }
+
+  @override
+  String get driverSelectRoute => 'Seleccionar ruta';
+
+  @override
+  String get driverNoRoutesLoaded => 'Sin rutas cargadas';
+
+  @override
+  String get driverChooseAnother => 'Elegir otra';
+
+  @override
+  String envErrorLabel(String name) {
+    return 'Error: $name';
+  }
+
+  @override
+  String envKeyLabel(String key) {
+    return 'Clave: $key';
+  }
+
+  @override
+  String get feedbackSelectCategoryFirst => 'Selecciona una categoría primero';
+
+  @override
+  String get feedbackEnterDescription => 'Escribe una descripción';
+
+  @override
+  String get feedbackSent => 'Feedback enviado · Gracias';
+
+  @override
+  String get routeFeedbackImprovementSent => 'Mejora enviada. ¡Gracias!';
+
+  @override
+  String get mapSearchComingSoon => 'Búsqueda en mapa: próximamente';
+
+  @override
+  String get profileDeleteAccount => 'Eliminar cuenta';
+
+  @override
+  String get profileCreateAccount => 'Crear cuenta';
+
+  @override
+  String get profileColorBlindModeNone => 'Modo: Ninguno';
+
+  @override
+  String get profileDarkMode => 'Modo oscuro';
+
+  @override
+  String get incidentReportSent =>
+      'Reporte enviado. Gracias por tu colaboración.';
+
+  @override
+  String inviteCodeGenerated(String code) {
+    return 'Código generado: $code';
+  }
+
+  @override
+  String get inviteGenerateCode => 'Generar código';
+
+  @override
+  String get operatorPanelTitle => 'Panel del operador';
+
+  @override
+  String get operatorPanelSubtitle => 'Gestiona tu operador de transporte';
+
+  @override
+  String get routeChangelogEmpty => 'Sin cambios recientes';
+
+  @override
+  String get routeFeedbackThanksConfirming => '¡Gracias por confirmar!';
+
+  @override
+  String get routeNoUpcomingSchedules => 'Sin horarios próximos';
+
+  @override
+  String get stopNoLinesRegistered => 'Sin líneas registradas';
+
+  @override
+  String get suggestRouteSent => 'Sugerencia enviada · Te avisaremos';
+
+  @override
+  String suggestRouteSubmitError(String error) {
+    return 'Error al enviar: $error';
+  }
 }

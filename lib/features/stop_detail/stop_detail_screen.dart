@@ -108,7 +108,7 @@ class StopDetailScreen extends ConsumerWidget {
                 const SizedBox(height: 12),
 
                 if (routesAtStop.isEmpty)
-                  Text('Sin líneas registradas',
+                  Text(AppLocalizations.of(context).stopNoLinesRegistered,
                       style: TransitTypography.bodySecondary(c.textMid))
                 else
                   StaggerList(

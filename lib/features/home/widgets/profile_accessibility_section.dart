@@ -42,7 +42,7 @@ class ProfileAccessibilitySection extends ConsumerWidget {
             child: Row(
               children: [
                 Expanded(
-                  child: Text('Modo: Ninguno',
+                  child: Text(l10n.profileColorBlindModeNone,
                       style: TransitTypography.bodyPrimary(c.textHi)),
                 ),
                 Icon(Icons.chevron_right, size: 20, color: c.textLo),

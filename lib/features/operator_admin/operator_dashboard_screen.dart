@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
+import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/glass_card.dart';
 import '../../../shared/widgets/smoke_background.dart';
 
@@ -27,10 +28,10 @@ class OperatorDashboardScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Panel del operador',
+                  Text(AppLocalizations.of(context).operatorPanelTitle,
                       style: TransitTypography.heading(c.textHi)),
                   const SizedBox(height: 8),
-                  Text('Gestiona tu operador de transporte',
+                  Text(AppLocalizations.of(context).operatorPanelSubtitle,
                       style: TransitTypography.bodySecondary(c.textMid)),
                   const SizedBox(height: 24),
 

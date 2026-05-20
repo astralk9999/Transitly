@@ -197,7 +197,7 @@ class _RouteFeedbackContentState extends ConsumerState<_RouteFeedbackContent> {
       await repo.create(feedback);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Mejora enviada. ¡Gracias!')),
+          SnackBar(content: Text(AppLocalizations.of(context).routeFeedbackImprovementSent)),
         );
         Navigator.of(context).pop();
       }

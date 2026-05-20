@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../data/mock/mock_data_service.dart';
+import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/models/enums.dart';
 import '../../../shared/models/route_changelog_model.dart';
 
@@ -29,7 +30,7 @@ class RouteDetailChangelog extends ConsumerWidget {
         ),
         const SizedBox(height: 8),
         if (entries.isEmpty)
-          Text('Sin cambios recientes',
+          Text(AppLocalizations.of(context).routeChangelogEmpty,
               style: TransitTypography.bodySecondary(c.textMid))
         else
           ...entries.map((e) => _item(c, e)),

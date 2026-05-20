@@ -7,6 +7,7 @@ import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../core/utils/uuid.dart';
 import '../../data/route_suggestion/route_suggestion_repository_provider.dart';
+import '../../l10n/generated/app_localizations.dart';
 import '../../shared/models/enums.dart';
 import '../../shared/models/route_suggestion_model.dart';
 import '../../shared/providers/user_provider.dart';
@@ -297,6 +298,7 @@ class _SuggestRouteScreenState extends ConsumerState<SuggestRouteScreen> {
     final repo = ref.read(routeSuggestionRepositoryProvider);
     final messenger = ScaffoldMessenger.of(context);
     final nav = Navigator.of(context);
+    final l10n = AppLocalizations.of(context);
 
     final suggestion = RouteSuggestionModel(
       id: generateUuidV4(),
@@ -317,14 +319,14 @@ class _SuggestRouteScreenState extends ConsumerState<SuggestRouteScreen> {
       await repo.create(suggestion);
       if (mounted) {
         messenger.showSnackBar(
-          const SnackBar(content: Text('Sugerencia enviada · Te avisaremos')),
+          SnackBar(content: Text(l10n.suggestRouteSent)),
         );
         nav.pop();
       }
     } on Exception catch (e) {
       if (mounted) {
         messenger.showSnackBar(
-          SnackBar(content: Text('Error al enviar: $e')),
+          SnackBar(content: Text(l10n.suggestRouteSubmitError(e.toString()))),
         );
       }
     }

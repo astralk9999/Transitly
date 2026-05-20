@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../data/mock/mock_data_service.dart';
+import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/models/enums.dart';
 import '../../../shared/models/schedule_model.dart';
 
@@ -96,7 +97,7 @@ class _RouteDetailScheduleSectionState
         ] else ...[
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Text('Sin horarios próximos',
+            child: Text(AppLocalizations.of(context).routeNoUpcomingSchedules,
                 style: TransitTypography.bodySecondary(c.textMid)),
           ),
         ],

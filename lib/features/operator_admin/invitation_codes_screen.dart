@@ -81,7 +81,7 @@ class _InvitationCodesScreenState extends ConsumerState<InvitationCodesScreen> {
 
       if (mounted && result != null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Código generado: $result')),
+          SnackBar(content: Text(AppLocalizations.of(context).inviteCodeGenerated(result.toString()))),
         );
       }
     } catch (e) {
@@ -173,7 +173,7 @@ class _InvitationCodesScreenState extends ConsumerState<InvitationCodesScreen> {
         backgroundColor: c.accent,
         foregroundColor: Colors.white,
         icon: const Icon(Icons.add),
-        label: const Text('Generar código'),
+        label: Text(AppLocalizations.of(context).inviteGenerateCode),
       ),
       body: Stack(
         children: [

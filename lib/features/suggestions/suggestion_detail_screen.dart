@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../data/route_suggestion/route_suggestion_repository_provider.dart';
+import '../../l10n/generated/app_localizations.dart';
 import '../../shared/models/route_suggestion_model.dart';
 import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_button.dart';
@@ -124,7 +125,7 @@ class _SuggestionDetailScreenState
           ],
           if (s.operatorName != null) ...[
             const SizedBox(height: 4),
-            Text('Operador: ${s.operatorName}',
+            Text(AppLocalizations.of(context).driverCurrentOperator(s.operatorName!),
                 style: TransitTypography.bodySecondary(c.textMid)),
           ],
           const SizedBox(height: 16),

@@ -38,7 +38,7 @@ class CityPickerScreen extends ConsumerWidget {
                         onPressed: () => Navigator.of(context).pop(),
                       ),
                       const SizedBox(width: 8),
-                      Text('Seleccionar operador',
+                      Text(AppLocalizations.of(context).cityPickerSelectOperator,
                           style: TransitTypography.heading(c.textHi)),
                     ],
                   ),

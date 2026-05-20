@@ -1327,4 +1327,112 @@ class AppLocalizationsEn extends AppLocalizations {
   ) {
     return 'Line $code, $name$status$minutes';
   }
+
+  @override
+  String get adminPanelTitle => 'Admin panel';
+
+  @override
+  String get adminPanelSubtitle => 'Manage the platform';
+
+  @override
+  String get cityPickerSelectOperator => 'Select operator';
+
+  @override
+  String get driverPermissionRequired => 'Location permission required';
+
+  @override
+  String get driverModeLabel => 'Driver mode';
+
+  @override
+  String driverGreeting(String name) {
+    return 'Hi $name';
+  }
+
+  @override
+  String driverCurrentOperator(String name) {
+    return 'Operator: $name';
+  }
+
+  @override
+  String get driverSelectRoute => 'Select route';
+
+  @override
+  String get driverNoRoutesLoaded => 'No routes loaded';
+
+  @override
+  String get driverChooseAnother => 'Choose another';
+
+  @override
+  String envErrorLabel(String name) {
+    return 'Error: $name';
+  }
+
+  @override
+  String envKeyLabel(String key) {
+    return 'Key: $key';
+  }
+
+  @override
+  String get feedbackSelectCategoryFirst => 'Select a category first';
+
+  @override
+  String get feedbackEnterDescription => 'Write a description';
+
+  @override
+  String get feedbackSent => 'Feedback sent · Thanks';
+
+  @override
+  String get routeFeedbackImprovementSent => 'Improvement sent. Thanks!';
+
+  @override
+  String get mapSearchComingSoon => 'Map search: coming soon';
+
+  @override
+  String get profileDeleteAccount => 'Delete account';
+
+  @override
+  String get profileCreateAccount => 'Create account';
+
+  @override
+  String get profileColorBlindModeNone => 'Mode: None';
+
+  @override
+  String get profileDarkMode => 'Dark mode';
+
+  @override
+  String get incidentReportSent => 'Report sent. Thanks for your contribution.';
+
+  @override
+  String inviteCodeGenerated(String code) {
+    return 'Code generated: $code';
+  }
+
+  @override
+  String get inviteGenerateCode => 'Generate code';
+
+  @override
+  String get operatorPanelTitle => 'Operator panel';
+
+  @override
+  String get operatorPanelSubtitle => 'Manage your transit operator';
+
+  @override
+  String get routeChangelogEmpty => 'No recent changes';
+
+  @override
+  String get routeFeedbackThanksConfirming => 'Thanks for confirming!';
+
+  @override
+  String get routeNoUpcomingSchedules => 'No upcoming schedules';
+
+  @override
+  String get stopNoLinesRegistered => 'No lines registered';
+
+  @override
+  String get suggestRouteSent => 'Suggestion sent · We\'ll let you know';
+
+  @override
+  String suggestRouteSubmitError(String error) {
+    return 'Failed to send: $error';
+  }
 }

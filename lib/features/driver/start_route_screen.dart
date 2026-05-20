@@ -7,6 +7,7 @@ import '../../core/theme/transit_animations.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../data/mock/mock_data_service.dart';
+import '../../l10n/generated/app_localizations.dart';
 import '../../shared/models/enums.dart';
 import '../../shared/models/schedule_model.dart';
 import '../../shared/providers/derived/schedule_providers.dart';
@@ -132,7 +133,7 @@ class _StartRouteScreenState extends ConsumerState<StartRouteScreen> {
                         const SizedBox(width: 12),
                         GestureDetector(
                           onTap: _scrollToRouteList,
-                          child: Text('Elegir otra',
+                          child: Text(AppLocalizations.of(context).driverChooseAnother,
                               style:
                                   TransitTypography.bodySecondary(c.accent)),
                         ),

@@ -776,5 +776,55 @@
       "status": { "type": "String", "example": ", A tiempo" },
       "minutes": { "type": "String", "example": ", 5 min" }
     }
+  },
+  "adminPanelTitle": "Panel de administración",
+  "adminPanelSubtitle": "Gestiona la plataforma",
+  "cityPickerSelectOperator": "Seleccionar operador",
+  "driverPermissionRequired": "Permiso de ubicación requerido",
+  "driverModeLabel": "Modo conductor",
+  "driverGreeting": "Hola {name}",
+  "@driverGreeting": {
+    "placeholders": { "name": { "type": "String", "example": "Ana" } }
+  },
+  "driverCurrentOperator": "Operador: {name}",
+  "@driverCurrentOperator": {
+    "placeholders": { "name": { "type": "String", "example": "COMUJESA" } }
+  },
+  "driverSelectRoute": "Seleccionar ruta",
+  "driverNoRoutesLoaded": "Sin rutas cargadas",
+  "driverChooseAnother": "Elegir otra",
+  "envErrorLabel": "Error: {name}",
+  "@envErrorLabel": {
+    "placeholders": { "name": { "type": "String", "example": "missing" } }
+  },
+  "envKeyLabel": "Clave: {key}",
+  "@envKeyLabel": {
+    "placeholders": { "key": { "type": "String", "example": "SUPABASE_URL" } }
+  },
+  "feedbackSelectCategoryFirst": "Selecciona una categoría primero",
+  "feedbackEnterDescription": "Escribe una descripción",
+  "feedbackSent": "Feedback enviado · Gracias",
+  "routeFeedbackImprovementSent": "Mejora enviada. ¡Gracias!",
+  "mapSearchComingSoon": "Búsqueda en mapa: próximamente",
+  "profileDeleteAccount": "Eliminar cuenta",
+  "profileCreateAccount": "Crear cuenta",
+  "profileColorBlindModeNone": "Modo: Ninguno",
+  "profileDarkMode": "Modo oscuro",
+  "incidentReportSent": "Reporte enviado. Gracias por tu colaboración.",
+  "inviteCodeGenerated": "Código generado: {code}",
+  "@inviteCodeGenerated": {
+    "placeholders": { "code": { "type": "String", "example": "ABC123" } }
+  },
+  "inviteGenerateCode": "Generar código",
+  "operatorPanelTitle": "Panel del operador",
+  "operatorPanelSubtitle": "Gestiona tu operador de transporte",
+  "routeChangelogEmpty": "Sin cambios recientes",
+  "routeFeedbackThanksConfirming": "¡Gracias por confirmar!",
+  "routeNoUpcomingSchedules": "Sin horarios próximos",
+  "stopNoLinesRegistered": "Sin líneas registradas",
+  "suggestRouteSent": "Sugerencia enviada · Te avisaremos",
+  "suggestRouteSubmitError": "Error al enviar: {error}",
+  "@suggestRouteSubmitError": {
+    "placeholders": { "error": { "type": "String", "example": "timeout" } }
   }
 }

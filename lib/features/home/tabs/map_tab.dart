@@ -11,6 +11,7 @@ import '../../../core/theme/transit_spacing.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../data/mock/mock_data_service.dart';
 import '../../../data/mock/mock_realtime_service.dart';
+import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/providers/connectivity_provider.dart';
 import '../../../shared/providers/is_dark_provider.dart';
 import '../../../shared/widgets/pressable.dart';
@@ -174,8 +175,8 @@ class _MapTabState extends ConsumerState<MapTab> {
                 onFilter: () => showMapFilterSheet(context, ref),
                 onSearch: () {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content: Text('Búsqueda en mapa: próximamente')),
+                    SnackBar(
+                        content: Text(AppLocalizations.of(context).mapSearchComingSoon)),
                   );
                 },
               ),

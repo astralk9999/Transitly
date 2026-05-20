@@ -13,6 +13,7 @@ import '../../../core/theme/transit_typography.dart';
 import '../../../core/utils/app_logger.dart';
 import '../../../data/geo/geo_providers.dart';
 import '../../../data/mock/mock_data_service.dart';
+import '../../../l10n/generated/app_localizations.dart';
 import '../../../data/supabase/supabase_client_provider.dart';
 import '../../../shared/models/operator_model.dart';
 import '../../../shared/models/route_model.dart';
@@ -115,8 +116,8 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen> {
           perm == LocationPermission.deniedForever) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-                content: Text('Permiso de ubicación requerido')),
+            SnackBar(
+                content: Text(AppLocalizations.of(context).driverPermissionRequired)),
           );
         }
         return;
@@ -263,7 +264,7 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen> {
           icon: Icon(Icons.arrow_back, color: c.textMid),
           onPressed: () => context.pop(),
         ),
-        title: Text('Modo conductor',
+        title: Text(AppLocalizations.of(context).driverModeLabel,
             style: TransitTypography.sectionTitle(c.textHi)),
       ),
       body: Stack(
@@ -287,14 +288,15 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Hola ${user.name}',
+          Text(AppLocalizations.of(context).driverGreeting(user.name),
               style: TransitTypography.heading(c.textHi)),
           if (_selectedOperator != null)
-            Text('Operador: ${_selectedOperator!.name}',
+            Text(AppLocalizations.of(context)
+                    .driverCurrentOperator(_selectedOperator!.name),
                 style: TransitTypography.bodySecondary(c.textMid)),
           const SizedBox(height: 24),
 
-          Text('Seleccionar ruta',
+          Text(AppLocalizations.of(context).driverSelectRoute,
               style: TransitTypography.sectionTitle(c.textMid)),
           const SizedBox(height: 12),
 
@@ -316,7 +318,7 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen> {
           const SizedBox(height: 16),
 
           if (_availableRoutes.isEmpty) ...[
-            Text('Sin rutas cargadas',
+            Text(AppLocalizations.of(context).driverNoRoutesLoaded,
                 style: TransitTypography.bodySmall(c.textMid)),
             const SizedBox(height: 8),
             TransitButton(

@@ -13,7 +13,7 @@ class RouteSuggestionLocalRepository implements RouteSuggestionRepository {
   static String _key(String id) => 'suggestion:$id';
 
   @override
-  Future<List<RouteSuggestionModel>> list() async =>
+  Future<List<RouteSuggestionModel>> list({int? limit, int? offset}) async =>
       _box.values.toList(growable: false);
 
   @override

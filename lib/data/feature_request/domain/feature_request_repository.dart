@@ -34,7 +34,7 @@ class FeatureRequestRepositoryException implements Exception {
 /// app, correcciones de datos). Patrón análogo a [RouteSuggestion]
 /// — `castVote` usa la RPC `cast_feature_request_vote` (F006).
 abstract class FeatureRequestRepository {
-  Future<List<FeatureRequest>> list();
+  Future<List<FeatureRequest>> list({int? limit, int? offset});
 
   Future<FeatureRequest?> byId(String id);
 

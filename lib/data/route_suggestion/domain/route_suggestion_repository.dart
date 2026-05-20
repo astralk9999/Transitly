@@ -35,7 +35,7 @@ class RouteSuggestionRepositoryException implements Exception {
 /// usuario y devuelve el nuevo total. Si la red falla, el voto se
 /// encola y se devuelve un total optimista (+1 sobre el cacheado).
 abstract class RouteSuggestionRepository {
-  Future<List<RouteSuggestionModel>> list();
+  Future<List<RouteSuggestionModel>> list({int? limit, int? offset});
 
   Future<RouteSuggestionModel?> byId(String id);
 

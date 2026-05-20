@@ -16,7 +16,7 @@ class FeatureRequestMockRepository implements FeatureRequestRepository {
   final Map<String, int> _voteBumps = <String, int>{};
 
   @override
-  Future<List<FeatureRequest>> list() async =>
+  Future<List<FeatureRequest>> list({int? limit, int? offset}) async =>
       _ephemeral.map(_applyBump).toList(growable: false);
 
   @override

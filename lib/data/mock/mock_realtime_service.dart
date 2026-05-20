@@ -18,6 +18,7 @@ class MockRealtimeService {
   Timer? _tripTimer;
   Timer? _clockTimer;
   int _tickCount = 0;
+  bool _paused = false;
 
   // Internal state
   late List<ActiveTripModel> _currentTrips;
@@ -257,6 +258,24 @@ class MockRealtimeService {
     final y =
         cos(lat1Rad) * sin(lat2Rad) - sin(lat1Rad) * cos(lat2Rad) * cos(dLng);
     return (atan2(x, y) * 180 / pi + 360) % 360;
+  }
+
+  void pause() {
+    if (_paused) return;
+    _paused = true;
+    _tripTimer?.cancel();
+    _tripTimer = null;
+    _clockTimer?.cancel();
+    _clockTimer = null;
+  }
+
+  void resume() {
+    if (!_paused) return;
+    _paused = false;
+    _tripTimer = Timer.periodic(const Duration(seconds: 15), (_) => _tick());
+    _clockTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      _clockController.add(DateTime.now());
+    });
   }
 
   void dispose() {

@@ -12,6 +12,7 @@ import 'core/utils/app_logger.dart';
 import 'core/utils/sentry_setup.dart';
 import 'data/cache/hive_init.dart';
 import 'data/mock/mock_data_service.dart';
+import 'data/mock/mock_realtime_service.dart';
 import 'data/privacy_consent/privacy_consent_repository.dart';
 import 'data/push/firebase_setup.dart';
 import 'features/error/env_error_screen.dart';
@@ -135,7 +136,45 @@ void main() async {
       overrides: [
         mockDataServiceProvider.overrideWithValue(mockData),
       ],
-      child: const TransitlyApp(),
+      child: const _TransitlyAppWithLifecycle(),
     ),
   );
+}
+
+class _TransitlyAppWithLifecycle extends StatefulWidget {
+  const _TransitlyAppWithLifecycle();
+
+  @override
+  State<_TransitlyAppWithLifecycle> createState() =>
+      _TransitlyAppWithLifecycleState();
+}
+
+class _TransitlyAppWithLifecycleState
+    extends State<_TransitlyAppWithLifecycle>
+    with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    final container = ProviderScope.containerOf(context);
+    final service = container.read(mockRealtimeServiceProvider);
+    if (state == AppLifecycleState.paused) {
+      service.pause();
+    } else if (state == AppLifecycleState.resumed) {
+      service.resume();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => const TransitlyApp();
 }

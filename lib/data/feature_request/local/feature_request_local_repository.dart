@@ -12,7 +12,7 @@ class FeatureRequestLocalRepository implements FeatureRequestRepository {
   static String _key(String id) => 'request:$id';
 
   @override
-  Future<List<FeatureRequest>> list() async =>
+  Future<List<FeatureRequest>> list({int? limit, int? offset}) async =>
       _box.values.toList(growable: false);
 
   @override

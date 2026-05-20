@@ -23,7 +23,7 @@ class RouteSuggestionRepositorySwr implements RouteSuggestionRepository {
   static const _logTag = 'Repo:RouteSuggestion';
 
   @override
-  Future<List<RouteSuggestionModel>> list() async {
+  Future<List<RouteSuggestionModel>> list({int? limit, int? offset}) async {
     final cached = await local.list();
     if (cached.isNotEmpty) {
       unawaited(_refreshList());

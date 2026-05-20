@@ -15,7 +15,7 @@ class RouteSuggestionMockRepository implements RouteSuggestionRepository {
       [..._mockData.routeSuggestions, ..._ephemeralCreates];
 
   @override
-  Future<List<RouteSuggestionModel>> list() async {
+  Future<List<RouteSuggestionModel>> list({int? limit, int? offset}) async {
     return _all.map(_applyVoteBump).toList(growable: false);
   }
 

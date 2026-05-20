@@ -23,7 +23,7 @@ class FeatureRequestRepositorySwr implements FeatureRequestRepository {
   static const _logTag = 'Repo:FeatureRequest';
 
   @override
-  Future<List<FeatureRequest>> list() async {
+  Future<List<FeatureRequest>> list({int? limit, int? offset}) async {
     final cached = await local.list();
     if (cached.isNotEmpty) {
       unawaited(_refreshList());

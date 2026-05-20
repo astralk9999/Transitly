@@ -23,10 +23,16 @@ class RouteSuggestionRemoteRepository implements RouteSuggestionRepository {
   static const _logTag = 'Repo:RouteSuggestion:Remote';
 
   @override
-  Future<List<RouteSuggestionModel>> list() async {
+  Future<List<RouteSuggestionModel>> list({int? limit, int? offset}) async {
     try {
-      final rows = await _client.from('route_suggestions').select();
-      return rows.map(_fromRow).toList();
+      dynamic query = _client.from('route_suggestions').select().order('created_at', ascending: false);
+      if (offset != null && limit != null) {
+        query = query.range(offset, offset + limit - 1);
+      } else if (limit != null) {
+        query = query.limit(limit);
+      }
+      final rows = await query;
+      return (rows as List<dynamic>).map((e) => _fromRow(e as Map<String, dynamic>)).toList();
     } catch (e, st) {
       throw _mapError(e, st, 'list');
     }

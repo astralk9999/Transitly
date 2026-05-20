@@ -26,10 +26,16 @@ class FeatureRequestRemoteRepository implements FeatureRequestRepository {
   static const _logTag = 'Repo:FeatureRequest:Remote';
 
   @override
-  Future<List<FeatureRequest>> list() async {
+  Future<List<FeatureRequest>> list({int? limit, int? offset}) async {
     try {
-      final rows = await _client.from('feature_requests').select();
-      return rows.map(_fromRow).toList();
+      dynamic query = _client.from('feature_requests').select().order('created_at', ascending: false);
+      if (offset != null && limit != null) {
+        query = query.range(offset, offset + limit - 1);
+      } else if (limit != null) {
+        query = query.limit(limit);
+      }
+      final rows = await query;
+      return (rows as List<dynamic>).map((e) => _fromRow(e as Map<String, dynamic>)).toList();
     } catch (e, st) {
       throw _mapError(e, st, 'list');
     }

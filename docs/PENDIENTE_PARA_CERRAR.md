@@ -74,17 +74,15 @@ sensibles a recursos vivos**:
 - `privacyConsentsProvider` — `FutureProvider` que conviene re-fetchear.
 - Todos los `.family` parametrizados (no acumular instancias por parámetro).
 
-### 2.2 ⏳ Unificar modelo de usuario (P2-3)
+### 2.2 ✅ Unificar modelo de usuario (P2-3) — **HECHO**
 
-`currentUserProvider` sigue derivando de `mockData.users + isDriverMode`
-(StateProvider). El guard del router (`lib/core/router/redirect_guards.dart:31`)
-usa ese rol mock-derived. Plan:
+`lib/shared/providers/user_provider.dart:17-45`:
+- `userProfileFromSupabaseProvider` lee `profiles` de Supabase si `AuthAuthenticated`.
+- `currentUserProvider` usa perfil real si existe, o mock si guest.
+- `currentUserRoleProvider` deriva del rol real.
+- El guard del router (`redirect_guards.dart:31`) ya usa `currentUserRoleProvider`.
 
-1. Provider de perfil que lea `profiles.role` de Supabase.
-2. `currentUserProvider` → real si `AuthAuthenticated`, mock si guest.
-3. `currentUserRoleProvider` deriva del real.
-
-Gradual (capa Supabase + fallback mock) para no romper consumidores.
+Hecho en el commit `7550751`.
 
 ### 2.3 ⏳ Tests de la capa de datos de producción (P2-4)
 
@@ -119,10 +117,9 @@ Es la palanca principal para subir cobertura (estancada en 24 %). Con
   `capacity_indicator` (añadir icono/forma).
 - **Foco**: `FocusTraversalGroup` por sección, visibilidad de foco,
   navegación por teclado/switch.
-- **Documentar excepción `data/auth`**: el commit `2b09e8f` decía "auth
-  pattern exception docs" pero la nota no aparece. Documentar en
-  `AGENTS.md` por qué `lib/data/auth/` solo tiene 2 archivos (sesión
-  gestionada por Supabase, no necesita local/mock).
+- **Documentar excepción `data/auth`**: ✅ Documentado en `AGENTS.md:259`:
+  "Excepción: `data/auth/` — Auth no sigue el patrón de 5 archivos porque:
+  la sesión la gestiona Supabase, no necesita local/mock."
 
 ---
 

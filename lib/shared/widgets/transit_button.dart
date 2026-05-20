@@ -66,6 +66,9 @@ class TransitButton extends StatelessWidget {
       shadows = [];
     }
 
+    // GoogleFonts mantenido aquí por decisión: fontSize es dinámico
+    // (isSmall? 11 : 13) y TransitTypography usa tamaños fijos. Es el
+    // único GoogleFonts. restante en shared/widgets/ (10/11 migrados).
     final textStyle = GoogleFonts.ibmPlexMono(
       fontSize: fontSize,
       fontWeight: FontWeight.w700,

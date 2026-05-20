@@ -269,7 +269,7 @@ Riesgos en escalabilidad y operación viva quedan recogidos en
 
 - IDE: Visual Studio Code / IntelliJ IDEA + plugin Flutter/Dart.
 - VCS: Git + GitHub (control de versiones obligatorio por la guía).
-- Tracker: GitHub Issues + plan vivo en `docs/PLAN_ACCION_REMEDIACION.md`.
+- Tracker: GitHub Issues + plan vivo en `docs/MEGA_PLAN_REFINAMIENTO.md`.
 - Comunicación con tutores: presencial + correo institucional.
 
 ---

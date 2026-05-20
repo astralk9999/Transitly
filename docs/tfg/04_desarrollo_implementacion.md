@@ -18,7 +18,7 @@ tiene un objetivo único, una rama de trabajo en `master` directa
   `PLAN_TRANSITLY_V2.md` (ahora archivado tras cierre F27).
 - **Tracker de tareas:** `multiagent/state/queue.json` (cola viva durante
   cada sesión) + `docs/PENDIENTES.md` (deuda con tags por fase) +
-  `docs/PLAN_ACCION_REMEDIACION.md` (plan vivo de remediación
+  `docs/MEGA_PLAN_REFINAMIENTO.md` (plan vivo de remediación
   post-cierre).
 - **Sesiones presenciales** con el tutor: seguimiento de progreso y
   validación de avances; revisiones críticas independientes

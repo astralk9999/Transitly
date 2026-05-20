@@ -56,7 +56,7 @@ Verified quality metrics (2026-05-20, `master @ 3a31fb3`):
 
 > Coverage is the remaining lever: the `remote/` data layer (auth + 7
 > repos) is at ~0 %. Plan in
-> [`docs/PLAN_ACCION_REMEDIACION.md §P2-4`](./docs/PLAN_ACCION_REMEDIACION.md).
+> [`docs/MEGA_PLAN_REFINAMIENTO.md §P2-4`](./docs/MEGA_PLAN_REFINAMIENTO.md).
 
 ---
 

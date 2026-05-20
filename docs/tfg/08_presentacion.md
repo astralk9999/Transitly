@@ -233,7 +233,7 @@ ciclos P0/P1 para pulir deuda descubierta en revisiones críticas.
 
 ### Diapositiva 13 — Trabajo futuro y agradecimientos
 
-**Trabajo futuro (priorizado en `docs/PLAN_ACCION_REMEDIACION.md`):**
+**Trabajo futuro (priorizado en `docs/MEGA_PLAN_REFINAMIENTO.md`):**
 
 - **Cerrar accesibilidad AA defendible** (verificación con
   TalkBack/VoiceOver + alternativa accesible al mapa).

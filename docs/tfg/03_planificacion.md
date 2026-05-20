@@ -72,7 +72,7 @@ gantt
 
 Duración total: **~28 días naturales** desde F0 (2026-04-28) hasta F27
 (2026-05-25). Trabajo post-cierre (Workstream R, ciclos de remediación
-documentados en el plan vivo `docs/PLAN_ACCION_REMEDIACION.md`) extendió
+documentados en el plan vivo `docs/MEGA_PLAN_REFINAMIENTO.md`) extendió
 hasta 2026-05-20 con mejoras de calidad (Kotlin DSL fix, Realtime
 multiplex, autoDispose, l10n trilingüe, etc.).
 
@@ -88,7 +88,7 @@ multiplex, autoDispose, l10n trilingüe, etc.).
    parte en sub-fases (p.ej. `F3.1`, `F3.2`).
 3. **Cierre = commit semántico + push a `master`** (sin ramas).
 4. **Tras el cierre formal (F27), entran ciclos de remediación** sobre
-   el plan vivo `docs/PLAN_ACCION_REMEDIACION.md` (Workstream R, P0-P3,
+   el plan vivo `docs/MEGA_PLAN_REFINAMIENTO.md` (Workstream R, P0-P3,
    PROD, A11Y) — son sprints de "última milla" para producción real.
 
 ### 2.2. Tabla resumen por bloque
@@ -128,7 +128,7 @@ multiplex, autoDispose, l10n trilingüe, etc.).
 | Dispositivos de prueba | Android físico (API 24+); emulador iOS; navegadores Chrome/Firefox/Safari para web |
 | VCS | Git + GitHub (repositorio privado de TFG con CI activado) |
 | Servicios cloud | Supabase (plan free), MapTiler (plan free), Firebase (plan free), Sentry (plan free), PostHog (plan free) |
-| Tracker | GitHub Issues + plan vivo `docs/PLAN_ACCION_REMEDIACION.md` + `multiagent/state/queue.json` |
+| Tracker | GitHub Issues + plan vivo `docs/MEGA_PLAN_REFINAMIENTO.md` + `multiagent/state/queue.json` |
 
 ### 3.3. Costes (resumen, detalle en `02_diseno_proyecto.md §5.2`)
 
@@ -164,7 +164,7 @@ multiplex, autoDispose, l10n trilingüe, etc.).
 ### 4.3. Riesgos de operación a escala (post-MVP)
 
 Recogidos como bloque PROD del plan vivo (`docs/SCALABILITY.md` +
-`docs/PLAN_ACCION_REMEDIACION.md §PROD`). Resumen:
+`docs/MEGA_PLAN_REFINAMIENTO.md §PROD`). Resumen:
 
 - Keystore real ausente → APK actual no publicable.
 - Observabilidad sin SLO/tracing.
@@ -226,4 +226,4 @@ Tras el cierre formal F27, entraron ciclos de remediación (Workstream R
 + múltiples ciclos P0/P1) que pulieron deuda detectada en revisiones
 críticas independientes. El plan vivo de pendientes para llevar el
 proyecto a "producción real" (no solo "TFG aprobado") está en
-`docs/PLAN_ACCION_REMEDIACION.md` con 57 ítems priorizados.
+`docs/MEGA_PLAN_REFINAMIENTO.md` con 57 ítems priorizados.

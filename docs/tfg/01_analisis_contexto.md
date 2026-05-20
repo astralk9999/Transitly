@@ -207,7 +207,7 @@ El proyecto siguió un plan incremental por fases:
 
 Cada fase con sus subitems queda trazada en el histórico
 `docs/historico/PLAN_TRANSITLY_V2.md` y reemplazada operativamente por
-el plan vivo `docs/PLAN_ACCION_REMEDIACION.md`.
+el plan vivo `docs/MEGA_PLAN_REFINAMIENTO.md`.
 
 ---
 

@@ -168,7 +168,7 @@ Transitly/
 │   ├── SCALABILITY.md            # Dossier producción
 │   ├── ACCESSIBILITY.md          # Dossier WCAG
 │   ├── ARCHITECTURE.md           # Reglas de arquitectura
-│   ├── PLAN_ACCION_REMEDIACION.md
+│   ├── MEGA_PLAN_REFINAMIENTO.md
 │   ├── PENDIENTE_PARA_CERRAR.md
 │   ├── PENDIENTES.md             # Cola interna [F<n>]
 │   ├── PLATFORM_SETUP.md
@@ -379,7 +379,7 @@ flutter analyze && flutter test  # verificar
 Actualizaciones mayores (Riverpod 3, Sentry 9, etc.) están fijadas en
 `pubspec.yaml` por decisión consciente — actualizarlas requiere
 migración propia documentada como deuda en
-`docs/PLAN_ACCION_REMEDIACION.md`.
+`docs/MEGA_PLAN_REFINAMIENTO.md`.
 
 ### 7.2. Añadir nuevo operador
 

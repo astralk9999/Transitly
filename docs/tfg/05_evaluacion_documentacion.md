@@ -47,7 +47,7 @@ A lo largo del proyecto se realizaron **4 pasadas críticas
 independientes** documentadas en
 `docs/historico/REVISION_INDEPENDIENTE_2026_05_17.md`. Cada pasada
 descubrió deuda real que se trasladó al plan vivo
-(`docs/PLAN_ACCION_REMEDIACION.md`) y se cerró en ciclos sucesivos
+(`docs/MEGA_PLAN_REFINAMIENTO.md`) y se cerró en ciclos sucesivos
 (Workstream R, ciclos P0/P1, etc.).
 
 ---
@@ -226,7 +226,7 @@ la **demo presencial** ante el tutor.
 | README al día con métricas reales | 🟩 (actualizado al estado actual) |
 | Mapa de documentación con TFG | 🟩 (`docs/README.md`) |
 | Doc maestra única (fuente de verdad) | 🟩 (`docs/00_MAESTRO.md`) |
-| Plan de remediación vivo | 🟩 (`docs/PLAN_ACCION_REMEDIACION.md`) |
+| Plan de remediación vivo | 🟩 (`docs/MEGA_PLAN_REFINAMIENTO.md`) |
 | Histórico archivado | 🟩 (`docs/historico/` con 6 docs) |
 
 ---
@@ -249,7 +249,7 @@ la **demo presencial** ante el tutor.
 
 - `docs/SCALABILITY.md` — dossier de escalabilidad para producción.
 - `docs/ACCESSIBILITY.md` — dossier WCAG 2.2 AA.
-- `docs/PLAN_ACCION_REMEDIACION.md` — plan vivo de 57 ítems.
+- `docs/MEGA_PLAN_REFINAMIENTO.md` — plan vivo de 57 ítems.
 - `docs/PENDIENTE_PARA_CERRAR.md` — playbook táctico próximo ciclo.
 
 ---
@@ -302,4 +302,4 @@ vivo para llevar el producto desde "TFG aprobado" hasta "producción
 real". La trayectoria de progreso es medible (148 → 175 tests, F13 0/12
 → 5/12, modelo de usuario unificado, paginación 4 → 11/11, SEC2
 cerrado, AGENTS saneada). Los próximos pasos están priorizados en
-`docs/PLAN_ACCION_REMEDIACION.md` y `docs/PENDIENTE_PARA_CERRAR.md`.
+`docs/MEGA_PLAN_REFINAMIENTO.md` y `docs/PENDIENTE_PARA_CERRAR.md`.

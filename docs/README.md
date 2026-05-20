@@ -47,7 +47,7 @@ seguridad). Útil para la sección de **Evaluación** y la **defensa**.
 | [`00_MAESTRO.md`](./00_MAESTRO.md) | **Fuente única de verdad**: veredicto, trayectoria, bloqueadores, mapa documental. **Empieza aquí.** |
 | [`SCALABILITY.md`](./SCALABILITY.md) | Dossier de escalabilidad para producción a escala (Top-10 blockers). |
 | [`ACCESSIBILITY.md`](./ACCESSIBILITY.md) | Dossier WCAG 2.2 AA (sustituye y supera al histórico `A11Y_AUDIT.md`). |
-| [`PLAN_ACCION_REMEDIACION.md`](./PLAN_ACCION_REMEDIACION.md) | Plan priorizado P0–P3 + PROD + A11Y (57 ítems, esfuerzo/riesgo/aceptación). |
+| [`MEGA_PLAN_REFINAMIENTO.md`](./MEGA_PLAN_REFINAMIENTO.md) | **Mega-plan superset** (190 ítems = 57 originales + 133 nuevos de auditoría multi-agente) priorizado en hitos H0–H8 para TFG + stores + portfolio senior. |
 | [`PENDIENTE_PARA_CERRAR.md`](./PENDIENTE_PARA_CERRAR.md) | Playbook táctico para el próximo ciclo. |
 | [`PENDIENTES.md`](./PENDIENTES.md) | Cola de deuda interna con tags `[F<n>]`. |
 
@@ -86,7 +86,7 @@ auditoría temporal del proceso, **no representan el estado actual**.
 - `SESSION_AUDIT_2026_05.md` — Registro de la sesión 02-12 mayo 2026.
 - `PLAN_TRANSITLY_V2.md` — Plan original de 28 fases (F0→F27); cerradas
   todas; reemplazado operativamente por
-  [`PLAN_ACCION_REMEDIACION.md`](./PLAN_ACCION_REMEDIACION.md).
+  [`MEGA_PLAN_REFINAMIENTO.md`](./MEGA_PLAN_REFINAMIENTO.md).
 
 ---
 

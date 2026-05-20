@@ -158,5 +158,5 @@
 9. 🟡 **F13 Realtime en repos secundarios** según necesidad real.
 10. 🟡 **Migración futura** riverpod 3 / sentry 9.
 
-Detalle accionable y orden en `docs/PLAN_ACCION_REMEDIACION.md` (bloques
+Detalle accionable y orden en `docs/MEGA_PLAN_REFINAMIENTO.md` (bloques
 PROD/A11Y/P1-P3) y `docs/PENDIENTE_PARA_CERRAR.md` (playbook táctico).

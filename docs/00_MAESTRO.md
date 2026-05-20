@@ -48,7 +48,7 @@ han reducido pero algunos siguen activos:
 A escala adicional: **sin clustering en el mapa**, sin caché Hive cifrada
 particionada por operador, sin FORCE RLS en Supabase, sin gate de
 cobertura en CI, sin build iOS firmado. Todos son ítems del plan
-prioritizados en `docs/PLAN_ACCION_REMEDIACION.md`.
+prioritizados en `docs/MEGA_PLAN_REFINAMIENTO.md`.
 
 > **Conclusión:** excelente trabajo de TFG; **MVP serio pero aún no
 > producción a escala**. La distancia que queda no se cierra redactando
@@ -97,7 +97,7 @@ honesta posible: el progreso es real y medible.
 | **`docs/00_MAESTRO.md`** (este) | Índice + veredicto + estado verificado | ✅ Fuente de verdad |
 | `docs/SCALABILITY.md` | Dossier de escalabilidad (producción) | ✅ Refrescado |
 | `docs/ACCESSIBILITY.md` | Dossier WCAG 2.2 AA (producción) | ✅ Refrescado |
-| `docs/PLAN_ACCION_REMEDIACION.md` | Plan accionable P0–P3 + PROD + A11Y + R | ✅ Vigente |
+| `docs/MEGA_PLAN_REFINAMIENTO.md` | Plan accionable P0–P3 + PROD + A11Y + R | ✅ Vigente |
 | `docs/PENDIENTE_PARA_CERRAR.md` | Playbook táctico para el próximo ciclo | ✅ Re-verificado con grep |
 | `docs/historico/REVISION_INDEPENDIENTE_2026_05_17.md` | Histórico de las 4 pasadas críticas | ⚪ Archivo (trazabilidad) |
 | `README.md` | Entrada del repo | 🟡 Refinar marco de producción/escala |
@@ -163,4 +163,4 @@ Por orden de relación valor/esfuerzo:
    en A11Y.
 
 Detalle exacto en `docs/PENDIENTE_PARA_CERRAR.md` y
-`docs/PLAN_ACCION_REMEDIACION.md`.
+`docs/MEGA_PLAN_REFINAMIENTO.md`.

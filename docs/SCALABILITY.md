@@ -1,131 +1,162 @@
 # Transitly — Dossier de escalabilidad (óptica de producción)
 
-> Evaluado como **servicio real para decenas/cientos de miles de usuarios en
-> toda España**, no como TFG. Estado: `master @ 6f26725`.
+> Evaluado como **servicio real para decenas/cientos de miles de usuarios
+> en toda España**, no como TFG. Estado: `master @ 3a31fb3`.
 > Severidad = riesgo a escala: 🔴 Crítico · 🟠 Alto · 🟡 Medio.
-> Evidencia marcada `[V]` = verificada directamente en esta auditoría;
-> `[R]` = verificada en pasadas previas de esta revisión; `[?]` = a confirmar.
+> Notación: ✅ cerrado · ⚠️ avanzado/parcial · ❌ pendiente.
 
-## Nota de preparación para producción a escala: **4 / 10**
+## Nota de preparación para producción a escala: **6 / 10**
 
-Arquitectura de capas correcta y disciplinada, pero **diseñada y probada solo
-para un operador con datos mock**. Las piezas que definen "escala" (tiempo
-real, paginación, multi-tenant, release, observabilidad) están ausentes o son
-prototipo.
+> Sube desde 4/10 del dossier anterior. La arquitectura ha pasado de
+> "prototipo demostrable de operador único" a "MVP con capa de tiempo
+> real funcional, modelo de usuario unificado y release verificable". Lo
+> que sigue impidiendo el 8+ son piezas de operabilidad real
+> (observabilidad, firma, multi-tenant, mapa a escala) que ningún ciclo
+> documental cierra.
 
 ---
 
 ## A. Arquitectura de datos y multi-tenant
 
-- 🔴 **Sin "tiempo real" (F13).** `[R]` 0/12 repos `remote/` con suscripción
-  Supabase; `bus_location_remote_repository.dart:34` hace
-  `async* { yield await latestForRoute(...); }`. El "bus en vivo" es
-  `MockRealtimeService` con `Timer.periodic`. A escala, además, abrir un canal
-  Realtime por ruta/usuario sin multiplexar dispara coste y límites de
-  conexiones de Supabase. **Recomendación:** suscripción única por
-  operador/área con *fan-out* en cliente; backpressure; reconexión con
-  jitter.
-- 🔴 **Sin paginación.** `[?]` los repos `remote/` y las pantallas de listas
-  (rutas, paradas, incidencias, sugerencias) cargan colecciones completas. Con
-  10 operadores y miles de paradas/rutas → payloads enormes, OOM en cliente,
-  coste de egress. **Recomendación:** `range()`/keyset pagination en todos los
-  `select`, listas virtualizadas, prefetch por viewport.
-- 🟠 **Multi-operador no demostrable.** Solo COMUJESA mock; los ~9 operadores
-  dependen de un Supabase no poblado. No hay partición por `operator_id` en
-  caché ni estrategia de *tenant isolation* más allá de RLS.
-- 🟠 **Doble modelo de usuario.** `[R]` `currentUserProvider` (mock +
-  `StateProvider isDriverMode`) desacoplado de `AuthRepositorySupabase`; el
-  guard de rol del router no es fiable. A escala = riesgo de autorización.
-- 🟡 **7 modelos manuales fuera de freezed** `[R]` → inconsistencia de
-  serialización/igualdad; fricción de mantenimiento al crecer el equipo.
+- ✅ **F13 Realtime en repos críticos.** `lib/data/sync/realtime_channel_manager.dart`
+  multiplexa canales Supabase con backoff exponencial + jitter, usado por
+  `stop`, `route`, `incident`, `route_feedback`. `bus_location` mantiene
+  `bus_position_channel_manager.dart` dedicado (filtro por `route_id`).
+  **5/12 repos** con `Stream` real; los 7 restantes deciden caso a caso si
+  necesitan vivo o snapshot.
+- ✅ **Paginación completa en 11/11 repos de lista**: todos los
+  `remote/*_repository.dart` que devuelven colecciones aceptan `offset`/
+  `limit` y aplican `range(offset, offset+limit-1)`. `user_preferences`
+  queda fuera por diseño (objeto singular por usuario, no colección).
+- ✅ **Modelo de usuario unificado.** `currentUserProvider` ahora deriva
+  de `userProfileFromSupabaseProvider` (lectura de `profiles.role` con
+  `.maybeSingle()` y manejo de `PostgrestException`) con fallback gradual
+  al mock para guest. El guard del router consume el rol **real**, no el
+  derivado de un `StateProvider isDriverMode`. El control de acceso por
+  rol pasa a ser fiable server-side.
+- 🟠 **Multi-operador limitado.** Solo COMUJESA poblado en mock; los ~9
+  operadores adicionales dependen de un Supabase no rellenado. La
+  partición por `operator_id` en caché Hive **no existe**: una sesión que
+  cambia de operador puede dejar datos cruzados en el storage local.
+- 🟡 **7 repos sin Realtime aún:** `route_suggestion`, `feature_request`,
+  `operator`, `schedule`, `user_preferences`, `offline_region`,
+  `notification` (Realtime fuera del repo, en
+  `notification_stream_provider`). Decidir cuáles necesitan vivo.
 
 ## B. Backend Supabase
 
-- 🟠 **Proyecto único, sin multi-región.** Un solo project-ref; latencia para
-  usuarios lejanos; sin DR/HA documentado. Plan free tiene cuotas duras
-  (conexiones, Realtime, egress) incompatibles con "toda España".
-- 🟠 **Edge Functions best-effort.** `[R]` `send_notification`: rate-limit con
-  TOCTOU (no atómico); `import_gtfs`: anti-SSRF best-effort (DNS rebinding
-  mitigado parcialmente). Cold starts no medidos. Sin idempotencia fuerte.
+- ✅ **RLS default-deny coherente** (verificado en ciclos previos);
+  `search_path` fijado en todas las `SECURITY DEFINER`.
+- 🟠 **Proyecto único, sin multi-región.** Un solo project-ref;
+  latencia para usuarios lejanos; sin DR/HA documentado.
+- 🟠 **Edge Functions: anti-SSRF y rate-limit best-effort.**
+  `import_gtfs` valida hostname textual + DNS A/AAAA (mitiga rebinding
+  parcialmente) + `redirect:"manual"`; rate-limit en `send_notification`
+  con TOCTOU (documentado como deuda conocida) + fail-closed si el INSERT
+  falla. Cold starts no medidos.
+- 🟡 **Sin FORCE RLS ni auditoría de accesos `service_role`.** Cualquier
+  bug en una Edge con `service_role` implica acceso total.
 - 🟡 **Sin connection pooling explícito** (PgBouncer/`pgbouncer` mode) ni
   límites de concurrencia documentados para los triggers `pg_net`.
-- 🟡 **GTFS in-memory.** `[R]` `import_gtfs` parsea ZIP/CSV en memoria con
-  tope 50 MB → OOM con feeds reales grandes; sin streaming ni troceado.
-- 🟢 **RLS default-deny coherente** `[R]` (punto fuerte); falta FORCE RLS y
-  auditoría de accesos `service_role`.
+- 🟡 **GTFS in-memory.** `import_gtfs` parsea ZIP/CSV en memoria con tope
+  50 MB → OOM con feeds reales grandes. Sin streaming.
 
 ## C. Estado, memoria y rendimiento cliente
 
-- 🟠 **0 `autoDispose`** `[R]` en ~73 providers (streams, futures,
-  `.family`). A escala = fugas de memoria y canales/timers vivos tras salir
-  de pantalla. **Recomendación:** `autoDispose` selectivo + `keepAlive`
-  explícito donde haga falta.
+- ⚠️ **`autoDispose` parcial (6 providers cerrados):** `home_providers`,
+  `nfc_provider`, `notificationStreamProvider` (cierra canal Supabase via
+  `ref.onDispose` al detach), `realtimeTripsProvider`,
+  `realtimeClockProvider`, `privacyConsentsProvider`. **Pendiente sweep
+  en providers `.family`** (no acumular instancias por parámetro).
+- ✅ **`MockRealtimeService` reacciona al lifecycle** del SO:
+  `WidgetsBindingObserver` cableado en `main.dart:154-173`;
+  `Timer.periodic` se pausa en `AppLifecycleState.paused` y reanuda en
+  `resumed`.
 - 🟠 **Mapa sin clustering.** `flutter_map` + `MarkerLayer` con todas las
-  paradas/buses → jank y memoria con miles de markers. Falta clustering por
-  zoom, `RepaintBoundary` y degradación por LOD.
-- 🟡 **`ListView(` no-builder** `[R]` en varias pantallas → materializa listas
-  largas de golpe. Migrar a `.builder`/`.separated` + `itemExtent`.
-- 🟡 **Sin presupuesto de rendimiento** (no hay perf tests, ni medición de
-  TTI/jank/SkSL warmup). Shaders y `SmokeBackground` razonables `[R]`.
+  paradas/buses → jank y memoria con miles de markers. Falta clustering
+  por zoom, `RepaintBoundary` aislando el mapa del shader de fondo, y LOD
+  por zoom.
+- 🟡 **`ListView(` no-builder** en pocas pantallas restantes; migrar a
+  `.builder` con `itemExtent`.
+- 🟡 **Sin presupuesto de rendimiento** (no hay perf tests, ni medición
+  de TTI/jank/SkSL warmup).
 
 ## D. Caché y offline a escala
 
-- 🟠 **Hive sin estrategia de tamaño/evicción/cifrado** documentada; con
-  multi-operador la caché crece sin límite. `live_recorder_draft` en
-  `shared_preferences` sin cifrar `[R]` (datos GPS sensibles).
-- 🟡 **Cola offline** `OfflineSyncService` con backoff y dead-letter `[R]`,
-  pero sin límites de tamaño de cola ni métricas; con miles de acciones puede
+- 🟠 **Hive sin estrategia de tamaño/evicción/cifrado** documentada;
+  con multi-operador la caché crece sin límite. `live_recorder_draft` en
+  `shared_preferences` sin cifrar (datos GPS sensibles).
+- 🟡 **Cola offline** `OfflineSyncService` con backoff y dead-letter, pero
+  sin límites de tamaño de cola ni métricas; con miles de acciones puede
   degradar el arranque.
+- ✅ **Resilencia de Realtime:** `RealtimeChannelManager` aplica backoff
+  exponencial con jitter en reconexión, evita avalancha al volver online.
 
 ## E. Release y operación
 
-- 🔴 **APK release firmado con DEBUG keystore.** `[V]`
-  `android/app/build.gradle.kts:39` →
-  `signingConfig = signingConfigs.getByName("debug")`. **No publicable** en
-  Play Store, sin garantías de integridad. Bloqueador absoluto de producción.
-  **Recomendación:** keystore real + Play App Signing + secrets en CI.
-- 🔴 **`.env` empaquetado como asset** (SEC2) `[R]` (`pubspec.yaml`); claves
-  extraíbles del binario. Pasar a `--dart-define`/secret manager.
-- 🔴 **PAT de Supabase vivo** (SEC1) `[R]` en `.mcp.json` (alcance de cuenta).
-  **Rotar inmediatamente**; no es solo deuda, es exposición activa.
-- 🟠 **CI insuficiente.** `[R]` solo `build web`; sin build Android/iOS, sin
-  gate de cobertura, sin firma, sin smoke E2E, sin escaneo de dependencias
-  (Dependabot/Renovate) ni SAST. `.env` se materializa con
-  `cp .env.example .env` (workaround, no fix de SEC2).
-- 🟡 **Versionado/observabilidad de releases:** sin changelog automatizado,
-  sin feature flags, sin rollout gradual.
+- ✅ **Build APK release funcional.** `build.gradle.kts` distingue
+  release/debug correctamente (Kotlin DSL puro: `if-else` expression);
+  `flutter build apk --release` produce `app-release.apk` 73,5 MB.
+- ✅ **SEC2 cerrado.** `Env` lee `String.fromEnvironment`
+  (`--dart-define`); `.env` ya no se bundlea como asset.
+- ✅ **Core library desugaring** habilitado para
+  `flutter_local_notifications`.
+- 🔴 **Keystore real ausente** (`android/key.properties` no existe). El
+  APK release se firma con la keystore de **debug** → **no publicable en
+  Play Store**. Único bloqueador absoluto de release. Pasos en
+  `android/README.md` + `docs/PENDIENTE_PARA_CERRAR.md §1.1`.
+- 🟠 **CI parcial pero ya con Android.** 4 jobs verdes (Analyze, Test,
+  Build Web, **Build Android APK firmado**). Faltan: build iOS firmado,
+  gate de cobertura con umbral, SAST/dependency scan, Dependabot/Renovate,
+  smoke E2E. Detalle en `android/README.md` para secrets de keystore.
+- ✅ **Stack modernizado:** freezed 2→3, go_router 14→17, json_serializable
+  6.8→6.14. Resolución y codegen estables.
+- 🟡 **Pins regresivos** `flutter_riverpod`/`riverpod` 2.6.1 y
+  `sentry_flutter` 8.14.2 — congela migraciones futuras (riverpod 3,
+  sentry 9). Documentado como deuda consciente.
 
 ## F. Observabilidad
 
-- 🟠 **Sin observabilidad de producto.** Sentry/PostHog con consent-gating
-  `[R]` (bien para GDPR) pero **no hay** métricas de negocio, tracing
-  distribuido cliente↔Edge↔DB, dashboards, SLO/SLA ni alertas. Sin esto, a
-  escala se opera a ciegas.
-- 🟡 **Logs no estructurados para agregación** (AppLogger es texto plano);
-  falta correlación por request/usuario (con PII fuera, ya respetado `[R]`).
+- ✅ **Consent-gating de telemetría real.** PostHog arranca con
+  `optOut=true`; `analyticsServiceProvider` default-deny, exige
+  consentimiento explícito. Sentry no se inicializa para invitados.
+  Revocación efectiva en caliente (llama `Posthog().disable()` y
+  `SentrySetup.close()` al revocar).
+- 🟠 **Sin observabilidad de producto.** No hay métricas de negocio
+  (acciones por usuario, viajes, conversión), no hay tracing distribuido
+  cliente↔Edge↔DB, no hay dashboards de SLO/SLA, no hay alertas. A escala
+  se opera a ciegas.
+- 🟡 **Logs no estructurados para agregación** (AppLogger es texto plano).
+  Buena disciplina de PII (UUID truncado en auth), falta correlación por
+  request/usuario.
 
 ## G. Dependencias y evolución
 
-- 🟡 **Pins regresivos.** `[R]` `flutter_riverpod`/`riverpod` fijados 2.6.1,
-  `sentry_flutter` 8.14.2 — congela migraciones futuras (riverpod 3, sentry 9)
-  y acumula deuda. Documentar plan de actualización.
-- 🟢 Stack modernizado parcialmente (freezed 3, go_router 17) `[R]` — buen
-  paso; mantener cadencia con Dependabot.
+- ✅ Stack puesto al día (freezed 3, go_router 17). Workmanager eliminado
+  como dependencia muerta. `flutter_dotenv` eliminado tras SEC2.
+- 🟡 Sin Dependabot/Renovate ni gate de actualización. Pins regresivos a
+  documentar plan de upgrade.
 
 ---
 
 ## Top-10 bloqueadores de escalabilidad (priorizados)
 
-1. 🔴 F13 Realtime real (multiplexado, con backpressure).
-2. 🔴 Paginación/keyset en todos los `remote/` + listas virtualizadas.
-3. 🔴 Firma de release real (keystore + Play App Signing + CI secrets).
-4. 🔴 SEC2 (`.env`→`--dart-define`) y SEC1 (rotar PAT).
-5. 🟠 `autoDispose` selectivo (fugas de memoria/streams).
-6. 🟠 Clustering + `RepaintBoundary` en el mapa.
-7. 🟠 Unificar modelo de usuario (rol fiable server-side).
-8. 🟠 Observabilidad: SLO, tracing, alertas, métricas de negocio.
-9. 🟠 CI producción: build móvil, gate de cobertura, SAST, Dependabot.
-10. 🟡 Estrategia de caché/tenant (tamaño, evicción, cifrado, partición por operador).
+1. 🔴 **Keystore real + Play App Signing** (15 min, manual del usuario).
+   Desbloquea release publicable.
+2. 🟠 **Observabilidad mínima**: SLO + alertas + tracing cliente↔Edge↔DB.
+3. 🟠 **Mapa a escala**: clustering por zoom, `RepaintBoundary`, LOD.
+4. 🟠 **autoDispose `.family` sweep** + auditoría caso a caso.
+5. 🟠 **Tests de la capa `remote/`** (auth_supabase, stop, route,
+   bus_location, etc.) con mocks de `SupabaseClient` → habilita gate de
+   cobertura en CI.
+6. 🟠 **CI producción**: build iOS firmado, gate de cobertura, SAST,
+   Dependabot/Renovate, smoke E2E.
+7. 🟠 **Caché/tenant a escala**: tamaño/evicción/cifrado Hive; partición
+   por `operator_id`; cifrar `live_recorder_draft`.
+8. 🟠 **Backend a escala**: FORCE RLS + auditoría, connection pooling,
+   idempotencia Edge, GTFS streaming, plan no-free / multi-región.
+9. 🟡 **F13 Realtime en repos secundarios** según necesidad real.
+10. 🟡 **Migración futura** riverpod 3 / sentry 9.
 
-> Estos ítems se incorporan al plan como bloque **PROD** en
-> `docs/PLAN_ACCION_REMEDIACION.md`.
+Detalle accionable y orden en `docs/PLAN_ACCION_REMEDIACION.md` (bloques
+PROD/A11Y/P1-P3) y `docs/PENDIENTE_PARA_CERRAR.md` (playbook táctico).

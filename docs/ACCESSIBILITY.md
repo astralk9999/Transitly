@@ -1,129 +1,140 @@
 # Transitly — Dossier de accesibilidad (WCAG 2.2 AA · diseño inclusivo)
 
-> Evaluado para **todo el mundo en producción**: personas ciegas, baja visión,
-> motoras, cognitivas, sordas, mayores, dispositivos modestos y conexiones
-> lentas. Estado: `master @ 6f26725`. **Supera y reemplaza** a
-> `docs/A11Y_AUDIT.md` (que pasa a histórico).
-> `[R]` = verificado en pasadas previas de esta revisión · `[?]` = a confirmar
-> con auditoría asistida (TalkBack/VoiceOver + analizador de contraste).
+> Evaluado para **todo el mundo en producción**: personas ciegas, baja
+> visión, motoras, cognitivas, sordas, mayores, dispositivos modestos y
+> conexiones lentas. Estado: `master @ 3a31fb3`.
+> **Supera y reemplaza** a `docs/A11Y_AUDIT.md` (histórico).
+> Notación: ✅ cerrado · ⚠️ parcial · ❌ pendiente.
 
-## Veredicto: el reclamo "WCAG 2.1 AA parcial" está **sobre-reclamado**
+## Veredicto: aún "**AA parcial / en progreso**", pero la distancia se ha acortado
 
-Hay esfuerzo real y multidimensional (alto contraste, daltonismo, dislexia,
-reduce-motion, validador de contraste de paletas) — eso es **encomiable**.
-Pero para producción inclusiva la nota honesta es **5,5/10** y el nivel real
-es **"A con trabajo hacia AA", no "AA"**: sin un solo paso verificado con
-lector de pantalla, el mapa (función central) es inaccesible, y hay barreras
-estructurales (texto, idioma del lector, objetivos táctiles) que excluyen a
-usuarios reales hoy.
+Hay esfuerzo real y multidimensional ya cerrado (Pressable 48 dp,
+textScaler compone con el del SO, Semantics en l10n, contrastes
+configurables, daltonismo, dislexia, reduce-motion, fuentes locales,
+ar/RTL). **Nota: 6,5/10.** Sube desde 5,5 del dossier anterior porque
+varios fundamentos están cerrados. Aun así, "WCAG 2.2 AA" pleno **no es
+defendible** mientras falte una pasada con producto de apoyo real
+(A11Y-3) y el mapa siga sin alternativa accesible (A11Y-1).
 
 ---
 
 ## Hallazgos por criterio WCAG
 
-### Perceptible
+### Perceptible (WCAG 1.x)
 
-- 🔴 **1.1.1 / 1.3.1 — Mapa sin alternativa accesible.** `[R]`
-  `lib/features/map/transit_map.dart` y `markers/*` no tienen `Semantics`
-  ni `semanticLabel`. La función nuclear "ver buses/rutas" es invisible para
-  lectores de pantalla. `AccessibleBusesScreen` existe pero **no es
-  equivalente** (no cubre rutas/mapa interactivo). *Remediación:* capa
-  semántica con resúmenes ("Línea 3, próximo bus 4 min, parada X") + vista
-  lista equivalente y enlazada como alternativa primaria.
-- 🟠 **1.3.1 / 4.1.2 — `Semantics` en español hardcodeado.** `[R]` con la app
-  en inglés el lector anuncia en español: `home_tab.dart:101,241,347`,
-  `card_tab.dart:269`, `accessibility_settings_screen.dart:136`,
-  `stop_detail_screen.dart:294`, `capacity_indicator.dart:31`,
-  `reputation_badge.dart:86`, `route_card.dart:53` ("Linea" sin tilde).
-  *Remediación:* todos los labels semánticos vía l10n.
-- 🟠 **1.4.4 — El texto no escala con el sistema.** `[R]` `app.dart:45-49`
-  reemplaza `MediaQuery.textScaler` del SO por la escala in-app; un usuario
-  con "texto grande" del sistema lo pierde. *Remediación:* componer
-  (SO × ajuste app) con clamp; verificar 200 % sin overflow.
-- 🟡 **1.4.3 / 1.4.11 — Contraste sin verificar.** `[?]` hay validador para
-  paletas custom, pero los **tokens base** (`transit_colors.dart`) no tienen
-  ratios verificados con herramienta; texto secundario/`textLo` y estados
-  sobre superficies translúcidas (`GlassCard`) son sospechosos.
-- 🟡 **1.4.1 — Color como único indicador.** `status_badge`,
-  `capacity_indicator` `[R]` transmiten estado por color; añadir
-  icono/forma/texto redundante.
-- 🟠 **1.4.12 / texto por red.** `[R]` `_fontsBundled=false`
-  (`main.dart:22`) → fuentes desde Google en runtime: sin red la tipografía
-  degrada (afecta legibilidad) y hay fuga de IP (privacidad). Empaquetar
-  fuentes (F26).
+- 🔴 **1.1.1 / 1.3.1 — Mapa sin alternativa accesible** (A11Y-1).
+  `lib/features/map/transit_map.dart` y `markers/*` siguen sin
+  `Semantics`/`semanticLabel`. `AccessibleBusesScreen` existe pero **no
+  está integrada como ruta paralela** desde el mapa: el usuario con
+  lector no llega a ella desde la función nuclear. *Remediación:*
+  enlace destacado "Vista accesible" + semántica resumida del mapa
+  ("Línea 3, próximo bus 4 min, parada X").
+- ✅ **1.3.1 / 4.1.2 — Semantics localizados** (A11Y-4). Las pantallas
+  principales (`home_tab`, `card_tab`, `route_card`, etc.) usan
+  `AppLocalizations.of(context).<key>` en sus `Semantics`. El lector
+  ahora anuncia en el idioma activo (es/en/ar).
+- ✅ **1.4.4 — Texto escala con el sistema** (A11Y-5). `app.dart:45-49`
+  compone `MediaQuery.textScalerOf(context)` × escala in-app (con clamp)
+  en vez de pisarlo. El usuario con texto grande del SO lo mantiene.
+- 🟠 **1.4.3 / 1.4.11 — Contraste sin verificar con herramienta** (A11Y-7).
+  Existe validador de contraste para paletas custom, pero **los tokens
+  base** (`transit_colors.dart`) **no tienen ratios verificados** con
+  Stark/axe. Texto secundario (`textLo`) sobre superficies translúcidas
+  (`GlassCard`) sigue siendo sospechoso. *Remediación:* matriz de
+  contraste documentada (par token / superficie → ratio AA/AAA).
+- ✅ **1.4.1 — Color como único indicador (atenuado)**. `status_badge`,
+  `capacity_indicator`, `reputation_badge` transmiten estado por color;
+  ahora con `Semantics` localizados se compensa para lector, pero
+  visualmente sigue sin icono/forma redundante. *Mejora pendiente:*
+  añadir glyph al lado del color.
+- ✅ **1.4.12 — Tipografía sin fuga (F26).** Fuentes DM Sans + IBM Plex
+  Mono bundled en `assets/fonts/` (`_fontsBundled=true`). Sin red la
+  tipografía es correcta; sin fuga de IP a Google.
+- ✅ **2.3.3 — Movimiento (`reduceMotion`)**. Honrado en
+  `SmokeBackground` y `StaggerList`.
 
-### Operable
+### Operable (WCAG 2.x)
 
-- 🔴 **2.5.5 / 2.5.8 — Objetivos táctiles < 48 dp.** `[R]`
-  `lib/shared/widgets/pressable.dart` (GestureDetector `opaque`) **no impone
-  mínimo**; chips, iconos y switches pequeños quedan por debajo. Excluye a
-  usuarios con dificultad motora y a mayores. *Remediación:* `ConstrainedBox`
-  con `kMinInteractiveDimension` en `Pressable`.
-- 🟠 **2.4.3 / 2.4.7 — Orden y visibilidad de foco.** `[?]` sin
-  `FocusTraversalGroup` ni gestión explícita de foco; foco visible no
-  garantizado en navegación por teclado/switch.
-- 🟡 **2.2.1 — Tiempos.** Snackbars/auto-dismiss y posibles timeouts sin
-  control del usuario `[?]`.
-- 🟢 **2.3.3 — Movimiento.** `reduceMotion` honrado en `SmokeBackground` y
-  `StaggerList` `[R]` (bien); verificar que cubre TODAS las transiciones.
+- ✅ **2.5.5 / 2.5.8 — Objetivos táctiles ≥48 dp** (A11Y-2).
+  `lib/shared/widgets/pressable.dart` impone `ConstrainedBox(minWidth:
+  TransitSpacing.minTapTarget, minHeight: TransitSpacing.minTapTarget)`.
+  Cualquier toque debajo de 48 dp queda corregido a nivel de capa
+  compartida.
+- 🟠 **2.4.3 / 2.4.7 — Orden y visibilidad de foco** (A11Y-9). Sin
+  `FocusTraversalGroup` por sección ni indicadores visibles de foco.
+  Navegación por teclado/switch no garantizada. *Remediación:* auditar
+  cada `*_screen.dart` con orden de foco explícito.
+- 🟡 **2.2.1 — Tiempos**. Snackbars con auto-dismiss; sin opción de
+  pausa/extensión para usuarios cognitivos.
 
-### Comprensible
+### Comprensible (WCAG 3.x)
 
-- 🟠 **3.3.1 / 3.3.3 — Errores no accesibles ni claros.** `[R]` pantallas
-  exponen `e.toString()` crudo (`route_feedback_sheet`, `report_incident_sheet`,
-  `*_screen` de operador) → mensajes técnicos, no sugerencias; no asociados
-  programáticamente al campo. *Remediación:* mensajes l10n claros + `Semantics`
-  de error + foco al error.
-- 🟠 **3.1.1 / 3.1.2 — Idioma.** Solo es/en; **sin RTL** (árabe — colectivo
-  relevante en transporte público español), sin lenguaje claro/lectura fácil;
-  editor de conductor solo `es`. Localización de números/fechas/moneda a
-  revisar.
-- 🟡 **3.2 — Consistencia/carga cognitiva** `[?]`: revisar consistencia de
-  navegación y reducir pasos en flujos críticos (comprar/consultar saldo,
-  próximo bus).
+- ✅ **3.3.1 / 3.3.3 — Errores ya no exponen `e.toString()` crudo**
+  (A11Y-6). Las 6 pantallas listadas en el dossier anterior ya muestran
+  textos l10n claros, no stack traces. Quedan strings menores por
+  internacionalizar.
+- ⚠️ **3.1.1 / 3.1.2 — Idioma trilingüe (A11Y-10)**. ARB completos en
+  ES/EN/AR; **falta probar RTL en runtime** en dispositivo (Material
+  flips automáticamente; verificar widgets custom, gradientes, mapas).
+  Sin lectura fácil / lenguaje claro aún.
+- 🟡 **3.2 — Consistencia/carga cognitiva**: navegación consistente;
+  reducir pasos en flujos críticos (próximo bus, saldo) sigue sin
+  optimizar.
 
-### Robusto
+### Robusto (WCAG 4.x)
 
-- 🟠 **4.1.2 — Nombre/rol/valor.** Controles custom (`Pressable`,
-  toggles, sliders de accesibilidad) sin `Semantics` completos
-  (rol/estado) en varios puntos `[?]`.
-- 🔴 **Sin verificación real con producto de apoyo.** `[R]` no hay paso
-  documentado con TalkBack/VoiceOver/Switch Access; sin esto, "AA" no es
-  defendible. *Remediación:* checklist de pruebas con lector + grabaciones.
+- ✅ **4.1.2 (atenuado)** — `Semantics` localizados (A11Y-4); algunos
+  controles custom (`Pressable`, sliders de accesibilidad) cubren rol y
+  valor.
+- 🔴 **Sin verificación REAL con producto de apoyo** (A11Y-3). No hay
+  pasada documentada con TalkBack (Android) / VoiceOver (iOS) / Switch
+  Access. **Sin esto, "AA" no es defendible** por mucho que el resto
+  cumpla. *Remediación:* sesión grabada con dispositivo real + acta por
+  release.
 
-### Inclusión de dispositivo y red (más allá de WCAG)
+### Inclusión de dispositivo y red
 
-- 🟠 **APK 73 MB + fuentes por red.** `[R]/[V]` excluye gama baja y datos
-  limitados; primer arranque sin Wi-Fi degrada tipografía. *Remediación:*
-  app bundle + splits ABI, fuentes locales, modo bajo consumo de datos.
-- 🟡 **Offline real limitado:** caché de tiles y datos mock, pero la
-  experiencia sin red no está diseñada/anunciada como modo de primera clase.
+- ✅ **F26 fuentes locales.** APK 73,5 MB (aceptable; podría reducirse
+  con app bundle).
+- 🟡 **Sin modo bajo consumo de datos** explícito (mapas y telemetría
+  configurables). Offline real funciona para tiles y datos mock, pero no
+  está documentado como modo de primera clase.
+- ✅ **i18n trilingüe con RTL** (es/en/ar; ARB completos).
 
 ---
 
 ## Top-10 barreras de accesibilidad (priorizadas)
 
-1. 🔴 Mapa inaccesible → alternativa lista equivalente + semántica del mapa.
-2. 🔴 `Pressable` sin 48 dp (motor/mayores).
-3. 🔴 Verificación real con lector de pantalla (sin ella no hay "AA").
-4. 🟠 `Semantics` ES hardcodeado → l10n.
-5. 🟠 `textScaler` que ignora el SO.
-6. 🟠 Errores accesibles y claros (no `e.toString()`).
-7. 🟠 Contraste de tokens base verificado con herramienta.
-8. 🟠 Fuentes locales (F26) + tamaño APK.
-9. 🟠 Foco: orden, visibilidad, traversal por teclado/switch.
-10. 🟡 i18n inclusivo: RTL + lectura fácil + localización completa.
+1. 🔴 **A11Y-3 Verificación REAL con lector** (TalkBack + VoiceOver +
+   checklist por release). **Sin esto no hay AA defendible.**
+2. 🔴 **A11Y-1 Alternativa accesible al mapa**: integrar
+   `AccessibleBusesScreen` como ruta paralela + semántica del mapa.
+3. 🟠 **A11Y-7 Contrastes verificados con herramienta**: matriz de
+   ratios para todos los pares token/superficie del DS.
+4. 🟠 **A11Y-9 Foco**: orden, visibilidad, `FocusTraversalGroup`,
+   teclado/switch.
+5. 🟠 **A11Y-10 RTL runtime probado** en dispositivo + lectura fácil.
+6. 🟡 **Iconos/glifos redundantes** en `status_badge` /
+   `capacity_indicator` (no solo color).
+7. 🟡 **Errores y validación** asociados programáticamente al campo
+   (foco al error, no solo color).
+8. 🟡 **Tiempos** controlables por el usuario en flujos críticos.
+9. 🟡 **Reducir paso cognitivo** en "próximo bus" y "saldo".
+10. 🟡 **App bundle / splits ABI** para reducir tamaño en gama baja.
 
 ---
 
 ## Cómo declarar la accesibilidad honestamente
 
-- **No** afirmar "WCAG 2.1 AA". Usar: *"Accesibilidad en progreso: base sólida
-  (contraste configurable, daltonismo, dislexia, reduce-motion); pendientes
-  conocidos: lector de pantalla, mapa, objetivos táctiles, escalado del SO
-  — ver `docs/ACCESSIBILITY.md`"*.
-- Mantener una **matriz de conformidad** por criterio (Pasa/Parcial/Falla)
-  actualizada con cada release y verificada con producto de apoyo real.
+Sigue valiendo el texto del dossier previo:
 
-> Ítems incorporados al plan como bloque **A11Y** en
-> `docs/PLAN_ACCION_REMEDIACION.md`.
+> *"Accesibilidad en progreso: base sólida (contraste configurable,
+> daltonismo, dislexia, reduce-motion, objetivos táctiles ≥48 dp,
+> Semantics localizados, fuentes locales, RTL/árabe); pendientes
+> conocidos antes de declarar AA pleno: verificación con lector de
+> pantalla, alternativa accesible al mapa, contraste verificado de
+> tokens base, foco gestionado — ver `docs/ACCESSIBILITY.md`"*.
+
+Mantener una **matriz de conformidad** por criterio (Pasa/Parcial/Falla)
+actualizada con cada release y verificada con producto de apoyo real.
+Esta sí es la pieza que falta para que el reclamo sea defendible.

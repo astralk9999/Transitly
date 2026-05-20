@@ -37,6 +37,8 @@ class MapStyleSection extends ConsumerWidget {
     };
   }
 
+  // Preview swatches para estilos de mapa — colores específicos de
+  // cada tile provider, no duplican tokens de diseño. Intencional.
   Color _stylePreviewColor(String key) {
     return switch (key) {
       'streets' => const Color(0xFF4A90D9),

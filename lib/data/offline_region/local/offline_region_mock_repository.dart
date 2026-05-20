@@ -7,7 +7,7 @@ class OfflineRegionMockRepository implements OfflineRegionRepository {
   final List<OfflineRegion> _ephemeral = <OfflineRegion>[];
 
   @override
-  Future<List<OfflineRegion>> forUser(String userId) async =>
+  Future<List<OfflineRegion>> forUser(String userId, {int? limit, int? offset}) async =>
       _ephemeral.toList(growable: false);
 
   @override

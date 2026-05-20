@@ -36,7 +36,7 @@ class OfflineRegionRepositoryException implements Exception {
 ///
 /// F20 conecta esto al descargador de tiles MapTiler.
 abstract class OfflineRegionRepository {
-  Future<List<OfflineRegion>> forUser(String userId);
+  Future<List<OfflineRegion>> forUser(String userId, {int? limit, int? offset});
 
   Future<OfflineRegion> add(OfflineRegion region);
 

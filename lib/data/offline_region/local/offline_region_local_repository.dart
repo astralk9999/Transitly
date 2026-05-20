@@ -16,7 +16,7 @@ class OfflineRegionLocalRepository implements OfflineRegionRepository {
       'region:$userId:$regionId';
 
   @override
-  Future<List<OfflineRegion>> forUser(String userId) async {
+  Future<List<OfflineRegion>> forUser(String userId, {int? limit, int? offset}) async {
     final prefix = 'region:$userId:';
     final result = <OfflineRegion>[];
     for (final entry in _box.toMap().entries) {

@@ -26,7 +26,7 @@ class OfflineRegionRepositoryLocalFirst implements OfflineRegionRepository {
   static const _logTag = 'Repo:OfflineRegion';
 
   @override
-  Future<List<OfflineRegion>> forUser(String userId) async {
+  Future<List<OfflineRegion>> forUser(String userId, {int? limit, int? offset}) async {
     final cached = await local.forUser(userId);
     if (cached.isEmpty) {
       unawaited(_pullFromRemote(userId));

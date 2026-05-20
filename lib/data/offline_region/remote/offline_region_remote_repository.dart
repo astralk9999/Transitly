@@ -16,15 +16,20 @@ class OfflineRegionRemoteRepository implements OfflineRegionRepository {
   static const _logTag = 'Repo:OfflineRegion:Remote';
 
   @override
-  Future<List<OfflineRegion>> forUser(String userId) async {
+  Future<List<OfflineRegion>> forUser(String userId, {int? limit, int? offset}) async {
     try {
-      final rows = await _client
+      dynamic query = _client
           .from('offline_regions')
           .select()
           .eq('user_id', userId)
           .order('created_at', ascending: false);
-
-      return rows.map(_fromRow).toList();
+      if (offset != null && limit != null) {
+        query = query.range(offset, offset + limit - 1);
+      } else if (limit != null) {
+        query = query.limit(limit);
+      }
+      final rows = await query;
+      return (rows as List<dynamic>).map((e) => _fromRow(e as Map<String, dynamic>)).toList();
     } catch (e) {
       AppLogger.warn(_logTag, 'forUser failed', e);
       return <OfflineRegion>[];

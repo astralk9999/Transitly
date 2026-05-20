@@ -72,7 +72,7 @@ class RouteFeedbackRepositorySwr implements RouteFeedbackRepository {
   }
 
   @override
-  Future<List<RouteFeedbackModel>> listAll() async {
+  Future<List<RouteFeedbackModel>> listAll({int? limit, int? offset}) async {
     final cached = await local.listAll();
     if (cached.isNotEmpty) {
       unawaited(_refreshListAll());
@@ -97,6 +97,13 @@ class RouteFeedbackRepositorySwr implements RouteFeedbackRepository {
     final updated = await remote.updateStatus(id, status);
     await local.upsert(updated);
     return updated;
+  }
+
+  @override
+  Stream<RouteFeedbackModel?> watch(String id) async* {
+    final cached = await local.watch(id).first;
+    if (cached != null) yield cached;
+    yield* remote.watch(id);
   }
 }
 

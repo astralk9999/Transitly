@@ -42,7 +42,9 @@ abstract class IncidentRepository {
   /// cuando el drainer lo sincronice (UUID v4 generado en cliente).
   Future<IncidentModel> create(IncidentModel incident);
 
-  Future<List<IncidentModel>> listAll();
+  Future<List<IncidentModel>> listAll({int? limit, int? offset});
 
   Future<IncidentModel> updateStatus(String id, String status);
+
+  Stream<IncidentModel?> watch(String id);
 }

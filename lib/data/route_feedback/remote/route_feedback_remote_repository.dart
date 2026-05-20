@@ -6,6 +6,7 @@ import '../../../shared/models/enums.dart';
 import '../../../shared/models/route_feedback_model.dart';
 import '../../sync/pending_action.dart';
 import '../../sync/pending_actions_queue.dart';
+import '../../sync/realtime_channel_manager.dart';
 import '../domain/route_feedback_repository.dart';
 
 /// Implementación remota sobre Supabase. `create` integra la cola
@@ -15,12 +16,18 @@ class RouteFeedbackRemoteRepository implements RouteFeedbackRepository {
     required SupabaseClient client,
     required PendingActionsQueue queue,
   })  : _client = client,
-        _queue = queue;
+        _queue = queue,
+        _chManager = RealtimeChannelManager(client);
 
   final SupabaseClient _client;
   final PendingActionsQueue _queue;
+  final RealtimeChannelManager _chManager;
 
   static const _logTag = 'Repo:RouteFeedback:Remote';
+
+  void dispose() {
+    _chManager.dispose();
+  }
 
   @override
   Future<List<RouteFeedbackModel>> byAuthor(String authorId) async {
@@ -79,13 +86,19 @@ class RouteFeedbackRemoteRepository implements RouteFeedbackRepository {
   }
 
   @override
-  Future<List<RouteFeedbackModel>> listAll() async {
+  Future<List<RouteFeedbackModel>> listAll({int? limit, int? offset}) async {
     try {
-      final rows = await _client
+      dynamic query = _client
           .from('route_feedback')
           .select()
           .order('created_at', ascending: false);
-      return rows.map(_fromRow).toList();
+      if (offset != null && limit != null) {
+        query = query.range(offset, offset + limit - 1);
+      } else if (limit != null) {
+        query = query.limit(limit);
+      }
+      final rows = await query;
+      return (rows as List<dynamic>).map((e) => _fromRow(e as Map<String, dynamic>)).toList();
     } catch (e, st) {
       throw _mapError(e, st, 'listAll');
     }
@@ -120,6 +133,24 @@ class RouteFeedbackRemoteRepository implements RouteFeedbackRepository {
         ),
       );
       rethrow;
+    }
+  }
+
+  @override
+  Stream<RouteFeedbackModel?> watch(String id) async* {
+    try {
+      final row = await _client.from('route_feedback').select().eq('id', id).maybeSingle();
+      yield row != null ? _fromRow(row) : null;
+    } catch (_) {
+      yield null;
+    }
+    await for (final row in _chManager.watch(
+      channelPrefix: 'feedback',
+      table: 'route_feedback',
+      entityId: id,
+      events: [PostgresChangeEvent.all],
+    )) {
+      yield _fromRow(row);
     }
   }
 

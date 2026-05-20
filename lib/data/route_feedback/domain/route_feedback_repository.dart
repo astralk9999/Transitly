@@ -40,7 +40,9 @@ abstract class RouteFeedbackRepository {
 
   Future<RouteFeedbackModel> create(RouteFeedbackModel feedback);
 
-  Future<List<RouteFeedbackModel>> listAll();
+  Future<List<RouteFeedbackModel>> listAll({int? limit, int? offset});
 
   Future<RouteFeedbackModel> updateStatus(String id, String status);
+
+  Stream<RouteFeedbackModel?> watch(String id);
 }

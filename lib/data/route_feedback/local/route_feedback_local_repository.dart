@@ -33,7 +33,7 @@ class RouteFeedbackLocalRepository implements RouteFeedbackRepository {
   }
 
   @override
-  Future<List<RouteFeedbackModel>> listAll() async {
+  Future<List<RouteFeedbackModel>> listAll({int? limit, int? offset}) async {
     return _box.values.toList(growable: false);
   }
 
@@ -64,4 +64,10 @@ class RouteFeedbackLocalRepository implements RouteFeedbackRepository {
   }
 
   Future<void> clear() async => _box.clear();
+
+  @override
+  Stream<RouteFeedbackModel?> watch(String id) async* {
+    final cached = _box.get(_key(id));
+    if (cached != null) yield cached;
+  }
 }

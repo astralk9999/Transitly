@@ -42,7 +42,7 @@ class RouteFeedbackMockRepository implements RouteFeedbackRepository {
   }
 
   @override
-  Future<List<RouteFeedbackModel>> listAll() async {
+  Future<List<RouteFeedbackModel>> listAll({int? limit, int? offset}) async {
     return _all.toList(growable: false);
   }
 
@@ -53,5 +53,11 @@ class RouteFeedbackMockRepository implements RouteFeedbackRepository {
     final updated = existing.copyWith(status: fbStatus);
     _modifications[id] = updated;
     return updated;
+  }
+
+  @override
+  Stream<RouteFeedbackModel?> watch(String id) async* {
+    final found = _all.where((f) => f.id == id);
+    if (found.isNotEmpty) yield found.first;
   }
 }

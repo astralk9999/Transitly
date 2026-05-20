@@ -43,7 +43,7 @@ class IncidentMockRepository implements IncidentRepository {
   }
 
   @override
-  Future<List<IncidentModel>> listAll() async {
+  Future<List<IncidentModel>> listAll({int? limit, int? offset}) async {
     return _all.toList(growable: false);
   }
 
@@ -53,5 +53,11 @@ class IncidentMockRepository implements IncidentRepository {
     final updated = existing.copyWith(status: status);
     _modifications[id] = updated;
     return updated;
+  }
+
+  @override
+  Stream<IncidentModel?> watch(String id) async* {
+    final found = _all.where((i) => i.id == id);
+    if (found.isNotEmpty) yield found.first;
   }
 }

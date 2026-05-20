@@ -79,7 +79,7 @@ class IncidentRepositorySwr implements IncidentRepository {
   }
 
   @override
-  Future<List<IncidentModel>> listAll() async {
+  Future<List<IncidentModel>> listAll({int? limit, int? offset}) async {
     final cached = await local.listAll();
     if (cached.isNotEmpty) {
       unawaited(_refreshListAll());
@@ -104,6 +104,13 @@ class IncidentRepositorySwr implements IncidentRepository {
     final updated = await remote.updateStatus(id, status);
     await local.upsert(updated);
     return updated;
+  }
+
+  @override
+  Stream<IncidentModel?> watch(String id) async* {
+    final cached = await local.watch(id).first;
+    if (cached != null) yield cached;
+    yield* remote.watch(id);
   }
 }
 

@@ -32,7 +32,7 @@ class IncidentLocalRepository implements IncidentRepository {
   }
 
   @override
-  Future<List<IncidentModel>> listAll() async {
+  Future<List<IncidentModel>> listAll({int? limit, int? offset}) async {
     return _box.values.toList(growable: false);
   }
 
@@ -62,4 +62,10 @@ class IncidentLocalRepository implements IncidentRepository {
   }
 
   Future<void> clear() async => _box.clear();
+
+  @override
+  Stream<IncidentModel?> watch(String id) async* {
+    final cached = _box.get(_key(id));
+    if (cached != null) yield cached;
+  }
 }

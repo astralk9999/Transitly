@@ -1,16 +1,9 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
     id("dev.flutter.flutter-gradle-plugin")
-}
-
-def keystorePropertiesFile = rootProject.file("key.properties")
-def keystoreProperties = new Properties()
-def useReleaseSigning = false
-
-if (keystorePropertiesFile.exists()) {
-    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-    useReleaseSigning = true
 }
 
 android {
@@ -36,8 +29,11 @@ android {
         versionName = flutter.versionName
     }
 
-    signingConfigs {
-        if (useReleaseSigning) {
+    val keystorePropertiesFile = rootProject.file("key.properties")
+    if (keystorePropertiesFile.exists()) {
+        val keystoreProperties = Properties()
+        keystoreProperties.load(keystorePropertiesFile.inputStream())
+        signingConfigs {
             create("release") {
                 keyAlias = keystoreProperties["keyAlias"] as String
                 keyPassword = keystoreProperties["keyPassword"] as String
@@ -49,9 +45,10 @@ android {
 
     buildTypes {
         release {
-            signingConfig = useReleaseSigning
-                ? signingConfigs.getByName("release")
-                : signingConfigs.getByName("debug")
+            signingConfig = if (keystorePropertiesFile.exists())
+                signingConfigs.getByName("release")
+            else
+                signingConfigs.getByName("debug")
         }
     }
 }

@@ -1,119 +1,360 @@
 # 04 — Desarrollo e Implementación
 
 **Proyecto:** Transitly
-**Fecha:** 2026-05-15
-**Fase actual:** F26 — QA, performance, TFG y release
+**Estado verificado:** `master @ 3a31fb3` · 28/28 fases · 175/175 tests · cobertura 24,30 % · `flutter analyze` 0 issues · APK release 73,5 MB · CI verde (4 jobs)
 
 ---
 
 ## 1. Metodología de desarrollo
 
-- **Modelo:** Desarrollo ágil con fases atómicas de 1-3 días
-- **Control de versiones:** Git (GitHub), conventional commits, sin ramas de feature (todo sobre `master`)
-- **Calidad:** `flutter analyze` 0 errors + `flutter test` 100% pass antes de cada commit
-- **Arquitectura:** Feature-first con `core/` + `shared/` + `data/` transversales
-- **Codegen:** freezed + json_serializable vía `tool/build.sh`
-- **Asistencia IA:** Sistema multiagente autónomo (Queen + Developer + Review + Git)
+### 1.1. Modelo
+
+**Desarrollo ágil iterativo por fases atómicas de 1-4 días.** Cada fase
+tiene un objetivo único, una rama de trabajo en `master` directa
+(sin ramas de feature) y un cierre formal verificable.
+
+- **Sin Scrum / Kanban formales** — la naturaleza individual del TFG no
+  lo requiere; el rol de Product Owner lo cubre el plan de
+  `PLAN_TRANSITLY_V2.md` (ahora archivado tras cierre F27).
+- **Tracker de tareas:** `multiagent/state/queue.json` (cola viva durante
+  cada sesión) + `docs/PENDIENTES.md` (deuda con tags por fase) +
+  `docs/PLAN_ACCION_REMEDIACION.md` (plan vivo de remediación
+  post-cierre).
+- **Sesiones presenciales** con el tutor: seguimiento de progreso y
+  validación de avances; revisiones críticas independientes
+  documentadas en `docs/historico/REVISION_INDEPENDIENTE_2026_05_17.md`
+  (4 pasadas críticas).
+
+### 1.2. Asistencia de IA documentada
+
+Trabajo asistido por un **sistema multiagente** documentado en
+`multiagent/ARCHITECTURE.md` con 5 roles bien delimitados:
+
+- **Queen** — planificación de fases y coordinación.
+- **Developer** — escritura de código y tests.
+- **Review** — análisis crítico, revisiones por pares simuladas.
+- **Git** — commits semánticos y push.
+- **Documentation** — sincronía de `tfg/` y plan.
+
+La declaración explícita de esta asistencia es un compromiso de
+**integridad académica**: el TFG se evalúa por el rigor del proyecto y
+las decisiones tomadas, no por la negación de herramientas. Cada commit
+queda firmado y trazable.
+
+### 1.3. Control de versiones
+
+- **Git + GitHub.** Repositorio privado del TFG.
+- **Conventional Commits** (`feat:`, `fix:`, `docs:`, `refactor:`,
+  `chore:`). Mensajes en imperativo.
+- **Sin ramas de feature** — todo sobre `master`; los conflictos no
+  existen en proyecto individual.
+- **CI obligatoria verde** en cada push (4 jobs: Analyze, Test, Build
+  Web, Build Android APK).
+- **Pre-commit local:** `flutter analyze` 0 + `flutter test` 100 %
+  manualmente antes de cada commit.
+
+### 1.4. Calidad y arquitectura como reglas operativas
+
+Reglas no negociables del proyecto (recogidas en `AGENTS.md`):
+
+1. **`data/` no depende de `features/`**.
+2. **Design tokens en `core/theme/` se consumen, nunca se duplican**.
+3. **Patrón de errores tipado** (`enum FooError` + `class
+   FooException`); nada de `catch (_) {}` silencioso.
+4. **`avoid_print: true`** en `lib/` (solo `AppLogger`).
+5. **`strict-casts: true` + `strict-raw-types: true`** en
+   `analysis_options.yaml`.
+6. **Modelos críticos en `@freezed`** con `.freezed.dart` commiteados.
+7. **`shared/widgets/` solo si se usa en ≥2 features**.
+8. **Cada `*_screen.dart` ≤ ~300 LoC** → descomponer en `widgets/` si
+   crece.
 
 ---
 
-## 2. Estado actual del desarrollo
+## 2. Estructura del código
 
-### Progreso global
+### 2.1. Capas
 
 ```
-✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅  28/28 fases (100%)
-
-Completado: F0 → F27 (incluye QA, performance, TFG, release y
-Wearables nivel 1).
+lib/
+├── main.dart           Bootstrap secuencial
+├── app.dart            MaterialApp.router + theme + locale
+├── core/               Núcleo (router, theme, utils)
+├── data/               Repositorios + caché + sync (más profunda)
+├── features/           Feature-first (≈25 features)
+├── l10n/               ARB + generated (es/en/ar)
+└── shared/             Models + providers + widgets reusables
 ```
 
-### Métricas
+Detalle en `docs/ARCHITECTURE.md`.
 
-| Indicador | Valor |
-|-----------|-------|
-| Commits totales | ~80 |
-| Tests | 148 pasando, 0 fallando (tras remediación P0/P1, 2026-05-18; CI verde) |
-| Lint | 0 issues (0 errors, 0 warnings, 0 info) |
-| Líneas de código | ~35,000+ |
-| Modelos @freezed | 20+ |
-| Repositorios | 12 (operator, stop, route, schedule, busLocation, incident, routeFeedback, routeSuggestion, featureRequest, notification, userPreferences, offlineRegion) |
-| Pantallas | 35+ |
-| Widgets compartidos | 27 |
-| Operadores seed | 10 (COMUJESA, TUSSAM, EMT Madrid, EMT Málaga, EMT Valencia, TMB, AUVASA, Bilbobus, TITSA, Avanza Zaragoza) |
-| Idiomas | Español (principal) + Inglés |
+### 2.2. Patrón canónico de repositorio
 
----
+Cada entidad de dominio sigue el patrón de 5 ficheros:
 
-## 3. Registro de commits
+```
+lib/data/<entity>/
+├── domain/<entity>_repository.dart       (interfaz abstracta)
+├── remote/<entity>_remote_repository.dart (Supabase)
+├── local/<entity>_local_repository.dart   (Hive)
+├── local/<entity>_mock_repository.dart    (modo guest)
+└── <entity>_repository_provider.dart      (Riverpod SWR + selector)
+```
 
-| Hash | Fecha | Fase | Descripción |
-|------|-------|------|-------------|
-| `bee9094` | 2026-05-15 | F24+F25 | feat(native): home widgets support, privacy screen with GDPR consent management |
-| `254b551` | 2026-05-15 | F23 | feat(web): Astro SSR site with 10 pages and Flutter Web island entry points |
-| `f972d49` | 2026-05-15 | F22 | feat(telemetry): consent gating for Sentry/PostHog and offline queue smoke tests |
-| `03a409a` | 2026-05-15 | F22 | feat(telemetry): Sentry crash reporting and PostHog analytics with consent gating |
-| `62c6387` | 2026-05-15 | F21 | feat(push): notification preferences, quiet hours, and wearable docs |
-| `1b9d9a1` | 2026-05-15 | F21 | feat(push): send_notification edge function, push triggers, in-app notification UI |
-| `cf1b96f` | 2026-05-15 | F21 | feat(push): PushService with FCM token management and device_tokens migration |
-| `437a3ad` | 2026-05-15 | F21 | feat(push): Firebase setup with graceful degradation and FCM setup docs |
-| `a015a9a` | 2026-05-15 | F20 | feat(map): region data export RPC and offline storage settings |
-| `d5fa5d9` | 2026-05-15 | F20 | feat(map): FMTC tile caching and offline regions download screen |
-| `d6c8ad0` | 2026-05-15 | F20 | feat(map): MapTiler tile provider with 5 styles and CartoDB fallback |
-| `4897404` | 2026-05-15 | F19 | feat(reputation): 9 achievements catalog JSON and trigger stubs |
-| `fc2502d` | 2026-05-15 | F19 | feat(reputation): reputation screen with progress bar and rank display |
-| `9c7d4c2` | 2026-05-15 | F19 | feat(reputation): ReputationRank system, events tracking, and SQL migration |
-| `2a076f0` | 2026-05-15 | F18 | docs(a11y): accessibility audit document with 29 Semantics nodes verified |
-| `f696ad1` | 2026-05-15 | F18 | feat(a11y): high contrast mode with solid backgrounds and thicker borders |
-| `e58f0f6` | 2026-05-15 | F18 | feat(a11y): accessible buses list screen for screen readers |
-| `26c7c07` | 2026-05-15 | F18 | feat(a11y): liveRegion semantics, tooltips, and screen reader labels |
-| `f6d9c8d` | 2026-05-15 | F18 | feat(a11y): color blind matrix, dyslexia font, reduceMotion and fontScale |
-| `bff7288` | 2026-05-15 | F17 | feat(theme): 3-page onboarding with PageView and google_fonts bundle prep |
-| `ab78409` | 2026-05-15 | F17 | feat(theme): custom palette screen with WCAG AA validation |
-| `f1145e0` | 2026-05-15 | F17 | feat(theme): BackgroundWrapper with smoke/gradient/image support |
-| `d33d1db` | 2026-05-15 | F17 | feat(theme): appearance screen with palette/background/font controls |
-| `e009c8a` | 2026-05-15 | F17 | feat(theme): palette/background models and ThemeNotifier |
-| `a9c2447` | 2026-05-14 | F16 | feat(admin): router-level admin guard redirect |
-| `d09706a` | 2026-05-14 | F16 | feat(admin): wire ManagerInboxScreen to real repositories with moderation actions |
-| `852ef25` | 2026-05-14 | F16 | feat(admin): operator CRUD with repository and admin screen |
-| `182b442` | 2026-05-14 | F16 | feat(admin): user list with role filter and search |
-| `4d08467` | 2026-05-14 | F16 | feat(admin): admin panel base screen with RoleGate |
-| `e16af43` | 2026-05-14 | F15 | feat(incidents): wire incident report to IncidentRepository + offline queue |
-| `252a422` | 2026-05-14 | F15 | feat(contributions): wire suggestions, feedback, MyContributions to repos |
-| `a0055dd` | 2026-05-12 | F14 | feat(driver): add DriverDashboard with live GPS tracking |
-| `51dbdc5` | 2026-05-12 | F13 | feat(bus): add bus_estimator + BusOriginLabel + realtime trips |
-| `d856cfc` | 2026-05-11 | F12 | feat(share): add share sheet + RouteOfficializeModal |
-| `1e32386` | 2026-05-11 | F11 | feat(gps): add LocationService.subscribe + GPS indicator |
-| `8341490` | 2026-05-10 | F10 | feat(editor): add route editor serialization + autosave Hive |
-| `2c52f25` | 2026-05-10 | F9 | feat(filters): add MapFilterState + filter bottom sheet |
-| `75d56cb` | 2026-05-09 | F8 | feat(geo): add LocationService + city picker + active operator |
-| `4991464` | 2026-05-09 | F7 | feat(gtfs): add GTFS importer Edge Function + seed operators YAML |
-| `546a320` | 2026-05-08 | F6 | feat(driver): add invitation codes migration + RPC |
-| `2ad97ec` | 2026-05-08 | F5 | feat(roles): add UserRole enum + RoleGate widget |
-| `fdf6aeb` | 2026-05-07 | F4 | feat(auth): add AuthRepository + sign-in/sign-up/magic-link screens |
+**Excepción documentada** (`AGENTS.md §259-265`): `lib/data/auth/` solo
+tiene 2 ficheros (`auth_repository.dart` abstracto +
+`auth_repository_supabase.dart`) porque la sesión la gestiona el SDK
+de Supabase; no necesita local/mock/provider (el provider vive en
+`features/auth/auth_provider.dart`).
+
+### 2.3. Cifras del código (por capa)
+
+Aproximaciones medibles a fecha de cierre F27:
+
+| Capa | Ficheros `.dart` (excluyendo generados) | Comentario |
+|------|:-:|------------|
+| `lib/core/` | ~15 | Tokens, router, utils |
+| `lib/data/` | ~75 | 12 entidades × 5 ficheros = 60 + sync, mock, cache, auth (excepción) |
+| `lib/features/` | ~120 | ~25 features, cada una con 1-5 ficheros |
+| `lib/shared/` | ~50 | 27+ modelos + ~25 providers + ~30 widgets compartidos |
+| `lib/l10n/` | 4 ARB + 4 generated | 343 claves por locale |
+| **Total** | ~260 ficheros .dart | ~35.000 LOC |
 
 ---
 
-## 4. Cobertura de tests
+## 3. Integraciones técnicas
 
-| Módulo | Tests | Cobertura |
-|--------|-------|-----------|
-| data/operator | 8 | Operadores, CRUD, caché |
-| data/geo | 4 | RPC, búsqueda |
-| data/mock | 8 | MockDataService, MockRealtimeService, smoke tests |
-| data/nfc | 4 | NFC card service |
-| data/incident | 4 | Incident repository mock |
-| data/route_feedback | 4 | Feedback repository mock |
-| shared/models | 12 | Serialización freezed |
-| shared/providers | 30+ | Derivados, theme, user, NFC, local feedback |
-| features/home | 12 | Tabs, perfil |
-| features/admin | 13 | Admin users + operator CRUD + manager inbox |
-| features/driver | 6 | Route editor, recorded sessions |
-| widgets compartidos | 15 | GlassCard, TransitAppBar, design system |
-| router | 8 | Deeplinks, shell branches |
-| accessibility | 5 | Settings screen |
-| **Total** | **148** | +6 `bus_estimation` (P2), +5 auth screens |
+### 3.1. Backend Supabase
+
+- **PostgreSQL + PostGIS** para datos geoespaciales (paradas, rutas).
+- **13 migraciones SQL** versionadas en `supabase/migrations/`.
+- **RLS default-deny** activo en todas las tablas con datos personales.
+- **`SECURITY DEFINER`** con `search_path` fijado en todas las funciones
+  (`002_rls.sql:18`).
+- **2 Edge Functions** en Deno (`import_gtfs`, `send_notification`):
+  - `import_gtfs` con anti-SSRF (resolución DNS A/AAAA,
+    `redirect:"manual"`, rangos privados bloqueados), validación de rol
+    admin + parser GTFS streaming.
+  - `send_notification` con validación de invocador (`service_role` en
+    tiempo constante), rate-limit best-effort (TOCTOU documentado),
+    fail-closed si el INSERT en `notifications` falla, OAuth JWT para
+    FCM HTTP v1.
+
+### 3.2. F13 Realtime (5/12 repos)
+
+- **`RealtimeChannelManager`** compartido en `lib/data/sync/` —
+  multiplexa canales con `Supabase.channel().onPostgresChanges()`,
+  reconexión con backoff exponencial + jitter, dispose limpio
+  via `ref.onDispose`.
+- Usado por: `stop`, `route`, `incident`, `route_feedback`.
+- **`BusPositionChannelManager`** dedicado para `bus_location` (filtro
+  por `route_id` específico).
+- `notification_stream_provider` tiene Realtime propio para el feed de
+  notificaciones del usuario actual (`autoDispose` para cerrar canal al
+  detach).
+
+### 3.3. Auth + roles
+
+- `AuthRepositorySupabase` con email/password, magic link y resend.
+- **Modelo de usuario unificado:** `userProfileFromSupabaseProvider`
+  lee `profiles.role` de Supabase con `.maybeSingle()` y maneja
+  `PostgrestException`; `currentUserProvider` usa el perfil real si
+  hay sesión, mock si guest.
+- **Guard del router** (`redirect_guards.dart:31`) consume el rol
+  REAL de Supabase, no un `StateProvider` mutable.
+
+### 3.4. NFC
+
+- `NfcCardService` lee tarjeta Mifare Classic con claves
+  reverse-engineered del Consorcio de Transportes de Andalucía
+  (uso académico).
+- Override por build: `--dart-define=NFC_KEY_SECTOR0=…
+  --dart-define=NFC_KEY_SECTOR9=…`.
+- i18n de errores en `nfc_l10n.dart`.
+
+### 3.5. Mapa + offline
+
+- `flutter_map 7.0` con `MapTiler` (con clave) + fallback CartoDB.
+- `flutter_map_tile_caching 10.0` (FMTC) para tiles offline por región.
+- Descarga gestionada en `features/offline/`.
+
+### 3.6. Push (FCM)
+
+- `firebase_messaging 16.2` para tokens y mensajes en foreground.
+- `flutter_local_notifications 20.1` para presentación local.
+- Edge Function `send_notification` envía vía FCM HTTP v1 con OAuth JWT
+  RS256 firmado en Deno.
+
+### 3.7. Telemetría con consent-gating GDPR
+
+- **PostHog** arranca con `optOut=true` en `main.dart`;
+  `analyticsServiceProvider` es default-deny (solo se construye con
+  consentimiento explícito).
+- **Sentry** no se inicializa para invitados; lee consent antes de
+  arrancar; falla a opt-out si la lectura falla.
+- **Revocación en caliente:** `privacy_screen._setConsent` llama
+  `Posthog().disable()` / `SentrySetup.close()` y hace
+  `ref.invalidate(privacyConsentsProvider)` para que el provider
+  reconstruya como `NoopAnalyticsService`.
+
+### 3.8. Astro Web (marketing)
+
+- `astro/` con sitio SSR de ~10 páginas (landing, sobre, ciudades,
+  rutas, privacidad, términos).
+- Independiente del build de Flutter Web; rutas separadas
+  (`/app/admin`, `/app/editor`, `/app/map` apuntan a Flutter como
+  islands futuros).
+
+### 3.9. Widgets nativos (home screen)
+
+- `home_widget 0.7` integra widgets en pantalla de inicio de Android e
+  iOS.
+- `WidgetDataWriter` persiste en `SharedPreferences`.
+- Refresco periódico desde la app (workmanager fue eliminado por
+  incompatibilidad v1-embedding; refresco automático queda como
+  trabajo futuro).
 
 ---
 
-**Última actualización:** 2026-05-15 · F26 · Documentation Agent · Commit `bee9094`
+## 4. Pruebas
+
+### 4.1. Suite actual
+
+| Categoría | Tests | Foco |
+|-----------|:-:|------|
+| `data/operator/` | 8 | CRUD, helpers, error mapping de Postgrest |
+| `data/incident/`, `data/route_feedback/` | 8 | Repositorios mock + helpers |
+| `data/mock/` | 8 | MockDataService, MockRealtimeService, parser robusto |
+| `data/nfc/` | 4 | NFC card service (parser, errores) |
+| **`data/sync/`** | 5 | **`RealtimeChannelManager` con `fake_async`** |
+| `shared/models/` | 12 | Serialización freezed |
+| `shared/providers/` | 30+ | Theme, user, NFC, local feedback, derivados, schedule |
+| `features/admin/` | 13 | Admin users + operator CRUD + manager inbox |
+| `features/auth/` | 5 | Pantallas signin / signup / magic link / activate driver |
+| `features/bus_estimation/` | 6 | Estimación pura con tiempos fijos |
+| `features/driver/route_editor/` | 4 | RecordedSession y validaciones |
+| `widgets compartidos` | 15 | Design system, GlassCard, TransitAppBar |
+| `router` | 8 | Deeplinks, shell branches, redirect guards |
+| `widget/accessibility` | 5 | Settings screen + semantics |
+| `widget/home_tabs` | 12 | Tabs, perfil, card |
+| `smoke` | 5 | Offline queue, app boot |
+| **Total** | **175** | Verificado `master @ 3a31fb3` |
+
+### 4.2. Cobertura
+
+`flutter test --coverage` produce `coverage/lcov.info` con:
+
+- **24,30 %** de líneas cubiertas (4 004 / 16 476).
+- **Lever principal:** la capa `lib/data/*/remote/*` (Supabase) está a
+  casi 0 % — son los repositorios que se prueban con mocks. Tests con
+  `SupabaseClient` mockeado son el siguiente paso (P2-4 en el plan
+  vivo).
+
+### 4.3. CI
+
+GitHub Actions con 4 jobs ejecutados en cada push y PR a `master`:
+
+1. **Flutter Analyze** — `flutter analyze` (debe ser 0 issues).
+2. **Flutter Test** — `flutter test --coverage` + upload de `lcov.info`
+   como artifact.
+3. **Build Web (release)** — `flutter build web --release`.
+4. **Build Android APK** — `flutter build apk --release` con keystore
+   provisionado desde secrets (cuando se configure).
+
+Configuración en `.github/workflows/ci.yml`. CI verde verificado.
+
+### 4.4. Decisiones de testing
+
+- **No pixel goldens** — `google_fonts` resolvía por red al principio;
+  ahora con fuentes locales sería viable, pero la decisión de no
+  introducirlos se mantiene para no añadir ruido a los tests visuales.
+- **`disableAnimations: true`** por defecto en `pumpApp` para evitar
+  futures pendientes de animaciones.
+- **`fake_async`** en tests de lógica con tiempos
+  (`RealtimeChannelManager`, `bus_estimator`).
+- **`mocktail`** para mocks limpios sin generación de código.
+
+---
+
+## 5. Documentación del código
+
+### 5.1. AppLogger
+
+Wrapper en `lib/core/utils/app_logger.dart` con 4 niveles (`debug`,
+`info`, `warn`, `error`) y formato consistente
+`[Tag] mensaje (key=value)`. Reglas:
+
+- **No PII en logs** (UUID truncado a 8 chars en auth, sin email,
+  sin lat/lng exactos).
+- Tags por capa (`[NfcCardService]`, `[Provider:Theme]`, `[Router]`).
+- **No `print()`** en `lib/` (lint `avoid_print` activo).
+
+### 5.2. Codegen
+
+- `freezed_annotation 3.x` + `json_annotation 4.14` para modelos.
+- `tool/build.sh` ejecuta `dart run build_runner build
+  --delete-conflicting-outputs`.
+- `tool/build_watch.sh` para sesiones largas de edición de modelos.
+- Los `.freezed.dart` y `.g.dart` **se commitean**.
+
+### 5.3. Comentarios en código
+
+- **Por defecto, sin comentarios.** Los identificadores explican qué.
+- Solo se comenta el **porqué** no obvio: invariantes ocultos, *workarounds*
+  con referencia al bug, decisiones contraintuitivas
+  (p.ej. `bus_position_channel_manager.dart` con backoff jitter).
+
+### 5.4. Manuales
+
+- `docs/tfg/06_manual_tecnico.md` — instalación, configuración,
+  mantenimiento.
+- `docs/tfg/07_manual_usuario.md` — uso del producto.
+- `docs/ARCHITECTURE.md` — reglas de arquitectura.
+- `docs/PLATFORM_SETUP.md`, `docs/FCM_SETUP.md`, `docs/FONTS_F26.md`,
+  `docs/HOME_WIDGETS.md`, `docs/WEB_SETUP.md`,
+  `docs/SECURITY_PAT_ROTATION.md`, `android/README.md` — guías técnicas
+  específicas.
+
+---
+
+## 6. Iteraciones y remediación post-cierre (Workstream R)
+
+Tras el cierre formal F27 (2026-05-15) entraron varios **ciclos de
+remediación** descubiertos en revisiones críticas independientes
+(`docs/historico/REVISION_INDEPENDIENTE_2026_05_17.md`,
+`docs/historico/REVISION_CRITICA.md`). Sin estos ciclos, el proyecto
+"funcionaba" pero ocultaba deuda importante. Lo cerrado en esos ciclos
+(con verificación) está en `docs/PENDIENTE_PARA_CERRAR.md §5` y
+en el cuadro de mando del plan vivo.
+
+Lo más notable:
+
+- **Hallazgo grave:** el APK release **nunca había compilado** en Flutter
+  3.x. Tres causas encadenadas (workmanager con API v1-embedding
+  removida, `flutter_local_notifications` exigía core library
+  desugaring, daemon Gradle se quedaba sin memoria). Cerrado con
+  eliminación de workmanager (dependencia muerta), `coreLibraryDesugaring`
+  + `desugar_jdk_libs:2.1.4`, y `gradle.properties` con `-Xmx4G` +
+  `daemon=false`.
+- **Kotlin DSL en `build.gradle.kts`** — un commit posterior introdujo
+  sintaxis Groovy mezclada y ternario C-style (no existen en Kotlin DSL);
+  detectado por CI Android rojo, arreglado en commit dedicado.
+- **CI nunca había pasado** hasta corregir un asset `.env` ausente y
+  alinear versión Flutter (3.32.x → 3.35.x para SDK Dart `^3.9.2`).
+
+Esos hallazgos están documentados con honestidad en los históricos —
+muestran que el rigor de las verificaciones independientes fue tan
+importante como el desarrollo en sí.
+
+---
+
+## 7. Conclusión del desarrollo
+
+El producto entregado es **funcional, verificado y trazable**: cada
+commit pasa por `flutter analyze` (0 issues), 175 tests, CI con 4 jobs
+verdes, y un APK release que compila. La cobertura de pruebas
+(24,30 %) está reconocida como deuda con palanca identificada (P2-4 del
+plan). Las decisiones de arquitectura están documentadas y respetadas
+(verificable con grep). La asistencia IA queda declarada con
+transparencia. El siguiente documento (`05_evaluacion_documentacion.md`)
+recopila los procedimientos de seguimiento y los indicadores reales.

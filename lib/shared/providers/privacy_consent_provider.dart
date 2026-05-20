@@ -11,7 +11,9 @@ final privacyConsentRepositoryProvider =
   return PrivacyConsentRepository(client);
 });
 
-final privacyConsentsProvider = FutureProvider<Map<String, bool>>((ref) {
+// autoDispose: se re-fetchea cuando vuelve a observarse (consentimientos
+// frescos al reabrir Privacidad).
+final privacyConsentsProvider = FutureProvider.autoDispose<Map<String, bool>>((ref) {
   final authState = ref.watch(authStateProvider).valueOrNull;
   if (authState is! AuthAuthenticated) {
     return const {};

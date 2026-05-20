@@ -296,12 +296,17 @@ final mockRealtimeServiceProvider = Provider<MockRealtimeService>((ref) {
   return service;
 });
 
-final realtimeTripsProvider = StreamProvider<List<ActiveTripModel>>((ref) {
+// autoDispose: suscripción se libera cuando ninguna pantalla observa.
+// El servicio subyacente (mockRealtimeServiceProvider) sigue vivo
+// porque otras partes lo pueden necesitar; el pause/resume por lifecycle
+// (P3-5) sigue rigiendo la actividad del Timer.
+final realtimeTripsProvider =
+    StreamProvider.autoDispose<List<ActiveTripModel>>((ref) {
   final service = ref.watch(mockRealtimeServiceProvider);
   return service.tripsStream;
 });
 
-final realtimeClockProvider = StreamProvider<DateTime>((ref) {
+final realtimeClockProvider = StreamProvider.autoDispose<DateTime>((ref) {
   final service = ref.watch(mockRealtimeServiceProvider);
   return service.clockTick;
 });

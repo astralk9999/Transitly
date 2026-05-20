@@ -61,17 +61,23 @@ defendible**. Tiempo: ~1 día de pruebas + acta firmada.
 
 ## 2. Lo importante (días — código)
 
-### 2.1 ⏳ `autoDispose` en providers críticos de streams/timers
+### 2.1 ⚠️ `autoDispose` en providers críticos — **cerrado en críticos; queda `.family`**
 
-Hechos en `home_providers.dart` y `nfc_provider.dart`. **Faltan los más
-sensibles a recursos vivos**:
+Hechos: `home_providers.dart`, `nfc_provider.dart`, y los 4 más sensibles a
+recursos vivos verificados con `analyze` 0 / `test` 175/175:
 
-- `notificationStreamProvider` — Stream Supabase Realtime (cierre del canal
-  al salir de pantalla).
-- `realtimeTripsProvider` — `Timer.periodic`; ya hay `pause/resume` por
-  lifecycle (`P3-5`), `autoDispose` lo remata cuando nadie observa.
-- `privacyConsentsProvider` — `FutureProvider` que conviene re-fetchear.
-- Todos los `.family` parametrizados (no acumular instancias por parámetro).
+- ✅ **`notificationStreamProvider`** (`notification_stream_provider.dart:19`,
+  ahora `StreamProvider.autoDispose`) — cierra el canal Supabase Realtime
+  vía el `ref.onDispose` ya existente cuando ninguna pantalla observa.
+- ✅ **`realtimeTripsProvider` + `realtimeClockProvider`**
+  (`mock_realtime_service.dart:299,307`, ahora `.autoDispose`) — libera la
+  suscripción al `tripsStream`/`clockTick`. El servicio sigue vivo (otras
+  partes pueden consumirlo) pero la actividad real del `Timer.periodic`
+  está acotada por el `pause/resume` por lifecycle (P3-5).
+- ✅ **`privacyConsentsProvider`** (`privacy_consent_provider.dart:14`,
+  ahora `FutureProvider.autoDispose`) — re-fetch al reabrir Privacidad.
+- ⏳ **`.family` parametrizados**: sweep pendiente (no acumular instancias
+  por parámetro). Inventario y aplicación caso a caso.
 
 ### 2.2 ⏳ Tests de la capa de datos de producción (P2-4)
 
@@ -98,8 +104,9 @@ sensibles a recursos vivos**:
 
 ### 2.4 ⏳ Refinos de calidad
 
-- **`streamForRoute` doble controller** (`bus_location_remote_repository.dart`):
-  simplificar con concat/prepend en vez de dos `StreamController` anidados.
+- ✅ **`streamForRoute` simplificado** — `bus_location_remote_repository.dart:39-48`
+  ya usa `async* { yield initial; yield* _channelMgr.watch(routeId); }`
+  (sin doble `StreamController`). El playbook anterior estaba stale.
 - **RTL runtime**: probar `app_ar.arb` en dispositivo (Material flips
   automáticamente; verificar widgets custom y mapas).
 - **Verificación de contrastes** de tokens en `transit_colors.dart` con
@@ -216,8 +223,9 @@ verifica los 4 jobs (Analyze, Test, Build Web, Build Android APK) en `success`.
    `user_preferences` excluido por diseño (objeto singular, no colección).
 ✅ **PROD-3** Realtime real en 5/12 repos (bus_location, stop, route,
    incident, route_feedback) vía `RealtimeChannelManager` compartido.
-✅ **PROD-5 (parcial)** autoDispose en 2 providers (home_providers,
-   nfc_provider).
+✅ **PROD-5 (avanzado, 6 providers)** autoDispose en home_providers,
+   nfc_provider, **notificationStreamProvider, realtimeTripsProvider,
+   realtimeClockProvider, privacyConsentsProvider**. Queda `.family` sweep.
 ✅ **PROD-8 (parcial)** CI con 4 jobs incl. Build Android APK firmado.
 ✅ Tests del `RealtimeChannelManager` en `test/data/sync/`.
 ✅ `android/README.md` con flujo de firma para release.
@@ -231,8 +239,14 @@ de pantalla). **Palanca de cobertura**: §2.2 (tests de capa `remote/`).
 
 ### Cambios respecto al playbook anterior
 
-Solo cambios documentales: marcar P2-3 (unificación de usuario) y la doc
-de excepción `data/auth` como cerrados — ambos verificados con
-evidencia `archivo:línea` directamente en el código de
-`lib/shared/providers/user_provider.dart:17-65` y `AGENTS.md:259-265`.
-El playbook anterior los tenía como pendientes por desactualización.
+**Cerrados en este ciclo (commit propio):**
+- ✅ §2.1 autoDispose en los 4 providers críticos restantes
+  (`notificationStreamProvider`, `realtimeTripsProvider`,
+  `realtimeClockProvider`, `privacyConsentsProvider`). Verificado:
+  `flutter analyze` 0 issues, `flutter test` 175/175 sin regresión.
+- ✅ §2.4 primer bullet: `streamForRoute` ya estaba simplificado en un
+  ciclo anterior; el playbook estaba stale (corregido).
+
+**Pendiente arrastrado:** §1 (keystore, screen reader pass — manuales del
+usuario), §2.1 `.family` sweep, §2.2 tests `remote/`, §2.3 strings ES +
+F16/F22, §2.4 resto (RTL runtime, contrastes, foco), §3 deuda de fondo.

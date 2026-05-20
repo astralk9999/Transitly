@@ -15,8 +15,10 @@ const _logTag = 'Provider:NotificationStream';
 ///
 /// When the user is not authenticated the stream emits an empty list and
 /// does not open a Realtime channel.
+// autoDispose: el canal Supabase Realtime se cierra cuando ninguna
+// pantalla observa el provider (el ref.onDispose de abajo se dispara).
 final notificationStreamProvider =
-    StreamProvider<List<AppNotification>>((ref) {
+    StreamProvider.autoDispose<List<AppNotification>>((ref) {
   final client = ref.watch(supabaseClientProvider);
   final userId = client.auth.currentUser?.id;
 

@@ -52,19 +52,19 @@ Reporta estos hallazgos.
 ### 3. Sincronizar las 3 fuentes
 
 Regla de `PENDIENTES.md` línea 218:
-> Al actualizar items aquí, sincronizar a la vez `docs/AUDIT_2026_04.md §4` y `docs/PLAN_TRANSITLY_V2.md` cuando cambie la decisión o el tag de fase. Las tres fuentes deben coincidir.
+> Al actualizar items aquí, sincronizar a la vez `docs/historico/AUDIT_2026_04.md §4` y `docs/historico/PLAN_TRANSITLY_V2.md` cuando cambie la decisión o el tag de fase. Las tres fuentes deben coincidir.
 
 Verifica:
 1. `docs/PENDIENTES.md` — ¿refleja el estado real?
-2. `docs/AUDIT_2026_04.md §4` — ¿los items cerrados están marcados ✅?
-3. `docs/PLAN_TRANSITLY_V2.md` — ¿la fase actual coincide con `multiagent/state/project.json`?
+2. `docs/historico/AUDIT_2026_04.md §4` — ¿los items cerrados están marcados ✅?
+3. `docs/historico/PLAN_TRANSITLY_V2.md` — ¿la fase actual coincide con `multiagent/state/project.json`?
 
 Si hay divergencia → regístrala y repórtala.
 
-### 4. Sincronizar PLAN_TRANSITLY_V2.md
+### 4. Sincronizar historico/PLAN_TRANSITLY_V2.md
 
 Si todas las tareas de una fase están completadas:
-- Buscar la sección de la fase en `docs/PLAN_TRANSITLY_V2.md`
+- Buscar la sección de la fase en `docs/historico/PLAN_TRANSITLY_V2.md`
 - Añadir al final de la sección: `✅ F<n> cerrada — <fecha>. Commits: <lista de hashes>.`
 - Actualizar el roadmap visual al inicio del documento
 
@@ -110,7 +110,7 @@ En caso de divergencia:
 
 ## Reglas
 
-- **NUNCA** modifiques código fuente (solo `docs/PENDIENTES.md`, `docs/PLAN_TRANSITLY_V2.md`, `docs/AUDIT_2026_04.md`, `multiagent/state/project.json`)
+- **NUNCA** modifiques código fuente (solo `docs/PENDIENTES.md`, `docs/historico/PLAN_TRANSITLY_V2.md`, `docs/historico/AUDIT_2026_04.md`, `multiagent/state/project.json`)
 - **NUNCA** hagas commits
 - **SÍ** marcas ítems como ✅ completados con su commit hash
 - **SÍ** añades nuevos ítems pendientes detectados

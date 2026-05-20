@@ -72,11 +72,11 @@ multiagent/state/
 
 ```
 docs/
-├── PLAN_TRANSITLY_V2.md          # Plan de 27 fases (leído por Queen)
+├── historico/PLAN_TRANSITLY_V2.md          # Plan de 27 fases (leído por Queen)
 ├── PENDIENTES.md                  # Incidencias y mejoras (mantenido por Tracker)
 ├── PROPUESTAS_FUTURAS.md          # Ideas y mejoras (mantenido por Innovation)
 ├── ARCHITECTURE.md                # Reglas de arquitectura (referencia)
-├── AUDIT_2026_04.md              # Auditoría (sincronizado por Tracker)
+├── historico/AUDIT_2026_04.md              # Auditoría (sincronizado por Tracker)
 └── tfg/                           # Documentación académica (mantenido por Documentation)
     ├── 01_analisis_contexto.md
     ├── 02_diseno_proyecto.md
@@ -111,7 +111,7 @@ Cada tarea que Queen delega sigue este esquema JSON:
     "Navegación desde perfil → admin panel funciona"
   ],
   "references": [
-    "docs/PLAN_TRANSITLY_V2.md §F16",
+    "docs/historico/PLAN_TRANSITLY_V2.md §F16",
     "lib/data/operator/ (patrón canónico)"
   ]
 }

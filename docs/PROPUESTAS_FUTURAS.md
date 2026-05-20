@@ -105,7 +105,7 @@
 
 ## Notas
 
-- Las entradas con tag `[F<n>]` están mapeadas a una fase del plan v2 (`docs/PLAN_TRANSITLY_V2.md`).
+- Las entradas con tag `[F<n>]` están mapeadas a una fase del plan v2 (`docs/historico/PLAN_TRANSITLY_V2.md`).
 - Las entradas `[SIN ASIGNAR]` no tienen fase — asignar antes de implementar.
 - Prioridad: **P0** = bloqueante para release, **P1** = importante, **P2** = deseable, **P3** = nice-to-have.
 - Esfuerzo: **S** = <2h, **M** = medio día, **L** = 1-2 días.

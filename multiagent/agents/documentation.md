@@ -20,7 +20,7 @@ Lee estos archivos para entender el estado actual:
 - `multiagent/state/project.json` — fase, métricas
 - `multiagent/state/queue.json` — tareas completadas/pendientes
 - `docs/PENDIENTES.md` — incidencias y deuda técnica
-- `docs/PLAN_TRANSITLY_V2.md` — buscar la fase para extraer objetivo
+- `docs/historico/PLAN_TRANSITLY_V2.md` — buscar la fase para extraer objetivo
 - `git log --oneline -10` — commits recientes
 
 ### 2. Actualizar 04_desarrollo_implementacion.md

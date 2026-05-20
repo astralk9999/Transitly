@@ -65,7 +65,7 @@
 ## Documentation
 
 - [x] `docs/ARCHITECTURE.md` — up to date
-- [x] `docs/PLAN_TRANSITLY_V2.md` — F0→F25 completed, F26 in progress
+- [x] `docs/historico/PLAN_TRANSITLY_V2.md` — F0→F25 completed, F26 in progress
 - [x] `docs/PENDIENTES.md` — synchronized
 - [x] `docs/tfg/04_desarrollo_implementacion.md` — updated with F16-F25
 - [x] `docs/tfg/05_evaluacion_documentacion.md` — incidences updated

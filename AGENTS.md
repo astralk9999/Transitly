@@ -40,22 +40,22 @@ Cuatro archivos vivos en `docs/` que se actualizan en cada fase:
 
 | Documento | Rol | ¿Cuándo actualizar? |
 |-----------|-----|---------------------|
-| `PLAN_TRANSITLY_V2.md` | Plan de 27 fases con prompts copiables | Al completar/retroceder una fase |
+| `historico/PLAN_TRANSITLY_V2.md` | Plan de 27 fases con prompts copiables | Al completar/retroceder una fase |
 | `ARCHITECTURE.md` | Reglas de oro, capas, entidades, errores, logging | Si cambia una decisión estructural |
 | `PENDIENTES.md` | Cola de items bloqueantes/mejora con tags `[F<n>]` | Cada vez que se cierra/pospone/destapa un item |
 | `DATA_INVENTORY.md` | Catálogo de assets, JSON mock, pipeline de datos | Cada vez que se toca un asset o script |
 
-**Regla de sincronía:** al actualizar `PENDIENTES.md`, sincronizar `AUDIT_2026_04.md §4` y `PLAN_TRANSITLY_V2.md` si cambia el tag de fase. Las tres fuentes deben coincidir.
+**Regla de sincronía:** al actualizar `PENDIENTES.md`, sincronizar `historico/AUDIT_2026_04.md §4` y `historico/PLAN_TRANSITLY_V2.md` si cambia el tag de fase. Las tres fuentes deben coincidir.
 
 **Contexto adicional (solo lectura):**
-- `docs/SESSION_AUDIT_2026_05.md` — registro de la sesión 02-12 mayo 2026 (49 commits, F0→F3.3)
-- `docs/AUDIT_2026_04.md` — auditoría estática pre-sesión (30 items numerados)
+- `docs/historico/SESSION_AUDIT_2026_05.md` — registro de la sesión 02-12 mayo 2026 (49 commits, F0→F3.3)
+- `docs/historico/AUDIT_2026_04.md` — auditoría estática pre-sesión (30 items numerados)
 
 ---
 
 ## Cómo ejecutar el plan
 
-`PLAN_TRANSITLY_V2.md` contiene prompts numerados por fase. Cada sesión nueva arranca con:
+`historico/PLAN_TRANSITLY_V2.md` contiene prompts numerados por fase. Cada sesión nueva arranca con:
 
 ```
 Estoy ejecutando el Plan v2 de Transitly, fase <N>. Ya está hecho:
@@ -63,7 +63,7 @@ Estoy ejecutando el Plan v2 de Transitly, fase <N>. Ya está hecho:
 
 <pega el prompt>
 
-Antes de tocar nada lee docs/ARCHITECTURE.md y docs/PLAN_TRANSITLY_V2.md.
+Antes de tocar nada lee docs/ARCHITECTURE.md y docs/historico/PLAN_TRANSITLY_V2.md.
 ```
 
 Estado actual (20 mayo 2026):
@@ -286,5 +286,5 @@ Esta excepción está documentada y es intencional (no es deuda pendiente).
 | Template de repositorio | `lib/data/operator/` |
 | ARB template | `lib/l10n/app_es.arb` |
 | Schema Supabase | `supabase/migrations/001_init.sql` |
-| Plan de acción | `docs/PLAN_TRANSITLY_V2.md` |
-| Próximo prompt a ejecutar | `docs/PLAN_TRANSITLY_V2.md` §3 (buscar primer prompt no completado) |
+| Plan de acción | `docs/historico/PLAN_TRANSITLY_V2.md` |
+| Próximo prompt a ejecutar | `docs/historico/PLAN_TRANSITLY_V2.md` §3 (buscar primer prompt no completado) |

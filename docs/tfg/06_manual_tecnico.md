@@ -102,7 +102,7 @@ Transitly/
 │   └── mock/                   # Datos semilla (JSON)
 ├── docs/                       # Documentación
 │   ├── ARCHITECTURE.md         # Reglas de arquitectura
-│   ├── PLAN_TRANSITLY_V2.md    # Plan de 27 fases
+│   ├── historico/PLAN_TRANSITLY_V2.md    # Plan de 27 fases
 │   ├── PENDIENTES.md           # Incidencias y mejoras
 │   └── tfg/                    # Documentación académica
 ├── multiagent/                 # Sistema multiagente

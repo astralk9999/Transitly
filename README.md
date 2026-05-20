@@ -15,43 +15,57 @@ when a Supabase session exists, the same repositories read/write the remote
 backend. Telemetry (Sentry/PostHog), push (FCM) and the Astro web surface are
 present but optional and consent/env-gated.
 
-> **Honest scope note (read before evaluating).** This README previously
-> claimed "no backend, no auth, no push". That is no longer true: phases
-> F1–F27 added a full Supabase backend, auth, FCM push, telemetry, an Astro
-> SSR site and native home widgets. See *Status* and *Architecture* below for
-> the real picture. Real-time updates (F13) are **not** implemented yet — the
-> `watch()` streams in `lib/data/*/remote/` emit an initial snapshot plus
-> manual refresh, not live subscriptions.
+> **Honest scope note (read before evaluating).** Phases F0–F27 (28/28
+> completed) added a full Supabase backend, auth, FCM push, telemetry,
+> an Astro SSR site and native home widgets. Real-time updates (F13) are
+> implemented on the critical repos (5 of 12: `bus_location`, `stop`,
+> `route`, `incident`, `route_feedback`) via a shared
+> `RealtimeChannelManager` with exponential backoff + jitter. APK
+> release builds and CI is green on 4 jobs (incl. Build Android APK).
+> The remaining production gaps are documented in
+> [`docs/00_MAESTRO.md`](./docs/00_MAESTRO.md) — start there.
+
+---
+
+## Documentation entry-point
+
+All documentation is indexed in **[`docs/README.md`](./docs/README.md)**,
+which maps each TFG required deliverable to the corresponding file and
+points to the audit dossiers (`00_MAESTRO`, `SCALABILITY`,
+`ACCESSIBILITY`) and the action plan.
 
 ---
 
 ## Status
 
-The project tracks 28 incremental phases (**F0 → F27**); state lives in
+The project completed 28/28 incremental phases (**F0 → F27**); state in
 `multiagent/state/project.json`. Development was assisted by an autonomous
 multi-agent system (Queen / Developer / Review / Git / Documentation),
 documented in `multiagent/ARCHITECTURE.md` and in the TFG memory
 (`docs/tfg/03–05`).
 
-Verified quality metrics (2026-05-15):
+Verified quality metrics (2026-05-20, `master @ 3a31fb3`):
 
 | Metric | Value |
 |--------|-------|
-| `flutter analyze` | **0 errors, 6 info** (const/conditional/underscore lints) |
-| `flutter test` | **143 / 143 passing** |
-| Line coverage (`coverage/lcov.info`) | **~23 %** (3 580 / 15 424 lines) — known debt |
+| `flutter analyze` | **0 issues** (0 errors, 0 warnings, 0 info) |
+| `flutter test` | **175 / 175 passing** |
+| Line coverage (`coverage/lcov.info`) | **24,30 %** (4 004 / 16 476 lines) — known debt |
+| `flutter build apk --release` | **OK** (73,5 MB) |
+| CI GitHub Actions | **4 jobs green** (Analyze, Test, Build Web, Build Android APK) |
 
-> The previous "0 issues / 56 tests" line was stale. Coverage is low for the
-> codebase size (~49 K LOC); raising it on critical modules (`bus_estimator`,
-> offline sync, repositories) is tracked as technical debt.
+> Coverage is the remaining lever: the `remote/` data layer (auth + 7
+> repos) is at ~0 %. Plan in
+> [`docs/PLAN_ACCION_REMEDIACION.md §P2-4`](./docs/PLAN_ACCION_REMEDIACION.md).
 
 ---
 
 ## Architecture / Stack
 
 - **Flutter** 3.9.2+ / **Dart** 3 (strict casts + strict raw types)
-- **Riverpod** 2.6 (StateProviders, derived providers, `overrideWith` in tests)
-- **go_router** 14.8 with `StatefulShellRoute` and per-route `redirect`
+- **Riverpod** 2.6 (StateProviders, derived providers, `autoDispose` on
+  streams/timers/futures, `overrideWith` in tests)
+- **go_router** 17.2 with `StatefulShellRoute` and per-route `redirect`
 - **Supabase** (`supabase_flutter` 2.8) — auth, 13 SQL migrations, 2 Edge
   Functions; `domain/local/mock/remote` repository pattern per entity
 - **Firebase / FCM** (`firebase_messaging`) — push, with graceful degradation
@@ -60,8 +74,8 @@ Verified quality metrics (2026-05-15):
 - **nfc_manager** 3.5 over Mifare Classic (sector keys via `--dart-define`)
 - **Astro** SSR marketing site (`astro/`)
 - Native Android/iOS home widgets (`home_widget`, `workmanager`)
-- **google_fonts** for IBM Plex Mono + DM Sans (runtime fetch; bundling = TODO F26)
-- **flutter_localizations** + ARB generation (`flutter gen-l10n`)
+- **DM Sans + IBM Plex Mono** bundled as local assets (F26 closed)
+- **flutter_localizations** + ARB generation (`flutter gen-l10n`) — **ES / EN / AR (RTL)**, 343 keys/locale
 
 ---
 
@@ -101,8 +115,8 @@ TAG`).
 ## Tests
 
 ```bash
-flutter test                       # 143 tests
-flutter test --coverage            # writes coverage/lcov.info (~23 % lines)
+flutter test                       # 175 tests
+flutter test --coverage            # writes coverage/lcov.info (24,30 % lines)
 ```
 
 The suite covers `MockDataService`, the NFC parser and error mapping
@@ -120,48 +134,56 @@ realistic. Structural assertions cover the same surface.
 
 ## i18n
 
-Strings live in `lib/l10n/app_es.arb` (template) and `lib/l10n/app_en.arb`,
-generated into `lib/l10n/generated/`. The selector is at **Profile →
-Accessibility → Idioma** (`localeProvider`). Both ARB files are **complete and
-in sync** (343 keys each, verified by key — the earlier "~60 %" figure was a
-miscount of a multiline ARB by line, not by key). A few widgets still build
-Spanish strings inline rather than via l10n; the driver-side route editor is
-also single-locale (`es`) — internal tooling for the demo persona.
+Strings live in `lib/l10n/app_es.arb` (template), `lib/l10n/app_en.arb`
+and `lib/l10n/app_ar.arb` (Arabic / RTL), generated into
+`lib/l10n/generated/`. The selector is at **Profile → Accessibility →
+Idioma** (`localeProvider`). The three ARB files are **complete and in
+sync** (343 keys each). The driver-side route editor remains
+single-locale (`es`) — internal tooling for the demo persona.
 
 ---
 
 ## Accessibility
 
-The app implements real accessibility work: `Semantics` nodes, high-contrast
-theme, color-blind matrices (protanopia/deuteranopia/tritanopia), an
-OpenDyslexic font option, `textScaler` support, reduced-motion handling, and a
-WCAG-AA contrast validator for custom palettes (`custom_palette_screen.dart`).
+The app implements real accessibility work: `Semantics` nodes localized
+to ES/EN/AR, high-contrast theme, color-blind matrices
+(protanopia/deuteranopia/tritanopia), an OpenDyslexic font option,
+`textScaler` that composes with the OS setting, reduced-motion handling,
+a WCAG-AA contrast validator for custom palettes, and a `Pressable`
+widget enforcing the 48 dp minimum tap target.
 
-The **"WCAG 2.1 AA"** claim is qualified to **"WCAG 2.1 AA partial"**: there is
-no manual TalkBack/VoiceOver pass, the map (`flutter_map`) is not accessible,
-some `Semantics` labels are hardcoded in Spanish, and there are no
-accessibility golden tests in CI. Known gaps are listed honestly in
-`docs/A11Y_AUDIT.md`.
+The **"WCAG 2.2 AA"** claim is qualified to **"AA partial / in
+progress"**: there is no manual TalkBack/VoiceOver pass yet, the map
+(`flutter_map`) still needs an accessible alternative integration, and
+contrast ratios for base tokens are not verified with tooling. Full
+audit and remediation plan in
+[`docs/ACCESSIBILITY.md`](./docs/ACCESSIBILITY.md).
 
 ---
 
 ## Scope decisions (what this project deliberately is / is not)
 
-This is an academic project. Conscious boundaries:
+This is an academic project (TFG). Conscious boundaries:
 
-- The Supabase backend is **scaffolded and partially wired**, not production-
-  hardened: no FORCE RLS, Edge Functions lack rate-limiting / `user_id`
-  validation, real-time (F13) is unimplemented. See `docs/REVISION_CRITICA.md`.
+- The Supabase backend is **scaffolded with real-time on the 5 critical
+  repos**, not yet production-hardened at scale: no FORCE RLS, Edge
+  Functions with best-effort anti-SSRF + rate-limit (documented as
+  known debt), single-region project. See
+  [`docs/SCALABILITY.md`](./docs/SCALABILITY.md).
 - Mock data is the primary demonstrable surface; the other ~9 Spanish
-  operators referenced in the design depend on a populated Supabase and are
-  **future work**, not shipped in the local build.
+  operators referenced in the design depend on a populated Supabase and
+  are **future work**.
 - No A → B route planner. No migration away from Riverpod.
-- No `very_good_analysis`. Lint rules are layered on top of `flutter_lints`
-  (`prefer_single_quotes`, `unawaited_futures`,
+- No `very_good_analysis`. Lint rules are layered on top of
+  `flutter_lints` (`prefer_single_quotes`, `unawaited_futures`,
   `use_build_context_synchronously`, etc.) — strict but not noisy.
 
-A full critical self-review (scoring, severity-ranked findings, remediation
-plan) lives in **`docs/REVISION_CRITICA.md`**.
+The full critical self-review (production-lens scoring, trajectory and
+remediation plan) lives in **[`docs/00_MAESTRO.md`](./docs/00_MAESTRO.md)**
+with detailed dossiers in [`docs/SCALABILITY.md`](./docs/SCALABILITY.md)
+and [`docs/ACCESSIBILITY.md`](./docs/ACCESSIBILITY.md). The historical
+trace of the four critical review passes is preserved under
+[`docs/historico/`](./docs/historico/).
 
 ---
 

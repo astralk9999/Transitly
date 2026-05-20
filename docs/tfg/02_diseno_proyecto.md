@@ -88,7 +88,7 @@ lib/
 - **Offline-first:** Funcionalidad básica sin conexión, sincronización al reconectar
 - **Escalabilidad:** Soporte para 100+ operadores, 10k+ rutas, RLS en 25 tablas
 - **Seguridad:** Row-Level Security en PostgreSQL, cifrado AES en caché local
-- **Accesibilidad:** WCAG 2.1 AA parcial — contraste 4.5:1 validado, fuente dislexia, color-blind, soporte lector de pantalla; sin verificación manual TalkBack/VoiceOver (gaps en `docs/A11Y_AUDIT.md`)
+- **Accesibilidad:** WCAG 2.1 AA parcial — contraste 4.5:1 validado, fuente dislexia, color-blind, soporte lector de pantalla; sin verificación manual TalkBack/VoiceOver (gaps en `docs/historico/A11Y_AUDIT.md`)
 - **i18n:** Español + Inglés (ARB),arquitectura preparada para más idiomas
 
 ---
@@ -138,7 +138,7 @@ Ver `docs/tfg/03_planificacion.md` para el diagrama de Gantt completo.
 | Tiempo de build | < 5 min | flutter build apk --release |
 | Tamaño APK | < 50 MB | flutter build apk --analyze-size |
 | Crash-free rate | > 99% | Sentry |
-| Accesibilidad | WCAG 2.1 AA parcial (sin pase manual TalkBack/VoiceOver) | Audit `docs/A11Y_AUDIT.md` |
+| Accesibilidad | WCAG 2.1 AA parcial (sin pase manual TalkBack/VoiceOver) | Audit `docs/historico/A11Y_AUDIT.md` |
 
 ---
 

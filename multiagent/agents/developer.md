@@ -26,7 +26,7 @@ Recibirás un JSON con este formato:
     "flutter test pasa"
   ],
   "references": [
-    "docs/PLAN_TRANSITLY_V2.md §F16",
+    "docs/historico/PLAN_TRANSITLY_V2.md §F16",
     "lib/data/operator/ (patrón canónico)"
   ]
 }

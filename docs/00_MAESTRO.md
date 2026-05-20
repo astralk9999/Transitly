@@ -99,15 +99,15 @@ honesta posible: el progreso es real y medible.
 | `docs/ACCESSIBILITY.md` | Dossier WCAG 2.2 AA (producción) | ✅ Refrescado |
 | `docs/PLAN_ACCION_REMEDIACION.md` | Plan accionable P0–P3 + PROD + A11Y + R | ✅ Vigente |
 | `docs/PENDIENTE_PARA_CERRAR.md` | Playbook táctico para el próximo ciclo | ✅ Re-verificado con grep |
-| `docs/REVISION_INDEPENDIENTE_2026_05_17.md` | Histórico de las 4 pasadas críticas | ⚪ Archivo (trazabilidad) |
+| `docs/historico/REVISION_INDEPENDIENTE_2026_05_17.md` | Histórico de las 4 pasadas críticas | ⚪ Archivo (trazabilidad) |
 | `README.md` | Entrada del repo | 🟡 Refinar marco de producción/escala |
 | `AGENTS.md` | Guía operativa para agentes | ✅ Saneada en `6de6261` (cifras y CI) |
-| `docs/A11Y_AUDIT.md` | Auditoría a11y previa | ⚪ Superado por `ACCESSIBILITY.md` (marcar histórico) |
+| `docs/historico/A11Y_AUDIT.md` | Auditoría a11y previa | ⚪ Superado por `ACCESSIBILITY.md` (marcar histórico) |
 | `docs/PENDIENTES.md` | Cola de deuda con tags `[F<n>]` | 🟡 Sincronizar con plan |
-| `docs/REVISION_CRITICA.md` | 1.ª revisión (15-may) | ⚪ Histórico |
+| `docs/historico/REVISION_CRITICA.md` | 1.ª revisión (15-may) | ⚪ Histórico |
 | `docs/tfg/01..08` | Memoria académica | 🟡 Métricas reconciliadas; revisar `tfg/02/06/08` |
 | `multiagent/state/project.json` | Estado del proceso multiagente | 🟡 `progress_pct:100` se refiere a "fases", no "producción" |
-| `docs/AUDIT_2026_04.md`, `SESSION_AUDIT_2026_05.md` | Auditorías históricas | ⚪ Archivo |
+| `docs/historico/AUDIT_2026_04.md`, `historico/SESSION_AUDIT_2026_05.md` | Auditorías históricas | ⚪ Archivo |
 
 **Regla:** ante conflicto de cifras entre documentos, **gana este Maestro**.
 Orden de lectura recomendado: Maestro → Scalability → Accessibility → Plan

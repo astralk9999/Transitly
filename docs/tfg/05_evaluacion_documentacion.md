@@ -13,7 +13,7 @@
 - Git status → sin cambios sin commitear al final de sesión
 
 ### Control por fase
-- Checklist de "Hecho cuando" en `docs/PLAN_TRANSITLY_V2.md`
+- Checklist de "Hecho cuando" en `docs/historico/PLAN_TRANSITLY_V2.md`
 - Revisión de código por Review Agent (sistema multiagente)
 - Commit semántico por Git Agent + push automático
 
@@ -101,7 +101,7 @@
 | Build time (debug) | < 3 min | ~2 min | 🟩 |
 | Tamaño APK (release) | < 50 MB | Por medir | ⬜ |
 | Crash-free rate | > 99% | Por medir (Sentry F22) | ⬜ |
-| Accesibilidad WCAG 2.1 AA **parcial** | Cumplir AA en lo razonable | Auditado (F18), 29 Semantics nodes; **sin verificación manual TalkBack/VoiceOver, mapa no accesible** (gaps en `docs/A11Y_AUDIT.md`) | 🟨 |
+| Accesibilidad WCAG 2.1 AA **parcial** | Cumplir AA en lo razonable | Auditado (F18), 29 Semantics nodes; **sin verificación manual TalkBack/VoiceOver, mapa no accesible** (gaps en `docs/historico/A11Y_AUDIT.md`) | 🟨 |
 | i18n cobertura | 100% claves ES/EN | **100%** (275/275 claves ES↔EN sincronizadas); quedan pocos strings inline en widgets | 🟩 |
 | CI/CD | GitHub Actions | `flutter analyze` + `flutter test` en push/PR | ✅ F26 |
 

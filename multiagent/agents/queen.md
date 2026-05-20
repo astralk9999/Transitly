@@ -14,7 +14,7 @@ Lee en este orden:
 1. `multiagent/state/project.json` — fase actual, métricas, entorno
 2. `multiagent/state/queue.json` — tareas pendientes, activas, completadas
 3. `multiagent/roadmap.json` — roadmap y sprint actual
-4. `docs/PLAN_TRANSITLY_V2.md` — plan completo (busca la fase actual)
+4. `docs/historico/PLAN_TRANSITLY_V2.md` — plan completo (busca la fase actual)
 5. `docs/PENDIENTES.md` — items bloqueantes y de mejora
 6. `AGENTS.md` — reglas del proyecto
 
@@ -32,7 +32,7 @@ Actualiza `state/project.json` con los resultados reales.
 ### Paso 3: Seleccionar siguiente tarea
 
 De `queue.json`, elige la primera tarea `pending` sin dependencias bloqueantes.
-Si no hay tareas pendientes, genera nuevas desde `PLAN_TRANSITLY_V2.md` para la fase actual.
+Si no hay tareas pendientes, genera nuevas desde `historico/PLAN_TRANSITLY_V2.md` para la fase actual.
 
 **Criterios de priorización:**
 1. Tareas que desbloquean otras (dependencias)
@@ -191,7 +191,7 @@ REVIEW_ISSUES: {review_issues_json}
 PHASE: {phase}
 
 Verifica lint + tests + commit. Actualiza docs/PENDIENTES.md.
-Sincroniza con AUDIT_2026_04.md §4 y PLAN_TRANSITLY_V2.md.
+Sincroniza con historico/AUDIT_2026_04.md §4 y historico/PLAN_TRANSITLY_V2.md.
 
 Al terminar, reporta:
 {

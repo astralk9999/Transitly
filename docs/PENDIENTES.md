@@ -1,6 +1,6 @@
 # Pendientes
 
-> **Origen.** Lista derivada de `docs/AUDIT_2026_04.md` §4 "Propuesta de cierre". Cada item conserva su numeración del audit (`1.x` para puntos a medias, `3.x` para riesgos). Cuando el audit se actualice, este documento se sincroniza.
+> **Origen.** Lista derivada de `docs/historico/AUDIT_2026_04.md` §4 "Propuesta de cierre". Cada item conserva su numeración del audit (`1.x` para puntos a medias, `3.x` para riesgos). Cuando el audit se actualice, este documento se sincroniza.
 >
 > **Convención de buckets.**
 > - **Bloqueantes** = items marcados S/M con decisión `cerrar` o `borrar`. Se resuelven en F0.5 (higiene previa al backend) antes de tocar `freezed` o Supabase.
@@ -249,10 +249,10 @@ Cada entidad necesita el mismo conjunto de 5 archivos: interfaz abstracta + remo
 
 - **`1.12` reservado.** Hueco histórico del draft del audit; sin item asignado. No reutilizar la numeración para items nuevos — usar `1.20+`.
 - **`3.3` ya limpio.** El lint `avoid_print` (P37) hace su trabajo: cero `print()` en `lib/`. No requiere acción.
-- **Cuándo actualizar este documento.** Cada vez que se cierre un item, marca `✅` aquí y en `AUDIT_2026_04.md`. Cada vez que un prompt destape un nuevo pendiente, añádelo con su tag de fase. Al final de cada fase, F0.5 → F26, hacer un barrido y mover lo pospuesto a la siguiente fase relevante.
-- **Sincronía con el audit.** Al actualizar items aquí, sincronizar **a la vez** `docs/AUDIT_2026_04.md §4` y `docs/PLAN_TRANSITLY_V2.md` cuando cambie la decisión o el tag de fase. Las tres fuentes deben coincidir; la divergencia produce silenciosamente trabajo perdido.
+- **Cuándo actualizar este documento.** Cada vez que se cierre un item, marca `✅` aquí y en `historico/AUDIT_2026_04.md`. Cada vez que un prompt destape un nuevo pendiente, añádelo con su tag de fase. Al final de cada fase, F0.5 → F26, hacer un barrido y mover lo pospuesto a la siguiente fase relevante.
+- **Sincronía con el audit.** Al actualizar items aquí, sincronizar **a la vez** `docs/historico/AUDIT_2026_04.md §4` y `docs/historico/PLAN_TRANSITLY_V2.md` cuando cambie la decisión o el tag de fase. Las tres fuentes deben coincidir; la divergencia produce silenciosamente trabajo perdido.
 
 ---
 
-**Última actualización:** 2026-05-17 · Tras revisión crítica + remediación P0/P1/P2 (ver `docs/REVISION_CRITICA.md`). **143 tests** pasando, cobertura ~23,2 %. F26 sigue como deuda acotada y documentada (`docs/FONTS_F26.md`).
+**Última actualización:** 2026-05-17 · Tras revisión crítica + remediación P0/P1/P2 (ver `docs/historico/REVISION_CRITICA.md`). **143 tests** pasando, cobertura ~23,2 %. F26 sigue como deuda acotada y documentada (`docs/FONTS_F26.md`).
 _Snapshot anterior (2026-05-15): F0→F25 completadas (26/28 fases, 92.9%), 137 tests._

@@ -3,7 +3,7 @@
 > Evaluado para **todo el mundo en producción**: personas ciegas, baja
 > visión, motoras, cognitivas, sordas, mayores, dispositivos modestos y
 > conexiones lentas. Estado: `master @ 3a31fb3`.
-> **Supera y reemplaza** a `docs/A11Y_AUDIT.md` (histórico).
+> **Supera y reemplaza** a `docs/historico/A11Y_AUDIT.md` (histórico).
 > Notación: ✅ cerrado · ⚠️ parcial · ❌ pendiente.
 
 ## Veredicto: aún "**AA parcial / en progreso**", pero la distancia se ha acortado

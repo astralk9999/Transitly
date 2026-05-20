@@ -1,6 +1,6 @@
 # Plan de acción — remediación integral de Transitly
 
-> **Origen:** `docs/00_MAESTRO.md` (índice) + `REVISION_INDEPENDIENTE_2026_05_17.md`
+> **Origen:** `docs/00_MAESTRO.md` (índice) + `historico/REVISION_INDEPENDIENTE_2026_05_17.md`
 > (4 pasadas) + `SCALABILITY.md` + `ACCESSIBILITY.md` (óptica producción).
 > **Estado base:** `master @ 396a1e6` (2026-05-18) · `flutter analyze` 0 issues ·
 > `flutter test` 148/148 · `flutter build apk --release` OK (73 MB) ·

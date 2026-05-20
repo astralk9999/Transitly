@@ -4,7 +4,7 @@
 >
 > **Estado del documento:** vivo. Si una decisión cambia, se actualiza aquí — no se documenta en commit messages.
 >
-> **Última auditoría que respalda este doc:** [`docs/AUDIT_2026_04.md`](AUDIT_2026_04.md) (post P43, commit `b91fc25`). Inventario de assets y datos: [`docs/DATA_INVENTORY.md`](DATA_INVENTORY.md). Pendientes vivos: [`docs/PENDIENTES.md`](PENDIENTES.md).
+> **Última auditoría que respalda este doc:** [`docs/historico/AUDIT_2026_04.md`](historico/AUDIT_2026_04.md) (post P43, commit `b91fc25`). Inventario de assets y datos: [`docs/DATA_INVENTORY.md`](DATA_INVENTORY.md). Pendientes vivos: [`docs/PENDIENTES.md`](PENDIENTES.md).
 
 ---
 

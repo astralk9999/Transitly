@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/transit_colors.dart';
 import '../../../../core/theme/transit_typography.dart';
 import '../../../../data/supabase/supabase_client_provider.dart';
+import '../../../../l10n/generated/app_localizations.dart';
 import '../../../../shared/widgets/transit_button.dart';
 
 /// Bottom sheet para compartir una ruta comunitaria con otro usuario
@@ -79,7 +80,7 @@ class _ShareSheetContentState extends ConsumerState<_ShareSheetContent> {
           .limit(1);
 
       if ((response as List).isEmpty) {
-        setState(() => _feedback = 'Usuario no encontrado');
+        setState(() => _feedback = AppLocalizations.of(context).routeShareUserNotFound);
         return;
       }
 
@@ -92,9 +93,9 @@ class _ShareSheetContentState extends ConsumerState<_ShareSheetContent> {
         'permission': permission,
       });
 
-      setState(() => _feedback = 'Ruta compartida con $email');
+      setState(() => _feedback = AppLocalizations.of(context).routeShareSuccess(email));
     } catch (e) {
-      setState(() => _feedback = 'Error: ${e.toString()}');
+      setState(() => _feedback = AppLocalizations.of(context).routeShareError);
     }
   }
 
@@ -120,7 +121,7 @@ class _ShareSheetContentState extends ConsumerState<_ShareSheetContent> {
         _feedback = 'Enlace generado';
       });
     } catch (e) {
-      setState(() => _feedback = 'Error al generar enlace');
+      setState(() => _feedback = AppLocalizations.of(context).routeShareErrorGeneratingLink);
     }
   }
 

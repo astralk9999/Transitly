@@ -1,5 +1,6 @@
 import 'package:hive/hive.dart';
 
+import '../../../shared/models/enums.dart';
 import '../../../shared/models/route_suggestion_model.dart';
 import '../domain/route_suggestion_repository.dart';
 
@@ -48,4 +49,14 @@ class RouteSuggestionLocalRepository implements RouteSuggestionRepository {
   }
 
   Future<void> clear() async => _box.clear();
+
+  @override
+  Future<RouteSuggestionModel> updateStatus(String id, String status) async {
+    final s = _box.get(_key(id));
+    if (s == null) throw Exception('Suggestion not found: $id');
+    final newStatus = SuggestionStatus.fromString(status);
+    final updated = s.copyWith(status: newStatus);
+    await _box.put(_key(id), updated);
+    return updated;
+  }
 }

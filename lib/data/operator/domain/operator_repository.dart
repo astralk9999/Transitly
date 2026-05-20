@@ -10,6 +10,7 @@ enum OperatorRepositoryError {
   network,
   parse,
   denied,
+  conflict,
   unknown,
 }
 
@@ -38,9 +39,8 @@ class OperatorRepositoryException implements Exception {
 /// - F2 (lazy multi-operador) — `list()` y `byId()`.
 abstract class OperatorRepository {
   /// Todos los operadores conocidos. Pensado para listas pequeñas
-  /// (< 100). Para una visión geográfica de un sitio concreto, usa
-  /// [nearby] que aprovecha el índice GIST sobre `bbox`.
-  Future<List<OperatorModel>> list();
+  /// (< 100). Para datasets grandes, usa [limit] y [offset].
+  Future<List<OperatorModel>> list({int? limit, int? offset});
 
   Future<OperatorModel?> byId(String id);
 

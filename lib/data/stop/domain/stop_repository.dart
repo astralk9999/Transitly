@@ -48,5 +48,5 @@ abstract class StopRepository {
   /// cache → fresh y termina.
   Stream<StopModel?> watch(String id);
 
-  Future<List<StopModel>> byOperator(String operatorId);
+  Future<List<StopModel>> byOperator(String operatorId, {int? limit, int? offset});
 }

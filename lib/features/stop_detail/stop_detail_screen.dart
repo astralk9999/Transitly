@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
+import '../../l10n/generated/app_localizations.dart';
 import '../../data/mock/mock_data_service.dart';
 import '../../shared/providers/route_lookup_providers.dart';
 import '../feedback/route_feedback_sheet.dart';
@@ -30,7 +31,7 @@ class StopDetailScreen extends ConsumerWidget {
     if (stop == null) {
       return Scaffold(
         backgroundColor: c.bgRoot,
-        body: const Center(child: Text('Parada no encontrada')),
+        body: Center(child: Text(AppLocalizations.of(context).stopDetailNotFound)),
       );
     }
 
@@ -291,8 +292,8 @@ class StopDetailScreen extends ConsumerWidget {
                   SnackBar(
                     content: Semantics(
                       liveRegion: true,
-                      label: '$label: próximamente',
-                      child: Text('$label: próximamente'),
+                      label: AppLocalizations.of(context).generalComingSoon(label),
+                      child: Text(AppLocalizations.of(context).generalComingSoon(label)),
                     ),
                     behavior: SnackBarBehavior.floating,
                   ),

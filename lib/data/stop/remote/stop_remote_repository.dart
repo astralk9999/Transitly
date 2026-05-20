@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:latlong2/latlong.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/utils/app_logger.dart';
 import '../../../shared/models/stop_model.dart';
+import '../../sync/realtime_channel_manager.dart';
 import '../domain/stop_repository.dart';
 
 /// Implementación remota de [StopRepository] sobre Supabase.
@@ -11,11 +14,16 @@ import '../domain/stop_repository.dart';
 /// JSONB, metadata JSONB) al [StopModel] de la app, que vive con un
 /// formato simplificado de campos planos heredado del JSON mock.
 class StopRemoteRepository implements StopRepository {
-  StopRemoteRepository(this._client);
+  StopRemoteRepository(this._client) : _chManager = RealtimeChannelManager(_client);
 
   final SupabaseClient _client;
+  final RealtimeChannelManager _chManager;
 
   static const _logTag = 'Repo:Stop:Remote';
+
+  void dispose() {
+    _chManager.dispose();
+  }
 
   @override
   Future<List<StopModel>> nearby(
@@ -57,19 +65,37 @@ class StopRemoteRepository implements StopRepository {
 
   @override
   Stream<StopModel?> watch(String id) async* {
-    yield await byId(id);
-    // F13 conectará Supabase Realtime al canal `public:stops:id=eq.<id>`
-    // y emitirá cambios subsiguientes desde aquí.
+    try {
+      final initial = await byId(id);
+      yield initial;
+    } catch (_) {
+      yield null;
+    }
+    await for (final row in _chManager.watch(
+      channelPrefix: 'stop',
+      table: 'stops',
+      entityId: id,
+      events: [PostgresChangeEvent.all],
+    )) {
+      yield _fromRow(row);
+    }
   }
 
   @override
-  Future<List<StopModel>> byOperator(String operatorId) async {
+  Future<List<StopModel>> byOperator(String operatorId, {int? limit, int? offset}) async {
     try {
-      final rows = await _client
+      dynamic query = _client
           .from('stops')
           .select()
-          .eq('operator_id', operatorId);
-      return rows.map(_fromRow).toList();
+          .eq('operator_id', operatorId)
+          .order('name');
+      if (offset != null && limit != null) {
+        query = query.range(offset, offset + limit - 1);
+      } else if (limit != null) {
+        query = query.limit(limit);
+      }
+      final rows = await query;
+      return (rows as List<dynamic>).map((e) => _fromRow(e as Map<String, dynamic>)).toList();
     } catch (e, st) {
       throw _mapError(e, st, 'byOperator($operatorId)');
     }

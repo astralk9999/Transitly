@@ -14,7 +14,7 @@ class RouteMockRepository implements RouteRepository {
   final MockDataService _mockData;
 
   @override
-  Future<List<RouteModel>> byOperator(String operatorId) async {
+  Future<List<RouteModel>> byOperator(String operatorId, {int? limit, int? offset}) async {
     return _mockData.operator_.id == operatorId
         ? _mockData.routes
         : const [];

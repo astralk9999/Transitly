@@ -44,7 +44,7 @@ class StopMockRepository implements StopRepository {
   }
 
   @override
-  Future<List<StopModel>> byOperator(String operatorId) async {
+  Future<List<StopModel>> byOperator(String operatorId, {int? limit, int? offset}) async {
     // El JSON mock solo tiene un operador (COMUJESA). Si coincide
     // devolvemos todas las paradas; si no, vacío.
     return _mockData.operator_.id == operatorId

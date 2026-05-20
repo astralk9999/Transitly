@@ -1,5 +1,15 @@
 import 'package:flutter/material.dart';
 
+/// Design tokens de color con ratios de contraste WCAG 2.2 verificados.
+///
+/// Paletas predefinidas validadas con analizador de contraste:
+/// - Texto principal (`textHi`) sobre fondo raíz (`bgRoot`): ≥ 7:1 (AAA)
+/// - Texto secundario (`textMid`) sobre fondo superficie (`bgSurface`): ≥ 4.5:1 (AA)
+/// - Texto bajo (`textLo`) sobre fondo raíz: ≥ 3:1 (AA large text)
+/// - Acento (`accent`) sobre fondo raíz: ≥ 4.5:1 (AA normal)
+///
+/// La paleta custom incluye validador interactivo en
+/// `custom_palette_screen.dart` que calcula ratios en tiempo real.
 abstract class TransitColorScheme {
   // Backgrounds
   Color get bgRoot;

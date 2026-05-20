@@ -20,8 +20,12 @@ class OperatorLocalRepository implements OperatorRepository {
   static String _key(String id) => 'op:$id';
 
   @override
-  Future<List<OperatorModel>> list() async {
-    return _box.values.toList(growable: false);
+  Future<List<OperatorModel>> list({int? limit, int? offset}) async {
+    final all = _box.values.toList(growable: false);
+    if (offset != null && offset >= all.length) return [];
+    final start = offset ?? 0;
+    final end = limit != null ? start + limit : all.length;
+    return all.sublist(start, end > all.length ? all.length : end);
   }
 
   @override
@@ -67,13 +71,12 @@ class OperatorLocalRepository implements OperatorRepository {
   }
 
   @override
-  Future<OperatorModel> create(OperatorModel op) async {
-    await _box.put(_key(op.id), op);
-    return op;
-  }
+  Future<OperatorModel> create(OperatorModel op) => upsertAndReturn(op);
 
   @override
-  Future<OperatorModel> update(OperatorModel op) async {
+  Future<OperatorModel> update(OperatorModel op) => upsertAndReturn(op);
+
+  Future<OperatorModel> upsertAndReturn(OperatorModel op) async {
     await _box.put(_key(op.id), op);
     return op;
   }

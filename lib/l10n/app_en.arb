@@ -226,7 +226,6 @@
   "offlineRegionsEstimatedSize": "Estimated size",
   "offlineRegionsSelectArea": "Move the map to select an area",
   "offlineRegionsDataSynced": "Data synced",
-  "offlineRegionsDataSyncedAt": "Synced on {date}",
   "offlineRegionsMapLink": "Offline maps",
 
   "appearanceStorageSection": "OFFLINE STORAGE",
@@ -238,7 +237,6 @@
   "appearanceStorageClearCacheConfirm": "Delete all downloaded offline maps?",
   "appearanceStorageClearCacheDone": "Map cache cleared",
   "appearanceStorageMaxInfo": "Maximum storage: 500 MB",
-  "appearanceStorageNotAvailable": "Not available",
 
   "notificationsTitle": "Notifications",
   "notificationsEmpty": "You have no notifications",
@@ -254,7 +252,6 @@
   "notificationTimeMinutes": "{n, plural, =1{1 min ago} other{{n} min ago}}",
   "notificationTimeHours": "{n, plural, =1{1 h ago} other{{n} h ago}}",
   "notificationTimeDays": "{n, plural, =1{1 d ago} other{{n} d ago}}",
-  "notificationSwipeToRead": "Swipe to mark as read",
 
   "notifPrefSectionTitle": "NOTIFICATIONS",
   "notifPrefIncidentResolved": "Resolved reports",
@@ -484,5 +481,31 @@
 
   "suggestionContributeTitle": "Contribute to suggestions",
   "suggestionContributeEmptyTitle": "Nothing to contribute now",
-  "suggestionContributeEmptySubtitle": "No open suggestions. Check back later or propose a new route from the suggestions tab."
+  "suggestionContributeEmptySubtitle": "No open suggestions. Check back later or propose a new route from the suggestions tab.",
+
+  "cityPickerErrorOperators": "Error loading operators",
+  "driversErrorLoading": "Error loading drivers",
+  "driversErrorRevoking": "Error revoking driver",
+  "invitationCodesErrorLoading": "Error loading codes",
+  "invitationCodesErrorGenerating": "Error generating code",
+  "invitationCodesErrorRevoking": "Error revoking code",
+  "routeOfficializeError": "Error sending request",
+  "routeShareUserNotFound": "User not found",
+  "routeShareSuccess": "Route shared with {email}",
+  "routeShareError": "Error sharing route",
+  "routeShareErrorGeneratingLink": "Error generating link",
+  "routeDetailNotFound": "Route not found",
+  "stopDetailNotFound": "Stop not found",
+  "feedbackErrorSending": "Error sending feedback",
+  "incidentErrorSending": "Error sending report",
+
+  "homeRouteSemanticsLabel": "{code}, {time}",
+
+  "nfcCardBalance": "Balance: {amount} euros",
+  "homeNextBusSemantics": "Your next bus, {route}",
+  "generalComingSoon": "{feature}: coming soon",
+  "capacitySemanticsLabel": "Occupancy: {level}",
+  "reputationSemanticsLabel": "Reputation: {level}",
+  "reputationScoreSemantics": "{label}: {score} points",
+  "routeCardSemantics": "Line {code}, {name}{status}{minutes}"
 }

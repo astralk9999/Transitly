@@ -45,7 +45,10 @@ List<Marker> buildStopMarkers({
       point: LatLng(stop.lat, stop.lng),
       width: 20,
       height: 20,
-      child: GestureDetector(
+      child: Semantics(
+        label: 'Parada ${stop.name}',
+        button: onTap != null,
+        child: GestureDetector(
         onTap: onTap != null ? () => onTap(stop) : null,
         child: Center(
           child: Container(
@@ -58,6 +61,7 @@ List<Marker> buildStopMarkers({
             ),
           ),
         ),
+      ),
       ),
     ));
   }

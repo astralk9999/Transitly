@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
@@ -47,12 +46,8 @@ class FeedbackListItem extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    feedback.feedbackType.label.toUpperCase(),
-                    style: GoogleFonts.ibmPlexMono(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w600,
-                      color: c.textMid,
-                    ),
+                  feedback.feedbackType.label.toUpperCase(),
+                  style: TransitTypography.inboxTypeTag(c.textMid),
                   ),
                   const Spacer(),
                   Text(

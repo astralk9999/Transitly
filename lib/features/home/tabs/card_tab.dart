@@ -216,7 +216,7 @@ class CardTab extends ConsumerWidget {
 
     return Column(
       children: [
-        _buildBalanceCard(c, result),
+        _buildBalanceCard(context, c, result),
         const SizedBox(height: 16),
         TransitButton(
           label: 'ESCANEAR DE NUEVO',
@@ -233,7 +233,7 @@ class CardTab extends ConsumerWidget {
     );
   }
 
-  Widget _buildBalanceCard(TransitColorScheme c, NfcCardResult result) {
+  Widget _buildBalanceCard(BuildContext context, TransitColorScheme c, NfcCardResult result) {
     final elapsed = DateTime.now().difference(result.scannedAt);
     final timeAgo = elapsed.inMinutes < 1
         ? 'Ahora mismo'
@@ -266,7 +266,7 @@ class CardTab extends ConsumerWidget {
           ),
           const SizedBox(height: 28),
           Semantics(
-            label: 'Saldo: ${result.balance.toStringAsFixed(2)} euros',
+            label: AppLocalizations.of(context).nfcCardBalance(result.balance.toStringAsFixed(2)),
             child: Center(
               child: GradientText(
                 '${result.balance.toStringAsFixed(2)} \u20AC',

@@ -6,6 +6,7 @@ import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../core/utils/uuid.dart';
 import '../../data/route_feedback/route_feedback_repository_provider.dart';
+import '../../l10n/generated/app_localizations.dart';
 import '../../shared/models/enums.dart';
 import '../../shared/models/route_feedback_model.dart';
 import '../../shared/models/route_model.dart';
@@ -200,11 +201,11 @@ class _RouteFeedbackContentState extends ConsumerState<_RouteFeedbackContent> {
         );
         Navigator.of(context).pop();
       }
-    } on Exception catch (e) {
+    } catch (_) {
       setState(() => _submitting = false);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error al enviar: $e')),
+          SnackBar(content: Text(AppLocalizations.of(context).feedbackErrorSending)),
         );
       }
     }

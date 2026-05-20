@@ -107,8 +107,19 @@ class RouteFeedbackRemoteRepository implements RouteFeedbackRepository {
           .select()
           .single();
       return _fromRow(row);
-    } catch (e, st) {
+    } on PostgrestException catch (e, st) {
       throw _mapError(e, st, 'updateStatus($id)');
+    } catch (e) {
+      AppLogger.warn(_logTag, 'updateStatus network failed; enqueueing', e);
+      await _queue.enqueue(
+        PendingAction(
+          id: id,
+          kind: PendingActionKind.updateFeedbackStatus,
+          payload: <String, dynamic>{'id': id, 'status': status},
+          createdAt: DateTime.now().toUtc(),
+        ),
+      );
+      rethrow;
     }
   }
 

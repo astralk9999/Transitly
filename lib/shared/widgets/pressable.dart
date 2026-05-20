@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/theme/transit_animations.dart';
+import '../../core/theme/transit_spacing.dart';
 
 class Pressable extends StatefulWidget {
   const Pressable({
@@ -62,7 +63,13 @@ class _PressableState extends State<Pressable> {
           widget.enabled ? () => setState(() => _pressed = false) : null,
       onTap: widget.enabled ? widget.onTap : null,
       behavior: HitTestBehavior.opaque,
-      child: child,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          minWidth: TransitSpacing.minTapTarget,
+          minHeight: TransitSpacing.minTapTarget,
+        ),
+        child: child,
+      ),
     );
   }
 }

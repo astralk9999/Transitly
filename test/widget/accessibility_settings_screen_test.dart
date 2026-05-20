@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:transitly/features/profile/accessibility_settings_screen.dart';
 import 'package:transitly/shared/providers/theme_notifier.dart';
 import 'package:transitly/shared/providers/theme_provider.dart';
+import 'package:transitly/l10n/generated/app_localizations.dart';
 
 import '../data/shared_test_repositories.dart';
 import '../helpers/pump_app.dart';
@@ -58,7 +59,11 @@ void main() {
           container: container,
           child: const MediaQuery(
             data: MediaQueryData(disableAnimations: true),
-            child: MaterialApp(home: AccessibilitySettingsScreen()),
+            child: MaterialApp(
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              home: AccessibilitySettingsScreen(),
+            ),
           ),
         ),
       );

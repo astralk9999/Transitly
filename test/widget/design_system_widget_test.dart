@@ -7,6 +7,7 @@ import 'package:transitly/shared/widgets/glass_card.dart';
 import 'package:transitly/shared/widgets/reputation_badge.dart';
 import 'package:transitly/shared/widgets/status_badge.dart';
 import 'package:transitly/shared/widgets/transit_button.dart';
+import 'package:transitly/l10n/generated/app_localizations.dart';
 
 /// Mounts [child] inside a themed Scaffold for structural widget tests.
 /// We don't pin pixel goldens — `google_fonts` resolves via the network and
@@ -22,6 +23,8 @@ Future<void> pumpDesign(
     MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: buildTransitTheme(scheme),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(
         body: Center(
           child: Padding(

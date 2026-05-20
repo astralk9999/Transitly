@@ -35,25 +35,14 @@ class BusLocationRepositorySwr implements BusLocationRepository {
     }
   }
 
-  /// Hoy: emite cache (si existe) → emite fresh del remoto → cierra.
-  /// F13 sustituirá la segunda emisión por una suscripción
-  /// Realtime que emite cada `INSERT` en `bus_positions` filtrado por
-  /// `route_id`.
+  /// Emite cache → delega al stream Realtime del remote repo.
+  /// El remote repo abre una suscripción Supabase Realtime sobre
+  /// `bus_positions` filtrada por `route_id` (F13).
   @override
   Stream<BusLocation?> streamForRoute(String routeId) async* {
     final cached = await local.latestForRoute(routeId);
     if (cached != null) yield cached;
-    try {
-      final fresh = await remote.latestForRoute(routeId);
-      if (fresh != null) {
-        local.upsert(routeId, fresh);
-        if (fresh != cached) yield fresh;
-      } else if (cached == null) {
-        yield null;
-      }
-    } on BusLocationRepositoryException catch (e) {
-      AppLogger.warn(_logTag, 'streamForRoute remote failed', e);
-    }
+    yield* remote.streamForRoute(routeId);
   }
 }
 
@@ -67,8 +56,13 @@ final busLocationRepositoryProvider =
     return BusLocationMockRepository(mockData);
   }
 
-  return BusLocationRepositorySwr(
+  final remote = BusLocationRemoteRepository(client);
+  final swr = BusLocationRepositorySwr(
     local: BusLocationLocalRepository(),
-    remote: BusLocationRemoteRepository(client),
+    remote: remote,
   );
+
+  ref.onDispose(() => remote.dispose());
+
+  return swr;
 });

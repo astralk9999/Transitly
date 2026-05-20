@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
+import '../../l10n/generated/app_localizations.dart';
 import '../../shared/providers/is_dark_provider.dart';
 import '../../shared/providers/locale_provider.dart';
 import '../../shared/providers/theme_notifier.dart';
@@ -133,7 +134,7 @@ class _ThemeSection extends StatelessWidget {
           ),
           const Divider(height: 24),
           Semantics(
-            label: 'Alto contraste',
+            label: AppLocalizations.of(context).accessibilityHighContrast,
             selected: highContrast,
             child: Row(
               children: [

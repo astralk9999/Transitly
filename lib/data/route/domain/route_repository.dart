@@ -39,7 +39,7 @@ class RouteRepositoryException implements Exception {
 /// - F8 city picker — `byOperator()`.
 /// - MyContributions / route editor — `community(ownerId)`.
 abstract class RouteRepository {
-  Future<List<RouteModel>> byOperator(String operatorId);
+  Future<List<RouteModel>> byOperator(String operatorId, {int? limit, int? offset});
 
   Future<RouteModel?> byId(String id);
 

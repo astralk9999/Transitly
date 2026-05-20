@@ -1,29 +1,25 @@
-class HabitualTripModel {
-  const HabitualTripModel({
-    required this.id,
-    required this.userId,
-    required this.routeId,
-    required this.stopId,
-    this.destinationStopId,
-    this.timeWindowStart,
-    this.timeWindowEnd,
-    this.daysOfWeek = const [],
-    this.notify = false,
-    this.notifyMinutesBefore = 5,
-  });
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  final String id;
-  final String userId;
-  final String routeId;
-  final String stopId;
-  final String? destinationStopId;
-  final String? timeWindowStart;
-  final String? timeWindowEnd;
-  final List<int> daysOfWeek;
-  final bool notify;
-  final int notifyMinutesBefore;
+part 'habitual_trip_model.freezed.dart';
 
-  factory HabitualTripModel.fromJson(Map<String, dynamic> j) =>
+@freezed
+abstract class HabitualTripModel with _$HabitualTripModel {
+  const HabitualTripModel._();
+
+  const factory HabitualTripModel({
+    required String id,
+    required String userId,
+    required String routeId,
+    required String stopId,
+    String? destinationStopId,
+    String? timeWindowStart,
+    String? timeWindowEnd,
+    @Default([]) List<int> daysOfWeek,
+    @Default(false) bool notify,
+    @Default(5) int notifyMinutesBefore,
+  }) = _HabitualTripModel;
+
+  static HabitualTripModel fromJson(Map<String, dynamic> j) =>
       HabitualTripModel(
         id: j['id'] as String,
         userId: j['userId'] as String,

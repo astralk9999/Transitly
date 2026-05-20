@@ -188,7 +188,8 @@ class _TransitMapState extends State<TransitMap> {
 
     return Stack(
       children: [
-        FlutterMap(
+        RepaintBoundary(
+          child: FlutterMap(
           mapController: widget.controller,
           options: MapOptions(
             initialCenter: widget.center ?? MapConfig.defaultCenter,
@@ -221,6 +222,7 @@ class _TransitMapState extends State<TransitMap> {
             ...widget.additionalLayers,
           ],
         ),
+      ),
         ...widget.overlayWidgets,
         Positioned(
           right: 4,

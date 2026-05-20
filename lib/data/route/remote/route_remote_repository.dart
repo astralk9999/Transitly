@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:latlong2/latlong.dart';
@@ -6,24 +7,37 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/utils/app_logger.dart';
 import '../../../shared/models/enums.dart';
 import '../../../shared/models/route_model.dart';
+import '../../sync/realtime_channel_manager.dart';
 import '../domain/route_repository.dart';
 
 /// Implementación remota de [RouteRepository] sobre Supabase.
 class RouteRemoteRepository implements RouteRepository {
-  RouteRemoteRepository(this._client);
+  RouteRemoteRepository(this._client) : _chManager = RealtimeChannelManager(_client);
 
   final SupabaseClient _client;
+  final RealtimeChannelManager _chManager;
 
   static const _logTag = 'Repo:Route:Remote';
 
+  void dispose() {
+    _chManager.dispose();
+  }
+
   @override
-  Future<List<RouteModel>> byOperator(String operatorId) async {
+  Future<List<RouteModel>> byOperator(String operatorId, {int? limit, int? offset}) async {
     try {
-      final rows = await _client
+      dynamic query = _client
           .from('routes')
           .select()
-          .eq('operator_id', operatorId);
-      return rows.map(_fromRow).toList();
+          .eq('operator_id', operatorId)
+          .order('code');
+      if (offset != null && limit != null) {
+        query = query.range(offset, offset + limit - 1);
+      } else if (limit != null) {
+        query = query.limit(limit);
+      }
+      final rows = await query;
+      return (rows as List<dynamic>).map((e) => _fromRow(e as Map<String, dynamic>)).toList();
     } catch (e, st) {
       throw _mapError(e, st, 'byOperator($operatorId)');
     }
@@ -45,8 +59,20 @@ class RouteRemoteRepository implements RouteRepository {
 
   @override
   Stream<RouteModel?> watch(String id) async* {
-    yield await byId(id);
-    // F13: subscribe a `public:routes:id=eq.<id>` y emite cambios.
+    try {
+      final initial = await byId(id);
+      yield initial;
+    } catch (_) {
+      yield null;
+    }
+    await for (final row in _chManager.watch(
+      channelPrefix: 'route',
+      table: 'routes',
+      entityId: id,
+      events: [PostgresChangeEvent.all],
+    )) {
+      yield _fromRow(row);
+    }
   }
 
   @override

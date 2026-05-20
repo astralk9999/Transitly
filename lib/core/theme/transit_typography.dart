@@ -51,6 +51,48 @@ abstract final class TransitTypography {
         color: c,
       );
 
+  static TextStyle sectionLabel(Color c) => GoogleFonts.ibmPlexMono(
+        fontSize: 11,
+        fontWeight: FontWeight.w700,
+        letterSpacing: 1.5,
+        color: c,
+      );
+
+  static TextStyle inboxTypeTag(Color c) => GoogleFonts.ibmPlexMono(
+        fontSize: 10,
+        fontWeight: FontWeight.w600,
+        color: c,
+      );
+
+  static TextStyle timeEstimate(Color c) => GoogleFonts.ibmPlexMono(
+        fontSize: 20,
+        fontWeight: FontWeight.w700,
+        color: c,
+      );
+
+  static TextStyle badgeNumber(Color c) => GoogleFonts.ibmPlexMono(
+        fontSize: 10,
+        fontWeight: FontWeight.w700,
+        color: c,
+      );
+
+  static TextStyle errorText(Color c) => GoogleFonts.ibmPlexMono(
+        fontSize: 13,
+        color: c,
+      );
+
+  static TextStyle tabLabel(Color c) => GoogleFonts.ibmPlexMono(
+        fontSize: 11,
+        fontWeight: FontWeight.w600,
+        color: c,
+      );
+
+  static TextStyle routeName(Color c) => GoogleFonts.dmSans(
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+        color: c,
+      );
+
   // ── UI text (DM Sans) ──────────────────────────────────
 
   static TextStyle navLabel(Color c) => GoogleFonts.dmSans(

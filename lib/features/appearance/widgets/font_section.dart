@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
@@ -32,11 +31,7 @@ class FontSection extends ConsumerWidget {
         children: [
           GradientText(
             l10n.appearanceTextSection,
-            style: GoogleFonts.ibmPlexMono(
-              fontSize: 11,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 1.5,
-            ),
+            style: TransitTypography.sectionLabel(Colors.white),
             gradient: c.gradientAccent,
           ),
           const SizedBox(height: 12),
@@ -77,12 +72,7 @@ class FontSection extends ConsumerWidget {
             ),
             child: Text(
               l10n.appearanceTextPreview,
-              style: GoogleFonts.dmSans(
-                fontSize: 13 * fontScale,
-                fontWeight: FontWeight.w300,
-                height: 1.5,
-                color: c.textHi,
-              ),
+              style: TransitTypography.bodyPrimary(c.textHi).copyWith(fontSize: 13 * fontScale),
             ),
           ),
           const SizedBox(height: 12),

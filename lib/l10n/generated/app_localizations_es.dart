@@ -651,11 +651,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get offlineRegionsDataSynced => 'Datos sincronizados';
 
   @override
-  String offlineRegionsDataSyncedAt(String date) {
-    return 'Sincronizado el $date';
-  }
-
-  @override
   String get offlineRegionsMapLink => 'Mapas offline';
 
   @override
@@ -685,9 +680,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get appearanceStorageMaxInfo => 'Almacenamiento máximo: 500 MB';
-
-  @override
-  String get appearanceStorageNotAvailable => 'No disponible';
 
   @override
   String get notificationsTitle => 'Notificaciones';
@@ -746,7 +738,7 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String notificationTimeDays(int n) {
+  String notificationTimeDays(num n) {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
@@ -755,9 +747,6 @@ class AppLocalizationsEs extends AppLocalizations {
     );
     return '$_temp0';
   }
-
-  @override
-  String get notificationSwipeToRead => 'Desliza para marcar como leído';
 
   @override
   String get notifPrefSectionTitle => 'NOTIFICACIONES';
@@ -1252,4 +1241,96 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get suggestionContributeEmptySubtitle =>
       'No hay sugerencias abiertas. Vuelve más tarde o propón una ruta nueva desde la pestaña de sugerencias.';
+
+  @override
+  String get cityPickerErrorOperators => 'Error al cargar operadores';
+
+  @override
+  String get driversErrorLoading => 'Error al cargar conductores';
+
+  @override
+  String get driversErrorRevoking => 'Error al revocar conductor';
+
+  @override
+  String get invitationCodesErrorLoading => 'Error al cargar códigos';
+
+  @override
+  String get invitationCodesErrorGenerating => 'Error al generar código';
+
+  @override
+  String get invitationCodesErrorRevoking => 'Error al revocar código';
+
+  @override
+  String get routeOfficializeError => 'Error al enviar solicitud';
+
+  @override
+  String get routeShareUserNotFound => 'Usuario no encontrado';
+
+  @override
+  String routeShareSuccess(String email) {
+    return 'Ruta compartida con $email';
+  }
+
+  @override
+  String get routeShareError => 'Error al compartir ruta';
+
+  @override
+  String get routeShareErrorGeneratingLink => 'Error al generar enlace';
+
+  @override
+  String get routeDetailNotFound => 'Ruta no encontrada';
+
+  @override
+  String get stopDetailNotFound => 'Parada no encontrada';
+
+  @override
+  String get feedbackErrorSending => 'Error al enviar mejora';
+
+  @override
+  String get incidentErrorSending => 'Error al enviar reporte';
+
+  @override
+  String homeRouteSemanticsLabel(String code, String time) {
+    return '$code, $time';
+  }
+
+  @override
+  String nfcCardBalance(String amount) {
+    return 'Saldo: $amount euros';
+  }
+
+  @override
+  String homeNextBusSemantics(String route) {
+    return 'Tu próximo bus, $route';
+  }
+
+  @override
+  String generalComingSoon(String feature) {
+    return '$feature: próximamente';
+  }
+
+  @override
+  String capacitySemanticsLabel(String level) {
+    return 'Ocupación: $level';
+  }
+
+  @override
+  String reputationSemanticsLabel(String level) {
+    return 'Reputación: $level';
+  }
+
+  @override
+  String reputationScoreSemantics(String label, int score) {
+    return '$label: $score puntos';
+  }
+
+  @override
+  String routeCardSemantics(
+    String code,
+    String name,
+    String status,
+    String minutes,
+  ) {
+    return 'Línea $code, $name$status$minutes';
+  }
 }

@@ -1,21 +1,21 @@
-class FeedbackMessageModel {
-  const FeedbackMessageModel({
-    required this.id,
-    required this.feedbackId,
-    required this.userId,
-    required this.message,
-    this.isFromManager = false,
-    required this.createdAt,
-  });
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  final String id;
-  final String feedbackId;
-  final String userId;
-  final String message;
-  final bool isFromManager;
-  final DateTime createdAt;
+part 'feedback_message_model.freezed.dart';
 
-  factory FeedbackMessageModel.fromJson(Map<String, dynamic> j) =>
+@freezed
+abstract class FeedbackMessageModel with _$FeedbackMessageModel {
+  const FeedbackMessageModel._();
+
+  const factory FeedbackMessageModel({
+    required String id,
+    required String feedbackId,
+    required String userId,
+    required String message,
+    @Default(false) bool isFromManager,
+    required DateTime createdAt,
+  }) = _FeedbackMessageModel;
+
+  static FeedbackMessageModel fromJson(Map<String, dynamic> j) =>
       FeedbackMessageModel(
         id: j['id'] as String,
         feedbackId: j['feedbackId'] as String,

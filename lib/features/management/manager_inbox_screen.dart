@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../data/incident/domain/incident_repository.dart';
 import '../../data/incident/incident_repository_provider.dart';
 import '../../data/route_feedback/domain/route_feedback_repository.dart';
+import '../../data/route_feedback/route_feedback_helpers.dart';
 import '../../data/route_feedback/route_feedback_repository_provider.dart';
+import '../../data/route_suggestion/domain/route_suggestion_repository.dart';
 import '../../data/route_suggestion/route_suggestion_repository_provider.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../shared/models/enums.dart';
@@ -37,6 +38,7 @@ class _ManagerInboxScreenState extends ConsumerState<ManagerInboxScreen> {
   List<RouteFeedbackModel> _resolvedFeedbacks = [];
   List<IncidentModel> _resolvedIncidents = [];
   bool _loading = true;
+  bool _statusLoading = false;
   String? _error;
 
   @override
@@ -96,29 +98,64 @@ class _ManagerInboxScreenState extends ConsumerState<ManagerInboxScreen> {
 
   Future<void> _updateFeedbackStatus(
       RouteFeedbackModel fb, String newStatus) async {
-    final repo = ref.read(routeFeedbackRepositoryProvider);
+    final fbStatus = feedbackStatusFromString(newStatus);
+    final updated = fb.copyWith(status: fbStatus);
+
+    setState(() {
+      _statusLoading = true;
+      _feedbacks = _feedbacks.where((f) => f.id != fb.id).toList();
+      _resolvedFeedbacks = [updated, ..._resolvedFeedbacks];
+    });
+
     try {
-      await repo.updateStatus(fb.id, newStatus);
-      await _loadData();
+      await ref.read(routeFeedbackRepositoryProvider).updateStatus(fb.id, newStatus);
     } on RouteFeedbackRepositoryException {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(AppLocalizations.of(context).adminOperatorsErrorUnknown)),
       );
+    } finally {
+      if (mounted) setState(() => _statusLoading = false);
     }
   }
 
   Future<void> _updateIncidentStatus(
       IncidentModel incident, String newStatus) async {
-    final repo = ref.read(incidentRepositoryProvider);
+    final updated = incident.copyWith(status: newStatus);
+
+    setState(() {
+      _statusLoading = true;
+      _resolvedIncidents = [updated, ..._resolvedIncidents];
+    });
+
     try {
-      await repo.updateStatus(incident.id, newStatus);
-      await _loadData();
+      await ref.read(incidentRepositoryProvider).updateStatus(incident.id, newStatus);
     } on IncidentRepositoryException {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(AppLocalizations.of(context).adminOperatorsErrorUnknown)),
       );
+    } finally {
+      if (mounted) setState(() => _statusLoading = false);
+    }
+  }
+
+  Future<void> _updateSuggestionStatus(
+      RouteSuggestionModel sug, String newStatus) async {
+    setState(() {
+      _statusLoading = true;
+      _suggestions = _suggestions.where((s) => s.id != sug.id).toList();
+    });
+
+    try {
+      await ref.read(routeSuggestionRepositoryProvider).updateStatus(sug.id, newStatus);
+    } on RouteSuggestionRepositoryException {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context).adminOperatorsErrorUnknown)),
+      );
+    } finally {
+      if (mounted) setState(() => _statusLoading = false);
     }
   }
 
@@ -146,6 +183,13 @@ class _ManagerInboxScreenState extends ConsumerState<ManagerInboxScreen> {
         children: [
           Positioned.fill(
               child: SmokeBackground(color: c.accent, isDark: isDark)),
+          if (_statusLoading)
+            const Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: LinearProgressIndicator(),
+            ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -168,7 +212,7 @@ class _ManagerInboxScreenState extends ConsumerState<ManagerInboxScreen> {
                   child: Text(
                     l10n.managerInboxPending(pendingCount),
                     style:
-                        GoogleFonts.ibmPlexMono(fontSize: 12, color: c.textMid),
+                        TransitTypography.errorText(c.textMid),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -181,8 +225,7 @@ class _ManagerInboxScreenState extends ConsumerState<ManagerInboxScreen> {
                           indicatorColor: c.accent,
                           labelColor: c.accent,
                           unselectedLabelColor: c.textMid,
-                          labelStyle: GoogleFonts.ibmPlexMono(
-                              fontSize: 11, fontWeight: FontWeight.w600),
+                          labelStyle: TransitTypography.tabLabel(Colors.white),
                           tabs: [
                             Tab(text: l10n.managerInboxFeedback),
                             Tab(text: l10n.managerInboxSuggestions),
@@ -251,6 +294,14 @@ class _ManagerInboxScreenState extends ConsumerState<ManagerInboxScreen> {
             context,
             suggestion: sug,
             onOpen: () => context.push('/suggestions/${sug.id}'),
+            onResolve: sug.status != SuggestionStatus.accepted &&
+                    sug.status != SuggestionStatus.rejected
+                ? () => _updateSuggestionStatus(sug, 'accepted')
+                : null,
+            onReject: sug.status != SuggestionStatus.accepted &&
+                    sug.status != SuggestionStatus.rejected
+                ? () => _updateSuggestionStatus(sug, 'rejected')
+                : null,
           ),
         );
       },

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
@@ -44,12 +43,8 @@ class SuggestionListItem extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    l10n.managerInboxSuggestions.toUpperCase(),
-                    style: GoogleFonts.ibmPlexMono(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w600,
-                      color: c.textMid,
-                    ),
+                  l10n.managerInboxSuggestions.toUpperCase(),
+                  style: TransitTypography.inboxTypeTag(c.textMid),
                   ),
                   const Spacer(),
                   Text(

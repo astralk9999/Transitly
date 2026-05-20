@@ -50,7 +50,7 @@ class StopLocalRepository implements StopRepository {
   }
 
   @override
-  Future<List<StopModel>> byOperator(String operatorId) async {
+  Future<List<StopModel>> byOperator(String operatorId, {int? limit, int? offset}) async {
     // El StopModel actual no expone operatorId (heredado del JSON
     // mock), así que esta cache no puede filtrar por operador. La
     // capa SWR delega siempre al remoto para esta query.

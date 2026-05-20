@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
+import '../../l10n/generated/app_localizations.dart';
 import '../models/active_trip_model.dart';
 import '../models/enums.dart';
 import '../models/route_model.dart';
@@ -50,7 +50,7 @@ class RouteCard extends StatelessWidget {
     final minsLabel = estimatedMinutes != null ? ', $estimatedMinutes' : '';
 
     return Semantics(
-      label: 'Linea ${route.code}, ${route.name}$statusLabel$minsLabel',
+      label: AppLocalizations.of(context).routeCardSemantics(route.code, route.name, statusLabel, minsLabel),
       button: onTap != null,
       child: Pressable(
         onTap: onTap,
@@ -85,12 +85,8 @@ class RouteCard extends StatelessWidget {
                 ),
                 child: Center(
                   child: Text(
-                    route.code,
-                    style: GoogleFonts.ibmPlexMono(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
-                      color: c.accent,
-                    ),
+                      route.code,
+                      style: TransitTypography.routeCode(c.accent),
                   ),
                 ),
               ),
@@ -104,11 +100,7 @@ class RouteCard extends StatelessWidget {
                     children: [
                       Text(
                         route.name.toUpperCase(),
-                        style: GoogleFonts.dmSans(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: c.textHi,
-                        ),
+                        style: TransitTypography.routeName(c.textHi),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -146,12 +138,8 @@ class RouteCard extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(right: 14),
                   child: Text(
-                    estimatedMinutes!,
-                    style: GoogleFonts.ibmPlexMono(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
-                      color: c.accent,
-                    ),
+                      estimatedMinutes!,
+                      style: TransitTypography.timeEstimate(c.accent),
                   ),
                 ),
             ],

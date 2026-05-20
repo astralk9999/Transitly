@@ -104,6 +104,24 @@ class RouteSuggestionRemoteRepository implements RouteSuggestionRepository {
     }
   }
 
+  @override
+  Future<RouteSuggestionModel> updateStatus(String id, String status) async {
+    try {
+      final row = await _client
+          .from('route_suggestions')
+          .update(<String, dynamic>{
+            'status': status,
+            'updated_at': DateTime.now().toUtc().toIso8601String(),
+          })
+          .eq('id', id)
+          .select()
+          .single();
+      return _fromRow(row);
+    } catch (e, st) {
+      throw _mapError(e, st, 'updateStatus($id)');
+    }
+  }
+
   RouteSuggestionModel _fromRow(Map<String, dynamic> row) {
     final originGeom = row['origin_geom'] as Map<String, dynamic>?;
     final destGeom = row['destination_geom'] as Map<String, dynamic>?;

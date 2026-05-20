@@ -1,0 +1,38 @@
+{
+  "@@locale": "ar",
+  "appTitle": "Transitly",
+  "tabHome": "الرئيسية",
+  "tabSearch": "بحث",
+  "tabMap": "الخريطة",
+  "tabCard": "البطاقة",
+  "tabProfile": "الملف",
+
+  "nfcErrorUnsupported": "NFC غير متوفر",
+  "nfcErrorNotMifareClassic": "البطاقة غير مدعومة",
+  "nfcErrorAuthFailed": "فشل المصادقة",
+  "nfcErrorReadFailed": "خطأ في القراءة",
+  "nfcErrorTagLost": "تمت إزالة البطاقة بسرعة",
+
+  "actionClose": "إغلاق",
+  "actionRetry": "إعادة",
+  "actionCancel": "إلغاء",
+  "actionSave": "حفظ",
+
+  "accessibilityTitle": "إمكانية الوصول",
+  "accessibilityThemeSystem": "النظام",
+  "accessibilityThemeLight": "فاتح",
+  "accessibilityThemeDark": "داكن",
+  "accessibilityLanguageEs": "الإسبانية",
+  "accessibilityLanguageEn": "الإنجليزية",
+  "accessibilityLanguageSystem": "لغة النظام",
+
+  "authEmail": "البريد",
+  "authPassword": "كلمة المرور",
+  "authSignInButton": "تسجيل الدخول",
+  "authSignUpButton": "إنشاء حساب",
+  "authNoAccount": "ليس لديك حساب؟",
+  "authRegister": "سجل الآن",
+
+  "offlineBannerOffline": "غير متصل",
+  "offlineDataTitle": "بيانات دون اتصال"
+}

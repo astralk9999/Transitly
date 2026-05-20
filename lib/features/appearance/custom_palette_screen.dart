@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/theme/palettes/custom_colors.dart';
 import '../../core/theme/transit_colors.dart';
@@ -253,12 +252,7 @@ class _SectionLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       label.toUpperCase(),
-      style: GoogleFonts.ibmPlexMono(
-        fontSize: 11,
-        fontWeight: FontWeight.w700,
-        letterSpacing: 1.5,
-        color: scheme.accent,
-      ),
+      style: TransitTypography.sectionLabel(scheme.accent),
     );
   }
 }
@@ -313,10 +307,7 @@ class _ColorField extends StatelessWidget {
                 ),
                 child: Text(
                   '#${color.toARGB32().toRadixString(16).toUpperCase().padLeft(8, '0').substring(2)}',
-                  style: GoogleFonts.ibmPlexMono(
-                    fontSize: 11,
-                    color: scheme.textMid,
-                  ),
+                  style: TransitTypography.errorText(scheme.textMid),
                 ),
               ),
             ],
@@ -484,11 +475,7 @@ class _ContrastBadge extends StatelessWidget {
           const Spacer(),
           Text(
             '${ratio.toStringAsFixed(2)}:1',
-            style: GoogleFonts.ibmPlexMono(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: _badgeColor,
-            ),
+            style: TransitTypography.displayNumber(_badgeColor),
           ),
         ],
       ),

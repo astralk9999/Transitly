@@ -1,23 +1,23 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+
 import 'enums.dart';
 
-class RouteChangelogModel {
-  const RouteChangelogModel({
-    required this.id,
-    required this.routeId,
-    required this.changeType,
-    required this.description,
-    required this.changedBy,
-    required this.createdAt,
-  });
+part 'route_changelog_model.freezed.dart';
 
-  final String id;
-  final String routeId;
-  final ChangeType changeType;
-  final String description;
-  final String changedBy;
-  final DateTime createdAt;
+@freezed
+abstract class RouteChangelogModel with _$RouteChangelogModel {
+  const RouteChangelogModel._();
 
-  factory RouteChangelogModel.fromJson(Map<String, dynamic> j) =>
+  const factory RouteChangelogModel({
+    required String id,
+    required String routeId,
+    required ChangeType changeType,
+    required String description,
+    required String changedBy,
+    required DateTime createdAt,
+  }) = _RouteChangelogModel;
+
+  static RouteChangelogModel fromJson(Map<String, dynamic> j) =>
       RouteChangelogModel(
         id: j['id'] as String,
         routeId: j['routeId'] as String,

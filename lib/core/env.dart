@@ -1,5 +1,3 @@
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-
 /// Tipos de fallo al cargar configuración de entorno.
 enum EnvError { missing, malformed }
 
@@ -21,22 +19,21 @@ class EnvException implements Exception {
   }
 }
 
-/// Acceso tipado a las variables del `.env` de la app.
+/// Acceso tipado a las variables de entorno compiladas vía `--dart-define`.
 ///
-/// La carga se hace una sola vez en `main()` mediante [Env.load]; tras
-/// ello, los getters resuelven en O(1) y lanzan [EnvException] si una
-/// clave crítica falta o está vacía.
-///
+/// Cada valor se lee de `String.fromEnvironment` en tiempo de compilación.
 /// Las claves "críticas" (sin las cuales la app no puede arrancar) se
-/// validan vía [_required]. Las "opcionales" (telemetría, mapas
-/// premium) devuelven `null` cuando la integración no está configurada
-/// — quien las consume decide si silenciar o degradar.
-class Env {
+/// validan vía [_required]. Las "opcionales" (telemetría, mapas premium)
+/// devuelven `null` cuando la integración no está configurada.
+///
+/// Para desarrollo, pasar las variables en la línea de comandos:
+/// ```bash
+/// flutter run \
+///   --dart-define=SUPABASE_URL=https://xxx.supabase.co \
+///   --dart-define=SUPABASE_ANON_KEY=eyJ...
+/// ```
+abstract final class Env {
   Env._();
-
-  /// Carga `.env` en memoria. Llamar antes de cualquier otro getter.
-  static Future<void> load({String fileName = '.env'}) =>
-      dotenv.load(fileName: fileName);
 
   // ── Supabase (críticas) ─────────────────────────────────────
 
@@ -62,20 +59,20 @@ class Env {
   // ── Helpers privados ────────────────────────────────────────
 
   static String _required(String key) {
-    final value = dotenv.maybeGet(key);
-    if (value == null || value.isEmpty) {
+    final value = String.fromEnvironment(key);
+    if (value.isEmpty) {
       throw EnvException(
         error: EnvError.missing,
         key: key,
-        message: 'No definido en .env (o vacío)',
+        message: 'No definido en --dart-define (o vacío)',
       );
     }
     return value;
   }
 
   static String? _optional(String key) {
-    final value = dotenv.maybeGet(key);
-    if (value == null || value.isEmpty) return null;
+    final value = String.fromEnvironment(key);
+    if (value.isEmpty) return null;
     return value;
   }
 }

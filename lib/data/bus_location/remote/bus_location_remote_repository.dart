@@ -1,16 +1,21 @@
+import 'dart:async';
+
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/utils/app_logger.dart';
 import '../../../shared/models/bus_location.dart';
 import '../domain/bus_location_repository.dart';
+import 'bus_position_channel_manager.dart';
 
-/// Implementación remota sobre Supabase. Hoy solo lee — la inserción
-/// de bus_positions la hace cada driver desde su sesión autenticada,
-/// vía RLS de la tabla.
+/// Implementación remota sobre Supabase con suscripción Realtime
+/// multiplexada (F13). Usa [BusPositionChannelManager] para compartir
+/// un único canal entre todas las rutas observadas.
 class BusLocationRemoteRepository implements BusLocationRepository {
-  BusLocationRemoteRepository(this._client);
+  BusLocationRemoteRepository(this._client)
+      : _channelMgr = BusPositionChannelManager(_client);
 
   final SupabaseClient _client;
+  final BusPositionChannelManager _channelMgr;
 
   static const _logTag = 'Repo:BusLocation:Remote';
 
@@ -32,9 +37,17 @@ class BusLocationRemoteRepository implements BusLocationRepository {
 
   @override
   Stream<BusLocation?> streamForRoute(String routeId) async* {
-    // F13 sustituirá esto por una suscripción a
-    // _client.channel('public:bus_positions:route_id=eq.$routeId')
-    yield await latestForRoute(routeId);
+    try {
+      final initial = await latestForRoute(routeId);
+      yield initial;
+    } catch (_) {
+      yield null;
+    }
+    yield* _channelMgr.watch(routeId);
+  }
+
+  void dispose() {
+    _channelMgr.dispose();
   }
 
   BusLocation _fromRow(Map<String, dynamic> row) {

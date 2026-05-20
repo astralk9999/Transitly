@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../l10n/generated/app_localizations.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../data/mock/mock_data_service.dart';
 import '../../data/mock/mock_realtime_service.dart';
@@ -40,7 +41,7 @@ class RouteDetailScreen extends ConsumerWidget {
     if (route == null) {
       return Scaffold(
         backgroundColor: c.bgRoot,
-        body: const Center(child: Text('Ruta no encontrada')),
+        body: Center(child: Text(AppLocalizations.of(context).routeDetailNotFound)),
       );
     }
 

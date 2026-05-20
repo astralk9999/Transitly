@@ -19,7 +19,7 @@ import 'features/error/env_error_screen.dart';
 /// F26 switch point: cuando las fuentes se empaqueten como assets locales,
 /// poner `true` (y seguir `docs/FONTS_F26.md`). Mientras es `false`,
 /// `google_fonts` resuelve por red (comportamiento actual).
-const bool _fontsBundled = false;
+const bool _fontsBundled = true;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,12 +36,11 @@ void main() async {
     ]));
   }
 
-  // Cargar .env e inicializar Supabase ANTES de cualquier ProviderScope.
-  // Si esto falla, la app se monta con una pantalla de error explicativa
-  // en lugar de crashear silenciosamente; el resto del bootstrap (mock
-  // data + go_router) se omite.
+  // Valida las variables de entorno compiladas vía --dart-define.
+  // Si falta una clave crítica, la app se monta con una pantalla de
+  // error explicativa en lugar de crashear silenciosamente.
   try {
-    await Env.load();
+    Env.supabaseUrl; // dispara _required validation
     await HiveInit.bootstrap();
     AppLogger.info('HiveCache', 'bootstrap complete');
     await Supabase.initialize(

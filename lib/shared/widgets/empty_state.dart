@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_spacing.dart';
@@ -46,10 +45,7 @@ class EmptyState extends StatelessWidget {
               ],
               GradientText(
                 title,
-                style: GoogleFonts.ibmPlexMono(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                ),
+                style: TransitTypography.timeEstimate(Colors.white),
                 gradient: c.gradientAccent,
               ),
               const SizedBox(height: TransitSpacing.space8),

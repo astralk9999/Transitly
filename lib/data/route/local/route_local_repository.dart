@@ -14,7 +14,7 @@ class RouteLocalRepository implements RouteRepository {
   static String _key(String id) => 'route:$id';
 
   @override
-  Future<List<RouteModel>> byOperator(String operatorId) async {
+  Future<List<RouteModel>> byOperator(String operatorId, {int? limit, int? offset}) async {
     return _box.values
         .where((r) => r.operatorId == operatorId)
         .toList(growable: false);

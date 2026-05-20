@@ -9,17 +9,16 @@ import '../../../core/theme/transit_typography.dart';
 import '../../../data/mock/mock_data_service.dart';
 import '../../../data/mock/mock_realtime_service.dart';
 import '../../../data/geo/geo_providers.dart';
+import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/models/models.dart';
 import '../../../shared/providers/derived/home_providers.dart';
 import '../../../shared/providers/route_lookup_providers.dart';
 import '../../../shared/widgets/glass_card.dart';
 import '../../../shared/widgets/responsive_scaffold.dart';
-import '../../../shared/widgets/route_card.dart';
 import '../../../shared/widgets/stagger_list.dart';
+import '../../../shared/widgets/route_card.dart';
 import '../../../shared/widgets/transit_button.dart';
 import '../../../shared/widgets/transit_chip.dart';
-
-import '../../../l10n/generated/app_localizations.dart';
 
 const _jerezCenter = LatLng(36.6850, -6.1261);
 const _nearbyCount = 3;
@@ -98,7 +97,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
               // ── Header ──
               Semantics(
                 header: true,
-                label: 'Transitly',
+                label: AppLocalizations.of(context).appTitle,
                 child: Text(
                   'TRANSITLY',
                   style: GoogleFonts.ibmPlexMono(
@@ -238,7 +237,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
 
     return Semantics(
       button: true,
-      label: 'Tu próximo bus, ${route.code}',
+      label: AppLocalizations.of(context).homeNextBusSemantics(route.code),
       child: GestureDetector(
         onTap: () => context.push('/route/${route.id}'),
         child: GlassCard(
@@ -344,7 +343,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
 
               return Semantics(
                 button: true,
-                label: '${route.code}, $time',
+                label: AppLocalizations.of(context).homeRouteSemanticsLabel(route.code, time),
                 child: GestureDetector(
                   onTap: () => context.push('/route/$routeId'),
                   child: Row(

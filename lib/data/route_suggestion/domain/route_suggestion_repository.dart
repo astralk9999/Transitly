@@ -43,4 +43,6 @@ abstract class RouteSuggestionRepository {
 
   /// Devuelve el conteo de votos tras aplicar el del caller.
   Future<int> castVote(String suggestionId);
+
+  Future<RouteSuggestionModel> updateStatus(String id, String status);
 }

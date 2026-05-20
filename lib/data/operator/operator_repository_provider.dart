@@ -35,13 +35,13 @@ class OperatorRepositorySwr implements OperatorRepository {
   static const _logTag = 'Repo:Operator';
 
   @override
-  Future<List<OperatorModel>> list() async {
-    final cached = await local.list();
+  Future<List<OperatorModel>> list({int? limit, int? offset}) async {
+    final cached = await local.list(limit: limit, offset: offset);
     if (cached.isNotEmpty) {
       unawaited(_refreshList());
       return cached;
     }
-    final fresh = await remote.list();
+    final fresh = await remote.list(limit: limit, offset: offset);
     await local.upsertAll(fresh);
     return fresh;
   }

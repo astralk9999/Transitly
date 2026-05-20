@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+
+import '../../core/theme/transit_typography.dart';
 
 class StatusBadge extends StatelessWidget {
   const StatusBadge(this.text, this.stateColor, {super.key});
@@ -18,12 +19,7 @@ class StatusBadge extends StatelessWidget {
       ),
       child: Text(
         text.toUpperCase(),
-        style: GoogleFonts.ibmPlexMono(
-          fontSize: 10,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 1.0,
-          color: stateColor,
-        ),
+        style: TransitTypography.inboxTypeTag(stateColor),
       ),
     );
   }

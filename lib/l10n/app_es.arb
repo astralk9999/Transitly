@@ -131,7 +131,6 @@
   "adminOperatorsErrorNetwork": "Error de red al cargar operadores",
   "@adminOperatorsErrorNetwork": { "description": "Admin operators network error" },
   "adminOperatorsErrorUnknown": "Error desconocido al cargar operadores",
-  "@adminOperatorsErrorUnknown": { "description": "Admin operators unknown error" },
 
   "managerInboxTitle": "Bandeja de gestión",
   "@managerInboxTitle": { "description": "Manager inbox screen title" },
@@ -361,10 +360,7 @@
   "@offlineRegionsSelectArea": { "description": "Instruction to select area on map" },
   "offlineRegionsDataSynced": "Datos sincronizados",
   "@offlineRegionsDataSynced": { "description": "Data synced indicator in region card" },
-  "offlineRegionsDataSyncedAt": "Sincronizado el {date}",
-  "@offlineRegionsDataSyncedAt": { "description": "Data sync date indicator", "placeholders": { "date": { "type": "String" } } },
   "offlineRegionsMapLink": "Mapas offline",
-  "@offlineRegionsMapLink": { "description": "Profile link to offline maps" },
 
   "appearanceStorageSection": "ALMACENAMIENTO OFF LINE",
   "@appearanceStorageSection": { "description": "Appearance storage section header" },
@@ -383,9 +379,6 @@
   "appearanceStorageClearCacheDone": "Caché de mapas eliminada",
   "@appearanceStorageClearCacheDone": { "description": "Map cache cleared confirmation" },
   "appearanceStorageMaxInfo": "Almacenamiento máximo: 500 MB",
-  "@appearanceStorageMaxInfo": { "description": "Maximum storage info text" },
-  "appearanceStorageNotAvailable": "No disponible",
-  "@appearanceStorageNotAvailable": { "description": "Not available label" },
 
   "notificationsTitle": "Notificaciones",
   "@notificationsTitle": { "description": "Notifications screen title" },
@@ -420,12 +413,6 @@
     "placeholders": { "n": { "type": "int", "example": "3" } }
   },
   "notificationTimeDays": "{n, plural, =1{Hace 1 d} other{Hace {n} d}}",
-  "@notificationTimeDays": {
-    "description": "Relative time: n days ago",
-    "placeholders": { "n": { "type": "int", "example": "2" } }
-  },
-  "notificationSwipeToRead": "Desliza para marcar como leído",
-  "@notificationSwipeToRead": { "description": "Hint: swipe to mark notification as read" },
 
   "notifPrefSectionTitle": "NOTIFICACIONES",
   "@notifPrefSectionTitle": { "description": "Profile notifications section header" },
@@ -713,5 +700,81 @@
 
   "suggestionContributeTitle": "Contribuir a sugerencias",
   "suggestionContributeEmptyTitle": "Nada que contribuir ahora",
-  "suggestionContributeEmptySubtitle": "No hay sugerencias abiertas. Vuelve más tarde o propón una ruta nueva desde la pestaña de sugerencias."
+  "suggestionContributeEmptySubtitle": "No hay sugerencias abiertas. Vuelve más tarde o propón una ruta nueva desde la pestaña de sugerencias.",
+
+  "cityPickerErrorOperators": "Error al cargar operadores",
+  "driversErrorLoading": "Error al cargar conductores",
+  "driversErrorRevoking": "Error al revocar conductor",
+  "invitationCodesErrorLoading": "Error al cargar códigos",
+  "invitationCodesErrorGenerating": "Error al generar código",
+  "invitationCodesErrorRevoking": "Error al revocar código",
+  "routeOfficializeError": "Error al enviar solicitud",
+  "routeShareUserNotFound": "Usuario no encontrado",
+  "routeShareSuccess": "Ruta compartida con {email}",
+  "@routeShareSuccess": {
+    "placeholders": {
+      "email": { "type": "String", "example": "usuario@email.com" }
+    }
+  },
+  "routeShareError": "Error al compartir ruta",
+  "routeShareErrorGeneratingLink": "Error al generar enlace",
+  "routeDetailNotFound": "Ruta no encontrada",
+  "stopDetailNotFound": "Parada no encontrada",
+  "feedbackErrorSending": "Error al enviar mejora",
+  "incidentErrorSending": "Error al enviar reporte",
+
+  "homeRouteSemanticsLabel": "{code}, {time}",
+  "@homeRouteSemanticsLabel": {
+    "placeholders": {
+      "code": { "type": "String", "example": "L1" },
+      "time": { "type": "String", "example": "5 min" }
+    }
+  },
+
+  "nfcCardBalance": "Saldo: {amount} euros",
+  "@nfcCardBalance": {
+    "placeholders": {
+      "amount": { "type": "String", "example": "12.50" }
+    }
+  },
+  "homeNextBusSemantics": "Tu próximo bus, {route}",
+  "@homeNextBusSemantics": {
+    "placeholders": {
+      "route": { "type": "String", "example": "L1" }
+    }
+  },
+  "generalComingSoon": "{feature}: próximamente",
+  "@generalComingSoon": {
+    "placeholders": {
+      "feature": { "type": "String", "example": "Compartir" }
+    }
+  },
+  "capacitySemanticsLabel": "Ocupación: {level}",
+  "@capacitySemanticsLabel": {
+    "placeholders": {
+      "level": { "type": "String", "example": "Lleno" }
+    }
+  },
+  "reputationSemanticsLabel": "Reputación: {level}",
+  "@reputationSemanticsLabel": {
+    "placeholders": {
+      "level": { "type": "String", "example": "Colaborador" }
+    }
+  },
+  "reputationScoreSemantics": "{label}: {score} puntos",
+  "@reputationScoreSemantics": {
+    "placeholders": {
+      "label": { "type": "String", "example": "Colaborador" },
+      "score": { "type": "int", "example": "150" }
+    }
+  },
+  "routeCardSemantics": "Línea {code}, {name}{status}{minutes}",
+  "@routeCardSemantics": {
+    "placeholders": {
+      "code": { "type": "String", "example": "L1" },
+      "name": { "type": "String", "example": "Centro-Norte" },
+      "status": { "type": "String", "example": ", A tiempo" },
+      "minutes": { "type": "String", "example": ", 5 min" }
+    }
+  }
 }

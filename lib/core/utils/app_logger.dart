@@ -4,6 +4,9 @@ import 'sentry_setup.dart';
 
 /// Thin logging wrapper around [debugPrint] + [assert].
 ///
+/// Niveles: debug → info → perf → warn → error.
+/// [perf] registra duraciones de operaciones clave para SLO.
+///
 /// Kept dependency-free on purpose: swapping to `logger` later is a drop-in
 /// replacement of these four static methods.
 class AppLogger {
@@ -19,6 +22,11 @@ class AppLogger {
   static void info(String tag, String message) {
     if (!_enabled) return;
     debugPrint('[INFO ][$tag] $message');
+  }
+
+  static void perf(String tag, String operation, Duration elapsed) {
+    if (!_enabled) return;
+    debugPrint('[PERF ][$tag] $operation took ${elapsed.inMilliseconds}ms');
   }
 
   static void warn(String tag, String message, [Object? error]) {

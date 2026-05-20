@@ -38,7 +38,8 @@ class HomeShell extends ConsumerWidget {
     final tabs = homeTabsOf(AppLocalizations.of(context));
 
     if (useRail) {
-      return Scaffold(
+      return FocusTraversalGroup(
+        child: Scaffold(
         backgroundColor: c.bgRoot,
         body: Stack(
           children: [
@@ -79,10 +80,12 @@ class HomeShell extends ConsumerWidget {
             ),
           ],
         ),
+      ),
       );
     }
 
-    return Scaffold(
+    return FocusTraversalGroup(
+      child: Scaffold(
       backgroundColor: c.bgRoot,
       extendBody: true,
       body: Stack(
@@ -111,10 +114,11 @@ class HomeShell extends ConsumerWidget {
             ),
         ],
       ),
-      bottomNavigationBar: HomeBottomNav(
-        currentIndex: navigationShell.currentIndex,
-        onTap: _onTap,
-        tabs: tabs,
+        bottomNavigationBar: HomeBottomNav(
+          currentIndex: navigationShell.currentIndex,
+          onTap: _onTap,
+          tabs: tabs,
+        ),
       ),
     );
   }

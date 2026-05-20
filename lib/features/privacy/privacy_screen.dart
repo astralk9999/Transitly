@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -65,6 +67,7 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen> {
     // Reconstruye analyticsServiceProvider (observa privacyConsentsProvider):
     // al re-otorgar 'analytics' volverá a instanciar PostHog (que llama
     // a enable()); al revocar, devolverá NoopAnalyticsService.
+    if (!mounted) return;
     ref.invalidate(privacyConsentsProvider);
   }
 
@@ -185,7 +188,7 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen> {
                   c: c,
                   onChanged: (v) {
                     setState(() => _analytics = v);
-                    _setConsent('analytics', v);
+                    unawaited(_setConsent('analytics', v));
                   },
                 ),
                 const SizedBox(height: 12),
@@ -203,7 +206,7 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen> {
                   c: c,
                   onChanged: (v) {
                     setState(() => _crashReporting = v);
-                    _setConsent('crash_reporting', v);
+                    unawaited(_setConsent('crash_reporting', v));
                   },
                 ),
                 const SizedBox(height: 12),
@@ -221,7 +224,7 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen> {
                   c: c,
                   onChanged: (v) {
                     setState(() => _marketing = v);
-                    _setConsent('marketing', v);
+                    unawaited(_setConsent('marketing', v));
                   },
                 ),
               ],

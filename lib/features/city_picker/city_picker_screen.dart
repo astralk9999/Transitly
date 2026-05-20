@@ -6,6 +6,7 @@ import '../../../core/theme/transit_typography.dart';
 import '../../../data/geo/geo_providers.dart';
 import '../../../shared/models/operator_model.dart';
 import '../../../shared/widgets/glass_card.dart';
+import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/smoke_background.dart';
 
 class CityPickerScreen extends ConsumerWidget {
@@ -60,9 +61,9 @@ class CityPickerScreen extends ConsumerWidget {
                     },
                     loading: () => const Center(
                         child: CircularProgressIndicator()),
-                    error: (_, __) => const Center(
-                      child: Text('Error al cargar operadores',
-                          style: TextStyle(color: Colors.redAccent)),
+                    error: (_, __) => Center(
+                      child: Text(AppLocalizations.of(context).cityPickerErrorOperators,
+                          style: const TextStyle(color: Colors.redAccent)),
                     ),
                   ),
                 ),

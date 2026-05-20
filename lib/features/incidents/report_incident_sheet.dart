@@ -6,6 +6,7 @@ import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../core/utils/uuid.dart';
 import '../../data/incident/incident_repository_provider.dart';
+import '../../l10n/generated/app_localizations.dart';
 import '../../shared/models/enums.dart';
 import '../../shared/models/incident_model.dart';
 import '../../shared/models/route_model.dart';
@@ -138,7 +139,7 @@ class _ReportIncidentContentState
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error al enviar: ${e.toString()}')),
+          SnackBar(content: Text(AppLocalizations.of(context).incidentErrorSending)),
         );
       }
     } finally {

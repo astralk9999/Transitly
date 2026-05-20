@@ -123,6 +123,18 @@ final routeFeedbackRepositoryProvider =
     },
   );
 
+  ref.read(offlineSyncServiceProvider).registerExecutor(
+    PendingActionKind.updateFeedbackStatus,
+    (payload) async {
+      final id = payload['id'] as String;
+      final status = payload['status'] as String;
+      await client.from('route_feedback').update(<String, dynamic>{
+        'feedback_status': status,
+        'updated_at': DateTime.now().toUtc().toIso8601String(),
+      }).eq('id', id);
+    },
+  );
+
   return RouteFeedbackRepositorySwr(
     local: RouteFeedbackLocalRepository(box),
     remote: remote,

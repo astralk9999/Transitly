@@ -6,6 +6,7 @@ import '../../../core/theme/transit_typography.dart';
 import '../../../data/supabase/supabase_client_provider.dart';
 import '../../../shared/widgets/glass_card.dart';
 import '../../../shared/widgets/smoke_background.dart';
+import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/transit_button.dart';
 
 class InvitationCodesScreen extends ConsumerStatefulWidget {
@@ -57,7 +58,7 @@ class _InvitationCodesScreenState extends ConsumerState<InvitationCodesScreen> {
     } catch (e) {
       setState(() {
         _loading = false;
-        _error = 'Error al cargar códigos';
+        _error = AppLocalizations.of(context).invitationCodesErrorLoading;
       });
     }
   }
@@ -86,7 +87,7 @@ class _InvitationCodesScreenState extends ConsumerState<InvitationCodesScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${e.toString()}')),
+          SnackBar(content: Text(AppLocalizations.of(context).invitationCodesErrorGenerating)),
         );
       }
     }
@@ -154,7 +155,7 @@ class _InvitationCodesScreenState extends ConsumerState<InvitationCodesScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error al revocar: ${e.toString()}')),
+          SnackBar(content: Text(AppLocalizations.of(context).invitationCodesErrorRevoking)),
         );
       }
     }

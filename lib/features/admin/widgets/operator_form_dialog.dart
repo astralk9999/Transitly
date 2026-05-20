@@ -82,11 +82,21 @@ class _OperatorFormDialogState extends State<OperatorFormDialog> {
               TransitInput(
                 hint: l10n.adminOperatorsSlug,
                 controller: _slugCtrl,
+                validator: (v) {
+                  if (v == null || v.trim().isEmpty) return 'Required';
+                  if (v.contains(' ')) return 'No spaces';
+                  return null;
+                },
               ),
               const SizedBox(height: 12),
               TransitInput(
                 hint: l10n.adminOperatorsName,
                 controller: _nameCtrl,
+                validator: (v) {
+                  if (v == null || v.trim().isEmpty) return 'Required';
+                  if (v.trim().length < 2) return 'Min 2 chars';
+                  return null;
+                },
               ),
               const SizedBox(height: 12),
               TransitInput(
@@ -102,6 +112,13 @@ class _OperatorFormDialogState extends State<OperatorFormDialog> {
               TransitInput(
                 hint: l10n.adminOperatorsEmail,
                 controller: _emailCtrl,
+                validator: (v) {
+                  if (v == null || v.trim().isEmpty) return null;
+                  if (!RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(v.trim())) {
+                    return 'Invalid email';
+                  }
+                  return null;
+                },
               ),
             ],
           ),
@@ -120,8 +137,6 @@ class _OperatorFormDialogState extends State<OperatorFormDialog> {
           isLoading: _saving,
           onPressed: () async {
             if (!_formKey.currentState!.validate()) return;
-            if (_slugCtrl.text.trim().isEmpty) return;
-            if (_nameCtrl.text.trim().isEmpty) return;
             setState(() => _saving = true);
             try {
               Navigator.of(context).pop(_buildOperator());

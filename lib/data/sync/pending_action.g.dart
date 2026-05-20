@@ -40,4 +40,6 @@ const _$PendingActionKindEnumMap = {
   PendingActionKind.voteFeatureRequest: 'voteFeatureRequest',
   PendingActionKind.markFavorite: 'markFavorite',
   PendingActionKind.markNotificationRead: 'markNotificationRead',
+  PendingActionKind.updateFeedbackStatus: 'updateFeedbackStatus',
+  PendingActionKind.updateIncidentStatus: 'updateIncidentStatus',
 };

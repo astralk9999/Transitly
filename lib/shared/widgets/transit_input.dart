@@ -12,6 +12,7 @@ class TransitInput extends StatelessWidget {
     this.prefix,
     this.suffix,
     this.maxLines = 1,
+    this.validator,
   });
 
   final String? hint;
@@ -20,6 +21,7 @@ class TransitInput extends StatelessWidget {
   final Widget? prefix;
   final Widget? suffix;
   final int maxLines;
+  final FormFieldValidator<String>? validator;
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +33,7 @@ class TransitInput extends StatelessWidget {
       child: TextFormField(
         controller: controller,
         onChanged: onChanged,
+        validator: validator,
         maxLines: maxLines,
         style: TransitTypography.bodyPrimary(c.textHi),
         cursorColor: c.accent,

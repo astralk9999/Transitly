@@ -22,6 +22,8 @@ enum PendingActionKind {
   voteFeatureRequest,
   markFavorite,
   markNotificationRead,
+  updateFeedbackStatus,
+  updateIncidentStatus,
 }
 
 /// Mutación pendiente de aplicar contra el backend. Se persiste en

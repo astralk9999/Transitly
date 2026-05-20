@@ -1,19 +1,20 @@
-class UserFavoriteModel {
-  const UserFavoriteModel({
-    required this.id,
-    required this.userId,
-    required this.routeId,
-    this.homeStopId,
-    this.alarmMinutesBefore,
-  });
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  final String id;
-  final String userId;
-  final String routeId;
-  final String? homeStopId;
-  final int? alarmMinutesBefore;
+part 'user_favorite_model.freezed.dart';
 
-  factory UserFavoriteModel.fromJson(Map<String, dynamic> j) =>
+@freezed
+abstract class UserFavoriteModel with _$UserFavoriteModel {
+  const UserFavoriteModel._();
+
+  const factory UserFavoriteModel({
+    required String id,
+    required String userId,
+    required String routeId,
+    String? homeStopId,
+    int? alarmMinutesBefore,
+  }) = _UserFavoriteModel;
+
+  static UserFavoriteModel fromJson(Map<String, dynamic> j) =>
       UserFavoriteModel(
         id: j['id'] as String,
         userId: j['userId'] as String,

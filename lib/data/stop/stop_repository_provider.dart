@@ -88,7 +88,7 @@ class StopRepositorySwr implements StopRepository {
   }
 
   @override
-  Future<List<StopModel>> byOperator(String operatorId) async {
+  Future<List<StopModel>> byOperator(String operatorId, {int? limit, int? offset}) async {
     // Cache local no indexa por operador (StopModel sin operatorId);
     // vamos directos al remoto y guardamos para byId().
     try {

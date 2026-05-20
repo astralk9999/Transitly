@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
@@ -36,11 +35,7 @@ class ResolvedIncidentItem extends StatelessWidget {
               children: [
                 Text(
                   incident.incidentType.label.toUpperCase(),
-                  style: GoogleFonts.ibmPlexMono(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600,
-                    color: c.textMid,
-                  ),
+                  style: TransitTypography.inboxTypeTag(c.textMid),
                 ),
                 const Spacer(),
                 Text(

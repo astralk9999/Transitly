@@ -12,14 +12,19 @@ import '../domain/operator_repository.dart';
 /// El JSON mock contiene un único operador (COMUJESA) y no se va a
 /// expandir, así que las búsquedas espaciales son triviales.
 class OperatorMockRepository implements OperatorRepository {
-  OperatorMockRepository(this._mockData) : _cached = [_mockData.operator_];
+  OperatorMockRepository(MockDataService mockData)
+      : _cached = [mockData.operator_];
 
-  // ignore: unused_field
-  final MockDataService _mockData;
   final List<OperatorModel> _cached;
 
   @override
-  Future<List<OperatorModel>> list() async => List.unmodifiable(_cached);
+  Future<List<OperatorModel>> list({int? limit, int? offset}) async {
+    final all = List<OperatorModel>.unmodifiable(_cached);
+    if (offset != null && offset >= all.length) return [];
+    final start = offset ?? 0;
+    final end = limit != null ? start + limit : all.length;
+    return all.sublist(start, end > all.length ? all.length : end);
+  }
 
   @override
   Future<OperatorModel?> byId(String id) async {

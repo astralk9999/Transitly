@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_spacing.dart';
+import '../../core/theme/transit_typography.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../models/enums.dart';
 import '../models/reputation.dart';
@@ -29,7 +29,7 @@ class ReputationBadge extends StatelessWidget {
     final label = _rankLabel(l10n, rank);
 
     return Semantics(
-      label: '$label: $score pts',
+      label: l10n.reputationScoreSemantics(label, score),
       child: Container(
         padding: TransitSpacing.paddingBadge,
         decoration: BoxDecoration(
@@ -44,21 +44,12 @@ class ReputationBadge extends StatelessWidget {
             const SizedBox(width: TransitSpacing.space4),
             Text(
               label,
-              style: GoogleFonts.ibmPlexMono(
-                fontSize: 10,
-                fontWeight: FontWeight.w500,
-                letterSpacing: 0.5,
-                color: rank.color,
-              ),
+              style: TransitTypography.statusBadge(rank.color),
             ),
             const SizedBox(width: TransitSpacing.space4),
             Text(
               '$score',
-              style: GoogleFonts.ibmPlexMono(
-                fontSize: 10,
-                fontWeight: FontWeight.w700,
-                color: c.textMid,
-              ),
+              style: TransitTypography.badgeNumber(c.textMid),
             ),
           ],
         ),
@@ -83,7 +74,7 @@ class ReputationBadge extends StatelessWidget {
     }
 
     return Semantics(
-      label: 'Reputación: ${level.label}',
+      label: AppLocalizations.of(context).reputationSemanticsLabel(level.label),
       child: Container(
         padding: TransitSpacing.paddingBadge,
         decoration: BoxDecoration(
@@ -93,12 +84,7 @@ class ReputationBadge extends StatelessWidget {
         ),
         child: Text(
           level.label.toUpperCase(),
-          style: GoogleFonts.ibmPlexMono(
-            fontSize: 10,
-            fontWeight: FontWeight.w500,
-            letterSpacing: 1.0,
-            color: color,
-          ),
+          style: TransitTypography.statusBadge(color),
         ),
       ),
     );

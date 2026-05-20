@@ -648,11 +648,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get offlineRegionsDataSynced => 'Data synced';
 
   @override
-  String offlineRegionsDataSyncedAt(String date) {
-    return 'Synced on $date';
-  }
-
-  @override
   String get offlineRegionsMapLink => 'Offline maps';
 
   @override
@@ -682,9 +677,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appearanceStorageMaxInfo => 'Maximum storage: 500 MB';
-
-  @override
-  String get appearanceStorageNotAvailable => 'Not available';
 
   @override
   String get notificationsTitle => 'Notifications';
@@ -743,7 +735,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String notificationTimeDays(int n) {
+  String notificationTimeDays(num n) {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
@@ -752,9 +744,6 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$_temp0';
   }
-
-  @override
-  String get notificationSwipeToRead => 'Swipe to mark as read';
 
   @override
   String get notifPrefSectionTitle => 'NOTIFICATIONS';
@@ -1246,4 +1235,96 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get suggestionContributeEmptySubtitle =>
       'No open suggestions. Check back later or propose a new route from the suggestions tab.';
+
+  @override
+  String get cityPickerErrorOperators => 'Error loading operators';
+
+  @override
+  String get driversErrorLoading => 'Error loading drivers';
+
+  @override
+  String get driversErrorRevoking => 'Error revoking driver';
+
+  @override
+  String get invitationCodesErrorLoading => 'Error loading codes';
+
+  @override
+  String get invitationCodesErrorGenerating => 'Error generating code';
+
+  @override
+  String get invitationCodesErrorRevoking => 'Error revoking code';
+
+  @override
+  String get routeOfficializeError => 'Error sending request';
+
+  @override
+  String get routeShareUserNotFound => 'User not found';
+
+  @override
+  String routeShareSuccess(String email) {
+    return 'Route shared with $email';
+  }
+
+  @override
+  String get routeShareError => 'Error sharing route';
+
+  @override
+  String get routeShareErrorGeneratingLink => 'Error generating link';
+
+  @override
+  String get routeDetailNotFound => 'Route not found';
+
+  @override
+  String get stopDetailNotFound => 'Stop not found';
+
+  @override
+  String get feedbackErrorSending => 'Error sending feedback';
+
+  @override
+  String get incidentErrorSending => 'Error sending report';
+
+  @override
+  String homeRouteSemanticsLabel(String code, String time) {
+    return '$code, $time';
+  }
+
+  @override
+  String nfcCardBalance(String amount) {
+    return 'Balance: $amount euros';
+  }
+
+  @override
+  String homeNextBusSemantics(String route) {
+    return 'Your next bus, $route';
+  }
+
+  @override
+  String generalComingSoon(String feature) {
+    return '$feature: coming soon';
+  }
+
+  @override
+  String capacitySemanticsLabel(String level) {
+    return 'Occupancy: $level';
+  }
+
+  @override
+  String reputationSemanticsLabel(String level) {
+    return 'Reputation: $level';
+  }
+
+  @override
+  String reputationScoreSemantics(String label, int score) {
+    return '$label: $score points';
+  }
+
+  @override
+  String routeCardSemantics(
+    String code,
+    String name,
+    String status,
+    String minutes,
+  ) {
+    return 'Line $code, $name$status$minutes';
+  }
 }

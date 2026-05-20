@@ -5,6 +5,7 @@ import '../../core/utils/app_logger.dart';
 import '../../shared/models/operator_model.dart';
 import '../cache/hive_box_provider.dart';
 import '../mock/mock_data_service.dart';
+import '../operator/operator_helpers.dart';
 import '../supabase/supabase_client_provider.dart';
 import 'location_service.dart';
 
@@ -73,7 +74,7 @@ final activeOperatorsProvider =
     }
 
     final operators = (result as List<dynamic>)
-        .map((row) => _operatorFromRow(row as Map<String, dynamic>))
+        .map((row) => operatorFromRow(row as Map<String, dynamic>))
         .toList();
 
     // Cachear en Hive.
@@ -105,15 +106,3 @@ final geoBootstrapProvider = FutureProvider<void>((ref) async {
   await ref.watch(activeOperatorsProvider.future);
 });
 
-OperatorModel _operatorFromRow(Map<String, dynamic> row) {
-  return OperatorModel(
-    id: row['id'] as String,
-    name: row['name'] as String? ?? '',
-    shortName: row['slug'] as String? ?? '',
-    slug: row['slug'] as String? ?? '',
-    region: row['region'] as String? ?? 'ES',
-    website: row['website'] as String? ?? '',
-    contactEmail: row['contact_email'] as String? ?? '',
-    phone: '',
-  );
-}

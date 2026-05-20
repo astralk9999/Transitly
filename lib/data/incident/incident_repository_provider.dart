@@ -134,6 +134,17 @@ final incidentRepositoryProvider = Provider<IncidentRepository>((ref) {
     },
   );
 
+  ref.read(offlineSyncServiceProvider).registerExecutor(
+    PendingActionKind.updateIncidentStatus,
+    (payload) async {
+      final id = payload['id'] as String;
+      final status = payload['status'] as String;
+      await client.from('incidents').update(<String, dynamic>{
+        'status': status,
+      }).eq('id', id);
+    },
+  );
+
   return IncidentRepositorySwr(
     local: IncidentLocalRepository(box),
     remote: remote,

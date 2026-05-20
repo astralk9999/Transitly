@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/transit_colors.dart';
 import '../../../../core/theme/transit_typography.dart';
 import '../../../../data/supabase/supabase_client_provider.dart';
+import '../../../../l10n/generated/app_localizations.dart';
 import '../../../../shared/widgets/transit_button.dart';
 
 /// Modal para solicitar la oficialización de una ruta comunitaria.
@@ -72,7 +73,7 @@ class _OfficializeModalState extends ConsumerState<_OfficializeModal> {
       setState(() => _success =
           'Solicitud enviada. Recibirás una notificación cuando se resuelva.');
     } catch (e) {
-      setState(() => _error = 'Error: ${e.toString()}');
+      setState(() => _error = AppLocalizations.of(context).routeOfficializeError);
     }
   }
 

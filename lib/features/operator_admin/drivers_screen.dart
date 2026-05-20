@@ -6,6 +6,7 @@ import '../../../core/theme/transit_typography.dart';
 import '../../../data/supabase/supabase_client_provider.dart';
 import '../../../shared/widgets/glass_card.dart';
 import '../../../shared/widgets/smoke_background.dart';
+import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/transit_button.dart';
 
 class DriversScreen extends ConsumerStatefulWidget {
@@ -56,7 +57,7 @@ class _DriversScreenState extends ConsumerState<DriversScreen> {
     } catch (e) {
       setState(() {
         _loading = false;
-        _error = 'Error al cargar conductores';
+        _error = AppLocalizations.of(context).driversErrorLoading;
       });
     }
   }
@@ -106,7 +107,7 @@ class _DriversScreenState extends ConsumerState<DriversScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${e.toString()}')),
+          SnackBar(content: Text(AppLocalizations.of(context).driversErrorRevoking)),
         );
       }
     }

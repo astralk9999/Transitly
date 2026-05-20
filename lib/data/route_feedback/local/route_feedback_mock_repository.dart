@@ -1,7 +1,7 @@
-import '../../../shared/models/enums.dart';
 import '../../../shared/models/route_feedback_model.dart';
 import '../../mock/mock_data_service.dart';
 import '../domain/route_feedback_repository.dart';
+import '../route_feedback_helpers.dart';
 
 /// Implementación de [RouteFeedbackRepository] sobre [MockDataService]
 /// para modo invitado.
@@ -49,17 +49,9 @@ class RouteFeedbackMockRepository implements RouteFeedbackRepository {
   @override
   Future<RouteFeedbackModel> updateStatus(String id, String status) async {
     final existing = _all.firstWhere((f) => f.id == id);
-    final fbStatus = _feedbackStatusFromString(status);
+    final fbStatus = feedbackStatusFromString(status);
     final updated = existing.copyWith(status: fbStatus);
     _modifications[id] = updated;
     return updated;
   }
-
-  static FeedbackStatus _feedbackStatusFromString(String s) => switch (s) {
-        'open' => FeedbackStatus.submitted,
-        'in_review' => FeedbackStatus.inReview,
-        'resolved' || 'applied' => FeedbackStatus.applied,
-        'rejected' => FeedbackStatus.rejected,
-        _ => FeedbackStatus.submitted,
-      };
 }

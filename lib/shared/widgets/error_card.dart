@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/theme/transit_colors.dart';
+import '../../core/theme/transit_typography.dart';
 import 'transit_button.dart';
 
 class ErrorCard extends StatelessWidget {
@@ -37,10 +37,7 @@ class ErrorCard extends StatelessWidget {
               children: [
                 Text(
                   'ERROR · $message',
-                  style: GoogleFonts.ibmPlexMono(
-                    fontSize: 13,
-                    color: c.textMid,
-                  ),
+                  style: TransitTypography.errorText(c.textMid),
                 ),
                 if (onRetry != null) ...[
                   const SizedBox(height: 8),

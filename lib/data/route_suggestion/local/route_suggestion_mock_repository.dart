@@ -1,3 +1,4 @@
+import '../../../shared/models/enums.dart';
 import '../../../shared/models/route_suggestion_model.dart';
 import '../../mock/mock_data_service.dart';
 import '../domain/route_suggestion_repository.dart';
@@ -41,6 +42,13 @@ class RouteSuggestionMockRepository implements RouteSuggestionRepository {
       orElse: () => throw StateError('Suggestion not found: $suggestionId'),
     );
     return s.voteCount + _voteBumps[suggestionId]!;
+  }
+
+  @override
+  Future<RouteSuggestionModel> updateStatus(String id, String status) async {
+    final existing = _all.firstWhere((s) => s.id == id);
+    final newStatus = SuggestionStatus.fromString(status);
+    return existing.copyWith(status: newStatus);
   }
 
   RouteSuggestionModel _applyVoteBump(RouteSuggestionModel s) {

@@ -1,17 +1,19 @@
-class UserAchievementModel {
-  const UserAchievementModel({
-    required this.achievementId,
-    required this.progress,
-    required this.unlocked,
-    this.unlockedAt,
-  });
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  final String achievementId;
-  final int progress;
-  final bool unlocked;
-  final DateTime? unlockedAt;
+part 'user_achievement_model.freezed.dart';
 
-  factory UserAchievementModel.fromJson(Map<String, dynamic> j) =>
+@freezed
+abstract class UserAchievementModel with _$UserAchievementModel {
+  const UserAchievementModel._();
+
+  const factory UserAchievementModel({
+    required String achievementId,
+    required int progress,
+    required bool unlocked,
+    DateTime? unlockedAt,
+  }) = _UserAchievementModel;
+
+  static UserAchievementModel fromJson(Map<String, dynamic> j) =>
       UserAchievementModel(
         achievementId: j['id'] as String,
         progress: j['userProgress'] as int? ?? 0,

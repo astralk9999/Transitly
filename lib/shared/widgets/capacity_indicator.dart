@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
+import '../../l10n/generated/app_localizations.dart';
 import '../models/enums.dart';
 
 class CapacityIndicator extends StatelessWidget {
@@ -28,7 +29,7 @@ class CapacityIndicator extends StatelessWidget {
     }
 
     return Semantics(
-      label: 'Ocupación: ${capacity.label}',
+      label: AppLocalizations.of(context).capacitySemanticsLabel(capacity.label),
       child: Row(
       mainAxisSize: MainAxisSize.min,
       children: [

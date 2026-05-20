@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
+import 'app_localizations_ar.dart';
 import 'app_localizations_en.dart';
 import 'app_localizations_es.dart';
 
@@ -94,6 +95,7 @@ abstract class AppLocalizations {
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
+    Locale('ar'),
     Locale('en'),
     Locale('es'),
   ];
@@ -548,7 +550,7 @@ abstract class AppLocalizations {
   /// **'Error de red al cargar operadores'**
   String get adminOperatorsErrorNetwork;
 
-  /// Admin operators unknown error
+  /// No description provided for @adminOperatorsErrorUnknown.
   ///
   /// In es, this message translates to:
   /// **'Error desconocido al cargar operadores'**
@@ -1340,13 +1342,7 @@ abstract class AppLocalizations {
   /// **'Datos sincronizados'**
   String get offlineRegionsDataSynced;
 
-  /// Data sync date indicator
-  ///
-  /// In es, this message translates to:
-  /// **'Sincronizado el {date}'**
-  String offlineRegionsDataSyncedAt(String date);
-
-  /// Profile link to offline maps
+  /// No description provided for @offlineRegionsMapLink.
   ///
   /// In es, this message translates to:
   /// **'Mapas offline'**
@@ -1400,17 +1396,11 @@ abstract class AppLocalizations {
   /// **'Caché de mapas eliminada'**
   String get appearanceStorageClearCacheDone;
 
-  /// Maximum storage info text
+  /// No description provided for @appearanceStorageMaxInfo.
   ///
   /// In es, this message translates to:
   /// **'Almacenamiento máximo: 500 MB'**
   String get appearanceStorageMaxInfo;
-
-  /// Not available label
-  ///
-  /// In es, this message translates to:
-  /// **'No disponible'**
-  String get appearanceStorageNotAvailable;
 
   /// Notifications screen title
   ///
@@ -1490,17 +1480,11 @@ abstract class AppLocalizations {
   /// **'{n, plural, =1{Hace 1 h} other{Hace {n} h}}'**
   String notificationTimeHours(int n);
 
-  /// Relative time: n days ago
+  /// No description provided for @notificationTimeDays.
   ///
   /// In es, this message translates to:
   /// **'{n, plural, =1{Hace 1 d} other{Hace {n} d}}'**
-  String notificationTimeDays(int n);
-
-  /// Hint: swipe to mark notification as read
-  ///
-  /// In es, this message translates to:
-  /// **'Desliza para marcar como leído'**
-  String get notificationSwipeToRead;
+  String notificationTimeDays(num n);
 
   /// Profile notifications section header
   ///
@@ -2383,6 +2367,149 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'No hay sugerencias abiertas. Vuelve más tarde o propón una ruta nueva desde la pestaña de sugerencias.'**
   String get suggestionContributeEmptySubtitle;
+
+  /// No description provided for @cityPickerErrorOperators.
+  ///
+  /// In es, this message translates to:
+  /// **'Error al cargar operadores'**
+  String get cityPickerErrorOperators;
+
+  /// No description provided for @driversErrorLoading.
+  ///
+  /// In es, this message translates to:
+  /// **'Error al cargar conductores'**
+  String get driversErrorLoading;
+
+  /// No description provided for @driversErrorRevoking.
+  ///
+  /// In es, this message translates to:
+  /// **'Error al revocar conductor'**
+  String get driversErrorRevoking;
+
+  /// No description provided for @invitationCodesErrorLoading.
+  ///
+  /// In es, this message translates to:
+  /// **'Error al cargar códigos'**
+  String get invitationCodesErrorLoading;
+
+  /// No description provided for @invitationCodesErrorGenerating.
+  ///
+  /// In es, this message translates to:
+  /// **'Error al generar código'**
+  String get invitationCodesErrorGenerating;
+
+  /// No description provided for @invitationCodesErrorRevoking.
+  ///
+  /// In es, this message translates to:
+  /// **'Error al revocar código'**
+  String get invitationCodesErrorRevoking;
+
+  /// No description provided for @routeOfficializeError.
+  ///
+  /// In es, this message translates to:
+  /// **'Error al enviar solicitud'**
+  String get routeOfficializeError;
+
+  /// No description provided for @routeShareUserNotFound.
+  ///
+  /// In es, this message translates to:
+  /// **'Usuario no encontrado'**
+  String get routeShareUserNotFound;
+
+  /// No description provided for @routeShareSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Ruta compartida con {email}'**
+  String routeShareSuccess(String email);
+
+  /// No description provided for @routeShareError.
+  ///
+  /// In es, this message translates to:
+  /// **'Error al compartir ruta'**
+  String get routeShareError;
+
+  /// No description provided for @routeShareErrorGeneratingLink.
+  ///
+  /// In es, this message translates to:
+  /// **'Error al generar enlace'**
+  String get routeShareErrorGeneratingLink;
+
+  /// No description provided for @routeDetailNotFound.
+  ///
+  /// In es, this message translates to:
+  /// **'Ruta no encontrada'**
+  String get routeDetailNotFound;
+
+  /// No description provided for @stopDetailNotFound.
+  ///
+  /// In es, this message translates to:
+  /// **'Parada no encontrada'**
+  String get stopDetailNotFound;
+
+  /// No description provided for @feedbackErrorSending.
+  ///
+  /// In es, this message translates to:
+  /// **'Error al enviar mejora'**
+  String get feedbackErrorSending;
+
+  /// No description provided for @incidentErrorSending.
+  ///
+  /// In es, this message translates to:
+  /// **'Error al enviar reporte'**
+  String get incidentErrorSending;
+
+  /// No description provided for @homeRouteSemanticsLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'{code}, {time}'**
+  String homeRouteSemanticsLabel(String code, String time);
+
+  /// No description provided for @nfcCardBalance.
+  ///
+  /// In es, this message translates to:
+  /// **'Saldo: {amount} euros'**
+  String nfcCardBalance(String amount);
+
+  /// No description provided for @homeNextBusSemantics.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu próximo bus, {route}'**
+  String homeNextBusSemantics(String route);
+
+  /// No description provided for @generalComingSoon.
+  ///
+  /// In es, this message translates to:
+  /// **'{feature}: próximamente'**
+  String generalComingSoon(String feature);
+
+  /// No description provided for @capacitySemanticsLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Ocupación: {level}'**
+  String capacitySemanticsLabel(String level);
+
+  /// No description provided for @reputationSemanticsLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Reputación: {level}'**
+  String reputationSemanticsLabel(String level);
+
+  /// No description provided for @reputationScoreSemantics.
+  ///
+  /// In es, this message translates to:
+  /// **'{label}: {score} puntos'**
+  String reputationScoreSemantics(String label, int score);
+
+  /// No description provided for @routeCardSemantics.
+  ///
+  /// In es, this message translates to:
+  /// **'Línea {code}, {name}{status}{minutes}'**
+  String routeCardSemantics(
+    String code,
+    String name,
+    String status,
+    String minutes,
+  );
 }
 
 class _AppLocalizationsDelegate
@@ -2396,7 +2523,7 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['en', 'es'].contains(locale.languageCode);
+      <String>['ar', 'en', 'es'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -2405,6 +2532,8 @@ class _AppLocalizationsDelegate
 AppLocalizations lookupAppLocalizations(Locale locale) {
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
+    case 'ar':
+      return AppLocalizationsAr();
     case 'en':
       return AppLocalizationsEn();
     case 'es':

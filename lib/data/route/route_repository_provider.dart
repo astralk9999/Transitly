@@ -25,7 +25,7 @@ class RouteRepositorySwr implements RouteRepository {
   static const _logTag = 'Repo:Route';
 
   @override
-  Future<List<RouteModel>> byOperator(String operatorId) async {
+  Future<List<RouteModel>> byOperator(String operatorId, {int? limit, int? offset}) async {
     final cached = await local.byOperator(operatorId);
     if (cached.isNotEmpty) {
       unawaited(_refreshByOperator(operatorId));

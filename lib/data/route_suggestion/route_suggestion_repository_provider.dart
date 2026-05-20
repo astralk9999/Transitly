@@ -97,6 +97,13 @@ class RouteSuggestionRepositorySwr implements RouteSuggestionRepository {
       return localTotal;
     }
   }
+
+  @override
+  Future<RouteSuggestionModel> updateStatus(String id, String status) async {
+    final updated = await remote.updateStatus(id, status);
+    await local.upsert(updated);
+    return updated;
+  }
 }
 
 final routeSuggestionRepositoryProvider =

@@ -24,13 +24,13 @@ flutter run                               # Dispositivo Android o iOS conectado
 
 ```bash
 flutter analyze          # 0 issues — no commits con warnings
-flutter test             # 148 tests
+flutter test             # 175 tests
 flutter test --coverage  # Escribe coverage/lcov.info
 ```
 
 - `flutter analyze` tiene `strict-casts: true` y `strict-raw-types: true`. Sin margen.
 - `avoid_print: true` en `lib/`. Solo se permite `print()` en `test/`.
-- No hay CI, no hay pre-commit hook. Todo se ejecuta a mano.
+- CI activo en GitHub Actions con 4 jobs (Analyze, Test, Build Web, Build Android APK). Sin pre-commit hook local.
 
 ---
 
@@ -66,14 +66,16 @@ Estoy ejecutando el Plan v2 de Transitly, fase <N>. Ya está hecho:
 Antes de tocar nada lee docs/ARCHITECTURE.md y docs/PLAN_TRANSITLY_V2.md.
 ```
 
-Estado actual (12 mayo 2026):
-- ✅ F0 — Auditoría
-- ✅ F0.5 — Higiene previa al backend (A+B+C+D)
-- ✅ F1 — Migración a freezed
-- ✅ F2 — Backend Supabase
-- 🟨 F3 — Repositorios + caché Hive (8/12 repos + F3.1 + F3.3 hechos)
-- ⏳ F3.2 restante: `FeatureRequest`, `Notification`, `UserPreferences`, `OfflineRegion`
-- ⏳ F3.4 en adelante sin empezar
+Estado actual (20 mayo 2026):
+- ✅ 28/28 fases del plan completadas
+- ✅ `flutter analyze` 0 issues · `flutter test` 175/175
+- ✅ CI GitHub verde (Analyze, Test, Build Web, Build Android APK)
+- ✅ F13 Realtime implementado (5/12 repos con canales Supabase)
+- ✅ Paginación en 10/12 repos
+- ✅ SEC2: `.env` → `--dart-define`
+- ✅ F26: fuentes locales (DM Sans + IBM Plex Mono bundled)
+- ✅ i18n: ES + EN + AR (RTL)
+- ⏳ 3 items externos: PAT rotation, release keystore, TalkBack verification
 
 ---
 
@@ -150,7 +152,7 @@ flutter test --plain-name "nombre"     # Un test concreto
 - Strings en `lib/l10n/app_es.arb` (template) + `app_en.arb`.
 - Selector en Profile → Accessibility → Idioma via `localeProvider`.
 - Config: `l10n.yaml`. Generado a `lib/l10n/generated/app_localizations.dart`.
-- Scope actual: NFC errors, bottom-nav labels, profile headers, offline/accessibility screens. Driver editor sigue solo `es`.
+- Scope actual: ES + EN + AR (RTL). Mayoría de pantallas con cobertura completa.
 
 ---
 

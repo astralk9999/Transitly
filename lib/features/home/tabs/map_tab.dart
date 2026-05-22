@@ -19,7 +19,7 @@ import '../../../shared/widgets/pressable.dart';
 import '../../../shared/widgets/route_card.dart';
 import '../../map/map_config.dart';
 import '../../map/map_data_cache.dart';
-import '../../map/map_filter_controller.dart';
+import '../../map/widgets/map_filter_sheet.dart';
 import '../../map/sheets/stop_info_sheet.dart';
 import '../../map/sheets/trip_info_sheet.dart';
 import '../../map/transit_map.dart';

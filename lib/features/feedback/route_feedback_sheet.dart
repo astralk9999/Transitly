@@ -164,7 +164,7 @@ class _RouteFeedbackContentState extends ConsumerState<_RouteFeedbackContent> {
             SizedBox(
               width: double.infinity,
               child: TransitButton(
-                label: _submitting ? 'ENVIANDO...' : 'ENVIAR MEJORA',
+                label: _submitting ? AppLocalizations.of(context).actionSending : AppLocalizations.of(context).actionSendImprovement.toUpperCase(),
                 onPressed:
                     _descCtrl.text.trim().isNotEmpty && !_submitting
                         ? _submit

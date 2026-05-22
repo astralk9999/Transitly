@@ -245,7 +245,7 @@ class _ReportIncidentContentState
           SizedBox(
             width: double.infinity,
             child: TransitButton(
-              label: _submitting ? 'ENVIANDO...' : 'ENVIAR',
+              label: _submitting ? AppLocalizations.of(context).actionSending : AppLocalizations.of(context).actionSend.toUpperCase(),
               onPressed: _selected != null && !_submitting
                   ? _submit
                   : null,

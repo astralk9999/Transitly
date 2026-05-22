@@ -335,7 +335,7 @@ class _ActiveRouteScreenState extends ConsumerState<ActiveRouteScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
-            child: Text('CANCELAR',
+            child: Text(AppLocalizations.of(context).actionCancel.toUpperCase(),
                 style: TransitTypography.bodySecondary(c.textMid)),
           ),
           TextButton(

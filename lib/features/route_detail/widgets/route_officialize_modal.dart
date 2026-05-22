@@ -194,7 +194,7 @@ class _OfficializeModalState extends ConsumerState<_OfficializeModal> {
 
             if (_success == null)
               TransitButton(
-                label: 'ENVIAR SOLICITUD',
+                label: AppLocalizations.of(context).actionSendRequest.toUpperCase(),
                 onPressed: _submit,
               ),
             const SizedBox(height: 16),

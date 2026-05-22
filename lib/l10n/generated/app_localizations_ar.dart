@@ -169,6 +169,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get sectionRecentChanges => 'التغييرات الأخيرة';
 
   @override
+  String get routeDayWeekday => 'أيام العمل';
+
+  @override
+  String get routeDaySaturday => 'السبت';
+
+  @override
+  String get routeDaySunday => 'الأحد';
+
+  @override
   String get adminUsersTitle => 'Gestión de usuarios';
 
   @override

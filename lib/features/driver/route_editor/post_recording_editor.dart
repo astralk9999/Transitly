@@ -6,6 +6,7 @@ import 'package:latlong2/latlong.dart';
 
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
+import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/smoke_background.dart';
 import '../../../shared/widgets/transit_button.dart';
 import '../../../shared/widgets/transit_input.dart';
@@ -64,7 +65,7 @@ class _PostRecordingEditorState extends State<PostRecordingEditor> {
                       style: TransitTypography.bodyPrimary(c.textMid)),
                   const SizedBox(height: 16),
                   TransitButton(
-                    label: 'VOLVER',
+                    label: AppLocalizations.of(context).actionBack.toUpperCase(),
                     isSmall: true,
                     onPressed: () => context.pop(),
                   ),

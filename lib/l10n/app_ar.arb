@@ -32,6 +32,10 @@
   "sectionSchedules": "الجداول",
   "sectionRecentChanges": "التغييرات الأخيرة",
 
+  "routeDayWeekday": "أيام العمل",
+  "routeDaySaturday": "السبت",
+  "routeDaySunday": "الأحد",
+
   "accessibilityTitle": "إمكانية الوصول",
   "accessibilityThemeSystem": "النظام",
   "accessibilityThemeLight": "فاتح",

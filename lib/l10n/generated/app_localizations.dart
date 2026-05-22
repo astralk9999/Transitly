@@ -418,6 +418,24 @@ abstract class AppLocalizations {
   /// **'CAMBIOS RECIENTES'**
   String get sectionRecentChanges;
 
+  /// No description provided for @routeDayWeekday.
+  ///
+  /// In es, this message translates to:
+  /// **'Laborable'**
+  String get routeDayWeekday;
+
+  /// No description provided for @routeDaySaturday.
+  ///
+  /// In es, this message translates to:
+  /// **'Sábado'**
+  String get routeDaySaturday;
+
+  /// No description provided for @routeDaySunday.
+  ///
+  /// In es, this message translates to:
+  /// **'Domingo'**
+  String get routeDaySunday;
+
   /// Admin users screen title
   ///
   /// In es, this message translates to:

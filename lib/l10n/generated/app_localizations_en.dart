@@ -168,6 +168,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sectionRecentChanges => 'RECENT CHANGES';
 
   @override
+  String get routeDayWeekday => 'Weekday';
+
+  @override
+  String get routeDaySaturday => 'Saturday';
+
+  @override
+  String get routeDaySunday => 'Sunday';
+
+  @override
   String get adminUsersTitle => 'User management';
 
   @override

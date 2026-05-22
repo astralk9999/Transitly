@@ -199,7 +199,7 @@ class CardTab extends ConsumerWidget {
           ),
           const SizedBox(height: 24),
           TransitButton(
-            label: 'CANCELAR',
+            label: AppLocalizations.of(context).actionCancel.toUpperCase(),
             isPrimary: false,
             isSmall: true,
             onPressed: () =>

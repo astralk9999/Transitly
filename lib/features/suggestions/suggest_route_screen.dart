@@ -276,7 +276,7 @@ class _SuggestRouteScreenState extends ConsumerState<SuggestRouteScreen> {
             SizedBox(
               width: double.infinity,
               child: TransitButton(
-                label: 'ENVIAR SUGERENCIA',
+                label: AppLocalizations.of(context).actionSendSuggestion.toUpperCase(),
                 onPressed:
                     _fromCtrl.text.isNotEmpty && _toCtrl.text.isNotEmpty
                         ? () => _submitSuggestion(context, c)

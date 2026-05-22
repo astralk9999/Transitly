@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../data/mock/mock_data_service.dart';
+import '../../l10n/generated/app_localizations.dart';
 import '../../data/mock/mock_realtime_service.dart';
 import '../../shared/models/enums.dart';
 import '../../shared/providers/derived/active_trip_providers.dart';
@@ -58,7 +59,7 @@ class _ActiveRouteScreenState extends ConsumerState<ActiveRouteScreen> {
                       style: TransitTypography.bodyPrimary(c.textMid)),
                   const SizedBox(height: 16),
                   TransitButton(
-                    label: 'VOLVER',
+                    label: AppLocalizations.of(context).actionBack.toUpperCase(),
                     isSmall: true,
                     onPressed: () => context.pop(),
                   ),

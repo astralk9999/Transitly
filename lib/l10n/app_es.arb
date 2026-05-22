@@ -68,6 +68,10 @@
   "sectionSchedules": "HORARIOS",
   "sectionRecentChanges": "CAMBIOS RECIENTES",
 
+  "routeDayWeekday": "Laborable",
+  "routeDaySaturday": "Sábado",
+  "routeDaySunday": "Domingo",
+
   "adminUsersTitle": "Gestión de usuarios",
   "@adminUsersTitle": { "description": "Admin users screen title" },
   "adminUsersSearchHint": "Buscar usuario...",

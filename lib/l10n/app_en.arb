@@ -60,6 +60,10 @@
   "sectionSchedules": "SCHEDULES",
   "sectionRecentChanges": "RECENT CHANGES",
 
+  "routeDayWeekday": "Weekday",
+  "routeDaySaturday": "Saturday",
+  "routeDaySunday": "Sunday",
+
   "adminUsersTitle": "User management",
   "adminUsersSearchHint": "Search user...",
   "adminUsersFilterAll": "All",

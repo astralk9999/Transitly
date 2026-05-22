@@ -129,7 +129,7 @@ class _InvitationCodesScreenState extends ConsumerState<InvitationCodesScreen> {
               ),
               actions: [
                 TransitButton(
-                  label: 'CANCELAR',
+                  label: AppLocalizations.of(ctx).actionCancel.toUpperCase(),
                   isPrimary: false,
                   isSmall: true,
                   onPressed: () => Navigator.of(ctx).pop(),

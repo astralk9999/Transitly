@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/transit_colors.dart';
 import '../../../../core/theme/transit_typography.dart';
+import '../../../../l10n/generated/app_localizations.dart';
 import '../../../../shared/widgets/transit_button.dart';
 import '../../../map/map_config.dart';
 import '../editor_controller.dart';
@@ -115,7 +116,7 @@ class StepReview extends ConsumerWidget {
                 children: [
                   Expanded(
                     child: TransitButton(
-                      label: 'GUARDAR BORRADOR',
+                      label: AppLocalizations.of(context).actionSaveDraft.toUpperCase(),
                       isPrimary: false,
                       onPressed: () async {
                         await controller.saveDraft();

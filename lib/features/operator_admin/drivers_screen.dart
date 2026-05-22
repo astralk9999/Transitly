@@ -79,7 +79,7 @@ class _DriversScreenState extends ConsumerState<DriversScreen> {
               style: TransitTypography.bodySecondary(c.textMid)),
           actions: [
             TransitButton(
-              label: 'CANCELAR',
+              label: AppLocalizations.of(ctx).actionCancel.toUpperCase(),
               isPrimary: false,
               isSmall: true,
               onPressed: () => Navigator.of(ctx).pop(false),

@@ -169,6 +169,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get sectionRecentChanges => 'CAMBIOS RECIENTES';
 
   @override
+  String get routeDayWeekday => 'Laborable';
+
+  @override
+  String get routeDaySaturday => 'Sábado';
+
+  @override
+  String get routeDaySunday => 'Domingo';
+
+  @override
   String get adminUsersTitle => 'Gestión de usuarios';
 
   @override

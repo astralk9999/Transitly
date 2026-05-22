@@ -149,7 +149,7 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
                 SizedBox(
                   width: double.infinity,
                   child: TransitButton(
-                    label: _submitting ? 'ENVIANDO...' : 'ENVIAR FEEDBACK',
+                    label: _submitting ? AppLocalizations.of(context).actionSending : AppLocalizations.of(context).actionSendFeedback.toUpperCase(),
                     onPressed: _submitting ? null : _submit,
                   ),
                 ),

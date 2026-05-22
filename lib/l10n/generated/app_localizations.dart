@@ -436,6 +436,54 @@ abstract class AppLocalizations {
   /// **'Domingo'**
   String get routeDaySunday;
 
+  /// No description provided for @routeDayHoliday.
+  ///
+  /// In es, this message translates to:
+  /// **'Festivo'**
+  String get routeDayHoliday;
+
+  /// No description provided for @stopLinesHeader.
+  ///
+  /// In es, this message translates to:
+  /// **'LÍNEAS'**
+  String get stopLinesHeader;
+
+  /// No description provided for @routeTimeline.
+  ///
+  /// In es, this message translates to:
+  /// **'RECORRIDO'**
+  String get routeTimeline;
+
+  /// No description provided for @editorStepInfo.
+  ///
+  /// In es, this message translates to:
+  /// **'Información'**
+  String get editorStepInfo;
+
+  /// No description provided for @editorStepTrace.
+  ///
+  /// In es, this message translates to:
+  /// **'Trazado'**
+  String get editorStepTrace;
+
+  /// No description provided for @editorStepStops.
+  ///
+  /// In es, this message translates to:
+  /// **'Paradas'**
+  String get editorStepStops;
+
+  /// No description provided for @editorStepReturn.
+  ///
+  /// In es, this message translates to:
+  /// **'Vuelta'**
+  String get editorStepReturn;
+
+  /// No description provided for @editorStepReview.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisión'**
+  String get editorStepReview;
+
   /// Admin users screen title
   ///
   /// In es, this message translates to:

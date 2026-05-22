@@ -35,6 +35,15 @@
   "routeDayWeekday": "أيام العمل",
   "routeDaySaturday": "السبت",
   "routeDaySunday": "الأحد",
+  "routeDayHoliday": "عطلة",
+
+  "stopLinesHeader": "الخطوط",
+  "routeTimeline": "المسار",
+  "editorStepInfo": "معلومات",
+  "editorStepTrace": "المسار",
+  "editorStepStops": "المحطات",
+  "editorStepReturn": "عودة",
+  "editorStepReview": "مراجعة",
 
   "accessibilityTitle": "إمكانية الوصول",
   "accessibilityThemeSystem": "النظام",

@@ -63,6 +63,15 @@
   "routeDayWeekday": "Weekday",
   "routeDaySaturday": "Saturday",
   "routeDaySunday": "Sunday",
+  "routeDayHoliday": "Holiday",
+
+  "stopLinesHeader": "LINES",
+  "routeTimeline": "ROUTE",
+  "editorStepInfo": "Information",
+  "editorStepTrace": "Trace",
+  "editorStepStops": "Stops",
+  "editorStepReturn": "Return",
+  "editorStepReview": "Review",
 
   "adminUsersTitle": "User management",
   "adminUsersSearchHint": "Search user...",

@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
+import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/models/active_trip_model.dart';
 import '../../../shared/models/route_stop_model.dart';
 import '../../../shared/models/stop_model.dart';
@@ -32,7 +33,7 @@ class RouteDetailTimeline extends StatelessWidget {
       children: [
         Semantics(
           header: true,
-          child: Text('RECORRIDO',
+          child: Text(AppLocalizations.of(context).routeTimeline,
               style: TransitTypography.sectionTitle(c.textMid)),
         ),
         const SizedBox(height: 8),

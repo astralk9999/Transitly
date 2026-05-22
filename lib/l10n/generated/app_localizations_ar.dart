@@ -178,6 +178,30 @@ class AppLocalizationsAr extends AppLocalizations {
   String get routeDaySunday => 'الأحد';
 
   @override
+  String get routeDayHoliday => 'عطلة';
+
+  @override
+  String get stopLinesHeader => 'الخطوط';
+
+  @override
+  String get routeTimeline => 'المسار';
+
+  @override
+  String get editorStepInfo => 'معلومات';
+
+  @override
+  String get editorStepTrace => 'المسار';
+
+  @override
+  String get editorStepStops => 'المحطات';
+
+  @override
+  String get editorStepReturn => 'عودة';
+
+  @override
+  String get editorStepReview => 'مراجعة';
+
+  @override
   String get adminUsersTitle => 'Gestión de usuarios';
 
   @override

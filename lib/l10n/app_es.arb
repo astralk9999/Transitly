@@ -71,6 +71,15 @@
   "routeDayWeekday": "Laborable",
   "routeDaySaturday": "Sábado",
   "routeDaySunday": "Domingo",
+  "routeDayHoliday": "Festivo",
+
+  "stopLinesHeader": "LÍNEAS",
+  "routeTimeline": "RECORRIDO",
+  "editorStepInfo": "Información",
+  "editorStepTrace": "Trazado",
+  "editorStepStops": "Paradas",
+  "editorStepReturn": "Vuelta",
+  "editorStepReview": "Revisión",
 
   "adminUsersTitle": "Gestión de usuarios",
   "@adminUsersTitle": { "description": "Admin users screen title" },

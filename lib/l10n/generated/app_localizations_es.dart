@@ -178,6 +178,30 @@ class AppLocalizationsEs extends AppLocalizations {
   String get routeDaySunday => 'Domingo';
 
   @override
+  String get routeDayHoliday => 'Festivo';
+
+  @override
+  String get stopLinesHeader => 'LÍNEAS';
+
+  @override
+  String get routeTimeline => 'RECORRIDO';
+
+  @override
+  String get editorStepInfo => 'Información';
+
+  @override
+  String get editorStepTrace => 'Trazado';
+
+  @override
+  String get editorStepStops => 'Paradas';
+
+  @override
+  String get editorStepReturn => 'Vuelta';
+
+  @override
+  String get editorStepReview => 'Revisión';
+
+  @override
   String get adminUsersTitle => 'Gestión de usuarios';
 
   @override

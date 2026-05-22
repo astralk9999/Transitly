@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
+import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/smoke_background.dart';
 import 'editor_controller.dart';
 import 'steps/step_info.dart';
@@ -25,13 +26,13 @@ class _ManualRouteEditorState extends State<ManualRouteEditor> {
   final _pageController = PageController();
   int _step = 0;
 
-  static const _titles = <String>[
-    'INFORMACIÓN',
-    'TRAZADO',
-    'PARADAS',
-    'VUELTA',
-    'HORARIOS',
-    'REVISIÓN',
+  List<String> _titles(BuildContext context) => [
+    AppLocalizations.of(context).editorStepInfo.toUpperCase(),
+    AppLocalizations.of(context).editorStepTrace.toUpperCase(),
+    AppLocalizations.of(context).editorStepStops.toUpperCase(),
+    AppLocalizations.of(context).editorStepReturn.toUpperCase(),
+    AppLocalizations.of(context).sectionSchedules,
+    AppLocalizations.of(context).editorStepReview.toUpperCase(),
   ];
 
   @override
@@ -70,7 +71,7 @@ class _ManualRouteEditorState extends State<ManualRouteEditor> {
             }
           },
         ),
-        title: Text(_titles[_step],
+        title: Text(_titles(context)[_step],
             style: TransitTypography.sectionTitle(c.textHi)),
         centerTitle: false,
       ),

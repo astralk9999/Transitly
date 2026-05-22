@@ -194,7 +194,7 @@ class StopDetailScreen extends ConsumerWidget {
                 // ── 3. LÍNEAS QUE PASAN ──
                 Semantics(
                   header: true,
-                  child: Text('LÍNEAS',
+                  child: Text(AppLocalizations.of(context).stopLinesHeader,
                       style: TransitTypography.sectionTitle(c.textMid)),
                 ),
                 const SizedBox(height: 8),

@@ -87,7 +87,7 @@ class _RouteDetailScheduleSectionState
             const SizedBox(width: 12),
             _dayTypeButton(c, AppLocalizations.of(context).routeDaySaturday.toUpperCase(), DayType.saturday),
             const SizedBox(width: 12),
-            _dayTypeButton(c, 'FESTIVO', DayType.sundayHoliday),
+            _dayTypeButton(c, AppLocalizations.of(context).routeDayHoliday.toUpperCase(), DayType.sundayHoliday),
           ],
         ),
         const SizedBox(height: 12),

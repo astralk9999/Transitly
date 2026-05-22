@@ -615,6 +615,10 @@
   "authSignInLink": "Inicia sesión",
   "@authSignInLink": { "description": "Auth: sign in link" },
 
+  "signupAgeGateTitle": "Verificación de edad",
+  "signupAgeGateUnder16": "Debes tener al menos 16 años",
+  "signupAgeGateLabel": "Fecha de nacimiento",
+
   "authRecoverTitle": "Recuperar contraseña",
   "@authRecoverTitle": { "description": "Auth: recover password screen title" },
   "authRecoverSent": "Si el email existe, recibirás un enlace para restablecer tu contraseña.",

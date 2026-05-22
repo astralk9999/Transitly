@@ -24,21 +24,82 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _birthdateController = TextEditingController();
+  DateTime? _selectedBirthdate;
   bool _isLoading = false;
   String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _birthdateController.addListener(() {
+      final text = _birthdateController.text;
+      final parts = text.split('/');
+      if (parts.length == 3) {
+        final day = int.tryParse(parts[0]);
+        final month = int.tryParse(parts[1]);
+        final year = int.tryParse(parts[2]);
+        if (day != null && month != null && year != null) {
+          _selectedBirthdate = DateTime(year, month, day);
+        }
+      }
+    });
+  }
 
   @override
   void dispose() {
     _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _birthdateController.dispose();
     super.dispose();
+  }
+
+  DateTime? _parseBirthdate() {
+    if (_selectedBirthdate != null) return _selectedBirthdate;
+    final parts = _birthdateController.text.split('/');
+    if (parts.length != 3) return null;
+    final day = int.tryParse(parts[0]);
+    final month = int.tryParse(parts[1]);
+    final year = int.tryParse(parts[2]);
+    if (day == null || month == null || year == null) return null;
+    return DateTime(year, month, day);
+  }
+
+  bool _isAtLeast16() {
+    final birthdate = _parseBirthdate();
+    if (birthdate == null) return false;
+    final today = DateTime.now();
+    var age = today.year - birthdate.year;
+    if (today.month < birthdate.month ||
+        (today.month == birthdate.month && today.day < birthdate.day)) {
+      age--;
+    }
+    return age >= 16;
   }
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
 
     final l10n = AppLocalizations.of(context);
+
+    if (!_isAtLeast16()) {
+      await showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text(l10n.signupAgeGateTitle),
+          content: Text(l10n.signupAgeGateUnder16),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: Text(l10n.actionClose),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
     setState(() {
       _isLoading = true;
       _error = null;
@@ -109,6 +170,38 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                         textInputAction: TextInputAction.next,
                         validator: (v) =>
                             (v == null || v.isEmpty) ? l10n.authRequired : null,
+                      ),
+                      const SizedBox(height: 16),
+                      AuthField(
+                        label: l10n.signupAgeGateLabel,
+                        hint: 'DD/MM/AAAA',
+                        controller: _birthdateController,
+                        keyboardType: TextInputType.none,
+                        textInputAction: TextInputAction.next,
+                        onTap: () async {
+                          final now = DateTime.now();
+                          final picked = await showDatePicker(
+                            context: context,
+                            initialDate: _selectedBirthdate ??
+                                DateTime(now.year - 16, 1, 1),
+                            firstDate: DateTime(1900),
+                            lastDate: now,
+                            helpText: l10n.signupAgeGateLabel,
+                          );
+                          if (picked != null) {
+                            setState(() {
+                              _selectedBirthdate = picked;
+                              _birthdateController.text =
+                                  '${picked.day}/${picked.month}/${picked.year}';
+                            });
+                          }
+                        },
+                        validator: (_) {
+                          if (_parseBirthdate() == null) {
+                            return l10n.authRequired;
+                          }
+                          return null;
+                        },
                       ),
                       const SizedBox(height: 16),
                       AuthField(

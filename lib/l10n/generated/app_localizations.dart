@@ -2182,6 +2182,24 @@ abstract class AppLocalizations {
   /// **'Inicia sesión'**
   String get authSignInLink;
 
+  /// No description provided for @signupAgeGateTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Verificación de edad'**
+  String get signupAgeGateTitle;
+
+  /// No description provided for @signupAgeGateUnder16.
+  ///
+  /// In es, this message translates to:
+  /// **'Debes tener al menos 16 años'**
+  String get signupAgeGateUnder16;
+
+  /// No description provided for @signupAgeGateLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha de nacimiento'**
+  String get signupAgeGateLabel;
+
   /// Auth: recover password screen title
   ///
   /// In es, this message translates to:

@@ -15,6 +15,8 @@ class AuthField extends StatelessWidget {
     this.onSubmitted,
     this.validator,
     this.suffix,
+    this.readOnly = false,
+    this.onTap,
   });
 
   final String label;
@@ -26,6 +28,8 @@ class AuthField extends StatelessWidget {
   final ValueChanged<String>? onSubmitted;
   final FormFieldValidator<String>? validator;
   final Widget? suffix;
+  final bool readOnly;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +46,8 @@ class AuthField extends StatelessWidget {
           obscureText: obscureText,
           keyboardType: keyboardType,
           textInputAction: textInputAction,
+          readOnly: readOnly,
+          onTap: onTap,
           onFieldSubmitted: onSubmitted,
           validator: validator,
           style: TextStyle(color: c.textHi, fontSize: 16),

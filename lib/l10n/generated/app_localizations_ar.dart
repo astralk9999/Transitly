@@ -1122,6 +1122,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get authSignInLink => 'Inicia sesión';
 
   @override
+  String get signupAgeGateTitle => 'التحقق من العمر';
+
+  @override
+  String get signupAgeGateUnder16 => 'يجب أن يكون عمرك 16 سنة على الأقل';
+
+  @override
+  String get signupAgeGateLabel => 'تاريخ الميلاد';
+
+  @override
   String get authRecoverTitle => 'Recuperar contraseña';
 
   @override

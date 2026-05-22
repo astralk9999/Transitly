@@ -1120,6 +1120,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authSignInLink => 'Sign in';
 
   @override
+  String get signupAgeGateTitle => 'Age verification';
+
+  @override
+  String get signupAgeGateUnder16 => 'You must be at least 16';
+
+  @override
+  String get signupAgeGateLabel => 'Date of birth';
+
+  @override
   String get authRecoverTitle => 'Recover password';
 
   @override

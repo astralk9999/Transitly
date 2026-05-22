@@ -411,6 +411,10 @@
   "authSignInLink": "Sign in",
   "@authSignInLink": { "description": "Auth: sign in link" },
 
+  "signupAgeGateTitle": "Age verification",
+  "signupAgeGateUnder16": "You must be at least 16",
+  "signupAgeGateLabel": "Date of birth",
+
   "authRecoverTitle": "Recover password",
   "@authRecoverTitle": { "description": "Auth: recover password screen title" },
   "authRecoverSent": "If the email exists, you will receive a link to reset your password.",

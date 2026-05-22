@@ -105,6 +105,7 @@ void main() {
       expect(find.text('Nombre'), findsOneWidget);
       expect(find.text('Email'), findsOneWidget);
       expect(find.text('Contraseña'), findsOneWidget);
+      expect(find.text('Fecha de nacimiento'), findsOneWidget);
       await unmount(tester);
     });
 
@@ -116,8 +117,9 @@ void main() {
           overrides: [authRepositoryProvider.overrideWithValue(mockRepo)]);
       await tester.pump();
       await tester.enterText(find.byType(TextFormField).at(0), 'Test User');
-      await tester.enterText(find.byType(TextFormField).at(1), 'taken@test.com');
-      await tester.enterText(find.byType(TextFormField).at(2), '123456');
+      await tester.enterText(find.byType(TextFormField).at(1), '01/01/2000');
+      await tester.enterText(find.byType(TextFormField).at(2), 'taken@test.com');
+      await tester.enterText(find.byType(TextFormField).at(3), '123456');
       await tester.tap(find.text('CREAR CUENTA'));
       await tester.pump();
       expect(find.text('Este email ya está registrado'), findsOneWidget);
@@ -132,8 +134,9 @@ void main() {
           overrides: [authRepositoryProvider.overrideWithValue(mockRepo)]);
       await tester.pump();
       await tester.enterText(find.byType(TextFormField).at(0), 'Test User');
-      await tester.enterText(find.byType(TextFormField).at(1), 'user@test.com');
-      await tester.enterText(find.byType(TextFormField).at(2), '123');
+      await tester.enterText(find.byType(TextFormField).at(1), '01/01/2000');
+      await tester.enterText(find.byType(TextFormField).at(2), 'user@test.com');
+      await tester.enterText(find.byType(TextFormField).at(3), '123');
       await tester.tap(find.text('CREAR CUENTA'));
       await tester.pump();
       // The screen should display the error message
@@ -149,8 +152,9 @@ void main() {
           overrides: [authRepositoryProvider.overrideWithValue(mockRepo)]);
       await tester.pump();
       await tester.enterText(find.byType(TextFormField).at(0), 'Test User');
-      await tester.enterText(find.byType(TextFormField).at(1), 'user@test.com');
-      await tester.enterText(find.byType(TextFormField).at(2), '123456');
+      await tester.enterText(find.byType(TextFormField).at(1), '01/01/2000');
+      await tester.enterText(find.byType(TextFormField).at(2), 'user@test.com');
+      await tester.enterText(find.byType(TextFormField).at(3), '123456');
       await tester.tap(find.text('CREAR CUENTA'));
       await tester.pump();
       expect(find.text('Error'), findsOneWidget);

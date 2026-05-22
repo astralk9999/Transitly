@@ -83,6 +83,10 @@
   "authNoAccount": "ليس لديك حساب؟",
   "authRegister": "سجل الآن",
 
+  "signupAgeGateTitle": "التحقق من العمر",
+  "signupAgeGateUnder16": "يجب أن يكون عمرك 16 سنة على الأقل",
+  "signupAgeGateLabel": "تاريخ الميلاد",
+
   "offlineBannerOffline": "غير متصل",
   "offlineDataTitle": "بيانات دون اتصال",
 

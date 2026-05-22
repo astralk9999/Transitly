@@ -9,7 +9,7 @@ import '../../shared/providers/is_dark_provider.dart';
 import '../../shared/providers/theme_provider.dart';
 import '../../shared/widgets/smoke_background.dart';
 import 'widgets/accessibility_section.dart';
-import 'widgets/background_section.dart';
+import 'widgets/background_selector.dart';
 import 'widgets/brightness_section.dart';
 import 'widgets/font_section.dart';
 import 'widgets/map_style_section.dart';

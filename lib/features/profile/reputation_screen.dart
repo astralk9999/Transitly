@@ -14,22 +14,11 @@ import '../../shared/widgets/gradient_text.dart';
 import '../../shared/widgets/reputation_badge.dart';
 import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_app_bar.dart';
+import 'widgets/reputation_history_list.dart';
 import 'widgets/reputation_level_card.dart';
 
 class ReputationScreen extends ConsumerWidget {
   const ReputationScreen({super.key});
-
-  static final _events = const [
-    ('incidentCreated', Icons.warning_amber, 5),
-    ('feedbackSubmitted', Icons.feedback, 3),
-    ('feedbackAccepted', Icons.check_circle, 10),
-    ('suggestionCreated', Icons.lightbulb, 5),
-    ('suggestionVoteReceived', Icons.thumb_up, 2),
-    ('suggestionVerified', Icons.verified, 20),
-    ('suggestionOfficial', Icons.auto_awesome, 50),
-    ('duplicateReport', Icons.content_copy, 1),
-    ('incidentRejectedSpam', Icons.block, -10),
-  ];
 
   String _initials(String name) {
     final parts = name.trim().split(RegExp(r'\s+'));
@@ -86,9 +75,7 @@ class ReputationScreen extends ConsumerWidget {
                       isMaxRank: isMaxRank,
                     ),
                     const SizedBox(height: 16),
-                    _SectionHeader(title: l10n.reputationHowToEarn, c: c),
-                    const SizedBox(height: 8),
-                    _HowToEarnCard(c: c, l10n: l10n),
+                    ReputationHistoryList(c: c, l10n: l10n),
                     const SizedBox(height: 16),
                     _SectionHeader(title: l10n.reputationRanks, c: c),
                     const SizedBox(height: 8),
@@ -193,66 +180,6 @@ class _SectionHeader extends StatelessWidget {
           letterSpacing: 1.5,
         ),
         gradient: c.gradientAccent,
-      ),
-    );
-  }
-}
-
-class _HowToEarnCard extends StatelessWidget {
-  const _HowToEarnCard({required this.c, required this.l10n});
-
-  final TransitColorScheme c;
-  final AppLocalizations l10n;
-
-  @override
-  Widget build(BuildContext context) {
-    return GlassCard(
-      blur: 20,
-      fillOpacity: 0.06,
-      borderRadius: 16,
-      padding: const EdgeInsets.all(12),
-      child: Column(
-        children: ReputationScreen._events.map((e) {
-          final eventKey = e.$1;
-          final icon = e.$2;
-          final pts = e.$3;
-          final label = switch (eventKey) {
-            'incidentCreated' => l10n.reputationEventIncidentCreated,
-            'incidentRejectedSpam' => l10n.reputationEventIncidentRejectedSpam,
-            'feedbackSubmitted' => l10n.reputationEventFeedbackSubmitted,
-            'feedbackAccepted' => l10n.reputationEventFeedbackAccepted,
-            'suggestionCreated' => l10n.reputationEventSuggestionCreated,
-            'suggestionVoteReceived' => l10n.reputationEventSuggestionVoteReceived,
-            'suggestionVerified' => l10n.reputationEventSuggestionVerified,
-            'suggestionOfficial' => l10n.reputationEventSuggestionOfficial,
-            'duplicateReport' => l10n.reputationEventDuplicateReport,
-            _ => eventKey,
-          };
-          final sign = pts >= 0 ? '+' : '';
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6),
-            child: Row(
-              children: [
-                Icon(icon, size: 18, color: c.accent),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    label,
-                    style: TransitTypography.bodyPrimary(c.textHi),
-                  ),
-                ),
-                Text(
-                  '$sign$pts',
-                  style: GoogleFonts.ibmPlexMono(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: pts >= 0 ? c.stateOnTime : c.stateCancelled,
-                  ),
-                ),
-              ],
-            ),
-          );
-        }).toList(),
       ),
     );
   }

@@ -5,7 +5,7 @@ import '../../core/utils/app_logger.dart';
 import '../../data/auth/auth_repository.dart';
 import '../../data/mock/mock_data_service.dart';
 import '../../data/supabase/supabase_client_provider.dart';
-import '../../features/auth/auth_provider.dart';
+import '../providers/auth_provider.dart';
 import '../models/user_model.dart';
 import '../models/user_role.dart';
 

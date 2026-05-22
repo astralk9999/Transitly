@@ -8,7 +8,7 @@ import '../../core/utils/app_logger.dart';
 import '../../data/auth/auth_repository.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../shared/widgets/smoke_background.dart';
-import 'auth_provider.dart';
+import '../../shared/providers/auth_provider.dart';
 import 'widgets/auth_field.dart';
 import 'widgets/auth_submit_button.dart';
 

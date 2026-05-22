@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
-import '../../../features/auth/auth_provider.dart';
+import '../../../shared/providers/auth_provider.dart';
 import '../../../data/auth/auth_repository.dart';
 import '../../../shared/models/user_model.dart';
 import '../../../shared/widgets/glass_card.dart';

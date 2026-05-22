@@ -1,0 +1,26 @@
+pre-commit:
+  parallel: true
+  commands:
+    analyze:
+      run: flutter analyze
+      glob: "*.dart"
+    format:
+      run: dart format --set-exit-if-changed {staged_files}
+      glob: "*.dart"
+      exclude: "*.freezed.dart|*.g.dart|l10n/generated/"
+
+commit-msg:
+  commands:
+    conventional-commits:
+      run: |
+        if ! grep -qE "^(feat|fix|refactor|docs|test|chore|style|perf|ci|build|revert)(\(.+\))?[!]?: " "$1"; then
+          echo "Commit message must follow Conventional Commits"
+          exit 1
+        fi
+
+pre-push:
+  commands:
+    test:
+      run: flutter test
+    analyze:
+      run: flutter analyze

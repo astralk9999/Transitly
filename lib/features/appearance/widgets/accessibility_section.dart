@@ -21,6 +21,11 @@ class AccessibilitySection extends ConsumerWidget {
       ColorBlindMode.protanopia => l10n.appearanceColorBlindProtanopia,
       ColorBlindMode.deuteranopia => l10n.appearanceColorBlindDeuteranopia,
       ColorBlindMode.tritanopia => l10n.appearanceColorBlindTritanopia,
+      ColorBlindMode.protanomaly => 'Protanomalía',
+      ColorBlindMode.deuteranomaly => 'Deuteranomalía',
+      ColorBlindMode.tritanomaly => 'Tritanomalía',
+      ColorBlindMode.achromatopsia => 'Acromatopsia',
+      ColorBlindMode.achromatomaly => 'Acromatomalía',
     };
   }
 

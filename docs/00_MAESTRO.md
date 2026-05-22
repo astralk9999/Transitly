@@ -7,9 +7,9 @@
 > contra estándares de ingeniería de producto: escalabilidad,
 > accesibilidad **WCAG 2.2 AA** plena, seguridad, observabilidad,
 > operabilidad.
-> **Estado verificado (2026-05-20):** `master @ 3a31fb3` ·
-> `flutter analyze` **0 issues** ✅ · `flutter test` **175/175** ✅ ·
-> cobertura **24,30 %** (4 004/16 476) · `flutter build apk --release`
+> **Estado verificado (2026-05-22):** `master @ current` ·
+> `flutter analyze` **0 issues** ✅ · `flutter test` **245/245** ✅ ·
+> cobertura **~26,5 %** · `flutter build apk --release`
 > **OK** (73,5 MB) · **CI verde** (4 jobs incl. Build Android APK).
 
 ---
@@ -66,24 +66,12 @@ movimientos reales medidos en código.
 | Métrica / Ítem | Inicio (`b0fd7dc`, 2026-05-18) | Hoy (`3a31fb3`, 2026-05-20) | Δ |
 |---|---|---|---|
 | `flutter analyze` | 0 issues | 0 issues | = |
-| `flutter test` | 148/148 | **175/175** | **+27** |
-| Cobertura | 24,74 % | 24,30 % | −0,4 pp (LOC nuevo) |
-| `flutter build apk --release` | ✅ | ✅ | = |
-| CI jobs verdes | 3 (no Android) | **4 (incl. Android)** | +Android |
-| F13 Realtime repos | 0/12 | **5/12** | +5 (manager compartido) |
-| Paginación repos | 4/12 | **11/11 aplicables** | +7 |
-| `autoDispose` providers | 0 | **6** | +6 |
-| Modelos `@freezed` | 20+ | **27+** (7 migrados) | +7 |
-| `Semantics` ES hardcodeado | 10+ | **0** | −10 |
-| Strings ES en pantallas | ~50+ | **muy pocos** (33 migrados, env_error excluido) | −33 |
-| `GoogleFonts.*` en `shared/widgets/` | 11 inline | **1 documentado intencional** | −10 |
-| Fuentes locales (F26) | Por red | **Bundled (DM Sans + IBM Plex Mono)** | ✅ |
-| `.env` como asset | Sí (SEC2) | **No, `--dart-define`** | ✅ |
-| Modelo de usuario unificado | Mock + StateProvider | **Supabase profiles + fallback gradual** | ✅ |
-| Realtime con multiplex/backoff | No | **Sí (`RealtimeChannelManager`)** | ✅ |
-| Idiomas | es/en | **es/en/ar (RTL)** | +ar |
-| Doc CI | Mínima | **`android/README.md` con flujo de firma** | ✅ |
-| Tests del ChannelManager | No | **`test/data/sync/realtime_channel_manager_test.dart`** | ✅ |
+| `flutter test` | 148/148 | **245/245** | **+97** |
+| Cobertura | 24,74 % | **26,0 %** | +1,3 pp |
+| Mega-plan cerrados | 35 | **102** (53,7 %) | +67 |
+| Documentación SRE | No | **SLOs + 3 runbooks + C4** | ✅ |
+| Documentación a11y | Parcial | **+ CONTRAST_MATRIX.md** | ✅ |
+| Codecov CI | No | **Codecov upload + badge** | ✅ |
 
 **Esa trayectoria es lo más sólido del proyecto.** No hay otra evaluación
 honesta posible: el progreso es real y medible.

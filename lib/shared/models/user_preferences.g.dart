@@ -35,6 +35,7 @@ _UserPreferences _$UserPreferencesFromJson(Map<String, dynamic> json) =>
       quietHoursEnabled: json['quietHoursEnabled'] as bool? ?? false,
       quietHoursStart: json['quietHoursStart'] as String?,
       quietHoursEnd: json['quietHoursEnd'] as String?,
+      extendedTimers: json['extendedTimers'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$UserPreferencesToJson(_UserPreferences instance) =>
@@ -58,6 +59,7 @@ Map<String, dynamic> _$UserPreferencesToJson(_UserPreferences instance) =>
       'quietHoursEnabled': instance.quietHoursEnabled,
       'quietHoursStart': ?instance.quietHoursStart,
       'quietHoursEnd': ?instance.quietHoursEnd,
+      'extendedTimers': instance.extendedTimers,
     };
 
 const _$ColorBlindModeEnumMap = {
@@ -65,4 +67,9 @@ const _$ColorBlindModeEnumMap = {
   ColorBlindMode.protanopia: 'protanopia',
   ColorBlindMode.deuteranopia: 'deuteranopia',
   ColorBlindMode.tritanopia: 'tritanopia',
+  ColorBlindMode.protanomaly: 'protanomaly',
+  ColorBlindMode.deuteranomaly: 'deuteranomaly',
+  ColorBlindMode.tritanomaly: 'tritanomaly',
+  ColorBlindMode.achromatopsia: 'achromatopsia',
+  ColorBlindMode.achromatomaly: 'achromatomaly',
 };

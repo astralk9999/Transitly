@@ -39,12 +39,12 @@
 | **P3** — Deuda de fondo | 8 | 4 | 4 | A/C | autoDispose `.family`, F26 fuentes verificadas, audit_log `data/auth/`, tests integración |
 | **PROD** — Producción a escala (existente) | 10 | 3 | 7 | B/C | Keystore [EXT], observabilidad, mapa clustering, caché tenant |
 | **A11Y** — WCAG existente | 10 | 5 | 5 | B/C | Verificación lector, alt mapa, contrastes, foco, RTL completo |
-| **PRO-Snr** — Senior portfolio 🆕 | 18 | 0 | 18 | C | ADRs, LICENSE, CHANGELOG, ErrorBoundary, very_good_analysis, golden, dartdoc |
-| **PRO-Rel** — Publicación stores 🆕 | 33 | 0 | 33 | B | Permisos manifest, Privacy Manifest iOS, listings, AAB CI, ATT, ToS |
-| **PRO-A11Y** — A11y AAA + inclusión 🆕 | 23 | 0 | 23 | C | Contraste AAA, teclado pleno, breadcrumbs, lectura fácil, ARB AR completo |
-| **PRO-QA** — Testing pro 🆕 | 25 | 0 | 25 | C | Property-based, golden DS, RLS pgTAP, integration tests, Codecov, Gitleaks, Semgrep |
-| **PRO-Ops** — SRE / Operación 🆕 | 34 | 0 | 34 | C | SLO/SLI, runbooks, feature flags, audit log, C4 diagrams, DR plan |
-| **TOTAL** | **190** | **35** | **155** | | 35 cerrados (18,4 %); de los 155 pendientes ~42 son [EXTERNAL] |
+| **PRO-Snr** — Senior portfolio 🆕 | 18 | 16 | 2 | C | ADRs, LICENSE, CHANGELOG, ErrorBoundary, CI, rollback docs, dartdoc, auth_provider moved |
+| **PRO-Rel** — Publicación stores 🆕 | 33 | 12 | 21 | B | Permisos, PrivacyInfo, icons, CI, Gitleaks, versionCode, report, age verify |
+| **PRO-Ops** — SRE / Operación 🆕 | 34 | 17 | 17 | C | SLOs, runbooks, audit, retention, RTBF, C4, catalog, timing, spans, events, alert matrix, edge fn, DR plan |
+| **PRO-QA** — Testing pro 🆕 | 25 | 12 | 13 | C | auth tests, ARB, architecture, a11y, i18n, roundtrip, feature-switch, Semgrep, leak tracker, edge fn tests, db reset CI |
+| **PRO-A11Y** — A11y AAA + inclusión 🆕 | 23 | 12 | 11 | C | Contrast, lints, daltonism, textScaler, RTL, undo, breadcrumbs, meetsGuideline, switch access, report, low data |
+| **TOTAL** | **190** | **102** | **88** | | 102 cerrados (53,7 %); de los 88 pendientes ~42 son [EXTERNAL] |
 
 > Definición de "✅ Hecho": verificado en código + en CI verde + criterio de aceptación cumplido en el documento que lo declaró.
 

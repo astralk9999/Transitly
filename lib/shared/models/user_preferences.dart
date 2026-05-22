@@ -3,7 +3,17 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'user_preferences.freezed.dart';
 part 'user_preferences.g.dart';
 
-enum ColorBlindMode { none, protanopia, deuteranopia, tritanopia }
+enum ColorBlindMode {
+  none,
+  protanopia,
+  deuteranopia,
+  tritanopia,
+  protanomaly,
+  deuteranomaly,
+  tritanomaly,
+  achromatopsia,
+  achromatomaly,
+}
 
 /// Preferencias de presentación y accesibilidad de un usuario. Habilita
 /// el panel custom de F17 (apariencia) y la accesibilidad ampliada de
@@ -30,6 +40,7 @@ abstract class UserPreferences with _$UserPreferences {
     @Default(false) bool quietHoursEnabled,
     String? quietHoursStart,
     String? quietHoursEnd,
+    @Default(false) bool extendedTimers,
   }) = _UserPreferences;
 
   factory UserPreferences.fromJson(Map<String, dynamic> json) =>

@@ -111,6 +111,10 @@ class _ManagerInboxScreenState extends ConsumerState<ManagerInboxScreen> {
       await ref.read(routeFeedbackRepositoryProvider).updateStatus(fb.id, newStatus);
     } on RouteFeedbackRepositoryException {
       if (!mounted) return;
+      setState(() {
+        _feedbacks = [fb, ..._feedbacks];
+        _resolvedFeedbacks = _resolvedFeedbacks.where((f) => f.id != fb.id).toList();
+      });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(AppLocalizations.of(context).adminOperatorsErrorUnknown)),
       );
@@ -132,6 +136,9 @@ class _ManagerInboxScreenState extends ConsumerState<ManagerInboxScreen> {
       await ref.read(incidentRepositoryProvider).updateStatus(incident.id, newStatus);
     } on IncidentRepositoryException {
       if (!mounted) return;
+      setState(() {
+        _resolvedIncidents = _resolvedIncidents.where((i) => i.id != incident.id).toList();
+      });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(AppLocalizations.of(context).adminOperatorsErrorUnknown)),
       );
@@ -151,6 +158,9 @@ class _ManagerInboxScreenState extends ConsumerState<ManagerInboxScreen> {
       await ref.read(routeSuggestionRepositoryProvider).updateStatus(sug.id, newStatus);
     } on RouteSuggestionRepositoryException {
       if (!mounted) return;
+      setState(() {
+        _suggestions = [sug, ..._suggestions];
+      });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(AppLocalizations.of(context).adminOperatorsErrorUnknown)),
       );

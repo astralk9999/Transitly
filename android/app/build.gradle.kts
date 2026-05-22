@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace = "com.transitly.transitly"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 35
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -24,7 +24,7 @@ android {
     defaultConfig {
         applicationId = "com.transitly.transitly"
         minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+        targetSdk = 34
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
@@ -49,6 +49,17 @@ android {
                 signingConfigs.getByName("release")
             else
                 signingConfigs.getByName("debug")
+            isMinifyEnabled = true
+            isShrinkResources = true
+        }
+    }
+
+    bundle {
+        language {
+            enableSplit = true
+        }
+        abi {
+            enableSplit = true
         }
     }
 }

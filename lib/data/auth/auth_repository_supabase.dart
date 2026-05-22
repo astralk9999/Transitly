@@ -8,6 +8,7 @@ import 'package:supabase_flutter/supabase_flutter.dart'
         User;
 
 import '../../core/utils/app_logger.dart';
+import 'auth_helpers.dart';
 import 'auth_repository.dart';
 
 class AuthRepositorySupabase implements AuthRepository {
@@ -81,7 +82,7 @@ class AuthRepositorySupabase implements AuthRepository {
       rethrow;
     } catch (e, st) {
       if (e is Exception) {
-        throw _mapError(e);
+        throw mapAuthError(e);
       }
       AppLogger.error(_logTag, 'signInWithEmail failed', e, st);
       throw const AuthRepoException(AuthError.unknown, 'Error inesperado');
@@ -103,7 +104,7 @@ class AuthRepositorySupabase implements AuthRepository {
       );
     } catch (e, st) {
       if (e is Exception) {
-        throw _mapError(e);
+        throw mapAuthError(e);
       }
       AppLogger.error(_logTag, 'signUpWithEmail failed', e, st);
       throw const AuthRepoException(AuthError.unknown, 'Error inesperado');
@@ -127,7 +128,7 @@ class AuthRepositorySupabase implements AuthRepository {
       await _client.auth.signInWithOtp(email: email.trim());
     } catch (e, st) {
       if (e is Exception) {
-        throw _mapError(e);
+        throw mapAuthError(e);
       }
       AppLogger.error(_logTag, 'sendMagicLink failed', e, st);
       throw const AuthRepoException(AuthError.unknown, 'Error inesperado');
@@ -140,7 +141,7 @@ class AuthRepositorySupabase implements AuthRepository {
       await _client.auth.resetPasswordForEmail(email.trim());
     } catch (e, st) {
       if (e is Exception) {
-        throw _mapError(e);
+        throw mapAuthError(e);
       }
       AppLogger.error(_logTag, 'recoverPassword failed', e, st);
       throw const AuthRepoException(AuthError.unknown, 'Error inesperado');
@@ -156,7 +157,7 @@ class AuthRepositorySupabase implements AuthRepository {
       );
     } catch (e, st) {
       if (e is Exception) {
-        throw _mapError(e);
+        throw mapAuthError(e);
       }
       AppLogger.error(_logTag, 'resendVerification failed', e, st);
       throw const AuthRepoException(AuthError.unknown, 'Error inesperado');
@@ -170,31 +171,6 @@ class AuthRepositorySupabase implements AuthRepository {
     } catch (e, st) {
       AppLogger.error(_logTag, 'signOut failed', e, st);
     }
-  }
-
-  AuthRepoException _mapError(Exception e) {
-    AppLogger.warn(_logTag, 'auth error', e);
-
-    final msg = e.toString().toLowerCase();
-    if (msg.contains('invalid login credentials')) {
-      return const AuthRepoException(
-          AuthError.invalidCredentials, 'Email o contraseña incorrectos');
-    }
-    if (msg.contains('already been registered') ||
-        msg.contains('already registered')) {
-      return const AuthRepoException(
-          AuthError.emailTaken, 'Este email ya está registrado');
-    }
-    if (msg.contains('password should be at least 6 characters')) {
-      return const AuthRepoException(
-          AuthError.weakPassword,
-          'La contraseña debe tener al menos 6 caracteres');
-    }
-    if (msg.contains('email not confirmed')) {
-      return const AuthRepoException(
-          AuthError.emailNotVerified, 'Email no verificado');
-    }
-    return AuthRepoException(AuthError.unknown, e.toString());
   }
 
   void dispose() {

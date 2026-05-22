@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../core/utils/uuid.dart';
+import '../../../data/operator/operator_helpers.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/models/operator_model.dart';
 import '../../../shared/widgets/transit_button.dart';
@@ -51,11 +52,13 @@ class _OperatorFormDialogState extends State<OperatorFormDialog> {
 
   OperatorModel _buildOperator() {
     final op = widget.operator;
+    final slug = _slugCtrl.text.trim();
+    final name = _nameCtrl.text.trim();
     return OperatorModel(
       id: op?.id ?? generateUuidV4(),
-      name: _nameCtrl.text.trim(),
-      shortName: _slugCtrl.text.trim().toUpperCase(),
-      slug: _slugCtrl.text.trim(),
+      name: name,
+      shortName: operatorShortNameFromSlug(slug, name),
+      slug: slug,
       region: _regionCtrl.text.trim(),
       website: _websiteCtrl.text.trim(),
       contactEmail: _emailCtrl.text.trim(),
@@ -75,6 +78,7 @@ class _OperatorFormDialogState extends State<OperatorFormDialog> {
       ),
       content: Form(
         key: _formKey,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,

@@ -46,7 +46,13 @@
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>NFCReaderUsageDescription</key>
-	<string>Transitly necesita acceso a NFC para leer el saldo de tu tarjeta de transporte.</string>
+	<string>Transitly needs NFC access to read your transit card balance.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Transitly uses your location to show nearby stops, routes, and active buses on the map.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Transitly needs camera access to scan documents and report incidents with photos.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Transitly needs photo library access to attach images to incident reports.</string>
 	<key>com.apple.developer.nfc.readersession.iso18092.system-codes</key>
 	<array/>
 	<key>com.apple.developer.nfc.readersession.iso7816.select-identifiers</key>

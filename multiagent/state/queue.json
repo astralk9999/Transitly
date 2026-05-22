@@ -1,5 +1,14 @@
 {
-  "pending": [{"id": "R3", "title": "Rest packages + verificacion final", "status": "pending", "dependencies": ["R2"]}],
-  "active": [{"id": "R2", "title": "Router split + placeholders + test warnings", "status": "active", "dependencies": ["R1"]}],
-  "completed": [{"id": "R1", "title": "Paquetes criticos + lint", "status": "completed"}]
+  "pending": [],
+  "active": [
+    {"id": "MEGA-001", "title": "Mega-plan refinement — remaining automatable items", "status": "active"}
+  ],
+  "completed": [
+    {"id": "H2", "title": "Senior Foundations (12 items)", "status": "completed"},
+    {"id": "FIXES", "title": "PENDIENTE_PARA_CERRAR fixes (9 items)", "status": "completed"},
+    {"id": "H3", "title": "Production Foundations (8 items)", "status": "completed"},
+    {"id": "H5", "title": "SRE Observability (17 items)", "status": "completed"},
+    {"id": "H6", "title": "Pro Testing (12 items)", "status": "completed"},
+    {"id": "H7", "title": "AAA Accessibility (12 items)", "status": "completed"}
+  ]
 }

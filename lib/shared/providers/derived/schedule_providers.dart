@@ -13,7 +13,7 @@ const int defaultUpcomingCount = 3;
 /// (caso del wizard "Iniciar ruta", que muestra el día completo). Si
 /// [count] es un entero, devuelve las primeras N — útil para vistas
 /// resumen tipo "Próximas salidas (3)".
-final upcomingDeparturesForRouteProvider = Provider.family<
+final upcomingDeparturesForRouteProvider = Provider.autoDispose.family<
     List<ScheduleModel>,
     ({String routeId, int? count, DayType dayType})>((ref, args) {
   final mockData = ref.watch(mockDataServiceProvider);
@@ -32,7 +32,7 @@ final upcomingDeparturesForRouteProvider = Provider.family<
 /// Calcula: ordena horas → suma diferencias entre consecutivas →
 /// divide entre N-1 → redondea.
 final routeFrequencyProvider =
-    Provider.family<int?, String>((ref, routeId) {
+    Provider.autoDispose.family<int?, String>((ref, routeId) {
   final mockData = ref.watch(mockDataServiceProvider);
   final schedules =
       mockData.getSchedulesForRoute(routeId, dayType: DayType.weekday);

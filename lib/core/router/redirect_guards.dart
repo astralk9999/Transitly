@@ -2,7 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/auth/auth_repository.dart';
-import '../../features/auth/auth_provider.dart';
+import '../../shared/providers/auth_provider.dart';
 import '../../shared/models/user_role.dart';
 import '../../shared/providers/user_provider.dart';
 

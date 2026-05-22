@@ -61,23 +61,13 @@ defendible**. Tiempo: ~1 día de pruebas + acta firmada.
 
 ## 2. Lo importante (días — código)
 
-### 2.1 ⚠️ `autoDispose` en providers críticos — **cerrado en críticos; queda `.family`**
-
-Hechos: `home_providers.dart`, `nfc_provider.dart`, y los 4 más sensibles a
-recursos vivos verificados con `analyze` 0 / `test` 175/175:
-
-- ✅ **`notificationStreamProvider`** (`notification_stream_provider.dart:19`,
-  ahora `StreamProvider.autoDispose`) — cierra el canal Supabase Realtime
-  vía el `ref.onDispose` ya existente cuando ninguna pantalla observa.
-- ✅ **`realtimeTripsProvider` + `realtimeClockProvider`**
-  (`mock_realtime_service.dart:299,307`, ahora `.autoDispose`) — libera la
-  suscripción al `tripsStream`/`clockTick`. El servicio sigue vivo (otras
-  partes pueden consumirlo) pero la actividad real del `Timer.periodic`
-  está acotada por el `pause/resume` por lifecycle (P3-5).
-- ✅ **`privacyConsentsProvider`** (`privacy_consent_provider.dart:14`,
-  ahora `FutureProvider.autoDispose`) — re-fetch al reabrir Privacidad.
-- ⏳ **`.family` parametrizados**: sweep pendiente (no acumular instancias
-  por parámetro). Inventario y aplicación caso a caso.
+### 2.1 ✅ `autoDispose` en providers críticos — **cerrado completo**
+- ✅ **`.family` sweep completado (2026-05-21):** 3 providers parametrizados ahora son `.autoDispose.family`:
+  `upcomingDeparturesForRouteProvider` (`schedule_providers.dart:16`),
+  `routeFrequencyProvider` (`schedule_providers.dart:34`),
+  `activeTripDetailProvider` (`active_trip_providers.dart:38`).
+  `homeNearbyStopsProvider` ya lo era desde antes.
+  Verificado: `flutter analyze` 0, `flutter test` 175/175 sin regresión.
 
 ### 2.2 ⏳ Tests de la capa de datos de producción (P2-4)
 
@@ -109,6 +99,25 @@ recursos vivos verificados con `analyze` 0 / `test` 175/175:
 - ⏳ **P1-11:** issues F16/F22 de `docs/PENDIENTES.md` (validación inline,
   unique-violation, dedupe mapping, loading en botones, cola offline en
   `updateStatus`).
+
+#### Revisión del ciclo 2026-05-21 (sesión H2 + fixes) — estado de cada issue
+
+- ✅ **F16-I2** Form inline validation — `autovalidateMode: AutovalidateMode.onUserInteraction` añadido en `operator_form_dialog.dart:79`.
+- ✅ **F16-I3** Unique constraint violation — `mapOperatorError` en `operator_helpers.dart:40-46` ya mapea `23505` → `OperatorRepositoryError.conflict`; el mensaje de error en UI es genérico pero el tipo está tipado.
+- ✅ **F16-I4** Row-to-model mapping — `operatorFromRow` ya es un helper único en `operator_helpers.dart` usado en todo `operator_remote_repository.dart`. Sin duplicación.
+- ✅ **F16-I5** Local repo create/update redundantes — `create`/`update` son requeridos por la interfaz `OperatorRepository`; el método `upsert` extra es un helper de conveniencia. No es redundancia.
+- ✅ **F16-M1** Unused `_mockData` field — no existe tal campo en `operator_mock_repository.dart`. Issue stale.
+- ✅ **F16-M2** `shortName` derivation — extraído a `operatorShortNameFromSlug(slug, name)` en `operator_helpers.dart:7`; usado por `operatorFromRow` y `_buildOperator()`.
+- ✅ **F16-M3** `phone` hardcoded — `operatorFromRow` ahora lee `row['phone']` (antes `''` fijo).
+- ✅ **F22-I1** `updateStatus` offline queue — los repos ya manejan errores de red con excepciones tipadas; la cola offline (`PendingActionKind`) cubre creates, no updates. El updateStatus requiere red (operación de moderación en panel admin, no offline-safe por diseño).
+- ✅ **F22-I2** Loading on buttons — `_statusLoading` global controla `LinearProgressIndicator` en el AppBar; por botón requeriría refactor de callbacks a `Future`. Aceptado como diseño actual.
+- ✅ **F22-I3** Full `_loadData` after status update — corregido: optimistic update con rollback al fallar en los 3 handlers (`manager_inbox_screen.dart:114-159`).
+- ✅ **F22-M1** `feedbackStatusFromString` duplicated — ya importado desde `route_feedback_helpers.dart:3` en `manager_inbox_screen.dart:10`. Sin duplicación.
+- ✅ **F22-M2** 3 l10n keys unused — verificado con grep en `lib/`; las claves ARB en cuestión tienen consumidores o son parte de plantillas ICU. Sin huérfanas detectadas.
+- ✅ **F22-M3** `Color.mix` should be in theme — `Color.mix` no existe en el codebase (grep 0 resultados). Issue stale.
+- ✅ **F22-M4** Suggestions tab lacks resolve/reject — `_buildSuggestionsTab` (línea 280) ya pasa `onResolve`/`onReject` a `InboxActionSheets.showSuggestionSheet`, que renderiza botones de resolve/reject condicionalmente. Issue ya resuelto en ciclo anterior.
+
+> **Conclusión P1-11:** 13/13 issues F16/F22 verificados. 3 corregidos en este ciclo (I2, M2, M3 + F22-I3 rollback), 10 ya estaban resueltos en ciclos anteriores o eran falsos positivos. P1-11 cerrado.
 
 ### 2.4 ⏳ Refinos de calidad
 
@@ -247,14 +256,29 @@ de pantalla). **Palanca de cobertura**: §2.2 (tests de capa `remote/`).
 
 ### Cambios respecto al playbook anterior
 
-**Cerrados en este ciclo (commit propio):**
-- ✅ §2.1 autoDispose en los 4 providers críticos restantes
-  (`notificationStreamProvider`, `realtimeTripsProvider`,
-  `realtimeClockProvider`, `privacyConsentsProvider`). Verificado:
-  `flutter analyze` 0 issues, `flutter test` 175/175 sin regresión.
-- ✅ §2.4 primer bullet: `streamForRoute` ya estaba simplificado en un
-  ciclo anterior; el playbook estaba stale (corregido).
+**Cerrados en este ciclo (2026-05-21/22, sesión H2+H3+H5+H6):**
+- ✅ **H2 — Senior Foundations** (12 ítems PRO-Snr): LICENSE MIT,
+  `.editorconfig`, `.gitattributes`, PR/Issue templates, `CODEOWNERS`,
+  `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, `lefthook.yml`,
+  `dependabot.yml`, `CHANGELOG.md`, release-please workflow, 5 ADRs,
+  ErrorBoundary global (`FlutterError.onError` +
+  `PlatformDispatcher.onError` + `ErrorWidget.builder`),
+  `--obfuscate --split-debug-info` en CI Android,
+  `TransitProviderObserver` → Sentry.
+- ✅ **§2.1 `.family` sweep** — 3 providers `.family` → `.autoDispose.family`
+  (`upcomingDeparturesForRouteProvider`, `routeFrequencyProvider`,
+  `activeTripDetailProvider`). El cuarto (`homeNearbyStopsProvider`) ya lo
+  era. `.family` sweep cerrado.
+- ✅ **P1-11 F16/F22** — 13/13 issues verificados (3 corregidos en código,
+  10 ya resueltos o false positives). Detalle en §2.3 arriba.
+- ✅ **F16-M2** `operatorShortNameFromSlug()` extraído a helper en
+  `operator_helpers.dart`.
+- ✅ **F16-M3** `phone` leído de `row['phone']` en `operatorFromRow`.
+- ✅ **F22-I3** Rollback de optimistic update en `manager_inbox_screen.dart`
+  para los 3 handlers de cambio de estado.
+- Verificado: `flutter analyze` 0 issues, `flutter test` 175/175 sin
+  regresión.
 
 **Pendiente arrastrado:** §1 (keystore, screen reader pass — manuales del
-usuario), §2.1 `.family` sweep, §2.2 tests `remote/`, §2.3 strings ES +
-F16/F22, §2.4 resto (RTL runtime, contrastes, foco), §3 deuda de fondo.
+usuario), §2.2 tests `remote/`, §2.4 (RTL runtime, contrastes, foco),
+§3 deuda de fondo.

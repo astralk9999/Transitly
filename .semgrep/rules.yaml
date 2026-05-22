@@ -1,0 +1,38 @@
+# Semgrep Rules for Transitly
+
+rules:
+  - id: no-hardcoded-es-strings
+    pattern-regex: "['\"][A-ZÁÉÍÓÚÜÑ][^'\"]*[áéíóúüñ][^'\"]*['\"]"
+    message: |
+      Spanish string literal found. Use l10n via AppLocalizations instead.
+      Exception: env_error_screen.dart (diagnostic-only, no l10n delegates).
+    paths:
+      include:
+        - "lib/**/*.dart"
+      exclude:
+        - "lib/l10n/**"
+        - "lib/features/error/env_error_screen.dart"
+        - "lib/core/env.dart"
+    languages:
+      - generic
+    severity: WARNING
+
+  - id: no-print-in-lib
+    pattern: print(
+    message: "print() is forbidden in lib/. Use AppLogger instead."
+    paths:
+      include:
+        - "lib/**/*.dart"
+    languages:
+      - generic
+    severity: ERROR
+
+  - id: no-hardcoded-supabase-url
+    pattern-regex: "https://[a-z]+\\.supabase\\.co"
+    message: "Hardcoded Supabase URL detected. Use Env.supabaseUrl or --dart-define."
+    paths:
+      include:
+        - "lib/**/*.dart"
+    languages:
+      - generic
+    severity: ERROR

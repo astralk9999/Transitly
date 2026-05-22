@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserPreferences {
 
- String get userId; String get themePaletteId; Map<String, String>? get customColors; String get backgroundId; bool get backgroundEnabled; double get backgroundOpacity; double get fontScale; ColorBlindMode get colorBlindMode; bool get dyslexiaFontEnabled; bool get reduceMotion; bool get highContrast; String get mapStyle; bool get notifIncidentResolved; bool get notifRoutePromoted; bool get notifBusApproaching; bool get notifFeatureRequestReplied; bool get quietHoursEnabled; String? get quietHoursStart; String? get quietHoursEnd;
+ String get userId; String get themePaletteId; Map<String, String>? get customColors; String get backgroundId; bool get backgroundEnabled; double get backgroundOpacity; double get fontScale; ColorBlindMode get colorBlindMode; bool get dyslexiaFontEnabled; bool get reduceMotion; bool get highContrast; String get mapStyle; bool get notifIncidentResolved; bool get notifRoutePromoted; bool get notifBusApproaching; bool get notifFeatureRequestReplied; bool get quietHoursEnabled; String? get quietHoursStart; String? get quietHoursEnd; bool get extendedTimers;
 /// Create a copy of UserPreferences
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $UserPreferencesCopyWith<UserPreferences> get copyWith => _$UserPreferencesCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserPreferences&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.themePaletteId, themePaletteId) || other.themePaletteId == themePaletteId)&&const DeepCollectionEquality().equals(other.customColors, customColors)&&(identical(other.backgroundId, backgroundId) || other.backgroundId == backgroundId)&&(identical(other.backgroundEnabled, backgroundEnabled) || other.backgroundEnabled == backgroundEnabled)&&(identical(other.backgroundOpacity, backgroundOpacity) || other.backgroundOpacity == backgroundOpacity)&&(identical(other.fontScale, fontScale) || other.fontScale == fontScale)&&(identical(other.colorBlindMode, colorBlindMode) || other.colorBlindMode == colorBlindMode)&&(identical(other.dyslexiaFontEnabled, dyslexiaFontEnabled) || other.dyslexiaFontEnabled == dyslexiaFontEnabled)&&(identical(other.reduceMotion, reduceMotion) || other.reduceMotion == reduceMotion)&&(identical(other.highContrast, highContrast) || other.highContrast == highContrast)&&(identical(other.mapStyle, mapStyle) || other.mapStyle == mapStyle)&&(identical(other.notifIncidentResolved, notifIncidentResolved) || other.notifIncidentResolved == notifIncidentResolved)&&(identical(other.notifRoutePromoted, notifRoutePromoted) || other.notifRoutePromoted == notifRoutePromoted)&&(identical(other.notifBusApproaching, notifBusApproaching) || other.notifBusApproaching == notifBusApproaching)&&(identical(other.notifFeatureRequestReplied, notifFeatureRequestReplied) || other.notifFeatureRequestReplied == notifFeatureRequestReplied)&&(identical(other.quietHoursEnabled, quietHoursEnabled) || other.quietHoursEnabled == quietHoursEnabled)&&(identical(other.quietHoursStart, quietHoursStart) || other.quietHoursStart == quietHoursStart)&&(identical(other.quietHoursEnd, quietHoursEnd) || other.quietHoursEnd == quietHoursEnd));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserPreferences&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.themePaletteId, themePaletteId) || other.themePaletteId == themePaletteId)&&const DeepCollectionEquality().equals(other.customColors, customColors)&&(identical(other.backgroundId, backgroundId) || other.backgroundId == backgroundId)&&(identical(other.backgroundEnabled, backgroundEnabled) || other.backgroundEnabled == backgroundEnabled)&&(identical(other.backgroundOpacity, backgroundOpacity) || other.backgroundOpacity == backgroundOpacity)&&(identical(other.fontScale, fontScale) || other.fontScale == fontScale)&&(identical(other.colorBlindMode, colorBlindMode) || other.colorBlindMode == colorBlindMode)&&(identical(other.dyslexiaFontEnabled, dyslexiaFontEnabled) || other.dyslexiaFontEnabled == dyslexiaFontEnabled)&&(identical(other.reduceMotion, reduceMotion) || other.reduceMotion == reduceMotion)&&(identical(other.highContrast, highContrast) || other.highContrast == highContrast)&&(identical(other.mapStyle, mapStyle) || other.mapStyle == mapStyle)&&(identical(other.notifIncidentResolved, notifIncidentResolved) || other.notifIncidentResolved == notifIncidentResolved)&&(identical(other.notifRoutePromoted, notifRoutePromoted) || other.notifRoutePromoted == notifRoutePromoted)&&(identical(other.notifBusApproaching, notifBusApproaching) || other.notifBusApproaching == notifBusApproaching)&&(identical(other.notifFeatureRequestReplied, notifFeatureRequestReplied) || other.notifFeatureRequestReplied == notifFeatureRequestReplied)&&(identical(other.quietHoursEnabled, quietHoursEnabled) || other.quietHoursEnabled == quietHoursEnabled)&&(identical(other.quietHoursStart, quietHoursStart) || other.quietHoursStart == quietHoursStart)&&(identical(other.quietHoursEnd, quietHoursEnd) || other.quietHoursEnd == quietHoursEnd)&&(identical(other.extendedTimers, extendedTimers) || other.extendedTimers == extendedTimers));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,userId,themePaletteId,const DeepCollectionEquality().hash(customColors),backgroundId,backgroundEnabled,backgroundOpacity,fontScale,colorBlindMode,dyslexiaFontEnabled,reduceMotion,highContrast,mapStyle,notifIncidentResolved,notifRoutePromoted,notifBusApproaching,notifFeatureRequestReplied,quietHoursEnabled,quietHoursStart,quietHoursEnd]);
+int get hashCode => Object.hashAll([runtimeType,userId,themePaletteId,const DeepCollectionEquality().hash(customColors),backgroundId,backgroundEnabled,backgroundOpacity,fontScale,colorBlindMode,dyslexiaFontEnabled,reduceMotion,highContrast,mapStyle,notifIncidentResolved,notifRoutePromoted,notifBusApproaching,notifFeatureRequestReplied,quietHoursEnabled,quietHoursStart,quietHoursEnd,extendedTimers]);
 
 @override
 String toString() {
-  return 'UserPreferences(userId: $userId, themePaletteId: $themePaletteId, customColors: $customColors, backgroundId: $backgroundId, backgroundEnabled: $backgroundEnabled, backgroundOpacity: $backgroundOpacity, fontScale: $fontScale, colorBlindMode: $colorBlindMode, dyslexiaFontEnabled: $dyslexiaFontEnabled, reduceMotion: $reduceMotion, highContrast: $highContrast, mapStyle: $mapStyle, notifIncidentResolved: $notifIncidentResolved, notifRoutePromoted: $notifRoutePromoted, notifBusApproaching: $notifBusApproaching, notifFeatureRequestReplied: $notifFeatureRequestReplied, quietHoursEnabled: $quietHoursEnabled, quietHoursStart: $quietHoursStart, quietHoursEnd: $quietHoursEnd)';
+  return 'UserPreferences(userId: $userId, themePaletteId: $themePaletteId, customColors: $customColors, backgroundId: $backgroundId, backgroundEnabled: $backgroundEnabled, backgroundOpacity: $backgroundOpacity, fontScale: $fontScale, colorBlindMode: $colorBlindMode, dyslexiaFontEnabled: $dyslexiaFontEnabled, reduceMotion: $reduceMotion, highContrast: $highContrast, mapStyle: $mapStyle, notifIncidentResolved: $notifIncidentResolved, notifRoutePromoted: $notifRoutePromoted, notifBusApproaching: $notifBusApproaching, notifFeatureRequestReplied: $notifFeatureRequestReplied, quietHoursEnabled: $quietHoursEnabled, quietHoursStart: $quietHoursStart, quietHoursEnd: $quietHoursEnd, extendedTimers: $extendedTimers)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $UserPreferencesCopyWith<$Res>  {
   factory $UserPreferencesCopyWith(UserPreferences value, $Res Function(UserPreferences) _then) = _$UserPreferencesCopyWithImpl;
 @useResult
 $Res call({
- String userId, String themePaletteId, Map<String, String>? customColors, String backgroundId, bool backgroundEnabled, double backgroundOpacity, double fontScale, ColorBlindMode colorBlindMode, bool dyslexiaFontEnabled, bool reduceMotion, bool highContrast, String mapStyle, bool notifIncidentResolved, bool notifRoutePromoted, bool notifBusApproaching, bool notifFeatureRequestReplied, bool quietHoursEnabled, String? quietHoursStart, String? quietHoursEnd
+ String userId, String themePaletteId, Map<String, String>? customColors, String backgroundId, bool backgroundEnabled, double backgroundOpacity, double fontScale, ColorBlindMode colorBlindMode, bool dyslexiaFontEnabled, bool reduceMotion, bool highContrast, String mapStyle, bool notifIncidentResolved, bool notifRoutePromoted, bool notifBusApproaching, bool notifFeatureRequestReplied, bool quietHoursEnabled, String? quietHoursStart, String? quietHoursEnd, bool extendedTimers
 });
 
 
@@ -65,7 +65,7 @@ class _$UserPreferencesCopyWithImpl<$Res>
 
 /// Create a copy of UserPreferences
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? userId = null,Object? themePaletteId = null,Object? customColors = freezed,Object? backgroundId = null,Object? backgroundEnabled = null,Object? backgroundOpacity = null,Object? fontScale = null,Object? colorBlindMode = null,Object? dyslexiaFontEnabled = null,Object? reduceMotion = null,Object? highContrast = null,Object? mapStyle = null,Object? notifIncidentResolved = null,Object? notifRoutePromoted = null,Object? notifBusApproaching = null,Object? notifFeatureRequestReplied = null,Object? quietHoursEnabled = null,Object? quietHoursStart = freezed,Object? quietHoursEnd = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? userId = null,Object? themePaletteId = null,Object? customColors = freezed,Object? backgroundId = null,Object? backgroundEnabled = null,Object? backgroundOpacity = null,Object? fontScale = null,Object? colorBlindMode = null,Object? dyslexiaFontEnabled = null,Object? reduceMotion = null,Object? highContrast = null,Object? mapStyle = null,Object? notifIncidentResolved = null,Object? notifRoutePromoted = null,Object? notifBusApproaching = null,Object? notifFeatureRequestReplied = null,Object? quietHoursEnabled = null,Object? quietHoursStart = freezed,Object? quietHoursEnd = freezed,Object? extendedTimers = null,}) {
   return _then(_self.copyWith(
 userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,themePaletteId: null == themePaletteId ? _self.themePaletteId : themePaletteId // ignore: cast_nullable_to_non_nullable
@@ -86,7 +86,8 @@ as bool,notifFeatureRequestReplied: null == notifFeatureRequestReplied ? _self.n
 as bool,quietHoursEnabled: null == quietHoursEnabled ? _self.quietHoursEnabled : quietHoursEnabled // ignore: cast_nullable_to_non_nullable
 as bool,quietHoursStart: freezed == quietHoursStart ? _self.quietHoursStart : quietHoursStart // ignore: cast_nullable_to_non_nullable
 as String?,quietHoursEnd: freezed == quietHoursEnd ? _self.quietHoursEnd : quietHoursEnd // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,extendedTimers: null == extendedTimers ? _self.extendedTimers : extendedTimers // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
@@ -171,10 +172,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String userId,  String themePaletteId,  Map<String, String>? customColors,  String backgroundId,  bool backgroundEnabled,  double backgroundOpacity,  double fontScale,  ColorBlindMode colorBlindMode,  bool dyslexiaFontEnabled,  bool reduceMotion,  bool highContrast,  String mapStyle,  bool notifIncidentResolved,  bool notifRoutePromoted,  bool notifBusApproaching,  bool notifFeatureRequestReplied,  bool quietHoursEnabled,  String? quietHoursStart,  String? quietHoursEnd)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String userId,  String themePaletteId,  Map<String, String>? customColors,  String backgroundId,  bool backgroundEnabled,  double backgroundOpacity,  double fontScale,  ColorBlindMode colorBlindMode,  bool dyslexiaFontEnabled,  bool reduceMotion,  bool highContrast,  String mapStyle,  bool notifIncidentResolved,  bool notifRoutePromoted,  bool notifBusApproaching,  bool notifFeatureRequestReplied,  bool quietHoursEnabled,  String? quietHoursStart,  String? quietHoursEnd,  bool extendedTimers)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserPreferences() when $default != null:
-return $default(_that.userId,_that.themePaletteId,_that.customColors,_that.backgroundId,_that.backgroundEnabled,_that.backgroundOpacity,_that.fontScale,_that.colorBlindMode,_that.dyslexiaFontEnabled,_that.reduceMotion,_that.highContrast,_that.mapStyle,_that.notifIncidentResolved,_that.notifRoutePromoted,_that.notifBusApproaching,_that.notifFeatureRequestReplied,_that.quietHoursEnabled,_that.quietHoursStart,_that.quietHoursEnd);case _:
+return $default(_that.userId,_that.themePaletteId,_that.customColors,_that.backgroundId,_that.backgroundEnabled,_that.backgroundOpacity,_that.fontScale,_that.colorBlindMode,_that.dyslexiaFontEnabled,_that.reduceMotion,_that.highContrast,_that.mapStyle,_that.notifIncidentResolved,_that.notifRoutePromoted,_that.notifBusApproaching,_that.notifFeatureRequestReplied,_that.quietHoursEnabled,_that.quietHoursStart,_that.quietHoursEnd,_that.extendedTimers);case _:
   return orElse();
 
 }
@@ -192,10 +193,10 @@ return $default(_that.userId,_that.themePaletteId,_that.customColors,_that.backg
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String userId,  String themePaletteId,  Map<String, String>? customColors,  String backgroundId,  bool backgroundEnabled,  double backgroundOpacity,  double fontScale,  ColorBlindMode colorBlindMode,  bool dyslexiaFontEnabled,  bool reduceMotion,  bool highContrast,  String mapStyle,  bool notifIncidentResolved,  bool notifRoutePromoted,  bool notifBusApproaching,  bool notifFeatureRequestReplied,  bool quietHoursEnabled,  String? quietHoursStart,  String? quietHoursEnd)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String userId,  String themePaletteId,  Map<String, String>? customColors,  String backgroundId,  bool backgroundEnabled,  double backgroundOpacity,  double fontScale,  ColorBlindMode colorBlindMode,  bool dyslexiaFontEnabled,  bool reduceMotion,  bool highContrast,  String mapStyle,  bool notifIncidentResolved,  bool notifRoutePromoted,  bool notifBusApproaching,  bool notifFeatureRequestReplied,  bool quietHoursEnabled,  String? quietHoursStart,  String? quietHoursEnd,  bool extendedTimers)  $default,) {final _that = this;
 switch (_that) {
 case _UserPreferences():
-return $default(_that.userId,_that.themePaletteId,_that.customColors,_that.backgroundId,_that.backgroundEnabled,_that.backgroundOpacity,_that.fontScale,_that.colorBlindMode,_that.dyslexiaFontEnabled,_that.reduceMotion,_that.highContrast,_that.mapStyle,_that.notifIncidentResolved,_that.notifRoutePromoted,_that.notifBusApproaching,_that.notifFeatureRequestReplied,_that.quietHoursEnabled,_that.quietHoursStart,_that.quietHoursEnd);case _:
+return $default(_that.userId,_that.themePaletteId,_that.customColors,_that.backgroundId,_that.backgroundEnabled,_that.backgroundOpacity,_that.fontScale,_that.colorBlindMode,_that.dyslexiaFontEnabled,_that.reduceMotion,_that.highContrast,_that.mapStyle,_that.notifIncidentResolved,_that.notifRoutePromoted,_that.notifBusApproaching,_that.notifFeatureRequestReplied,_that.quietHoursEnabled,_that.quietHoursStart,_that.quietHoursEnd,_that.extendedTimers);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -212,10 +213,10 @@ return $default(_that.userId,_that.themePaletteId,_that.customColors,_that.backg
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String userId,  String themePaletteId,  Map<String, String>? customColors,  String backgroundId,  bool backgroundEnabled,  double backgroundOpacity,  double fontScale,  ColorBlindMode colorBlindMode,  bool dyslexiaFontEnabled,  bool reduceMotion,  bool highContrast,  String mapStyle,  bool notifIncidentResolved,  bool notifRoutePromoted,  bool notifBusApproaching,  bool notifFeatureRequestReplied,  bool quietHoursEnabled,  String? quietHoursStart,  String? quietHoursEnd)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String userId,  String themePaletteId,  Map<String, String>? customColors,  String backgroundId,  bool backgroundEnabled,  double backgroundOpacity,  double fontScale,  ColorBlindMode colorBlindMode,  bool dyslexiaFontEnabled,  bool reduceMotion,  bool highContrast,  String mapStyle,  bool notifIncidentResolved,  bool notifRoutePromoted,  bool notifBusApproaching,  bool notifFeatureRequestReplied,  bool quietHoursEnabled,  String? quietHoursStart,  String? quietHoursEnd,  bool extendedTimers)?  $default,) {final _that = this;
 switch (_that) {
 case _UserPreferences() when $default != null:
-return $default(_that.userId,_that.themePaletteId,_that.customColors,_that.backgroundId,_that.backgroundEnabled,_that.backgroundOpacity,_that.fontScale,_that.colorBlindMode,_that.dyslexiaFontEnabled,_that.reduceMotion,_that.highContrast,_that.mapStyle,_that.notifIncidentResolved,_that.notifRoutePromoted,_that.notifBusApproaching,_that.notifFeatureRequestReplied,_that.quietHoursEnabled,_that.quietHoursStart,_that.quietHoursEnd);case _:
+return $default(_that.userId,_that.themePaletteId,_that.customColors,_that.backgroundId,_that.backgroundEnabled,_that.backgroundOpacity,_that.fontScale,_that.colorBlindMode,_that.dyslexiaFontEnabled,_that.reduceMotion,_that.highContrast,_that.mapStyle,_that.notifIncidentResolved,_that.notifRoutePromoted,_that.notifBusApproaching,_that.notifFeatureRequestReplied,_that.quietHoursEnabled,_that.quietHoursStart,_that.quietHoursEnd,_that.extendedTimers);case _:
   return null;
 
 }
@@ -227,7 +228,7 @@ return $default(_that.userId,_that.themePaletteId,_that.customColors,_that.backg
 @JsonSerializable()
 
 class _UserPreferences implements UserPreferences {
-  const _UserPreferences({required this.userId, this.themePaletteId = 'default', final  Map<String, String>? customColors, this.backgroundId = 'smoke', this.backgroundEnabled = true, this.backgroundOpacity = 1.0, this.fontScale = 1.0, this.colorBlindMode = ColorBlindMode.none, this.dyslexiaFontEnabled = false, this.reduceMotion = false, this.highContrast = false, this.mapStyle = 'streets', this.notifIncidentResolved = true, this.notifRoutePromoted = true, this.notifBusApproaching = true, this.notifFeatureRequestReplied = true, this.quietHoursEnabled = false, this.quietHoursStart, this.quietHoursEnd}): _customColors = customColors;
+  const _UserPreferences({required this.userId, this.themePaletteId = 'default', final  Map<String, String>? customColors, this.backgroundId = 'smoke', this.backgroundEnabled = true, this.backgroundOpacity = 1.0, this.fontScale = 1.0, this.colorBlindMode = ColorBlindMode.none, this.dyslexiaFontEnabled = false, this.reduceMotion = false, this.highContrast = false, this.mapStyle = 'streets', this.notifIncidentResolved = true, this.notifRoutePromoted = true, this.notifBusApproaching = true, this.notifFeatureRequestReplied = true, this.quietHoursEnabled = false, this.quietHoursStart, this.quietHoursEnd, this.extendedTimers = false}): _customColors = customColors;
   factory _UserPreferences.fromJson(Map<String, dynamic> json) => _$UserPreferencesFromJson(json);
 
 @override final  String userId;
@@ -257,6 +258,7 @@ class _UserPreferences implements UserPreferences {
 @override@JsonKey() final  bool quietHoursEnabled;
 @override final  String? quietHoursStart;
 @override final  String? quietHoursEnd;
+@override@JsonKey() final  bool extendedTimers;
 
 /// Create a copy of UserPreferences
 /// with the given fields replaced by the non-null parameter values.
@@ -271,16 +273,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserPreferences&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.themePaletteId, themePaletteId) || other.themePaletteId == themePaletteId)&&const DeepCollectionEquality().equals(other._customColors, _customColors)&&(identical(other.backgroundId, backgroundId) || other.backgroundId == backgroundId)&&(identical(other.backgroundEnabled, backgroundEnabled) || other.backgroundEnabled == backgroundEnabled)&&(identical(other.backgroundOpacity, backgroundOpacity) || other.backgroundOpacity == backgroundOpacity)&&(identical(other.fontScale, fontScale) || other.fontScale == fontScale)&&(identical(other.colorBlindMode, colorBlindMode) || other.colorBlindMode == colorBlindMode)&&(identical(other.dyslexiaFontEnabled, dyslexiaFontEnabled) || other.dyslexiaFontEnabled == dyslexiaFontEnabled)&&(identical(other.reduceMotion, reduceMotion) || other.reduceMotion == reduceMotion)&&(identical(other.highContrast, highContrast) || other.highContrast == highContrast)&&(identical(other.mapStyle, mapStyle) || other.mapStyle == mapStyle)&&(identical(other.notifIncidentResolved, notifIncidentResolved) || other.notifIncidentResolved == notifIncidentResolved)&&(identical(other.notifRoutePromoted, notifRoutePromoted) || other.notifRoutePromoted == notifRoutePromoted)&&(identical(other.notifBusApproaching, notifBusApproaching) || other.notifBusApproaching == notifBusApproaching)&&(identical(other.notifFeatureRequestReplied, notifFeatureRequestReplied) || other.notifFeatureRequestReplied == notifFeatureRequestReplied)&&(identical(other.quietHoursEnabled, quietHoursEnabled) || other.quietHoursEnabled == quietHoursEnabled)&&(identical(other.quietHoursStart, quietHoursStart) || other.quietHoursStart == quietHoursStart)&&(identical(other.quietHoursEnd, quietHoursEnd) || other.quietHoursEnd == quietHoursEnd));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserPreferences&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.themePaletteId, themePaletteId) || other.themePaletteId == themePaletteId)&&const DeepCollectionEquality().equals(other._customColors, _customColors)&&(identical(other.backgroundId, backgroundId) || other.backgroundId == backgroundId)&&(identical(other.backgroundEnabled, backgroundEnabled) || other.backgroundEnabled == backgroundEnabled)&&(identical(other.backgroundOpacity, backgroundOpacity) || other.backgroundOpacity == backgroundOpacity)&&(identical(other.fontScale, fontScale) || other.fontScale == fontScale)&&(identical(other.colorBlindMode, colorBlindMode) || other.colorBlindMode == colorBlindMode)&&(identical(other.dyslexiaFontEnabled, dyslexiaFontEnabled) || other.dyslexiaFontEnabled == dyslexiaFontEnabled)&&(identical(other.reduceMotion, reduceMotion) || other.reduceMotion == reduceMotion)&&(identical(other.highContrast, highContrast) || other.highContrast == highContrast)&&(identical(other.mapStyle, mapStyle) || other.mapStyle == mapStyle)&&(identical(other.notifIncidentResolved, notifIncidentResolved) || other.notifIncidentResolved == notifIncidentResolved)&&(identical(other.notifRoutePromoted, notifRoutePromoted) || other.notifRoutePromoted == notifRoutePromoted)&&(identical(other.notifBusApproaching, notifBusApproaching) || other.notifBusApproaching == notifBusApproaching)&&(identical(other.notifFeatureRequestReplied, notifFeatureRequestReplied) || other.notifFeatureRequestReplied == notifFeatureRequestReplied)&&(identical(other.quietHoursEnabled, quietHoursEnabled) || other.quietHoursEnabled == quietHoursEnabled)&&(identical(other.quietHoursStart, quietHoursStart) || other.quietHoursStart == quietHoursStart)&&(identical(other.quietHoursEnd, quietHoursEnd) || other.quietHoursEnd == quietHoursEnd)&&(identical(other.extendedTimers, extendedTimers) || other.extendedTimers == extendedTimers));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,userId,themePaletteId,const DeepCollectionEquality().hash(_customColors),backgroundId,backgroundEnabled,backgroundOpacity,fontScale,colorBlindMode,dyslexiaFontEnabled,reduceMotion,highContrast,mapStyle,notifIncidentResolved,notifRoutePromoted,notifBusApproaching,notifFeatureRequestReplied,quietHoursEnabled,quietHoursStart,quietHoursEnd]);
+int get hashCode => Object.hashAll([runtimeType,userId,themePaletteId,const DeepCollectionEquality().hash(_customColors),backgroundId,backgroundEnabled,backgroundOpacity,fontScale,colorBlindMode,dyslexiaFontEnabled,reduceMotion,highContrast,mapStyle,notifIncidentResolved,notifRoutePromoted,notifBusApproaching,notifFeatureRequestReplied,quietHoursEnabled,quietHoursStart,quietHoursEnd,extendedTimers]);
 
 @override
 String toString() {
-  return 'UserPreferences(userId: $userId, themePaletteId: $themePaletteId, customColors: $customColors, backgroundId: $backgroundId, backgroundEnabled: $backgroundEnabled, backgroundOpacity: $backgroundOpacity, fontScale: $fontScale, colorBlindMode: $colorBlindMode, dyslexiaFontEnabled: $dyslexiaFontEnabled, reduceMotion: $reduceMotion, highContrast: $highContrast, mapStyle: $mapStyle, notifIncidentResolved: $notifIncidentResolved, notifRoutePromoted: $notifRoutePromoted, notifBusApproaching: $notifBusApproaching, notifFeatureRequestReplied: $notifFeatureRequestReplied, quietHoursEnabled: $quietHoursEnabled, quietHoursStart: $quietHoursStart, quietHoursEnd: $quietHoursEnd)';
+  return 'UserPreferences(userId: $userId, themePaletteId: $themePaletteId, customColors: $customColors, backgroundId: $backgroundId, backgroundEnabled: $backgroundEnabled, backgroundOpacity: $backgroundOpacity, fontScale: $fontScale, colorBlindMode: $colorBlindMode, dyslexiaFontEnabled: $dyslexiaFontEnabled, reduceMotion: $reduceMotion, highContrast: $highContrast, mapStyle: $mapStyle, notifIncidentResolved: $notifIncidentResolved, notifRoutePromoted: $notifRoutePromoted, notifBusApproaching: $notifBusApproaching, notifFeatureRequestReplied: $notifFeatureRequestReplied, quietHoursEnabled: $quietHoursEnabled, quietHoursStart: $quietHoursStart, quietHoursEnd: $quietHoursEnd, extendedTimers: $extendedTimers)';
 }
 
 
@@ -291,7 +293,7 @@ abstract mixin class _$UserPreferencesCopyWith<$Res> implements $UserPreferences
   factory _$UserPreferencesCopyWith(_UserPreferences value, $Res Function(_UserPreferences) _then) = __$UserPreferencesCopyWithImpl;
 @override @useResult
 $Res call({
- String userId, String themePaletteId, Map<String, String>? customColors, String backgroundId, bool backgroundEnabled, double backgroundOpacity, double fontScale, ColorBlindMode colorBlindMode, bool dyslexiaFontEnabled, bool reduceMotion, bool highContrast, String mapStyle, bool notifIncidentResolved, bool notifRoutePromoted, bool notifBusApproaching, bool notifFeatureRequestReplied, bool quietHoursEnabled, String? quietHoursStart, String? quietHoursEnd
+ String userId, String themePaletteId, Map<String, String>? customColors, String backgroundId, bool backgroundEnabled, double backgroundOpacity, double fontScale, ColorBlindMode colorBlindMode, bool dyslexiaFontEnabled, bool reduceMotion, bool highContrast, String mapStyle, bool notifIncidentResolved, bool notifRoutePromoted, bool notifBusApproaching, bool notifFeatureRequestReplied, bool quietHoursEnabled, String? quietHoursStart, String? quietHoursEnd, bool extendedTimers
 });
 
 
@@ -308,7 +310,7 @@ class __$UserPreferencesCopyWithImpl<$Res>
 
 /// Create a copy of UserPreferences
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? userId = null,Object? themePaletteId = null,Object? customColors = freezed,Object? backgroundId = null,Object? backgroundEnabled = null,Object? backgroundOpacity = null,Object? fontScale = null,Object? colorBlindMode = null,Object? dyslexiaFontEnabled = null,Object? reduceMotion = null,Object? highContrast = null,Object? mapStyle = null,Object? notifIncidentResolved = null,Object? notifRoutePromoted = null,Object? notifBusApproaching = null,Object? notifFeatureRequestReplied = null,Object? quietHoursEnabled = null,Object? quietHoursStart = freezed,Object? quietHoursEnd = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? userId = null,Object? themePaletteId = null,Object? customColors = freezed,Object? backgroundId = null,Object? backgroundEnabled = null,Object? backgroundOpacity = null,Object? fontScale = null,Object? colorBlindMode = null,Object? dyslexiaFontEnabled = null,Object? reduceMotion = null,Object? highContrast = null,Object? mapStyle = null,Object? notifIncidentResolved = null,Object? notifRoutePromoted = null,Object? notifBusApproaching = null,Object? notifFeatureRequestReplied = null,Object? quietHoursEnabled = null,Object? quietHoursStart = freezed,Object? quietHoursEnd = freezed,Object? extendedTimers = null,}) {
   return _then(_UserPreferences(
 userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,themePaletteId: null == themePaletteId ? _self.themePaletteId : themePaletteId // ignore: cast_nullable_to_non_nullable
@@ -329,7 +331,8 @@ as bool,notifFeatureRequestReplied: null == notifFeatureRequestReplied ? _self.n
 as bool,quietHoursEnabled: null == quietHoursEnabled ? _self.quietHoursEnabled : quietHoursEnabled // ignore: cast_nullable_to_non_nullable
 as bool,quietHoursStart: freezed == quietHoursStart ? _self.quietHoursStart : quietHoursStart // ignore: cast_nullable_to_non_nullable
 as String?,quietHoursEnd: freezed == quietHoursEnd ? _self.quietHoursEnd : quietHoursEnd // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,extendedTimers: null == extendedTimers ? _self.extendedTimers : extendedTimers // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

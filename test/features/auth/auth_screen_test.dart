@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'package:transitly/data/auth/auth_repository.dart';
-import 'package:transitly/features/auth/auth_provider.dart';
+import 'package:transitly/shared/providers/auth_provider.dart';
 import 'package:transitly/features/auth/magic_link_screen.dart';
 import 'package:transitly/features/auth/recover_password_screen.dart';
 import 'package:transitly/features/auth/signin_screen.dart';

@@ -8,7 +8,7 @@ import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../core/utils/app_logger.dart';
 import '../../../data/auth/auth_repository.dart';
-import '../../../features/auth/auth_provider.dart';
+import '../../../shared/providers/auth_provider.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/models/user_role.dart';
 import '../../../shared/providers/user_provider.dart';

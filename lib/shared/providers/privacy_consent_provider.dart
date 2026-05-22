@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/privacy_consent/privacy_consent_repository.dart';
 import '../../data/supabase/supabase_client_provider.dart';
-import '../../features/auth/auth_provider.dart';
+import '../providers/auth_provider.dart';
 import '../../data/auth/auth_repository.dart';
 
 final privacyConsentRepositoryProvider =

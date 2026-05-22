@@ -9,7 +9,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'app.dart';
 import 'core/env.dart';
 import 'core/utils/app_logger.dart';
+import 'core/utils/error_boundary.dart';
 import 'core/utils/sentry_setup.dart';
+import 'core/utils/transit_provider_observer.dart';
 import 'data/cache/hive_init.dart';
 import 'data/mock/mock_data_service.dart';
 import 'data/mock/mock_realtime_service.dart';
@@ -24,6 +26,7 @@ const bool _fontsBundled = true;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  ErrorBoundary.setup();
 
   // F26: con fuentes empaquetadas se desactiva el fetch por red (privacidad
   // + offline). Sin empaquetar, se precargan en segundo plano sin bloquear
@@ -133,6 +136,7 @@ void main() async {
 
   runApp(
     ProviderScope(
+      observers: const [TransitProviderObserver()],
       overrides: [
         mockDataServiceProvider.overrideWithValue(mockData),
       ],

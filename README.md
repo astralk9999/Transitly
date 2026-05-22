@@ -44,15 +44,17 @@ multi-agent system (Queen / Developer / Review / Git / Documentation),
 documented in `multiagent/ARCHITECTURE.md` and in the TFG memory
 (`docs/tfg/03–05`).
 
-Verified quality metrics (2026-05-20, `master @ 3a31fb3`):
+Verified quality metrics (2026-05-22):
 
 | Metric | Value |
 |--------|-------|
-| `flutter analyze` | **0 issues** (0 errors, 0 warnings, 0 info) |
-| `flutter test` | **175 / 175 passing** |
-| Line coverage (`coverage/lcov.info`) | **24,30 %** (4 004 / 16 476 lines) — known debt |
+| `flutter analyze` | **0 issues** |
+| `flutter test` | **201 / 201 passing** |
+| Line coverage | **~25,5 %** — known debt |
 | `flutter build apk --release` | **OK** (73,5 MB) |
 | CI GitHub Actions | **4 jobs green** (Analyze, Test, Build Web, Build Android APK) |
+
+[![codecov](https://codecov.io/gh/astralk9999/Transitly/branch/master/graph/badge.svg)](https://codecov.io/gh/astralk9999/Transitly)
 
 > Coverage is the remaining lever: the `remote/` data layer (auth + 7
 > repos) is at ~0 %. Plan in

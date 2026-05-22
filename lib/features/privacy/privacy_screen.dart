@@ -10,7 +10,7 @@ import '../../core/utils/app_logger.dart';
 import '../../core/utils/sentry_setup.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
-import '../../features/auth/auth_provider.dart';
+import '../../shared/providers/auth_provider.dart';
 import '../../data/auth/auth_repository.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../shared/providers/privacy_consent_provider.dart';

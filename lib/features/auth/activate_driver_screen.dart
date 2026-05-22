@@ -10,7 +10,7 @@ import '../../l10n/generated/app_localizations.dart';
 import '../../shared/providers/user_provider.dart';
 import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_button.dart';
-import 'auth_provider.dart';
+import '../../shared/providers/auth_provider.dart';
 
 class ActivateDriverScreen extends ConsumerStatefulWidget {
   const ActivateDriverScreen({super.key});

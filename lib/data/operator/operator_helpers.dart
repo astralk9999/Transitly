@@ -4,18 +4,21 @@ import '../../core/utils/app_logger.dart';
 import '../../shared/models/operator_model.dart';
 import 'domain/operator_repository.dart';
 
+String operatorShortNameFromSlug(String slug, String name) =>
+    slug.isNotEmpty ? slug.toUpperCase() : name;
+
 OperatorModel operatorFromRow(Map<String, dynamic> row) {
   final slug = row['slug'] as String? ?? '';
   final name = row['name'] as String? ?? '';
   return OperatorModel(
     id: row['id'] as String,
     name: name,
-    shortName: slug.isNotEmpty ? slug.toUpperCase() : name,
+    shortName: operatorShortNameFromSlug(slug, name),
     slug: slug,
     region: row['region'] as String? ?? '',
     website: row['website'] as String? ?? '',
     contactEmail: row['contact_email'] as String? ?? '',
-    phone: '',
+    phone: row['phone'] as String? ?? '',
   );
 }
 

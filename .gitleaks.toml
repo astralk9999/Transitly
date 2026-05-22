@@ -1,0 +1,13 @@
+# Gitleaks configuration for Transitly
+# Excludes known false positives and generated files.
+
+[allowlist]
+  description = "Global allowlist"
+
+  paths = [
+    '''.*\.freezed\.dart$''',
+    '''.*\.g\.dart$''',
+    '''l10n/generated/.*''',
+    '''pubspec\.lock''',
+    '''\.github/workflows/.*''',
+  ]

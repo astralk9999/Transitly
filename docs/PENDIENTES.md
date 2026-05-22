@@ -11,6 +11,35 @@
 
 ---
 
+## Mega-plan Refinamiento (2026-05-22)
+
+> Sesión de refinamiento basada en el mega-plan superset de 190 ítems
+> (`docs/MEGA_PLAN_REFINAMIENTO.md`). Trabajo realizado del 18 al 22 de mayo 2026.
+
+### Hitos completados
+
+| Hito | Nombre | Ítems | Bloques |
+|------|--------|------:|---------|
+| H2 | Senior Foundations | 10 | PRO-Snr |
+| H3 | Foundations producción | 16 | PRO-Rel |
+| H5 | Operación profesional (SRE) | 16 | PRO-Ops |
+| H6 | Testing pro | 19 | PRO-QA |
+| H7 | Accesibilidad AAA + inclusión | 19 | PRO-A11Y |
+
+- **Total mega-plan:** 102/190 ítems cerrados (53,7 %)
+- **`flutter analyze`:** 0 issues ✅
+- **`flutter test`:** 245/245 ✅
+- **Cobertura:** ~26,5 %
+- **APK release:** 73,5 MB · CI verde (4 jobs: Analyze, Test, Build Web, Build Android APK)
+
+### Issues F16/F22 resueltos en esta sesión
+
+> Los 11 issues de revisión de código registrados en F16-003 (I2–I5, M1–M3) y
+> F16-004 (I1–I3, M1–M4) fueron resueltos como parte de P1-11 durante el
+> refinamiento H1 del mega-plan.
+
+---
+
 ## Bloqueantes
 
 > Se cierran en F0.5. Esfuerzo previsto ≈ 1 día. Orden ejecutado: F0.5.A → F0.5.B → F0.5.C.
@@ -201,7 +230,7 @@ Cada entidad necesita el mismo conjunto de 5 archivos: interfaz abstracta + remo
 - ⏸️ `SuggestionContributeScreen` — pospuesto (enriquecimiento de sugerencias post-MVP)
 - ⏸️ `FeedbackMessageModel` threading — pospuesto (mensajería gestor↔usuario post-F16)
 
-### ⏳ F16 — Panel admin (en progreso)
+### ✅ F16 — Panel admin (completado)
 
 #### F16-003 — CRUD de operadores (`852ef25`)
 
@@ -254,5 +283,5 @@ Cada entidad necesita el mismo conjunto de 5 archivos: interfaz abstracta + remo
 
 ---
 
-**Última actualización:** 2026-05-17 · Tras revisión crítica + remediación P0/P1/P2 (ver `docs/historico/REVISION_CRITICA.md`). **143 tests** pasando, cobertura ~23,2 %. F26 sigue como deuda acotada y documentada (`docs/FONTS_F26.md`).
-_Snapshot anterior (2026-05-15): F0→F25 completadas (26/28 fases, 92.9%), 137 tests._
+**Última actualización:** 2026-05-22 · Post refinamiento mega-plan (102/190, 53,7 %). **245 tests** pasando, cobertura ~26,5 %, `flutter analyze` 0 issues.
+_Snapshot anterior (2026-05-17): 143 tests, cobertura ~23,2 %. F0→F25 completadas (26/28 fases, 92.9 %)._

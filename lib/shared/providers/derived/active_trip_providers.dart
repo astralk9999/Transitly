@@ -36,7 +36,7 @@ class ActiveTripDetail {
 /// - no existe ningún trip con ese id, o
 /// - la ruta del trip no tiene stops registrados.
 final activeTripDetailProvider =
-    Provider.family<ActiveTripDetail?, String>((ref, tripId) {
+    Provider.autoDispose.family<ActiveTripDetail?, String>((ref, tripId) {
   final mockData = ref.watch(mockDataServiceProvider);
   final realtime =
       ref.watch(realtimeTripsProvider).valueOrNull ?? mockData.activeTrips;

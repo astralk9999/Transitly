@@ -102,6 +102,7 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
+    final l10n = AppLocalizations.of(context);
     final mockData = ref.watch(mockDataServiceProvider);
     final route = mockData.getRouteById(widget.routeId);
     final code = route?.code ?? widget.routeId;
@@ -113,10 +114,10 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: c.textMid),
-          tooltip: 'Volver',
+          tooltip: l10n.actionBack,
           onPressed: () => context.pop(),
         ),
-        title: Text('FEEDBACK · $code',
+        title: Text(l10n.feedbackScreenTitleFmt(code),
             style: TransitTypography.sectionTitle(c.textHi)),
         centerTitle: false,
       ),
@@ -129,20 +130,20 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _option(c, Icons.route, FeedbackCategory.route),
-                _option(c, Icons.location_on, FeedbackCategory.stops),
-                _option(c, Icons.schedule, FeedbackCategory.schedules),
-                _option(c, Icons.info_outline, FeedbackCategory.info),
+                _option(c, Icons.route, FeedbackCategory.route, l10n.feedbackCategoryRouteLabel),
+                _option(c, Icons.location_on, FeedbackCategory.stops, l10n.feedbackCategoryStopsLabel),
+                _option(c, Icons.schedule, FeedbackCategory.schedules, l10n.feedbackCategorySchedulesLabel),
+                _option(c, Icons.info_outline, FeedbackCategory.info, l10n.feedbackCategoryInfoLabel),
                 _option(c, Icons.lightbulb_outline,
-                    FeedbackCategory.suggestion),
+                    FeedbackCategory.suggestion, l10n.feedbackCategorySuggestionLabel),
 
                 const SizedBox(height: 24),
 
-                Text('Descripción',
+                Text(l10n.feedbackDescriptionLabel,
                     style: TransitTypography.bodySecondary(c.textMid)),
                 const SizedBox(height: 6),
                 TransitInput(
-                  hint: 'Descripción de lo que has encontrado',
+                  hint: l10n.feedbackDescriptionHint,
                   controller: _descCtrl,
                   maxLines: 4,
                 ),
@@ -163,7 +164,7 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
     );
   }
 
-  Widget _option(TransitColorScheme c, IconData icon, FeedbackCategory cat) {
+  Widget _option(TransitColorScheme c, IconData icon, FeedbackCategory cat, String label) {
     final isSelected = _selected == cat;
     return GestureDetector(
       onTap: () => setState(() => _selected = cat),
@@ -183,7 +184,7 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
             Icon(icon, size: 24, color: c.accent),
             const SizedBox(width: 12),
             Expanded(
-              child: Text(cat.label,
+              child: Text(label,
                   style: TransitTypography.bodyPrimary(c.textHi)),
             ),
             Icon(

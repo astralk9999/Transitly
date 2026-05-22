@@ -1580,4 +1580,251 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get searchReportRouteAction => 'Suggest route';
+
+  @override
+  String get driverPanelTitle => 'DRIVER MODE';
+
+  @override
+  String get driverPanelStartRoute => 'Start route';
+
+  @override
+  String get driverPanelActiveRoute => 'Active route';
+
+  @override
+  String get driverPanelCreateManualRoute => 'Create manual route';
+
+  @override
+  String get driverPanelCreateLiveRoute => 'Create live route';
+
+  @override
+  String get driverPanelMyRoutes => 'My routes';
+
+  @override
+  String get driverPanelImportSchedules => 'Import schedules';
+
+  @override
+  String get driverPanelManagementInbox => 'Management inbox';
+
+  @override
+  String get driverActiveNoActiveRoute => 'No active route';
+
+  @override
+  String get driverActiveRouteHeader => 'ACTIVE ROUTE';
+
+  @override
+  String driverActiveRouteStartedAt(String code, String time) {
+    return '$code · $time START';
+  }
+
+  @override
+  String get driverActiveNextStopHeader => 'NEXT STOP';
+
+  @override
+  String driverActiveStopRegisteredFmt(String time) {
+    return 'STOP REGISTERED · $time';
+  }
+
+  @override
+  String get driverActiveRegisterStop => 'REGISTER STOP';
+
+  @override
+  String get driverActiveIncidentButton => 'INCIDENT';
+
+  @override
+  String get driverActiveFinishRouteButton => 'FINISH ROUTE';
+
+  @override
+  String get driverActiveFinishConfirmTitle => 'Finish route?';
+
+  @override
+  String get driverActiveFinishConfirmMessage =>
+      'The route will be registered as completed.';
+
+  @override
+  String get driverActiveFinishConfirmButton => 'FINISH';
+
+  @override
+  String get driverStartTitle => 'START ROUTE';
+
+  @override
+  String driverStartSuggestionFmt(String code, String time, String day) {
+    return 'SUGGESTION: $code · $time · $day';
+  }
+
+  @override
+  String get driverStartIsThisYourRoute => 'Is this your route?';
+
+  @override
+  String get driverStartYesStart => 'YES, START';
+
+  @override
+  String get driverStartSelectLine => 'SELECT LINE';
+
+  @override
+  String get driverStartSelectSchedule => 'SELECT SCHEDULE';
+
+  @override
+  String driverStartDepartureFmt(String time) {
+    return 'Departure: $time';
+  }
+
+  @override
+  String driverStartStopsAndTime(int count, int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count stops',
+      one: '1 stop',
+    );
+    return '$_temp0 · ~$minutes min';
+  }
+
+  @override
+  String get driverStartStartButton => 'START ROUTE';
+
+  @override
+  String feedbackScreenTitleFmt(String code) {
+    return 'FEEDBACK · $code';
+  }
+
+  @override
+  String get feedbackDescriptionLabel => 'Description';
+
+  @override
+  String get feedbackDescriptionHint => 'Description of what you found';
+
+  @override
+  String get feedbackCategoryRouteLabel => 'The route on the map';
+
+  @override
+  String get feedbackCategoryStopsLabel =>
+      'A stop (missing, extra or incorrect)';
+
+  @override
+  String get feedbackCategorySchedulesLabel => 'The schedules';
+
+  @override
+  String get feedbackCategoryInfoLabel => 'General information';
+
+  @override
+  String get feedbackCategorySuggestionLabel => 'I have a suggestion';
+
+  @override
+  String get suggestRouteScreenTitle => 'SUGGEST ROUTE';
+
+  @override
+  String get suggestRouteHelpText => 'Help us complete the transport map';
+
+  @override
+  String get suggestRouteFromLabel => 'From';
+
+  @override
+  String get suggestRouteFromHint => 'Origin';
+
+  @override
+  String get suggestRouteToLabel => 'To';
+
+  @override
+  String get suggestRouteToHint => 'Destination';
+
+  @override
+  String get suggestRouteOperatorLabel => 'Operator?';
+
+  @override
+  String get suggestRouteOperatorComujesa => 'COMUJESA';
+
+  @override
+  String get suggestRouteOperatorOther => 'Other';
+
+  @override
+  String get suggestRouteOperatorDontKnow => 'I don\'t know';
+
+  @override
+  String get suggestRouteCodeLabel => 'Line code';
+
+  @override
+  String get suggestRouteCodeHint => 'e.g. M-250';
+
+  @override
+  String get suggestRouteHowKnow => 'How do you know?';
+
+  @override
+  String get suggestRouteSourceUseIt => 'I use it';
+
+  @override
+  String get suggestRouteSourceSawIt => 'I\'ve seen it';
+
+  @override
+  String get suggestRouteSourceTold => 'Someone told me';
+
+  @override
+  String get suggestRouteSourceWeb => 'Official website';
+
+  @override
+  String get suggestRouteAddDetails => 'Add more details';
+
+  @override
+  String get suggestRouteStopsRemember => 'Stops you remember';
+
+  @override
+  String suggestRouteStopNumber(int number) {
+    return 'Stop $number';
+  }
+
+  @override
+  String get suggestRouteAddStop => '+ Add stop';
+
+  @override
+  String get suggestRouteTimesKnown => 'Times you know';
+
+  @override
+  String get suggestRouteNotesLabel => 'Notes';
+
+  @override
+  String get suggestRouteNotesHint => 'Any additional details...';
+
+  @override
+  String get suggestRouteAddTimeTitle => 'Add time';
+
+  @override
+  String get suggestRouteAddTimeHint => 'HH:MM';
+
+  @override
+  String get suggestRouteAddTimeConfirm => 'ADD';
+
+  @override
+  String get incidentSheetTitle => 'WHAT HAPPENED?';
+
+  @override
+  String get incidentNoShow => 'No show';
+
+  @override
+  String get incidentDelay => 'Delay';
+
+  @override
+  String get incidentFull => 'Full';
+
+  @override
+  String get incidentDetour => 'Detour';
+
+  @override
+  String get incidentBreakdown => 'Breakdown';
+
+  @override
+  String get incidentOther => 'Other';
+
+  @override
+  String get incidentPositiveLabel => 'POSITIVE:';
+
+  @override
+  String get incidentPunctual => 'Punctual';
+
+  @override
+  String get incidentKind => 'Kind';
+
+  @override
+  String get incidentClean => 'Clean';
+
+  @override
+  String get incidentCommentHint => 'Comment (optional)';
 }

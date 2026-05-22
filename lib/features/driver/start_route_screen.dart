@@ -48,6 +48,7 @@ class _StartRouteScreenState extends ConsumerState<StartRouteScreen> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
+    final l10n = AppLocalizations.of(context);
     final mockData = ref.watch(mockDataServiceProvider);
 
     // Driver routes (mock: L1, L3, L5, L8)
@@ -59,7 +60,7 @@ class _StartRouteScreenState extends ConsumerState<StartRouteScreen> {
     final suggestedRoute = driverRoutes.isNotEmpty ? driverRoutes.first : null;
     final suggestedNext = suggestedRoute != null
         ? mockData.getNextDepartures(suggestedRoute.id, '', 1)
-        : [];
+        : <ScheduleModel>[];
     final suggestedTime =
         suggestedNext.isNotEmpty ? suggestedNext.first.departureTime : '--:--';
 
@@ -89,10 +90,10 @@ class _StartRouteScreenState extends ConsumerState<StartRouteScreen> {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: c.textMid),
-          tooltip: 'Volver',
+          tooltip: l10n.actionBack,
           onPressed: () => context.pop(),
         ),
-        title: Text('INICIAR RUTA',
+        title: Text(l10n.driverStartTitle,
             style: TransitTypography.sectionTitle(c.textHi)),
         centerTitle: false,
       ),
@@ -117,17 +118,17 @@ class _StartRouteScreenState extends ConsumerState<StartRouteScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'SUGERENCIA: ${suggestedRoute.code} · $suggestedTime · Laborable',
+                       l10n.driverStartSuggestionFmt(suggestedRoute.code, suggestedTime, l10n.routeDayWeekday),
                       style: TransitTypography.bodyPrimary(c.textHi),
                     ),
                     const SizedBox(height: 4),
-                    Text('¿Es tu ruta?',
+                    Text(l10n.driverStartIsThisYourRoute,
                         style: TransitTypography.bodySecondary(c.textMid)),
                     const SizedBox(height: 12),
                     Row(
                       children: [
                         TransitButton(
-                          label: 'SÍ, INICIAR',
+                          label: l10n.driverStartYesStart,
                           isSmall: true,
                           onPressed: () => context.push('/driver/active'),
                         ),
@@ -147,7 +148,7 @@ class _StartRouteScreenState extends ConsumerState<StartRouteScreen> {
             const SizedBox(height: 24),
 
             // ── b) SELECCIONAR LÍNEA ──
-            Text('SELECCIONA LÍNEA',
+            Text(l10n.driverStartSelectLine,
                 key: _routeListKey,
                 style: TransitTypography.sectionTitle(c.textMid)),
             const SizedBox(height: 12),
@@ -203,7 +204,7 @@ class _StartRouteScreenState extends ConsumerState<StartRouteScreen> {
             // ── c) SELECCIONAR HORARIO ──
             if (_selectedRouteId != null) ...[
               const SizedBox(height: 24),
-              Text('SELECCIONA HORARIO',
+              Text(l10n.driverStartSelectSchedule,
                   style: TransitTypography.sectionTitle(c.textMid)),
               const SizedBox(height: 12),
               Wrap(
@@ -273,12 +274,12 @@ class _StartRouteScreenState extends ConsumerState<StartRouteScreen> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Salida: $_selectedTime',
+                      l10n.driverStartDepartureFmt(_selectedTime!),
                       style: TransitTypography.stopTime(c.accent),
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '${selectedStops.length} paradas · ~${selectedStops.length * 3} min',
+                      l10n.driverStartStopsAndTime(selectedStops.length, selectedStops.length * 3),
                       style: TransitTypography.bodySecondary(c.textMid),
                     ),
                   ],
@@ -289,7 +290,7 @@ class _StartRouteScreenState extends ConsumerState<StartRouteScreen> {
                 width: double.infinity,
                 height: 56,
                 child: TransitButton(
-                  label: 'INICIAR RUTA',
+                  label: l10n.driverStartStartButton,
                   onPressed: () => context.push('/driver/active'),
                 ),
               ),

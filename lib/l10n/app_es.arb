@@ -880,5 +880,125 @@
   "searchEmptySubtitle": "Te mostraremos las rutas más rápidas",
   "searchUnderConstructionTitle": "Buscador en construcción",
   "searchUnderConstructionSubtitle": "Mientras tanto, puedes sugerirnos rutas",
-  "searchReportRouteAction": "Sugerir ruta"
+  "searchReportRouteAction": "Sugerir ruta",
+
+  "driverPanelTitle": "MODO CONDUCTOR",
+  "driverPanelStartRoute": "Iniciar ruta",
+  "driverPanelActiveRoute": "Ruta activa",
+  "driverPanelCreateManualRoute": "Crear ruta manual",
+  "driverPanelCreateLiveRoute": "Crear ruta en vivo",
+  "driverPanelMyRoutes": "Mis rutas",
+  "driverPanelImportSchedules": "Importar horarios",
+  "driverPanelManagementInbox": "Bandeja de gestión",
+
+  "driverActiveNoActiveRoute": "No hay ruta activa",
+  "driverActiveRouteHeader": "RUTA ACTIVA",
+  "driverActiveRouteStartedAt": "{code} · {time} INICIO",
+  "@driverActiveRouteStartedAt": {
+    "placeholders": {
+      "code": { "type": "String", "example": "L1" },
+      "time": { "type": "String", "example": "08:30" }
+    }
+  },
+  "driverActiveNextStopHeader": "PRÓXIMA PARADA",
+  "driverActiveStopRegisteredFmt": "PARADA REGISTRADA · {time}",
+  "@driverActiveStopRegisteredFmt": {
+    "placeholders": {
+      "time": { "type": "String", "example": "08:30" }
+    }
+  },
+  "driverActiveRegisterStop": "REGISTRAR PARADA",
+  "driverActiveIncidentButton": "INCIDENCIA",
+  "driverActiveFinishRouteButton": "FINALIZAR RUTA",
+  "driverActiveFinishConfirmTitle": "¿Finalizar ruta?",
+  "driverActiveFinishConfirmMessage": "Se registrará la ruta como completada.",
+  "driverActiveFinishConfirmButton": "FINALIZAR",
+
+  "driverStartTitle": "INICIAR RUTA",
+  "driverStartSuggestionFmt": "SUGERENCIA: {code} · {time} · {day}",
+  "@driverStartSuggestionFmt": {
+    "placeholders": {
+      "code": { "type": "String", "example": "L1" },
+      "time": { "type": "String", "example": "08:30" },
+      "day": { "type": "String", "example": "Laborable" }
+    }
+  },
+  "driverStartIsThisYourRoute": "¿Es tu ruta?",
+  "driverStartYesStart": "SÍ, INICIAR",
+  "driverStartSelectLine": "SELECCIONA LÍNEA",
+  "driverStartSelectSchedule": "SELECCIONA HORARIO",
+  "driverStartDepartureFmt": "Salida: {time}",
+  "@driverStartDepartureFmt": {
+    "placeholders": {
+      "time": { "type": "String", "example": "08:30" }
+    }
+  },
+  "driverStartStopsAndTime": "{count, plural, =1{1 parada} other{{count} paradas}} · ~{minutes} min",
+  "@driverStartStopsAndTime": {
+    "placeholders": {
+      "count": { "type": "int", "example": "5" },
+      "minutes": { "type": "int", "example": "15" }
+    }
+  },
+  "driverStartStartButton": "INICIAR RUTA",
+
+  "feedbackScreenTitleFmt": "FEEDBACK · {code}",
+  "@feedbackScreenTitleFmt": {
+    "placeholders": {
+      "code": { "type": "String", "example": "L1" }
+    }
+  },
+  "feedbackDescriptionLabel": "Descripción",
+  "feedbackDescriptionHint": "Descripción de lo que has encontrado",
+  "feedbackCategoryRouteLabel": "El recorrido en el mapa",
+  "feedbackCategoryStopsLabel": "Una parada (falta, sobra o está mal)",
+  "feedbackCategorySchedulesLabel": "Los horarios",
+  "feedbackCategoryInfoLabel": "Información general",
+  "feedbackCategorySuggestionLabel": "Tengo una sugerencia",
+
+  "suggestRouteScreenTitle": "SUGERIR RUTA",
+  "suggestRouteHelpText": "Ayúdanos a completar el mapa de transporte",
+  "suggestRouteFromLabel": "Desde",
+  "suggestRouteFromHint": "Origen",
+  "suggestRouteToLabel": "Hasta",
+  "suggestRouteToHint": "Destino",
+  "suggestRouteOperatorLabel": "¿Operador?",
+  "suggestRouteOperatorComujesa": "COMUJESA",
+  "suggestRouteOperatorOther": "Otra",
+  "suggestRouteOperatorDontKnow": "No lo sé",
+  "suggestRouteCodeLabel": "Código de línea",
+  "suggestRouteCodeHint": "Ej: M-250",
+  "suggestRouteHowKnow": "¿Cómo lo sabes?",
+  "suggestRouteSourceUseIt": "La uso",
+  "suggestRouteSourceSawIt": "La he visto",
+  "suggestRouteSourceTold": "Me lo dijeron",
+  "suggestRouteSourceWeb": "Web oficial",
+  "suggestRouteAddDetails": "Añadir más detalles",
+  "suggestRouteStopsRemember": "Paradas que recuerdas",
+  "suggestRouteStopNumber": "Parada {number}",
+  "@suggestRouteStopNumber": {
+    "placeholders": {
+      "number": { "type": "int", "example": "1" }
+    }
+  },
+  "suggestRouteAddStop": "+ Añadir parada",
+  "suggestRouteTimesKnown": "Horas que conoces",
+  "suggestRouteNotesLabel": "Notas",
+  "suggestRouteNotesHint": "Cualquier detalle adicional...",
+  "suggestRouteAddTimeTitle": "Añadir hora",
+  "suggestRouteAddTimeHint": "HH:MM",
+  "suggestRouteAddTimeConfirm": "AÑADIR",
+
+  "incidentSheetTitle": "¿QUÉ HA PASADO?",
+  "incidentNoShow": "No pasó",
+  "incidentDelay": "Retraso",
+  "incidentFull": "Lleno",
+  "incidentDetour": "Desvío",
+  "incidentBreakdown": "Avería",
+  "incidentOther": "Otro",
+  "incidentPositiveLabel": "POSITIVO:",
+  "incidentPunctual": "Puntual",
+  "incidentKind": "Amable",
+  "incidentClean": "Limpio",
+  "incidentCommentHint": "Comentario (opcional)"
 }

@@ -1588,4 +1588,252 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get searchReportRouteAction => 'Sugerir ruta';
+
+  @override
+  String get driverPanelTitle => 'MODO CONDUCTOR';
+
+  @override
+  String get driverPanelStartRoute => 'Iniciar ruta';
+
+  @override
+  String get driverPanelActiveRoute => 'Ruta activa';
+
+  @override
+  String get driverPanelCreateManualRoute => 'Crear ruta manual';
+
+  @override
+  String get driverPanelCreateLiveRoute => 'Crear ruta en vivo';
+
+  @override
+  String get driverPanelMyRoutes => 'Mis rutas';
+
+  @override
+  String get driverPanelImportSchedules => 'Importar horarios';
+
+  @override
+  String get driverPanelManagementInbox => 'Bandeja de gestión';
+
+  @override
+  String get driverActiveNoActiveRoute => 'No hay ruta activa';
+
+  @override
+  String get driverActiveRouteHeader => 'RUTA ACTIVA';
+
+  @override
+  String driverActiveRouteStartedAt(String code, String time) {
+    return '$code · $time INICIO';
+  }
+
+  @override
+  String get driverActiveNextStopHeader => 'PRÓXIMA PARADA';
+
+  @override
+  String driverActiveStopRegisteredFmt(String time) {
+    return 'PARADA REGISTRADA · $time';
+  }
+
+  @override
+  String get driverActiveRegisterStop => 'REGISTRAR PARADA';
+
+  @override
+  String get driverActiveIncidentButton => 'INCIDENCIA';
+
+  @override
+  String get driverActiveFinishRouteButton => 'FINALIZAR RUTA';
+
+  @override
+  String get driverActiveFinishConfirmTitle => '¿Finalizar ruta?';
+
+  @override
+  String get driverActiveFinishConfirmMessage =>
+      'Se registrará la ruta como completada.';
+
+  @override
+  String get driverActiveFinishConfirmButton => 'FINALIZAR';
+
+  @override
+  String get driverStartTitle => 'INICIAR RUTA';
+
+  @override
+  String driverStartSuggestionFmt(String code, String time, String day) {
+    return 'SUGERENCIA: $code · $time · $day';
+  }
+
+  @override
+  String get driverStartIsThisYourRoute => '¿Es tu ruta?';
+
+  @override
+  String get driverStartYesStart => 'SÍ, INICIAR';
+
+  @override
+  String get driverStartSelectLine => 'SELECCIONA LÍNEA';
+
+  @override
+  String get driverStartSelectSchedule => 'SELECCIONA HORARIO';
+
+  @override
+  String driverStartDepartureFmt(String time) {
+    return 'Salida: $time';
+  }
+
+  @override
+  String driverStartStopsAndTime(int count, int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count paradas',
+      one: '1 parada',
+    );
+    return '$_temp0 · ~$minutes min';
+  }
+
+  @override
+  String get driverStartStartButton => 'INICIAR RUTA';
+
+  @override
+  String feedbackScreenTitleFmt(String code) {
+    return 'FEEDBACK · $code';
+  }
+
+  @override
+  String get feedbackDescriptionLabel => 'Descripción';
+
+  @override
+  String get feedbackDescriptionHint => 'Descripción de lo que has encontrado';
+
+  @override
+  String get feedbackCategoryRouteLabel => 'El recorrido en el mapa';
+
+  @override
+  String get feedbackCategoryStopsLabel =>
+      'Una parada (falta, sobra o está mal)';
+
+  @override
+  String get feedbackCategorySchedulesLabel => 'Los horarios';
+
+  @override
+  String get feedbackCategoryInfoLabel => 'Información general';
+
+  @override
+  String get feedbackCategorySuggestionLabel => 'Tengo una sugerencia';
+
+  @override
+  String get suggestRouteScreenTitle => 'SUGERIR RUTA';
+
+  @override
+  String get suggestRouteHelpText =>
+      'Ayúdanos a completar el mapa de transporte';
+
+  @override
+  String get suggestRouteFromLabel => 'Desde';
+
+  @override
+  String get suggestRouteFromHint => 'Origen';
+
+  @override
+  String get suggestRouteToLabel => 'Hasta';
+
+  @override
+  String get suggestRouteToHint => 'Destino';
+
+  @override
+  String get suggestRouteOperatorLabel => '¿Operador?';
+
+  @override
+  String get suggestRouteOperatorComujesa => 'COMUJESA';
+
+  @override
+  String get suggestRouteOperatorOther => 'Otra';
+
+  @override
+  String get suggestRouteOperatorDontKnow => 'No lo sé';
+
+  @override
+  String get suggestRouteCodeLabel => 'Código de línea';
+
+  @override
+  String get suggestRouteCodeHint => 'Ej: M-250';
+
+  @override
+  String get suggestRouteHowKnow => '¿Cómo lo sabes?';
+
+  @override
+  String get suggestRouteSourceUseIt => 'La uso';
+
+  @override
+  String get suggestRouteSourceSawIt => 'La he visto';
+
+  @override
+  String get suggestRouteSourceTold => 'Me lo dijeron';
+
+  @override
+  String get suggestRouteSourceWeb => 'Web oficial';
+
+  @override
+  String get suggestRouteAddDetails => 'Añadir más detalles';
+
+  @override
+  String get suggestRouteStopsRemember => 'Paradas que recuerdas';
+
+  @override
+  String suggestRouteStopNumber(int number) {
+    return 'Parada $number';
+  }
+
+  @override
+  String get suggestRouteAddStop => '+ Añadir parada';
+
+  @override
+  String get suggestRouteTimesKnown => 'Horas que conoces';
+
+  @override
+  String get suggestRouteNotesLabel => 'Notas';
+
+  @override
+  String get suggestRouteNotesHint => 'Cualquier detalle adicional...';
+
+  @override
+  String get suggestRouteAddTimeTitle => 'Añadir hora';
+
+  @override
+  String get suggestRouteAddTimeHint => 'HH:MM';
+
+  @override
+  String get suggestRouteAddTimeConfirm => 'AÑADIR';
+
+  @override
+  String get incidentSheetTitle => '¿QUÉ HA PASADO?';
+
+  @override
+  String get incidentNoShow => 'No pasó';
+
+  @override
+  String get incidentDelay => 'Retraso';
+
+  @override
+  String get incidentFull => 'Lleno';
+
+  @override
+  String get incidentDetour => 'Desvío';
+
+  @override
+  String get incidentBreakdown => 'Avería';
+
+  @override
+  String get incidentOther => 'Otro';
+
+  @override
+  String get incidentPositiveLabel => 'POSITIVO:';
+
+  @override
+  String get incidentPunctual => 'Puntual';
+
+  @override
+  String get incidentKind => 'Amable';
+
+  @override
+  String get incidentClean => 'Limpio';
+
+  @override
+  String get incidentCommentHint => 'Comentario (opcional)';
 }

@@ -50,6 +50,7 @@ class _SuggestRouteScreenState extends ConsumerState<SuggestRouteScreen> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: c.bgRoot,
@@ -58,10 +59,10 @@ class _SuggestRouteScreenState extends ConsumerState<SuggestRouteScreen> {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: c.textMid),
-          tooltip: 'Volver',
+          tooltip: l10n.actionBack,
           onPressed: () => context.pop(),
         ),
-        title: Text('SUGERIR RUTA',
+        title: Text(l10n.suggestRouteScreenTitle,
             style: TransitTypography.sectionTitle(c.textHi)),
         centerTitle: false,
       ),
@@ -74,39 +75,43 @@ class _SuggestRouteScreenState extends ConsumerState<SuggestRouteScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Ayúdanos a completar el mapa de transporte',
+              l10n.suggestRouteHelpText,
               style: TransitTypography.bodySecondary(c.textMid),
             ),
             const SizedBox(height: 16),
 
             // From / To
-            Text('Desde', style: TransitTypography.bodySecondary(c.textMid)),
+            Text(l10n.suggestRouteFromLabel, style: TransitTypography.bodySecondary(c.textMid)),
             const SizedBox(height: 6),
             TransitInput(
-              hint: 'Origen',
+              hint: l10n.suggestRouteFromHint,
               controller: _fromCtrl,
               onChanged: (_) => setState(() {}),
             ),
             const SizedBox(height: 12),
-            Text('Hasta', style: TransitTypography.bodySecondary(c.textMid)),
+            Text(l10n.suggestRouteToLabel, style: TransitTypography.bodySecondary(c.textMid)),
             const SizedBox(height: 6),
             TransitInput(
-              hint: 'Destino',
+              hint: l10n.suggestRouteToHint,
               controller: _toCtrl,
               onChanged: (_) => setState(() {}),
             ),
             const SizedBox(height: 20),
 
             // Operator chips
-            Text('¿Operador?',
+            Text(l10n.suggestRouteOperatorLabel,
                 style: TransitTypography.bodySecondary(c.textMid)),
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,
-              children: ['COMUJESA', 'Otra', 'No lo sé'].map((op) {
-                final selected = _operator == op;
+              children: [
+                (l10n.suggestRouteOperatorComujesa, 'COMUJESA'),
+                (l10n.suggestRouteOperatorOther, 'Otra'),
+                (l10n.suggestRouteOperatorDontKnow, 'No lo sé'),
+              ].map((op) {
+                final selected = _operator == op.$2;
                 return GestureDetector(
-                  onTap: () => setState(() => _operator = op),
+                  onTap: () => setState(() => _operator = op.$2),
                   child: Container(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -119,7 +124,7 @@ class _SuggestRouteScreenState extends ConsumerState<SuggestRouteScreen> {
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: Text(
-                      op,
+                      op.$1,
                       style: GoogleFonts.ibmPlexMono(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
@@ -133,19 +138,19 @@ class _SuggestRouteScreenState extends ConsumerState<SuggestRouteScreen> {
             const SizedBox(height: 16),
 
             // Code
-            Text('Código de línea',
+            Text(l10n.suggestRouteCodeLabel,
                 style: TransitTypography.bodySecondary(c.textMid)),
             const SizedBox(height: 6),
-            TransitInput(hint: 'Ej: M-250', controller: _codeCtrl),
+            TransitInput(hint: l10n.suggestRouteCodeHint, controller: _codeCtrl),
             const SizedBox(height: 20),
 
             // Source
-            Text('¿Cómo lo sabes?',
+            Text(l10n.suggestRouteHowKnow,
                 style: TransitTypography.bodySecondary(c.textMid)),
             const SizedBox(height: 8),
-            ...['La uso', 'La he visto', 'Me lo dijeron', 'Web oficial']
+            ...[(l10n.suggestRouteSourceUseIt, 'La uso'), (l10n.suggestRouteSourceSawIt, 'La he visto'), (l10n.suggestRouteSourceTold, 'Me lo dijeron'), (l10n.suggestRouteSourceWeb, 'Web oficial')]
                 .map((opt) => GestureDetector(
-                      onTap: () => setState(() => _source = opt),
+                      onTap: () => setState(() => _source = opt.$2),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 6),
                         child: Row(
@@ -156,11 +161,11 @@ class _SuggestRouteScreenState extends ConsumerState<SuggestRouteScreen> {
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 border: Border.all(
-                                  color: _source == opt ? c.accent : c.textLo,
+                                  color: _source == opt.$2 ? c.accent : c.textLo,
                                   width: 1.5,
                                 ),
                               ),
-                              child: _source == opt
+                              child: _source == opt.$2
                                   ? Center(
                                       child: Container(
                                         width: 10,
@@ -174,7 +179,7 @@ class _SuggestRouteScreenState extends ConsumerState<SuggestRouteScreen> {
                                   : null,
                             ),
                             const SizedBox(width: 10),
-                            Text(opt,
+                            Text(opt.$1,
                                 style:
                                     TransitTypography.subheading(c.textHi)),
                           ],
@@ -189,19 +194,19 @@ class _SuggestRouteScreenState extends ConsumerState<SuggestRouteScreen> {
                   .copyWith(dividerColor: Colors.transparent),
               child: ExpansionTile(
                 tilePadding: EdgeInsets.zero,
-                title: Text('Añadir más detalles',
+                title: Text(l10n.suggestRouteAddDetails,
                     style: TransitTypography.bodySecondary(c.accent)),
                 iconColor: c.accent,
                 collapsedIconColor: c.accent,
                 children: [
                   // Stops
-                  Text('Paradas que recuerdas',
+                  Text(l10n.suggestRouteStopsRemember,
                       style: TransitTypography.bodySecondary(c.textMid)),
                   const SizedBox(height: 8),
                   ..._stopCtrls.asMap().entries.map((e) => Padding(
                         padding: const EdgeInsets.only(bottom: 6),
                         child: TransitInput(
-                          hint: 'Parada ${e.key + 1}',
+                          hint: l10n.suggestRouteStopNumber(e.key + 1),
                           controller: e.value,
                         ),
                       )),
@@ -210,14 +215,14 @@ class _SuggestRouteScreenState extends ConsumerState<SuggestRouteScreen> {
                     child: GestureDetector(
                       onTap: () => setState(
                           () => _stopCtrls.add(TextEditingController())),
-                      child: Text('+ Añadir parada',
+                      child: Text(l10n.suggestRouteAddStop,
                           style: TransitTypography.bodySecondary(c.accent)),
                     ),
                   ),
                   const SizedBox(height: 16),
 
                   // Hours
-                  Text('Horas que conoces',
+                  Text(l10n.suggestRouteTimesKnown,
                       style: TransitTypography.bodySecondary(c.textMid)),
                   const SizedBox(height: 8),
                   Wrap(
@@ -258,11 +263,11 @@ class _SuggestRouteScreenState extends ConsumerState<SuggestRouteScreen> {
                   const SizedBox(height: 16),
 
                   // Notes
-                  Text('Notas',
+                  Text(l10n.suggestRouteNotesLabel,
                       style: TransitTypography.bodySecondary(c.textMid)),
                   const SizedBox(height: 6),
                   TransitInput(
-                    hint: 'Cualquier detalle adicional...',
+                    hint: l10n.suggestRouteNotesHint,
                     controller: _notesCtrl,
                     maxLines: 3,
                   ),
@@ -334,11 +339,12 @@ class _SuggestRouteScreenState extends ConsumerState<SuggestRouteScreen> {
   }
 
   Future<void> _addHourDialog(TransitColorScheme c) async {
+    final l10n = AppLocalizations.of(context);
     final hour = await showSingleFieldDialog(
       context,
-      title: 'Añadir hora',
-      hint: 'HH:MM',
-      confirmLabel: 'AÑADIR',
+      title: l10n.suggestRouteAddTimeTitle,
+      hint: l10n.suggestRouteAddTimeHint,
+      confirmLabel: l10n.suggestRouteAddTimeConfirm,
     );
     if (hour != null && mounted) {
       setState(() {

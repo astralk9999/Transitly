@@ -32,6 +32,7 @@ class _ActiveRouteScreenState extends ConsumerState<ActiveRouteScreen> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
+    final l10n = AppLocalizations.of(context);
     final mockData = ref.watch(mockDataServiceProvider);
     final realtimeTrips = ref.watch(realtimeTripsProvider);
 
@@ -52,14 +53,14 @@ class _ActiveRouteScreenState extends ConsumerState<ActiveRouteScreen> {
           children: [
             Positioned.fill(child: SmokeBackground(color: c.accent, isDark: isDark)),
             Center(
-              child: Column(
+                child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('No hay ruta activa',
+                  Text(l10n.driverActiveNoActiveRoute,
                       style: TransitTypography.bodyPrimary(c.textMid)),
                   const SizedBox(height: 16),
                   TransitButton(
-                    label: AppLocalizations.of(context).actionBack.toUpperCase(),
+                    label: l10n.actionBack.toUpperCase(),
                     isSmall: true,
                     onPressed: () => context.pop(),
                   ),
@@ -112,7 +113,7 @@ class _ActiveRouteScreenState extends ConsumerState<ActiveRouteScreen> {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      'RUTA ACTIVA',
+                      l10n.driverActiveRouteHeader,
                       style: GoogleFonts.ibmPlexMono(
                         fontSize: 10,
                         fontWeight: FontWeight.w600,
@@ -122,7 +123,7 @@ class _ActiveRouteScreenState extends ConsumerState<ActiveRouteScreen> {
                     ),
                     const Spacer(),
                     Text(
-                      '${route?.code ?? '?'} · $timeStr INICIO',
+                      l10n.driverActiveRouteStartedAt(route?.code ?? '?', timeStr),
                       style: GoogleFonts.ibmPlexMono(
                           fontSize: 13, color: c.textMid),
                     ),
@@ -146,7 +147,7 @@ class _ActiveRouteScreenState extends ConsumerState<ActiveRouteScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'PRÓXIMA PARADA',
+                  l10n.driverActiveNextStopHeader,
                   style: GoogleFonts.ibmPlexMono(
                     fontSize: 11,
                     fontWeight: FontWeight.w500,
@@ -221,8 +222,8 @@ class _ActiveRouteScreenState extends ConsumerState<ActiveRouteScreen> {
                   alignment: Alignment.center,
                   child: Text(
                     _justRegistered
-                        ? 'PARADA REGISTRADA · $_registeredTime'
-                        : '✓ REGISTRAR PARADA',
+                        ? l10n.driverActiveStopRegisteredFmt(_registeredTime)
+                        : '✓ ${l10n.driverActiveRegisterStop}',
                     style: GoogleFonts.ibmPlexMono(
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
@@ -240,7 +241,7 @@ class _ActiveRouteScreenState extends ConsumerState<ActiveRouteScreen> {
             child: SizedBox(
               width: double.infinity,
               child: TransitButton(
-                label: '⚠ INCIDENCIA',
+                label: '⚠ ${l10n.driverActiveIncidentButton}',
                 isDanger: true,
                 isSmall: true,
                 onPressed: () => showReportIncidentSheet(
@@ -280,7 +281,7 @@ class _ActiveRouteScreenState extends ConsumerState<ActiveRouteScreen> {
               child: SizedBox(
                 width: double.infinity,
                 child: TransitButton(
-                  label: 'FINALIZAR RUTA',
+                  label: l10n.driverActiveFinishRouteButton,
                   isDanger: true,
                   onPressed: () => _confirmFinish(context, c),
                 ),
@@ -322,18 +323,19 @@ class _ActiveRouteScreenState extends ConsumerState<ActiveRouteScreen> {
   }
 
   void _confirmFinish(BuildContext context, TransitColorScheme c) {
+    final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: c.bgSurface,
-        title: Text('¿Finalizar ruta?',
+        title: Text(l10n.driverActiveFinishConfirmTitle,
             style: TransitTypography.heading(c.textHi)),
-        content: Text('Se registrará la ruta como completada.',
+        content: Text(l10n.driverActiveFinishConfirmMessage,
             style: TransitTypography.bodySecondary(c.textMid)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
-            child: Text(AppLocalizations.of(context).actionCancel.toUpperCase(),
+            child: Text(l10n.actionCancel.toUpperCase(),
                 style: TransitTypography.bodySecondary(c.textMid)),
           ),
           TextButton(
@@ -341,7 +343,7 @@ class _ActiveRouteScreenState extends ConsumerState<ActiveRouteScreen> {
               Navigator.of(ctx).pop();
               context.go('/home/inicio');
             },
-            child: Text('FINALIZAR',
+            child: Text(l10n.driverActiveFinishConfirmButton,
                 style: TransitTypography.bodySecondary(c.stateCancelled)),
           ),
         ],

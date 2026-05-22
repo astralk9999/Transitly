@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
+import '../../l10n/generated/app_localizations.dart';
 import '../../shared/providers/user_provider.dart';
 
 class DriverPanel extends ConsumerWidget {
@@ -14,6 +15,7 @@ class DriverPanel extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
+    final l10n = AppLocalizations.of(context);
 
     return Container(
       decoration: BoxDecoration(
@@ -43,7 +45,7 @@ class DriverPanel extends ConsumerWidget {
             child: Row(
               children: [
                 Text(
-                  'MODO CONDUCTOR',
+                  l10n.driverPanelTitle,
                   style: GoogleFonts.ibmPlexMono(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
@@ -65,13 +67,13 @@ class DriverPanel extends ConsumerWidget {
           ),
 
           // Options
-          _option(context, c, Icons.play_arrow, 'Iniciar ruta', '/driver/start'),
-          _option(context, c, Icons.route, 'Ruta activa', '/driver/active'),
-          _option(context, c, Icons.edit, 'Crear ruta manual', '/driver/editor/manual'),
-          _option(context, c, Icons.fiber_manual_record, 'Crear ruta en vivo', '/driver/editor/live'),
-          _option(context, c, Icons.history, 'Mis rutas', '/driver/history'),
-          _option(context, c, Icons.schedule, 'Importar horarios', '/driver/ai-import'),
-          _option(context, c, Icons.inbox, 'Bandeja de gestión', '/management/inbox'),
+          _option(context, c, Icons.play_arrow, l10n.driverPanelStartRoute, '/driver/start'),
+          _option(context, c, Icons.route, l10n.driverPanelActiveRoute, '/driver/active'),
+          _option(context, c, Icons.edit, l10n.driverPanelCreateManualRoute, '/driver/editor/manual'),
+          _option(context, c, Icons.fiber_manual_record, l10n.driverPanelCreateLiveRoute, '/driver/editor/live'),
+          _option(context, c, Icons.history, l10n.driverPanelMyRoutes, '/driver/history'),
+          _option(context, c, Icons.schedule, l10n.driverPanelImportSchedules, '/driver/ai-import'),
+          _option(context, c, Icons.inbox, l10n.driverPanelManagementInbox, '/management/inbox'),
 
           const SizedBox(height: 16),
         ],

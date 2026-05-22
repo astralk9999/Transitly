@@ -150,6 +150,7 @@ class _ReportIncidentContentState
   @override
   Widget build(BuildContext context) {
     final c = widget.c;
+    final l10n = AppLocalizations.of(context);
 
     return Padding(
       padding: EdgeInsets.fromLTRB(
@@ -170,7 +171,7 @@ class _ReportIncidentContentState
             ),
           ),
           Text(
-            '¿QUÉ HA PASADO?',
+            l10n.incidentSheetTitle,
             style: GoogleFonts.ibmPlexMono(
               fontSize: 14,
               fontWeight: FontWeight.w600,
@@ -198,12 +199,12 @@ class _ReportIncidentContentState
             crossAxisSpacing: 8,
             childAspectRatio: 1.2,
             children: [
-              _optionCell(c, 'no_show', Icons.bus_alert, 'No pasó'),
-              _optionCell(c, 'delay', Icons.access_time, 'Retraso'),
-              _optionCell(c, 'full', Icons.people, 'Lleno'),
-              _optionCell(c, 'detour', Icons.alt_route, 'Desvío'),
-              _optionCell(c, 'breakdown', Icons.build, 'Avería'),
-              _optionCell(c, 'other', Icons.more_horiz, 'Otro'),
+              _optionCell(c, 'no_show', Icons.bus_alert, l10n.incidentNoShow),
+              _optionCell(c, 'delay', Icons.access_time, l10n.incidentDelay),
+              _optionCell(c, 'full', Icons.people, l10n.incidentFull),
+              _optionCell(c, 'detour', Icons.alt_route, l10n.incidentDetour),
+              _optionCell(c, 'breakdown', Icons.build, l10n.incidentBreakdown),
+              _optionCell(c, 'other', Icons.more_horiz, l10n.incidentOther),
             ],
           ),
           const SizedBox(height: 12),
@@ -211,7 +212,7 @@ class _ReportIncidentContentState
           const SizedBox(height: 12),
 
           Text(
-            'POSITIVO:',
+            l10n.incidentPositiveLabel,
             style: GoogleFonts.ibmPlexMono(
               fontSize: 10,
               fontWeight: FontWeight.w500,
@@ -224,20 +225,20 @@ class _ReportIncidentContentState
             children: [
               Expanded(
                   child:
-                      _optionCell(c, 'punctual', Icons.check, 'Puntual')),
+                      _optionCell(c, 'punctual', Icons.check, l10n.incidentPunctual)),
               const SizedBox(width: 8),
               Expanded(
                   child: _optionCell(
-                      c, 'kind', Icons.favorite_border, 'Amable')),
+                      c, 'kind', Icons.favorite_border, l10n.incidentKind)),
               const SizedBox(width: 8),
               Expanded(
                   child: _optionCell(
-                      c, 'clean', Icons.cleaning_services, 'Limpio')),
+                      c, 'clean', Icons.cleaning_services, l10n.incidentClean)),
             ],
           ),
           const SizedBox(height: 16),
           TransitInput(
-            hint: 'Comentario (opcional)',
+            hint: l10n.incidentCommentHint,
             controller: _commentCtrl,
           ),
           const SizedBox(height: 16),

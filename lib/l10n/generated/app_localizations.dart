@@ -2990,6 +2990,456 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Sugerir ruta'**
   String get searchReportRouteAction;
+
+  /// No description provided for @driverPanelTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'MODO CONDUCTOR'**
+  String get driverPanelTitle;
+
+  /// No description provided for @driverPanelStartRoute.
+  ///
+  /// In es, this message translates to:
+  /// **'Iniciar ruta'**
+  String get driverPanelStartRoute;
+
+  /// No description provided for @driverPanelActiveRoute.
+  ///
+  /// In es, this message translates to:
+  /// **'Ruta activa'**
+  String get driverPanelActiveRoute;
+
+  /// No description provided for @driverPanelCreateManualRoute.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear ruta manual'**
+  String get driverPanelCreateManualRoute;
+
+  /// No description provided for @driverPanelCreateLiveRoute.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear ruta en vivo'**
+  String get driverPanelCreateLiveRoute;
+
+  /// No description provided for @driverPanelMyRoutes.
+  ///
+  /// In es, this message translates to:
+  /// **'Mis rutas'**
+  String get driverPanelMyRoutes;
+
+  /// No description provided for @driverPanelImportSchedules.
+  ///
+  /// In es, this message translates to:
+  /// **'Importar horarios'**
+  String get driverPanelImportSchedules;
+
+  /// No description provided for @driverPanelManagementInbox.
+  ///
+  /// In es, this message translates to:
+  /// **'Bandeja de gestión'**
+  String get driverPanelManagementInbox;
+
+  /// No description provided for @driverActiveNoActiveRoute.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay ruta activa'**
+  String get driverActiveNoActiveRoute;
+
+  /// No description provided for @driverActiveRouteHeader.
+  ///
+  /// In es, this message translates to:
+  /// **'RUTA ACTIVA'**
+  String get driverActiveRouteHeader;
+
+  /// No description provided for @driverActiveRouteStartedAt.
+  ///
+  /// In es, this message translates to:
+  /// **'{code} · {time} INICIO'**
+  String driverActiveRouteStartedAt(String code, String time);
+
+  /// No description provided for @driverActiveNextStopHeader.
+  ///
+  /// In es, this message translates to:
+  /// **'PRÓXIMA PARADA'**
+  String get driverActiveNextStopHeader;
+
+  /// No description provided for @driverActiveStopRegisteredFmt.
+  ///
+  /// In es, this message translates to:
+  /// **'PARADA REGISTRADA · {time}'**
+  String driverActiveStopRegisteredFmt(String time);
+
+  /// No description provided for @driverActiveRegisterStop.
+  ///
+  /// In es, this message translates to:
+  /// **'REGISTRAR PARADA'**
+  String get driverActiveRegisterStop;
+
+  /// No description provided for @driverActiveIncidentButton.
+  ///
+  /// In es, this message translates to:
+  /// **'INCIDENCIA'**
+  String get driverActiveIncidentButton;
+
+  /// No description provided for @driverActiveFinishRouteButton.
+  ///
+  /// In es, this message translates to:
+  /// **'FINALIZAR RUTA'**
+  String get driverActiveFinishRouteButton;
+
+  /// No description provided for @driverActiveFinishConfirmTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Finalizar ruta?'**
+  String get driverActiveFinishConfirmTitle;
+
+  /// No description provided for @driverActiveFinishConfirmMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Se registrará la ruta como completada.'**
+  String get driverActiveFinishConfirmMessage;
+
+  /// No description provided for @driverActiveFinishConfirmButton.
+  ///
+  /// In es, this message translates to:
+  /// **'FINALIZAR'**
+  String get driverActiveFinishConfirmButton;
+
+  /// No description provided for @driverStartTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'INICIAR RUTA'**
+  String get driverStartTitle;
+
+  /// No description provided for @driverStartSuggestionFmt.
+  ///
+  /// In es, this message translates to:
+  /// **'SUGERENCIA: {code} · {time} · {day}'**
+  String driverStartSuggestionFmt(String code, String time, String day);
+
+  /// No description provided for @driverStartIsThisYourRoute.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Es tu ruta?'**
+  String get driverStartIsThisYourRoute;
+
+  /// No description provided for @driverStartYesStart.
+  ///
+  /// In es, this message translates to:
+  /// **'SÍ, INICIAR'**
+  String get driverStartYesStart;
+
+  /// No description provided for @driverStartSelectLine.
+  ///
+  /// In es, this message translates to:
+  /// **'SELECCIONA LÍNEA'**
+  String get driverStartSelectLine;
+
+  /// No description provided for @driverStartSelectSchedule.
+  ///
+  /// In es, this message translates to:
+  /// **'SELECCIONA HORARIO'**
+  String get driverStartSelectSchedule;
+
+  /// No description provided for @driverStartDepartureFmt.
+  ///
+  /// In es, this message translates to:
+  /// **'Salida: {time}'**
+  String driverStartDepartureFmt(String time);
+
+  /// No description provided for @driverStartStopsAndTime.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{1 parada} other{{count} paradas}} · ~{minutes} min'**
+  String driverStartStopsAndTime(int count, int minutes);
+
+  /// No description provided for @driverStartStartButton.
+  ///
+  /// In es, this message translates to:
+  /// **'INICIAR RUTA'**
+  String get driverStartStartButton;
+
+  /// No description provided for @feedbackScreenTitleFmt.
+  ///
+  /// In es, this message translates to:
+  /// **'FEEDBACK · {code}'**
+  String feedbackScreenTitleFmt(String code);
+
+  /// No description provided for @feedbackDescriptionLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Descripción'**
+  String get feedbackDescriptionLabel;
+
+  /// No description provided for @feedbackDescriptionHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Descripción de lo que has encontrado'**
+  String get feedbackDescriptionHint;
+
+  /// No description provided for @feedbackCategoryRouteLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'El recorrido en el mapa'**
+  String get feedbackCategoryRouteLabel;
+
+  /// No description provided for @feedbackCategoryStopsLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Una parada (falta, sobra o está mal)'**
+  String get feedbackCategoryStopsLabel;
+
+  /// No description provided for @feedbackCategorySchedulesLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Los horarios'**
+  String get feedbackCategorySchedulesLabel;
+
+  /// No description provided for @feedbackCategoryInfoLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Información general'**
+  String get feedbackCategoryInfoLabel;
+
+  /// No description provided for @feedbackCategorySuggestionLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Tengo una sugerencia'**
+  String get feedbackCategorySuggestionLabel;
+
+  /// No description provided for @suggestRouteScreenTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'SUGERIR RUTA'**
+  String get suggestRouteScreenTitle;
+
+  /// No description provided for @suggestRouteHelpText.
+  ///
+  /// In es, this message translates to:
+  /// **'Ayúdanos a completar el mapa de transporte'**
+  String get suggestRouteHelpText;
+
+  /// No description provided for @suggestRouteFromLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Desde'**
+  String get suggestRouteFromLabel;
+
+  /// No description provided for @suggestRouteFromHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Origen'**
+  String get suggestRouteFromHint;
+
+  /// No description provided for @suggestRouteToLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Hasta'**
+  String get suggestRouteToLabel;
+
+  /// No description provided for @suggestRouteToHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Destino'**
+  String get suggestRouteToHint;
+
+  /// No description provided for @suggestRouteOperatorLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Operador?'**
+  String get suggestRouteOperatorLabel;
+
+  /// No description provided for @suggestRouteOperatorComujesa.
+  ///
+  /// In es, this message translates to:
+  /// **'COMUJESA'**
+  String get suggestRouteOperatorComujesa;
+
+  /// No description provided for @suggestRouteOperatorOther.
+  ///
+  /// In es, this message translates to:
+  /// **'Otra'**
+  String get suggestRouteOperatorOther;
+
+  /// No description provided for @suggestRouteOperatorDontKnow.
+  ///
+  /// In es, this message translates to:
+  /// **'No lo sé'**
+  String get suggestRouteOperatorDontKnow;
+
+  /// No description provided for @suggestRouteCodeLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Código de línea'**
+  String get suggestRouteCodeLabel;
+
+  /// No description provided for @suggestRouteCodeHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej: M-250'**
+  String get suggestRouteCodeHint;
+
+  /// No description provided for @suggestRouteHowKnow.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cómo lo sabes?'**
+  String get suggestRouteHowKnow;
+
+  /// No description provided for @suggestRouteSourceUseIt.
+  ///
+  /// In es, this message translates to:
+  /// **'La uso'**
+  String get suggestRouteSourceUseIt;
+
+  /// No description provided for @suggestRouteSourceSawIt.
+  ///
+  /// In es, this message translates to:
+  /// **'La he visto'**
+  String get suggestRouteSourceSawIt;
+
+  /// No description provided for @suggestRouteSourceTold.
+  ///
+  /// In es, this message translates to:
+  /// **'Me lo dijeron'**
+  String get suggestRouteSourceTold;
+
+  /// No description provided for @suggestRouteSourceWeb.
+  ///
+  /// In es, this message translates to:
+  /// **'Web oficial'**
+  String get suggestRouteSourceWeb;
+
+  /// No description provided for @suggestRouteAddDetails.
+  ///
+  /// In es, this message translates to:
+  /// **'Añadir más detalles'**
+  String get suggestRouteAddDetails;
+
+  /// No description provided for @suggestRouteStopsRemember.
+  ///
+  /// In es, this message translates to:
+  /// **'Paradas que recuerdas'**
+  String get suggestRouteStopsRemember;
+
+  /// No description provided for @suggestRouteStopNumber.
+  ///
+  /// In es, this message translates to:
+  /// **'Parada {number}'**
+  String suggestRouteStopNumber(int number);
+
+  /// No description provided for @suggestRouteAddStop.
+  ///
+  /// In es, this message translates to:
+  /// **'+ Añadir parada'**
+  String get suggestRouteAddStop;
+
+  /// No description provided for @suggestRouteTimesKnown.
+  ///
+  /// In es, this message translates to:
+  /// **'Horas que conoces'**
+  String get suggestRouteTimesKnown;
+
+  /// No description provided for @suggestRouteNotesLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Notas'**
+  String get suggestRouteNotesLabel;
+
+  /// No description provided for @suggestRouteNotesHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Cualquier detalle adicional...'**
+  String get suggestRouteNotesHint;
+
+  /// No description provided for @suggestRouteAddTimeTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Añadir hora'**
+  String get suggestRouteAddTimeTitle;
+
+  /// No description provided for @suggestRouteAddTimeHint.
+  ///
+  /// In es, this message translates to:
+  /// **'HH:MM'**
+  String get suggestRouteAddTimeHint;
+
+  /// No description provided for @suggestRouteAddTimeConfirm.
+  ///
+  /// In es, this message translates to:
+  /// **'AÑADIR'**
+  String get suggestRouteAddTimeConfirm;
+
+  /// No description provided for @incidentSheetTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿QUÉ HA PASADO?'**
+  String get incidentSheetTitle;
+
+  /// No description provided for @incidentNoShow.
+  ///
+  /// In es, this message translates to:
+  /// **'No pasó'**
+  String get incidentNoShow;
+
+  /// No description provided for @incidentDelay.
+  ///
+  /// In es, this message translates to:
+  /// **'Retraso'**
+  String get incidentDelay;
+
+  /// No description provided for @incidentFull.
+  ///
+  /// In es, this message translates to:
+  /// **'Lleno'**
+  String get incidentFull;
+
+  /// No description provided for @incidentDetour.
+  ///
+  /// In es, this message translates to:
+  /// **'Desvío'**
+  String get incidentDetour;
+
+  /// No description provided for @incidentBreakdown.
+  ///
+  /// In es, this message translates to:
+  /// **'Avería'**
+  String get incidentBreakdown;
+
+  /// No description provided for @incidentOther.
+  ///
+  /// In es, this message translates to:
+  /// **'Otro'**
+  String get incidentOther;
+
+  /// No description provided for @incidentPositiveLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'POSITIVO:'**
+  String get incidentPositiveLabel;
+
+  /// No description provided for @incidentPunctual.
+  ///
+  /// In es, this message translates to:
+  /// **'Puntual'**
+  String get incidentPunctual;
+
+  /// No description provided for @incidentKind.
+  ///
+  /// In es, this message translates to:
+  /// **'Amable'**
+  String get incidentKind;
+
+  /// No description provided for @incidentClean.
+  ///
+  /// In es, this message translates to:
+  /// **'Limpio'**
+  String get incidentClean;
+
+  /// No description provided for @incidentCommentHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Comentario (opcional)'**
+  String get incidentCommentHint;
 }
 
 class _AppLocalizationsDelegate

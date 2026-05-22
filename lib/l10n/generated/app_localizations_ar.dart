@@ -1585,4 +1585,249 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get searchReportRouteAction => 'اقتراح طريق';
+
+  @override
+  String get driverPanelTitle => 'وضع السائق';
+
+  @override
+  String get driverPanelStartRoute => 'بدء المسار';
+
+  @override
+  String get driverPanelActiveRoute => 'المسار النشط';
+
+  @override
+  String get driverPanelCreateManualRoute => 'إنشاء مسار يدوي';
+
+  @override
+  String get driverPanelCreateLiveRoute => 'إنشاء مسار مباشر';
+
+  @override
+  String get driverPanelMyRoutes => 'مساراتي';
+
+  @override
+  String get driverPanelImportSchedules => 'استيراد الجداول';
+
+  @override
+  String get driverPanelManagementInbox => 'صندوق الإدارة';
+
+  @override
+  String get driverActiveNoActiveRoute => 'لا يوجد مسار نشط';
+
+  @override
+  String get driverActiveRouteHeader => 'مسار نشط';
+
+  @override
+  String driverActiveRouteStartedAt(String code, String time) {
+    return '$code · $time بداية';
+  }
+
+  @override
+  String get driverActiveNextStopHeader => 'المحطة التالية';
+
+  @override
+  String driverActiveStopRegisteredFmt(String time) {
+    return 'تم تسجيل المحطة · $time';
+  }
+
+  @override
+  String get driverActiveRegisterStop => 'تسجيل المحطة';
+
+  @override
+  String get driverActiveIncidentButton => 'بلاغ';
+
+  @override
+  String get driverActiveFinishRouteButton => 'إنهاء المسار';
+
+  @override
+  String get driverActiveFinishConfirmTitle => 'إنهاء المسار؟';
+
+  @override
+  String get driverActiveFinishConfirmMessage => 'سيتم تسجيل المسار كمكتمل.';
+
+  @override
+  String get driverActiveFinishConfirmButton => 'إنهاء';
+
+  @override
+  String get driverStartTitle => 'بدء المسار';
+
+  @override
+  String driverStartSuggestionFmt(String code, String time, String day) {
+    return 'اقتراح: $code · $time · $day';
+  }
+
+  @override
+  String get driverStartIsThisYourRoute => 'هل هذا مسارك؟';
+
+  @override
+  String get driverStartYesStart => 'نعم، ابدأ';
+
+  @override
+  String get driverStartSelectLine => 'اختر الخط';
+
+  @override
+  String get driverStartSelectSchedule => 'اختر الموعد';
+
+  @override
+  String driverStartDepartureFmt(String time) {
+    return 'الانطلاق: $time';
+  }
+
+  @override
+  String driverStartStopsAndTime(int count, int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count محطات',
+      one: 'محطة واحدة',
+    );
+    return '$_temp0 · ~$minutes دقيقة';
+  }
+
+  @override
+  String get driverStartStartButton => 'بدء المسار';
+
+  @override
+  String feedbackScreenTitleFmt(String code) {
+    return 'ملاحظات · $code';
+  }
+
+  @override
+  String get feedbackDescriptionLabel => 'الوصف';
+
+  @override
+  String get feedbackDescriptionHint => 'وصف ما وجدته';
+
+  @override
+  String get feedbackCategoryRouteLabel => 'المسار على الخريطة';
+
+  @override
+  String get feedbackCategoryStopsLabel => 'محطة (ناقصة أو زائدة أو خاطئة)';
+
+  @override
+  String get feedbackCategorySchedulesLabel => 'المواعيد';
+
+  @override
+  String get feedbackCategoryInfoLabel => 'معلومات عامة';
+
+  @override
+  String get feedbackCategorySuggestionLabel => 'لدي اقتراح';
+
+  @override
+  String get suggestRouteScreenTitle => 'اقتراح مسار';
+
+  @override
+  String get suggestRouteHelpText => 'ساعدنا في إكمال خريطة النقل';
+
+  @override
+  String get suggestRouteFromLabel => 'من';
+
+  @override
+  String get suggestRouteFromHint => 'نقطة الانطلاق';
+
+  @override
+  String get suggestRouteToLabel => 'إلى';
+
+  @override
+  String get suggestRouteToHint => 'الوجهة';
+
+  @override
+  String get suggestRouteOperatorLabel => 'المشغل؟';
+
+  @override
+  String get suggestRouteOperatorComujesa => 'كوموخيسا';
+
+  @override
+  String get suggestRouteOperatorOther => 'آخر';
+
+  @override
+  String get suggestRouteOperatorDontKnow => 'لا أعرف';
+
+  @override
+  String get suggestRouteCodeLabel => 'رمز الخط';
+
+  @override
+  String get suggestRouteCodeHint => 'مثال: M-250';
+
+  @override
+  String get suggestRouteHowKnow => 'كيف تعرف؟';
+
+  @override
+  String get suggestRouteSourceUseIt => 'أستخدمه';
+
+  @override
+  String get suggestRouteSourceSawIt => 'رأيته';
+
+  @override
+  String get suggestRouteSourceTold => 'أخبرني أحدهم';
+
+  @override
+  String get suggestRouteSourceWeb => 'الموقع الرسمي';
+
+  @override
+  String get suggestRouteAddDetails => 'إضافة تفاصيل';
+
+  @override
+  String get suggestRouteStopsRemember => 'المحطات التي تتذكرها';
+
+  @override
+  String suggestRouteStopNumber(int number) {
+    return 'محطة $number';
+  }
+
+  @override
+  String get suggestRouteAddStop => '+ إضافة محطة';
+
+  @override
+  String get suggestRouteTimesKnown => 'المواعيد التي تعرفها';
+
+  @override
+  String get suggestRouteNotesLabel => 'ملاحظات';
+
+  @override
+  String get suggestRouteNotesHint => 'أي تفاصيل إضافية...';
+
+  @override
+  String get suggestRouteAddTimeTitle => 'إضافة وقت';
+
+  @override
+  String get suggestRouteAddTimeHint => 'HH:MM';
+
+  @override
+  String get suggestRouteAddTimeConfirm => 'إضافة';
+
+  @override
+  String get incidentSheetTitle => 'ماذا حدث؟';
+
+  @override
+  String get incidentNoShow => 'لم يمر';
+
+  @override
+  String get incidentDelay => 'تأخير';
+
+  @override
+  String get incidentFull => 'ممتلئ';
+
+  @override
+  String get incidentDetour => 'تحويلة';
+
+  @override
+  String get incidentBreakdown => 'عطل';
+
+  @override
+  String get incidentOther => 'أخرى';
+
+  @override
+  String get incidentPositiveLabel => 'إيجابي:';
+
+  @override
+  String get incidentPunctual => 'دقيق';
+
+  @override
+  String get incidentKind => 'لطيف';
+
+  @override
+  String get incidentClean => 'نظيف';
+
+  @override
+  String get incidentCommentHint => 'تعليق (اختياري)';
 }

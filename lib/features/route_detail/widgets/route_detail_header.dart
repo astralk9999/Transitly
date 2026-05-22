@@ -96,9 +96,10 @@ class RouteDetailHeader extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 8),
-        DataFreshnessIndicator(
-          DateTime.now().subtract(const Duration(days: 2)),
-        ),
+        if (route.lastUpdatedAt != null)
+          DataFreshnessIndicator(
+            route.lastUpdatedAt!,
+          ),
       ],
     );
   }

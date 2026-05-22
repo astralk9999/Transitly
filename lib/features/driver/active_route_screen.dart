@@ -72,8 +72,6 @@ class _ActiveRouteScreenState extends ConsumerState<ActiveRouteScreen> {
     }
 
     final route = mockData.getRouteById(detail.trip.routeId);
-    final currentIdx = detail.currentIdx;
-    final nextIdx = currentIdx + 1;
     final nextStop = detail.nextStop;
     final firstStop = detail.firstStop;
     final lastStop = detail.lastStop;
@@ -170,7 +168,7 @@ class _ActiveRouteScreenState extends ConsumerState<ActiveRouteScreen> {
                       ),
                     ),
                     Text(
-                      'en 0.${(nextIdx % 5) + 1} km',
+                      '--',
                       style: GoogleFonts.ibmPlexMono(
                           fontSize: 18, color: c.textMid),
                     ),
@@ -179,7 +177,7 @@ class _ActiveRouteScreenState extends ConsumerState<ActiveRouteScreen> {
                 const SizedBox(height: 8),
                 Center(
                   child: Text(
-                    '~${(nextIdx % 4) + 1} min',
+                    '--',
                     style: GoogleFonts.ibmPlexMono(
                       fontSize: 32,
                       fontWeight: FontWeight.w700,

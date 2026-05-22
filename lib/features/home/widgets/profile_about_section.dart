@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -164,6 +165,7 @@ class _ProfileAboutSectionState extends ConsumerState<ProfileAboutSection> {
           const SizedBox(height: 4),
           GestureDetector(
             onTap: () {
+              if (kReleaseMode) return;
               _aboutTapCount++;
               if (_aboutTapCount >= 5) {
                 _aboutTapCount = 0;

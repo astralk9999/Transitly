@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/theme/transit_animations.dart';
 import '../../core/theme/transit_colors.dart';
@@ -69,8 +70,13 @@ class _SplashScreenState extends State<SplashScreen>
     } else {
       _ctrl.value = 1.0;
     }
-    _navTimer = Timer(_animDuration + _holdAfterAnim, () {
-      if (mounted) context.go('/onboarding');
+    _navTimer = Timer(_animDuration + _holdAfterAnim, () async {
+      if (!mounted) return;
+      final prefs = await SharedPreferences.getInstance();
+      final hasSeen = prefs.getBool('hasSeenOnboarding') ?? false;
+      if (mounted) {
+        context.go(hasSeen ? '/home/inicio' : '/onboarding');
+      }
     });
   }
 

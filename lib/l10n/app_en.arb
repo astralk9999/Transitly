@@ -90,6 +90,8 @@
   "actionContinue": "Continue",
   "actionFollow": "Follow",
 
+  "featureComingSoon": "Coming soon in a future update.",
+
   "statusPaused": "PAUSED",
   "statusLive": "LIVE",
   "statusRecordingRoute": "RECORDING ROUTE",
@@ -587,5 +589,10 @@
   "routeNoUpcomingSchedules": "No upcoming schedules",
   "stopNoLinesRegistered": "No lines registered",
   "suggestRouteSent": "Suggestion sent · We'll let you know",
-  "suggestRouteSubmitError": "Failed to send: {error}"
+  "suggestRouteSubmitError": "Failed to send: {error}",
+  "searchEmptyTitle": "Enter origin and destination",
+  "searchEmptySubtitle": "We'll show you the fastest routes",
+  "searchUnderConstructionTitle": "Search under construction",
+  "searchUnderConstructionSubtitle": "In the meantime, suggest routes to us",
+  "searchReportRouteAction": "Suggest route"
 }

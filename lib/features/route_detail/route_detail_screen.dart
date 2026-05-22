@@ -178,7 +178,16 @@ class RouteDetailScreen extends ConsumerWidget {
                           ? 'EN MIS LÍNEAS ✓'
                           : 'AÑADIR A MIS LÍNEAS ★',
                       isPrimary: true,
-                      onPressed: isFavorite ? null : () {},
+                      onPressed: isFavorite
+                          ? null
+                          : () {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(AppLocalizations.of(context)
+                                      .featureComingSoon),
+                                ),
+                              );
+                            },
                     ),
                   ),
                 ),

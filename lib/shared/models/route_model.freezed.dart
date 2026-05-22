@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$RouteModel {
 
- String get id; String get operatorId; String get code; String get name; ServiceType get serviceType; Color get routeColor; bool get hasReturn; bool get isCircular; RouteStatus get status; bool get active;
+ String get id; String get operatorId; String get code; String get name; ServiceType get serviceType; Color get routeColor; bool get hasReturn; bool get isCircular; RouteStatus get status; bool get active; DateTime? get lastUpdatedAt;
 /// Create a copy of RouteModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $RouteModelCopyWith<RouteModel> get copyWith => _$RouteModelCopyWithImpl<RouteMo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RouteModel&&(identical(other.id, id) || other.id == id)&&(identical(other.operatorId, operatorId) || other.operatorId == operatorId)&&(identical(other.code, code) || other.code == code)&&(identical(other.name, name) || other.name == name)&&(identical(other.serviceType, serviceType) || other.serviceType == serviceType)&&(identical(other.routeColor, routeColor) || other.routeColor == routeColor)&&(identical(other.hasReturn, hasReturn) || other.hasReturn == hasReturn)&&(identical(other.isCircular, isCircular) || other.isCircular == isCircular)&&(identical(other.status, status) || other.status == status)&&(identical(other.active, active) || other.active == active));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RouteModel&&(identical(other.id, id) || other.id == id)&&(identical(other.operatorId, operatorId) || other.operatorId == operatorId)&&(identical(other.code, code) || other.code == code)&&(identical(other.name, name) || other.name == name)&&(identical(other.serviceType, serviceType) || other.serviceType == serviceType)&&(identical(other.routeColor, routeColor) || other.routeColor == routeColor)&&(identical(other.hasReturn, hasReturn) || other.hasReturn == hasReturn)&&(identical(other.isCircular, isCircular) || other.isCircular == isCircular)&&(identical(other.status, status) || other.status == status)&&(identical(other.active, active) || other.active == active)&&(identical(other.lastUpdatedAt, lastUpdatedAt) || other.lastUpdatedAt == lastUpdatedAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,operatorId,code,name,serviceType,routeColor,hasReturn,isCircular,status,active);
+int get hashCode => Object.hash(runtimeType,id,operatorId,code,name,serviceType,routeColor,hasReturn,isCircular,status,active,lastUpdatedAt);
 
 @override
 String toString() {
-  return 'RouteModel(id: $id, operatorId: $operatorId, code: $code, name: $name, serviceType: $serviceType, routeColor: $routeColor, hasReturn: $hasReturn, isCircular: $isCircular, status: $status, active: $active)';
+  return 'RouteModel(id: $id, operatorId: $operatorId, code: $code, name: $name, serviceType: $serviceType, routeColor: $routeColor, hasReturn: $hasReturn, isCircular: $isCircular, status: $status, active: $active, lastUpdatedAt: $lastUpdatedAt)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $RouteModelCopyWith<$Res>  {
   factory $RouteModelCopyWith(RouteModel value, $Res Function(RouteModel) _then) = _$RouteModelCopyWithImpl;
 @useResult
 $Res call({
- String id, String operatorId, String code, String name, ServiceType serviceType, Color routeColor, bool hasReturn, bool isCircular, RouteStatus status, bool active
+ String id, String operatorId, String code, String name, ServiceType serviceType, Color routeColor, bool hasReturn, bool isCircular, RouteStatus status, bool active, DateTime? lastUpdatedAt
 });
 
 
@@ -62,7 +62,7 @@ class _$RouteModelCopyWithImpl<$Res>
 
 /// Create a copy of RouteModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? operatorId = null,Object? code = null,Object? name = null,Object? serviceType = null,Object? routeColor = null,Object? hasReturn = null,Object? isCircular = null,Object? status = null,Object? active = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? operatorId = null,Object? code = null,Object? name = null,Object? serviceType = null,Object? routeColor = null,Object? hasReturn = null,Object? isCircular = null,Object? status = null,Object? active = null,Object? lastUpdatedAt = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,operatorId: null == operatorId ? _self.operatorId : operatorId // ignore: cast_nullable_to_non_nullable
@@ -74,7 +74,8 @@ as Color,hasReturn: null == hasReturn ? _self.hasReturn : hasReturn // ignore: c
 as bool,isCircular: null == isCircular ? _self.isCircular : isCircular // ignore: cast_nullable_to_non_nullable
 as bool,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as RouteStatus,active: null == active ? _self.active : active // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,lastUpdatedAt: freezed == lastUpdatedAt ? _self.lastUpdatedAt : lastUpdatedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 
@@ -159,10 +160,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String operatorId,  String code,  String name,  ServiceType serviceType,  Color routeColor,  bool hasReturn,  bool isCircular,  RouteStatus status,  bool active)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String operatorId,  String code,  String name,  ServiceType serviceType,  Color routeColor,  bool hasReturn,  bool isCircular,  RouteStatus status,  bool active,  DateTime? lastUpdatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _RouteModel() when $default != null:
-return $default(_that.id,_that.operatorId,_that.code,_that.name,_that.serviceType,_that.routeColor,_that.hasReturn,_that.isCircular,_that.status,_that.active);case _:
+return $default(_that.id,_that.operatorId,_that.code,_that.name,_that.serviceType,_that.routeColor,_that.hasReturn,_that.isCircular,_that.status,_that.active,_that.lastUpdatedAt);case _:
   return orElse();
 
 }
@@ -180,10 +181,10 @@ return $default(_that.id,_that.operatorId,_that.code,_that.name,_that.serviceTyp
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String operatorId,  String code,  String name,  ServiceType serviceType,  Color routeColor,  bool hasReturn,  bool isCircular,  RouteStatus status,  bool active)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String operatorId,  String code,  String name,  ServiceType serviceType,  Color routeColor,  bool hasReturn,  bool isCircular,  RouteStatus status,  bool active,  DateTime? lastUpdatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _RouteModel():
-return $default(_that.id,_that.operatorId,_that.code,_that.name,_that.serviceType,_that.routeColor,_that.hasReturn,_that.isCircular,_that.status,_that.active);case _:
+return $default(_that.id,_that.operatorId,_that.code,_that.name,_that.serviceType,_that.routeColor,_that.hasReturn,_that.isCircular,_that.status,_that.active,_that.lastUpdatedAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -200,10 +201,10 @@ return $default(_that.id,_that.operatorId,_that.code,_that.name,_that.serviceTyp
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String operatorId,  String code,  String name,  ServiceType serviceType,  Color routeColor,  bool hasReturn,  bool isCircular,  RouteStatus status,  bool active)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String operatorId,  String code,  String name,  ServiceType serviceType,  Color routeColor,  bool hasReturn,  bool isCircular,  RouteStatus status,  bool active,  DateTime? lastUpdatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _RouteModel() when $default != null:
-return $default(_that.id,_that.operatorId,_that.code,_that.name,_that.serviceType,_that.routeColor,_that.hasReturn,_that.isCircular,_that.status,_that.active);case _:
+return $default(_that.id,_that.operatorId,_that.code,_that.name,_that.serviceType,_that.routeColor,_that.hasReturn,_that.isCircular,_that.status,_that.active,_that.lastUpdatedAt);case _:
   return null;
 
 }
@@ -215,7 +216,7 @@ return $default(_that.id,_that.operatorId,_that.code,_that.name,_that.serviceTyp
 
 
 class _RouteModel extends RouteModel {
-  const _RouteModel({required this.id, required this.operatorId, required this.code, required this.name, required this.serviceType, required this.routeColor, this.hasReturn = true, this.isCircular = false, this.status = RouteStatus.official, this.active = true}): super._();
+  const _RouteModel({required this.id, required this.operatorId, required this.code, required this.name, required this.serviceType, required this.routeColor, this.hasReturn = true, this.isCircular = false, this.status = RouteStatus.official, this.active = true, this.lastUpdatedAt}): super._();
   
 
 @override final  String id;
@@ -228,6 +229,7 @@ class _RouteModel extends RouteModel {
 @override@JsonKey() final  bool isCircular;
 @override@JsonKey() final  RouteStatus status;
 @override@JsonKey() final  bool active;
+@override final  DateTime? lastUpdatedAt;
 
 /// Create a copy of RouteModel
 /// with the given fields replaced by the non-null parameter values.
@@ -239,16 +241,16 @@ _$RouteModelCopyWith<_RouteModel> get copyWith => __$RouteModelCopyWithImpl<_Rou
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RouteModel&&(identical(other.id, id) || other.id == id)&&(identical(other.operatorId, operatorId) || other.operatorId == operatorId)&&(identical(other.code, code) || other.code == code)&&(identical(other.name, name) || other.name == name)&&(identical(other.serviceType, serviceType) || other.serviceType == serviceType)&&(identical(other.routeColor, routeColor) || other.routeColor == routeColor)&&(identical(other.hasReturn, hasReturn) || other.hasReturn == hasReturn)&&(identical(other.isCircular, isCircular) || other.isCircular == isCircular)&&(identical(other.status, status) || other.status == status)&&(identical(other.active, active) || other.active == active));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RouteModel&&(identical(other.id, id) || other.id == id)&&(identical(other.operatorId, operatorId) || other.operatorId == operatorId)&&(identical(other.code, code) || other.code == code)&&(identical(other.name, name) || other.name == name)&&(identical(other.serviceType, serviceType) || other.serviceType == serviceType)&&(identical(other.routeColor, routeColor) || other.routeColor == routeColor)&&(identical(other.hasReturn, hasReturn) || other.hasReturn == hasReturn)&&(identical(other.isCircular, isCircular) || other.isCircular == isCircular)&&(identical(other.status, status) || other.status == status)&&(identical(other.active, active) || other.active == active)&&(identical(other.lastUpdatedAt, lastUpdatedAt) || other.lastUpdatedAt == lastUpdatedAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,operatorId,code,name,serviceType,routeColor,hasReturn,isCircular,status,active);
+int get hashCode => Object.hash(runtimeType,id,operatorId,code,name,serviceType,routeColor,hasReturn,isCircular,status,active,lastUpdatedAt);
 
 @override
 String toString() {
-  return 'RouteModel(id: $id, operatorId: $operatorId, code: $code, name: $name, serviceType: $serviceType, routeColor: $routeColor, hasReturn: $hasReturn, isCircular: $isCircular, status: $status, active: $active)';
+  return 'RouteModel(id: $id, operatorId: $operatorId, code: $code, name: $name, serviceType: $serviceType, routeColor: $routeColor, hasReturn: $hasReturn, isCircular: $isCircular, status: $status, active: $active, lastUpdatedAt: $lastUpdatedAt)';
 }
 
 
@@ -259,7 +261,7 @@ abstract mixin class _$RouteModelCopyWith<$Res> implements $RouteModelCopyWith<$
   factory _$RouteModelCopyWith(_RouteModel value, $Res Function(_RouteModel) _then) = __$RouteModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String operatorId, String code, String name, ServiceType serviceType, Color routeColor, bool hasReturn, bool isCircular, RouteStatus status, bool active
+ String id, String operatorId, String code, String name, ServiceType serviceType, Color routeColor, bool hasReturn, bool isCircular, RouteStatus status, bool active, DateTime? lastUpdatedAt
 });
 
 
@@ -276,7 +278,7 @@ class __$RouteModelCopyWithImpl<$Res>
 
 /// Create a copy of RouteModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? operatorId = null,Object? code = null,Object? name = null,Object? serviceType = null,Object? routeColor = null,Object? hasReturn = null,Object? isCircular = null,Object? status = null,Object? active = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? operatorId = null,Object? code = null,Object? name = null,Object? serviceType = null,Object? routeColor = null,Object? hasReturn = null,Object? isCircular = null,Object? status = null,Object? active = null,Object? lastUpdatedAt = freezed,}) {
   return _then(_RouteModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,operatorId: null == operatorId ? _self.operatorId : operatorId // ignore: cast_nullable_to_non_nullable
@@ -288,7 +290,8 @@ as Color,hasReturn: null == hasReturn ? _self.hasReturn : hasReturn // ignore: c
 as bool,isCircular: null == isCircular ? _self.isCircular : isCircular // ignore: cast_nullable_to_non_nullable
 as bool,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as RouteStatus,active: null == active ? _self.active : active // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,lastUpdatedAt: freezed == lastUpdatedAt ? _self.lastUpdatedAt : lastUpdatedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 

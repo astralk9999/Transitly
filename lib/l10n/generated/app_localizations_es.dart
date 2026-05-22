@@ -250,6 +250,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get actionFollow => 'Seguir';
 
   @override
+  String get featureComingSoon =>
+      'Funcionalidad disponible en próxima versión.';
+
+  @override
   String get statusPaused => 'PAUSADO';
 
   @override
@@ -1568,4 +1572,20 @@ class AppLocalizationsEs extends AppLocalizations {
   String suggestRouteSubmitError(String error) {
     return 'Error al enviar: $error';
   }
+
+  @override
+  String get searchEmptyTitle => 'Escribe un origen y un destino';
+
+  @override
+  String get searchEmptySubtitle => 'Te mostraremos las rutas más rápidas';
+
+  @override
+  String get searchUnderConstructionTitle => 'Buscador en construcción';
+
+  @override
+  String get searchUnderConstructionSubtitle =>
+      'Mientras tanto, puedes sugerirnos rutas';
+
+  @override
+  String get searchReportRouteAction => 'Sugerir ruta';
 }

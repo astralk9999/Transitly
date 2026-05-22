@@ -250,6 +250,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get actionFollow => 'متابعة';
 
   @override
+  String get featureComingSoon => 'قريباً في تحديث مستقبلي.';
+
+  @override
   String get statusPaused => 'متوقف';
 
   @override
@@ -1566,4 +1569,20 @@ class AppLocalizationsAr extends AppLocalizations {
   String suggestRouteSubmitError(String error) {
     return 'خطأ في الإرسال: $error';
   }
+
+  @override
+  String get searchEmptyTitle => 'أدخل نقطة الانطلاق والوجهة';
+
+  @override
+  String get searchEmptySubtitle => 'سنعرض لك أسرع الطرق';
+
+  @override
+  String get searchUnderConstructionTitle => 'البحث قيد الإنشاء';
+
+  @override
+  String get searchUnderConstructionSubtitle =>
+      'في الوقت الحالي، يمكنك اقتراح طرق';
+
+  @override
+  String get searchReportRouteAction => 'اقتراح طريق';
 }

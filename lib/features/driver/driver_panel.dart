@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
+import '../../shared/providers/user_provider.dart';
 
-class DriverPanel extends StatelessWidget {
+class DriverPanel extends ConsumerWidget {
   const DriverPanel({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
 
@@ -50,7 +52,7 @@ class DriverPanel extends StatelessWidget {
                 ),
                 const Spacer(),
                 Text(
-                  'COMUJESA · Ana Martín',
+                  ref.watch(currentUserProvider).name,
                   style: TransitTypography.bodySecondary(c.textMid),
                 ),
               ],

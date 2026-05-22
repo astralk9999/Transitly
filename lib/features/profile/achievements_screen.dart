@@ -92,7 +92,7 @@ class AchievementsScreen extends ConsumerWidget {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: padding),
             child: Text(
-              l10n.achievementsLevel('VIAJERO', 450),
+              l10n.achievementsLevel('Nuevo', 0),
               style: GoogleFonts.dmSans(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,

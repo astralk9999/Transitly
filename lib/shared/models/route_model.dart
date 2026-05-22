@@ -21,6 +21,7 @@ abstract class RouteModel with _$RouteModel {
     @Default(false) bool isCircular,
     @Default(RouteStatus.official) RouteStatus status,
     @Default(true) bool active,
+    DateTime? lastUpdatedAt,
   }) = _RouteModel;
 
   static RouteModel fromJson(Map<String, dynamic> j,

@@ -7,10 +7,9 @@
 > contra estándares de ingeniería de producto: escalabilidad,
 > accesibilidad **WCAG 2.2 AA** plena, seguridad, observabilidad,
 > operabilidad.
-> **Estado verificado (2026-05-22):** `master @ 0017289` ·
-> `flutter analyze` **0 issues** ✅ · `flutter test` **292+ / 1 skipped** ✅ ·
-> cobertura **~27 %** · `flutter build apk --release`
-> **OK** (73,5 MB) · **CI verde** (4 jobs) · **17+ commits**
+<!-- BEGIN ESTADO -->
+(placeholder — autogenerado por tool/verify_state.sh)
+<!-- END ESTADO -->
 
 ---
 

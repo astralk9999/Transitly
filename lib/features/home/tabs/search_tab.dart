@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../data/mock/mock_data_service.dart';
+import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/responsive_scaffold.dart';
-import '../../../shared/widgets/route_card.dart';
 import '../../../shared/widgets/route_search_bar.dart';
 import '../../../shared/widgets/shimmer_skeleton.dart';
 
@@ -27,6 +26,7 @@ class _SearchTabState extends ConsumerState<SearchTab> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
+    final l10n = AppLocalizations.of(context);
     final mockData = ref.watch(mockDataServiceProvider);
 
     final padding = ResponsiveScaffold.screenPadding(context);
@@ -58,20 +58,33 @@ class _SearchTabState extends ConsumerState<SearchTab> {
                 child: AnimatedSwitcher(
                   duration: const Duration(milliseconds: 300),
                   child: _hasSearched
-                    ? (_searchLoading
-                        ? _buildSearchShimmer(context)
-                        : _buildResults(context, c, mockData))
-                    : Column(
-                        children: [
-                          const Expanded(
-                            child: EmptyState(
-                              'BUSCAR RUTA',
-                              'Indica origen y destino',
+                      ? (_searchLoading
+                          ? _buildSearchShimmer(context)
+                          : Column(
+                              children: [
+                                Expanded(
+                                  child: EmptyState(
+                                    l10n.searchUnderConstructionTitle,
+                                    l10n.searchUnderConstructionSubtitle,
+                                    actionLabel: l10n.searchReportRouteAction,
+                                    onAction: () =>
+                                        context.push('/suggestions/new'),
+                                  ),
+                                ),
+                                _buildSuggestLink(c),
+                              ],
+                            ))
+                      : Column(
+                          children: [
+                            Expanded(
+                              child: EmptyState(
+                                l10n.searchEmptyTitle,
+                                l10n.searchEmptySubtitle,
+                              ),
                             ),
-                          ),
-                          _buildSuggestLink(c),
-                        ],
-                      ),
+                            _buildSuggestLink(c),
+                          ],
+                        ),
                 ),
               ),
             ],
@@ -98,112 +111,6 @@ class _SearchTabState extends ConsumerState<SearchTab> {
           ShimmerSkeleton.routeCard(context),
         ],
       ),
-    );
-  }
-
-  Widget _buildResults(
-      BuildContext context, TransitColorScheme c, MockDataService mockData) {
-    final now = DateTime.now();
-    final timeStr =
-        '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
-
-    final routeL1 = mockData.getRouteById('L1');
-    final routeL4 = mockData.getRouteById('L4');
-    final routeL5 = mockData.getRouteById('L5');
-
-    final padding = ResponsiveScaffold.screenPadding(context);
-    return ListView(
-      padding: EdgeInsets.symmetric(horizontal: padding),
-      children: [
-        // Header
-        Row(
-          children: [
-            Text(
-              '3 RUTAS ENCONTRADAS',
-              style: TransitTypography.sectionTitle(c.textMid),
-            ),
-            const Spacer(),
-            Text(timeStr, style: TransitTypography.stopTime(c.accent)),
-          ],
-        ),
-        const SizedBox(height: 12),
-
-        // Result A: Direct
-        _resultHeader(c, 'DIRECTA · 25 min · 1,30 €', c.stateOnTime),
-        const SizedBox(height: 6),
-        if (routeL1 != null)
-          RouteCard(
-            route: routeL1,
-            activeTrip: mockData.getActiveTripForRoute('L1'),
-            estimatedMinutes: '25m',
-            onTap: () => context.push('/route/L1'),
-          ),
-        const SizedBox(height: 16),
-
-        // Result B: Transfer
-        _resultHeader(c, '1 TRASBORDO · 35 min · 2,60 €', c.textMid),
-        const SizedBox(height: 6),
-        if (routeL4 != null)
-          RouteCard(
-            route: routeL4,
-            estimatedMinutes: '15m',
-            onTap: () => context.push('/route/L4'),
-          ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-          child: Row(
-            children: [
-              Text('↕', style: TextStyle(fontSize: 14, color: c.textMid)),
-              const SizedBox(width: 6),
-              Expanded(
-                child: Text(
-                  'Trasbordo en Plaza del Arenal · ~5 min',
-                  style: GoogleFonts.dmSans(fontSize: 12, color: c.textMid),
-                ),
-              ),
-            ],
-          ),
-        ),
-        if (routeL1 != null)
-          RouteCard(
-            route: routeL1,
-            estimatedMinutes: '15m',
-            onTap: () => context.push('/route/L1'),
-          ),
-        const SizedBox(height: 16),
-
-        // Result C: Alternative
-        _resultHeader(c, 'ALTERNATIVA · 40 min', c.stateDelay),
-        const SizedBox(height: 6),
-        if (routeL5 != null)
-          RouteCard(
-            route: routeL5,
-            estimatedMinutes: '40m',
-            onTap: () => context.push('/route/L5'),
-          ),
-        const SizedBox(height: 24),
-
-        _buildSuggestLink(c),
-        const SizedBox(height: 16),
-      ],
-    );
-  }
-
-  Widget _resultHeader(TransitColorScheme c, String text, Color color) {
-    return Row(
-      children: [
-        Container(width: 3, height: 14, color: color),
-        const SizedBox(width: 8),
-        Text(
-          text,
-          style: GoogleFonts.ibmPlexMono(
-            fontSize: 11,
-            fontWeight: FontWeight.w600,
-            color: color,
-            letterSpacing: 0.5,
-          ),
-        ),
-      ],
     );
   }
 

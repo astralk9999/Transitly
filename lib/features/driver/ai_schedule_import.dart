@@ -67,6 +67,21 @@ class _AiScheduleImportState extends State<AiScheduleImport> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TransitAppBar(title: l10n.aiScheduleImportTitle),
+              Container(
+                color: Colors.amber.withValues(alpha: 0.85),
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                child: const Center(
+                  child: Text(
+                    'PROTOTIPO',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.black87,
+                      letterSpacing: 2,
+                    ),
+                  ),
+                ),
+              ),
               Expanded(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.all(TransitSpacing.space16),

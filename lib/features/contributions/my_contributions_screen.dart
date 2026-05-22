@@ -9,7 +9,6 @@ import '../../data/incident/incident_repository_provider.dart';
 import '../../data/mock/mock_data_service.dart';
 import '../../data/route_feedback/route_feedback_repository_provider.dart';
 import '../../data/route_suggestion/route_suggestion_repository_provider.dart';
-import '../../shared/models/enums.dart';
 import '../../shared/models/incident_model.dart';
 import '../../shared/models/route_feedback_model.dart';
 import '../../shared/models/route_suggestion_model.dart';
@@ -117,8 +116,8 @@ class _MyContributionsScreenState
                           const SizedBox(height: 8),
                           Row(
                             children: [
-                              const ReputationBadge(
-                                  ReputationLevel.contributor),
+                              ReputationBadge(
+                                  ref.watch(currentUserProvider).reputationLevel),
                               const SizedBox(width: 12),
                               Expanded(
                                 child: Text(

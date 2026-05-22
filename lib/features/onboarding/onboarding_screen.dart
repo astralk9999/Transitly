@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/theme/transit_animations.dart';
 import '../../core/theme/transit_colors.dart';
@@ -59,7 +60,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     setState(() => _currentPage = index);
   }
 
-  void _goHome() => context.go('/home/inicio');
+  void _goHome() {
+    SharedPreferences.getInstance().then(
+      (prefs) => prefs.setBool('hasSeenOnboarding', true),
+    );
+    context.go('/home/inicio');
+  }
 
   void _nextPage() {
     if (_currentPage < 2) {

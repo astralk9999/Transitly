@@ -1,5 +1,6 @@
 import 'dart:io' show Platform;
 
+import 'package:flutter/foundation.dart' show kReleaseMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -86,39 +87,50 @@ class _WidgetsSettingsScreenState
         ),
         centerTitle: false,
       ),
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: SmokeBackground(color: c.accent, isDark: isDark),
-          ),
-          SafeArea(
-            child: ListView(
-              padding: const EdgeInsets.all(16),
+      body: kReleaseMode
+          ? Center(
+              child: Padding(
+                padding: const EdgeInsets.all(32),
+                child: Text(
+                  l10n.featureComingSoon,
+                  style: TransitTypography.bodyPrimary(c.textHi),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            )
+          : Stack(
               children: [
-                _InstructionsSection(
-                  l10n: l10n,
-                  c: c,
-                  isAndroid: isAndroid,
+                Positioned.fill(
+                  child: SmokeBackground(color: c.accent, isDark: isDark),
                 ),
-                const SizedBox(height: 16),
-                _ConfigSection(
-                  l10n: l10n,
-                  c: c,
-                  stopController: _stopController,
-                  lineController: _lineController,
-                  onSave: _saveConfig,
-                ),
-                const SizedBox(height: 16),
-                _HowToAddSection(
-                  l10n: l10n,
-                  c: c,
-                  isAndroid: isAndroid,
+                SafeArea(
+                  child: ListView(
+                    padding: const EdgeInsets.all(16),
+                    children: [
+                      _InstructionsSection(
+                        l10n: l10n,
+                        c: c,
+                        isAndroid: isAndroid,
+                      ),
+                      const SizedBox(height: 16),
+                      _ConfigSection(
+                        l10n: l10n,
+                        c: c,
+                        stopController: _stopController,
+                        lineController: _lineController,
+                        onSave: _saveConfig,
+                      ),
+                      const SizedBox(height: 16),
+                      _HowToAddSection(
+                        l10n: l10n,
+                        c: c,
+                        isAndroid: isAndroid,
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
-          ),
-        ],
-      ),
     );
   }
 }

@@ -40,7 +40,7 @@
 
 1. FCM tokens expire on app reinstall or long inactivity
 2. `FirebaseMessaging.onTokenRefresh` should update the token in Supabase
-3. Verify the listener is registered in `firebase_setup.dart`
+3. Verify the listener is registered in `lib/data/push/firebase_setup.dart`
 
 ## Rollback
 

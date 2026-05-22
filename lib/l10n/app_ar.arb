@@ -62,6 +62,8 @@
   "actionContinue": "متابعة",
   "actionFollow": "متابعة",
 
+  "featureComingSoon": "قريباً في تحديث مستقبلي.",
+
   "statusPaused": "متوقف",
   "statusLive": "مباشر",
   "statusRecordingRoute": "جار تسجيل المسار",
@@ -115,5 +117,10 @@
   "routeNoUpcomingSchedules": "لا توجد جداول قريبة",
   "stopNoLinesRegistered": "لا توجد خطوط مسجلة",
   "suggestRouteSent": "تم إرسال الاقتراح · سنخبرك",
-  "suggestRouteSubmitError": "خطأ في الإرسال: {error}"
+  "suggestRouteSubmitError": "خطأ في الإرسال: {error}",
+  "searchEmptyTitle": "أدخل نقطة الانطلاق والوجهة",
+  "searchEmptySubtitle": "سنعرض لك أسرع الطرق",
+  "searchUnderConstructionTitle": "البحث قيد الإنشاء",
+  "searchUnderConstructionSubtitle": "في الوقت الحالي، يمكنك اقتراح طرق",
+  "searchReportRouteAction": "اقتراح طريق"
 }

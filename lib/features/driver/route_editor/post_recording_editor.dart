@@ -269,7 +269,7 @@ class _PostRecordingEditorState extends State<PostRecordingEditor> {
                       const SizedBox(width: 8),
                       Expanded(
                         child: TransitButton(
-                          label: 'PUBLICAR RUTA',
+                          label: 'GUARDAR LOCAL (prototipo)',
                           onPressed: () {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(

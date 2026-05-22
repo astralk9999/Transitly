@@ -249,6 +249,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get actionFollow => 'Follow';
 
   @override
+  String get featureComingSoon => 'Coming soon in a future update.';
+
+  @override
   String get statusPaused => 'PAUSED';
 
   @override
@@ -1561,4 +1564,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String suggestRouteSubmitError(String error) {
     return 'Failed to send: $error';
   }
+
+  @override
+  String get searchEmptyTitle => 'Enter origin and destination';
+
+  @override
+  String get searchEmptySubtitle => 'We\'ll show you the fastest routes';
+
+  @override
+  String get searchUnderConstructionTitle => 'Search under construction';
+
+  @override
+  String get searchUnderConstructionSubtitle =>
+      'In the meantime, suggest routes to us';
+
+  @override
+  String get searchReportRouteAction => 'Suggest route';
 }

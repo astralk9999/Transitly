@@ -580,6 +580,12 @@ abstract class AppLocalizations {
   /// **'Seguir'**
   String get actionFollow;
 
+  /// Placeholder para features en construcción
+  ///
+  /// In es, this message translates to:
+  /// **'Funcionalidad disponible en próxima versión.'**
+  String get featureComingSoon;
+
   /// No description provided for @statusPaused.
   ///
   /// In es, this message translates to:
@@ -2954,6 +2960,36 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Error al enviar: {error}'**
   String suggestRouteSubmitError(String error);
+
+  /// No description provided for @searchEmptyTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe un origen y un destino'**
+  String get searchEmptyTitle;
+
+  /// No description provided for @searchEmptySubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Te mostraremos las rutas más rápidas'**
+  String get searchEmptySubtitle;
+
+  /// No description provided for @searchUnderConstructionTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscador en construcción'**
+  String get searchUnderConstructionTitle;
+
+  /// No description provided for @searchUnderConstructionSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Mientras tanto, puedes sugerirnos rutas'**
+  String get searchUnderConstructionSubtitle;
+
+  /// No description provided for @searchReportRouteAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Sugerir ruta'**
+  String get searchReportRouteAction;
 }
 
 class _AppLocalizationsDelegate

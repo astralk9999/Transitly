@@ -592,9 +592,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get accessibleBusesSourceDriver => 'Driver';
 
   @override
-  String get accessibleBusesSourceOfficial => 'Official';
-
-  @override
   String get accessibleBusesLinkLabel => 'View bus list';
 
   @override

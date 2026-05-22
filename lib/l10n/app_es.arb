@@ -293,8 +293,6 @@
   "@accessibleBusesSourceEstimated": { "description": "Accessible buses source tag: estimated" },
   "accessibleBusesSourceDriver": "Conductor",
   "@accessibleBusesSourceDriver": { "description": "Accessible buses source tag: driver" },
-  "accessibleBusesSourceOfficial": "Oficial",
-  "@accessibleBusesSourceOfficial": { "description": "Accessible buses source tag: official" },
   "accessibleBusesLinkLabel": "Ver lista de buses",
   "@accessibleBusesLinkLabel": { "description": "Accessible buses link in home tab" },
 

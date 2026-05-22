@@ -594,9 +594,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get accessibleBusesSourceDriver => 'Conductor';
 
   @override
-  String get accessibleBusesSourceOfficial => 'Oficial';
-
-  @override
   String get accessibleBusesLinkLabel => 'Ver lista de buses';
 
   @override

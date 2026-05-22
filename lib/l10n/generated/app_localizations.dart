@@ -1246,12 +1246,6 @@ abstract class AppLocalizations {
   /// **'Conductor'**
   String get accessibleBusesSourceDriver;
 
-  /// Accessible buses source tag: official
-  ///
-  /// In es, this message translates to:
-  /// **'Oficial'**
-  String get accessibleBusesSourceOfficial;
-
   /// Accessible buses link in home tab
   ///
   /// In es, this message translates to:

@@ -1,10 +1,9 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/theme/contrast_utils.dart';
 import '../../core/theme/palettes/custom_colors.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
@@ -13,24 +12,6 @@ import '../../shared/providers/theme_notifier.dart';
 import '../../shared/widgets/glass_card.dart';
 import '../../shared/widgets/transit_app_bar.dart';
 import '../../shared/widgets/transit_button.dart';
-
-double _relativeLuminance(Color c) {
-  double linearize(double ch) {
-    return ch <= 0.03928 ? ch / 12.92 : math.pow((ch + 0.055) / 1.055, 2.4).toDouble();
-  }
-
-  return 0.2126 * linearize(c.r) +
-      0.7152 * linearize(c.g) +
-      0.0722 * linearize(c.b);
-}
-
-double contrastRatio(Color a, Color b) {
-  final l1 = _relativeLuminance(a);
-  final l2 = _relativeLuminance(b);
-  final lighter = math.max(l1, l2);
-  final darker = math.min(l1, l2);
-  return (lighter + 0.05) / (darker + 0.05);
-}
 
 class CustomPaletteScreen extends ConsumerStatefulWidget {
   const CustomPaletteScreen({super.key});

@@ -1,22 +1,33 @@
 # Transitly — Pendiente para el próximo ciclo (todo, en un sitio)
 
-> **Session CLOSED (2026-05-22):** mega-plan refinement complete. Final
-> metrics: `flutter test` **304 / 1 skipped** ✅ · `flutter analyze`
+> ## 🏁 FINAL SESSION CLOSE — 2026-05-22
+>
+> **Repositorio cerrado.** Todos los ciclos planificados completados.
+> Este documento queda como playbook de referencia para el próximo
+> desarrollador o ciclo futuro.
+>
+> **Métrica final de la sesión:**
+> `flutter test` **304 / 1 skipped** ✅ · `flutter analyze`
 > **0 errors, 0 warnings (22 info)** ✅ · **14 migraciones** · **4 edge
 > functions** · **63 test files** · **73 doc files** · **846 ARB keys** ·
-> **315 source files** · **112/190 cerrados (58,9 %)** · **5 commits**
-> this session batch.
+> **315 source files** · **112/190 mega-plan cerrados (58,9 %)** ·
+> **Plan v2: 55/80** · **33 commits total en el repositorio** ·
+> **CI verde (7 jobs, incl. Build Android APK).**
 >
-> **Para qué sirve este documento:** lo que falta tras los ciclos cerrados
-> hasta el **2026-05-22 (final)**, listo para retomar. Es el *playbook*
-> exhaustivo y autocontenido — no hace falta abrir otros docs.
-> **Estado verificado (2026-05-22):** `master @ 3dda413` ·
-> `flutter analyze` **0 errors, 0 warnings, 22 info** ✅ ·
-> `flutter test` **304/304 (1 skipped)** ✅ · cobertura **24,30 %** ·
-> `flutter build apk --release` **OK** (73,5 MB) · **CI verde** (4 jobs,
-> incl. Build Android APK).
-> **Nota:** la rotación del PAT de Supabase (antes SEC1/PROD-4) queda
-> **descartada** (dev / migración de BD próxima).
+> ---
+>
+> > **Session CLOSED (2026-05-22):** mega-plan refinement complete.
+> >
+> > **Para qué sirve este documento:** lo que falta tras los ciclos cerrados
+> > hasta el **2026-05-22 (final)**, listo para retomar. Es el *playbook*
+> > exhaustivo y autocontenido — no hace falta abrir otros docs.
+> > **Estado verificado (2026-05-22):** `master @ HEAD` ·
+> > `flutter analyze` **0 errors, 0 warnings, 22 info** ✅ ·
+> > `flutter test` **304/304 (1 skipped)** ✅ · cobertura **24,30 %** ·
+> > `flutter build apk --release` **OK** (73,5 MB) · **CI verde** (7 jobs,
+> > incl. Build Android APK).
+> > **Nota:** la rotación del PAT de Supabase (antes SEC1/PROD-4) queda
+> > **descartada** (dev / migración de BD próxima).
 
 > **⚠️ Integridad documental:** este playbook se re-verifica con grep en
 > código y comentarios cada ciclo. Ítems falsos detectados en versiones
@@ -331,7 +342,7 @@ usuario), §2.2 tests `remote/`, §2.4 (RTL runtime, contrastes, foco),
 ### Verification Snapshot
 
 ```
-commit:      3dda413 (2026-05-22)
+commit:      HEAD (2026-05-22) · 33 commits total
 analyze:     0 errors, 0 warnings, 22 info
 test:        304 passed, 1 skipped
 coverage:    24.30 %
@@ -342,7 +353,8 @@ doc files:   73 Markdown files
 ARB keys:    846 (es template)
 source:      315 Dart files (non-generated)
 APK release: 73.5 MB
-CI:          4 jobs verde
+CI:          7 jobs verde
+Plan v2:     55/80 (28/28 fases originales)
 ```
 
 ### External Blockers (unchanged)

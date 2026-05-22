@@ -95,6 +95,6 @@ auditoría temporal del proceso, **no representan el estado actual**.
 `master @ HEAD` · 2026-05-22 ·
 `flutter analyze` **0 errors (22 info)** · `flutter test` **304 (1 skipped)** ·
 cobertura **24,8 %** · `flutter build apk --release` OK 73,5 MB ·
-**CI verde** (4 jobs incl. Build Android APK).
+**CI verde** (7 jobs incl. Build Android APK). · **112/190 mega-plan (58,9 %)** · **33 commits**.
 
 Detalle y trayectoria completa en [`00_MAESTRO.md`](./00_MAESTRO.md).

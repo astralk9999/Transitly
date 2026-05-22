@@ -12,6 +12,7 @@ import '../../../shared/widgets/glass_card.dart';
 import '../../../shared/widgets/gradient_text.dart';
 import '../../../shared/widgets/responsive_scaffold.dart';
 import '../../../shared/widgets/transit_button.dart';
+import '../widgets/nfc_scan_result_card.dart';
 
 class CardTab extends ConsumerWidget {
   const CardTab({super.key});
@@ -216,7 +217,7 @@ class CardTab extends ConsumerWidget {
 
     return Column(
       children: [
-        _buildBalanceCard(context, c, result),
+        NfcScanResultCard(c: c, result: result),
         const SizedBox(height: 16),
         TransitButton(
           label: 'ESCANEAR DE NUEVO',
@@ -230,73 +231,6 @@ class CardTab extends ConsumerWidget {
           _buildHistory(c, scanState.scanHistory.skip(1).toList()),
         ],
       ],
-    );
-  }
-
-  Widget _buildBalanceCard(BuildContext context, TransitColorScheme c, NfcCardResult result) {
-    final elapsed = DateTime.now().difference(result.scannedAt);
-    final timeAgo = elapsed.inMinutes < 1
-        ? 'Ahora mismo'
-        : elapsed.inMinutes < 60
-            ? 'Hace ${elapsed.inMinutes} min'
-            : 'Hace ${elapsed.inHours}h';
-
-    return GlassCard(
-      blur: 30,
-      fillOpacity: 0.10,
-      borderRadius: 20,
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              GradientText(
-                'TARJETA CONSORCIO',
-                style: GoogleFonts.ibmPlexMono(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 1.5,
-                ),
-                gradient: c.gradientAccent,
-              ),
-              const Spacer(),
-              Icon(Icons.nfc, size: 20, color: c.accent),
-            ],
-          ),
-          const SizedBox(height: 28),
-          Semantics(
-            label: AppLocalizations.of(context).nfcCardBalance(result.balance.toStringAsFixed(2)),
-            child: Center(
-              child: GradientText(
-                '${result.balance.toStringAsFixed(2)} \u20AC',
-                style: GoogleFonts.ibmPlexMono(
-                  fontSize: 42,
-                  fontWeight: FontWeight.w900,
-                ),
-                gradient: c.gradientAccent,
-              ),
-            ),
-          ),
-          Center(
-            child: Text(
-              'saldo disponible',
-              style: TransitTypography.bodySecondary(c.textMid),
-            ),
-          ),
-          const SizedBox(height: 28),
-          Text(
-            result.cardId,
-            style: GoogleFonts.ibmPlexMono(
-              fontSize: 11,
-              color: c.textLo,
-              letterSpacing: 1.5,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(timeAgo, style: TransitTypography.bodySmall(c.textLo)),
-        ],
-      ),
     );
   }
 

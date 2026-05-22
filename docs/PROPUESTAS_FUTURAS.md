@@ -1,8 +1,9 @@
 ﻿# Propuestas Futuras — Technical Debt & Improvement Opportunities
 
-> Audit date: 2026-05-22 (updated 2026-05-22 — session close)  
-> **Current metrics:** 251 tests · 0 analyze issues · 106/190 mega-plan (55.8%)  
-> **Session:** 10 commits · 42 ARB keys added · 30 docs created  
+> Audit date: 2026-05-22 (final scan — multi-agent session close)  
+> **Current metrics:** 281 tests (1 skipped) · 3 errors / 1 warning / 22 info (flutter analyze) · 109/190 mega-plan (57.4%)  
+> **Session:** 17 commits · 42 ARB keys added · 65 docs · 51 test files  
+> **Regression:** 3 errors in `integration_test/app_test.dart` (package `integration_test` not in `pubspec.yaml`)  
 > Analyzed: `lib/` (excluding `lib/l10n/generated/`, `.freezed.dart`, `.g.dart`)  
 > Severity: P0 (urgent) → P3 (cosmetic)
 
@@ -197,10 +198,68 @@ Current configuration updated. **Added rules:**
 |------|----------|--------|
 | Hardcoded strings | P1 | ✅ CLOSED — 36 strings migrated |
 | TODO/FIXME | P3 | ✅ CLEAN — 0 actionable |
-| Unused l10n keys | P3 | ✅ CLOSED — `accessibleBusesSourceOfficial` documented |
+| Unused l10n keys | P3 | ✅ CLOSED — `accessibleBusesSourceOfficial` removed from ARB |
 | Silent catches | P1–P2 | ✅ CLOSED — 2 blocks fixed with `AppLogger.warn` |
 | Large files | P2 | ⏳ OPEN — 13 files >400 lines (decomposition) |
 | Lint rules | P1 | ✅ CLOSED — 5 rules added to `analysis_options.yaml` |
+
+---
+
+## Items cerrados en sesión multiagente (2026-05-22)
+
+Sesión final de refinamiento con metodología `code-review` skill (4 pasadas independientes: arquitectura sénior, release stores, accesibilidad AAA, QA pro, SRE/Ops). Resultado: **mega-plan de 190 ítems en 12 bloques**.
+
+### Key deliverables
+
+| Deliverable | Bloque | Items |
+|---|---|---|
+| **Mega-plan 190 items** | meta | `docs/MEGA_PLAN_REFINAMIENTO.md` y `docs/00_MAESTRO.md` como fuentes únicas |
+| **TFG cerrado (nivel A)** | P0, P1, R | 19/22 items P0+P1+R cerrados (86%). Solo PAT rotation [EXT] y revisión textScaler pendientes |
+| **i18n completo** | P1, PRO-A11Y | 42 nuevas claves ARB en es/en/ar; 36 strings ES migrados a l10n; 15 archivos tocados |
+| **Senior foundations** | PRO-Snr | 17/18 items: 5 ADRs, LICENSE MIT, CHANGELOG, ErrorBoundary, CI templates, .editorconfig, dartdoc |
+| **Release stores** | PRO-Rel | 14/33 items: AndroidManifest, compileSdk/targetSdk, Info.plist, PrivacyInfo.xcprivacy, AAB CI, icons, versionCode |
+| **Accesibilidad AAA** | A11Y, PRO-A11Y | 19/33 items: contrast matrix, textScaler 200%, FocusTraversalGroup, RTL undo, switch access, daltonism, Inflesz audit |
+| **Testing pro** | PRO-QA | 13/25 items: 281 tests (51 files), ARB parity, architecture layer tests, offline queue, realtime channel, a11y programmatic, golden tests |
+| **SRE/Ops** | PROD, PRO-Ops | 19/44 items: SLO catalog, runbooks, Sentry spans, PostHog events, alert matrix, data retention, right-to-be-forgotten, C4 diagrams, service catalog |
+| **Docs general** | — | 65 markdown files in `docs/` (ADRs, runbooks, SLOs, guides, audits, TFG memoria 8 docs) |
+
+### Scoreboard detallado (extraído de `MEGA_PLAN_REFINAMIENTO.md §2`)
+
+| Bloque | Total | ✅ Cerrado | ⏳ Pendiente | % |
+|---|---|---|---|---|
+| P0 — Defensa inminente | 7 | 6 | 1 [EXT] | 85.7 |
+| R — Refactor | 4 | 4 | 0 | 100 |
+| P1 — Calidad/a11y | 11 | 9 | 2 | 81.8 |
+| P2 — Núcleo | 7 | 4 | 3 | 57.1 |
+| P3 — Deuda | 8 | 4 | 4 | 50.0 |
+| PROD — Producción | 10 | 3 | 7 | 30.0 |
+| A11Y — WCAG | 10 | 5 | 5 | 50.0 |
+| PRO-Snr — Senior | 18 | 17 | 1 | 94.4 |
+| PRO-Rel — Stores | 33 | 14 | 19 | 42.4 |
+| PRO-QA — Testing | 25 | 13 | 12 | 52.0 |
+| PRO-A11Y — AAA | 23 | 14 | 9 | 60.9 |
+| PRO-Ops — SRE | 34 | 16 | 18 | 47.1 |
+| **TOTAL** | **190** | **109** | **81** | **57.4** |
+
+### Regresiones detectadas en scan final
+
+| Archivo | Tipo | Descripción |
+|---|---|---|
+| `integration_test/app_test.dart` | 🔴 error ×3 | `package:integration_test` no está en `pubspec.yaml` como dependencia |
+| `test/data/auth/auth_models_test.dart:1` | 🟡 warning | Unused import `dart:convert` |
+| `test/widget/rtl_undo_test.dart`, `test/widget/textscaler_200_test.dart` | 🔵 info ×22 | `prefer_const_constructors` en test widgets (baja prioridad) |
+
+### Items pendientes destacados (no [EXTERNAL])
+
+| ID | Descripción | Bloque |
+|---|---|---|
+| P2-2 | Auditoría Realtime stop/route con multiplex compartido | P2 |
+| P2-4 | Tests unitarios de repositorios `remote/` (palanca de cobertura) | P2 |
+| P3-5 | Descomponer `privacy_screen.dart` (406 LoC → ≤300) | P3 |
+| PROD-5 | autoDispose en providers `.family` pendientes | PROD |
+| A11Y-3 | Pasada real con TalkBack/VoiceOver [EXT parcial] | A11Y |
+| PRO-A11Y-13 | ARB árabe completo (actual 62/433 keys, 14.3%) [EXT parcial: traducción humana] | PRO-A11Y |
+| PRO-QA-07 | Integration tests con emulador Android (3 happy paths) | PRO-QA |
 
 ---
 
@@ -212,9 +271,11 @@ Current configuration updated. **Added rules:**
 ### Future work
 - **13 files >400 lines** — decomposition per AGENTS.md §5 guideline (≤300 LoC target)
 - **AR Arabic translation** — ARB keys exist but Arabic translations need native review
+- **integration_test/** — add `integration_test` to `pubspec.yaml` or remove scaffold
 
 ### External dependencies
 - Release keystore provisioning
 - TalkBack accessibility verification on physical device
 - App Store / Play Store submissions
 - PAT rotation (Supabase service keys)
+- Apple Developer Program enrollment (PRO-Rel-12)

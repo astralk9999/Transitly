@@ -8,7 +8,7 @@
 > accesibilidad **WCAG 2.2 AA** plena, seguridad, observabilidad,
 > operabilidad.
 > **Estado verificado (2026-05-22):** `master @ 0017289` ·
-> `flutter analyze` **0 issues** ✅ · `flutter test` **276/276** ✅ ·
+> `flutter analyze` **0 issues** ✅ · `flutter test` **281/281** ✅ ·
 > cobertura **~27 %** · `flutter build apk --release`
 > **OK** (73,5 MB) · **CI verde** (4 jobs) · **13 commits**
 

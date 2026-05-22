@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
+import '../../core/utils/app_logger.dart';
 import '../../data/incident/domain/incident_repository.dart';
 import '../../data/incident/incident_repository_provider.dart';
 import '../../data/route_feedback/domain/route_feedback_repository.dart';
@@ -88,6 +89,7 @@ class _ManagerInboxScreenState extends ConsumerState<ManagerInboxScreen> {
         _loading = false;
       });
     } catch (e) {
+      AppLogger.warn('ManagerInbox', '_loadData failed', e);
       if (!mounted) return;
       setState(() {
         _error = e.toString();

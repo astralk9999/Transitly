@@ -36,3 +36,10 @@ linter:
     # Accessibility (PRO-A11Y-17)
     use_key_in_widget_constructors: true
     prefer_const_literals_to_create_immutables: true
+
+    # Safety (Innovation audit 2026-05-22)
+    avoid_catches_without_on_clauses: false
+    discarded_futures: false
+    flutter_style_todos: true
+    sort_child_properties_last: true
+    use_full_hex_values_for_flutter_colors: true

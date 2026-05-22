@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
+import '../../core/utils/app_logger.dart';
 import '../../core/utils/uuid.dart';
 import '../../data/route_feedback/route_feedback_repository_provider.dart';
 import '../../l10n/generated/app_localizations.dart';
@@ -201,7 +202,8 @@ class _RouteFeedbackContentState extends ConsumerState<_RouteFeedbackContent> {
         );
         Navigator.of(context).pop();
       }
-    } catch (_) {
+    } catch (e) {
+      AppLogger.warn('RouteFeedbackSheet', 'submit failed', e);
       setState(() => _submitting = false);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

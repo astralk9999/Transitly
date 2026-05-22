@@ -76,7 +76,7 @@ class OfflineRegionRepositoryLocalFirst implements OfflineRegionRepository {
 }
 
 final offlineRegionRepositoryProvider =
-    Provider<OfflineRegionRepository>((ref) {
+    Provider.autoDispose<OfflineRegionRepository>((ref) {
   final client = ref.watch(supabaseClientProvider);
   final session = client.auth.currentSession;
 

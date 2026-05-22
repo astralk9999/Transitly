@@ -6,7 +6,7 @@ import '../../data/mock/mock_data_service.dart';
 ///
 /// Built once per [mockDataServiceProvider] change. Use this to replace
 /// O(n²) scans of `mockData.routeStops` from screen build methods.
-final stopToRouteCodesProvider = Provider<Map<String, List<String>>>((ref) {
+final stopToRouteCodesProvider = Provider.autoDispose<Map<String, List<String>>>((ref) {
   final mockData = ref.watch(mockDataServiceProvider);
   final result = <String, List<String>>{};
   for (final entry in mockData.routeStops.entries) {

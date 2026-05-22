@@ -92,7 +92,7 @@ class FeatureRequestRepositorySwr implements FeatureRequestRepository {
 }
 
 final featureRequestRepositoryProvider =
-    Provider<FeatureRequestRepository>((ref) {
+    Provider.autoDispose<FeatureRequestRepository>((ref) {
   final client = ref.watch(supabaseClientProvider);
   final session = client.auth.currentSession;
 

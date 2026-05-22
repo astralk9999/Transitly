@@ -11,7 +11,7 @@ import '../user_provider.dart';
 /// Filtra `mockData.favorites` por `currentUserProvider.id`. Si en el
 /// futuro las favoritas viven en su propia colección por usuario, este
 /// provider sigue siendo el único punto de derivación.
-final homeFavRouteIdsProvider = Provider<Set<String>>((ref) {
+final homeFavRouteIdsProvider = Provider.autoDispose<Set<String>>((ref) {
   final mockData = ref.watch(mockDataServiceProvider);
   final user = ref.watch(currentUserProvider);
   return mockData.favorites
@@ -23,7 +23,7 @@ final homeFavRouteIdsProvider = Provider<Set<String>>((ref) {
 /// Parada habitual del usuario: la `homeStopId` de su primera favorita,
 /// resuelta a un [StopModel]. `null` si no hay favoritas o si la parada
 /// referenciada ya no existe.
-final homeHabitualStopProvider = Provider<StopModel?>((ref) {
+final homeHabitualStopProvider = Provider.autoDispose<StopModel?>((ref) {
   final mockData = ref.watch(mockDataServiceProvider);
   final user = ref.watch(currentUserProvider);
   final favs = mockData.favorites.where((f) => f.userId == user.id);
@@ -51,7 +51,7 @@ final homeNearbyStopsProvider =
 /// Avisos activos para las rutas favoritas del usuario.
 ///
 /// Combina [homeFavRouteIdsProvider] con `mockData.getAlertsForRoute`.
-final homeFavAlertsProvider = Provider<List<AlertModel>>((ref) {
+final homeFavAlertsProvider = Provider.autoDispose<List<AlertModel>>((ref) {
   final mockData = ref.watch(mockDataServiceProvider);
   final favIds = ref.watch(homeFavRouteIdsProvider);
   final alerts = <AlertModel>[];

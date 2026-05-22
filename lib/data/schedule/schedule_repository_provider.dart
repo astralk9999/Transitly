@@ -69,7 +69,7 @@ class ScheduleRepositorySwr implements ScheduleRepository {
   }
 }
 
-final scheduleRepositoryProvider = Provider<ScheduleRepository>((ref) {
+final scheduleRepositoryProvider = Provider.autoDispose<ScheduleRepository>((ref) {
   final client = ref.watch(supabaseClientProvider);
   final session = client.auth.currentSession;
 

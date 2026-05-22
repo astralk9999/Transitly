@@ -47,7 +47,7 @@ class BusLocationRepositorySwr implements BusLocationRepository {
 }
 
 final busLocationRepositoryProvider =
-    Provider<BusLocationRepository>((ref) {
+    Provider.autoDispose<BusLocationRepository>((ref) {
   final client = ref.watch(supabaseClientProvider);
   final session = client.auth.currentSession;
 

@@ -68,7 +68,7 @@ final notificationStreamProvider =
 });
 
 /// Derived count of unread notifications from the stream.
-final unreadCountProvider = Provider<int>((ref) {
+final unreadCountProvider = Provider.autoDispose<int>((ref) {
   final notifications = ref.watch(notificationStreamProvider).valueOrNull;
   if (notifications == null) return 0;
   return notifications.where((n) => !n.read).length;

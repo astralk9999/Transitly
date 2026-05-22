@@ -10,6 +10,7 @@ import '../../data/offline_region/offline_region_repository_provider.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../shared/models/offline_region.dart';
 import '../../shared/providers/is_dark_provider.dart';
+import '../../shared/providers/user_provider.dart';
 import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/glass_card.dart';
 import '../../shared/widgets/smoke_background.dart';
@@ -34,6 +35,7 @@ class _OfflineRegionsScreenState extends ConsumerState<OfflineRegionsScreen> {
     final c = TransitColorScheme.of(isDark);
     final l10n = AppLocalizations.of(context);
     final repo = ref.watch(offlineRegionRepositoryProvider);
+    final userId = ref.watch(currentUserProvider.select((u) => u.id));
 
     return Scaffold(
       backgroundColor: c.bgRoot,
@@ -58,6 +60,7 @@ class _OfflineRegionsScreenState extends ConsumerState<OfflineRegionsScreen> {
                     isDark: isDark,
                     c: c,
                     l10n: l10n,
+                    userId: userId,
                     onRefresh: () => setState(() => _refreshCounter++),
                     onShowDownload: () => _showDownloadSheet(context),
                   ),
@@ -99,6 +102,7 @@ class _RegionList extends StatelessWidget {
     required this.l10n,
     required this.onRefresh,
     required this.onShowDownload,
+    required this.userId,
   });
 
   final OfflineRegionRepository repo;
@@ -107,11 +111,12 @@ class _RegionList extends StatelessWidget {
   final AppLocalizations l10n;
   final VoidCallback onRefresh;
   final VoidCallback onShowDownload;
+  final String? userId;
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<OfflineRegion>>(
-      future: repo.forUser('_current_'),
+      future: repo.forUser(userId ?? ''),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return _ShimmerList(c: c);

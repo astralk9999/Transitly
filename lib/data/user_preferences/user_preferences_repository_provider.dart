@@ -60,7 +60,7 @@ class UserPreferencesRepositorySwr implements UserPreferencesRepository {
 }
 
 final userPreferencesRepositoryProvider =
-    Provider<UserPreferencesRepository>((ref) {
+    Provider.autoDispose<UserPreferencesRepository>((ref) {
   final client = ref.watch(supabaseClientProvider);
   final session = client.auth.currentSession;
 

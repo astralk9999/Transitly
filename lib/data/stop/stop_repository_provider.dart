@@ -103,7 +103,7 @@ class StopRepositorySwr implements StopRepository {
 }
 
 /// Provider Riverpod del repositorio de paradas.
-final stopRepositoryProvider = Provider<StopRepository>((ref) {
+final stopRepositoryProvider = Provider.autoDispose<StopRepository>((ref) {
   final client = ref.watch(supabaseClientProvider);
   final session = client.auth.currentSession;
 

@@ -111,7 +111,7 @@ class RouteRepositorySwr implements RouteRepository {
   }
 }
 
-final routeRepositoryProvider = Provider<RouteRepository>((ref) {
+final routeRepositoryProvider = Provider.autoDispose<RouteRepository>((ref) {
   final client = ref.watch(supabaseClientProvider);
   final session = client.auth.currentSession;
 

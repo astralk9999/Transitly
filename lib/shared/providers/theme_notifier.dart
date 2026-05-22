@@ -25,6 +25,7 @@ class ThemeNotifier extends ChangeNotifier {
   static const _logTag = 'ThemeNotifier';
   static const _guestBoxName = 'guest_theme_prefs';
 
+  String? _authUserId;
   String _paletteId = 'default';
   Brightness _brightness = Brightness.dark;
   String _backgroundId = 'smoke';
@@ -300,6 +301,8 @@ class ThemeNotifier extends ChangeNotifier {
   Future<void> init({required String userId}) async {
     if (_initialized) return;
 
+    _authUserId = userId;
+
     try {
       final prefs = await _prefsRepo.getMine();
       loadFromPreferences(prefs);
@@ -364,7 +367,9 @@ class ThemeNotifier extends ChangeNotifier {
     if (!_initialized) return;
 
     try {
-      await _prefsRepo.update(toPreferences('_current_'));
+      final uid = _authUserId;
+      if (uid == null) return;
+      await _prefsRepo.update(toPreferences(uid));
       return;
     } on UserPreferencesRepositoryException {
       // Fall through to guest persistence

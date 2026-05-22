@@ -72,7 +72,7 @@ class NotificationRepositorySwr implements NotificationRepository {
 }
 
 final notificationRepositoryProvider =
-    Provider<NotificationRepository>((ref) {
+    Provider.autoDispose<NotificationRepository>((ref) {
   final client = ref.watch(supabaseClientProvider);
   final session = client.auth.currentSession;
 

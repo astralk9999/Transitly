@@ -107,7 +107,7 @@ class RouteSuggestionRepositorySwr implements RouteSuggestionRepository {
 }
 
 final routeSuggestionRepositoryProvider =
-    Provider<RouteSuggestionRepository>((ref) {
+    Provider.autoDispose<RouteSuggestionRepository>((ref) {
   final client = ref.watch(supabaseClientProvider);
   final session = client.auth.currentSession;
 

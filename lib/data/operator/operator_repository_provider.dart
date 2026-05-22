@@ -123,7 +123,7 @@ class OperatorRepositorySwr implements OperatorRepository {
 ///
 /// Nota: hasta que F4 implemente el flujo de auth real, "sesión
 /// nula" es la única vía de demostración de modo invitado.
-final operatorRepositoryProvider = Provider<OperatorRepository>((ref) {
+final operatorRepositoryProvider = Provider.autoDispose<OperatorRepository>((ref) {
   final client = ref.watch(supabaseClientProvider);
   final session = client.auth.currentSession;
 

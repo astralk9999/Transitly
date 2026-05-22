@@ -118,7 +118,7 @@ class IncidentRepositorySwr implements IncidentRepository {
 /// vuelo el executor de drenado para `createIncident` — la primera
 /// vez que alguien lee el provider, la cola queda lista para drenar
 /// inserts pendientes en cuanto vuelva la red.
-final incidentRepositoryProvider = Provider<IncidentRepository>((ref) {
+final incidentRepositoryProvider = Provider.autoDispose<IncidentRepository>((ref) {
   final client = ref.watch(supabaseClientProvider);
   final session = client.auth.currentSession;
 

@@ -108,7 +108,7 @@ class RouteFeedbackRepositorySwr implements RouteFeedbackRepository {
 }
 
 final routeFeedbackRepositoryProvider =
-    Provider<RouteFeedbackRepository>((ref) {
+    Provider.autoDispose<RouteFeedbackRepository>((ref) {
   final client = ref.watch(supabaseClientProvider);
   final session = client.auth.currentSession;
 

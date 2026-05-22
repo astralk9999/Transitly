@@ -40,11 +40,11 @@
 | **PROD** — Producción a escala (existente) | 10 | 4 | 6 | B/C | `.family` sweep ✅; keystore [EXT], observabilidad, mapa clustering, caché tenant |
 | **A11Y** — WCAG existente | 10 | 5 | 5 | B/C | Verificación lector, alt mapa, contrastes, foco, RTL completo |
 | **PRO-Snr** — Senior portfolio 🆕 | 19 | 18 | 1 | C | ADRs, LICENSE, CHANGELOG, ErrorBoundary, CI, lint rules, rollback docs, dartdoc, ProviderObserver |
-| **PRO-Rel** — Publicación stores 🆕 | 33 | 17 | 16 | B | Permisos, PrivacyInfo, icons, CI AAB, adaptive icons, bundle split, versionCode, age, consents, iOS build CI |
+| **PRO-Rel** — Publicación stores 🆕 | 33 | 22 | 11 | B | Permisos, PrivacyInfo, icons, CI AAB, adaptive icons, bundle split, versionCode, age, consents, iOS build CI |
 | **PRO-QA** — Testing pro 🆕 | 25 | 19 | 6 | C | auth tests, ARB parity smoke, architecture layer, a11y programmatic, golden tests, roundtrip |
 | **PRO-A11Y** — A11y AAA + inclusión 🆕 | 23 | 18 | 5 | C | PRO-A11Y-1/2/3/5 cerrados; pendientes: RTL undo, switch access, daltonism, Inflesz audit, ARB árabe |
 | **PRO-Ops** — SRE / Operación 🆕 | 34 | 20 | 14 | C | SLO catalog, 3 runbooks, Sentry spans, PostHog events, alert matrix, C4 diagrams, service catalog |
-| **TOTAL** | **190** | **130** | **60** | | 130 cerrados (68,4 %); de los 60 pendientes ~42 son [EXTERNAL], ~20 [L/XL] |
+| **TOTAL** | **190** | **135** | **55** | | 135 cerrados (71,1 %); de los 55 pendientes ~37 son [EXTERNAL], ~20 [L/XL] |
 
 > Definición de "✅ Hecho": verificado en código + en CI verde + criterio de aceptación cumplido en el documento que lo declaró.
 
@@ -92,11 +92,11 @@ Antes y después de cada ítem que toque código: `flutter analyze` 0 + `flutter
 
 | ID | Acción | Esf. |
 |---|---|:-:|
-| PRO-Rel-3 | Añadir permisos faltantes a `AndroidManifest.xml` (LOCATION, POST_NOTIFICATIONS, READ_MEDIA_IMAGES, CAMERA) | S |
-| PRO-Rel-4 | Fijar `compileSdk=35` y `targetSdk=34` (no delegar a Flutter SDK) | S |
-| PRO-Rel-13 | `NSLocationWhenInUseUsageDescription` + Camera/Photo en `Info.plist` con strings en es/en/ar | S |
-| PRO-Rel-15 | `ios/Runner/PrivacyInfo.xcprivacy` (Required Reason APIs para `shared_preferences`, `path_provider`, Hive) | S |
-| PRO-Rel-17 | Elevar iOS deployment target 13.0 → 16.0 | S |
+| PRO-Rel-3 | ✅ Añadir permisos faltantes a `AndroidManifest.xml` (LOCATION, POST_NOTIFICATIONS, READ_MEDIA_IMAGES, CAMERA) | S |
+| PRO-Rel-4 | ✅ Fijar `compileSdk=35` y `targetSdk=34` (no delegar a Flutter SDK) | S |
+| PRO-Rel-13 | ✅ `NSLocationWhenInUseUsageDescription` + Camera/Photo en `Info.plist` con strings en es/en/ar | S |
+| PRO-Rel-15 | ✅ `ios/Runner/PrivacyInfo.xcprivacy` (Required Reason APIs para `shared_preferences`, `path_provider`, Hive) | S |
+| PRO-Rel-17 | ✅ Elevar iOS deployment target 13.0 → 16.0 | S |
 | PRO-Rel-5 | ✅ Adaptive icon Android 8+ + monochrome icon Android 13+ | M |
 | PRO-Rel-1 | ✅ Job de CI `build-android-release-aab` con keystore desde secrets + `jarsigner -verify` | M |
 | PRO-Rel-9 | ✅ `bundle { language { enableSplit }, abi { enableSplit } }` en `build.gradle.kts` | S |

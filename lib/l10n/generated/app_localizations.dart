@@ -340,6 +340,84 @@ abstract class AppLocalizations {
   /// **'Guardar'**
   String get actionSave;
 
+  /// No description provided for @actionSend.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar'**
+  String get actionSend;
+
+  /// No description provided for @actionDelete.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar'**
+  String get actionDelete;
+
+  /// No description provided for @actionBack.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver'**
+  String get actionBack;
+
+  /// No description provided for @actionSignOut.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar sesión'**
+  String get actionSignOut;
+
+  /// No description provided for @actionSaveDraft.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar borrador'**
+  String get actionSaveDraft;
+
+  /// No description provided for @actionSendSuggestion.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar sugerencia'**
+  String get actionSendSuggestion;
+
+  /// No description provided for @actionSendFeedback.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar feedback'**
+  String get actionSendFeedback;
+
+  /// No description provided for @actionSendImprovement.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar mejora'**
+  String get actionSendImprovement;
+
+  /// No description provided for @actionSendRequest.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar solicitud'**
+  String get actionSendRequest;
+
+  /// No description provided for @actionSending.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviando...'**
+  String get actionSending;
+
+  /// No description provided for @sectionUpcomingArrivals.
+  ///
+  /// In es, this message translates to:
+  /// **'PRÓXIMAS LLEGADAS'**
+  String get sectionUpcomingArrivals;
+
+  /// No description provided for @sectionSchedules.
+  ///
+  /// In es, this message translates to:
+  /// **'HORARIOS'**
+  String get sectionSchedules;
+
+  /// No description provided for @sectionRecentChanges.
+  ///
+  /// In es, this message translates to:
+  /// **'CAMBIOS RECIENTES'**
+  String get sectionRecentChanges;
+
   /// Admin users screen title
   ///
   /// In es, this message translates to:

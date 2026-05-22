@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../data/mock/mock_data_service.dart';
+import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/models/stop_model.dart';
 
 void showStopInfoSheet(
@@ -75,7 +76,7 @@ void showStopInfoSheet(
             const SizedBox(height: 16),
             // Next arrivals
             Text(
-              'PRÓXIMAS LLEGADAS:',
+              AppLocalizations.of(context).sectionUpcomingArrivals,
               style: TransitTypography.sectionTitle(c.textMid),
             ),
             const SizedBox(height: 8),

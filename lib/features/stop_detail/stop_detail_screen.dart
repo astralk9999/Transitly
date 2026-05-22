@@ -102,7 +102,7 @@ class StopDetailScreen extends ConsumerWidget {
                 // ── 2. PRÓXIMAS LLEGADAS ──
                 Semantics(
                   header: true,
-                  child: Text('PRÓXIMAS LLEGADAS',
+                  child: Text(AppLocalizations.of(context).sectionUpcomingArrivals,
                       style: TransitTypography.sectionTitle(c.textMid)),
                 ),
                 const SizedBox(height: 12),

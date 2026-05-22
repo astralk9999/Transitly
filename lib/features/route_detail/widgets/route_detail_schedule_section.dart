@@ -74,7 +74,7 @@ class _RouteDetailScheduleSectionState
           children: [
             Semantics(
               header: true,
-              child: Text('HORARIOS',
+              child: Text(AppLocalizations.of(context).sectionSchedules,
                   style: TransitTypography.sectionTitle(c.textMid)),
             ),
             const Spacer(),

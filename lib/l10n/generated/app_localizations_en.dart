@@ -129,6 +129,45 @@ class AppLocalizationsEn extends AppLocalizations {
   String get actionSave => 'Save';
 
   @override
+  String get actionSend => 'Send';
+
+  @override
+  String get actionDelete => 'Delete';
+
+  @override
+  String get actionBack => 'Back';
+
+  @override
+  String get actionSignOut => 'Sign out';
+
+  @override
+  String get actionSaveDraft => 'Save draft';
+
+  @override
+  String get actionSendSuggestion => 'Send suggestion';
+
+  @override
+  String get actionSendFeedback => 'Send feedback';
+
+  @override
+  String get actionSendImprovement => 'Send improvement';
+
+  @override
+  String get actionSendRequest => 'Send request';
+
+  @override
+  String get actionSending => 'Sending...';
+
+  @override
+  String get sectionUpcomingArrivals => 'UPCOMING ARRIVALS';
+
+  @override
+  String get sectionSchedules => 'SCHEDULES';
+
+  @override
+  String get sectionRecentChanges => 'RECENT CHANGES';
+
+  @override
   String get adminUsersTitle => 'User management';
 
   @override

@@ -130,6 +130,45 @@ class AppLocalizationsAr extends AppLocalizations {
   String get actionSave => 'حفظ';
 
   @override
+  String get actionSend => 'إرسال';
+
+  @override
+  String get actionDelete => 'حذف';
+
+  @override
+  String get actionBack => 'رجوع';
+
+  @override
+  String get actionSignOut => 'تسجيل الخروج';
+
+  @override
+  String get actionSaveDraft => 'حفظ المسودة';
+
+  @override
+  String get actionSendSuggestion => 'إرسال اقتراح';
+
+  @override
+  String get actionSendFeedback => 'إرسال ملاحظات';
+
+  @override
+  String get actionSendImprovement => 'إرسال تحسين';
+
+  @override
+  String get actionSendRequest => 'إرسال طلب';
+
+  @override
+  String get actionSending => 'جار الإرسال...';
+
+  @override
+  String get sectionUpcomingArrivals => 'الوصول القادم';
+
+  @override
+  String get sectionSchedules => 'الجداول';
+
+  @override
+  String get sectionRecentChanges => 'التغييرات الأخيرة';
+
+  @override
   String get adminUsersTitle => 'Gestión de usuarios';
 
   @override

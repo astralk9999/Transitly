@@ -130,6 +130,45 @@ class AppLocalizationsEs extends AppLocalizations {
   String get actionSave => 'Guardar';
 
   @override
+  String get actionSend => 'Enviar';
+
+  @override
+  String get actionDelete => 'Eliminar';
+
+  @override
+  String get actionBack => 'Volver';
+
+  @override
+  String get actionSignOut => 'Cerrar sesión';
+
+  @override
+  String get actionSaveDraft => 'Guardar borrador';
+
+  @override
+  String get actionSendSuggestion => 'Enviar sugerencia';
+
+  @override
+  String get actionSendFeedback => 'Enviar feedback';
+
+  @override
+  String get actionSendImprovement => 'Enviar mejora';
+
+  @override
+  String get actionSendRequest => 'Enviar solicitud';
+
+  @override
+  String get actionSending => 'Enviando...';
+
+  @override
+  String get sectionUpcomingArrivals => 'PRÓXIMAS LLEGADAS';
+
+  @override
+  String get sectionSchedules => 'HORARIOS';
+
+  @override
+  String get sectionRecentChanges => 'CAMBIOS RECIENTES';
+
+  @override
   String get adminUsersTitle => 'Gestión de usuarios';
 
   @override

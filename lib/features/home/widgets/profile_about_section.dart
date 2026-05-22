@@ -45,13 +45,13 @@ class _ProfileAboutSectionState extends ConsumerState<ProfileAboutSection> {
         ),
         actions: [
           TransitButton(
-            label: 'CANCELAR',
+            label: AppLocalizations.of(ctx).actionCancel.toUpperCase(),
             isPrimary: false,
             isSmall: true,
             onPressed: () => Navigator.of(ctx).pop(),
           ),
           TransitButton(
-            label: 'CERRAR SESIÓN',
+            label: AppLocalizations.of(ctx).actionSignOut.toUpperCase(),
             isSmall: true,
             onPressed: () async {
               Navigator.of(ctx).pop();

@@ -25,7 +25,7 @@ class RouteDetailChangelog extends ConsumerWidget {
       children: [
         Semantics(
           header: true,
-          child: Text('CAMBIOS RECIENTES',
+          child: Text(AppLocalizations.of(context).sectionRecentChanges,
               style: TransitTypography.sectionTitle(c.textMid)),
         ),
         const SizedBox(height: 8),

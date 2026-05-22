@@ -1,3 +1,9 @@
+## Status: PROD-7 ✅ Implemented
+
+Sentry spans active for auth.signIn, nfc.read, network.*. PostHog 17 events wired.
+
+---
+
 # Sentry Performance Spans — Transitly
 
 > **Version:** 1.0 · **SLO Reference:** `docs/slo/slo_catalog.md`

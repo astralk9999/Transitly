@@ -1,3 +1,9 @@
+## Status: PROD-6 ✅ Documented
+
+Strategy documented. Implementation requires production marker count (>1000 active buses).
+
+---
+
 # Map Clustering Strategy
 
 > F5.1 — Marker clustering for the transit map with 598+ stops

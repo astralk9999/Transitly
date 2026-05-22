@@ -50,11 +50,13 @@ class _DriversScreenState extends ConsumerState<DriversScreen> {
           .filter('revoked_at', 'is', null)
           .order('granted_at', ascending: false);
 
+      if (!mounted) return;
       setState(() {
         _drivers = rows.cast<Map<String, dynamic>>();
         _loading = false;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _loading = false;
         _error = AppLocalizations.of(context).driversErrorLoading;
@@ -135,6 +137,7 @@ class _DriversScreenState extends ConsumerState<DriversScreen> {
                       IconButton(
                         icon: const Icon(Icons.arrow_back),
                         color: c.textHi,
+                        tooltip: 'Volver',
                         onPressed: () => Navigator.of(context).pop(),
                       ),
                       const SizedBox(width: 8),

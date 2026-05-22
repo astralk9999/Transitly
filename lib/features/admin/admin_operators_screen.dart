@@ -47,18 +47,21 @@ class _AdminOperatorsScreenState extends ConsumerState<AdminOperatorsScreen> {
       final repo = ref.read(operatorRepositoryProvider);
       final operators = await repo.list();
 
+      if (!mounted) return;
       setState(() {
         _operators = operators;
         _loading = false;
       });
     } on OperatorRepositoryException catch (e) {
       AppLogger.warn('AdminOperators', 'load failed', e);
+      if (!mounted) return;
       setState(() {
         _loading = false;
         _errorType = e.error;
       });
     } catch (e) {
       AppLogger.warn('AdminOperators', 'load failed', e);
+      if (!mounted) return;
       setState(() {
         _loading = false;
         _errorType = OperatorRepositoryError.unknown;

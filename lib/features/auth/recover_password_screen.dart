@@ -47,11 +47,14 @@ class _RecoverPasswordScreenState extends ConsumerState<RecoverPasswordScreen> {
 
     try {
       await ref.read(authRepositoryProvider).recoverPassword(email);
+      if (!mounted) return;
       setState(() => _sent = true);
     } on AuthRepoException catch (e) {
+      if (!mounted) return;
       setState(() => _error = e.message ?? l10n.authRecoverError);
     } catch (e) {
       AppLogger.warn('RecoverPassword', 'recover password error', e);
+      if (!mounted) return;
       setState(() => _error = l10n.authErrorConnection);
     } finally {
       if (mounted) setState(() => _isLoading = false);

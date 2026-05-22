@@ -79,6 +79,7 @@ class _ShareSheetContentState extends ConsumerState<_ShareSheetContent> {
           .eq('email', email.trim())
           .limit(1);
 
+      if (!mounted) return;
       if ((response as List).isEmpty) {
         setState(() => _feedback = AppLocalizations.of(context).routeShareUserNotFound);
         return;
@@ -93,8 +94,10 @@ class _ShareSheetContentState extends ConsumerState<_ShareSheetContent> {
         'permission': permission,
       });
 
+      if (!mounted) return;
       setState(() => _feedback = AppLocalizations.of(context).routeShareSuccess(email));
     } catch (e) {
+      if (!mounted) return;
       setState(() => _feedback = AppLocalizations.of(context).routeShareError);
     }
   }
@@ -116,11 +119,13 @@ class _ShareSheetContentState extends ConsumerState<_ShareSheetContent> {
         'created_by': session.user.id,
       });
 
+      if (!mounted) return;
       setState(() {
         _generatedLink = slug;
         _feedback = 'Enlace generado';
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() => _feedback = AppLocalizations.of(context).routeShareErrorGeneratingLink);
     }
   }

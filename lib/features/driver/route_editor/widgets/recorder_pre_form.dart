@@ -37,6 +37,7 @@ class RecorderPreForm extends StatelessWidget {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: c.textMid),
+          tooltip: 'Volver',
           onPressed: () => context.pop(),
         ),
         title: Text('GRABAR RUTA',

@@ -43,11 +43,13 @@ Descartado. Menos madurez en Realtime, comunidad más pequeña, sin Edge Functio
 - Sin soporte nativo para `OFFLINE` en Realtime (solucionado con cola offline propia)
 
 ### Esquema
-- 13 migraciones SQL en `supabase/migrations/`
+- 16 migraciones SQL en `supabase/migrations/` (12 números únicos: 001–007, 012–016; con duplicados de nomenclatura en 007, 014, 015)
 - Proyecto: `mmzahxtiaurkgtmtehxk`
 - `.env` excluido del repo; variables vía `--dart-define`
 
 ## Referencias
-- `supabase/migrations/` — 13 migraciones
+- `supabase/migrations/` — 16 migraciones
 - `lib/data/<entity>/` — 12 repositorios (abstract, remote, local, mock, provider)
 - `docs/SCALABILITY.md §B` — RLS y políticas
+- Realtime activo en 5/12 repos: `bus_location`, `stop`, `route`, `incident`, `route_feedback` vía `RealtimeChannelManager` compartido
+- Los 7 repos restantes (`route_suggestion`, `feature_request`, `operator`, `schedule`, `user_preferences`, `offline_region`, `notification`) usan snapshot sin suscripción WebSocket

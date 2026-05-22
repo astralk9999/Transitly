@@ -65,6 +65,7 @@ class _ActivateDriverScreenState extends ConsumerState<ActivateDriverScreen> {
       final result = await client
           .rpc('claim_invitation_code', params: {'p_code': code});
 
+      if (!mounted) return;
       if (result != null) {
         ref.read(isDriverModeProvider.notifier).state = true;
         setState(() => _success = l10n.authActivateSuccess);
@@ -72,6 +73,7 @@ class _ActivateDriverScreenState extends ConsumerState<ActivateDriverScreen> {
       }
     } catch (e) {
       AppLogger.warn('ActivateDriver', 'code claim error', e);
+      if (!mounted) return;
       final msg = e.toString().toLowerCase();
       if (msg.contains('not found') || msg.contains('no encontrado')) {
         setState(() => _error = l10n.authActivateCodeNotFound);

@@ -84,6 +84,7 @@ class _PostRecordingEditorState extends State<PostRecordingEditor> {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: c.textMid),
+          tooltip: 'Volver',
           onPressed: () => context.pop(),
         ),
         title: Text('EDITAR GRABACIÓN',
@@ -188,6 +189,7 @@ class _PostRecordingEditorState extends State<PostRecordingEditor> {
                                       IconButton(
                                         icon: Icon(Icons.check,
                                             size: 20, color: c.accent),
+                                        tooltip: 'Confirmar edición',
                                         onPressed: () {
                                           setState(() {
                                             _stops[index] = stop.copyWith(

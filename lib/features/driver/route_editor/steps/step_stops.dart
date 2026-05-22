@@ -156,6 +156,7 @@ class StepStops extends StatelessWidget {
                       style: TransitTypography.bodySecondary(c.textHi)),
                   trailing: IconButton(
                     icon: Icon(Icons.close, size: 16, color: c.textLo),
+                    tooltip: 'Eliminar parada',
                     onPressed: () => controller.removeStopAt(index),
                   ),
                 );

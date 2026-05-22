@@ -141,6 +141,7 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen> {
         if (mounted) setState(() {});
       });
 
+      if (!mounted) return;
       setState(() {
         _isTracking = true;
         _isPaused = false;
@@ -262,6 +263,7 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen> {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: c.textMid),
+          tooltip: 'Volver',
           onPressed: () => context.pop(),
         ),
         title: Text(AppLocalizations.of(context).driverModeLabel,

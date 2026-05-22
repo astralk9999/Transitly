@@ -70,9 +70,11 @@ class _OfficializeModalState extends ConsumerState<_OfficializeModal> {
         'p_justification': justification,
       });
 
+      if (!mounted) return;
       setState(() => _success =
           'Solicitud enviada. Recibirás una notificación cuando se resuelva.');
     } catch (e) {
+      if (!mounted) return;
       setState(() => _error = AppLocalizations.of(context).routeOfficializeError);
     }
   }

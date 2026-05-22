@@ -9,7 +9,7 @@
 ## Pre-flight
 
 - [x] `flutter analyze` — 0 errors, 0 warnings, 6 info (prefer_const_constructors)
-- [x] `flutter test` — 143 tests passing, 0 failing (tras P1/P2, 2026-05-17)
+- [x] `flutter test` — 304 tests passing (1 skipped), 0 failing (2026-05-22)
 - [x] `.env.example` — updated with all required keys (SUPABASE, POSTHOG, SENTRY, MAPTILER, FCM)
 - [ ] google-fonts bundled as local assets (TODO F26 — currently network fetch via `google_fonts`)
 

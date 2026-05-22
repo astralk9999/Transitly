@@ -204,6 +204,7 @@ class _RouteFeedbackContentState extends ConsumerState<_RouteFeedbackContent> {
       }
     } catch (e) {
       AppLogger.warn('RouteFeedbackSheet', 'submit failed', e);
+      if (!mounted) return;
       setState(() => _submitting = false);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

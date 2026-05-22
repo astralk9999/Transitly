@@ -51,11 +51,13 @@ class _InvitationCodesScreenState extends ConsumerState<InvitationCodesScreen> {
           .eq('created_by', session.user.id)
           .order('created_at', ascending: false);
 
+      if (!mounted) return;
       setState(() {
         _codes = rows.cast<Map<String, dynamic>>();
         _loading = false;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _loading = false;
         _error = AppLocalizations.of(context).invitationCodesErrorLoading;
@@ -190,6 +192,7 @@ class _InvitationCodesScreenState extends ConsumerState<InvitationCodesScreen> {
                       IconButton(
                         icon: const Icon(Icons.arrow_back),
                         color: c.textHi,
+                        tooltip: 'Volver',
                         onPressed: () => Navigator.of(context).pop(),
                       ),
                       const SizedBox(width: 8),

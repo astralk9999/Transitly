@@ -305,6 +305,7 @@ class _RegionDownloadSheetState extends ConsumerState<RegionDownloadSheet> {
                 ),
                 IconButton(
                   icon: Icon(Icons.close, size: 20, color: c.textMid),
+                  tooltip: 'Cerrar',
                   onPressed: () => Navigator.of(context).pop(),
                   constraints: const BoxConstraints(
                     minWidth: 48,

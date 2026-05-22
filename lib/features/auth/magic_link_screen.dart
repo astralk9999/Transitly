@@ -46,11 +46,14 @@ class _MagicLinkScreenState extends ConsumerState<MagicLinkScreen> {
 
     try {
       await ref.read(authRepositoryProvider).sendMagicLink(email);
+      if (!mounted) return;
       setState(() => _sent = true);
     } on AuthRepoException catch (e) {
+      if (!mounted) return;
       setState(() => _error = e.message ?? l10n.authMagicLinkError);
     } catch (e) {
       AppLogger.warn('MagicLink', 'magic link error', e);
+      if (!mounted) return;
       setState(() => _error = l10n.authErrorConnection);
     } finally {
       if (mounted) setState(() => _isLoading = false);

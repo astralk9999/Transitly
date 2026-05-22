@@ -63,6 +63,7 @@ class _ManualRouteEditorState extends State<ManualRouteEditor> {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: c.textMid),
+          tooltip: 'Volver',
           onPressed: () {
             if (_step > 0) {
               _goToStep(_step - 1);

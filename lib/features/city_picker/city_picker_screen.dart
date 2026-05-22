@@ -35,6 +35,7 @@ class CityPickerScreen extends ConsumerWidget {
                       IconButton(
                         icon: const Icon(Icons.close),
                         color: c.textHi,
+                        tooltip: 'Cerrar',
                         onPressed: () => Navigator.of(context).pop(),
                       ),
                       const SizedBox(width: 8),

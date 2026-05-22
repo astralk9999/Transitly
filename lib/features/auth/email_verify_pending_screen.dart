@@ -32,11 +32,14 @@ class _EmailVerifyPendingScreenState
 
     try {
       await ref.read(authRepositoryProvider).resendVerification();
+      if (!mounted) return;
       setState(() => _feedback = AppLocalizations.of(context).authResendSuccess);
     } on AuthRepoException catch (e) {
+      if (!mounted) return;
       setState(() => _feedback = e.message ?? AppLocalizations.of(context).authResendError);
     } catch (e) {
       AppLogger.warn('EmailVerify', 'resend verification error', e);
+      if (!mounted) return;
       setState(() => _feedback = AppLocalizations.of(context).authErrorConnection);
     } finally {
       if (mounted) setState(() => _isResending = false);

@@ -39,6 +39,7 @@ class ComponentShowcaseScreen extends ConsumerWidget {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: c.textMid),
+          tooltip: 'Volver',
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text('COMPONENT SHOWCASE',

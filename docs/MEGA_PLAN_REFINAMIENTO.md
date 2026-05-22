@@ -4,7 +4,7 @@
 >
 > **Objetivo declarado:** las 3 cosas a la vez — **TFG defensa impecable** + **app publicable en Play Store / App Store** + **portfolio de ingeniería senior**.
 >
-> **Estado verificado:** `master @ 605a062+` · `flutter analyze` 0 · 175/175 tests · cobertura 24,30 % · APK release 73,5 MB · CI verde (4 jobs incl. Build Android APK).
+> **Estado verificado:** `master @ 605a062+` · `flutter analyze` 0 errors (22 info) · 304 tests (1 skipped) · cobertura 24,30 % · APK release 73,5 MB · CI verde (4 jobs incl. Build Android APK).
 >
 > **Regla transversal:** cada ítem se cierra solo si tras él `flutter analyze` = 0, `flutter test` sigue verde y CI en GitHub queda verde.
 

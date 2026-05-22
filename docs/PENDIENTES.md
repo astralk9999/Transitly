@@ -28,8 +28,8 @@
 
 - **Total mega-plan:** 102/190 ítems cerrados (53,7 %)
 - **`flutter analyze`:** 0 issues ✅
-- **`flutter test`:** 245/245 ✅
-- **Cobertura:** ~26,5 %
+- **`flutter test`:** 304 (1 skipped) ✅
+- **Cobertura:** ~24,8 %
 - **APK release:** 73,5 MB · CI verde (4 jobs: Analyze, Test, Build Web, Build Android APK)
 
 ### Issues F16/F22 resueltos en esta sesión
@@ -283,5 +283,5 @@ Cada entidad necesita el mismo conjunto de 5 archivos: interfaz abstracta + remo
 
 ---
 
-**Última actualización:** 2026-05-22 · Post refinamiento mega-plan (102/190, 53,7 %). **245 tests** pasando, cobertura ~26,5 %, `flutter analyze` 0 issues.
+**Última actualización:** 2026-05-22 · Post refinamiento mega-plan (102/190, 53,7 %). **304 tests** (1 skipped), cobertura ~24,8 %, `flutter analyze` 0 errors (22 info).
 _Snapshot anterior (2026-05-17): 143 tests, cobertura ~23,2 %. F0→F25 completadas (26/28 fases, 92.9 %)._

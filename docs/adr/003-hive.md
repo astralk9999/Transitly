@@ -36,10 +36,10 @@ Descartado. Isar 3.x incompatible con nuestra versión de Dart; Isar 4 en alpha.
 ### Negativas
 - TypeIds append-only: nunca reutilizar aunque el modelo se borre
 - Sin queries: filtrar requiere cargar todo y filtrar en Dart (aceptable con ~600 stops)
-- Sin cifrado integrado (pendiente para datos sensibles: `live_recorder_draft`)
+- Sin cifrado integrado (pendiente para datos sensibles: `live_recorder_draft`, `editor_drafts`)
 
-### Cajas activas (9)
-`routes`, `stops`, `schedules`, `operators`, `userPreferences`, `offlineRegions`, `alerts`, `pendingActions`, `authSessionMeta`
+### Cajas activas (16)
+`routes`, `stops`, `schedules`, `operators`, `userPreferences`, `offlineRegions`, `alerts`, `incidents`, `routeFeedback`, `routeSuggestions`, `featureRequests`, `notifications`, `editorDrafts`, `pendingActions`, `deadLetterActions`, `authSessionMeta`
 
 ### Convención de claves
 `<scope>:<id>` — ej. `op:comujesa:route:L1`, `user:<uid>:pref`

@@ -8,9 +8,9 @@
 > accesibilidad **WCAG 2.2 AA** plena, seguridad, observabilidad,
 > operabilidad.
 > **Estado verificado (2026-05-22):** `master @ 0017289` ·
-> `flutter analyze` **0 issues** ✅ · `flutter test` **281/281** ✅ ·
+> `flutter analyze` **0 issues** ✅ · `flutter test` **292+ / 1 skipped** ✅ ·
 > cobertura **~27 %** · `flutter build apk --release`
-> **OK** (73,5 MB) · **CI verde** (4 jobs) · **13 commits**
+> **OK** (73,5 MB) · **CI verde** (4 jobs) · **17+ commits**
 
 ---
 
@@ -66,7 +66,7 @@ movimientos reales medidos en código.
 | Métrica / Ítem | Inicio (`b0fd7dc`, 2026-05-18) | Hoy (`3a31fb3`, 2026-05-20) | Δ |
 |---|---|---|---|
 | `flutter analyze` | 0 issues | 0 issues | = |
-| `flutter test` | 148/148 | **258/258** | **+110** |
+| `flutter test` | 148/148 | **292/292** | **+144** |
 | Cobertura | 24,74 % | **26,0 %** | +1,3 pp |
 | Mega-plan cerrados | 35 | **102** (53,7 %) | +67 |
 | Documentación SRE | No | **SLOs + 3 runbooks + C4** | ✅ |

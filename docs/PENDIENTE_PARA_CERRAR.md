@@ -1,5 +1,11 @@
 # Transitly — Pendiente para el próximo ciclo (todo, en un sitio)
 
+> **Session in progress (2026-05-22):** mega-plan refinement (190 items,
+> 12 blocks). Current metrics: `flutter test` **292+ / 1 skipped** ✅ ·
+> `flutter analyze` **0 issues** ✅ · **109+ cerrados (57 %+)** ·
+> **17+ commits** this session. See `docs/MEGA_PLAN_REFINAMIENTO.md` and
+> `docs/PROPUESTAS_FUTURAS.md` for live scoreboard and audit details.
+>
 > **Para qué sirve este documento:** lo que falta tras los ciclos cerrados
 > hasta el **2026-05-20 (noche)**, listo para retomar. Es el *playbook*
 > exhaustivo y autocontenido — no hace falta abrir otros docs.

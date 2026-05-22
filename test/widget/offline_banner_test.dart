@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:transitly/data/sync/offline_sync_provider.dart';
 import 'package:transitly/shared/providers/connectivity_provider.dart';

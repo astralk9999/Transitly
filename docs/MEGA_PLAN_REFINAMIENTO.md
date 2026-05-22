@@ -43,7 +43,7 @@
 | **PRO-Rel** — Publicación stores 🆕 | 33 | 14 | 19 | B | Permisos, PrivacyInfo, icons, CI, Gitleaks, versionCode, report, age, consents, iOS build CI |
 | **PRO-QA** — Testing pro 🆕 | 25 | 13 | 12 | C | auth tests, ARB, architecture, a11y, i18n, roundtrip, feature-switch, Semgrep, leak, edge fn, db reset, golden, integration docs |
 | **PRO-A11Y** — A11y AAA + inclusión 🆕 | 23 | 14 | 9 | C | Contrast, lints, daltonism, textScaler, RTL, undo, breadcrumbs, meetsGuideline, switch, report, low data, FocusTraversalGroup, Inflesz audit |
-| **TOTAL** | **190** | **109** | **81** | | 109 cerrados (57,4 %); de los 81 pendientes ~42 son [EXTERNAL], ~20 [L/XL] |
+| **TOTAL** | **190** | **109+** | **81** | | 109+ cerrados (57 %+); de los 81 pendientes ~42 son [EXTERNAL], ~20 [L/XL] |
 
 > Definición de "✅ Hecho": verificado en código + en CI verde + criterio de aceptación cumplido en el documento que lo declaró.
 

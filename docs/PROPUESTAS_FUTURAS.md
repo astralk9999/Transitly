@@ -2,7 +2,7 @@
 
 > Audit date: 2026-05-22 (final scan — multi-agent session close)  
 > **Current metrics:** 281 tests (1 skipped) · 3 errors / 1 warning / 22 info (flutter analyze) · 109/190 mega-plan (57.4%)  
-> **Session:** 17 commits · 42 ARB keys added · 65 docs · 51 test files  
+> **Session:** 17+ commits · 42 ARB keys added · 65 docs · 51 test files  
 > **Regression:** 3 errors in `integration_test/app_test.dart` (package `integration_test` not in `pubspec.yaml`)  
 > Analyzed: `lib/` (excluding `lib/l10n/generated/`, `.freezed.dart`, `.g.dart`)  
 > Severity: P0 (urgent) → P3 (cosmetic)

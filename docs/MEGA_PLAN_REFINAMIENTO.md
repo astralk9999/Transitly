@@ -43,8 +43,8 @@
 | **PRO-Rel** — Publicación stores 🆕 | 33 | 12 | 21 | B | Permisos, PrivacyInfo, icons, CI, Gitleaks, versionCode, report, age verify |
 | **PRO-Ops** — SRE / Operación 🆕 | 34 | 17 | 17 | C | SLOs, runbooks, audit, retention, RTBF, C4, catalog, timing, spans, events, alert matrix, edge fn, DR plan |
 | **PRO-QA** — Testing pro 🆕 | 25 | 12 | 13 | C | auth tests, ARB, architecture, a11y, i18n, roundtrip, feature-switch, Semgrep, leak tracker, edge fn tests, db reset CI |
-| **PRO-A11Y** — A11y AAA + inclusión 🆕 | 23 | 12 | 11 | C | Contrast, lints, daltonism, textScaler, RTL, undo, breadcrumbs, meetsGuideline, switch access, report, low data |
-| **TOTAL** | **190** | **102** | **88** | | 102 cerrados (53,7 %); de los 88 pendientes ~42 son [EXTERNAL] |
+| **PRO-A11Y** — A11y AAA + inclusión 🆕 | 23 | 13 | 10 | C | Contrast, lints, daltonism, textScaler, RTL, undo, breadcrumbs, meetsGuideline, switch, report, low data, FocusTraversalGroup |
+| **TOTAL** | **190** | **103** | **87** | | 103 cerrados (54,2 %); de los 87 pendientes ~42 son [EXTERNAL] |
 
 > Definición de "✅ Hecho": verificado en código + en CI verde + criterio de aceptación cumplido en el documento que lo declaró.
 

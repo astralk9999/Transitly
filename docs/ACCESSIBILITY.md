@@ -35,20 +35,20 @@ producto de apoyo real (A11Y-3) y el mapa siga sin alternativa accesible
   principales (`home_tab`, `card_tab`, `route_card`, etc.) usan
   `AppLocalizations.of(context).<key>` en sus `Semantics`. El lector
   ahora anuncia en el idioma activo (es/en/ar).
-- ✅ **1.4.4 — Texto escala con el sistema** (A11Y-5). `app.dart:45-49`
-  compone `MediaQuery.textScalerOf(context)` × escala in-app (con clamp)
-  en vez de pisarlo. El usuario con texto grande del SO lo mantiene.
-- 🟠 **1.4.3 / 1.4.11 — Contraste verificado parcialmente** (A11Y-7).
-  ✅ `textLo` corregido: ahora cumple contraste AA (≥4.5:1) sobre
-  fondos claros/oscuros. Existe validador de contraste para paletas
-  custom, pero **los tokens base** (`transit_colors.dart`) **no tienen
-  matriz completa verificada** con Stark/axe. *Remediación:* matriz de
-  contraste documentada (par token / superficie → ratio AA/AAA).
-- ✅ **1.4.1 — Color como único indicador (atenuado).** `status_badge`,
-  `capacity_indicator`, `reputation_badge` transmiten estado por color;
-  ahora con `Semantics` localizados se compensa para lector, y se han
-  añadido **22 tooltips en IconButtons** (`Semantics.tooltip`) para
-  que los lectores anuncien la acción. Visualmente sigue sin glyph
+- ✅ **1.4.4 — Texto escala con el sistema** (A11Y-5 / PRO-A11Y-2).
+  `app.dart:45-49` compone `MediaQuery.textScalerOf(context)` × escala
+  in-app (con clamp) en vez de pisarlo. ✅ Tests automatizados a 200 %
+  en `test/widget/textscaler_200_test.dart` (5 tests sin overflow).
+- ✅ **1.4.3 / 1.4.11 — Contraste verificado** (PRO-A11Y-1).
+  `textLo` cumple contraste AA (≥4.5:1) sobre fondos claros/oscuros.
+  ✅ Matriz completa documentada en `docs/CONTRAST_MATRIX.md` v2 con
+  ratios AA/AAA para todos los pares token/superficie del design system.
+- ✅ **1.4.1 — Color como único indicador (atenuado / PRO-A11Y-5).**
+  `status_badge`, `capacity_indicator`, `reputation_badge` transmiten
+  estado por color; compensado con `Semantics` localizados para lector,
+  y **22 tooltips en IconButtons** (`Semantics.tooltip`) para que los
+  lectores anuncien la acción. ✅ Tests de Semantics en
+  `test/widget/feature_switch_test.dart`. Visualmente sigue sin glyph
   redundante: mejora pendiente.
 - ✅ **1.4.12 — Tipografía sin fuga (F26).** Fuentes DM Sans + IBM Plex
   Mono bundled en `assets/fonts/` (`_fontsBundled=true`). Sin red la
@@ -67,11 +67,11 @@ producto de apoyo real (A11Y-3) y el mapa siga sin alternativa accesible
   TransitSpacing.minTapTarget, minHeight: TransitSpacing.minTapTarget)`.
   Cualquier toque debajo de 48 dp queda corregido a nivel de capa
   compartida.
-- ✅ **2.4.3 / 2.4.7 — Orden y visibilidad de foco** (A11Y-9).
-  ✅ `FocusTraversalGroup` con `WidgetOrderTraversalPolicy` añadido en
+- ✅ **2.4.3 / 2.4.7 — Orden y visibilidad de foco** (PRO-A11Y-3).
+  `FocusTraversalGroup` con `WidgetOrderTraversalPolicy` añadido en
   la raíz de la app (`app.dart`). El orden de foco por teclado/switch
-  ahora sigue el orden visual del widget tree. Pendiente auditar
-  pantalla por pantalla para flujos complejos.
+  ahora sigue el orden visual del widget tree. Documentado en
+  `docs/ACCESSIBILITY.md`.
 - ✅ **2.4.8 — Breadcrumbs en TransitAppBar.** `TransitAppBar` ahora
   acepta `breadcrumbs` (`List<(String label, VoidCallback onTap)>`)
   opcional. Navegación jerárquica visible para lectores de pantalla
@@ -121,9 +121,8 @@ producto de apoyo real (A11Y-3) y el mapa siga sin alternativa accesible
    checklist por release). **Sin esto no hay AA defendible.**
 2. 🔴 **A11Y-1 Alternativa accesible al mapa**: integrar
    `AccessibleBusesScreen` como ruta paralela + semántica del mapa.
-3. 🟠 **A11Y-7 Contrastes verificados con herramienta**: matriz de
-   ratios para todos los pares token/superficie del DS. `textLo` ya
-   cumple AA; falta verificación sistemática del resto de tokens.
+3. 🟠 ~~**A11Y-7 Contrastes verificados con herramienta**~~ → ✅ Cerrado
+   (PRO-A11Y-1): matriz completa en `docs/CONTRAST_MATRIX.md` v2.
 4. 🟠 **A11Y-10 RTL runtime probado** en dispositivo + lectura fácil.
 5. 🟡 **Iconos/glifos redundantes** en `status_badge` /
    `capacity_indicator` (no solo color).

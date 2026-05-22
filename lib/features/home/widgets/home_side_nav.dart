@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/theme/transit_colors.dart';
+import '../../../l10n/generated/app_localizations.dart';
 import 'home_tab_item.dart';
 
 /// Custom side navigation for desktop/tablet layouts.
@@ -43,18 +44,18 @@ class HomeSideNav extends StatelessWidget {
             const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: extended
-                  ? Text(
-                      'TRANSITLY',
-                      style: GoogleFonts.ibmPlexMono(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 2,
-                        color: c.accent,
-                      ),
-                    )
-                  : Text(
-                      'T',
+                child: extended
+                    ? Text(
+                        AppLocalizations.of(context).appTitle.toUpperCase(),
+                        style: GoogleFonts.ibmPlexMono(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 2,
+                          color: c.accent,
+                        ),
+                      )
+                    : Text(
+                        AppLocalizations.of(context).appTitle[0].toUpperCase(),
                       style: GoogleFonts.ibmPlexMono(
                         fontSize: 22,
                         fontWeight: FontWeight.w900,

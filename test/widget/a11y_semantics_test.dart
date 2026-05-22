@@ -10,9 +10,7 @@ import 'package:transitly/shared/widgets/transit_chip.dart';
 import '../helpers/pump_app.dart';
 
 void main() {
-  setUpAll(() {
-    TestWidgetsFlutterBinding.ensureInitialized();
-  });
+  setUpAll(TestWidgetsFlutterBinding.ensureInitialized);
 
   group('Semantics coverage (A11Y-3)', () {
     testWidgets('TransitButton has button semantics', (tester) async {

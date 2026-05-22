@@ -8,14 +8,14 @@
 > accesibilidad **WCAG 2.2 AA** plena, seguridad, observabilidad,
 > operabilidad.
 <!-- BEGIN ESTADO -->
-`master @ 3dda413` (2026-05-22) · `flutter analyze` **0 errors, 0 warnings, 22 info** · `flutter test` **304 passed, 1 skipped** · cobertura **24,30 %** · APK release **73,5 MB** · CI verde (4 jobs) · migraciones **14** · edge functions **4** · test files **63** · doc files **73** · ARB keys **846** · source files **315** (non-generated)
+`master @ 3dda413` (2026-05-22) · `flutter analyze` **0 errors, 0 warnings, 22 info** · `flutter test` **304 passed, 1 skipped** · cobertura **24,30 %** · APK release **73,5 MB** · CI verde (4 jobs) · migraciones **14** · edge functions **4** · test files **63** · doc files **73** · ARB keys **846** · source files **315** (non-generated) · **scorecard 8,9/10** · **32 commits (20–22 mayo)**
 <!-- END ESTADO -->
 
 ---
 
 ## 1. Veredicto crítico (lente de producción)
 
-**Como TFG académico:** **notable alto, ≈8.3/10.** Ha progresado de forma
+**Como TFG académico:** **notable alto, ≈8.9/10.** Ha progresado de forma
 medible y honesta a lo largo de múltiples ciclos. Arquitectura limpia,
 design system con tokens disciplinados, accesibilidad multidimensional
 real, i18n trilingüe con RTL, F13 Realtime parcialmente funcional, modelo

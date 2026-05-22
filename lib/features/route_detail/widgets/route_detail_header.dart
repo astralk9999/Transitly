@@ -74,7 +74,7 @@ class RouteDetailHeader extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'COMUJESA',
+                    route.operatorId.toUpperCase(),
                     style: TransitTypography.subheading(c.textMid),
                   ),
                 ],

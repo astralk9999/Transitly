@@ -100,7 +100,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                 header: true,
                 label: AppLocalizations.of(context).appTitle,
                 child: Text(
-                  'TRANSITLY',
+                  AppLocalizations.of(context).appTitle.toUpperCase(),
                   style: GoogleFonts.ibmPlexMono(
                     fontSize: 20,
                     fontWeight: FontWeight.w800,
@@ -111,7 +111,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
               ),
               const SizedBox(height: 4),
               Tooltip(
-                message: 'Cambiar ciudad',
+                message: AppLocalizations.of(context).homeChangeCityTooltip,
                 child: GestureDetector(
                   onTap: () => context.push('/city-picker'),
                   child: Row(
@@ -119,7 +119,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                     children: [
                       Text(
                         ref.watch(activeOperatorProvider)?.name ??
-                            'Jerez de la Frontera',
+                            AppLocalizations.of(context).homeDefaultCity,
                         style: GoogleFonts.dmSans(
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
@@ -140,7 +140,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
               if (habitualRoute != null) const SizedBox(height: 28),
 
               // ── 2) PARADAS CERCANAS ──
-              _sectionTitle(c, 'PARADAS CERCA DE TI'),
+              _sectionTitle(c, AppLocalizations.of(context).homeSectionNearbyStops),
               const SizedBox(height: 10),
               StaggerList(
                 children: nearbyStops
@@ -151,7 +151,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
               const SizedBox(height: 28),
 
               // ── 3) MIS LINEAS ──
-              _sectionTitle(c, 'MIS LINEAS'),
+              _sectionTitle(c, AppLocalizations.of(context).homeSectionMyLines),
               const SizedBox(height: 10),
               StaggerList(
                 children: favorites.map((fav) {
@@ -181,7 +181,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
               // ── 4) AVISOS ──
               if (favAlerts.isNotEmpty) ...[
                 const SizedBox(height: 28),
-                _sectionTitle(c, 'AVISOS'),
+                _sectionTitle(c, AppLocalizations.of(context).homeSectionAlerts),
                 const SizedBox(height: 10),
                 StaggerList(
                   children: favAlerts
@@ -192,7 +192,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
 
               // ── 5) ACCESIBLE BUSES LINK ──
               const SizedBox(height: 28),
-              _sectionTitle(c, 'ACCESIBILIDAD'),
+              _sectionTitle(c, AppLocalizations.of(context).profileSectionAccessibility),
               const SizedBox(height: 10),
               Semantics(
                 label: AppLocalizations.of(context).accessibleBusesLinkLabel,
@@ -250,7 +250,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'TU PROXIMO BUS',
+              AppLocalizations.of(context).homeSectionNextBus,
               style: GoogleFonts.ibmPlexMono(
                 fontSize: 11,
                 fontWeight: FontWeight.w700,
@@ -285,7 +285,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                 ),
                 const Spacer(),
                 TransitButton(
-                  label: 'SEGUIR',
+                  label: AppLocalizations.of(context).actionFollow,
                   isSmall: true,
                   onPressed: () => context.push('/route/${route.id}'),
                 ),

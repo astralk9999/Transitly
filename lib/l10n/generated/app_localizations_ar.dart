@@ -1967,4 +1967,69 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get reputationCurrentRank => 'الحالي';
+
+  @override
+  String get appTagline => 'وسيلة نقلتك العامة';
+
+  @override
+  String get homeSectionNearbyStops => 'المحطات القريبة منك';
+
+  @override
+  String get homeSectionMyLines => 'خطوطي';
+
+  @override
+  String get homeSectionAlerts => 'تنبيهات';
+
+  @override
+  String get homeSectionNextBus => 'حافلتك القادمة';
+
+  @override
+  String get homeChangeCityTooltip => 'تغيير المدينة';
+
+  @override
+  String get homeDefaultCity => 'خيريز دي لا فرونتيرا';
+
+  @override
+  String get accessibilityThemeSystemSubtitle => 'اتبع إعدادات الجهاز';
+
+  @override
+  String get accessibilityThemeLightSubtitle => 'خلفية فاتحة، تباين عالي نهاري';
+
+  @override
+  String get accessibilityThemeDarkSubtitle =>
+      'خلفية داكنة، استهلاك أقل لشاشات OLED';
+
+  @override
+  String get accessibilityLanguageSystemSubtitle => 'اتبع لغة الجهاز';
+
+  @override
+  String get accessibilityLanguageEsSubtitle => 'فرض الإسبانية';
+
+  @override
+  String get accessibilityLanguageEnSubtitle => 'فرض الإنجليزية';
+
+  @override
+  String get accessibilitySystemPrefAnimations => 'الحركات';
+
+  @override
+  String get accessibilitySystemPrefTextSize => 'حجم النص';
+
+  @override
+  String get accessibilitySystemPrefBoldText => 'نص عريض';
+
+  @override
+  String get accessibilitySystemPrefActivated => 'مفعل';
+
+  @override
+  String get accessibilitySystemPrefDeactivated => 'معطل';
+
+  @override
+  String get accessibilitySystemPrefReduced => 'مخفضة';
+
+  @override
+  String get accessibilitySystemPrefEnabled => 'مفعلة';
+
+  @override
+  String get accessibilitySystemPrefFootnote =>
+      'تتم قراءة هذه الإعدادات من نظام التشغيل. قم بتغييرها من إعدادات الجهاز لتستجيب التطبيق.';
 }

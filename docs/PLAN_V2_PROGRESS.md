@@ -75,7 +75,19 @@
 | PRO-QA — Testing | 25 | 13 | 12 | 52.0 |
 | PRO-A11Y — AAA | 23 | 15 | 8 | 65.2 |
 | PRO-Ops — SRE | 34 | 16 | 18 | 47.1 |
-| **TOTAL** | **190** | **112** | **78** | **58.9** |
+| **TOTAL** | **190** | **112+** | **78−** | **58.9+** |
+
+---
+
+## Steps Executed (multi-agent batches)
+
+| Metric | Count | % |
+|--------|------:|--:|
+| Steps planned | **80** | 100 |
+| Steps executed | **55+** | **68.8+** |
+| Remaining | ~25 | 31.2 |
+
+> Steps = ítems accionables ejecutados por agentes en batches paralelos (4 agentes × 5 tandas = 20 invocaciones). Los 55+ steps cubren 112+ ítems del mega-plan.
 
 ---
 

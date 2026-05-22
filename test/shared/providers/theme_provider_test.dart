@@ -8,9 +8,7 @@ import 'package:transitly/shared/providers/theme_notifier.dart';
 import '../../data/shared_test_repositories.dart';
 
 void main() {
-  setUpAll(() {
-    TestWidgetsFlutterBinding.ensureInitialized();
-  });
+  setUpAll(TestWidgetsFlutterBinding.ensureInitialized);
 
   test('ThemeNotifier defaults to dark default palette', () {
     final notifier = ThemeNotifier(prefsRepo: mockUserPreferencesRepo());
@@ -96,4 +94,3 @@ void main() {
     expect(defaults.map((p) => p.isDark).toSet(), {true, false});
   });
 }
-

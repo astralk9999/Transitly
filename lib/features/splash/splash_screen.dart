@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/theme/transit_animations.dart';
 import '../../core/theme/transit_colors.dart';
+import '../../l10n/generated/app_localizations.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -133,7 +134,7 @@ class _SplashScreenState extends State<SplashScreen>
                 child: SlideTransition(
                   position: _titleSlide,
                   child: Text(
-                    'TRANSITLY',
+                      AppLocalizations.of(context).appTitle.toUpperCase(),
                     style: GoogleFonts.ibmPlexMono(
                       fontSize: 36,
                       fontWeight: FontWeight.w900,
@@ -147,7 +148,7 @@ class _SplashScreenState extends State<SplashScreen>
               FadeTransition(
                 opacity: _subtitleFade,
                 child: Text(
-                  'TU TRANSPORTE PÚBLICO',
+                      AppLocalizations.of(context).appTagline,
                   style: GoogleFonts.dmSans(
                     fontSize: 12,
                     fontWeight: FontWeight.w400,

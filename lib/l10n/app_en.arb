@@ -735,5 +735,28 @@
   "myContributionsLocalDraft": "Local draft",
   "myContributionsNoDescription": "No description",
 
-  "reputationCurrentRank": "Current"
+  "reputationCurrentRank": "Current",
+
+  "appTagline": "YOUR PUBLIC TRANSPORT",
+  "homeSectionNearbyStops": "STOPS NEAR YOU",
+  "homeSectionMyLines": "MY LINES",
+  "homeSectionAlerts": "ALERTS",
+  "homeSectionNextBus": "YOUR NEXT BUS",
+  "homeChangeCityTooltip": "Change city",
+  "homeDefaultCity": "Jerez de la Frontera",
+
+  "accessibilityThemeSystemSubtitle": "Follow device settings",
+  "accessibilityThemeLightSubtitle": "Light background, daytime high contrast",
+  "accessibilityThemeDarkSubtitle": "Dark background, lower OLED consumption",
+  "accessibilityLanguageSystemSubtitle": "Follow device language",
+  "accessibilityLanguageEsSubtitle": "Force Spanish",
+  "accessibilityLanguageEnSubtitle": "Force English",
+  "accessibilitySystemPrefAnimations": "Animations",
+  "accessibilitySystemPrefTextSize": "Text size",
+  "accessibilitySystemPrefBoldText": "Bold text",
+  "accessibilitySystemPrefActivated": "On",
+  "accessibilitySystemPrefDeactivated": "Off",
+  "accessibilitySystemPrefReduced": "Reduced",
+  "accessibilitySystemPrefEnabled": "Enabled",
+  "accessibilitySystemPrefFootnote": "These settings are read from the operating system. Change them in your device settings for the app to respond."
 }

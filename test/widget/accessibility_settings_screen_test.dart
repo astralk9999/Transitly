@@ -41,7 +41,7 @@ void main() {
 
       expect(find.text('IDIOMA'), findsOneWidget);
       expect(find.text('Español'), findsOneWidget);
-      expect(find.text('English'), findsOneWidget);
+      expect(find.text('Inglés'), findsOneWidget);
       await unmount(tester);
     });
 
@@ -60,6 +60,7 @@ void main() {
           child: const MediaQuery(
             data: MediaQueryData(disableAnimations: true),
             child: MaterialApp(
+              locale: Locale('es'),
               localizationsDelegates: AppLocalizations.localizationsDelegates,
               supportedLocales: AppLocalizations.supportedLocales,
               home: AccessibilitySettingsScreen(),

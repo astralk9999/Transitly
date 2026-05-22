@@ -44,7 +44,7 @@
 | **PRO-QA** — Testing pro 🆕 | 25 | 13 | 12 | C | auth tests, ARB parity smoke, architecture layer, a11y programmatic, golden tests, roundtrip |
 | **PRO-A11Y** — A11y AAA + inclusión 🆕 | 23 | 15 | 8 | C | Contrast matrix, textScaler 200%, FocusTraversalGroup, RTL undo, switch access, daltonism, Inflesz audit |
 | **PRO-Ops** — SRE / Operación 🆕 | 34 | 16 | 18 | C | SLO catalog, 3 runbooks, Sentry spans, PostHog events, alert matrix, C4 diagrams, service catalog |
-| **TOTAL** | **190** | **112** | **78** | | 112 cerrados (58,9 %); de los 78 pendientes ~42 son [EXTERNAL], ~20 [L/XL] |
+| **TOTAL** | **190** | **112+** | **78−** | | 112+ cerrados (58,9+ %); de los ~78 pendientes ~42 son [EXTERNAL], ~20 [L/XL] |
 
 > Definición de "✅ Hecho": verificado en código + en CI verde + criterio de aceptación cumplido en el documento que lo declaró.
 
@@ -395,7 +395,7 @@ supabase test db
 ## 9. Resumen ejecutivo
 
 - **Total ítems:** 190 (57 originales + 133 nuevos de auditoría multi-agente).
-- **Estado actual (F6.12 re-audit):** 112 cerrados (58,9 %). Plan v2: 28/28 fases completadas (100 %). Bloque A (TFG defensa): 20/22 cerrados (90,9 %).
+- **Estado actual (F6.12 final re-audit):** 112+ cerrados (58,9+ %). Plan v2: 28/28 fases completadas (100 %). Bloque A (TFG defensa): 20/22 cerrados (90,9 %). Scorecard TFG: 8,9/10. 32 commits totales (20–22 mayo).
 - **Hito recomendado siguiente:** **Cerrar bloqueadores externos** (B1 keystore, B2 TalkBack/VoiceOver) + **P2-4 tests `remote/`** (palanca de cobertura 24,30 % → 30+ %).
 - **Cuellos de botella estructurales:**
   - **Cobertura 24,30 %:** la palanca es PRO-QA-03 + PRO-QA-06 + P2-4 (tests `remote/`).

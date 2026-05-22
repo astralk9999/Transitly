@@ -263,5 +263,28 @@
   "myContributionsLocalDraft": "مسودة محلية",
   "myContributionsNoDescription": "بدون وصف",
 
-  "reputationCurrentRank": "الحالي"
+  "reputationCurrentRank": "الحالي",
+
+  "appTagline": "وسيلة نقلتك العامة",
+  "homeSectionNearbyStops": "المحطات القريبة منك",
+  "homeSectionMyLines": "خطوطي",
+  "homeSectionAlerts": "تنبيهات",
+  "homeSectionNextBus": "حافلتك القادمة",
+  "homeChangeCityTooltip": "تغيير المدينة",
+  "homeDefaultCity": "خيريز دي لا فرونتيرا",
+
+  "accessibilityThemeSystemSubtitle": "اتبع إعدادات الجهاز",
+  "accessibilityThemeLightSubtitle": "خلفية فاتحة، تباين عالي نهاري",
+  "accessibilityThemeDarkSubtitle": "خلفية داكنة، استهلاك أقل لشاشات OLED",
+  "accessibilityLanguageSystemSubtitle": "اتبع لغة الجهاز",
+  "accessibilityLanguageEsSubtitle": "فرض الإسبانية",
+  "accessibilityLanguageEnSubtitle": "فرض الإنجليزية",
+  "accessibilitySystemPrefAnimations": "الحركات",
+  "accessibilitySystemPrefTextSize": "حجم النص",
+  "accessibilitySystemPrefBoldText": "نص عريض",
+  "accessibilitySystemPrefActivated": "مفعل",
+  "accessibilitySystemPrefDeactivated": "معطل",
+  "accessibilitySystemPrefReduced": "مخفضة",
+  "accessibilitySystemPrefEnabled": "مفعلة",
+  "accessibilitySystemPrefFootnote": "تتم قراءة هذه الإعدادات من نظام التشغيل. قم بتغييرها من إعدادات الجهاز لتستجيب التطبيق."
 }

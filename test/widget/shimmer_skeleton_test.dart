@@ -20,7 +20,7 @@ void main() {
     });
     testWidgets('renders route card skeleton', (tester) async {
       await pumpApp(tester, child: Builder(
-        builder: (context) => ShimmerSkeleton.routeCard(context),
+        builder: ShimmerSkeleton.routeCard,
       ));
       await tester.pump();
       expect(find.byType(Shimmer), findsOneWidget);

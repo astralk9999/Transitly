@@ -1964,4 +1964,70 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reputationCurrentRank => 'Current';
+
+  @override
+  String get appTagline => 'YOUR PUBLIC TRANSPORT';
+
+  @override
+  String get homeSectionNearbyStops => 'STOPS NEAR YOU';
+
+  @override
+  String get homeSectionMyLines => 'MY LINES';
+
+  @override
+  String get homeSectionAlerts => 'ALERTS';
+
+  @override
+  String get homeSectionNextBus => 'YOUR NEXT BUS';
+
+  @override
+  String get homeChangeCityTooltip => 'Change city';
+
+  @override
+  String get homeDefaultCity => 'Jerez de la Frontera';
+
+  @override
+  String get accessibilityThemeSystemSubtitle => 'Follow device settings';
+
+  @override
+  String get accessibilityThemeLightSubtitle =>
+      'Light background, daytime high contrast';
+
+  @override
+  String get accessibilityThemeDarkSubtitle =>
+      'Dark background, lower OLED consumption';
+
+  @override
+  String get accessibilityLanguageSystemSubtitle => 'Follow device language';
+
+  @override
+  String get accessibilityLanguageEsSubtitle => 'Force Spanish';
+
+  @override
+  String get accessibilityLanguageEnSubtitle => 'Force English';
+
+  @override
+  String get accessibilitySystemPrefAnimations => 'Animations';
+
+  @override
+  String get accessibilitySystemPrefTextSize => 'Text size';
+
+  @override
+  String get accessibilitySystemPrefBoldText => 'Bold text';
+
+  @override
+  String get accessibilitySystemPrefActivated => 'On';
+
+  @override
+  String get accessibilitySystemPrefDeactivated => 'Off';
+
+  @override
+  String get accessibilitySystemPrefReduced => 'Reduced';
+
+  @override
+  String get accessibilitySystemPrefEnabled => 'Enabled';
+
+  @override
+  String get accessibilitySystemPrefFootnote =>
+      'These settings are read from the operating system. Change them in your device settings for the app to respond.';
 }

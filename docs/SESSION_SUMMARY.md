@@ -1,6 +1,6 @@
 # Transitly — Resumen de sesión (20–22 mayo 2026)
 
-> 30 commits · 12 agentes · 7 fases Plan v2 (F0→F6) · 3 días de trabajo.
+> 32 commits · 12 agentes · 7 fases Plan v2 (F0→F6) · 3 días de trabajo.
 
 ---
 
@@ -16,6 +16,7 @@
 | **F5** — Performance + Escalabilidad | 1 | autoDispose sweep (16 providers), repository factory helper, `_current_` literal fixes | 1 (perf agent) |
 | **F6** — Polish + Docs | 2 | dartdoc GitHub Pages, INFLESZ legibility checker, CI docs workflow | 1 (docs agent) |
 | **3× Parallel Batch** | 3 | F1+F2+F5: manual técnico, Deno tests, secure storage, Hive cipher, Supabase cleanup · F2-F6: MapController dispose, LRU FMTC, Sentry edge docs, home widgets, SLO status, screen decomposition · F4-F6: contrast_check, PostHog wiring, SAST+perf budget, final re-audit | **12** (4 × 3 batches) |
+| **5th Agent Batch** | 1 | Scorecard final: docs sync (Maestro + Mega-plan + Plan v2 + Session), 32 commits, 304 tests, scorecard 8.9, mega-plan 112+/190, steps 55+/80 | **4** (final batch) |
 | **Tests** (paralelo) | 5 | +63 tests: EmptyState, ErrorCard, ShimmerSkeleton, PendingAction, OperatorRepository, TransitInput, TransitCheckbox, ReputationBadge, OfflineBanner, network interceptor, ContextualHelpButton, design tokens, accessibility matrices, auth models, utils, Pressable, GlassCard, TransitChip, StatusBadge, TransitButton | 2 (Developer agents) |
 | **i18n** (continuo) | 8 | 200+ strings ES→ARB migrados en 6 tandas (wizard, dashboard, map, recorder, tabs, timeline, action labels, section headers). ARB keys: ~846 total. | — (orquestador) |
 | **Mega-plan** | 3 | 190-item refinement superset creado, 112 cerrados (58,9 %), docs TFG reescritos (8 documentos) | 5 (code-review skill) |
@@ -80,4 +81,4 @@ CI GitHub         # 4/4 jobs verdes (Analyze, Test, Build Web, Build Android APK
 
 ---
 
-**Commits:** `cbbc5f6..ed182eb` (30 commits, 20–22 mayo 2026)
+**Commits:** `cbbc5f6..HEAD` (32 commits, 20–22 mayo 2026)

@@ -3698,6 +3698,132 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Actual'**
   String get reputationCurrentRank;
+
+  /// Splash screen tagline below app title
+  ///
+  /// In es, this message translates to:
+  /// **'TU TRANSPORTE PÚBLICO'**
+  String get appTagline;
+
+  /// Home tab section: nearby stops
+  ///
+  /// In es, this message translates to:
+  /// **'PARADAS CERCA DE TI'**
+  String get homeSectionNearbyStops;
+
+  /// Home tab section: my lines (favorites)
+  ///
+  /// In es, this message translates to:
+  /// **'MIS LÍNEAS'**
+  String get homeSectionMyLines;
+
+  /// Home tab section: alerts
+  ///
+  /// In es, this message translates to:
+  /// **'AVISOS'**
+  String get homeSectionAlerts;
+
+  /// Home tab habitual trip header
+  ///
+  /// In es, this message translates to:
+  /// **'TU PRÓXIMO BUS'**
+  String get homeSectionNextBus;
+
+  /// Home tab city picker tooltip
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiar ciudad'**
+  String get homeChangeCityTooltip;
+
+  /// Home tab default city name fallback
+  ///
+  /// In es, this message translates to:
+  /// **'Jerez de la Frontera'**
+  String get homeDefaultCity;
+
+  /// No description provided for @accessibilityThemeSystemSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Sigue la configuración del dispositivo'**
+  String get accessibilityThemeSystemSubtitle;
+
+  /// No description provided for @accessibilityThemeLightSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Fondo luminoso, alto contraste diurno'**
+  String get accessibilityThemeLightSubtitle;
+
+  /// No description provided for @accessibilityThemeDarkSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Fondo oscuro, menor consumo en OLED'**
+  String get accessibilityThemeDarkSubtitle;
+
+  /// No description provided for @accessibilityLanguageSystemSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Sigue el idioma del dispositivo'**
+  String get accessibilityLanguageSystemSubtitle;
+
+  /// No description provided for @accessibilityLanguageEsSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Forzar idioma en español'**
+  String get accessibilityLanguageEsSubtitle;
+
+  /// No description provided for @accessibilityLanguageEnSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Force English language'**
+  String get accessibilityLanguageEnSubtitle;
+
+  /// No description provided for @accessibilitySystemPrefAnimations.
+  ///
+  /// In es, this message translates to:
+  /// **'Animaciones'**
+  String get accessibilitySystemPrefAnimations;
+
+  /// No description provided for @accessibilitySystemPrefTextSize.
+  ///
+  /// In es, this message translates to:
+  /// **'Tamaño de texto'**
+  String get accessibilitySystemPrefTextSize;
+
+  /// No description provided for @accessibilitySystemPrefBoldText.
+  ///
+  /// In es, this message translates to:
+  /// **'Texto en negrita'**
+  String get accessibilitySystemPrefBoldText;
+
+  /// No description provided for @accessibilitySystemPrefActivated.
+  ///
+  /// In es, this message translates to:
+  /// **'Activado'**
+  String get accessibilitySystemPrefActivated;
+
+  /// No description provided for @accessibilitySystemPrefDeactivated.
+  ///
+  /// In es, this message translates to:
+  /// **'Desactivado'**
+  String get accessibilitySystemPrefDeactivated;
+
+  /// No description provided for @accessibilitySystemPrefReduced.
+  ///
+  /// In es, this message translates to:
+  /// **'Reducidas'**
+  String get accessibilitySystemPrefReduced;
+
+  /// No description provided for @accessibilitySystemPrefEnabled.
+  ///
+  /// In es, this message translates to:
+  /// **'Habilitadas'**
+  String get accessibilitySystemPrefEnabled;
+
+  /// Accessibility system preferences footnote
+  ///
+  /// In es, this message translates to:
+  /// **'Estos ajustes se leen del sistema operativo. Cámbialos desde los ajustes del dispositivo para que la app responda.'**
+  String get accessibilitySystemPrefFootnote;
 }
 
 class _AppLocalizationsDelegate

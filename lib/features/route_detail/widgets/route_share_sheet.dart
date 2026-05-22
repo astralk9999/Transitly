@@ -228,7 +228,7 @@ class _ShareSheetContentState extends ConsumerState<_ShareSheetContent> {
                 : l10n.routeShareGenerateLink.toUpperCase(),
             isPrimary: false,
             isSmall: true,
-            onPressed: () => _generateLink(),
+            onPressed: _generateLink,
           ),
           const SizedBox(height: 16),
         ],

@@ -62,7 +62,7 @@ final busLocationRepositoryProvider =
     remote: remote,
   );
 
-  ref.onDispose(() => remote.dispose());
+  ref.onDispose(remote.dispose);
 
   return swr;
 });

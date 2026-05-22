@@ -292,7 +292,7 @@ final mockRealtimeServiceProvider = Provider<MockRealtimeService>((ref) {
   final mockData = ref.watch(mockDataServiceProvider);
   final service = MockRealtimeService(mockData);
   service.init();
-  ref.onDispose(() => service.dispose());
+  ref.onDispose(service.dispose);
   return service;
 });
 

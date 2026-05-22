@@ -462,7 +462,7 @@ final themeNotifierProvider = ChangeNotifierProvider<ThemeNotifier>((ref) {
   final repo = ref.watch(userPreferencesRepositoryProvider);
   final notifier = ThemeNotifier(prefsRepo: repo);
 
-  ref.onDispose(() => notifier.dispose());
+  ref.onDispose(notifier.dispose);
 
   return notifier;
 });

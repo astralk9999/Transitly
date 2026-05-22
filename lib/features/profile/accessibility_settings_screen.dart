@@ -34,10 +34,10 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: c.textMid),
-          tooltip: 'Volver',
+          tooltip: AppLocalizations.of(context).actionBack,
           onPressed: () => context.pop(),
         ),
-        title: Text('ACCESIBILIDAD',
+        title: Text(AppLocalizations.of(context).accessibilityTitle,
             style: TransitTypography.sectionTitle(c.textHi)),
         centerTitle: false,
       ),
@@ -103,7 +103,7 @@ class _ThemeSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           GradientText(
-            'TEMA',
+            AppLocalizations.of(context).accessibilityThemeSection,
             style: GoogleFonts.ibmPlexMono(
               fontSize: 11,
               fontWeight: FontWeight.w700,
@@ -113,22 +113,22 @@ class _ThemeSection extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           _ThemeOption(
-            label: 'Sistema',
-            subtitle: 'Sigue la configuración del dispositivo',
+            label: AppLocalizations.of(context).accessibilityThemeSystem,
+            subtitle: AppLocalizations.of(context).accessibilityThemeSystemSubtitle,
             selected: mode == ThemeMode.system,
             c: c,
             onTap: () => onChanged(ThemeMode.system),
           ),
           _ThemeOption(
-            label: 'Claro',
-            subtitle: 'Fondo luminoso, alto contraste diurno',
+            label: AppLocalizations.of(context).accessibilityThemeLight,
+            subtitle: AppLocalizations.of(context).accessibilityThemeLightSubtitle,
             selected: mode == ThemeMode.light,
             c: c,
             onTap: () => onChanged(ThemeMode.light),
           ),
           _ThemeOption(
-            label: 'Oscuro',
-            subtitle: 'Fondo oscuro, menor consumo en OLED',
+            label: AppLocalizations.of(context).accessibilityThemeDark,
+            subtitle: AppLocalizations.of(context).accessibilityThemeDarkSubtitle,
             selected: mode == ThemeMode.dark,
             c: c,
             onTap: () => onChanged(ThemeMode.dark),
@@ -143,9 +143,9 @@ class _ThemeSection extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Alto contraste',
+                      Text(AppLocalizations.of(context).accessibilityHighContrast,
                           style: TransitTypography.bodyPrimary(c.textHi)),
-                      Text('Bordes más gruesos y mayor contraste',
+                      Text(AppLocalizations.of(context).appearanceHighContrastSubtitle,
                           style: TransitTypography.bodySmall(c.textLo)),
                     ],
                   ),
@@ -236,7 +236,7 @@ class _SystemPreferencesSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           GradientText(
-            'PREFERENCIAS DEL SISTEMA',
+            AppLocalizations.of(context).accessibilitySystemPreferencesSection,
             style: GoogleFonts.ibmPlexMono(
               fontSize: 11,
               fontWeight: FontWeight.w700,
@@ -245,30 +245,35 @@ class _SystemPreferencesSection extends StatelessWidget {
             gradient: c.gradientAccent,
           ),
           const SizedBox(height: 12),
-          _PrefRow(
-            label: 'Animaciones',
-            value: mq.disableAnimations ? 'Reducidas' : 'Habilitadas',
+            _PrefRow(
+            label: AppLocalizations.of(context).accessibilitySystemPrefAnimations,
+            value: mq.disableAnimations
+                ? AppLocalizations.of(context).accessibilitySystemPrefReduced
+                : AppLocalizations.of(context).accessibilitySystemPrefEnabled,
             c: c,
           ),
           _PrefRow(
-            label: 'Tamaño de texto',
+            label: AppLocalizations.of(context).accessibilitySystemPrefTextSize,
             value: '${(mq.textScaler.scale(1).toDouble() * 100).round()}%',
             c: c,
           ),
           _PrefRow(
-            label: 'Alto contraste',
-            value: mq.highContrast ? 'Activado' : 'Desactivado',
+            label: AppLocalizations.of(context).accessibilityHighContrast,
+            value: mq.highContrast
+                ? AppLocalizations.of(context).accessibilitySystemPrefActivated
+                : AppLocalizations.of(context).accessibilitySystemPrefDeactivated,
             c: c,
           ),
           _PrefRow(
-            label: 'Texto en negrita',
-            value: mq.boldText ? 'Activado' : 'Desactivado',
+            label: AppLocalizations.of(context).accessibilitySystemPrefBoldText,
+            value: mq.boldText
+                ? AppLocalizations.of(context).accessibilitySystemPrefActivated
+                : AppLocalizations.of(context).accessibilitySystemPrefDeactivated,
             c: c,
           ),
           const SizedBox(height: 8),
           Text(
-            'Estos ajustes se leen del sistema operativo. Cámbialos desde los '
-            'ajustes del dispositivo para que la app responda.',
+            AppLocalizations.of(context).accessibilitySystemPrefFootnote,
             style: TransitTypography.bodySmall(c.textLo),
           ),
         ],
@@ -330,7 +335,7 @@ class _LanguageSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           GradientText(
-            'IDIOMA',
+            AppLocalizations.of(context).accessibilityLanguageSection,
             style: GoogleFonts.ibmPlexMono(
               fontSize: 11,
               fontWeight: FontWeight.w700,
@@ -340,22 +345,22 @@ class _LanguageSection extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           _ThemeOption(
-            label: 'Sistema',
-            subtitle: 'Sigue el idioma del dispositivo',
+            label: AppLocalizations.of(context).accessibilityThemeSystem,
+            subtitle: AppLocalizations.of(context).accessibilityLanguageSystemSubtitle,
             selected: locale == null,
             c: c,
             onTap: () => onChanged(null),
           ),
           _ThemeOption(
-            label: 'Español',
-            subtitle: 'Forzar idioma en español',
+            label: AppLocalizations.of(context).accessibilityLanguageEs,
+            subtitle: AppLocalizations.of(context).accessibilityLanguageEsSubtitle,
             selected: locale?.languageCode == 'es',
             c: c,
             onTap: () => onChanged(const Locale('es')),
           ),
           _ThemeOption(
-            label: 'English',
-            subtitle: 'Force English language',
+            label: AppLocalizations.of(context).accessibilityLanguageEn,
+            subtitle: AppLocalizations.of(context).accessibilityLanguageEnSubtitle,
             selected: locale?.languageCode == 'en',
             c: c,
             onTap: () => onChanged(const Locale('en')),

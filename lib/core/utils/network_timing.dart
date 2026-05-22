@@ -41,7 +41,7 @@ extension TimedSupabaseQuery on PostgrestQueryBuilder<dynamic> {
   Future<List<Map<String, dynamic>>> timedSelect(String label) {
     return NetworkTimingInterceptor.measure(
       '$label.select',
-      () => select(),
+      select,
     );
   }
 }

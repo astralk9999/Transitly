@@ -1068,5 +1068,52 @@
   "myContributionsLocalDraft": "Borrador local",
   "myContributionsNoDescription": "Sin descripción",
 
-  "reputationCurrentRank": "Actual"
+  "reputationCurrentRank": "Actual",
+
+  "appTagline": "TU TRANSPORTE PÚBLICO",
+  "@appTagline": {
+    "description": "Splash screen tagline below app title"
+  },
+  "homeSectionNearbyStops": "PARADAS CERCA DE TI",
+  "@homeSectionNearbyStops": {
+    "description": "Home tab section: nearby stops"
+  },
+  "homeSectionMyLines": "MIS LÍNEAS",
+  "@homeSectionMyLines": {
+    "description": "Home tab section: my lines (favorites)"
+  },
+  "homeSectionAlerts": "AVISOS",
+  "@homeSectionAlerts": {
+    "description": "Home tab section: alerts"
+  },
+  "homeSectionNextBus": "TU PRÓXIMO BUS",
+  "@homeSectionNextBus": {
+    "description": "Home tab habitual trip header"
+  },
+  "homeChangeCityTooltip": "Cambiar ciudad",
+  "@homeChangeCityTooltip": {
+    "description": "Home tab city picker tooltip"
+  },
+  "homeDefaultCity": "Jerez de la Frontera",
+  "@homeDefaultCity": {
+    "description": "Home tab default city name fallback"
+  },
+
+  "accessibilityThemeSystemSubtitle": "Sigue la configuración del dispositivo",
+  "accessibilityThemeLightSubtitle": "Fondo luminoso, alto contraste diurno",
+  "accessibilityThemeDarkSubtitle": "Fondo oscuro, menor consumo en OLED",
+  "accessibilityLanguageSystemSubtitle": "Sigue el idioma del dispositivo",
+  "accessibilityLanguageEsSubtitle": "Forzar idioma en español",
+  "accessibilityLanguageEnSubtitle": "Force English language",
+  "accessibilitySystemPrefAnimations": "Animaciones",
+  "accessibilitySystemPrefTextSize": "Tamaño de texto",
+  "accessibilitySystemPrefBoldText": "Texto en negrita",
+  "accessibilitySystemPrefActivated": "Activado",
+  "accessibilitySystemPrefDeactivated": "Desactivado",
+  "accessibilitySystemPrefReduced": "Reducidas",
+  "accessibilitySystemPrefEnabled": "Habilitadas",
+  "accessibilitySystemPrefFootnote": "Estos ajustes se leen del sistema operativo. Cámbialos desde los ajustes del dispositivo para que la app responda.",
+  "@accessibilitySystemPrefFootnote": {
+    "description": "Accessibility system preferences footnote"
+  }
 }

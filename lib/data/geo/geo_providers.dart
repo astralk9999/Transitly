@@ -105,4 +105,3 @@ final geoBootstrapProvider = FutureProvider<void>((ref) async {
   // Precargar operadores cercanos.
   await ref.watch(activeOperatorsProvider.future);
 });
-

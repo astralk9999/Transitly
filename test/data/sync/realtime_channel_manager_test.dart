@@ -21,7 +21,7 @@ void main() {
 
     test('dispose cleans up without errors when no channels open', () {
       final mgr = RealtimeChannelManager(client);
-      expect(() => mgr.dispose(), returnsNormally);
+      expect(mgr.dispose, returnsNormally);
     });
 
     test('watch returns a broadcast stream', () {
@@ -57,7 +57,7 @@ void main() {
     test('repeated dispose does not throw', () {
       final mgr = RealtimeChannelManager(client);
       mgr.dispose();
-      expect(() => mgr.dispose(), returnsNormally);
+      expect(mgr.dispose, returnsNormally);
     });
   });
 }

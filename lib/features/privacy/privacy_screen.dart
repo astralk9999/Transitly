@@ -35,7 +35,7 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() => _loadConsents());
+    Future.microtask(_loadConsents);
   }
 
   Future<void> _loadConsents() async {

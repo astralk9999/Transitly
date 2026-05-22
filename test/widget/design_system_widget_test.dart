@@ -39,9 +39,7 @@ Future<void> pumpDesign(
 }
 
 void main() {
-  setUpAll(() {
-    TestWidgetsFlutterBinding.ensureInitialized();
-  });
+  setUpAll(TestWidgetsFlutterBinding.ensureInitialized);
 
   for (final dark in [true, false]) {
     final suffix = dark ? 'dark' : 'light';

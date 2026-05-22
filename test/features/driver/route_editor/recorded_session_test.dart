@@ -14,7 +14,7 @@ void main() {
         stops: [
           RecordedStop(
             position: LatLng(36.6819, -6.1365),
-            arrivalOffset: Duration(seconds: 0),
+            arrivalOffset: Duration.zero,
           ),
           RecordedStop(
             name: 'Plaza Esteve',
@@ -83,7 +83,7 @@ void main() {
         number: 1,
         position: LatLng(36.6819, -6.1365),
         distanceKm: 0,
-        markedAt: Duration(seconds: 0),
+        markedAt: Duration.zero,
       ));
       c.markedStops.add(const MarkedStop(
         number: 2,

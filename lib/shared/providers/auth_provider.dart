@@ -9,7 +9,7 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
   final client = ref.watch(supabaseClientProvider);
   final repo = AuthRepositorySupabase(client);
   repo.init();
-  ref.onDispose(() => repo.dispose());
+  ref.onDispose(repo.dispose);
   return repo;
 });
 

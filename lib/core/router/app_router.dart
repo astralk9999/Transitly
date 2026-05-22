@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../data/mock/mock_data_service.dart';
+import 'error_builder.dart';
 import 'redirect_guards.dart';
 import '../../features/auth/signin_screen.dart';
 import '../../features/auth/signup_screen.dart';
@@ -55,7 +55,6 @@ import '../../features/splash/splash_screen.dart';
 import '../../features/stop_detail/stop_detail_screen.dart';
 import '../../features/suggestions/suggest_route_screen.dart';
 import '../../features/suggestions/suggestion_contribute_screen.dart';
-import '../../features/error/not_found_screen.dart';
 import '../../features/suggestions/suggestion_detail_screen.dart';
 import '../../features/notifications/notifications_screen.dart';
 import '../../features/privacy/privacy_screen.dart';
@@ -68,7 +67,7 @@ final routerInitialLocationProvider = Provider<String>((ref) => '/splash');
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     initialLocation: ref.watch(routerInitialLocationProvider),
-    errorBuilder: (context, state) => const NotFoundScreen(),
+    errorBuilder: notFoundErrorBuilder,
     redirect: (context, state) => authRedirect(ref, state),
     routes: [
       GoRoute(
@@ -147,14 +146,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       // ── Detail screens (slide horizontal) ──
       GoRoute(
         path: '/route/:routeId',
-        redirect: (context, state) {
-          final id = state.pathParameters['routeId'];
-          final mock = ref.read(mockDataServiceProvider);
-          if (id == null || mock.getRouteById(id) == null) {
-            return '/home/inicio';
-          }
-          return null;
-        },
+        redirect: (context, state) => routeDetailRedirect(ref, state),
         pageBuilder: (context, state) => _slide(
           state,
           RouteDetailScreen(routeId: state.pathParameters['routeId']!),
@@ -162,14 +154,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/stop/:stopId',
-        redirect: (context, state) {
-          final id = state.pathParameters['stopId'];
-          final mock = ref.read(mockDataServiceProvider);
-          if (id == null || mock.getStopById(id) == null) {
-            return '/home/inicio';
-          }
-          return null;
-        },
+        redirect: (context, state) => stopDetailRedirect(ref, state),
         pageBuilder: (context, state) => _slide(
           state,
           StopDetailScreen(stopId: state.pathParameters['stopId']!),

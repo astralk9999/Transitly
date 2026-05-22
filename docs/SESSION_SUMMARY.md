@@ -1,6 +1,6 @@
-# Transitly — Resumen de sesión (20–22 mayo 2026)
+# Transitly — Resumen final (cierre 22 mayo 2026)
 
-> 32 commits · 12 agentes · 7 fases Plan v2 (F0→F6) · 3 días de trabajo.
+> 214 commits total · 20 agentes · 28/28 fases Plan v2 (100 %) · 3 días de trabajo.
 
 ---
 
@@ -81,4 +81,4 @@ CI GitHub         # 4/4 jobs verdes (Analyze, Test, Build Web, Build Android APK
 
 ---
 
-**Commits:** `cbbc5f6..HEAD` (32 commits, 20–22 mayo 2026)
+**Commits:** `cbbc5f6..HEAD` (214 total, 32 en esta sesión 20–22 mayo 2026)

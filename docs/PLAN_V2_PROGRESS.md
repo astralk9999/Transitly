@@ -1,6 +1,6 @@
 # Plan v2 Progress — Transitly
 
-> **Generated:** 2026-05-22 (F6.12 final re-audit)  
+> **Generated:** 2026-05-22 (final wrap-up)  
 > **Source:** `docs/historico/PLAN_TRANSITLY_V2.md`  
 > **Status:** 28/28 fases completadas (100 %)
 
@@ -107,7 +107,7 @@
 ## Verification Snapshot (2026-05-22)
 
 ```
-commit:      3dda413
+commit:      65a1fed
 analyze:     0 errors, 0 warnings, 22 info
 test:        304 passed, 1 skipped
 coverage:    24.30 %

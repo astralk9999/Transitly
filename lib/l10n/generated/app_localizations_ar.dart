@@ -42,28 +42,28 @@ class AppLocalizationsAr extends AppLocalizations {
   String get nfcErrorTagLost => 'تمت إزالة البطاقة بسرعة';
 
   @override
-  String get nfcErrorUnknown => 'Error desconocido';
+  String get nfcErrorUnknown => 'خطأ غير معروف';
 
   @override
-  String get profileSectionAppearance => 'APARIENCIA';
+  String get profileSectionAppearance => 'المظهر';
 
   @override
-  String get profileSectionDemoProfile => 'PERFIL DE DEMO';
+  String get profileSectionDemoProfile => 'الملف التجريبي';
 
   @override
-  String get profileSectionAccessibility => 'ACCESIBILIDAD';
+  String get profileSectionAccessibility => 'إمكانية الوصول';
 
   @override
-  String get profileSectionOfflineData => 'DATOS OFFLINE';
+  String get profileSectionOfflineData => 'بيانات دون اتصال';
 
   @override
-  String get profileSectionAbout => 'ACERCA DE';
+  String get profileSectionAbout => 'حول';
 
   @override
   String get accessibilityTitle => 'إمكانية الوصول';
 
   @override
-  String get accessibilityThemeSection => 'TEMA';
+  String get accessibilityThemeSection => 'المظهر';
 
   @override
   String get accessibilityThemeSystem => 'النظام';
@@ -75,11 +75,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get accessibilityThemeDark => 'داكن';
 
   @override
-  String get accessibilitySystemPreferencesSection =>
-      'PREFERENCIAS DEL SISTEMA';
+  String get accessibilitySystemPreferencesSection => 'تفضيلات النظام';
 
   @override
-  String get accessibilityLanguageSection => 'IDIOMA';
+  String get accessibilityLanguageSection => 'اللغة';
 
   @override
   String get accessibilityLanguageEs => 'الإسبانية';
@@ -94,28 +93,28 @@ class AppLocalizationsAr extends AppLocalizations {
   String get offlineDataTitle => 'بيانات دون اتصال';
 
   @override
-  String get offlineDataContent => 'CONTENIDO';
+  String get offlineDataContent => 'المحتوى';
 
   @override
-  String get offlineDataArchive => 'ARCHIVO';
+  String get offlineDataArchive => 'الملف';
 
   @override
-  String get offlineDataReload => 'Recargar desde assets';
+  String get offlineDataReload => 'إعادة التحميل من الأصول';
 
   @override
-  String get offlineDataReloaded => 'Datos recargados';
+  String get offlineDataReloaded => 'تم إعادة تحميل البيانات';
 
   @override
-  String get offlineDataSize => 'Tamaño';
+  String get offlineDataSize => 'الحجم';
 
   @override
-  String get offlineDataLoaded => 'Cargado';
+  String get offlineDataLoaded => 'تم التحميل';
 
   @override
-  String get offlineDataRoutes => 'Rutas';
+  String get offlineDataRoutes => 'المسارات';
 
   @override
-  String get offlineDataStops => 'Paradas';
+  String get offlineDataStops => 'المحطات';
 
   @override
   String get actionClose => 'إغلاق';
@@ -270,595 +269,589 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get adminUsersTitle => 'Gestión de usuarios';
+  String get adminUsersTitle => 'إدارة المستخدمين';
 
   @override
-  String get adminUsersSearchHint => 'Buscar usuario...';
+  String get adminUsersSearchHint => 'بحث عن مستخدم...';
 
   @override
-  String get adminUsersFilterAll => 'Todos';
+  String get adminUsersFilterAll => 'الكل';
 
   @override
-  String get adminUsersEmpty => 'No se encontraron usuarios';
+  String get adminUsersEmpty => 'لم يتم العثور على مستخدمين';
 
   @override
-  String get adminUsersOffline => 'Conecta a internet para gestionar usuarios';
+  String get adminUsersOffline => 'اتصل بالإنترنت لإدارة المستخدمين';
 
   @override
-  String get adminUsersRoleAdmin => 'Admin';
+  String get adminUsersRoleAdmin => 'مدير';
 
   @override
-  String get adminUsersRoleModerator => 'Moderador';
+  String get adminUsersRoleModerator => 'مشرف';
 
   @override
-  String get adminUsersRoleOperatorAdmin => 'Operador Admin';
+  String get adminUsersRoleOperatorAdmin => 'مدير المشغل';
 
   @override
-  String get adminUsersRoleDriver => 'Conductor';
+  String get adminUsersRoleDriver => 'سائق';
 
   @override
-  String get adminUsersRolePassenger => 'Pasajero';
+  String get adminUsersRolePassenger => 'راكب';
 
   @override
-  String get adminUsersRoleAll => 'Todos';
+  String get adminUsersRoleAll => 'الكل';
 
   @override
-  String get adminUsersError => 'Error al cargar usuarios';
+  String get adminUsersError => 'خطأ في تحميل المستخدمين';
 
   @override
-  String get adminUsersNoConnection => 'Sin conexión';
+  String get adminUsersNoConnection => 'لا يوجد اتصال';
 
   @override
-  String get adminUsersNoResults => 'Sin resultados';
+  String get adminUsersNoResults => 'لا توجد نتائج';
 
   @override
   String adminUsersNoMatchSearch(String query) {
-    return 'No hay usuarios que coincidan con \"$query\"';
+    return 'لا يوجد مستخدم يطابق \"$query\"';
   }
 
   @override
-  String get adminUsersNoMatchRole => 'No hay usuarios con el rol seleccionado';
+  String get adminUsersNoMatchRole => 'لا يوجد مستخدمون بالدور المحدد';
 
   @override
-  String get adminOperatorsTitle => 'Gestión de operadores';
+  String get adminOperatorsTitle => 'إدارة المشغلين';
 
   @override
-  String get adminOperatorsCreate => 'Crear operador';
+  String get adminOperatorsCreate => 'إنشاء مشغل';
 
   @override
-  String get adminOperatorsEdit => 'Editar operador';
+  String get adminOperatorsEdit => 'تعديل المشغل';
 
   @override
-  String get adminOperatorsDelete => 'Eliminar';
+  String get adminOperatorsDelete => 'حذف';
 
   @override
-  String get adminOperatorsSlug => 'Slug';
+  String get adminOperatorsSlug => 'المعرف';
 
   @override
-  String get adminOperatorsName => 'Nombre';
+  String get adminOperatorsName => 'الاسم';
 
   @override
-  String get adminOperatorsRegion => 'Región';
+  String get adminOperatorsRegion => 'المنطقة';
 
   @override
-  String get adminOperatorsWebsite => 'Sitio web';
+  String get adminOperatorsWebsite => 'الموقع الإلكتروني';
 
   @override
-  String get adminOperatorsEmail => 'Correo de contacto';
+  String get adminOperatorsEmail => 'البريد الإلكتروني للتواصل';
 
   @override
-  String get adminOperatorsDeleteConfirm => '¿Eliminar este operador?';
+  String get adminOperatorsDeleteConfirm => 'حذف هذا المشغل؟';
 
   @override
-  String get adminOperatorsEmpty => 'No hay operadores registrados';
+  String get adminOperatorsEmpty => 'لا يوجد مشغلون مسجلون';
 
   @override
-  String get adminOperatorsCreated => 'Operador creado';
+  String get adminOperatorsCreated => 'تم إنشاء المشغل';
 
   @override
-  String get adminOperatorsUpdated => 'Operador actualizado';
+  String get adminOperatorsUpdated => 'تم تحديث المشغل';
 
   @override
-  String get adminOperatorsDeleted => 'Operador eliminado';
+  String get adminOperatorsDeleted => 'تم حذف المشغل';
 
   @override
-  String get adminOperatorsError => 'Error al cargar operadores';
+  String get adminOperatorsError => 'خطأ في تحميل المشغلين';
 
   @override
-  String get adminOperatorsNoConnection => 'Sin conexión';
+  String get adminOperatorsNoConnection => 'لا يوجد اتصال';
 
   @override
-  String get adminOperatorsOffline =>
-      'Conecta a internet para gestionar operadores';
+  String get adminOperatorsOffline => 'اتصل بالإنترنت لإدارة المشغلين';
 
   @override
-  String get adminOperatorsErrorDenied =>
-      'Permiso denegado para gestionar operadores';
+  String get adminOperatorsErrorDenied => 'الإذن مرفوض لإدارة المشغلين';
 
   @override
-  String get adminOperatorsErrorNetwork => 'Error de red al cargar operadores';
+  String get adminOperatorsErrorNetwork => 'خطأ في الشبكة عند تحميل المشغلين';
 
   @override
-  String get adminOperatorsErrorUnknown =>
-      'Error desconocido al cargar operadores';
+  String get adminOperatorsErrorUnknown => 'خطأ غير معروف عند تحميل المشغلين';
 
   @override
-  String get managerInboxTitle => 'Bandeja de gestión';
+  String get managerInboxTitle => 'صندوق الإدارة';
 
   @override
-  String get managerInboxFeedback => 'Feedback';
+  String get managerInboxFeedback => 'ملاحظات';
 
   @override
-  String get managerInboxSuggestions => 'Sugerencias';
+  String get managerInboxSuggestions => 'اقتراحات';
 
   @override
-  String get managerInboxResolved => 'Resueltos';
+  String get managerInboxResolved => 'تم الحل';
 
   @override
   String managerInboxPending(int count) {
-    return '$count pendientes';
+    return '$count معلق';
   }
 
   @override
-  String get managerInboxMarkInReview => 'Marcar en revisión';
+  String get managerInboxMarkInReview => 'تعليم قيد المراجعة';
 
   @override
-  String get managerInboxResolve => 'Resolver';
+  String get managerInboxResolve => 'حل';
 
   @override
-  String get managerInboxReject => 'Rechazar';
+  String get managerInboxReject => 'رفض';
 
   @override
-  String get managerInboxEmptyFeedback => 'No hay feedback pendiente';
+  String get managerInboxEmptyFeedback => 'لا توجد ملاحظات معلقة';
 
   @override
-  String get managerInboxEmptySuggestions => 'No hay sugerencias';
+  String get managerInboxEmptySuggestions => 'لا توجد اقتراحات';
 
   @override
-  String get managerInboxEmptyResolved => 'No hay elementos resueltos';
+  String get managerInboxEmptyResolved => 'لا توجد عناصر محلولة';
 
   @override
-  String get managerInboxOpen => 'Abrir';
+  String get managerInboxOpen => 'فتح';
 
   @override
-  String get managerInboxStatus => 'Estado';
+  String get managerInboxStatus => 'الحالة';
 
   @override
-  String get managerInboxItemDescription => 'Descripción';
+  String get managerInboxItemDescription => 'الوصف';
 
   @override
-  String get managerInboxItemDate => 'Fecha';
+  String get managerInboxItemDate => 'التاريخ';
 
   @override
-  String get managerInboxItemType => 'Tipo';
+  String get managerInboxItemType => 'النوع';
 
   @override
-  String get appearanceTitle => 'Apariencia';
+  String get appearanceTitle => 'المظهر';
 
   @override
-  String get appearancePalettesSection => 'PALETAS';
+  String get appearancePalettesSection => 'لوحات الألوان';
 
   @override
-  String get appearanceBrightnessSection => 'BRILLO';
+  String get appearanceBrightnessSection => 'السطوع';
 
   @override
-  String get appearanceBackgroundSection => 'FONDO';
+  String get appearanceBackgroundSection => 'الخلفية';
 
   @override
-  String get appearanceTextSection => 'TEXTO';
+  String get appearanceTextSection => 'النص';
 
   @override
-  String get appearanceAccessibilitySection => 'ACCESIBILIDAD VISUAL';
+  String get appearanceAccessibilitySection => 'إمكانية الوصول البصري';
 
   @override
-  String get appearanceShowBackground => 'Mostrar fondo decorativo';
+  String get appearanceShowBackground => 'إظهار الخلفية الزخرفية';
 
   @override
-  String get appearanceBackgroundOpacity => 'Opacidad del fondo';
+  String get appearanceBackgroundOpacity => 'شفافية الخلفية';
 
   @override
-  String get appearanceFontScale => 'Tamaño de texto';
+  String get appearanceFontScale => 'حجم الخط';
 
   @override
-  String get appearanceDyslexiaFont => 'Fuente para dislexia';
+  String get appearanceDyslexiaFont => 'خط مناسب لعسر القراءة';
 
   @override
-  String get appearanceColorBlindMode => 'Modo daltónico';
+  String get appearanceColorBlindMode => 'وضع عمى الألوان';
 
   @override
-  String get appearanceReduceMotion => 'Reducir animaciones';
+  String get appearanceReduceMotion => 'تقليل الحركة';
 
   @override
-  String get appearanceResetButton => 'Restaurar valores por defecto';
+  String get appearanceResetButton => 'استعادة الإعدادات الافتراضية';
 
   @override
   String get appearanceResetConfirm =>
-      '¿Restaurar todos los ajustes de apariencia a sus valores por defecto?';
+      'استعادة جميع إعدادات المظهر إلى قيمها الافتراضية؟';
 
   @override
-  String get appearanceResetDone => 'Ajustes restaurados';
+  String get appearanceResetDone => 'تمت استعادة الإعدادات';
 
   @override
-  String get appearanceColorBlindNone => 'Ninguno';
+  String get appearanceColorBlindNone => 'لا شيء';
 
   @override
-  String get appearanceColorBlindProtanopia => 'Protanopia';
+  String get appearanceColorBlindProtanopia => 'بروتانوبيا';
 
   @override
-  String get appearanceColorBlindDeuteranopia => 'Deuteranopia';
+  String get appearanceColorBlindDeuteranopia => 'ديوتيرانوبيا';
 
   @override
-  String get appearanceColorBlindTritanopia => 'Tritanopia';
+  String get appearanceColorBlindTritanopia => 'تريتانوبيا';
 
   @override
-  String get appearanceBrightnessSystem => 'Sistema';
+  String get appearanceBrightnessSystem => 'النظام';
 
   @override
-  String get appearanceBrightnessLight => 'Claro';
+  String get appearanceBrightnessLight => 'فاتح';
 
   @override
-  String get appearanceBrightnessDark => 'Oscuro';
+  String get appearanceBrightnessDark => 'داكن';
 
   @override
-  String get appearanceLinkAppearance => 'Personalizar apariencia';
+  String get appearanceLinkAppearance => 'تخصيص المظهر';
 
   @override
-  String get appearanceBgNone => 'Ninguno';
+  String get appearanceBgNone => 'لا شيء';
 
   @override
-  String get appearanceBgSmoke => 'Humo';
+  String get appearanceBgSmoke => 'دخان';
 
   @override
-  String get appearanceBgGradient => 'Degradado';
+  String get appearanceBgGradient => 'تدرج';
 
   @override
-  String get appearanceBgGrid => 'Cuadrícula';
+  String get appearanceBgGrid => 'شبكة';
 
   @override
-  String get appearanceBgTopo => 'Topografía';
+  String get appearanceBgTopo => 'طبوغرافيا';
 
   @override
   String get appearanceTextPreview =>
-      'El rápido zorro marrón salta sobre el perro perezoso. Este texto de muestra te permite ver cómo se ve la tipografía con los ajustes actuales.';
+      'الثعلب البني السريع يقفز فوق الكلب الكسول. يتيح لك هذا النص النموذجي معاينة مظهر الخط بالإعدادات الحالية.';
 
   @override
-  String get appearanceCustomPaletteTitle => 'Paleta personalizada';
+  String get appearanceCustomPaletteTitle => 'لوحة مخصصة';
 
   @override
-  String get appearanceCustomPalettePrimary => 'Primario';
+  String get appearanceCustomPalettePrimary => 'أساسي';
 
   @override
-  String get appearanceCustomPaletteSecondary => 'Secundario';
+  String get appearanceCustomPaletteSecondary => 'ثانوي';
 
   @override
-  String get appearanceCustomPaletteBgRoot => 'Fondo raíz';
+  String get appearanceCustomPaletteBgRoot => 'خلفية الجذر';
 
   @override
-  String get appearanceCustomPaletteBgSurface => 'Fondo superficie';
+  String get appearanceCustomPaletteBgSurface => 'خلفية السطح';
 
   @override
-  String get appearanceCustomPaletteTextHi => 'Texto principal';
+  String get appearanceCustomPaletteTextHi => 'النص الرئيسي';
 
   @override
-  String get appearanceCustomPalettePreview => 'Vista previa';
+  String get appearanceCustomPalettePreview => 'معاينة';
 
   @override
-  String get appearanceCustomPaletteContrastPass => 'Contraste AA';
+  String get appearanceCustomPaletteContrastPass => 'تباين AA';
 
   @override
-  String get appearanceCustomPaletteContrastFail => 'Contraste bajo';
+  String get appearanceCustomPaletteContrastFail => 'تباين منخفض';
 
   @override
-  String get appearanceCustomPaletteSaved => 'Paleta guardada';
+  String get appearanceCustomPaletteSaved => 'تم حفظ اللوحة';
 
   @override
-  String get appearanceCustomPaletteAdd => 'Crear paleta';
+  String get appearanceCustomPaletteAdd => 'إنشاء لوحة';
 
   @override
-  String get appearanceMapStyleSection => 'ESTILO DE MAPA';
+  String get appearanceMapStyleSection => 'نمط الخريطة';
 
   @override
-  String get mapStyleStreets => 'Calles';
+  String get mapStyleStreets => 'الشوارع';
 
   @override
-  String get mapStyleBasic => 'Básico';
+  String get mapStyleBasic => 'أساسي';
 
   @override
-  String get mapStyleBright => 'Brillante';
+  String get mapStyleBright => 'ساطع';
 
   @override
-  String get mapStyleDark => 'Oscuro';
+  String get mapStyleDark => 'داكن';
 
   @override
-  String get mapStyleLight => 'Claro';
+  String get mapStyleLight => 'فاتح';
 
   @override
-  String get appearanceHighContrast => 'Alto contraste';
+  String get appearanceHighContrast => 'تباين عالي';
 
   @override
-  String get appearanceHighContrastSubtitle =>
-      'Bordes más gruesos y mayor contraste de texto';
+  String get appearanceHighContrastSubtitle => 'حدود أكثر سمكاً وتباين نص أعلى';
 
   @override
-  String get accessibilityHighContrast => 'Alto contraste';
+  String get accessibilityHighContrast => 'تباين عالي';
 
   @override
-  String get accessibleBusesTitle => 'Buses cercanos';
+  String get accessibleBusesTitle => 'الحافلات القريبة';
 
   @override
-  String get accessibleBusesEmpty => 'Sin buses activos';
+  String get accessibleBusesEmpty => 'لا توجد حافلات نشطة';
 
   @override
   String get accessibleBusesNoActiveBuses =>
-      'No se encontraron buses en operación en este momento';
+      'لم يتم العثور على حافلات قيد التشغيل حالياً';
 
   @override
-  String get accessibleBusesError => 'Error al cargar buses';
+  String get accessibleBusesError => 'خطأ في تحميل الحافلات';
 
   @override
-  String get accessibleBusesNextStop => 'Próxima parada';
+  String get accessibleBusesNextStop => 'المحطة التالية';
 
   @override
-  String get accessibleBusesSourceEstimated => 'Estimado';
+  String get accessibleBusesSourceEstimated => 'تقديري';
 
   @override
-  String get accessibleBusesSourceDriver => 'Conductor';
+  String get accessibleBusesSourceDriver => 'السائق';
 
   @override
-  String get accessibleBusesLinkLabel => 'Ver lista de buses';
+  String get accessibleBusesLinkLabel => 'عرض قائمة الحافلات';
 
   @override
-  String get onboardingSkip => 'Saltar';
+  String get onboardingSkip => 'تخطي';
 
   @override
-  String get onboardingNext => 'Siguiente';
+  String get onboardingNext => 'التالي';
 
   @override
-  String get onboardingGetStarted => 'Empezar';
+  String get onboardingGetStarted => 'ابدأ';
 
   @override
-  String get onboardingPage1Title => 'Transporte en tiempo real';
+  String get onboardingPage1Title => 'نقل في الوقت الفعلي';
 
   @override
   String get onboardingPage1Description =>
-      'Consulta dónde está tu autobús ahora mismo, sin esperas innecesarias.';
+      'تحقق من مكان حافلتك الآن، دون انتظار غير ضروري.';
 
   @override
-  String get onboardingPage2Title => 'Tu comunidad te ayuda';
+  String get onboardingPage2Title => 'مجتمعك يساعدك';
 
   @override
   String get onboardingPage2Description =>
-      'Reporta incidencias, sugiere rutas y ayuda a otros pasajeros como tú.';
+      'بلغ عن الحوادث، اقترح مسارات وساعد المسافرين الآخرين مثلك.';
 
   @override
-  String get onboardingPage3Title => 'Funciona sin internet';
+  String get onboardingPage3Title => 'يعمل دون اتصال';
 
   @override
   String get onboardingPage3Description =>
-      'Descarga tus rutas y consulta horarios incluso sin conexión.';
+      'قم بتنزيل مساراتك وتحقق من الجداول حتى بدون اتصال.';
 
   @override
-  String get reputationRankNone => 'Sin rango';
+  String get reputationRankNone => 'بدون رتبة';
 
   @override
-  String get reputationRankNovice => 'Novato';
+  String get reputationRankNovice => 'مبتدئ';
 
   @override
-  String get reputationRankContributor => 'Colaborador';
+  String get reputationRankContributor => 'مساهم';
 
   @override
-  String get reputationRankAdvocate => 'Defensor';
+  String get reputationRankAdvocate => 'مدافع';
 
   @override
-  String get reputationRankCartographer => 'Cartógrafo';
+  String get reputationRankCartographer => 'رسام خرائط';
 
   @override
-  String get reputationRankGuardian => 'Guardián';
+  String get reputationRankGuardian => 'حارس';
 
   @override
-  String get reputationRankLegend => 'Leyenda';
+  String get reputationRankLegend => 'أسطورة';
 
   @override
-  String get reputationEventIncidentCreated => 'Reporte creado';
+  String get reputationEventIncidentCreated => 'تم إنشاء البلاغ';
 
   @override
-  String get reputationEventIncidentRejectedSpam => 'Reporte rechazado (spam)';
+  String get reputationEventIncidentRejectedSpam => 'تم رفض البلاغ (بريد مزعج)';
 
   @override
-  String get reputationEventFeedbackSubmitted => 'Feedback enviado';
+  String get reputationEventFeedbackSubmitted => 'تم إرسال الملاحظات';
 
   @override
-  String get reputationEventFeedbackAccepted => 'Feedback aceptado';
+  String get reputationEventFeedbackAccepted => 'تم قبول الملاحظات';
 
   @override
-  String get reputationEventSuggestionCreated => 'Sugerencia creada';
+  String get reputationEventSuggestionCreated => 'تم إنشاء الاقتراح';
 
   @override
-  String get reputationEventSuggestionVoteReceived => 'Voto recibido';
+  String get reputationEventSuggestionVoteReceived => 'تم استلام التصويت';
 
   @override
-  String get reputationEventSuggestionVerified => 'Sugerencia verificada';
+  String get reputationEventSuggestionVerified => 'تم التحقق من الاقتراح';
 
   @override
-  String get reputationEventSuggestionOfficial => 'Sugerencia oficializada';
+  String get reputationEventSuggestionOfficial => 'تم اعتماد الاقتراح رسمياً';
 
   @override
-  String get reputationEventDuplicateReport => 'Reporte duplicado';
+  String get reputationEventDuplicateReport => 'بلاغ مكرر';
 
   @override
-  String get achievementsTitle => 'Logros';
+  String get achievementsTitle => 'الإنجازات';
 
   @override
   String achievementsLevel(String level, int xp) {
-    return 'Nivel: $level · $xp XP';
+    return 'المستوى: $level · $xp XP';
   }
 
   @override
-  String get achievementsCategoryContribution => 'Contribución';
+  String get achievementsCategoryContribution => 'مساهمة';
 
   @override
-  String get achievementsCategoryUsage => 'Uso';
+  String get achievementsCategoryUsage => 'استخدام';
 
   @override
-  String get reputationTitle => 'Reputación';
+  String get reputationTitle => 'السمعة';
 
   @override
-  String get reputationHowToEarn => 'Cómo subir';
+  String get reputationHowToEarn => 'كيفية الكسب';
 
   @override
-  String get reputationRanks => 'Rangos';
+  String get reputationRanks => 'الرتب';
 
   @override
-  String get reputationTooltip =>
-      'La reputación es decorativa. Más adelante desbloqueará privilegios.';
+  String get reputationTooltip => 'السمعة تزيينية. ستفتح امتيازات لاحقاً.';
 
   @override
-  String get reputationPoints => 'puntos';
+  String get reputationPoints => 'نقاط';
 
   @override
-  String get reputationNextRank => 'Siguiente rango';
+  String get reputationNextRank => 'الرتبة التالية';
 
   @override
-  String get reputationMaxRank => 'Rango máximo alcanzado';
+  String get reputationMaxRank => 'تم الوصول لأعلى رتبة';
 
   @override
-  String get offlineRegionsTitle => 'Mapas offline';
+  String get offlineRegionsTitle => 'خرائط دون اتصال';
 
   @override
-  String get offlineRegionsAddRegion => 'Añadir región';
+  String get offlineRegionsAddRegion => 'إضافة منطقة';
 
   @override
-  String get offlineRegionsEmpty => 'No hay mapas descargados';
+  String get offlineRegionsEmpty => 'لا توجد خرائط تم تنزيلها';
 
   @override
   String get offlineRegionsEmptySubtitle =>
-      'Descarga zonas del mapa para usarlas sin conexión';
+      'قم بتنزيل مناطق الخريطة لاستخدامها دون اتصال';
 
   @override
-  String get offlineRegionsDeleteConfirm => '¿Eliminar esta región?';
+  String get offlineRegionsDeleteConfirm => 'حذف هذه المنطقة؟';
 
   @override
   String get offlineRegionsDeleteDesc =>
-      'Los tiles descargados se perderán y deberás volver a descargarlos para usar el mapa sin conexión';
+      'سيتم فقدان البلاطات التي تم تنزيلها وسيتعين عليك تنزيلها مرة أخرى لاستخدام الخريطة دون اتصال';
 
   @override
-  String get offlineRegionsStatusReady => 'Listo';
+  String get offlineRegionsStatusReady => 'جاهز';
 
   @override
-  String get offlineRegionsStatusDownloading => 'Descargando';
+  String get offlineRegionsStatusDownloading => 'جارٍ التنزيل';
 
   @override
-  String get offlineRegionsStatusError => 'Error';
+  String get offlineRegionsStatusError => 'خطأ';
 
   @override
-  String get offlineRegionsStatusStale => 'Desactualizado';
+  String get offlineRegionsStatusStale => 'قديم';
 
   @override
-  String get offlineRegionsDownloaded => 'Descargado';
+  String get offlineRegionsDownloaded => 'تم التنزيل';
 
   @override
-  String get offlineRegionsSize => 'Tamaño';
+  String get offlineRegionsSize => 'الحجم';
 
   @override
-  String get offlineRegionsActionDownload => 'Descargar';
+  String get offlineRegionsActionDownload => 'تنزيل';
 
   @override
-  String get offlineRegionsActionDelete => 'Eliminar';
+  String get offlineRegionsActionDelete => 'حذف';
 
   @override
-  String get offlineRegionsRegionName => 'Nombre de la región';
+  String get offlineRegionsRegionName => 'اسم المنطقة';
 
   @override
-  String get offlineRegionsRegionNameHint => 'Ej. Centro de Jerez';
+  String get offlineRegionsRegionNameHint => 'مثال: وسط خيريز';
 
   @override
-  String get offlineRegionsZoomMin => 'Zoom mínimo';
+  String get offlineRegionsZoomMin => 'أدنى تكبير';
 
   @override
-  String get offlineRegionsZoomMax => 'Zoom máximo';
+  String get offlineRegionsZoomMax => 'أقصى تكبير';
 
   @override
-  String get offlineRegionsEstimatedSize => 'Tamaño estimado';
+  String get offlineRegionsEstimatedSize => 'الحجم المقدر';
 
   @override
-  String get offlineRegionsSelectArea =>
-      'Mueve el mapa para seleccionar un área';
+  String get offlineRegionsSelectArea => 'حرك الخريطة لتحديد منطقة';
 
   @override
-  String get offlineRegionsDataSynced => 'Datos sincronizados';
+  String get offlineRegionsDataSynced => 'تمت مزامنة البيانات';
 
   @override
-  String get offlineRegionsMapLink => 'Mapas offline';
+  String get offlineRegionsMapLink => 'خرائط دون اتصال';
 
   @override
-  String get appearanceStorageSection => 'ALMACENAMIENTO OFF LINE';
+  String get appearanceStorageSection => 'التخزين دون اتصال';
 
   @override
-  String get appearanceStorageTotal => 'Espacio usado';
+  String get appearanceStorageTotal => 'المساحة المستخدمة';
 
   @override
-  String get appearanceStorageFmtc => 'Mapas FMTC';
+  String get appearanceStorageFmtc => 'خرائط FMTC';
 
   @override
-  String get appearanceStorageHive => 'Datos locales';
+  String get appearanceStorageHive => 'البيانات المحلية';
 
   @override
-  String get appearanceStoragePending => 'Adjuntos pendientes';
+  String get appearanceStoragePending => 'مرفقات معلقة';
 
   @override
-  String get appearanceStorageClearCache => 'Limpiar caché de mapas';
+  String get appearanceStorageClearCache => 'مسح ذاكرة التخزين المؤقت للخرائط';
 
   @override
   String get appearanceStorageClearCacheConfirm =>
-      '¿Eliminar todos los mapas offline descargados?';
+      'حذف جميع الخرائط التي تم تنزيلها دون اتصال؟';
 
   @override
-  String get appearanceStorageClearCacheDone => 'Caché de mapas eliminada';
+  String get appearanceStorageClearCacheDone =>
+      'تم مسح ذاكرة التخزين المؤقت للخرائط';
 
   @override
-  String get appearanceStorageMaxInfo => 'Almacenamiento máximo: 500 MB';
+  String get appearanceStorageMaxInfo => 'الحد الأقصى للتخزين: 500 ميجابايت';
 
   @override
-  String get notificationsTitle => 'Notificaciones';
+  String get notificationsTitle => 'الإشعارات';
 
   @override
-  String get notificationsEmpty => 'No tienes notificaciones';
+  String get notificationsEmpty => 'ليس لديك إشعارات';
 
   @override
-  String get notificationsMarkAllRead => 'Marcar todo leído';
+  String get notificationsMarkAllRead => 'تعليم الكل كمقروء';
 
   @override
-  String get notificationsAllRead => 'Todo leído';
+  String get notificationsAllRead => 'تمت قراءة الكل';
 
   @override
-  String get notificationTypeIncidentResolved => 'Incidencia resuelta';
+  String get notificationTypeIncidentResolved => 'تم حل البلاغ';
 
   @override
-  String get notificationTypeRoutePromoted => 'Ruta promocionada';
+  String get notificationTypeRoutePromoted => 'تم ترقية المسار';
 
   @override
-  String get notificationTypeShareReceived => 'Ruta compartida contigo';
+  String get notificationTypeShareReceived => 'تمت مشاركة مسار معك';
 
   @override
-  String get notificationTypeFeatureRequestReplied =>
-      'Respuesta a tu solicitud';
+  String get notificationTypeFeatureRequestReplied => 'رد على طلبك';
 
   @override
-  String get notificationTypeBusApproaching => 'Bus acercándose';
+  String get notificationTypeBusApproaching => 'الحافلة تقترب';
 
   @override
-  String get notificationTypeCustom => 'Aviso';
+  String get notificationTypeCustom => 'إشعار';
 
   @override
-  String get notificationTimeNow => 'Ahora';
+  String get notificationTimeNow => 'الآن';
 
   @override
   String notificationTimeMinutes(int n) {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: 'Hace $n min',
-      one: 'Hace 1 min',
+      other: 'منذ $n دقائق',
+      one: 'منذ دقيقة',
     );
     return '$_temp0';
   }
@@ -868,8 +861,8 @@ class AppLocalizationsAr extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: 'Hace $n h',
-      one: 'Hace 1 h',
+      other: 'منذ $n ساعات',
+      one: 'منذ ساعة',
     );
     return '$_temp0';
   }
@@ -879,143 +872,143 @@ class AppLocalizationsAr extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: 'Hace $n d',
-      one: 'Hace 1 d',
+      other: 'منذ $n أيام',
+      one: 'منذ يوم',
     );
     return '$_temp0';
   }
 
   @override
-  String get notifPrefSectionTitle => 'NOTIFICACIONES';
+  String get notifPrefSectionTitle => 'الإشعارات';
 
   @override
-  String get notifPrefIncidentResolved => 'Reportes resueltos';
+  String get notifPrefIncidentResolved => 'بلاغات محلولة';
 
   @override
-  String get notifPrefRoutePromoted => 'Mis rutas';
+  String get notifPrefRoutePromoted => 'مساراتي';
 
   @override
-  String get notifPrefBusApproaching => 'Buses cerca';
+  String get notifPrefBusApproaching => 'حافلات قريبة';
 
   @override
-  String get notifPrefFeatureRequestReplied => 'Sugerencias';
+  String get notifPrefFeatureRequestReplied => 'اقتراحات';
 
   @override
-  String get notifPrefQuietHoursSection => 'HORARIO SILENCIOSO';
+  String get notifPrefQuietHoursSection => 'ساعات الهدوء';
 
   @override
-  String get notifPrefQuietHoursEnabled => 'Activar horario silencioso';
+  String get notifPrefQuietHoursEnabled => 'تفعيل ساعات الهدوء';
 
   @override
   String get notifPrefQuietHoursDescription =>
-      'Durante este horario no recibirás notificaciones sonoras. Las notificaciones seguirán apareciendo en el centro de notificaciones.';
+      'خلال هذا الوقت لن تتلقى إشعارات صوتية. ستظل الإشعارات تظهر في مركز الإشعارات.';
 
   @override
-  String get notifPrefQuietHoursStart => 'Desde';
+  String get notifPrefQuietHoursStart => 'من';
 
   @override
-  String get notifPrefQuietHoursEnd => 'Hasta';
+  String get notifPrefQuietHoursEnd => 'إلى';
 
   @override
-  String get notifPrefQuietHoursNotSet => 'No configurado';
+  String get notifPrefQuietHoursNotSet => 'غير محدد';
 
   @override
-  String get notifPrefSelectTime => 'Seleccionar hora';
+  String get notifPrefSelectTime => 'اختيار الوقت';
 
   @override
-  String get privacyTitle => 'Privacidad';
+  String get privacyTitle => 'الخصوصية';
 
   @override
-  String get privacySectionConsents => 'CONSENTIMIENTOS';
+  String get privacySectionConsents => 'الموافقات';
 
   @override
-  String get privacyConsentAnalytics => 'Analíticas';
+  String get privacyConsentAnalytics => 'تحليلات';
 
   @override
   String get privacyConsentAnalyticsDesc =>
-      'Datos anónimos de uso para mejorar la app';
+      'بيانات استخدام مجهولة لتحسين التطبيق';
 
   @override
-  String get privacyConsentCrashReporting => 'Informes de fallos';
+  String get privacyConsentCrashReporting => 'تقارير الأعطال';
 
   @override
   String get privacyConsentCrashReportingDesc =>
-      'Envía informes automáticos cuando la app falla';
+      'إرسال تقارير تلقائية عند تعطل التطبيق';
 
   @override
-  String get privacyConsentMarketing => 'Marketing';
+  String get privacyConsentMarketing => 'تسويق';
 
   @override
   String get privacyConsentMarketingDesc =>
-      'Recibe novedades y promociones sobre Transitly';
+      'تلقي الأخبار والعروض الترويجية حول Transitly';
 
   @override
-  String get privacySectionMyData => 'MIS DATOS';
+  String get privacySectionMyData => 'بياناتي';
 
   @override
-  String get privacyDownloadData => 'Descargar mis datos';
+  String get privacyDownloadData => 'تنزيل بياناتي';
 
   @override
-  String get privacyRequestDeletion => 'Solicitar borrado de cuenta';
+  String get privacyRequestDeletion => 'طلب حذف الحساب';
 
   @override
-  String get privacySectionLegal => 'LEGAL';
+  String get privacySectionLegal => 'قانوني';
 
   @override
-  String get privacyTermsOfService => 'Términos de servicio';
+  String get privacyTermsOfService => 'شروط الخدمة';
 
   @override
-  String get privacyPrivacyPolicy => 'Política de privacidad';
+  String get privacyPrivacyPolicy => 'سياسة الخصوصية';
 
   @override
   String get privacyDataExportRequested =>
-      'Solicitud de exportación enviada. Recibirás un enlace cuando esté lista.';
+      'تم إرسال طلب التصدير. ستتلقى رابطاً عندما يكون جاهزاً.';
 
   @override
   String get privacyDeletionRequested =>
-      'Solicitud de borrado enviada. Tus datos se eliminarán en 30 días.';
+      'تم إرسال طلب الحذف. سيتم حذف بياناتك خلال 30 يوماً.';
 
   @override
-  String get privacyDeleteConfirmTitle => '¿Solicitar borrado de cuenta?';
+  String get privacyDeleteConfirmTitle => 'طلب حذف الحساب؟';
 
   @override
   String get privacyDeleteConfirmMessage =>
-      'Tus datos se eliminarán tras un periodo de espera de 30 días.';
+      'سيتم حذف بياناتك بعد فترة انتظار مدتها 30 يوماً.';
 
   @override
-  String get privacyDeleteConfirmCancel => 'Cancelar';
+  String get privacyDeleteConfirmCancel => 'إلغاء';
 
   @override
-  String get privacyDeleteConfirmAction => 'Solicitar borrado';
+  String get privacyDeleteConfirmAction => 'طلب الحذف';
 
   @override
-  String get privacyLinkLabel => 'Privacidad';
+  String get privacyLinkLabel => 'الخصوصية';
 
   @override
-  String get widgetsTitle => 'Widgets';
+  String get widgetsTitle => 'الودجات';
 
   @override
-  String get widgetsSectionInstructions => 'INSTRUCCIONES';
+  String get widgetsSectionInstructions => 'تعليمات';
 
   @override
   String get widgetsInstructionsAndroid =>
-      'En Android, mantén pulsado en la pantalla de inicio y selecciona \"Añadir widget\". Busca Transitly en la lista.';
+      'في أندرويد، اضغط مطولاً على الشاشة الرئيسية واختر \"إضافة ودجة\". ابحث عن Transitly في القائمة.';
 
   @override
   String get widgetsInstructionsIos =>
-      'En iOS, mantén pulsado en la pantalla de inicio, pulsa el botón + y busca Transitly.';
+      'في iOS، اضغط مطولاً على الشاشة الرئيسية، اضغط زر + وابحث عن Transitly.';
 
   @override
-  String get widgetsFavoriteStop => 'Parada favorita';
+  String get widgetsFavoriteStop => 'المحطة المفضلة';
 
   @override
-  String get widgetsFavoriteLine => 'Línea favorita';
+  String get widgetsFavoriteLine => 'الخط المفضل';
 
   @override
-  String get widgetsHowToAdd => 'Cómo añadir el widget';
+  String get widgetsHowToAdd => 'كيفية إضافة الودجة';
 
   @override
-  String get widgetsConfigSaved => 'Configuración guardada';
+  String get widgetsConfigSaved => 'تم حفظ الإعدادات';
 
   @override
   String get offlineBannerOffline => 'غير متصل';
@@ -1025,10 +1018,10 @@ class AppLocalizationsAr extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count acciones en cola',
-      one: '1 acción en cola',
+      other: '$count إجراءات في الانتظار',
+      one: 'إجراء واحد في الانتظار',
     );
-    return 'Sin conexión · $_temp0.';
+    return 'غير متصل · $_temp0.';
   }
 
   @override
@@ -1036,17 +1029,17 @@ class AppLocalizationsAr extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count acciones pendientes',
-      one: '1 acción pendiente',
+      other: '$count إجراءات معلقة',
+      one: 'إجراء واحد معلق',
     );
-    return 'Sincronizando $_temp0…';
+    return 'جارٍ مزامنة $_temp0…';
   }
 
   @override
   String get authEmail => 'البريد';
 
   @override
-  String get authEmailHint => 'tu@email.com';
+  String get authEmailHint => 'you@email.com';
 
   @override
   String get authPassword => 'كلمة المرور';
@@ -1055,43 +1048,43 @@ class AppLocalizationsAr extends AppLocalizations {
   String get authPasswordHint => '••••••••';
 
   @override
-  String get authPasswordMinHint => 'Mínimo 6 caracteres';
+  String get authPasswordMinHint => 'الحد الأدنى 6 أحرف';
 
   @override
-  String get authName => 'Nombre';
+  String get authName => 'الاسم';
 
   @override
-  String get authNameHint => 'Tu nombre';
+  String get authNameHint => 'اسمك';
 
   @override
-  String get authRequired => 'Requerido';
+  String get authRequired => 'مطلوب';
 
   @override
-  String get authRequiredField => 'Requerida';
+  String get authRequiredField => 'مطلوب';
 
   @override
-  String get authInvalidEmail => 'Email inválido';
+  String get authInvalidEmail => 'بريد إلكتروني غير صالح';
 
   @override
-  String get authMinChars => 'Mínimo 6 caracteres';
+  String get authMinChars => 'الحد الأدنى 6 أحرف';
 
   @override
-  String get authEnterValidEmail => 'Introduce un email válido';
+  String get authEnterValidEmail => 'أدخل بريداً إلكترونياً صالحاً';
 
   @override
-  String get authErrorConnection => 'Error de conexión';
+  String get authErrorConnection => 'خطأ في الاتصال';
 
   @override
-  String get authErrorGoogle => 'Error de conexión con Google';
+  String get authErrorGoogle => 'خطأ في الاتصال بـ Google';
 
   @override
-  String get authSignInSubtitle => 'Inicia sesión para continuar';
+  String get authSignInSubtitle => 'سجل الدخول للمتابعة';
 
   @override
   String get authSignInButton => 'تسجيل الدخول';
 
   @override
-  String get authSignInError => 'Error al iniciar sesión';
+  String get authSignInError => 'خطأ في تسجيل الدخول';
 
   @override
   String get authNoAccount => 'ليس لديك حساب؟';
@@ -1100,34 +1093,34 @@ class AppLocalizationsAr extends AppLocalizations {
   String get authRegister => 'سجل الآن';
 
   @override
-  String get authForgotPassword => '¿Olvidaste tu contraseña?';
+  String get authForgotPassword => 'هل نسيت كلمة المرور؟';
 
   @override
-  String get authOrContinue => 'o continúa con';
+  String get authOrContinue => 'أو تابع باستخدام';
 
   @override
   String get authGoogleButton => 'GOOGLE';
 
   @override
-  String get authMagicLink => 'Acceder con enlace mágico';
+  String get authMagicLink => 'الدخول برابط سحري';
 
   @override
-  String get authSignUpTitle => 'Crear cuenta';
+  String get authSignUpTitle => 'إنشاء حساب';
 
   @override
-  String get authSignUpSubtitle => 'Únete a Transitly';
+  String get authSignUpSubtitle => 'انضم إلى Transitly';
 
   @override
   String get authSignUpButton => 'إنشاء حساب';
 
   @override
-  String get authSignUpError => 'Error al registrarse';
+  String get authSignUpError => 'خطأ في إنشاء الحساب';
 
   @override
-  String get authAlreadyHaveAccount => '¿Ya tienes cuenta?';
+  String get authAlreadyHaveAccount => 'هل لديك حساب بالفعل؟';
 
   @override
-  String get authSignInLink => 'Inicia sesión';
+  String get authSignInLink => 'تسجيل الدخول';
 
   @override
   String get signupAgeGateTitle => 'التحقق من العمر';
@@ -1139,334 +1132,329 @@ class AppLocalizationsAr extends AppLocalizations {
   String get signupAgeGateLabel => 'تاريخ الميلاد';
 
   @override
-  String get authRecoverTitle => 'Recuperar contraseña';
+  String get authRecoverTitle => 'استعادة كلمة المرور';
 
   @override
   String get authRecoverSent =>
-      'Si el email existe, recibirás un enlace para restablecer tu contraseña.';
+      'إذا كان البريد الإلكتروني موجوداً، ستتلقى رابطاً لإعادة تعيين كلمة المرور.';
 
   @override
-  String get authRecoverHint => 'Introduce tu email y te enviaremos un enlace';
+  String get authRecoverHint => 'أدخل بريدك الإلكتروني وسنرسل لك رابطاً';
 
   @override
-  String get authSendLinkButton => 'ENVIAR ENLACE';
+  String get authSendLinkButton => 'إرسال الرابط';
 
   @override
-  String get authBackToSignIn => 'Volver al inicio de sesión';
+  String get authBackToSignIn => 'العودة إلى تسجيل الدخول';
 
   @override
-  String get authRecoverError => 'Error al enviar la recuperación';
+  String get authRecoverError => 'خطأ في إرسال الاستعادة';
 
   @override
-  String get authMagicLinkTitle => 'Enlace mágico';
+  String get authMagicLinkTitle => 'الرابط السحري';
 
   @override
   String get authMagicLinkSent =>
-      'Revisa tu email. Te hemos enviado un enlace para acceder.';
+      'تحقق من بريدك الإلكتروني. أرسلنا لك رابط دخول.';
 
   @override
-  String get authMagicLinkHint => 'Te enviamos un enlace de acceso a tu email';
+  String get authMagicLinkHint => 'سنرسل رابط دخول إلى بريدك الإلكتروني';
 
   @override
-  String get authMagicLinkError => 'Error al enviar el enlace';
+  String get authMagicLinkError => 'خطأ في إرسال الرابط';
 
   @override
-  String get authVerifyTitle => 'Verifica tu email';
+  String get authVerifyTitle => 'تحقق من بريدك الإلكتروني';
 
   @override
   String get authVerifyMessage =>
-      'Te hemos enviado un email de verificación. Revisa tu bandeja de entrada y haz clic en el enlace para continuar.';
+      'أرسلنا لك بريد تحقق. تحقق من صندوق الوارد واضغط الرابط للمتابعة.';
 
   @override
-  String get authResendButton => 'REENVIAR EMAIL';
+  String get authResendButton => 'إعادة إرسال البريد';
 
   @override
-  String get authSignOutAndBack => 'Cerrar sesión y volver';
+  String get authSignOutAndBack => 'تسجيل الخروج والعودة';
 
   @override
-  String get authResendSuccess => 'Email de verificación reenviado.';
+  String get authResendSuccess => 'تم إعادة إرسال بريد التحقق.';
 
   @override
-  String get authResendError => 'Error al reenviar';
+  String get authResendError => 'خطأ في إعادة الإرسال';
 
   @override
-  String get authActivateDriverTitle => 'Activar modo conductor';
+  String get authActivateDriverTitle => 'تفعيل وضع السائق';
 
   @override
   String get authActivateDriverHint =>
-      'Tu compañía te ha dado un código.\nIntrodúcelo aquí para activar el modo conductor.';
+      'أعطتك شركتك رمزاً.\nأدخله هنا لتفعيل وضع السائق.';
 
   @override
-  String get authActivateNeedLogin =>
-      'Necesitas iniciar sesión para activar el modo conductor.';
+  String get authActivateNeedLogin => 'يجب تسجيل الدخول لتفعيل وضع السائق.';
 
   @override
-  String get authActivateButton => 'ACTIVAR';
+  String get authActivateButton => 'تفعيل';
 
   @override
-  String get authActivateEnterCode => 'Introduce el código';
+  String get authActivateEnterCode => 'أدخل الرمز';
 
   @override
-  String get authActivateCodeNotFound => 'Código no encontrado';
+  String get authActivateCodeNotFound => 'الرمز غير موجود';
 
   @override
-  String get authActivateCodeExpired => 'El código ha expirado';
+  String get authActivateCodeExpired => 'انتهت صلاحية الرمز';
 
   @override
-  String get authActivateCodeDepleted =>
-      'El código ya no tiene usos disponibles';
+  String get authActivateCodeDepleted => 'لم يعد للرمز استخدامات متاحة';
 
   @override
-  String get authActivateError => 'Error al activar el código';
+  String get authActivateError => 'خطأ في تفعيل الرمز';
 
   @override
-  String get authActivateNeedSession => 'Necesitas iniciar sesión primero';
+  String get authActivateNeedSession => 'يجب تسجيل الدخول أولاً';
 
   @override
-  String get authActivateSuccess =>
-      'Bienvenido. Ya puedes usar el modo conductor.';
+  String get authActivateSuccess => 'مرحباً. يمكنك الآن استخدام وضع السائق.';
 
   @override
-  String get authSignOutTitle => '¿Cerrar sesión?';
+  String get authSignOutTitle => 'تسجيل الخروج؟';
 
   @override
-  String get authSignOutMessage =>
-      'Volverás a la pantalla de inicio de sesión.';
+  String get authSignOutMessage => 'ستعود إلى شاشة تسجيل الدخول.';
 
   @override
-  String get authSignOutCancel => 'CANCELAR';
+  String get authSignOutCancel => 'إلغاء';
 
   @override
-  String get authSignOutConfirm => 'CERRAR SESIÓN';
+  String get authSignOutConfirm => 'تسجيل الخروج';
 
   @override
-  String get authDeleteAccountTitle => '¿Eliminar cuenta?';
+  String get authDeleteAccountTitle => 'حذف الحساب؟';
 
   @override
-  String get authDeleteAccountMessage => 'Esta acción es irreversible.';
+  String get authDeleteAccountMessage => 'هذا الإجراء لا رجعة فيه.';
 
   @override
-  String get authDeleteAccountButton => 'ELIMINAR';
+  String get authDeleteAccountButton => 'حذف';
 
   @override
-  String get authDeleteAccountError => 'No se pudo eliminar la cuenta';
+  String get authDeleteAccountError => 'تعذر حذف الحساب';
 
   @override
-  String get authDeleteAccountCancel => 'CANCELAR';
+  String get authDeleteAccountCancel => 'إلغاء';
 
   @override
-  String get filterPresetsTitle => 'Filtros predefinidos';
+  String get filterPresetsTitle => 'إعدادات الفلتر المسبقة';
 
   @override
-  String get filterPresetsEmptyTitle => 'Sin presets guardados';
+  String get filterPresetsEmptyTitle => 'لا توجد إعدادات محفوظة';
 
   @override
   String get filterPresetsEmptySubtitle =>
-      'Guarda la combinación de filtros del mapa que más uses para aplicarla con un toque.';
+      'احفظ مجموعة الفلاتر الأكثر استخداماً لتطبيقها بلمسة واحدة.';
 
   @override
-  String get filterPresetsActionSave => 'GUARDAR FILTROS ACTUALES';
+  String get filterPresetsActionSave => 'حفظ الفلاتر الحالية';
 
   @override
-  String get filterPresetsTileHint => 'Tocar para aplicar';
+  String get filterPresetsTileHint => 'اضغط للتطبيق';
 
   @override
-  String get filterPresetsTileDelete => 'Eliminar';
+  String get filterPresetsTileDelete => 'حذف';
 
   @override
-  String get filterPresetsDialogTitle => 'Guardar filtros';
+  String get filterPresetsDialogTitle => 'حفظ الفلاتر';
 
   @override
-  String get filterPresetsDialogHint => 'Nombre del preset';
+  String get filterPresetsDialogHint => 'اسم الإعداد المسبق';
 
   @override
-  String get filterPresetsDialogConfirm => 'GUARDAR';
+  String get filterPresetsDialogConfirm => 'حفظ';
 
   @override
   String filterPresetsApplied(String name) {
-    return 'Filtros «$name» aplicados';
+    return 'تم تطبيق فلاتر \"$name\"';
   }
 
   @override
-  String get driverStatsTitle => 'Estadísticas';
+  String get driverStatsTitle => 'الإحصائيات';
 
   @override
-  String get driverStatsEmptyTitle => 'Sin datos aún';
+  String get driverStatsEmptyTitle => 'لا توجد بيانات بعد';
 
   @override
-  String get driverStatsEmptySubtitle =>
-      'Tus estadísticas se calculan a partir del historial de viajes.';
+  String get driverStatsEmptySubtitle => 'تُحسب إحصائياتك من سجل رحلاتك.';
 
   @override
-  String get driverStatsTrips => 'Viajes';
+  String get driverStatsTrips => 'رحلات';
 
   @override
-  String get driverStatsDistinctLines => 'Líneas distintas';
+  String get driverStatsDistinctLines => 'خطوط مختلفة';
 
   @override
-  String get driverStatsTotalCost => 'Coste total';
+  String get driverStatsTotalCost => 'التكلفة الإجمالية';
 
   @override
-  String get driverStatsDistance => 'Distancia';
+  String get driverStatsDistance => 'المسافة';
 
   @override
-  String get driverStatsCo2Saved => 'CO₂ ahorrado';
+  String get driverStatsCo2Saved => 'CO₂ تم توفيره';
 
   @override
-  String get driverHistoryTitle => 'Historial de conductor';
+  String get driverHistoryTitle => 'سجل السائق';
 
   @override
-  String get driverHistoryEmptyTitle => 'Sin viajes todavía';
+  String get driverHistoryEmptyTitle => 'لا توجد رحلات بعد';
 
   @override
   String get driverHistoryEmptySubtitle =>
-      'Cuando completes rutas aparecerán aquí con su trayecto y coste.';
+      'عند إكمال المسارات ستظهر هنا مع مسارها وتكلفتها.';
 
   @override
-  String get driverHistoryUnknownRoute => 'Ruta desconocida';
+  String get driverHistoryUnknownRoute => 'مسار غير معروف';
 
   @override
-  String get plannedTripsTitle => 'Viajes planificados';
+  String get plannedTripsTitle => 'الرحلات المخططة';
 
   @override
-  String get plannedTripsEmptyTitle => 'Sin viajes planificados';
+  String get plannedTripsEmptyTitle => 'لا توجد رحلات مخططة';
 
   @override
   String get plannedTripsEmptySubtitle =>
-      'Marca una ruta como favorita y configura un aviso para verla aquí como viaje habitual.';
+      'ضع علامة على مسار كمفضل واضبط تنبيهاً لرؤيته هنا كرحلة منتظمة.';
 
   @override
-  String get plannedTripsNoStop => 'Parada no definida';
+  String get plannedTripsNoStop => 'المحطة غير محددة';
 
   @override
   String plannedTripsFrom(String stop) {
-    return 'Desde $stop';
+    return 'من $stop';
   }
 
   @override
-  String get aiScheduleImportTitle => 'Importar horario';
+  String get aiScheduleImportTitle => 'استيراد الجدول';
 
   @override
-  String get aiScheduleImportEmptyTitle => 'Importar horarios';
+  String get aiScheduleImportEmptyTitle => 'استيراد الجداول';
 
   @override
   String get aiScheduleImportEmptySubtitle =>
-      'Pega el texto de un horario para extraer las horas de salida automáticamente.';
+      'الصق نص الجدول لاستخراج أوقات المغادرة تلقائياً.';
 
   @override
   String get aiScheduleImportHint =>
-      'Pega el horario y se extraerán las horas de salida. El análisis es local (demo): detecta patrones HH:MM, no usa IA ni backend.';
+      'الصق الجدول وسيتم استخراج أوقات المغادرة. التحليل محلي (تجريبي): يكشف أنماط HH:MM، لا يستخدم ذكاء اصطناعي ولا خادم.';
 
   @override
-  String get aiScheduleImportFieldHint => 'Ej.: 06:00  06:30  07:00 ...';
+  String get aiScheduleImportFieldHint => 'مثال: 06:00  06:30  07:00 ...';
 
   @override
-  String get aiScheduleImportAnalyze => 'ANALIZAR';
+  String get aiScheduleImportAnalyze => 'تحليل';
 
   @override
-  String get aiScheduleImportNoTimes => 'No se detectaron horas';
+  String get aiScheduleImportNoTimes => 'لم يتم اكتشاف أوقات';
 
   @override
   String aiScheduleImportDetected(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count salidas detectadas',
-      one: '1 salida detectada',
+      other: 'تم اكتشاف $count مغادرة',
+      one: 'تم اكتشاف مغادرة واحدة',
     );
     return '$_temp0';
   }
 
   @override
-  String get suggestionContributeTitle => 'Contribuir a sugerencias';
+  String get suggestionContributeTitle => 'المساهمة في الاقتراحات';
 
   @override
-  String get suggestionContributeEmptyTitle => 'Nada que contribuir ahora';
+  String get suggestionContributeEmptyTitle => 'لا شيء للمساهمة به الآن';
 
   @override
   String get suggestionContributeEmptySubtitle =>
-      'No hay sugerencias abiertas. Vuelve más tarde o propón una ruta nueva desde la pestaña de sugerencias.';
+      'لا توجد اقتراحات مفتوحة. عد لاحقاً أو اقترح مساراً جديداً من تبويب الاقتراحات.';
 
   @override
-  String get cityPickerErrorOperators => 'Error al cargar operadores';
+  String get cityPickerErrorOperators => 'خطأ في تحميل المشغلين';
 
   @override
-  String get driversErrorLoading => 'Error al cargar conductores';
+  String get driversErrorLoading => 'خطأ في تحميل السائقين';
 
   @override
-  String get driversErrorRevoking => 'Error al revocar conductor';
+  String get driversErrorRevoking => 'خطأ في إلغاء السائق';
 
   @override
-  String get invitationCodesErrorLoading => 'Error al cargar códigos';
+  String get invitationCodesErrorLoading => 'خطأ في تحميل الرموز';
 
   @override
-  String get invitationCodesErrorGenerating => 'Error al generar código';
+  String get invitationCodesErrorGenerating => 'خطأ في إنشاء الرمز';
 
   @override
-  String get invitationCodesErrorRevoking => 'Error al revocar código';
+  String get invitationCodesErrorRevoking => 'خطأ في إلغاء الرمز';
 
   @override
-  String get routeOfficializeError => 'Error al enviar solicitud';
+  String get routeOfficializeError => 'خطأ في إرسال الطلب';
 
   @override
-  String get routeShareUserNotFound => 'Usuario no encontrado';
+  String get routeShareUserNotFound => 'المستخدم غير موجود';
 
   @override
   String routeShareSuccess(String email) {
-    return 'Ruta compartida con $email';
+    return 'تمت مشاركة المسار مع $email';
   }
 
   @override
-  String get routeShareError => 'Error al compartir ruta';
+  String get routeShareError => 'خطأ في مشاركة المسار';
 
   @override
-  String get routeShareErrorGeneratingLink => 'Error al generar enlace';
+  String get routeShareErrorGeneratingLink => 'خطأ في إنشاء الرابط';
 
   @override
-  String get routeDetailNotFound => 'Ruta no encontrada';
+  String get routeDetailNotFound => 'المسار غير موجود';
 
   @override
-  String get stopDetailNotFound => 'Parada no encontrada';
+  String get stopDetailNotFound => 'المحطة غير موجودة';
 
   @override
-  String get feedbackErrorSending => 'Error al enviar mejora';
+  String get feedbackErrorSending => 'خطأ في إرسال الملاحظات';
 
   @override
-  String get incidentErrorSending => 'Error al enviar reporte';
+  String get incidentErrorSending => 'خطأ في إرسال البلاغ';
 
   @override
   String homeRouteSemanticsLabel(String code, String time) {
-    return '$code, $time';
+    return '$code، $time';
   }
 
   @override
   String nfcCardBalance(String amount) {
-    return 'Saldo: $amount euros';
+    return 'الرصيد: $amount يورو';
   }
 
   @override
   String homeNextBusSemantics(String route) {
-    return 'Tu próximo bus, $route';
+    return 'حافلتك القادمة، $route';
   }
 
   @override
   String generalComingSoon(String feature) {
-    return '$feature: próximamente';
+    return '$feature: قريباً';
   }
 
   @override
   String capacitySemanticsLabel(String level) {
-    return 'Ocupación: $level';
+    return 'الإشغال: $level';
   }
 
   @override
   String reputationSemanticsLabel(String level) {
-    return 'Reputación: $level';
+    return 'السمعة: $level';
   }
 
   @override
   String reputationScoreSemantics(String label, int score) {
-    return '$label: $score puntos';
+    return '$label: $score نقطة';
   }
 
   @override
@@ -1476,7 +1464,7 @@ class AppLocalizationsAr extends AppLocalizations {
     String status,
     String minutes,
   ) {
-    return 'Línea $code, $name$status$minutes';
+    return 'الخط $code، $name$status$minutes';
   }
 
   @override

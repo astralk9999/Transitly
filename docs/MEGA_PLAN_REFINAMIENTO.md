@@ -43,8 +43,8 @@
 | **PRO-Rel** — Publicación stores 🆕 | 33 | 14 | 19 | B | Permisos, PrivacyInfo, icons, CI, versionCode, age, consents, iOS build CI |
 | **PRO-QA** — Testing pro 🆕 | 25 | 13 | 12 | C | auth tests, ARB parity smoke, architecture layer, a11y programmatic, golden tests, roundtrip |
 | **PRO-A11Y** — A11y AAA + inclusión 🆕 | 23 | 18 | 5 | C | PRO-A11Y-1/2/3/5 cerrados; pendientes: RTL undo, switch access, daltonism, Inflesz audit, ARB árabe |
-| **PRO-Ops** — SRE / Operación 🆕 | 34 | 16 | 18 | C | SLO catalog, 3 runbooks, Sentry spans, PostHog events, alert matrix, C4 diagrams, service catalog |
-| **TOTAL** | **190** | **115+** | **75−** | | 115+ cerrados (60,5+ %); de los ~75 pendientes ~42 son [EXTERNAL], ~20 [L/XL] |
+| **PRO-Ops** — SRE / Operación 🆕 | 34 | 20 | 14 | C | SLO catalog, 3 runbooks, Sentry spans, PostHog events, alert matrix, C4 diagrams, service catalog |
+| **TOTAL** | **190** | **119** | **71** | | 119 cerrados (62,6 %); de los 71 pendientes ~42 son [EXTERNAL], ~20 [L/XL] |
 
 > Definición de "✅ Hecho": verificado en código + en CI verde + criterio de aceptación cumplido en el documento que lo declaró.
 
@@ -126,18 +126,18 @@ Bloque dominado por acciones [EXTERNAL] (cuentas, certificados, formularios de s
 | PRO-Ops-2 | Error Budget Policy + Release Freeze policy escrita | S |
 | PRO-Ops-3 | Sentry Performance: spans de negocio (`auth.signIn`, `map.initial_render`, `nfc.read`) | M |
 | PRO-Ops-4 | Eventos de producto en PostHog (signup, route_viewed, incident_reported, nfc_read_success) | M |
-| PRO-Ops-5 | Logs estructurados JSON con sink configurable (extender `AppLogger`) | M |
+| PRO-Ops-5 | ✅ Logs estructurados JSON con sink configurable (extender `AppLogger`) | M |
 | PRO-Ops-6 | Network monitoring: interceptor para timings por endpoint Supabase | M |
 | PRO-Ops-10 | Sentry Deno SDK en `send_notification` + `import_gtfs` (instrumenta cold start, errores) | M |
 | PRO-Ops-13 | Matriz de alertas P0-P3 con links a runbooks (Sentry → Slack/Discord webhook) | M |
 | PRO-Ops-15 | `docs/runbooks/` con 3 runbooks mínimos: push down, Supabase down, Sentry spike | M |
-| PRO-Ops-20 | Banner in-app de incidencia activa (lee `incident_announcement` desde Remote Config) | M |
-| PRO-Ops-23 | Force-update mechanism con Remote Config `min_version` | M |
+| PRO-Ops-20 | ✅ Banner in-app de incidencia activa (lee `incident_announcement` desde Remote Config) | M |
+| PRO-Ops-23 | ✅ Force-update mechanism con Remote Config `min_version` | M |
 | PRO-Ops-28 | Audit log tabla en Supabase para acciones admin (CRUD operadores, baneos) | M |
 | PRO-Ops-30 | Data Retention Policy declarada + RPC de purga de `bus_positions` > 30 días | M |
 | PRO-Ops-31 | Right-to-be-forgotten con timestamping auditable | M |
 | PRO-Ops-32 | C4 diagrams (Mermaid) en `docs/architecture/c4-*.md` | M |
-| PRO-Ops-33 | `docs/service-catalog.md` con dependencias entre servicios | S |
+| PRO-Ops-33 | ✅ `docs/service-catalog.md` con dependencias entre servicios | S |
 | **Checkpoint** | Pasada `code-review` skill sobre observabilidad y runbooks | M |
 
 ### H6 — Testing pro (1-2 semanas)

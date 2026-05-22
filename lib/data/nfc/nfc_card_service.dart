@@ -3,6 +3,7 @@ import 'package:nfc_manager/nfc_manager.dart';
 import 'package:nfc_manager/platform_tags.dart';
 
 import '../../core/utils/app_logger.dart';
+import '../../core/utils/sentry_setup.dart';
 
 /// Result of a successful NFC card read.
 class NfcCardResult {
@@ -111,7 +112,7 @@ class NfcCardService {
       await NfcManager.instance.startSession(
         onDiscovered: (NfcTag tag) async {
           try {
-            final result = await _readCard(tag);
+            final result = await SentrySetup.trace('nfc.read', 'task', () => _readCard(tag));
             onResult(result);
           } on NfcCardException catch (e) {
             onError(e);

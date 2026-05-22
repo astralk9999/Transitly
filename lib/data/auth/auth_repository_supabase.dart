@@ -9,6 +9,7 @@ import 'package:supabase_flutter/supabase_flutter.dart'
         User;
 
 import '../../core/utils/app_logger.dart';
+import '../../core/utils/sentry_setup.dart';
 import 'auth_helpers.dart';
 import 'auth_repository.dart';
 
@@ -75,10 +76,10 @@ class AuthRepositorySupabase implements AuthRepository {
   Future<void> signInWithEmail(String email, String password) async {
     _stateController.add(AuthLoading());
     try {
-      await _client.auth.signInWithPassword(
+      await SentrySetup.trace('auth.signIn', 'task', () => _client.auth.signInWithPassword(
         email: email.trim(),
         password: password,
-      );
+      ));
     } on AuthRepoException {
       rethrow;
     } catch (e, st) {

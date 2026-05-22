@@ -1,6 +1,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'app_logger.dart';
+import 'sentry_setup.dart';
 
 class NetworkTimingInterceptor {
   NetworkTimingInterceptor._();
@@ -12,16 +13,18 @@ class NetworkTimingInterceptor {
     Future<T> Function() call,
   ) async {
     final start = DateTime.now();
-    try {
-      final result = await call();
-      final elapsed = DateTime.now().difference(start);
-      AppLogger.perf(_tag, operation, elapsed);
-      return result;
-    } catch (e) {
-      final elapsed = DateTime.now().difference(start);
-      AppLogger.warn(_tag, '$operation failed after ${elapsed.inMilliseconds}ms', e);
-      rethrow;
-    }
+    return SentrySetup.trace('network.$operation', 'http.client', () async {
+      try {
+        final result = await call();
+        final elapsed = DateTime.now().difference(start);
+        AppLogger.perf(_tag, operation, elapsed);
+        return result;
+      } catch (e) {
+        final elapsed = DateTime.now().difference(start);
+        AppLogger.warn(_tag, '$operation failed after ${elapsed.inMilliseconds}ms', e);
+        rethrow;
+      }
+    });
   }
 
   static PostgrestFilterBuilder<T> timedFilter<T>(

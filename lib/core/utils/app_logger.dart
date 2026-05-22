@@ -19,38 +19,37 @@ enum LogFormat { plain, json }
 class AppLogger {
   const AppLogger._();
 
-  static const _enabled = kDebugMode;
   static LogFormat logFormat = LogFormat.plain;
 
   static void debug(String tag, String message) {
-    if (!_enabled) return;
+    if (!kDebugMode) return;
     _emit('DEBUG', tag, message);
   }
 
   static void info(String tag, String message) {
-    if (!_enabled) return;
-    _emit('INFO', tag, message);
+    if (kDebugMode) _emit('INFO', tag, message);
+    SentrySetup.addBreadcrumb('[$tag] $message', category: 'info');
   }
 
   static void perf(String tag, String operation, Duration elapsed) {
-    if (!_enabled) return;
-    _emit('PERF', tag, '$operation ${elapsed.inMilliseconds}ms');
+    if (kDebugMode) _emit('PERF', tag, '$operation ${elapsed.inMilliseconds}ms');
+    SentrySetup.addBreadcrumb(
+      '[$tag] $operation ${elapsed.inMilliseconds}ms',
+      category: 'perf',
+    );
   }
 
   static void warn(String tag, String message, [Object? error]) {
-    if (!_enabled) return;
     final suffix = error == null ? '' : ' — $error';
-    _emit('WARN', tag, '$message$suffix');
-    if (error != null) {
-      SentrySetup.addBreadcrumb('[$tag] $message — $error', category: 'warn');
-    }
+    if (kDebugMode) _emit('WARN', tag, '$message$suffix');
+    SentrySetup.addBreadcrumb('[$tag] $message$suffix', category: 'warn');
   }
 
   static void error(String tag, String message, [Object? error, StackTrace? st]) {
-    if (!_enabled) return;
     final suffix = error == null ? '' : ' — $error';
-    _emit('ERROR', tag, '$message$suffix');
-    if (st != null) debugPrint(st.toString());
+    if (kDebugMode) _emit('ERROR', tag, '$message$suffix');
+    if (kDebugMode && st != null) debugPrint(st.toString());
+    SentrySetup.addBreadcrumb('[$tag] $message$suffix', category: 'error');
     SentrySetup.captureException(error ?? message, st);
   }
 

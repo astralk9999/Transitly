@@ -1,9 +1,10 @@
 ﻿# Propuestas Futuras — Technical Debt & Improvement Opportunities
 
-> Audit date: 2026-05-22 (final scan — multi-agent session close)  
-> **Current metrics:** 304 tests (1 skipped) · 0 errors / 0 warnings / 22 info (flutter analyze) · 109/190 mega-plan (57.4%)  
-> **Session:** 17+ commits · 42 ARB keys added · 65 docs · 51 test files  
+> Audit date: 2026-05-22 (FINAL — F6.12 re-audit close)  
+> **Current metrics:** 304 tests (1 skipped) · 0 errors / 0 warnings / 22 info (flutter analyze) · 112/190 mega-plan (58.9%)  
+> **Session:** 5 commits batch · 14 migraciones · 4 edge functions · 63 test files · 73 doc files · 846 ARB keys · 315 source files  
 > **Regression:** 3 errors in `integration_test/app_test.dart` (package `integration_test` not in `pubspec.yaml`)  
+> **Plan v2:** 28/28 fases completadas (F0→F27, 100%)  
 > Analyzed: `lib/` (excluding `lib/l10n/generated/`, `.freezed.dart`, `.g.dart`)  
 > Severity: P0 (urgent) → P3 (cosmetic)
 
@@ -205,9 +206,9 @@ Current configuration updated. **Added rules:**
 
 ---
 
-## Items cerrados en sesión multiagente (2026-05-22)
+## Items cerrados en sesión multiagente (2026-05-22) + F6.12 re-audit
 
-Sesión final de refinamiento con metodología `code-review` skill (4 pasadas independientes: arquitectura sénior, release stores, accesibilidad AAA, QA pro, SRE/Ops). Resultado: **mega-plan de 190 ítems en 12 bloques**.
+Sesión final de refinamiento con metodología `code-review` skill (4 pasadas independientes: arquitectura sénior, release stores, accesibilidad AAA, QA pro, SRE/Ops). Resultado: **mega-plan de 190 ítems en 12 bloques** + **Plan v2 28/28 fases completadas**.
 
 ### Key deliverables
 
@@ -221,7 +222,8 @@ Sesión final de refinamiento con metodología `code-review` skill (4 pasadas in
 | **Accesibilidad AAA** | A11Y, PRO-A11Y | 19/33 items: contrast matrix, textScaler 200%, FocusTraversalGroup, RTL undo, switch access, daltonism, Inflesz audit |
 | **Testing pro** | PRO-QA | 13/25 items: 281 tests (51 files), ARB parity, architecture layer tests, offline queue, realtime channel, a11y programmatic, golden tests |
 | **SRE/Ops** | PROD, PRO-Ops | 19/44 items: SLO catalog, runbooks, Sentry spans, PostHog events, alert matrix, data retention, right-to-be-forgotten, C4 diagrams, service catalog |
-| **Docs general** | — | 65 markdown files in `docs/` (ADRs, runbooks, SLOs, guides, audits, TFG memoria 8 docs) |
+| **Docs general** | — | 73 markdown files in `docs/` (ADRs, runbooks, SLOs, guides, audits, TFG memoria 8 docs) |
+| **Plan v2 completo** | F0→F27 | 28/28 fases (100%) — 14 migraciones, 4 edge functions, 315 source files, 846 ARB keys |
 
 ### Scoreboard detallado (extraído de `MEGA_PLAN_REFINAMIENTO.md §2`)
 
@@ -229,17 +231,17 @@ Sesión final de refinamiento con metodología `code-review` skill (4 pasadas in
 |---|---|---|---|---|
 | P0 — Defensa inminente | 7 | 6 | 1 [EXT] | 85.7 |
 | R — Refactor | 4 | 4 | 0 | 100 |
-| P1 — Calidad/a11y | 11 | 9 | 2 | 81.8 |
+| P1 — Calidad/a11y | 11 | 10 | 1 | 90.9 |
 | P2 — Núcleo | 7 | 4 | 3 | 57.1 |
 | P3 — Deuda | 8 | 4 | 4 | 50.0 |
-| PROD — Producción | 10 | 3 | 7 | 30.0 |
+| PROD — Producción | 10 | 4 | 6 | 40.0 |
 | A11Y — WCAG | 10 | 5 | 5 | 50.0 |
 | PRO-Snr — Senior | 18 | 17 | 1 | 94.4 |
 | PRO-Rel — Stores | 33 | 14 | 19 | 42.4 |
 | PRO-QA — Testing | 25 | 13 | 12 | 52.0 |
-| PRO-A11Y — AAA | 23 | 14 | 9 | 60.9 |
+| PRO-A11Y — AAA | 23 | 15 | 8 | 65.2 |
 | PRO-Ops — SRE | 34 | 16 | 18 | 47.1 |
-| **TOTAL** | **190** | **109** | **81** | **57.4** |
+| **TOTAL** | **190** | **112** | **78** | **58.9** |
 
 ### Regresiones detectadas en scan final
 
@@ -253,13 +255,20 @@ Sesión final de refinamiento con metodología `code-review` skill (4 pasadas in
 
 | ID | Descripción | Bloque |
 |---|---|---|
+| P1-3 | Revisión textScaler en pantallas restantes | P1 |
 | P2-2 | Auditoría Realtime stop/route con multiplex compartido | P2 |
 | P2-4 | Tests unitarios de repositorios `remote/` (palanca de cobertura) | P2 |
 | P3-5 | Descomponer `privacy_screen.dart` (406 LoC → ≤300) | P3 |
-| PROD-5 | autoDispose en providers `.family` pendientes | PROD |
 | A11Y-3 | Pasada real con TalkBack/VoiceOver [EXT parcial] | A11Y |
 | PRO-A11Y-13 | ARB árabe completo (actual 62/433 keys, 14.3%) [EXT parcial: traducción humana] | PRO-A11Y |
 | PRO-QA-07 | Integration tests con emulador Android (3 happy paths) | PRO-QA |
+
+### ✅ Items cerrados en F6.12 (respecto a scan previo)
+
+| ID | Descripción | Bloque |
+|---|---|---|
+| P1-11 | Issues F16/F22 — 13/13 verificados y cerrados | P1 |
+| PROD-5 | `.family` sweep — 3 providers → `.autoDispose.family` | PROD |
 
 ---
 

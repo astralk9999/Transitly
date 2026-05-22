@@ -4,7 +4,7 @@
 >
 > **Objetivo declarado:** las 3 cosas a la vez — **TFG defensa impecable** + **app publicable en Play Store / App Store** + **portfolio de ingeniería senior**.
 >
-> **Estado verificado:** `master @ 605a062+` · `flutter analyze` 0 errors (22 info) · 304 tests (1 skipped) · cobertura 24,30 % · APK release 73,5 MB · CI verde (4 jobs incl. Build Android APK).
+> **Estado verificado (2026-05-22):** `master @ 3dda413` · `flutter analyze` 0 errors, 0 warnings (22 info) · 304 tests (1 skipped) · cobertura 24,30 % · 14 migraciones · 4 edge functions · 63 test files · 73 doc files · 846 ARB keys · 315 source files · APK release 73,5 MB · CI verde (4 jobs incl. Build Android APK).
 >
 > **Regla transversal:** cada ítem se cierra solo si tras él `flutter analyze` = 0, `flutter test` sigue verde y CI en GitHub queda verde.
 
@@ -31,19 +31,20 @@
 ## 2. Cuadro de mando global (190 ítems · 12 bloques)
 
 | Bloque | Total | ✅ Hecho | ⏳ Pendiente | Nivel | Notas |
-|---|---:|---:|---:|:--:|---|
+|---|---|---|---|---|---|
 | **P0** — Defensa inminente | 7 | 6 | 1 [EXT] | A | Solo rotación de PAT pendiente externa |
 | **R** — Workstream paquetes/refactor | 4 | 4 | 0 | A | Freezed 3, go_router 17, app_router split |
-| **P1** — Calidad / a11y / requisitos | 11 | 9 | 2 | A | P1-6/7 documentados; queda P1-11 (issues F16/F22) y P1-3 textScaler revisar |
-| **P2** — Núcleo + cobertura | 7 | 4 | 3 | A/C | Faltan P2-2 (stop/route Realtime con multiplex), P2-3 unificar usuario (parcial), P2-4 tests `remote/` |
-| **P3** — Deuda de fondo | 8 | 4 | 4 | A/C | autoDispose `.family`, F26 fuentes verificadas, audit_log `data/auth/`, tests integración |
-| **PROD** — Producción a escala (existente) | 10 | 3 | 7 | B/C | Keystore [EXT], observabilidad, mapa clustering, caché tenant |
+| **P1** — Calidad / a11y / requisitos | 11 | 10 | 1 | A | P1-11 (F16/F22) cerrado completo (13/13); queda P1-3 textScaler revisión |
+| **P2** — Núcleo + cobertura | 7 | 4 | 3 | A/C | Faltan P2-2 (stop/route Realtime auditoría), P2-4 tests `remote/` (palanca cobertura) |
+| **P3** — Deuda de fondo | 8 | 4 | 4 | A/C | `.family` sweep completado; audit_log, tests integración, descomposición pendientes |
+| **PROD** — Producción a escala (existente) | 10 | 4 | 6 | B/C | `.family` sweep ✅; keystore [EXT], observabilidad, mapa clustering, caché tenant |
 | **A11Y** — WCAG existente | 10 | 5 | 5 | B/C | Verificación lector, alt mapa, contrastes, foco, RTL completo |
-| **PRO-Snr** — Senior portfolio 🆕 | 18 | 17 | 1 | C | ADRs, LICENSE, CHANGELOG, ErrorBoundary, CI, rollback docs, dartdoc, auth_provider, golden tests, integration docs |
-| **PRO-Rel** — Publicación stores 🆕 | 33 | 14 | 19 | B | Permisos, PrivacyInfo, icons, CI, Gitleaks, versionCode, report, age, consents, iOS build CI |
-| **PRO-QA** — Testing pro 🆕 | 25 | 13 | 12 | C | auth tests, ARB, architecture, a11y, i18n, roundtrip, feature-switch, Semgrep, leak, edge fn, db reset, golden, integration docs |
-| **PRO-A11Y** — A11y AAA + inclusión 🆕 | 23 | 14 | 9 | C | Contrast, lints, daltonism, textScaler, RTL, undo, breadcrumbs, meetsGuideline, switch, report, low data, FocusTraversalGroup, Inflesz audit |
-| **TOTAL** | **190** | **109+** | **81** | | 109+ cerrados (57 %+); de los 81 pendientes ~42 son [EXTERNAL], ~20 [L/XL] |
+| **PRO-Snr** — Senior portfolio 🆕 | 18 | 17 | 1 | C | ADRs, LICENSE, CHANGELOG, ErrorBoundary, CI, rollback docs, dartdoc, auth_provider |
+| **PRO-Rel** — Publicación stores 🆕 | 33 | 14 | 19 | B | Permisos, PrivacyInfo, icons, CI, versionCode, age, consents, iOS build CI |
+| **PRO-QA** — Testing pro 🆕 | 25 | 13 | 12 | C | auth tests, ARB parity smoke, architecture layer, a11y programmatic, golden tests, roundtrip |
+| **PRO-A11Y** — A11y AAA + inclusión 🆕 | 23 | 15 | 8 | C | Contrast matrix, textScaler 200%, FocusTraversalGroup, RTL undo, switch access, daltonism, Inflesz audit |
+| **PRO-Ops** — SRE / Operación 🆕 | 34 | 16 | 18 | C | SLO catalog, 3 runbooks, Sentry spans, PostHog events, alert matrix, C4 diagrams, service catalog |
+| **TOTAL** | **190** | **112** | **78** | | 112 cerrados (58,9 %); de los 78 pendientes ~42 son [EXTERNAL], ~20 [L/XL] |
 
 > Definición de "✅ Hecho": verificado en código + en CI verde + criterio de aceptación cumplido en el documento que lo declaró.
 
@@ -394,11 +395,11 @@ supabase test db
 ## 9. Resumen ejecutivo
 
 - **Total ítems:** 190 (57 originales + 133 nuevos de auditoría multi-agente).
-- **Estado actual:** 35 cerrados (18,4 %). Foco inmediato en cerrar los 1-2 residuales del bloque A para defensa TFG impecable.
-- **Hito recomendado siguiente:** **H2 — Senior Foundations** (3-4 días). Es la mayor relación valor/esfuerzo: ADRs, LICENSE, CHANGELOG, ErrorBoundary, pre-commit hooks, PR templates. Eleva el repo de "TFG aprobado" a "portfolio defendible en entrevista senior" sin tocar arquitectura nuclear.
+- **Estado actual (F6.12 re-audit):** 112 cerrados (58,9 %). Plan v2: 28/28 fases completadas (100 %). Bloque A (TFG defensa): 20/22 cerrados (90,9 %).
+- **Hito recomendado siguiente:** **Cerrar bloqueadores externos** (B1 keystore, B2 TalkBack/VoiceOver) + **P2-4 tests `remote/`** (palanca de cobertura 24,30 % → 30+ %).
 - **Cuellos de botella estructurales:**
   - **Cobertura 24,30 %:** la palanca es PRO-QA-03 + PRO-QA-06 + P2-4 (tests `remote/`).
-  - **Producción real:** PRO-Rel-1 (AAB firmado en CI) + PRO-Ops-1 (SLOs).
+  - **Producción real:** B1 (keystore [EXT]) + PRO-Rel-1 (AAB firmado en CI) + PRO-Ops-1 (SLOs).
   - **Accesibilidad AAA defendible:** PRO-A11Y-13 (ARB árabe completo) + A11Y-3 pasada con lector real.
 - **Acciones externas pendientes:** ~42 ítems [EXTERNAL] documentados; no bloquean el desarrollo local.
 - **Skill `code-review` checkpoints:** 6 hitos de auditoría externa simulada para validar cierres.

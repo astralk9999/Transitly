@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../core/utils/uuid.dart';
+import '../../data/analytics/posthog_service.dart';
 import '../../data/incident/incident_repository_provider.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../shared/models/enums.dart';
@@ -128,6 +129,8 @@ class _ReportIncidentContentState
       );
 
       await repo.create(incident);
+
+      PostHogAnalyticsService.incidentReported(_selected!);
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

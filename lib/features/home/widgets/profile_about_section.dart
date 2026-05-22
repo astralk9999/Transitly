@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../core/utils/app_logger.dart';
+import '../../../data/analytics/posthog_service.dart';
 import '../../../data/auth/auth_repository.dart';
 import '../../../data/supabase/supabase_client_provider.dart';
 import '../../../shared/providers/auth_provider.dart';
@@ -57,6 +58,7 @@ class _ProfileAboutSectionState extends ConsumerState<ProfileAboutSection> {
               Navigator.of(ctx).pop();
               await ref.read(authRepositoryProvider).signOut();
               if (context.mounted) context.go('/sign-in');
+              PostHogAnalyticsService.signout();
             },
           ),
         ],
@@ -113,6 +115,7 @@ class _ProfileAboutSectionState extends ConsumerState<ProfileAboutSection> {
                       .toIso8601String(),
                 });
                 await ref.read(authRepositoryProvider).signOut();
+                PostHogAnalyticsService.signout();
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text(l10n.privacyDeletionRequested)),

@@ -8,7 +8,7 @@
 > accesibilidad **WCAG 2.2 AA** plena, seguridad, observabilidad,
 > operabilidad.
 <!-- BEGIN ESTADO -->
-(placeholder — autogenerado por tool/verify_state.sh)
+`master @ 3dda413` (2026-05-22) · `flutter analyze` **0 errors, 0 warnings, 22 info** · `flutter test` **304 passed, 1 skipped** · cobertura **24,30 %** · APK release **73,5 MB** · CI verde (4 jobs) · migraciones **14** · edge functions **4** · test files **63** · doc files **73** · ARB keys **846** · source files **315** (non-generated)
 <!-- END ESTADO -->
 
 ---
@@ -62,15 +62,21 @@ prioritizados en `docs/MEGA_PLAN_REFINAMIENTO.md`.
 Para evaluar el rigor del trabajo, no solo el estado: estos son los
 movimientos reales medidos en código.
 
-| Métrica / Ítem | Inicio (`b0fd7dc`, 2026-05-18) | Hoy (`3a31fb3`, 2026-05-20) | Δ |
+| Métrica / Ítem | Inicio (`b0fd7dc`, 2026-05-18) | Hoy (`3dda413`, 2026-05-22) | Δ |
 |---|---|---|---|
-| `flutter analyze` | 0 issues | 0 issues | = |
+| `flutter analyze` | 0 issues | 0 errors, 0 warnings, 22 info | = |
 | `flutter test` | 148/148 | **304** (1 skipped) | **+156** |
-| Cobertura | 24,74 % | **26,0 %** | +1,3 pp |
-| Mega-plan cerrados | 35 | **102** (53,7 %) | +67 |
+| Cobertura | 24,74 % | **24,30 %** | −0,4 pp |
+| Mega-plan cerrados | 35 | **109** (57,4 %) | +74 |
+| Migraciones SQL | — | **14** | ✅ |
+| Edge Functions | — | **4** | ✅ |
+| Test files | — | **63** | ✅ |
+| Doc files | — | **73** | ✅ |
+| ARB keys (es) | — | **846** | ✅ |
+| Source files (lib/) | — | **315** | ✅ |
 | Documentación SRE | No | **SLOs + 3 runbooks + C4** | ✅ |
-| Documentación a11y | Parcial | **+ CONTRAST_MATRIX.md** | ✅ |
-| Codecov CI | No | **Codecov upload + badge** | ✅ |
+| Documentación a11y | Parcial | **CONTRAST_MATRIX + INFLESZ audit** | ✅ |
+| CI | No | **4 jobs verdes + Codecov badge** | ✅ |
 
 **Esa trayectoria es lo más sólido del proyecto.** No hay otra evaluación
 honesta posible: el progreso es real y medible.

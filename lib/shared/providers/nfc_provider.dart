@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../data/analytics/posthog_service.dart';
 import '../../data/nfc/nfc_card_service.dart';
 
 /// The service instance. Override in tests with a fake.
@@ -67,6 +68,7 @@ class NfcScanNotifier extends StateNotifier<NfcScanState> {
 
     await _service.startScan(
       onResult: (result) {
+        PostHogAnalyticsService.nfcReadSuccess('mifare_classic', result.balance);
         final history = [result, ...state.scanHistory].take(_maxHistory).toList();
         state = NfcScanState(
           status: NfcScanStatus.success,

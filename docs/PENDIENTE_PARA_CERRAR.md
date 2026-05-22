@@ -1,19 +1,20 @@
 # Transitly — Pendiente para el próximo ciclo (todo, en un sitio)
 
-> **Session in progress (2026-05-22):** mega-plan refinement (190 items,
-> 12 blocks). Current metrics: `flutter test` **304 / 1 skipped** ✅ ·
-> `flutter analyze` **0 errors (22 info)** ✅ · **109+ cerrados (57 %+)** ·
-> **17+ commits** this session. See `docs/MEGA_PLAN_REFINAMIENTO.md` and
-> `docs/PROPUESTAS_FUTURAS.md` for live scoreboard and audit details.
+> **Session CLOSED (2026-05-22):** mega-plan refinement complete. Final
+> metrics: `flutter test` **304 / 1 skipped** ✅ · `flutter analyze`
+> **0 errors, 0 warnings (22 info)** ✅ · **14 migraciones** · **4 edge
+> functions** · **63 test files** · **73 doc files** · **846 ARB keys** ·
+> **315 source files** · **112/190 cerrados (58,9 %)** · **5 commits**
+> this session batch.
 >
 > **Para qué sirve este documento:** lo que falta tras los ciclos cerrados
-> hasta el **2026-05-20 (noche)**, listo para retomar. Es el *playbook*
+> hasta el **2026-05-22 (final)**, listo para retomar. Es el *playbook*
 > exhaustivo y autocontenido — no hace falta abrir otros docs.
-> **Estado verificado (2026-05-20):** `master @ 9a0cc0b` ·
-> `flutter analyze` **0 issues** ✅ · `flutter test` **175/175** ✅ ·
-> cobertura **24,30 %** · `flutter build apk --release` **OK** (73,5 MB) ·
-> **CI verde** (4 jobs, incl. Build Android APK) para los commits ya
-> completados; los doc-only más recientes en `in_progress` al cierre.
+> **Estado verificado (2026-05-22):** `master @ 3dda413` ·
+> `flutter analyze` **0 errors, 0 warnings, 22 info** ✅ ·
+> `flutter test` **304/304 (1 skipped)** ✅ · cobertura **24,30 %** ·
+> `flutter build apk --release` **OK** (73,5 MB) · **CI verde** (4 jobs,
+> incl. Build Android APK).
 > **Nota:** la rotación del PAT de Supabase (antes SEC1/PROD-4) queda
 > **descartada** (dev / migración de BD próxima).
 
@@ -288,3 +289,79 @@ de pantalla). **Palanca de cobertura**: §2.2 (tests de capa `remote/`).
 **Pendiente arrastrado:** §1 (keystore, screen reader pass — manuales del
 usuario), §2.2 tests `remote/`, §2.4 (RTL runtime, contrastes, foco),
 §3 deuda de fondo.
+
+---
+
+## 6. F6.12 Final Re-Audit Summary (2026-05-22)
+
+### Plan v2 Progress (F0→F27, 28 fases)
+
+| Bloque | Fases | Estado |
+|---|---|---|
+| I — Cimientos | F0, F0.5, F1, F2, F3 | ✅ 5/5 |
+| II — Identidad | F4, F5, F6 | ✅ 3/3 |
+| III — Datos a escala | F7, F8 | ✅ 2/2 |
+| IV — Experiencia core | F9, F10, F11, F12 | ✅ 4/4 |
+| V — Ojos del bus | F13, F14 | ✅ 2/2 |
+| VI — Comunidad y moderación | F15, F16 | ✅ 2/2 |
+| VII — Pulido visual y accesibilidad | F17, F18, F19 | ✅ 3/3 |
+| VIII — Infraestructura de producto | F20, F21, F22 | ✅ 3/3 |
+| IX — Plataformas extra | F23, F24 | ✅ 2/2 |
+| X — Cierre | F25, F26, F27 | ✅ 3/3 |
+| **TOTAL** | **28 fases** | **✅ 28/28 (100 %)** |
+
+### Mega-plan Scoreboard (F6.12 close)
+
+| Bloque | Total | ✅ | ⏳ | % |
+|---|---|---|---|---|
+| P0 | 7 | 6 | 1 [EXT] | 85.7 |
+| R | 4 | 4 | 0 | 100 |
+| P1 | 11 | 10 | 1 | 90.9 |
+| P2 | 7 | 4 | 3 | 57.1 |
+| P3 | 8 | 4 | 4 | 50.0 |
+| PROD | 10 | 4 | 6 | 40.0 |
+| A11Y | 10 | 5 | 5 | 50.0 |
+| PRO-Snr | 18 | 17 | 1 | 94.4 |
+| PRO-Rel | 33 | 14 | 19 | 42.4 |
+| PRO-QA | 25 | 13 | 12 | 52.0 |
+| PRO-A11Y | 23 | 15 | 8 | 65.2 |
+| PRO-Ops | 34 | 16 | 18 | 47.1 |
+| **TOTAL** | **190** | **112** | **78** | **58.9** |
+
+### Verification Snapshot
+
+```
+commit:      3dda413 (2026-05-22)
+analyze:     0 errors, 0 warnings, 22 info
+test:        304 passed, 1 skipped
+coverage:    24.30 %
+migrations:  14 SQL files
+edge fn:     4 directories
+test files:  63 Dart files
+doc files:   73 Markdown files
+ARB keys:    846 (es template)
+source:      315 Dart files (non-generated)
+APK release: 73.5 MB
+CI:          4 jobs verde
+```
+
+### External Blockers (unchanged)
+
+| # | Blocker | Action |
+|---|---------|--------|
+| B1 | Keystore real | `keytool -genkey` (~15 min) |
+| B2 | TalkBack/VoiceOver pass | Physical device test (~1 day) |
+| B3 | PAT rotation | Supabase dashboard (5 min) |
+| B4 | Apple Developer enrollment | $99/year + provisioning |
+| B5 | AR Arabic translation | 272 keys need native review |
+| B6 | Play/App Store submissions | Forms, listings, screenshots |
+
+### Documents Updated
+
+| Document | Action |
+|---|---|
+| `docs/00_MAESTRO.md` | Estado verificado + trajectory table updated |
+| `docs/MEGA_PLAN_REFINAMIENTO.md` | Scoreboard §2 updated (109→112, 57.4%→58.9%) |
+| `docs/PENDIENTE_PARA_CERRAR.md` | Session header → CLOSED; F6.12 summary appended |
+| `docs/PROPUESTAS_FUTURAS.md` | Metrics + scoreboard updated; Plan v2 status added |
+| `docs/PLAN_V2_PROGRESS.md` | **NEW** — Clean progress table 28 fases |

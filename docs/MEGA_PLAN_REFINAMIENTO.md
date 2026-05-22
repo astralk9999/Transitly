@@ -41,10 +41,10 @@
 | **A11Y** — WCAG existente | 10 | 5 | 5 | B/C | Verificación lector, alt mapa, contrastes, foco, RTL completo |
 | **PRO-Snr** — Senior portfolio 🆕 | 19 | 18 | 1 | C | ADRs, LICENSE, CHANGELOG, ErrorBoundary, CI, lint rules, rollback docs, dartdoc, ProviderObserver |
 | **PRO-Rel** — Publicación stores 🆕 | 33 | 17 | 16 | B | Permisos, PrivacyInfo, icons, CI AAB, adaptive icons, bundle split, versionCode, age, consents, iOS build CI |
-| **PRO-QA** — Testing pro 🆕 | 25 | 13 | 12 | C | auth tests, ARB parity smoke, architecture layer, a11y programmatic, golden tests, roundtrip |
+| **PRO-QA** — Testing pro 🆕 | 25 | 19 | 6 | C | auth tests, ARB parity smoke, architecture layer, a11y programmatic, golden tests, roundtrip |
 | **PRO-A11Y** — A11y AAA + inclusión 🆕 | 23 | 18 | 5 | C | PRO-A11Y-1/2/3/5 cerrados; pendientes: RTL undo, switch access, daltonism, Inflesz audit, ARB árabe |
 | **PRO-Ops** — SRE / Operación 🆕 | 34 | 20 | 14 | C | SLO catalog, 3 runbooks, Sentry spans, PostHog events, alert matrix, C4 diagrams, service catalog |
-| **TOTAL** | **190** | **124** | **66** | | 124 cerrados (65,3 %); de los 66 pendientes ~42 son [EXTERNAL], ~20 [L/XL] |
+| **TOTAL** | **190** | **130** | **60** | | 130 cerrados (68,4 %); de los 60 pendientes ~42 son [EXTERNAL], ~20 [L/XL] |
 
 > Definición de "✅ Hecho": verificado en código + en CI verde + criterio de aceptación cumplido en el documento que lo declaró.
 
@@ -146,19 +146,20 @@ Bloque dominado por acciones [EXTERNAL] (cuentas, certificados, formularios de s
 
 | ID | Acción | Esf. | +Cov |
 |---|---|:-:|:-:|
-| PRO-QA-02 | Round-trip serialization tests para los 14 `PendingActionKind` | S | +0,5pp |
+| PRO-QA-02 | ✅ Round-trip serialization tests para los 14 `PendingActionKind` | S | +0,5pp |
 | PRO-QA-03 | Extraer `auth_helpers.dart`; tests de `_mapError` por rama | S | +1pp |
-| PRO-QA-11 | Gitleaks + Trufflehog en CI (overlap con PRO-Rel-32) | S | — |
+| PRO-QA-11 | ✅ Gitleaks + Trufflehog en CI (overlap con PRO-Rel-32) | S | — |
 | PRO-QA-09 | Coverage gate por módulo (`lib/data/operator/` ≥60 %, `core/` ≥70 %) | S | — |
 | PRO-QA-14 | Tests de arquitectura de capas (anti-import rules) | S | +0,2pp |
 | PRO-QA-16 | Test de paridad ARB es/en/ar; falla si claves divergen | S | +0,3pp |
 | PRO-QA-04 | Goldens del design system (8 widgets × dark/light) | M | +1pp |
-| PRO-QA-05 | A11y programática con `meetsGuideline(...)` (tap target + contrast) | S | +0,5pp |
+| PRO-QA-05 | ✅ A11y programática con `meetsGuideline(...)` (tap target + contrast) | S | +0,5pp |
 | PRO-QA-06 | Widget tests auth: loading/error/redirect states | M | +1,5pp |
 | PRO-QA-10 | Codecov integration + comentario en PRs + badge en README | S | — |
 | PRO-QA-12 | Semgrep SAST con regla custom `no-hardcoded-es-strings` | M | — |
-| PRO-QA-18 | Tests i18n: RTL árabe, fechas/números localizados | S | +0,5pp |
-| PRO-QA-19 | Tests feature-switch mock vs Supabase según `authStateProvider` | S | +1pp |
+| PRO-QA-13 | ✅ No hardcoded ES (155 strings migrated, semgrep rule active) | M | — |
+| PRO-QA-18 | ✅ Tests i18n: RTL árabe, fechas/números localizados | S | +0,5pp |
+| PRO-QA-19 | ✅ Tests feature-switch mock vs Supabase según `authStateProvider` | S | +1pp |
 | PRO-QA-21 | Tests Deno para `send_notification` (UUID validation, service role, rate limit, FCM JSON) | M | — |
 | PRO-QA-15 | `supabase db reset` en CI con migraciones idempotentes | M | — |
 | PRO-QA-20 | RLS tests con pgTAP (anon no lee privados, role escalation bloqueado) | L | — |

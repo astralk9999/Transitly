@@ -141,9 +141,10 @@ Transitly/
 │   │   ├── mock/                 # MockDataService, MockRealtimeService
 │   │   ├── cache/                # Hive adapters + boxes + HiveInit
 │   │   ├── nfc/                  # NfcCardService + i18n
+│   │   ├── push/                 # Firebase setup (firebase_setup.dart) + FCM push service
 │   │   ├── sync/                 # RealtimeChannelManager, OfflineSyncService
 │   │   └── <entity>/             # 12 entidades con patrón canónico de 5 ficheros
-│   ├── features/                 # Feature-first (~25 features)
+│   ├── features/                 # Feature-first (27 features)
 │   ├── l10n/                     # ARB es/en/ar + generated/
 │   └── shared/                   # models/ (27+ @freezed), providers/, widgets/
 ├── android/
@@ -179,7 +180,7 @@ Transitly/
 │   └── historico/                # Documentos archivados (trazabilidad)
 ├── multiagent/                   # Documentación del sistema multiagente IA
 ├── supabase/
-│   ├── migrations/               # 13 migraciones SQL
+│   ├── migrations/               # 15 migraciones SQL
 │   └── functions/                # Edge Functions (import_gtfs, send_notification)
 ├── data/seed/                    # spanish_gtfs_feeds.yaml
 ├── test/                         # 175 tests Dart
@@ -193,6 +194,65 @@ Transitly/
 ├── AGENTS.md                     # Guía operativa para agentes IA
 └── README.md                     # Entrada del repositorio
 ```
+
+### 3.1. Arquitectura de capas
+
+Transitly sigue un patrón de 4 capas por entidad de datos, con
+`lib/data/operator/` como implementación de referencia:
+
+| Capa | Directorio | Responsabilidad |
+|------|-----------|----------------|
+| **Domain** | `domain/` | Interfaz abstracta (`OperatorRepository`) + excepciones tipadas |
+| **Remote** | `remote/` | Implementación Supabase (consultas SQL, Realtime) |
+| **Local** | `local/` | Implementación Hive (caché offline, SWR, guest fallback) |
+| **Mock** | `local/` | Datos mock para modo invitado (`MockDataService`) |
+| **Provider** | (raíz) | Provider Riverpod con selector mock vs real + SWR |
+
+Cada entidad produce 5 ficheros: interfaz abstracta, repositorio
+remoto, repositorio local, repositorio mock y provider. Doce entidades
+siguen este patrón: `operator`, `route`, `stop`, `schedule`, `alert`,
+`incident`, `feedback`, `suggestion`, `feature_request`,
+`notification`, `offline_region` y `export`.
+
+#### Caché local (Hive) — 16 cajas
+
+```
+routes · stops · schedules · operators · user_preferences
+offline_regions · alerts · incidents · route_feedback
+route_suggestions · feature_requests · notifications
+editor_drafts · pending_actions · dead_letter_actions
+auth_session_meta
+```
+
+Inicializadas en `lib/data/cache/hive_init.dart` (adapters registrados
+en `lib/data/cache/hive_adapters.dart`). Si una caja está corrupta, se
+borra y se recrea automáticamente al arranque.
+
+#### Features — 27 módulos
+
+```
+accessible_buses · admin · appearance · auth · bus_estimation
+city_picker · contributions · debug · driver · error · feedback
+home · incidents · management · map · notifications · offline
+onboarding · operator_admin · privacy · profile · route_detail
+search · splash · stop_detail · suggestions · widgets_native
+```
+
+Cada feature contiene al menos un `*_screen.dart` (punto de entrada
+navegable) y widgets internos propios. Los widgets compartidos entre
+≥2 features viven en `lib/shared/widgets/` (27 widgets: `GlassCard`,
+`StaggerList`, `RouteCard`, `TransitButton`, etc.).
+
+#### Push notifications
+
+El módulo `lib/data/push/` contiene:
+- `firebase_setup.dart` — inicialización de Firebase (condicional, sin
+  crash si `firebase_options.dart` no existe).
+- `push_service.dart` — registro de tokens FCM en `device_tokens` vía
+  Supabase.
+
+Las notificaciones push se envían desde la Edge Function
+`send_notification` (invocada por triggers SQL vía `pg_net`).
 
 ---
 
@@ -212,7 +272,7 @@ supabase db push
 supabase migration list
 ```
 
-13 ficheros en `supabase/migrations/`:
+15 ficheros en `supabase/migrations/`:
 
 - `001_init.sql` — schema base (operadores, paradas, rutas, schedules,
   perfiles, posiciones).
@@ -222,12 +282,15 @@ supabase migration list
   permisos a `anon`.
 - `004_storage.sql` — buckets para avatares y adjuntos.
 - `005_functions.sql` — RPCs (búsqueda geográfica, votos).
-- `006_vote_helpers.sql`, `007_invitation_helpers.sql`,
-  `007_notification_triggers.sql` — helpers para votos, códigos de
-  invitación, triggers de notificaciones.
-- `012_reputation.sql`, `013_offline_export.sql`, `014_push_tokens.sql`,
-  `015_push_triggers.sql`, `016_data_exports.sql` — extensiones de
-  producto.
+- `006_vote_helpers.sql` — helpers para sistema de votos.
+- `007_invitation_helpers.sql` — códigos de invitación.
+- `008_notification_triggers.sql` — triggers de notificaciones.
+- `009_push_tokens.sql` — tabla `device_tokens` para FCM.
+- `010_push_triggers.sql` — triggers SQL para push vía `pg_net`.
+- `011_audit_log_extras.sql` — logging de auditoría extendido.
+- `012_reputation.sql` — sistema de reputación de usuarios.
+- `013_offline_export.sql` — exportación de datos para modo offline.
+- `016_data_exports.sql` — exportaciones GDPR (solicitudes de datos).
 
 ### 4.2. Tablas principales
 

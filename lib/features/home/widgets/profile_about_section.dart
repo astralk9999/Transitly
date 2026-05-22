@@ -3,12 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../core/utils/app_logger.dart';
 import '../../../data/auth/auth_repository.dart';
+import '../../../data/supabase/supabase_client_provider.dart';
 import '../../../shared/providers/auth_provider.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/models/user_role.dart';
@@ -101,7 +100,7 @@ class _ProfileAboutSectionState extends ConsumerState<ProfileAboutSection> {
               final authState = ref.read(authStateProvider).valueOrNull;
               if (authState is! AuthAuthenticated) return;
               try {
-                await Supabase.instance.client
+                await ref.read(supabaseClientProvider)
                     .from('data_deletion_requests')
                     .insert({
                   'user_id': authState.user.id,

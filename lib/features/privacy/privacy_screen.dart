@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/utils/app_logger.dart';
@@ -13,6 +12,7 @@ import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../shared/providers/auth_provider.dart';
 import '../../data/auth/auth_repository.dart';
+import '../../data/supabase/supabase_client_provider.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../shared/providers/privacy_consent_provider.dart';
 import '../../core/env.dart';
@@ -78,7 +78,7 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen> {
     if (authState is! AuthAuthenticated) return;
     final l10n = AppLocalizations.of(context);
     try {
-      final client = Supabase.instance.client;
+      final client = ref.read(supabaseClientProvider);
       await client.from('data_exports').insert({
         'user_id': authState.user.id,
         'status': 'queued',
@@ -125,7 +125,7 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen> {
     if (confirmed != true) return;
 
     try {
-      final client = Supabase.instance.client;
+      final client = ref.read(supabaseClientProvider);
       final authState = ref.read(authStateProvider).valueOrNull;
       if (authState is! AuthAuthenticated) return;
       await client.from('data_deletion_requests').insert({

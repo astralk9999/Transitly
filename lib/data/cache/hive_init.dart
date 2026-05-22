@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../core/utils/app_logger.dart';
@@ -14,6 +16,7 @@ import '../../shared/models/schedule_model.dart';
 import '../../shared/models/stop_model.dart';
 import '../../shared/models/user_preferences.dart';
 import 'hive_adapters.dart';
+import 'secure_storage.dart';
 
 /// Nombres de cajas Hive de Transitly.
 ///
@@ -83,25 +86,39 @@ abstract class HiveInit {
     await _open<AppNotification>(HiveBoxes.notifications);
     await _open<Map<dynamic, dynamic>>(HiveBoxes.editorDrafts);
 
-    // Cajas sin tipo fijado: cada entrada es `Map<dynamic, dynamic>`
-    // serializable directamente por Hive (los maps se cargan así por
-    // limitación del binario; el cast a `Map<String, dynamic>` se hace
-    // en el repositorio que consume cada entrada).
-    await _open<Map<dynamic, dynamic>>(HiveBoxes.pendingActions);
+    final encryptionCipher = HiveAesCipher(await _encryptionKey());
+
+    await _open<Map<dynamic, dynamic>>(
+      HiveBoxes.pendingActions,
+      cipher: encryptionCipher,
+    );
     await _open<Map<dynamic, dynamic>>(HiveBoxes.deadLetterActions);
-    await _open<Map<dynamic, dynamic>>(HiveBoxes.authSessionMeta);
+    await _open<Map<dynamic, dynamic>>(
+      HiveBoxes.authSessionMeta,
+      cipher: encryptionCipher,
+    );
 
     AppLogger.info(_logTag, 'opened ${Hive.box(HiveBoxes.routes).path != null ? "all" : "?"} boxes');
   }
 
-  static Future<Box<T>> _open<T>(String name) async {
+  static Future<Box<T>> _open<T>(String name, {HiveAesCipher? cipher}) async {
     try {
-      return await Hive.openBox<T>(name);
+      return await Hive.openBox<T>(name, encryptionCipher: cipher);
     } catch (e, st) {
       AppLogger.error(_logTag, 'open box "$name" failed; deleting and retrying', e, st);
       await Hive.deleteBoxFromDisk(name);
-      return Hive.openBox<T>(name);
+      return Hive.openBox<T>(name, encryptionCipher: cipher);
     }
+  }
+
+  static Future<List<int>> _encryptionKey() async {
+    final key = await SecureStorage.readSession('hive_key');
+    if (key != null) {
+      return base64Decode(key);
+    }
+    final newKey = Hive.generateSecureKey();
+    await SecureStorage.saveSession('hive_key', base64Encode(newKey));
+    return newKey;
   }
 
   /// Cierra todas las cajas y libera handles. Útil en tests para

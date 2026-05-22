@@ -40,11 +40,11 @@
 | **PROD** — Producción a escala (existente) | 10 | 4 | 6 | B/C | `.family` sweep ✅; keystore [EXT], observabilidad, mapa clustering, caché tenant |
 | **A11Y** — WCAG existente | 10 | 5 | 5 | B/C | Verificación lector, alt mapa, contrastes, foco, RTL completo |
 | **PRO-Snr** — Senior portfolio 🆕 | 19 | 18 | 1 | C | ADRs, LICENSE, CHANGELOG, ErrorBoundary, CI, lint rules, rollback docs, dartdoc, ProviderObserver |
-| **PRO-Rel** — Publicación stores 🆕 | 33 | 22 | 11 | B | Permisos, PrivacyInfo, icons, CI AAB, adaptive icons, bundle split, versionCode, age, consents, iOS build CI |
-| **PRO-QA** — Testing pro 🆕 | 25 | 19 | 6 | C | auth tests, ARB parity smoke, architecture layer, a11y programmatic, golden tests, roundtrip |
+| **PRO-Rel** — Publicación stores 🆕 | 33 | 26 | 7 | B | Permisos, PrivacyInfo, icons, CI AAB, adaptive icons, bundle split, versionCode, age, consents, iOS build CI |
+| **PRO-QA** — Testing pro 🆕 | 25 | 23 | 2 | C | auth tests, ARB parity smoke, architecture layer, a11y programmatic, golden tests, roundtrip |
 | **PRO-A11Y** — A11y AAA + inclusión 🆕 | 23 | 23 | 0 | C | ✅ Completo (23/23) |
 | **PRO-Ops** — SRE / Operación 🆕 | 34 | 20 | 14 | C | SLO catalog, 3 runbooks, Sentry spans, PostHog events, alert matrix, C4 diagrams, service catalog |
-| **TOTAL** | **190** | **140** | **50** | | 140 cerrados (73,7 %); de los 50 pendientes ~35 son [EXTERNAL], ~17 [L/XL] |
+| **TOTAL** | **190** | **148** | **42** | | 148 cerrados (77,9 %); de los 42 pendientes ~35 son [EXTERNAL], ~17 [L/XL] |
 
 > Definición de "✅ Hecho": verificado en código + en CI verde + criterio de aceptación cumplido en el documento que lo declaró.
 
@@ -100,11 +100,11 @@ Antes y después de cada ítem que toque código: `flutter analyze` 0 + `flutter
 | PRO-Rel-5 | ✅ Adaptive icon Android 8+ + monochrome icon Android 13+ | M |
 | PRO-Rel-1 | ✅ Job de CI `build-android-release-aab` con keystore desde secrets + `jarsigner -verify` | M |
 | PRO-Rel-9 | ✅ `bundle { language { enableSplit }, abi { enableSplit } }` en `build.gradle.kts` | S |
-| PRO-Rel-19 | Verificar ATT en `posthog_flutter`; añadir `NSUserTrackingUsageDescription` o documentar no-tracking | S |
-| PRO-Rel-20 | Botón "Reportar contenido" en incidencias y sugerencias (App Review 1.6 / GDPR DSA) | M |
+| PRO-Rel-19 | ✅ Verificar ATT en `posthog_flutter`; añadir `NSUserTrackingUsageDescription` o documentar no-tracking | S |
+| PRO-Rel-20 | ✅ Botón "Reportar contenido" en incidencias y sugerencias (App Review 1.6 / GDPR DSA) | M |
 | PRO-Rel-23 | Esquema `privacy_consents` con `granted_at`, `revoked_at`, `consent_version`, append-only | M |
-| PRO-Rel-24 | Edad mínima documentada (16 años GDPR-ES) + signup con fecha de nacimiento | S |
-| PRO-Rel-30 | `versionCode` desde `$GITHUB_RUN_NUMBER` en CI, `versionName` desde tag git | S |
+| PRO-Rel-24 | ✅ Edad mínima documentada (16 años GDPR-ES) + signup con fecha de nacimiento | S |
+| PRO-Rel-30 | ✅ `versionCode` desde `$GITHUB_RUN_NUMBER` en CI, `versionName` desde tag git | S |
 | PRO-Rel-31 | Job CI `build-ios-release` con macOS runner + Fastlane | L |
 | PRO-Rel-32 | Gitleaks + Trufflehog en CI | S |
 | PRO-Rel-33 | `docs/RELEASE_CHECKLIST.md` operativo reproducible | S |
@@ -147,14 +147,14 @@ Bloque dominado por acciones [EXTERNAL] (cuentas, certificados, formularios de s
 | ID | Acción | Esf. | +Cov |
 |---|---|:-:|:-:|
 | PRO-QA-02 | ✅ Round-trip serialization tests para los 14 `PendingActionKind` | S | +0,5pp |
-| PRO-QA-03 | Extraer `auth_helpers.dart`; tests de `_mapError` por rama | S | +1pp |
+| PRO-QA-03 | ✅ Extraer `auth_helpers.dart`; tests de `_mapError` por rama | S | +1pp |
 | PRO-QA-11 | ✅ Gitleaks + Trufflehog en CI (overlap con PRO-Rel-32) | S | — |
 | PRO-QA-09 | Coverage gate por módulo (`lib/data/operator/` ≥60 %, `core/` ≥70 %) | S | — |
-| PRO-QA-14 | Tests de arquitectura de capas (anti-import rules) | S | +0,2pp |
-| PRO-QA-16 | Test de paridad ARB es/en/ar; falla si claves divergen | S | +0,3pp |
+| PRO-QA-14 | ✅ Tests de arquitectura de capas (anti-import rules) | S | +0,2pp |
+| PRO-QA-16 | ✅ Test de paridad ARB es/en/ar; falla si claves divergen | S | +0,3pp |
 | PRO-QA-04 | Goldens del design system (8 widgets × dark/light) | M | +1pp |
 | PRO-QA-05 | ✅ A11y programática con `meetsGuideline(...)` (tap target + contrast) | S | +0,5pp |
-| PRO-QA-06 | Widget tests auth: loading/error/redirect states | M | +1,5pp |
+| PRO-QA-06 | ✅ Widget tests auth: loading/error/redirect states | M | +1,5pp |
 | PRO-QA-10 | Codecov integration + comentario en PRs + badge en README | S | — |
 | PRO-QA-12 | Semgrep SAST con regla custom `no-hardcoded-es-strings` | M | — |
 | PRO-QA-13 | ✅ No hardcoded ES (155 strings migrated, semgrep rule active) | M | — |
@@ -396,7 +396,7 @@ supabase test db
 ## 9. Resumen ejecutivo
 
 - **Total ítems:** 190 (57 originales + 133 nuevos de auditoría multi-agente).
-- **Estado actual:** 140 cerrados (73,7 %). Plan v2: 28/28 fases completadas (100 %). Bloque A (TFG defensa): 20/22 cerrados (90,9 %). Scorecard TFG: 8,9/10. PRO-A11Y bloque completo (23/23).
+- **Estado actual:** 148 cerrados (77,9 %). Plan v2: 28/28 fases completadas (100 %). Bloque A (TFG defensa): 20/22 cerrados (90,9 %). Scorecard TFG: 8,9/10. PRO-A11Y bloque completo (23/23).
 - **Hito recomendado siguiente:** **Cerrar bloqueadores externos** (B1 keystore, B2 TalkBack/VoiceOver) + **P2-4 tests `remote/`** (palanca de cobertura 24,30 % → 30+ %).
 - **Cuellos de botella estructurales:**
   - **Cobertura 24,30 %:** la palanca es PRO-QA-03 + PRO-QA-06 + P2-4 (tests `remote/`).

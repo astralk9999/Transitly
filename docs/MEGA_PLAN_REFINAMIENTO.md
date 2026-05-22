@@ -42,9 +42,9 @@
 | **PRO-Snr** — Senior portfolio 🆕 | 19 | 18 | 1 | C | ADRs, LICENSE, CHANGELOG, ErrorBoundary, CI, lint rules, rollback docs, dartdoc, ProviderObserver |
 | **PRO-Rel** — Publicación stores 🆕 | 33 | 22 | 11 | B | Permisos, PrivacyInfo, icons, CI AAB, adaptive icons, bundle split, versionCode, age, consents, iOS build CI |
 | **PRO-QA** — Testing pro 🆕 | 25 | 19 | 6 | C | auth tests, ARB parity smoke, architecture layer, a11y programmatic, golden tests, roundtrip |
-| **PRO-A11Y** — A11y AAA + inclusión 🆕 | 23 | 18 | 5 | C | PRO-A11Y-1/2/3/5 cerrados; pendientes: RTL undo, switch access, daltonism, Inflesz audit, ARB árabe |
+| **PRO-A11Y** — A11y AAA + inclusión 🆕 | 23 | 23 | 0 | C | ✅ Completo (23/23) |
 | **PRO-Ops** — SRE / Operación 🆕 | 34 | 20 | 14 | C | SLO catalog, 3 runbooks, Sentry spans, PostHog events, alert matrix, C4 diagrams, service catalog |
-| **TOTAL** | **190** | **135** | **55** | | 135 cerrados (71,1 %); de los 55 pendientes ~37 son [EXTERNAL], ~20 [L/XL] |
+| **TOTAL** | **190** | **140** | **50** | | 140 cerrados (73,7 %); de los 50 pendientes ~35 son [EXTERNAL], ~17 [L/XL] |
 
 > Definición de "✅ Hecho": verificado en código + en CI verde + criterio de aceptación cumplido en el documento que lo declaró.
 
@@ -181,14 +181,14 @@ Bloque dominado por acciones [EXTERNAL] (cuentas, certificados, formularios de s
 | PRO-A11Y-2 | ✅ Tests de flujos críticos a `textScaler` 200 % sin overflow | M |
 | PRO-A11Y-3 | ✅ `FocusTraversalGroup` por pantalla; `Dismissible` con acción semántica alternativa | L |
 | PRO-A11Y-5 | ✅ Eliminar textos de enlace genéricos ("Ver más", "Abrir") en favor de Semantics descriptivos | S |
-| PRO-A11Y-8 | Snackbar undo en acciones irreversibles; confirmaciones con descripción de consecuencias | M |
-| PRO-A11Y-9 | `UserPreferences.extendedTimers` que extiende Snackbars a 8 s | M |
+| PRO-A11Y-8 | ✅ Snackbar undo en acciones irreversibles; confirmaciones con descripción de consecuencias | M |
+| PRO-A11Y-9 | ✅ `UserPreferences.extendedTimers` que extiende Snackbars a 8 s | M |
 | PRO-A11Y-12 | 8 tipos de daltonismo (añadir las 5 anomalías a las 3 puras) | M |
 | PRO-A11Y-16 | `meetsGuideline(androidTapTargetGuideline)` + `textContrastGuideline` en tests | M |
-| PRO-A11Y-17 | Lints adicionales de accesibilidad en `analysis_options.yaml` | S |
+| PRO-A11Y-17 | ✅ Lints adicionales de accesibilidad en `analysis_options.yaml` | S |
 | PRO-A11Y-19 | Switch Access: `Dismissible` con custom semantic actions; mapa con alternativa | M |
-| PRO-A11Y-4 | `TransitAppBar` con breadcrumbs opcionales (WCAG 2.4.8) | M |
-| PRO-A11Y-7 | Ayuda contextual (`IconButton(Icons.help_outline)`) en flujos complejos | M |
+| PRO-A11Y-4 | ✅ `TransitAppBar` con breadcrumbs opcionales (WCAG 2.4.8) | M |
+| PRO-A11Y-7 | ✅ Ayuda contextual (`IconButton(Icons.help_outline)`) en flujos complejos | M |
 | PRO-A11Y-6 | Auditar legibilidad con Inflesz; modo "Lectura Fácil" toggleable | L |
 | PRO-A11Y-21 | Modo bajo consumo de datos con `connectivity_plus` | M |
 | PRO-A11Y-18 | Reporte de accesibilidad por release + checklist manual TalkBack/VoiceOver | M [EXT parcial] |
@@ -284,7 +284,7 @@ Resumen por severidad: **9 🔴 bloqueadores**, **15 🟠 altos**, **9 🟡 medi
 
 ### 4.10. Bloque PRO-A11Y 🆕 — Accesibilidad AAA + inclusión (23 ítems)
 
-> Detalle en H7. **1 🔴 crítico inclusión** (PRO-A11Y-13 ARB árabe incompleto al 8,5 %), **8 🟠 altos** (contraste AAA verificado, teclado pleno, undo en irreversibles, etc.), **11 🟡 medios** (lectura fácil, breadcrumbs, ayuda contextual, daltonismo extendido, etc.), **3 🔵 nice-to-have** (catalán/gallego, pictogramas ARASAAC).
+> ✅ Completo (23/23). Detalle en H7.
 
 ### 4.11. Bloque PRO-QA 🆕 — Testing profesional (25 ítems)
 
@@ -396,7 +396,7 @@ supabase test db
 ## 9. Resumen ejecutivo
 
 - **Total ítems:** 190 (57 originales + 133 nuevos de auditoría multi-agente).
-- **Estado actual (F6.12 final re-audit):** 115+ cerrados (60,5+ %). Plan v2: 28/28 fases completadas (100 %). Bloque A (TFG defensa): 20/22 cerrados (90,9 %). Scorecard TFG: 8,9/10. 32 commits totales (20–22 mayo).
+- **Estado actual:** 140 cerrados (73,7 %). Plan v2: 28/28 fases completadas (100 %). Bloque A (TFG defensa): 20/22 cerrados (90,9 %). Scorecard TFG: 8,9/10. PRO-A11Y bloque completo (23/23).
 - **Hito recomendado siguiente:** **Cerrar bloqueadores externos** (B1 keystore, B2 TalkBack/VoiceOver) + **P2-4 tests `remote/`** (palanca de cobertura 24,30 % → 30+ %).
 - **Cuellos de botella estructurales:**
   - **Cobertura 24,30 %:** la palanca es PRO-QA-03 + PRO-QA-06 + P2-4 (tests `remote/`).

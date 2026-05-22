@@ -108,7 +108,7 @@ class TransitDarkColors implements TransitColorScheme {
 
   @override Color get textHi => const Color(0xFFF0F0FA);
   @override Color get textMid => const Color(0xFF8888A8);
-  @override Color get textLo => const Color(0xFF4A4A68);
+  @override Color get textLo => const Color(0xFF8A87A5);
   @override Color get textDisabled => const Color(0xFF2A2A48);
 
   @override Color get glassBg => const Color(0x22FFFFFF);

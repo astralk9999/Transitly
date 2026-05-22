@@ -34,8 +34,7 @@ void main() {
       await unmount(tester);
     });
 
-    testWidgets('TransitButton primary renders in dark theme',
-        (tester) async {
+    testWidgets('TransitButton primary renders in dark theme', (tester) async {
       await pumpApp(
         tester,
         child: const Center(
@@ -48,8 +47,7 @@ void main() {
       await unmount(tester);
     });
 
-    testWidgets('TransitButton secondary renders in light theme',
-        (tester) async {
+    testWidgets('TransitButton secondary renders in light theme', (tester) async {
       await pumpApp(
         tester,
         child: const Center(

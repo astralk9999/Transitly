@@ -20,6 +20,14 @@ commit-msg:
 
 pre-push:
   commands:
+    verify-state:
+      run: |
+        tool/verify_state.sh > /tmp/estado_actual.md
+        diff <(sed -n '/<!-- BEGIN ESTADO -->/,/<!-- END ESTADO -->/p' docs/00_MAESTRO.md) /tmp/estado_actual.md || {
+          echo "ERROR: docs/00_MAESTRO.md estado block is stale."
+          echo "Run: tool/verify_state.sh and update the estado block."
+          exit 1
+        }
     test:
       run: flutter test
     analyze:

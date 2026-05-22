@@ -39,11 +39,11 @@
 | **P3** — Deuda de fondo | 8 | 4 | 4 | A/C | autoDispose `.family`, F26 fuentes verificadas, audit_log `data/auth/`, tests integración |
 | **PROD** — Producción a escala (existente) | 10 | 3 | 7 | B/C | Keystore [EXT], observabilidad, mapa clustering, caché tenant |
 | **A11Y** — WCAG existente | 10 | 5 | 5 | B/C | Verificación lector, alt mapa, contrastes, foco, RTL completo |
-| **PRO-Snr** — Senior portfolio 🆕 | 18 | 17 | 1 | C | ADRs, LICENSE, CHANGELOG, ErrorBoundary, CI, rollback docs, dartdoc, auth_provider moved, golden tests |
-| **PRO-Rel** — Publicación stores 🆕 | 33 | 13 | 20 | B | Permisos, PrivacyInfo, icons, CI, Gitleaks, versionCode, report, age verify, privacy_consents |
-| **PRO-QA** — Testing pro 🆕 | 25 | 13 | 12 | C | auth tests, ARB, architecture, a11y, i18n, roundtrip, feature-switch, Semgrep, leak tracker, edge fn tests, db reset, golden |
-| **PRO-A11Y** — A11y AAA + inclusión 🆕 | 23 | 13 | 10 | C | Contrast, lints, daltonism, textScaler, RTL, undo, breadcrumbs, meetsGuideline, switch, report, low data, FocusTraversalGroup |
-| **TOTAL** | **190** | **106** | **84** | | 106 cerrados (55,8 %); de los 84 pendientes ~42 son [EXTERNAL] |
+| **PRO-Snr** — Senior portfolio 🆕 | 18 | 17 | 1 | C | ADRs, LICENSE, CHANGELOG, ErrorBoundary, CI, rollback docs, dartdoc, auth_provider, golden tests, integration docs |
+| **PRO-Rel** — Publicación stores 🆕 | 33 | 14 | 19 | B | Permisos, PrivacyInfo, icons, CI, Gitleaks, versionCode, report, age, consents, iOS build CI |
+| **PRO-QA** — Testing pro 🆕 | 25 | 13 | 12 | C | auth tests, ARB, architecture, a11y, i18n, roundtrip, feature-switch, Semgrep, leak, edge fn, db reset, golden, integration docs |
+| **PRO-A11Y** — A11y AAA + inclusión 🆕 | 23 | 14 | 9 | C | Contrast, lints, daltonism, textScaler, RTL, undo, breadcrumbs, meetsGuideline, switch, report, low data, FocusTraversalGroup, Inflesz audit |
+| **TOTAL** | **190** | **109** | **81** | | 109 cerrados (57,4 %); de los 81 pendientes ~42 son [EXTERNAL], ~20 [L/XL] |
 
 > Definición de "✅ Hecho": verificado en código + en CI verde + criterio de aceptación cumplido en el documento que lo declaró.
 

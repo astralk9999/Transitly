@@ -86,8 +86,8 @@ class RecorderLiveView extends StatelessWidget {
                     alignment: Alignment.center,
                     child: Text(
                       controller.isPaused
-                          ? '⏸ PAUSADO'
-                          : '＋ MARCAR PARADA',
+                          ? '⏸ ${AppLocalizations.of(context).statusPaused.toUpperCase()}'
+                          : '＋ ${AppLocalizations.of(context).recorderMarkStop.toUpperCase()}',
                       style: GoogleFonts.ibmPlexMono(
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
@@ -120,7 +120,7 @@ class RecorderLiveView extends StatelessWidget {
                             ),
                             alignment: Alignment.center,
                             child: Text(
-                              controller.isPaused ? '▶ REANUDAR' : '⏸ PAUSAR',
+                              controller.isPaused ? '▶ ${AppLocalizations.of(context).actionResume.toUpperCase()}' : '⏸ ${AppLocalizations.of(context).actionPause.toUpperCase()}',
                               style: GoogleFonts.ibmPlexMono(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
@@ -143,7 +143,7 @@ class RecorderLiveView extends StatelessWidget {
                             ),
                             alignment: Alignment.center,
                             child: Text(
-                              '■ DETENER',
+                              '■ ${AppLocalizations.of(context).actionStop.toUpperCase()}',
                               style: GoogleFonts.ibmPlexMono(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,

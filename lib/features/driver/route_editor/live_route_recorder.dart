@@ -40,7 +40,7 @@ class _LiveRouteRecorderState extends ConsumerState<LiveRouteRecorder> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'PARADA #${stop.number} MARCADA · ${stop.distanceKm.toStringAsFixed(2)} km',
+            AppLocalizations.of(context).recorderStopMarkedFmt(stop.number, stop.distanceKm.toStringAsFixed(2)),
             style: GoogleFonts.ibmPlexMono(color: c.accent),
           ),
           duration: const Duration(seconds: 1),

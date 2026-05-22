@@ -263,6 +263,14 @@ class AppLocalizationsEs extends AppLocalizations {
   String get statusRecordingRoute => 'GRABANDO RUTA';
 
   @override
+  String get recorderMarkStop => 'MARCAR PARADA';
+
+  @override
+  String recorderStopMarkedFmt(int number, String distance) {
+    return 'PARADA #$number MARCADA · $distance km';
+  }
+
+  @override
   String get adminUsersTitle => 'Gestión de usuarios';
 
   @override

@@ -96,6 +96,9 @@
   "statusLive": "LIVE",
   "statusRecordingRoute": "RECORDING ROUTE",
 
+  "recorderMarkStop": "MARK STOP",
+  "recorderStopMarkedFmt": "STOP #{number} MARKED · {distance} km",
+
   "adminUsersTitle": "User management",
   "adminUsersSearchHint": "Search user...",
   "adminUsersFilterAll": "All",

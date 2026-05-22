@@ -87,7 +87,7 @@ class _DriversScreenState extends ConsumerState<DriversScreen> {
               onPressed: () => Navigator.of(ctx).pop(false),
             ),
             TransitButton(
-              label: 'REVOCAR',
+              label: AppLocalizations.of(ctx).actionRevoke.toUpperCase(),
               isDanger: true,
               isSmall: true,
               onPressed: () => Navigator.of(ctx).pop(true),
@@ -168,7 +168,7 @@ class _DriversScreenState extends ConsumerState<DriversScreen> {
             Text(_error!, style: const TextStyle(color: Colors.redAccent)),
             const SizedBox(height: 16),
             TransitButton(
-              label: 'REINTENTAR',
+              label: AppLocalizations.of(context).actionRetry.toUpperCase(),
               isSmall: true,
               onPressed: _loadDrivers,
             ),
@@ -222,7 +222,7 @@ class _DriversScreenState extends ConsumerState<DriversScreen> {
               style: TransitTypography.bodySmall(c.textMid),
             ),
             trailing: TransitButton(
-              label: 'REVOCAR',
+              label: AppLocalizations.of(context).actionRevoke.toUpperCase(),
               isDanger: true,
               isSmall: true,
               onPressed: () =>

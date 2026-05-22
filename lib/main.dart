@@ -18,6 +18,7 @@ import 'data/mock/mock_data_service.dart';
 import 'data/mock/mock_realtime_service.dart';
 import 'data/privacy_consent/privacy_consent_repository.dart';
 import 'data/push/firebase_setup.dart';
+import 'data/push/push_service.dart';
 import 'features/error/env_error_screen.dart';
 
 /// F26 switch point: cuando las fuentes se empaqueten como assets locales,
@@ -57,6 +58,7 @@ void main() async {
     try {
       await FirebaseSetup.init();
       AppLogger.info('Firebase', 'initialized');
+      await PushService.init();
     } catch (e) {
       AppLogger.warn('Firebase', 'init failed — push unavailable', e);
     }

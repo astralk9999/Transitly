@@ -114,5 +114,5 @@ class LocalFeedbackNotifier extends StateNotifier<List<LocalFeedbackEntry>> {
 }
 
 final localFeedbackProvider =
-    StateNotifierProvider<LocalFeedbackNotifier, List<LocalFeedbackEntry>>(
+    StateNotifierProvider.autoDispose<LocalFeedbackNotifier, List<LocalFeedbackEntry>>(
         (ref) => LocalFeedbackNotifier());

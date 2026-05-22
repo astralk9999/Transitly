@@ -604,6 +604,18 @@ abstract class AppLocalizations {
   /// **'GRABANDO RUTA'**
   String get statusRecordingRoute;
 
+  /// Live route recorder: mark-stop big button
+  ///
+  /// In es, this message translates to:
+  /// **'MARCAR PARADA'**
+  String get recorderMarkStop;
+
+  /// Live route recorder: stop marked snackbar
+  ///
+  /// In es, this message translates to:
+  /// **'PARADA #{number} MARCADA · {distance} km'**
+  String recorderStopMarkedFmt(int number, String distance);
+
   /// Admin users screen title
   ///
   /// In es, this message translates to:

@@ -73,7 +73,7 @@ class AchievementsScreen extends ConsumerWidget {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: c.textMid),
-          tooltip: 'Volver',
+          tooltip: l10n.actionBack,
           onPressed: () => context.pop(),
         ),
         title: Text(l10n.achievementsTitle,

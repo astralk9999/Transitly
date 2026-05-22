@@ -43,3 +43,13 @@ linter:
     flutter_style_todos: true
     sort_child_properties_last: true
     use_full_hex_values_for_flutter_colors: true
+
+    # Code quality (selective from very_good_analysis)
+    cascade_invocations: false
+    lines_longer_than_80_chars: false
+    public_member_api_docs: false
+    always_use_package_imports: false
+    sort_pub_dependencies: true
+    unnecessary_lambdas: true
+    use_named_constants: true
+    eol_at_end_of_file: true

@@ -68,6 +68,9 @@
   "statusLive": "مباشر",
   "statusRecordingRoute": "جار تسجيل المسار",
 
+  "recorderMarkStop": "تسجيل المحطة",
+  "recorderStopMarkedFmt": "المحطة #{number} مسجلة · {distance} كم",
+
   "accessibilityTitle": "إمكانية الوصول",
   "accessibilityThemeSystem": "النظام",
   "accessibilityThemeLight": "فاتح",

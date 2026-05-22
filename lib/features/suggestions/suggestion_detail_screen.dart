@@ -51,6 +51,7 @@ class _SuggestionDetailScreenState
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: c.bgRoot,
@@ -82,11 +83,11 @@ class _SuggestionDetailScreenState
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text('No se encontró la sugerencia',
+                      Text(l10n.routeDetailNotFound,
                           style: TransitTypography.bodyPrimary(c.textMid)),
                       const SizedBox(height: 12),
                       TransitButton(
-                        label: 'REINTENTAR',
+                        label: l10n.actionRetry.toUpperCase(),
                         onPressed: _reload,
                       ),
                     ],

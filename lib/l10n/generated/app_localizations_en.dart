@@ -261,6 +261,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statusRecordingRoute => 'RECORDING ROUTE';
 
   @override
+  String get recorderMarkStop => 'MARK STOP';
+
+  @override
+  String recorderStopMarkedFmt(int number, String distance) {
+    return 'STOP #$number MARKED · $distance km';
+  }
+
+  @override
   String get adminUsersTitle => 'User management';
 
   @override

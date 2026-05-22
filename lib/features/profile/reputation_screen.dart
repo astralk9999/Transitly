@@ -14,6 +14,7 @@ import '../../shared/widgets/gradient_text.dart';
 import '../../shared/widgets/reputation_badge.dart';
 import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_app_bar.dart';
+import 'widgets/reputation_level_card.dart';
 
 class ReputationScreen extends ConsumerWidget {
   const ReputationScreen({super.key});
@@ -74,7 +75,7 @@ class ReputationScreen extends ConsumerWidget {
                   children: [
                     _HeaderCard(user: user, c: c, initials: initials),
                     const SizedBox(height: 12),
-                    _ProgressCard(
+                    ReputationLevelCard(
                       c: c,
                       l10n: l10n,
                       score: score,
@@ -167,85 +168,6 @@ class _HeaderCard extends StatelessWidget {
                 ReputationBadge(user.reputationLevel, score: user.reputationScore),
               ],
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ProgressCard extends StatelessWidget {
-  const _ProgressCard({
-    required this.c,
-    required this.l10n,
-    required this.score,
-    required this.rank,
-    required this.progress,
-    required this.rangeStart,
-    required this.nextMin,
-    required this.isMaxRank,
-  });
-
-  final TransitColorScheme c;
-  final AppLocalizations l10n;
-  final int score;
-  final ReputationRank rank;
-  final double progress;
-  final int rangeStart;
-  final int nextMin;
-  final bool isMaxRank;
-
-  @override
-  Widget build(BuildContext context) {
-    return GlassCard(
-      blur: 20,
-      fillOpacity: 0.06,
-      borderRadius: 16,
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(rank.icon, size: 20, color: rank.color),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  '$score ${l10n.reputationPoints}',
-                  style: GoogleFonts.ibmPlexMono(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: c.textHi,
-                  ),
-                ),
-              ),
-              if (!isMaxRank)
-                Text(
-                  '$score/$nextMin',
-                  style: GoogleFonts.ibmPlexMono(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: c.textMid,
-                  ),
-                ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: LinearProgressIndicator(
-              value: progress.clamp(0.0, 1.0),
-              minHeight: 6,
-              backgroundColor: c.bgSurface,
-              valueColor: AlwaysStoppedAnimation(rank.color),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            isMaxRank
-                ? l10n.reputationMaxRank
-                : '${l10n.reputationNextRank}: ${nextMin - score} ${l10n.reputationPoints}',
-            style: TransitTypography.bodySecondary(c.textMid),
           ),
         ],
       ),

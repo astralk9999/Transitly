@@ -105,6 +105,17 @@
   "statusLive": "EN VIVO",
   "statusRecordingRoute": "GRABANDO RUTA",
 
+  "recorderMarkStop": "MARCAR PARADA",
+  "@recorderMarkStop": { "description": "Live route recorder: mark-stop big button" },
+  "recorderStopMarkedFmt": "PARADA #{number} MARCADA · {distance} km",
+  "@recorderStopMarkedFmt": {
+    "description": "Live route recorder: stop marked snackbar",
+    "placeholders": {
+      "number": { "type": "int", "example": "3" },
+      "distance": { "type": "String", "example": "1.23" }
+    }
+  },
+
   "adminUsersTitle": "Gestión de usuarios",
   "@adminUsersTitle": { "description": "Admin users screen title" },
   "adminUsersSearchHint": "Buscar usuario...",

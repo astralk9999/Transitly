@@ -5,8 +5,33 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../core/utils/app_logger.dart';
+import 'firebase_setup.dart';
 
 class PushService {
+  static String? _fcmToken;
+  static bool _initialized = false;
+
+  static Future<void> init() async {
+    if (_initialized) return;
+    if (!FirebaseSetup.isAvailable) return;
+    try {
+      final messaging = FirebaseMessaging.instance;
+      final settings = await messaging.requestPermission();
+      if (settings.authorizationStatus != AuthorizationStatus.authorized) return;
+      _fcmToken = await messaging.getToken();
+      AppLogger.info('Push', 'FCM token obtained');
+      messaging.onTokenRefresh.listen((token) {
+        _fcmToken = token;
+        AppLogger.info('Push', 'FCM token refreshed');
+      });
+      _initialized = true;
+    } catch (e) {
+      AppLogger.warn('Push', 'init failed', e);
+    }
+  }
+
+  static String? get fcmToken => _fcmToken;
+
   final SupabaseClient _client;
   final FirebaseMessaging _messaging;
   final FlutterLocalNotificationsPlugin _localNotifications;

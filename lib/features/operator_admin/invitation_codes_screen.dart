@@ -137,7 +137,7 @@ class _InvitationCodesScreenState extends ConsumerState<InvitationCodesScreen> {
                   onPressed: () => Navigator.of(ctx).pop(),
                 ),
                 TransitButton(
-                  label: 'GENERAR',
+                  label: AppLocalizations.of(ctx).actionGenerate.toUpperCase(),
                   isSmall: true,
                   onPressed: () => Navigator.of(ctx).pop(uses),
                 ),
@@ -225,7 +225,7 @@ class _InvitationCodesScreenState extends ConsumerState<InvitationCodesScreen> {
             Text(_error!, style: const TextStyle(color: Colors.redAccent)),
             const SizedBox(height: 16),
             TransitButton(
-              label: 'REINTENTAR',
+              label: AppLocalizations.of(context).actionRetry.toUpperCase(),
               isSmall: true,
               onPressed: _loadCodes,
             ),
@@ -286,7 +286,7 @@ class _InvitationCodesScreenState extends ConsumerState<InvitationCodesScreen> {
                 ),
               ),
               TransitButton(
-                label: 'REVOCAR',
+                label: AppLocalizations.of(context).actionRevoke.toUpperCase(),
                 isDanger: true,
                 isSmall: true,
                 onPressed: () => _revokeCode(code['code'] as String),

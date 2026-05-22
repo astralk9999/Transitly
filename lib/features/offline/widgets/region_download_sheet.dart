@@ -19,6 +19,7 @@ import '../../../shared/models/schedule_model.dart';
 import '../../../shared/models/stop_model.dart';
 import '../../../shared/widgets/gradient_text.dart';
 import '../../../shared/widgets/transit_button.dart';
+import 'region_status_badge.dart';
 
 class RegionDownloadSheet extends ConsumerStatefulWidget {
   const RegionDownloadSheet({super.key});
@@ -425,15 +426,11 @@ class _RegionDownloadSheetState extends ConsumerState<RegionDownloadSheet> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  if (_isDownloading) ...[
-                    LinearProgressIndicator(
-                      value: _downloadProgress,
-                      backgroundColor: c.border,
-                      valueColor:
-                          AlwaysStoppedAnimation<Color>(c.accent),
-                    ),
-                    const SizedBox(height: 8),
-                  ],
+                  RegionStatusBadge(
+                    isDownloading: _isDownloading,
+                    progress: _downloadProgress,
+                    c: c,
+                  ),
                   TransitButton(
                     label: _isDownloading
                         ? '${l10n.offlineRegionsActionDownload} ${(_downloadProgress * 100).round()}%'

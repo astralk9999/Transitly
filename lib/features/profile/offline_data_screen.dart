@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../data/mock/mock_data_service.dart';
+import '../../l10n/generated/app_localizations.dart';
 import '../../shared/providers/is_dark_provider.dart';
 import '../../shared/widgets/glass_card.dart';
 import '../../shared/widgets/gradient_text.dart';
@@ -41,6 +42,8 @@ class _OfflineDataScreenState extends ConsumerState<OfflineDataScreen> {
     final c = TransitColorScheme.of(isDark);
     final data = ref.watch(mockDataServiceProvider);
 
+    final l10n = AppLocalizations.of(context);
+
     return Scaffold(
       backgroundColor: c.bgRoot,
       appBar: AppBar(
@@ -48,10 +51,10 @@ class _OfflineDataScreenState extends ConsumerState<OfflineDataScreen> {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: c.textMid),
-          tooltip: 'Volver',
+          tooltip: l10n.actionBack,
           onPressed: () => context.pop(),
         ),
-        title: Text('DATOS OFFLINE',
+        title: Text(l10n.offlineDataTitle.toUpperCase(),
             style: TransitTypography.sectionTitle(c.textHi)),
         centerTitle: false,
       ),
@@ -110,7 +113,7 @@ class _StatsCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           GradientText(
-            'CONTENIDO',
+            AppLocalizations.of(context).offlineDataContent,
             style: GoogleFonts.ibmPlexMono(
               fontSize: 11,
               fontWeight: FontWeight.w700,
@@ -154,7 +157,7 @@ class _MetadataCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           GradientText(
-            'ARCHIVO',
+            AppLocalizations.of(context).offlineDataArchive,
             style: GoogleFonts.ibmPlexMono(
               fontSize: 11,
               fontWeight: FontWeight.w700,

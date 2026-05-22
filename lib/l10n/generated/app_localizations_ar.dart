@@ -262,6 +262,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String get statusRecordingRoute => 'جار تسجيل المسار';
 
   @override
+  String get recorderMarkStop => 'تسجيل المحطة';
+
+  @override
+  String recorderStopMarkedFmt(int number, String distance) {
+    return 'المحطة #$number مسجلة · $distance كم';
+  }
+
+  @override
   String get adminUsersTitle => 'Gestión de usuarios';
 
   @override

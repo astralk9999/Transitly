@@ -201,6 +201,63 @@ class AppLocalizationsEn extends AppLocalizations {
   String get editorStepReview => 'Review';
 
   @override
+  String get actionNext => 'Next';
+
+  @override
+  String get actionConfirm => 'Confirm';
+
+  @override
+  String get actionAdd => 'Add';
+
+  @override
+  String get actionPause => 'Pause';
+
+  @override
+  String get actionResume => 'Resume';
+
+  @override
+  String get actionFinish => 'Finish';
+
+  @override
+  String get actionUndo => 'Undo';
+
+  @override
+  String get actionPublish => 'Publish';
+
+  @override
+  String get actionGenerate => 'Generate';
+
+  @override
+  String get actionRevoke => 'Revoke';
+
+  @override
+  String get actionShare => 'Share';
+
+  @override
+  String get actionApply => 'Apply';
+
+  @override
+  String get actionReset => 'Reset';
+
+  @override
+  String get actionStop => 'Stop';
+
+  @override
+  String get actionContinue => 'Continue';
+
+  @override
+  String get actionFollow => 'Follow';
+
+  @override
+  String get statusPaused => 'PAUSED';
+
+  @override
+  String get statusLive => 'LIVE';
+
+  @override
+  String get statusRecordingRoute => 'RECORDING ROUTE';
+
+  @override
   String get adminUsersTitle => 'User management';
 
   @override

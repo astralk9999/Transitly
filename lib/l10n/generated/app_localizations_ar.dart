@@ -202,6 +202,63 @@ class AppLocalizationsAr extends AppLocalizations {
   String get editorStepReview => 'مراجعة';
 
   @override
+  String get actionNext => 'التالي';
+
+  @override
+  String get actionConfirm => 'تأكيد';
+
+  @override
+  String get actionAdd => 'إضافة';
+
+  @override
+  String get actionPause => 'إيقاف';
+
+  @override
+  String get actionResume => 'استئناف';
+
+  @override
+  String get actionFinish => 'إنهاء';
+
+  @override
+  String get actionUndo => 'تراجع';
+
+  @override
+  String get actionPublish => 'نشر';
+
+  @override
+  String get actionGenerate => 'إنشاء';
+
+  @override
+  String get actionRevoke => 'إلغاء';
+
+  @override
+  String get actionShare => 'مشاركة';
+
+  @override
+  String get actionApply => 'تطبيق';
+
+  @override
+  String get actionReset => 'إعادة تعيين';
+
+  @override
+  String get actionStop => 'توقف';
+
+  @override
+  String get actionContinue => 'متابعة';
+
+  @override
+  String get actionFollow => 'متابعة';
+
+  @override
+  String get statusPaused => 'متوقف';
+
+  @override
+  String get statusLive => 'مباشر';
+
+  @override
+  String get statusRecordingRoute => 'جار تسجيل المسار';
+
+  @override
   String get adminUsersTitle => 'Gestión de usuarios';
 
   @override

@@ -484,6 +484,120 @@ abstract class AppLocalizations {
   /// **'Revisión'**
   String get editorStepReview;
 
+  /// No description provided for @actionNext.
+  ///
+  /// In es, this message translates to:
+  /// **'Siguiente'**
+  String get actionNext;
+
+  /// No description provided for @actionConfirm.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirmar'**
+  String get actionConfirm;
+
+  /// No description provided for @actionAdd.
+  ///
+  /// In es, this message translates to:
+  /// **'Añadir'**
+  String get actionAdd;
+
+  /// No description provided for @actionPause.
+  ///
+  /// In es, this message translates to:
+  /// **'Pausar'**
+  String get actionPause;
+
+  /// No description provided for @actionResume.
+  ///
+  /// In es, this message translates to:
+  /// **'Reanudar'**
+  String get actionResume;
+
+  /// No description provided for @actionFinish.
+  ///
+  /// In es, this message translates to:
+  /// **'Finalizar'**
+  String get actionFinish;
+
+  /// No description provided for @actionUndo.
+  ///
+  /// In es, this message translates to:
+  /// **'Deshacer'**
+  String get actionUndo;
+
+  /// No description provided for @actionPublish.
+  ///
+  /// In es, this message translates to:
+  /// **'Publicar'**
+  String get actionPublish;
+
+  /// No description provided for @actionGenerate.
+  ///
+  /// In es, this message translates to:
+  /// **'Generar'**
+  String get actionGenerate;
+
+  /// No description provided for @actionRevoke.
+  ///
+  /// In es, this message translates to:
+  /// **'Revocar'**
+  String get actionRevoke;
+
+  /// No description provided for @actionShare.
+  ///
+  /// In es, this message translates to:
+  /// **'Compartir'**
+  String get actionShare;
+
+  /// No description provided for @actionApply.
+  ///
+  /// In es, this message translates to:
+  /// **'Aplicar'**
+  String get actionApply;
+
+  /// No description provided for @actionReset.
+  ///
+  /// In es, this message translates to:
+  /// **'Restablecer'**
+  String get actionReset;
+
+  /// No description provided for @actionStop.
+  ///
+  /// In es, this message translates to:
+  /// **'Detener'**
+  String get actionStop;
+
+  /// No description provided for @actionContinue.
+  ///
+  /// In es, this message translates to:
+  /// **'Continuar'**
+  String get actionContinue;
+
+  /// No description provided for @actionFollow.
+  ///
+  /// In es, this message translates to:
+  /// **'Seguir'**
+  String get actionFollow;
+
+  /// No description provided for @statusPaused.
+  ///
+  /// In es, this message translates to:
+  /// **'PAUSADO'**
+  String get statusPaused;
+
+  /// No description provided for @statusLive.
+  ///
+  /// In es, this message translates to:
+  /// **'EN VIVO'**
+  String get statusLive;
+
+  /// No description provided for @statusRecordingRoute.
+  ///
+  /// In es, this message translates to:
+  /// **'GRABANDO RUTA'**
+  String get statusRecordingRoute;
+
   /// Admin users screen title
   ///
   /// In es, this message translates to:

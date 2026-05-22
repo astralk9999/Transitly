@@ -202,6 +202,63 @@ class AppLocalizationsEs extends AppLocalizations {
   String get editorStepReview => 'Revisión';
 
   @override
+  String get actionNext => 'Siguiente';
+
+  @override
+  String get actionConfirm => 'Confirmar';
+
+  @override
+  String get actionAdd => 'Añadir';
+
+  @override
+  String get actionPause => 'Pausar';
+
+  @override
+  String get actionResume => 'Reanudar';
+
+  @override
+  String get actionFinish => 'Finalizar';
+
+  @override
+  String get actionUndo => 'Deshacer';
+
+  @override
+  String get actionPublish => 'Publicar';
+
+  @override
+  String get actionGenerate => 'Generar';
+
+  @override
+  String get actionRevoke => 'Revocar';
+
+  @override
+  String get actionShare => 'Compartir';
+
+  @override
+  String get actionApply => 'Aplicar';
+
+  @override
+  String get actionReset => 'Restablecer';
+
+  @override
+  String get actionStop => 'Detener';
+
+  @override
+  String get actionContinue => 'Continuar';
+
+  @override
+  String get actionFollow => 'Seguir';
+
+  @override
+  String get statusPaused => 'PAUSADO';
+
+  @override
+  String get statusLive => 'EN VIVO';
+
+  @override
+  String get statusRecordingRoute => 'GRABANDO RUTA';
+
+  @override
   String get adminUsersTitle => 'Gestión de usuarios';
 
   @override

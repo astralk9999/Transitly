@@ -39,12 +39,11 @@
 | **P3** — Deuda de fondo | 8 | 4 | 4 | A/C | autoDispose `.family`, F26 fuentes verificadas, audit_log `data/auth/`, tests integración |
 | **PROD** — Producción a escala (existente) | 10 | 3 | 7 | B/C | Keystore [EXT], observabilidad, mapa clustering, caché tenant |
 | **A11Y** — WCAG existente | 10 | 5 | 5 | B/C | Verificación lector, alt mapa, contrastes, foco, RTL completo |
-| **PRO-Snr** — Senior portfolio 🆕 | 18 | 16 | 2 | C | ADRs, LICENSE, CHANGELOG, ErrorBoundary, CI, rollback docs, dartdoc, auth_provider moved |
-| **PRO-Rel** — Publicación stores 🆕 | 33 | 12 | 21 | B | Permisos, PrivacyInfo, icons, CI, Gitleaks, versionCode, report, age verify |
-| **PRO-Ops** — SRE / Operación 🆕 | 34 | 17 | 17 | C | SLOs, runbooks, audit, retention, RTBF, C4, catalog, timing, spans, events, alert matrix, edge fn, DR plan |
-| **PRO-QA** — Testing pro 🆕 | 25 | 12 | 13 | C | auth tests, ARB, architecture, a11y, i18n, roundtrip, feature-switch, Semgrep, leak tracker, edge fn tests, db reset CI |
+| **PRO-Snr** — Senior portfolio 🆕 | 18 | 17 | 1 | C | ADRs, LICENSE, CHANGELOG, ErrorBoundary, CI, rollback docs, dartdoc, auth_provider moved, golden tests |
+| **PRO-Rel** — Publicación stores 🆕 | 33 | 13 | 20 | B | Permisos, PrivacyInfo, icons, CI, Gitleaks, versionCode, report, age verify, privacy_consents |
+| **PRO-QA** — Testing pro 🆕 | 25 | 13 | 12 | C | auth tests, ARB, architecture, a11y, i18n, roundtrip, feature-switch, Semgrep, leak tracker, edge fn tests, db reset, golden |
 | **PRO-A11Y** — A11y AAA + inclusión 🆕 | 23 | 13 | 10 | C | Contrast, lints, daltonism, textScaler, RTL, undo, breadcrumbs, meetsGuideline, switch, report, low data, FocusTraversalGroup |
-| **TOTAL** | **190** | **103** | **87** | | 103 cerrados (54,2 %); de los 87 pendientes ~42 son [EXTERNAL] |
+| **TOTAL** | **190** | **106** | **84** | | 106 cerrados (55,8 %); de los 84 pendientes ~42 son [EXTERNAL] |
 
 > Definición de "✅ Hecho": verificado en código + en CI verde + criterio de aceptación cumplido en el documento que lo declaró.
 

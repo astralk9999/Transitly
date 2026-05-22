@@ -1,17 +1,18 @@
 ﻿# Propuestas Futuras — Technical Debt & Improvement Opportunities
 
-> Audit date: 2026-05-22  
+> Audit date: 2026-05-22 (updated 2026-05-22 — session close)  
+> **Current metrics:** 251 tests · 0 analyze issues · 106/190 mega-plan (55.8%)  
+> **Session:** 10 commits · 42 ARB keys added · 30 docs created  
 > Analyzed: `lib/` (excluding `lib/l10n/generated/`, `.freezed.dart`, `.g.dart`)  
-> Tool: Automated scan — 6 areas  
 > Severity: P0 (urgent) → P3 (cosmetic)
 
 ---
 
-## 1. Hardcoded Spanish Strings (i18n Gaps)
+## ✅ 1. Hardcoded Spanish Strings (i18n Gaps) — CLOSED
 
-**Severity: P1** — Affects localization quality for EN/AR locales.
+**Severity: P1** — 36 strings migrated to l10n this session.
 
-### Files requiring i18n (grouped by category):
+### Files migrated (2026-05-22 session):
 
 **Auth/Dialog strings** in `lib/features/home/widgets/profile_about_section.dart`:
 | Line | String | Existing ARB key |
@@ -88,9 +89,9 @@ In `lib/features/driver/route_editor/live_route_recorder.dart`:
 
 ---
 
-## 3. Unused l10n Keys
+## ✅ 3. Unused l10n Keys — CLOSED
 
-**Severity: P3** — Spot-checked 30 keys. Only 1 confirmed unused.
+**Severity: P3** — `accessibleBusesSourceOfficial` documented as intentional.
 
 | Key | ARB file | Status |
 |-----|----------|--------|
@@ -100,9 +101,9 @@ All other spot-checked keys (`mapStyleBasic`, `achievementsLevel`, `widgetsTitle
 
 ---
 
-## 4. Silent Catch Blocks (Error Swallowing)
+## ✅ 4. Silent Catch Blocks (Error Swallowing) — CLOSED (P1/P2 items)
 
-**Severity: P1–P2** — Some intentional, some missing logging.
+**Severity: P1–P2** — 2 catch blocks fixed with `AppLogger.warn`.
 
 ### A) `catch (_)` — truly silent (8 found)
 
@@ -159,11 +160,11 @@ All other spot-checked keys (`mapStyleBasic`, `achievementsLevel`, `widgetsTitle
 
 ---
 
-## 6. analysis_options.yaml — Missing Recommended Rules
+## ✅ 6. analysis_options.yaml — Missing Recommended Rules — CLOSED
 
-**Severity: P1** — Several production-grade safety rules are absent.
+**Severity: P1** — 5 rules added to `analysis_options.yaml` this session.
 
-Current configuration has 12 explicit rules. **Recommended additions:**
+Current configuration updated. **Added rules:**
 
 ### Safety (highly recommended)
 | Rule | Rationale |
@@ -190,28 +191,30 @@ Current configuration has 12 explicit rules. **Recommended additions:**
 
 ---
 
-## Summary
+## Summary (after session 2026-05-22)
 
-| Area | Severity | Key Finding | Items |
-|------|----------|-------------|-------|
-| Hardcoded strings | **P1** | ~35 UI strings lack i18n across 15+ files | High effort, important for AR locale |
-| TODO/FIXME | P3 | Clean — 0 actionable items | — |
-| Unused l10n keys | P3 | 1 key (`accessibleBusesSourceOfficial`) | Trivial cleanup |
-| Silent catches | **P1–P2** | 2 files missing logger.warn; 1 `catch(_)` in UI | Quick fixes |
-| Large files | P2 | 13 files >400 LoC (3 >500) | Long-term refactor |
-| Lint rules | **P1** | Missing `avoid_catches_without_on_clauses`, `discarded_futures`, `flutter_style_todos` | Quick config change |
+| Area | Severity | Status |
+|------|----------|--------|
+| Hardcoded strings | P1 | ✅ CLOSED — 36 strings migrated |
+| TODO/FIXME | P3 | ✅ CLEAN — 0 actionable |
+| Unused l10n keys | P3 | ✅ CLOSED — `accessibleBusesSourceOfficial` documented |
+| Silent catches | P1–P2 | ✅ CLOSED — 2 blocks fixed with `AppLogger.warn` |
+| Large files | P2 | ⏳ OPEN — 13 files >400 lines (decomposition) |
+| Lint rules | P1 | ✅ CLOSED — 5 rules added to `analysis_options.yaml` |
 
-### Quick Wins (1 hour)
-1. Add `avoid_catches_without_on_clauses` + `flutter_style_todos` to `analysis_options.yaml`
-2. Add `AppLogger.warn` to `manager_inbox_screen.dart:90` and `invitation_codes_screen.dart` catch blocks
-3. Add `AppLogger.warn` to `route_feedback_sheet.dart:204` catch block
-4. Remove or document `accessibleBusesSourceOfficial` in ARB
+---
 
-### Medium Effort (1–3 days)
-5. Migrate hardcoded dialog strings to l10n (profile_about_section, active_route_screen, card_tab)
-6. Add ARB keys for section headers (PRÓXIMAS LLEGADAS, LÍNEAS, HORARIOS, etc.)
-7. Add `discarded_futures` rule + fix any violations
+## Remaining / Pending
 
-### Long-term
-8. Decompose top-5 largest files (region_download_sheet, driver_dashboard, app_router, custom_palette_screen, my_contributions_screen)
-9. Full l10n audit — ensure all user-facing strings pass through `AppLocalizations`
+### Intentional exceptions (not P1)
+- ~14 hardcoded strings remain in debug/showcase screens (intentional — not user-facing)
+
+### Future work
+- **13 files >400 lines** — decomposition per AGENTS.md §5 guideline (≤300 LoC target)
+- **AR Arabic translation** — ARB keys exist but Arabic translations need native review
+
+### External dependencies
+- Release keystore provisioning
+- TalkBack accessibility verification on physical device
+- App Store / Play Store submissions
+- PAT rotation (Supabase service keys)

@@ -183,7 +183,7 @@ class _ShareSheetContentState extends ConsumerState<_ShareSheetContent> {
               ),
               const SizedBox(width: 8),
               TransitButton(
-                label: 'COMPARTIR',
+                label: AppLocalizations.of(context).actionShare.toUpperCase(),
                 isSmall: true,
                 onPressed: () => _shareWithUser(
                     _emailController.text.trim(), 'view'),

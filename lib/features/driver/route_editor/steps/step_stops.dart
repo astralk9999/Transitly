@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../../../core/theme/transit_colors.dart';
+import '../../../../l10n/generated/app_localizations.dart';
 import '../../../../core/theme/transit_typography.dart';
 import '../../../../shared/widgets/single_field_dialog.dart';
 import '../../../../shared/widgets/transit_button.dart';
@@ -27,7 +28,7 @@ class StepStops extends StatelessWidget {
       context,
       title: 'Nueva parada',
       hint: 'Nombre de la parada',
-      confirmLabel: 'CONFIRMAR',
+      confirmLabel: AppLocalizations.of(context).actionConfirm.toUpperCase(),
     );
     if (name != null) {
       controller.addStop(EditorStop(name, point));
@@ -120,7 +121,7 @@ class StepStops extends StatelessWidget {
                     ),
                     const Spacer(),
                     TransitButton(
-                      label: 'SIGUIENTE',
+                      label: AppLocalizations.of(context).actionNext.toUpperCase(),
                       onPressed: stops.length >= 2 ? onNext : null,
                     ),
                   ],

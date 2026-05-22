@@ -330,7 +330,7 @@ class CardTab extends ConsumerWidget {
               ),
               const SizedBox(height: 20),
               TransitButton(
-                label: 'REINTENTAR',
+                label: AppLocalizations.of(context).actionRetry.toUpperCase(),
                 icon: Icons.refresh,
                 onPressed: () =>
                     ref.read(nfcScanProvider.notifier).startScan(),

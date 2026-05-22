@@ -8,6 +8,7 @@ import '../../../core/utils/app_logger.dart';
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../shared/widgets/transit_button.dart';
+import '../../../l10n/generated/app_localizations.dart';
 import 'map_filter_state.dart';
 
 /// Persiste y expone el estado de los filtros del mapa en
@@ -218,7 +219,7 @@ void showMapFilterSheet(
                     children: [
                       Expanded(
                         child: TransitButton(
-                          label: 'RESTABLECER',
+                          label: AppLocalizations.of(context).actionReset.toUpperCase(),
                           isPrimary: false,
                           isSmall: true,
                           onPressed: ctrl.reset,
@@ -227,7 +228,7 @@ void showMapFilterSheet(
                       const SizedBox(width: 12),
                       Expanded(
                         child: TransitButton(
-                          label: 'APLICAR',
+                          label: AppLocalizations.of(context).actionApply.toUpperCase(),
                           isSmall: true,
                           onPressed: () => Navigator.of(sheetCtx).pop(),
                         ),

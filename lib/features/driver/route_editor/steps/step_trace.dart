@@ -3,6 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/theme/transit_colors.dart';
+import '../../../../l10n/generated/app_localizations.dart';
 import '../../../../shared/widgets/transit_button.dart';
 import '../../../map/map_config.dart';
 import '../editor_controller.dart';
@@ -87,7 +88,7 @@ class StepTrace extends StatelessWidget {
               if (tracePoints.isNotEmpty)
                 Expanded(
                   child: TransitButton(
-                    label: 'DESHACER',
+                    label: AppLocalizations.of(context).actionUndo.toUpperCase(),
                     isPrimary: false,
                     icon: Icons.undo,
                     onPressed: controller.removeLastTracePoint,
@@ -96,7 +97,7 @@ class StepTrace extends StatelessWidget {
               if (tracePoints.isNotEmpty) const SizedBox(width: 8),
               Expanded(
                 child: TransitButton(
-                  label: 'SIGUIENTE',
+                  label: AppLocalizations.of(context).actionNext.toUpperCase(),
                   onPressed: tracePoints.length >= 2 ? onNext : null,
                 ),
               ),

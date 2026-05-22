@@ -353,7 +353,7 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen> {
               ),
               const SizedBox(width: 8),
               Text(
-                _isPaused ? 'PAUSADO' : 'EN VIVO',
+                _isPaused ? AppLocalizations.of(context).statusPaused.toUpperCase() : AppLocalizations.of(context).statusLive.toUpperCase(),
                 style: TransitTypography.bodyPrimary(_isPaused
                         ? Colors.orangeAccent
                         : Colors.greenAccent)
@@ -420,7 +420,7 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen> {
               children: [
                 Expanded(
                   child: TransitButton(
-                    label: _isPaused ? 'REANUDAR' : 'PAUSAR',
+                    label: _isPaused ? AppLocalizations.of(context).actionResume.toUpperCase() : AppLocalizations.of(context).actionPause.toUpperCase(),
                     isPrimary: false,
                     isSmall: true,
                     onPressed: _pauseTracking,
@@ -429,7 +429,7 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: TransitButton(
-                    label: 'FINALIZAR',
+                    label: AppLocalizations.of(context).actionFinish.toUpperCase(),
                     isDanger: true,
                     isSmall: true,
                     onPressed: () {

@@ -9,6 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../data/geo/geo_providers.dart';
+import '../../../l10n/generated/app_localizations.dart';
 import 'live_recorder_controller.dart';
 import 'widgets/recorder_live_view.dart';
 import 'widgets/recorder_pre_form.dart';
@@ -106,7 +107,7 @@ class _LiveRouteRecorderState extends ConsumerState<LiveRouteRecorder> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
-            child: Text('CONTINUAR',
+            child: Text(AppLocalizations.of(context).actionContinue.toUpperCase(),
                 style: TransitTypography.bodySecondary(c.textMid)),
           ),
           TextButton(
@@ -117,7 +118,7 @@ class _LiveRouteRecorderState extends ConsumerState<LiveRouteRecorder> {
               if (!mounted) return;
               unawaited(context.push('/driver/editor/post', extra: session));
             },
-            child: Text('DETENER',
+            child: Text(AppLocalizations.of(context).actionStop.toUpperCase(),
                 style: TransitTypography.bodySecondary(c.stateCancelled)),
           ),
         ],

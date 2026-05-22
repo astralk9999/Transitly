@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/transit_colors.dart';
+import '../../../../l10n/generated/app_localizations.dart';
 import '../../../../core/theme/transit_typography.dart';
 import '../../../../shared/widgets/transit_button.dart';
 import '../../../../shared/widgets/transit_input.dart';
@@ -96,7 +97,7 @@ class StepInfo extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: TransitButton(
-              label: 'SIGUIENTE',
+              label: AppLocalizations.of(context).actionNext.toUpperCase(),
               onPressed: canContinue ? onNext : null,
             ),
           ),

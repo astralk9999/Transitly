@@ -133,7 +133,7 @@ class StepReview extends ConsumerWidget {
                   const SizedBox(width: 8),
                   Expanded(
                     child: TransitButton(
-                      label: 'PUBLICAR',
+                      label: AppLocalizations.of(context).actionPublish.toUpperCase(),
                       onPressed: () async {
                         // F15: conectar a RouteRepository.create() para
                         // persistir ruta comunitaria en Supabase + cola offline.

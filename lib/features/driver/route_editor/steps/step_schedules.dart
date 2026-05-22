@@ -24,7 +24,7 @@ class StepSchedules extends StatelessWidget {
       context,
       title: 'Añadir hora',
       hint: 'HH:MM',
-      confirmLabel: 'AÑADIR',
+      confirmLabel: AppLocalizations.of(context).actionAdd.toUpperCase(),
     );
     if (time != null) controller.addScheduleTime(key, time);
   }
@@ -90,7 +90,7 @@ class StepSchedules extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   child: TransitButton(
-                    label: 'SIGUIENTE',
+                    label: AppLocalizations.of(context).actionNext.toUpperCase(),
                     onPressed: onNext,
                   ),
                 ),

@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/theme/transit_colors.dart';
 import '../../../../core/theme/transit_typography.dart';
+import '../../../../l10n/generated/app_localizations.dart';
 import '../../../../shared/widgets/single_field_dialog.dart';
 import '../../../../shared/widgets/transit_button.dart';
 import '../../../../shared/widgets/transit_input.dart';
@@ -43,10 +44,10 @@ class StepSchedules extends StatelessWidget {
             unselectedLabelColor: c.textMid,
             labelStyle: GoogleFonts.ibmPlexMono(
                 fontSize: 11, fontWeight: FontWeight.w600),
-            tabs: const [
-              Tab(text: 'LABORABLE'),
-              Tab(text: 'SÁBADO'),
-              Tab(text: 'FESTIVO'),
+            tabs: [
+              Tab(text: AppLocalizations.of(context).routeDayWeekday.toUpperCase()),
+              Tab(text: AppLocalizations.of(context).routeDaySaturday.toUpperCase()),
+              Tab(text: AppLocalizations.of(context).routeDayHoliday.toUpperCase()),
             ],
           ),
           Expanded(

@@ -13,6 +13,7 @@ import 'core/utils/error_boundary.dart';
 import 'core/utils/sentry_setup.dart';
 import 'core/utils/transit_provider_observer.dart';
 import 'data/cache/hive_init.dart';
+import 'data/fmtc/fmtc_service.dart';
 import 'data/mock/mock_data_service.dart';
 import 'data/mock/mock_realtime_service.dart';
 import 'data/privacy_consent/privacy_consent_repository.dart';
@@ -47,6 +48,7 @@ void main() async {
     Env.supabaseUrl; // dispara _required validation
     await HiveInit.bootstrap();
     AppLogger.info('HiveCache', 'bootstrap complete');
+    await _initFmtc();
     await Supabase.initialize(
       url: Env.supabaseUrl,
       anonKey: Env.supabaseAnonKey,
@@ -181,4 +183,15 @@ class _TransitlyAppWithLifecycleState
 
   @override
   Widget build(BuildContext context) => const TransitlyApp();
+}
+
+Future<void> _initFmtc() async {
+  try {
+    await FmtcService.initialise(
+      maxDatabaseSize: 50 * 1024 * 1024,
+      maxTileCount: 50000,
+    );
+  } catch (e) {
+    AppLogger.warn('FMTC', 'init failed — map caching unavailable', e);
+  }
 }

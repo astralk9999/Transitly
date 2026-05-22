@@ -9,6 +9,7 @@ import 'package:latlong2/latlong.dart';
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_spacing.dart';
 import '../../../core/theme/transit_typography.dart';
+import '../../../data/fmtc/fmtc_provider.dart';
 import '../../../data/mock/mock_data_service.dart';
 import '../../../data/mock/mock_realtime_service.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -39,6 +40,7 @@ class _MapTabState extends ConsumerState<MapTab> {
 
   @override
   void dispose() {
+    _mapController.dispose();
     _sheetController.dispose();
     _scrollController.dispose();
     super.dispose();
@@ -136,15 +138,16 @@ class _MapTabState extends ConsumerState<MapTab> {
     final stops = mockData.stops;
     final cache = ref.watch(mapDataCacheProvider);
     final offline = ref.watch(isOfflineProvider);
+    final fmtcTp = ref.watch(fmtcTileProviderProvider);
 
     return Scaffold(
       backgroundColor: c.bgRoot,
       body: Stack(
         children: [
-          // Map
           TransitMap(
             isDark: isDark,
             controller: _mapController,
+            fmtcTileProvider: fmtcTp,
             routes: routes,
             routePathsLod: cache.routePathsLod,
             routeStopsMap: cache.routeStopsMap,

@@ -18,6 +18,7 @@ the SLI (metric), the target, and the measurement window.
 | **Window** | 30 days rolling |
 | **Alert** | < 99 % for 1 hour → P2 |
 | **Dashboard** | Sentry / Supabase Auth dashboard |
+| **Status** | **Live** — `auth.signIn` span (`lib/data/auth/auth_repository_supabase.dart:79`) |
 
 **Rationale:** Login is the gate to all authenticated features. Below 99.5 %
 indicates an auth service degradation requiring immediate attention.
@@ -33,6 +34,7 @@ indicates an auth service degradation requiring immediate attention.
 | **Window** | 7 days rolling |
 | **Alert** | p95 > 3000 ms for 1 hour → P3 |
 | **Dashboard** | Sentry Performance |
+| **Status** | **Planned** — `map.initial_render` span not yet instrumented |
 
 **Rationale:** The map is the core product surface. Users tolerate up to 2s for
 cold-start map initialization. Above 3s indicates tile server issues or render
@@ -49,6 +51,7 @@ degradation.
 | **Window** | 30 days rolling |
 | **Alert** | < 99.5 % for any day → P1 |
 | **Dashboard** | Sentry Releases |
+| **Status** | **Live** — SentryFlutter error boundary + `SentrySetup.captureException` on unhandled crashes (`lib/core/utils/error_boundary.dart`, `transit_provider_observer.dart`) |
 
 **Rationale:** Industry standard for mobile apps. 99.9 % allows ~1 crash per
 1000 sessions. Below 99.5 % triggers an immediate release freeze.
@@ -64,6 +67,7 @@ degradation.
 | **Window** | 7 days rolling |
 | **Alert** | < 95 % for 1 hour → P2 |
 | **Dashboard** | Supabase Edge Functions dashboard |
+| **Status** | **Planned** — requires `npm:@sentry/deno` in `send_notification` and `import_gtfs` edge functions (see `docs/SENTRY_EDGE_FUNCTIONS.md`) |
 
 **Rationale:** `send_notification` and `import_gtfs` are critical backend
 paths. 99 % accounts for cold starts and occasional timeouts.
@@ -79,6 +83,7 @@ paths. 99 % accounts for cold starts and occasional timeouts.
 | **Window** | 7 days rolling |
 | **Alert** | p95 > 120 s for 1 hour → P3 |
 | **Dashboard** | Firebase Cloud Messaging dashboard |
+| **Status** | **Planned** — depends on SLO-4 edge instrumentation |
 
 **Rationale:** Push notifications for incident resolution and route changes
 are time-sensitive. 30s p95 accounts for FCM delivery variance.
@@ -94,6 +99,7 @@ are time-sensitive. 30s p95 accounts for FCM delivery variance.
 | **Window** | 7 days rolling |
 | **Alert** | < 99 % for 1 hour → P2 |
 | **Dashboard** | Supabase Auth / Sentry |
+| **Status** | **Live** — `network.*` spans capture all Supabase HTTP calls via `NetworkTimingInterceptor` (`lib/core/utils/network_timing.dart`); auth errors logged via `AppLogger` breadcrumbs |
 
 **Rationale:** Token refresh failures force users to re-authenticate. 99.9 %
 ensures transparent session continuity for the vast majority of users.

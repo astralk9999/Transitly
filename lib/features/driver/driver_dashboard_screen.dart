@@ -22,6 +22,7 @@ import '../../../shared/providers/user_provider.dart';
 import '../../../shared/widgets/smoke_background.dart';
 import '../../../shared/widgets/transit_button.dart';
 import '../map/map_config.dart';
+import 'widgets/driver_stats_card.dart';
 
 class DriverDashboardScreen extends ConsumerStatefulWidget {
   const DriverDashboardScreen({super.key});
@@ -205,13 +206,6 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen> {
     }
   }
 
-  String _formatTime(int sec) {
-    final h = sec ~/ 3600;
-    final m = (sec % 3600) ~/ 60;
-    final s = sec % 60;
-    return '${h.toString().padLeft(2, '0')}:${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
-  }
-
   double _haversineKm(LatLng a, LatLng b) {
     const r = 6371.0;
     final dLat = (b.latitude - a.latitude) * pi / 180;
@@ -338,41 +332,13 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen> {
   Widget _buildTrackingView(TransitColorScheme c) {
     return Column(
       children: [
-        Container(
-          padding: const EdgeInsets.all(12),
-          color: c.bgSurface,
-          child: Row(
-            children: [
-              Container(
-                width: 10,
-                height: 10,
-                decoration: BoxDecoration(
-                  color: _isPaused
-                      ? Colors.orangeAccent
-                      : Colors.greenAccent,
-                  shape: BoxShape.circle,
-                ),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                _isPaused ? AppLocalizations.of(context).statusPaused.toUpperCase() : AppLocalizations.of(context).statusLive.toUpperCase(),
-                style: TransitTypography.bodyPrimary(_isPaused
-                        ? Colors.orangeAccent
-                        : Colors.greenAccent)
-                    .copyWith(
-                        fontSize: 12, fontWeight: FontWeight.w600),
-              ),
-              const Spacer(),
-              Text(_formatTime(_elapsedSeconds),
-                  style: TransitTypography.bodyPrimary(c.textHi)
-                      .copyWith(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600)),
-              const SizedBox(width: 16),
-              Text('${_tripDistanceKm.toStringAsFixed(1)} km',
-                  style: TransitTypography.bodySecondary(c.textMid)),
-            ],
-          ),
+        DriverStatsCard(
+          isPaused: _isPaused,
+          elapsedSeconds: _elapsedSeconds,
+          tripDistanceKm: _tripDistanceKm,
+          colorScheme: c,
+          statusPausedLabel: AppLocalizations.of(context).statusPaused.toUpperCase(),
+          statusLiveLabel: AppLocalizations.of(context).statusLive.toUpperCase(),
         ),
         Expanded(
           child: FlutterMap(

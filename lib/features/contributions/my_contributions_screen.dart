@@ -18,6 +18,7 @@ import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/reputation_badge.dart';
 import '../../shared/widgets/responsive_scaffold.dart';
 import '../../shared/widgets/smoke_background.dart';
+import 'widgets/suggestions_tab_content.dart';
 
 class MyContributionsScreen extends ConsumerStatefulWidget {
   const MyContributionsScreen({super.key});
@@ -175,7 +176,11 @@ class _MyContributionsScreenState
                             Expanded(
                               child: TabBarView(
                                 children: [
-                                  _buildSuggestionsTab(c, padding),
+                                  SuggestionsTabContent(
+                                    suggestions: _suggestions,
+                                    colorScheme: c,
+                                    padding: padding,
+                                  ),
                                   _buildFeedbackTab(
                                       c, localFeedbacks, mockData, padding),
                                   _buildReportsTab(c, padding),
@@ -192,79 +197,6 @@ class _MyContributionsScreenState
             ),
         ],
       ),
-    );
-  }
-
-  Widget _buildSuggestionsTab(TransitColorScheme c, double padding) {
-    if (_suggestions.isEmpty) {
-      return const Center(
-        child: EmptyState(
-          'SIN SUGERENCIAS',
-          'Tus sugerencias de ruta aparecerán aquí',
-        ),
-      );
-    }
-    return ListView.builder(
-      padding: EdgeInsets.all(padding),
-      itemCount: _suggestions.length,
-      itemBuilder: (context, index) {
-        final sug = _suggestions[index];
-        return GestureDetector(
-          onTap: () => context.push('/suggestions/detail/${sug.id}'),
-          child: Container(
-            margin: const EdgeInsets.only(bottom: 8),
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: c.bgSurface,
-              border: Border.all(color: c.border, width: 0.5),
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      'SUGERENCIA',
-                      style: GoogleFonts.ibmPlexMono(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w600,
-                        color: c.textMid,
-                      ),
-                    ),
-                    const Spacer(),
-                    if (sug.voteCount > 0)
-                      Row(
-                        children: [
-                          Icon(Icons.arrow_upward,
-                              size: 12, color: c.accent),
-                          const SizedBox(width: 2),
-                          Text(sug.voteCount.toString(),
-                              style: TransitTypography.bodySmall(c.accent)),
-                        ],
-                      ),
-                    const SizedBox(width: 8),
-                    Text(
-                      sug.status.label,
-                      style: TransitTypography.bodySmall(c.accent),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  '${sug.originText} → ${sug.destinationText}',
-                  style: TransitTypography.bodySecondary(c.textHi),
-                ),
-                if (sug.routeCode != null)
-                  Text(
-                    sug.routeCode!,
-                    style: TransitTypography.bodySmall(c.textMid),
-                  ),
-              ],
-            ),
-          ),
-        );
-      },
     );
   }
 

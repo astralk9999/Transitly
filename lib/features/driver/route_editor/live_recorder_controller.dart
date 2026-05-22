@@ -243,6 +243,7 @@ class LiveRecorderController extends ChangeNotifier {
   @override
   void dispose() {
     stop();
+    mapController.dispose();
     super.dispose();
   }
 

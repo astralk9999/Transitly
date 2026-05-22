@@ -210,6 +210,8 @@ class RouteEditorController extends ChangeNotifier {
     codeCtrl.dispose();
     nameCtrl.dispose();
     totalTimeCtrl.dispose();
+    traceMapCtrl.dispose();
+    stopsMapCtrl.dispose();
     super.dispose();
   }
 }

@@ -1004,5 +1004,58 @@
   "incidentPunctual": "Puntual",
   "incidentKind": "Amable",
   "incidentClean": "Limpio",
-  "incidentCommentHint": "Comentario (opcional)"
+  "incidentCommentHint": "Comentario (opcional)",
+
+  "driverStartTrip": "Iniciar viaje",
+  "driverSelectRouteFirst": "Selecciona una ruta",
+  "driverLoadRoutes": "Cargar rutas",
+
+  "routeShareTitle": "Compartir ruta",
+  "routeShareWithUser": "Compartir con usuario",
+  "routeShareEmailHint": "email@ejemplo.com",
+  "routeSharePublicLink": "Enlace público",
+  "routeShareGenerateLink": "Generar enlace",
+  "routeShareRegenerateLink": "Regenerar enlace",
+  "routeShareNeedLogin": "Inicia sesión para compartir rutas",
+  "routeShareLinkGenerated": "Enlace generado",
+
+  "mapFilterTitle": "Filtros del mapa",
+  "mapFilterRouteSource": "Origen de la ruta",
+  "mapFilterOfficial": "Oficiales",
+  "mapFilterCommunity": "Comunitarias",
+  "mapFilterUpcoming": "Próximas salidas",
+  "mapFilterMinutes": "{m} min",
+  "@mapFilterMinutes": {
+    "placeholders": { "m": { "type": "int", "example": "15" } }
+  },
+  "mapFilterAccessibility": "Accesibilidad",
+  "mapFilterOnlyAccessible": "Solo accesibles",
+  "mapFilterFavorites": "Favoritos",
+  "mapFilterOnlyFavorites": "Solo favoritos",
+
+  "myContributionsTitle": "Mis contribuciones",
+  "myContributionsReload": "Recargar",
+  "myContributionsSummary": "{suggestions} sugerencias · {feedbacks} feedbacks · {reports} reportes",
+  "@myContributionsSummary": {
+    "placeholders": {
+      "suggestions": { "type": "int", "example": "3" },
+      "feedbacks": { "type": "int", "example": "5" },
+      "reports": { "type": "int", "example": "2" }
+    }
+  },
+  "myContributionsLabelSuggestions": "sugerencias",
+  "myContributionsLabelCorrections": "correcciones",
+  "myContributionsLabelReports": "reportes",
+  "myContributionsLabelPhotos": "fotos",
+  "myContributionsTabSuggestions": "Sugerencias",
+  "myContributionsTabFeedback": "Feedback",
+  "myContributionsTabReports": "Reportes",
+  "myContributionsEmptyFeedback": "Sin feedback",
+  "myContributionsEmptyFeedbackSubtitle": "Tu feedback enviado aparecerá aquí",
+  "myContributionsEmptyReports": "Sin reportes",
+  "myContributionsEmptyReportsSubtitle": "Tus reportes de incidencias aparecerán aquí",
+  "myContributionsLocalDraft": "Borrador local",
+  "myContributionsNoDescription": "Sin descripción",
+
+  "reputationCurrentRank": "Actual"
 }

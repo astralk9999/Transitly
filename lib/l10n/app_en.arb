@@ -679,5 +679,58 @@
   "incidentPunctual": "Punctual",
   "incidentKind": "Kind",
   "incidentClean": "Clean",
-  "incidentCommentHint": "Comment (optional)"
+  "incidentCommentHint": "Comment (optional)",
+
+  "driverStartTrip": "Start trip",
+  "driverSelectRouteFirst": "Select a route",
+  "driverLoadRoutes": "Load routes",
+
+  "routeShareTitle": "Share route",
+  "routeShareWithUser": "Share with user",
+  "routeShareEmailHint": "email@example.com",
+  "routeSharePublicLink": "Public link",
+  "routeShareGenerateLink": "Generate link",
+  "routeShareRegenerateLink": "Regenerate link",
+  "routeShareNeedLogin": "Sign in to share routes",
+  "routeShareLinkGenerated": "Link generated",
+
+  "mapFilterTitle": "Map filters",
+  "mapFilterRouteSource": "Route source",
+  "mapFilterOfficial": "Official",
+  "mapFilterCommunity": "Community",
+  "mapFilterUpcoming": "Upcoming departures",
+  "mapFilterMinutes": "{m} min",
+  "@mapFilterMinutes": {
+    "placeholders": { "m": { "type": "int", "example": "15" } }
+  },
+  "mapFilterAccessibility": "Accessibility",
+  "mapFilterOnlyAccessible": "Accessible only",
+  "mapFilterFavorites": "Favorites",
+  "mapFilterOnlyFavorites": "Favorites only",
+
+  "myContributionsTitle": "My contributions",
+  "myContributionsReload": "Reload",
+  "myContributionsSummary": "{suggestions} suggestions · {feedbacks} feedback · {reports} reports",
+  "@myContributionsSummary": {
+    "placeholders": {
+      "suggestions": { "type": "int", "example": "3" },
+      "feedbacks": { "type": "int", "example": "5" },
+      "reports": { "type": "int", "example": "2" }
+    }
+  },
+  "myContributionsLabelSuggestions": "suggestions",
+  "myContributionsLabelCorrections": "corrections",
+  "myContributionsLabelReports": "reports",
+  "myContributionsLabelPhotos": "photos",
+  "myContributionsTabSuggestions": "Suggestions",
+  "myContributionsTabFeedback": "Feedback",
+  "myContributionsTabReports": "Reports",
+  "myContributionsEmptyFeedback": "No feedback",
+  "myContributionsEmptyFeedbackSubtitle": "Your submitted feedback will appear here",
+  "myContributionsEmptyReports": "No reports",
+  "myContributionsEmptyReportsSubtitle": "Your incident reports will appear here",
+  "myContributionsLocalDraft": "Local draft",
+  "myContributionsNoDescription": "No description",
+
+  "reputationCurrentRank": "Current"
 }

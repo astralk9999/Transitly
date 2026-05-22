@@ -3458,6 +3458,234 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Comentario (opcional)'**
   String get incidentCommentHint;
+
+  /// No description provided for @driverStartTrip.
+  ///
+  /// In es, this message translates to:
+  /// **'Iniciar viaje'**
+  String get driverStartTrip;
+
+  /// No description provided for @driverSelectRouteFirst.
+  ///
+  /// In es, this message translates to:
+  /// **'Selecciona una ruta'**
+  String get driverSelectRouteFirst;
+
+  /// No description provided for @driverLoadRoutes.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargar rutas'**
+  String get driverLoadRoutes;
+
+  /// No description provided for @routeShareTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Compartir ruta'**
+  String get routeShareTitle;
+
+  /// No description provided for @routeShareWithUser.
+  ///
+  /// In es, this message translates to:
+  /// **'Compartir con usuario'**
+  String get routeShareWithUser;
+
+  /// No description provided for @routeShareEmailHint.
+  ///
+  /// In es, this message translates to:
+  /// **'email@ejemplo.com'**
+  String get routeShareEmailHint;
+
+  /// No description provided for @routeSharePublicLink.
+  ///
+  /// In es, this message translates to:
+  /// **'Enlace público'**
+  String get routeSharePublicLink;
+
+  /// No description provided for @routeShareGenerateLink.
+  ///
+  /// In es, this message translates to:
+  /// **'Generar enlace'**
+  String get routeShareGenerateLink;
+
+  /// No description provided for @routeShareRegenerateLink.
+  ///
+  /// In es, this message translates to:
+  /// **'Regenerar enlace'**
+  String get routeShareRegenerateLink;
+
+  /// No description provided for @routeShareNeedLogin.
+  ///
+  /// In es, this message translates to:
+  /// **'Inicia sesión para compartir rutas'**
+  String get routeShareNeedLogin;
+
+  /// No description provided for @routeShareLinkGenerated.
+  ///
+  /// In es, this message translates to:
+  /// **'Enlace generado'**
+  String get routeShareLinkGenerated;
+
+  /// No description provided for @mapFilterTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Filtros del mapa'**
+  String get mapFilterTitle;
+
+  /// No description provided for @mapFilterRouteSource.
+  ///
+  /// In es, this message translates to:
+  /// **'Origen de la ruta'**
+  String get mapFilterRouteSource;
+
+  /// No description provided for @mapFilterOfficial.
+  ///
+  /// In es, this message translates to:
+  /// **'Oficiales'**
+  String get mapFilterOfficial;
+
+  /// No description provided for @mapFilterCommunity.
+  ///
+  /// In es, this message translates to:
+  /// **'Comunitarias'**
+  String get mapFilterCommunity;
+
+  /// No description provided for @mapFilterUpcoming.
+  ///
+  /// In es, this message translates to:
+  /// **'Próximas salidas'**
+  String get mapFilterUpcoming;
+
+  /// No description provided for @mapFilterMinutes.
+  ///
+  /// In es, this message translates to:
+  /// **'{m} min'**
+  String mapFilterMinutes(int m);
+
+  /// No description provided for @mapFilterAccessibility.
+  ///
+  /// In es, this message translates to:
+  /// **'Accesibilidad'**
+  String get mapFilterAccessibility;
+
+  /// No description provided for @mapFilterOnlyAccessible.
+  ///
+  /// In es, this message translates to:
+  /// **'Solo accesibles'**
+  String get mapFilterOnlyAccessible;
+
+  /// No description provided for @mapFilterFavorites.
+  ///
+  /// In es, this message translates to:
+  /// **'Favoritos'**
+  String get mapFilterFavorites;
+
+  /// No description provided for @mapFilterOnlyFavorites.
+  ///
+  /// In es, this message translates to:
+  /// **'Solo favoritos'**
+  String get mapFilterOnlyFavorites;
+
+  /// No description provided for @myContributionsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Mis contribuciones'**
+  String get myContributionsTitle;
+
+  /// No description provided for @myContributionsReload.
+  ///
+  /// In es, this message translates to:
+  /// **'Recargar'**
+  String get myContributionsReload;
+
+  /// No description provided for @myContributionsSummary.
+  ///
+  /// In es, this message translates to:
+  /// **'{suggestions} sugerencias · {feedbacks} feedbacks · {reports} reportes'**
+  String myContributionsSummary(int suggestions, int feedbacks, int reports);
+
+  /// No description provided for @myContributionsLabelSuggestions.
+  ///
+  /// In es, this message translates to:
+  /// **'sugerencias'**
+  String get myContributionsLabelSuggestions;
+
+  /// No description provided for @myContributionsLabelCorrections.
+  ///
+  /// In es, this message translates to:
+  /// **'correcciones'**
+  String get myContributionsLabelCorrections;
+
+  /// No description provided for @myContributionsLabelReports.
+  ///
+  /// In es, this message translates to:
+  /// **'reportes'**
+  String get myContributionsLabelReports;
+
+  /// No description provided for @myContributionsLabelPhotos.
+  ///
+  /// In es, this message translates to:
+  /// **'fotos'**
+  String get myContributionsLabelPhotos;
+
+  /// No description provided for @myContributionsTabSuggestions.
+  ///
+  /// In es, this message translates to:
+  /// **'Sugerencias'**
+  String get myContributionsTabSuggestions;
+
+  /// No description provided for @myContributionsTabFeedback.
+  ///
+  /// In es, this message translates to:
+  /// **'Feedback'**
+  String get myContributionsTabFeedback;
+
+  /// No description provided for @myContributionsTabReports.
+  ///
+  /// In es, this message translates to:
+  /// **'Reportes'**
+  String get myContributionsTabReports;
+
+  /// No description provided for @myContributionsEmptyFeedback.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin feedback'**
+  String get myContributionsEmptyFeedback;
+
+  /// No description provided for @myContributionsEmptyFeedbackSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu feedback enviado aparecerá aquí'**
+  String get myContributionsEmptyFeedbackSubtitle;
+
+  /// No description provided for @myContributionsEmptyReports.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin reportes'**
+  String get myContributionsEmptyReports;
+
+  /// No description provided for @myContributionsEmptyReportsSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tus reportes de incidencias aparecerán aquí'**
+  String get myContributionsEmptyReportsSubtitle;
+
+  /// No description provided for @myContributionsLocalDraft.
+  ///
+  /// In es, this message translates to:
+  /// **'Borrador local'**
+  String get myContributionsLocalDraft;
+
+  /// No description provided for @myContributionsNoDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin descripción'**
+  String get myContributionsNoDescription;
+
+  /// No description provided for @reputationCurrentRank.
+  ///
+  /// In es, this message translates to:
+  /// **'Actual'**
+  String get reputationCurrentRank;
 }
 
 class _AppLocalizationsDelegate

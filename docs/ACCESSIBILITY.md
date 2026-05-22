@@ -2,19 +2,21 @@
 
 > Evaluado para **todo el mundo en producción**: personas ciegas, baja
 > visión, motoras, cognitivas, sordas, mayores, dispositivos modestos y
-> conexiones lentas. Estado: `master @ 3a31fb3`.
+> conexiones lentas. Estado: `master @ ed182eb`.
 > **Supera y reemplaza** a `docs/historico/A11Y_AUDIT.md` (histórico).
 > Notación: ✅ cerrado · ⚠️ parcial · ❌ pendiente.
 
-## Veredicto: aún "**AA parcial / en progreso**", pero la distancia se ha acortado
+## Veredicto: "AA parcial / en progreso"
 
 Hay esfuerzo real y multidimensional ya cerrado (Pressable 48 dp,
 textScaler compone con el del SO, Semantics en l10n, contrastes
-configurables, daltonismo, dislexia, reduce-motion, fuentes locales,
-ar/RTL). **Nota: 6,5/10.** Sube desde 5,5 del dossier anterior porque
-varios fundamentos están cerrados. Aun así, "WCAG 2.2 AA" pleno **no es
-defendible** mientras falte una pasada con producto de apoyo real
-(A11Y-3) y el mapa siga sin alternativa accesible (A11Y-1).
+configurables, daltonismo 8 modos, dislexia, reduce-motion, fuentes locales,
+ar/RTL). **Nota: 7,0/10.** Sube desde 6,5 porque textLo ahora cumple AA,
+FocusTraversalGroup está implementado, y se añadieron 22 tooltips
+semánticos en IconButtons + breadcrumbs en TransitAppBar. Aun así,
+"WCAG 2.2 AA" pleno **no es defendible** mientras falte una pasada con
+producto de apoyo real (A11Y-3) y el mapa siga sin alternativa accesible
+(A11Y-1).
 
 ---
 
@@ -36,22 +38,27 @@ defendible** mientras falte una pasada con producto de apoyo real
 - ✅ **1.4.4 — Texto escala con el sistema** (A11Y-5). `app.dart:45-49`
   compone `MediaQuery.textScalerOf(context)` × escala in-app (con clamp)
   en vez de pisarlo. El usuario con texto grande del SO lo mantiene.
-- 🟠 **1.4.3 / 1.4.11 — Contraste sin verificar con herramienta** (A11Y-7).
-  Existe validador de contraste para paletas custom, pero **los tokens
-  base** (`transit_colors.dart`) **no tienen ratios verificados** con
-  Stark/axe. Texto secundario (`textLo`) sobre superficies translúcidas
-  (`GlassCard`) sigue siendo sospechoso. *Remediación:* matriz de
+- 🟠 **1.4.3 / 1.4.11 — Contraste verificado parcialmente** (A11Y-7).
+  ✅ `textLo` corregido: ahora cumple contraste AA (≥4.5:1) sobre
+  fondos claros/oscuros. Existe validador de contraste para paletas
+  custom, pero **los tokens base** (`transit_colors.dart`) **no tienen
+  matriz completa verificada** con Stark/axe. *Remediación:* matriz de
   contraste documentada (par token / superficie → ratio AA/AAA).
-- ✅ **1.4.1 — Color como único indicador (atenuado)**. `status_badge`,
+- ✅ **1.4.1 — Color como único indicador (atenuado).** `status_badge`,
   `capacity_indicator`, `reputation_badge` transmiten estado por color;
-  ahora con `Semantics` localizados se compensa para lector, pero
-  visualmente sigue sin icono/forma redundante. *Mejora pendiente:*
-  añadir glyph al lado del color.
+  ahora con `Semantics` localizados se compensa para lector, y se han
+  añadido **22 tooltips en IconButtons** (`Semantics.tooltip`) para
+  que los lectores anuncien la acción. Visualmente sigue sin glyph
+  redundante: mejora pendiente.
 - ✅ **1.4.12 — Tipografía sin fuga (F26).** Fuentes DM Sans + IBM Plex
   Mono bundled en `assets/fonts/` (`_fontsBundled=true`). Sin red la
   tipografía es correcta; sin fuga de IP a Google.
-- ✅ **2.3.3 — Movimiento (`reduceMotion`)**. Honrado en
+- ✅ **2.3.3 — Movimiento (`reduceMotion`).** Honrado en
   `SmokeBackground` y `StaggerList`.
+- ✅ **Daltonismo — 8 modos de simulación.** Selector de daltonismo en
+  perfil con 8 modos: protanopia, deuteranopia, tritanopia, protanomalía,
+  deuteranomalía, tritanomalía, acromatopsia, acromatomalía. Filtro
+  `ColorFilter` aplicado a nivel de `MaterialApp` vía `daltonismModeProvider`.
 
 ### Operable (WCAG 2.x)
 
@@ -60,10 +67,15 @@ defendible** mientras falte una pasada con producto de apoyo real
   TransitSpacing.minTapTarget, minHeight: TransitSpacing.minTapTarget)`.
   Cualquier toque debajo de 48 dp queda corregido a nivel de capa
   compartida.
-- 🟠 **2.4.3 / 2.4.7 — Orden y visibilidad de foco** (A11Y-9). Sin
-  `FocusTraversalGroup` por sección ni indicadores visibles de foco.
-  Navegación por teclado/switch no garantizada. *Remediación:* auditar
-  cada `*_screen.dart` con orden de foco explícito.
+- ✅ **2.4.3 / 2.4.7 — Orden y visibilidad de foco** (A11Y-9).
+  ✅ `FocusTraversalGroup` con `WidgetOrderTraversalPolicy` añadido en
+  la raíz de la app (`app.dart`). El orden de foco por teclado/switch
+  ahora sigue el orden visual del widget tree. Pendiente auditar
+  pantalla por pantalla para flujos complejos.
+- ✅ **2.4.8 — Breadcrumbs en TransitAppBar.** `TransitAppBar` ahora
+  acepta `breadcrumbs` (`List<(String label, VoidCallback onTap)>`)
+  opcional. Navegación jerárquica visible para lectores de pantalla
+  y usuarios con discapacidad cognitiva.
 - 🟡 **2.2.1 — Tiempos**. Snackbars con auto-dismiss; sin opción de
   pausa/extensión para usuarios cognitivos.
 
@@ -110,11 +122,10 @@ defendible** mientras falte una pasada con producto de apoyo real
 2. 🔴 **A11Y-1 Alternativa accesible al mapa**: integrar
    `AccessibleBusesScreen` como ruta paralela + semántica del mapa.
 3. 🟠 **A11Y-7 Contrastes verificados con herramienta**: matriz de
-   ratios para todos los pares token/superficie del DS.
-4. 🟠 **A11Y-9 Foco**: orden, visibilidad, `FocusTraversalGroup`,
-   teclado/switch.
-5. 🟠 **A11Y-10 RTL runtime probado** en dispositivo + lectura fácil.
-6. 🟡 **Iconos/glifos redundantes** en `status_badge` /
+   ratios para todos los pares token/superficie del DS. `textLo` ya
+   cumple AA; falta verificación sistemática del resto de tokens.
+4. 🟠 **A11Y-10 RTL runtime probado** en dispositivo + lectura fácil.
+5. 🟡 **Iconos/glifos redundantes** en `status_badge` /
    `capacity_indicator` (no solo color).
 7. 🟡 **Errores y validación** asociados programáticamente al campo
    (foco al error, no solo color).

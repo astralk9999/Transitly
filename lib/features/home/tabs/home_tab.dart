@@ -19,6 +19,7 @@ import '../../../shared/widgets/stagger_list.dart';
 import '../../../shared/widgets/route_card.dart';
 import '../../../shared/widgets/transit_button.dart';
 import '../../../shared/widgets/transit_chip.dart';
+import '../widgets/home_alert_item.dart';
 
 const _jerezCenter = LatLng(36.6850, -6.1261);
 const _nearbyCount = 3;
@@ -184,7 +185,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                 const SizedBox(height: 10),
                 StaggerList(
                   children: favAlerts
-                      .map((alert) => _buildAlertItem(c, alert))
+                      .map((alert) => HomeAlertItem(c: c, alert: alert))
                       .toList(),
                 ),
               ],
@@ -371,47 +372,6 @@ class _HomeTabState extends ConsumerState<HomeTab> {
               ),
               );
             }).toList(),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAlertItem(TransitColorScheme c, AlertModel alert) {
-    final Color severityColor;
-    switch (alert.severity) {
-      case AlertSeverity.info:
-        severityColor = c.neonBlue;
-      case AlertSeverity.warning:
-        severityColor = c.stateDelay;
-      case AlertSeverity.critical:
-        severityColor = c.stateCancelled;
-    }
-
-    return GlassCard(
-      blur: 16,
-      fillOpacity: 0.05,
-      borderRadius: 12,
-      margin: const EdgeInsets.only(bottom: 6),
-      padding: const EdgeInsets.all(12),
-      child: Row(
-        children: [
-          Container(
-            width: 3,
-            height: 32,
-            decoration: BoxDecoration(
-              color: severityColor,
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              alert.title,
-              style: TransitTypography.bodySecondary(c.textHi),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
           ),
         ],
       ),

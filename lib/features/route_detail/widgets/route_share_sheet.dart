@@ -69,7 +69,7 @@ class _ShareSheetContentState extends ConsumerState<_ShareSheetContent> {
       final client = ref.read(supabaseClientProvider);
       final session = client.auth.currentSession;
       if (session == null) {
-        setState(() => _feedback = 'Inicia sesión para compartir rutas');
+        setState(() => _feedback = AppLocalizations.of(context).routeShareNeedLogin);
         return;
       }
 
@@ -122,7 +122,7 @@ class _ShareSheetContentState extends ConsumerState<_ShareSheetContent> {
       if (!mounted) return;
       setState(() {
         _generatedLink = slug;
-        _feedback = 'Enlace generado';
+        _feedback = AppLocalizations.of(context).routeShareLinkGenerated;
       });
     } catch (e) {
       if (!mounted) return;
@@ -139,6 +139,7 @@ class _ShareSheetContentState extends ConsumerState<_ShareSheetContent> {
   @override
   Widget build(BuildContext context) {
     final c = widget.c;
+    final l10n = AppLocalizations.of(context);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
@@ -155,7 +156,7 @@ class _ShareSheetContentState extends ConsumerState<_ShareSheetContent> {
             ),
           ),
           const SizedBox(height: 16),
-          Text('Compartir ruta',
+          Text(l10n.routeShareTitle,
               style: TransitTypography.heading(c.textHi)),
           const SizedBox(height: 4),
           Text(widget.routeName,
@@ -163,7 +164,7 @@ class _ShareSheetContentState extends ConsumerState<_ShareSheetContent> {
           const SizedBox(height: 16),
 
           // Compartir con usuario
-          Text('Compartir con usuario',
+          Text(l10n.routeShareWithUser,
               style: TransitTypography.sectionTitle(c.textMid)),
           const SizedBox(height: 8),
           Row(
@@ -173,7 +174,7 @@ class _ShareSheetContentState extends ConsumerState<_ShareSheetContent> {
                   controller: _emailController,
                   style: TextStyle(color: c.textHi, fontSize: 14),
                   decoration: InputDecoration(
-                    hintText: 'email@ejemplo.com',
+                    hintText: l10n.routeShareEmailHint,
                     hintStyle: TextStyle(color: c.textLo),
                     filled: true,
                     fillColor: c.bgSurface,
@@ -198,7 +199,7 @@ class _ShareSheetContentState extends ConsumerState<_ShareSheetContent> {
           const SizedBox(height: 16),
 
           // Enlace público
-          Text('Enlace público',
+          Text(l10n.routeSharePublicLink,
               style: TransitTypography.sectionTitle(c.textMid)),
           const SizedBox(height: 8),
           if (_feedback != null)
@@ -222,7 +223,9 @@ class _ShareSheetContentState extends ConsumerState<_ShareSheetContent> {
             ),
           ],
           TransitButton(
-            label: _generatedLink != null ? 'REGENERAR ENLACE' : 'GENERAR ENLACE',
+            label: _generatedLink != null
+                ? l10n.routeShareRegenerateLink.toUpperCase()
+                : l10n.routeShareGenerateLink.toUpperCase(),
             isPrimary: false,
             isSmall: true,
             onPressed: () => _generateLink(),

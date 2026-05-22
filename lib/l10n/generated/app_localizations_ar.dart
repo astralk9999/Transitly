@@ -1839,4 +1839,124 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get incidentCommentHint => 'تعليق (اختياري)';
+
+  @override
+  String get driverStartTrip => 'بدء الرحلة';
+
+  @override
+  String get driverSelectRouteFirst => 'اختر مساراً';
+
+  @override
+  String get driverLoadRoutes => 'تحميل المسارات';
+
+  @override
+  String get routeShareTitle => 'مشاركة المسار';
+
+  @override
+  String get routeShareWithUser => 'مشاركة مع مستخدم';
+
+  @override
+  String get routeShareEmailHint => 'email@ejemplo.com';
+
+  @override
+  String get routeSharePublicLink => 'رابط عام';
+
+  @override
+  String get routeShareGenerateLink => 'إنشاء رابط';
+
+  @override
+  String get routeShareRegenerateLink => 'إعادة إنشاء الرابط';
+
+  @override
+  String get routeShareNeedLogin => 'سجل الدخول لمشاركة المسارات';
+
+  @override
+  String get routeShareLinkGenerated => 'تم إنشاء الرابط';
+
+  @override
+  String get mapFilterTitle => 'فلاتر الخريطة';
+
+  @override
+  String get mapFilterRouteSource => 'مصدر المسار';
+
+  @override
+  String get mapFilterOfficial => 'رسمية';
+
+  @override
+  String get mapFilterCommunity => 'مجتمعية';
+
+  @override
+  String get mapFilterUpcoming => 'الرحلات القادمة';
+
+  @override
+  String mapFilterMinutes(int m) {
+    return '$m دقيقة';
+  }
+
+  @override
+  String get mapFilterAccessibility => 'إمكانية الوصول';
+
+  @override
+  String get mapFilterOnlyAccessible => 'المتاحة فقط';
+
+  @override
+  String get mapFilterFavorites => 'المفضلة';
+
+  @override
+  String get mapFilterOnlyFavorites => 'المفضلة فقط';
+
+  @override
+  String get myContributionsTitle => 'مساهماتي';
+
+  @override
+  String get myContributionsReload => 'إعادة تحميل';
+
+  @override
+  String myContributionsSummary(int suggestions, int feedbacks, int reports) {
+    return '$suggestions اقتراحات · $feedbacks ملاحظات · $reports تقارير';
+  }
+
+  @override
+  String get myContributionsLabelSuggestions => 'اقتراحات';
+
+  @override
+  String get myContributionsLabelCorrections => 'تصحيحات';
+
+  @override
+  String get myContributionsLabelReports => 'تقارير';
+
+  @override
+  String get myContributionsLabelPhotos => 'صور';
+
+  @override
+  String get myContributionsTabSuggestions => 'اقتراحات';
+
+  @override
+  String get myContributionsTabFeedback => 'ملاحظات';
+
+  @override
+  String get myContributionsTabReports => 'تقارير';
+
+  @override
+  String get myContributionsEmptyFeedback => 'لا توجد ملاحظات';
+
+  @override
+  String get myContributionsEmptyFeedbackSubtitle =>
+      'ستظهر ملاحظاتك المرسلة هنا';
+
+  @override
+  String get myContributionsEmptyReports => 'لا توجد تقارير';
+
+  @override
+  String get myContributionsEmptyReportsSubtitle =>
+      'ستظهر تقارير الحوادث الخاصة بك هنا';
+
+  @override
+  String get myContributionsLocalDraft => 'مسودة محلية';
+
+  @override
+  String get myContributionsNoDescription => 'بدون وصف';
+
+  @override
+  String get reputationCurrentRank => 'الحالي';
 }

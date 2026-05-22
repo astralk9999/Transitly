@@ -9,6 +9,7 @@ import '../../data/incident/incident_repository_provider.dart';
 import '../../data/mock/mock_data_service.dart';
 import '../../data/route_feedback/route_feedback_repository_provider.dart';
 import '../../data/route_suggestion/route_suggestion_repository_provider.dart';
+import '../../l10n/generated/app_localizations.dart';
 import '../../shared/models/incident_model.dart';
 import '../../shared/models/route_feedback_model.dart';
 import '../../shared/models/route_suggestion_model.dart';
@@ -75,6 +76,7 @@ class _MyContributionsScreenState
     final c = TransitColorScheme.of(isDark);
     final mockData = ref.watch(mockDataServiceProvider);
     final localFeedbacks = ref.watch(localFeedbackProvider);
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: c.bgRoot,
@@ -83,17 +85,17 @@ class _MyContributionsScreenState
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: c.textMid),
-          tooltip: 'Volver',
+          tooltip: l10n.actionBack,
           onPressed: () => context.pop(),
         ),
-        title: Text('MIS CONTRIBUCIONES',
+        title: Text(l10n.myContributionsTitle.toUpperCase(),
             style: TransitTypography.sectionTitle(c.textHi)),
         centerTitle: false,
         actions: [
           IconButton(
             icon: Icon(Icons.refresh, color: c.textMid, size: 20),
             onPressed: _load,
-            tooltip: 'Recargar',
+            tooltip: l10n.myContributionsReload,
           ),
         ],
       ),
@@ -123,7 +125,9 @@ class _MyContributionsScreenState
                               const SizedBox(width: 12),
                               Expanded(
                                 child: Text(
-                                  '${_suggestions.length} sugerencias · ${_feedbacks.length + localFeedbacks.length} feedbacks · ${_incidents.length} reportes',
+                                  l10n.myContributionsSummary(_suggestions.length,
+                                      _feedbacks.length + localFeedbacks.length,
+                                      _incidents.length),
                                   style: GoogleFonts.dmSans(
                                       fontSize: 12, color: c.textMid),
                                 ),
@@ -140,15 +144,15 @@ class _MyContributionsScreenState
                             childAspectRatio: 2.5,
                             children: [
                               _statCell(c, _suggestions.length.toString(),
-                                  'sugerencias'),
+                                  l10n.myContributionsLabelSuggestions),
                               _statCell(
                                   c,
                                   (_feedbacks.length + localFeedbacks.length)
                                       .toString(),
-                                  'correcciones'),
+                                  l10n.myContributionsLabelCorrections),
                               _statCell(c, _incidents.length.toString(),
-                                  'reportes'),
-                              _statCell(c, '—', 'fotos'),
+                                  l10n.myContributionsLabelReports),
+                              _statCell(c, '—', l10n.myContributionsLabelPhotos),
                             ],
                           ),
                           const SizedBox(height: 16),
@@ -167,10 +171,10 @@ class _MyContributionsScreenState
                               labelStyle: GoogleFonts.ibmPlexMono(
                                   fontSize: 11,
                                   fontWeight: FontWeight.w600),
-                              tabs: const [
-                                Tab(text: 'SUGERENCIAS'),
-                                Tab(text: 'FEEDBACK'),
-                                Tab(text: 'REPORTES'),
+                              tabs: [
+                                Tab(text: l10n.myContributionsTabSuggestions.toUpperCase()),
+                                Tab(text: l10n.myContributionsTabFeedback.toUpperCase()),
+                                Tab(text: l10n.myContributionsTabReports.toUpperCase()),
                               ],
                             ),
                             Expanded(
@@ -207,10 +211,11 @@ class _MyContributionsScreenState
     final hasLocal = localFeedbacks.isNotEmpty;
 
     if (allFeedbacks.isEmpty && !hasLocal) {
-      return const Center(
+      final l10n = AppLocalizations.of(context);
+      return Center(
         child: EmptyState(
-          'SIN FEEDBACK',
-          'Tu feedback enviado aparecerá aquí',
+          l10n.myContributionsEmptyFeedback.toUpperCase(),
+          l10n.myContributionsEmptyFeedbackSubtitle,
         ),
       );
     }
@@ -258,7 +263,7 @@ class _MyContributionsScreenState
               ),
               const Spacer(),
               Text(
-                'BORRADOR LOCAL',
+                AppLocalizations.of(context).myContributionsLocalDraft.toUpperCase(),
                 style: TransitTypography.bodySmall(c.accent),
               ),
             ],
@@ -319,10 +324,11 @@ class _MyContributionsScreenState
 
   Widget _buildReportsTab(TransitColorScheme c, double padding) {
     if (_incidents.isEmpty) {
-      return const Center(
+      final l10n = AppLocalizations.of(context);
+      return Center(
         child: EmptyState(
-          'SIN REPORTES',
-          'Tus reportes de incidencias aparecerán aquí',
+          l10n.myContributionsEmptyReports.toUpperCase(),
+          l10n.myContributionsEmptyReportsSubtitle,
         ),
       );
     }
@@ -361,7 +367,7 @@ class _MyContributionsScreenState
               ),
               const SizedBox(height: 4),
               Text(
-                inc.comment ?? 'Sin descripción',
+                inc.comment ?? AppLocalizations.of(context).myContributionsNoDescription,
                 style: TransitTypography.bodySecondary(c.textHi),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,

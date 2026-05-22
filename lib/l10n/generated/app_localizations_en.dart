@@ -1836,4 +1836,124 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get incidentCommentHint => 'Comment (optional)';
+
+  @override
+  String get driverStartTrip => 'Start trip';
+
+  @override
+  String get driverSelectRouteFirst => 'Select a route';
+
+  @override
+  String get driverLoadRoutes => 'Load routes';
+
+  @override
+  String get routeShareTitle => 'Share route';
+
+  @override
+  String get routeShareWithUser => 'Share with user';
+
+  @override
+  String get routeShareEmailHint => 'email@example.com';
+
+  @override
+  String get routeSharePublicLink => 'Public link';
+
+  @override
+  String get routeShareGenerateLink => 'Generate link';
+
+  @override
+  String get routeShareRegenerateLink => 'Regenerate link';
+
+  @override
+  String get routeShareNeedLogin => 'Sign in to share routes';
+
+  @override
+  String get routeShareLinkGenerated => 'Link generated';
+
+  @override
+  String get mapFilterTitle => 'Map filters';
+
+  @override
+  String get mapFilterRouteSource => 'Route source';
+
+  @override
+  String get mapFilterOfficial => 'Official';
+
+  @override
+  String get mapFilterCommunity => 'Community';
+
+  @override
+  String get mapFilterUpcoming => 'Upcoming departures';
+
+  @override
+  String mapFilterMinutes(int m) {
+    return '$m min';
+  }
+
+  @override
+  String get mapFilterAccessibility => 'Accessibility';
+
+  @override
+  String get mapFilterOnlyAccessible => 'Accessible only';
+
+  @override
+  String get mapFilterFavorites => 'Favorites';
+
+  @override
+  String get mapFilterOnlyFavorites => 'Favorites only';
+
+  @override
+  String get myContributionsTitle => 'My contributions';
+
+  @override
+  String get myContributionsReload => 'Reload';
+
+  @override
+  String myContributionsSummary(int suggestions, int feedbacks, int reports) {
+    return '$suggestions suggestions · $feedbacks feedback · $reports reports';
+  }
+
+  @override
+  String get myContributionsLabelSuggestions => 'suggestions';
+
+  @override
+  String get myContributionsLabelCorrections => 'corrections';
+
+  @override
+  String get myContributionsLabelReports => 'reports';
+
+  @override
+  String get myContributionsLabelPhotos => 'photos';
+
+  @override
+  String get myContributionsTabSuggestions => 'Suggestions';
+
+  @override
+  String get myContributionsTabFeedback => 'Feedback';
+
+  @override
+  String get myContributionsTabReports => 'Reports';
+
+  @override
+  String get myContributionsEmptyFeedback => 'No feedback';
+
+  @override
+  String get myContributionsEmptyFeedbackSubtitle =>
+      'Your submitted feedback will appear here';
+
+  @override
+  String get myContributionsEmptyReports => 'No reports';
+
+  @override
+  String get myContributionsEmptyReportsSubtitle =>
+      'Your incident reports will appear here';
+
+  @override
+  String get myContributionsLocalDraft => 'Local draft';
+
+  @override
+  String get myContributionsNoDescription => 'No description';
+
+  @override
+  String get reputationCurrentRank => 'Current';
 }

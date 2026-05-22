@@ -207,5 +207,58 @@
   "incidentPunctual": "دقيق",
   "incidentKind": "لطيف",
   "incidentClean": "نظيف",
-  "incidentCommentHint": "تعليق (اختياري)"
+  "incidentCommentHint": "تعليق (اختياري)",
+
+  "driverStartTrip": "بدء الرحلة",
+  "driverSelectRouteFirst": "اختر مساراً",
+  "driverLoadRoutes": "تحميل المسارات",
+
+  "routeShareTitle": "مشاركة المسار",
+  "routeShareWithUser": "مشاركة مع مستخدم",
+  "routeShareEmailHint": "email@ejemplo.com",
+  "routeSharePublicLink": "رابط عام",
+  "routeShareGenerateLink": "إنشاء رابط",
+  "routeShareRegenerateLink": "إعادة إنشاء الرابط",
+  "routeShareNeedLogin": "سجل الدخول لمشاركة المسارات",
+  "routeShareLinkGenerated": "تم إنشاء الرابط",
+
+  "mapFilterTitle": "فلاتر الخريطة",
+  "mapFilterRouteSource": "مصدر المسار",
+  "mapFilterOfficial": "رسمية",
+  "mapFilterCommunity": "مجتمعية",
+  "mapFilterUpcoming": "الرحلات القادمة",
+  "mapFilterMinutes": "{m} دقيقة",
+  "@mapFilterMinutes": {
+    "placeholders": { "m": { "type": "int", "example": "15" } }
+  },
+  "mapFilterAccessibility": "إمكانية الوصول",
+  "mapFilterOnlyAccessible": "المتاحة فقط",
+  "mapFilterFavorites": "المفضلة",
+  "mapFilterOnlyFavorites": "المفضلة فقط",
+
+  "myContributionsTitle": "مساهماتي",
+  "myContributionsReload": "إعادة تحميل",
+  "myContributionsSummary": "{suggestions} اقتراحات · {feedbacks} ملاحظات · {reports} تقارير",
+  "@myContributionsSummary": {
+    "placeholders": {
+      "suggestions": { "type": "int", "example": "3" },
+      "feedbacks": { "type": "int", "example": "5" },
+      "reports": { "type": "int", "example": "2" }
+    }
+  },
+  "myContributionsLabelSuggestions": "اقتراحات",
+  "myContributionsLabelCorrections": "تصحيحات",
+  "myContributionsLabelReports": "تقارير",
+  "myContributionsLabelPhotos": "صور",
+  "myContributionsTabSuggestions": "اقتراحات",
+  "myContributionsTabFeedback": "ملاحظات",
+  "myContributionsTabReports": "تقارير",
+  "myContributionsEmptyFeedback": "لا توجد ملاحظات",
+  "myContributionsEmptyFeedbackSubtitle": "ستظهر ملاحظاتك المرسلة هنا",
+  "myContributionsEmptyReports": "لا توجد تقارير",
+  "myContributionsEmptyReportsSubtitle": "ستظهر تقارير الحوادث الخاصة بك هنا",
+  "myContributionsLocalDraft": "مسودة محلية",
+  "myContributionsNoDescription": "بدون وصف",
+
+  "reputationCurrentRank": "الحالي"
 }

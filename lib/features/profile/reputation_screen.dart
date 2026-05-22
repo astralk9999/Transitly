@@ -411,7 +411,7 @@ class _RankCard extends StatelessWidget {
                   border: Border.all(color: rank.color.withValues(alpha: 0.3)),
                 ),
                 child: Text(
-                  'ACTUAL',
+                  l10n.reputationCurrentRank.toUpperCase(),
                   style: GoogleFonts.ibmPlexMono(
                     fontSize: 10,
                     fontWeight: FontWeight.w700,

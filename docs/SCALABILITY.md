@@ -1,9 +1,23 @@
 # Transitly — Dossier de escalabilidad (óptica de producción)
 
 > Evaluado como **servicio real para decenas/cientos de miles de usuarios
-> en toda España**, no como TFG. Estado: `master @ 3a31fb3`.
+> en toda España**, no como TFG. Estado: `master @ ed182eb`.
 > Severidad = riesgo a escala: 🔴 Crítico · 🟠 Alto · 🟡 Medio.
 > Notación: ✅ cerrado · ⚠️ avanzado/parcial · ❌ pendiente.
+
+## Métricas rápidas (2026-05-22)
+
+| Métrica | Valor |
+|---|---|
+| Tests | **304** (1 skipped) |
+| Cobertura | **~24,3 %** |
+| Migraciones SQL | **14** |
+| Edge Functions | **4** |
+| Repos con Realtime | **5/12** |
+| Repos con paginación | **11/11** |
+| `flutter analyze` | 0 errors, 0 warnings (22 info) |
+| APK release | 73,5 MB |
+| CI | 4 jobs verdes (Analyze, Test, Build Web, Build Android APK) |
 
 ## Nota de preparación para producción a escala: **6 / 10**
 

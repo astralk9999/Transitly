@@ -257,7 +257,7 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen> {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: c.textMid),
-          tooltip: 'Volver',
+          tooltip: AppLocalizations.of(context).actionBack,
           onPressed: () => context.pop(),
         ),
         title: Text(AppLocalizations.of(context).driverModeLabel,
@@ -305,8 +305,8 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen> {
 
           TransitButton(
             label: _selectedRoute != null
-                ? 'INICIAR VIAJE'
-                : 'SELECCIONA UNA RUTA',
+                ? AppLocalizations.of(context).driverStartTrip.toUpperCase()
+                : AppLocalizations.of(context).driverSelectRouteFirst.toUpperCase(),
             isPrimary: _selectedRoute != null,
             onPressed:
                 _selectedRoute != null ? _startTracking : null,
@@ -318,7 +318,7 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen> {
                 style: TransitTypography.bodySmall(c.textMid)),
             const SizedBox(height: 8),
             TransitButton(
-              label: 'CARGAR RUTAS',
+              label: AppLocalizations.of(context).driverLoadRoutes.toUpperCase(),
               isPrimary: false,
               isSmall: true,
               onPressed: _loadRoutes,

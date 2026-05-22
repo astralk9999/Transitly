@@ -153,24 +153,24 @@ void showMapFilterSheet(
                     ),
                   ),
                   const SizedBox(height: 16),
-                  Text('Filtros del mapa',
+                  Text(AppLocalizations.of(context).mapFilterTitle,
                       style: TransitTypography.heading(c.textHi)),
                   const SizedBox(height: 16),
 
-                  _SectionTitle(c: c, title: 'Origen de la ruta'),
+                  _SectionTitle(c: c, title: AppLocalizations.of(context).mapFilterRouteSource),
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
                     children: [
                       _FilterChip(
-                        label: 'Oficiales',
+                        label: AppLocalizations.of(context).mapFilterOfficial,
                         selected: f.showOfficial,
                         c: c,
                         onTap: () =>
                             ctrl.setShowOfficial(!f.showOfficial),
                       ),
                       _FilterChip(
-                        label: 'Comunitarias',
+                        label: AppLocalizations.of(context).mapFilterCommunity,
                         selected: f.showCommunity,
                         c: c,
                         onTap: () =>
@@ -180,13 +180,13 @@ void showMapFilterSheet(
                   ),
                   const SizedBox(height: 16),
 
-                  _SectionTitle(c: c, title: 'Próximas salidas'),
+                  _SectionTitle(c: c, title: AppLocalizations.of(context).mapFilterUpcoming),
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
                     children: [15, 30, 60]
                         .map((m) => _FilterChip(
-                              label: '$m min',
+                              label: AppLocalizations.of(context).mapFilterMinutes(m),
                               selected: f.nextMinutes == m,
                               c: c,
                               onTap: () => ctrl.setNextMinutes(
@@ -196,9 +196,9 @@ void showMapFilterSheet(
                   ),
                   const SizedBox(height: 16),
 
-                  _SectionTitle(c: c, title: 'Accesibilidad'),
+                  _SectionTitle(c: c, title: AppLocalizations.of(context).mapFilterAccessibility),
                   _FilterChip(
-                    label: 'Solo accesibles',
+                    label: AppLocalizations.of(context).mapFilterOnlyAccessible,
                     selected: f.onlyAccessible,
                     c: c,
                     onTap: () =>
@@ -206,9 +206,9 @@ void showMapFilterSheet(
                   ),
                   const SizedBox(height: 16),
 
-                  _SectionTitle(c: c, title: 'Favoritos'),
+                  _SectionTitle(c: c, title: AppLocalizations.of(context).mapFilterFavorites),
                   _FilterChip(
-                    label: 'Solo favoritos',
+                    label: AppLocalizations.of(context).mapFilterOnlyFavorites,
                     selected: f.onlyFavorites,
                     c: c,
                     onTap: () => ctrl.setOnlyFavorites(!f.onlyFavorites),

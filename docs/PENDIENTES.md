@@ -26,17 +26,19 @@
 | H6 | Testing pro | 19 | PRO-QA |
 | H7 | Accesibilidad AAA + inclusión | 19 | PRO-A11Y |
 
-- **Total mega-plan:** 102/190 ítems cerrados (53,7 %)
+- **Total mega-plan:** 112/190 ítems cerrados (58,9 %)
+- **Plan v2:** 28/28 fases completadas (100 %)
 - **`flutter analyze`:** 0 issues ✅
 - **`flutter test`:** 304 (1 skipped) ✅
-- **Cobertura:** ~24,8 %
+- **Cobertura:** ~24,3 %
 - **APK release:** 73,5 MB · CI verde (4 jobs: Analyze, Test, Build Web, Build Android APK)
 
-### Issues F16/F22 resueltos en esta sesión
+### Issues F16/F22 — ✅ Cerrados (14 issues · P1-11 completo)
 
-> Los 11 issues de revisión de código registrados en F16-003 (I2–I5, M1–M3) y
-> F16-004 (I1–I3, M1–M4) fueron resueltos como parte de P1-11 durante el
-> refinamiento H1 del mega-plan.
+> Los 14 issues de revisión de código registrados en F16-003 (I2–I5, M1–M3, 7 issues) y
+> F16-004 (I1–I3, M1–M4, 7 issues) fueron resueltos como parte de P1-11 durante el
+> refinamiento H1 del mega-plan. Verificado con doble pasada de code-review.
+> Ambos bloques quedan completamente cerrados.
 
 ---
 
@@ -240,29 +242,29 @@ Cada entidad necesita el mismo conjunto de 5 archivos: interfaz abstracta + remo
 
 ✅ Completado — Botones de approve/reject/resolve en ManagerInboxScreen con llamadas reales a repositorios y feedback visual.
 
-##### Issues de revisión de código (F16-003)
+##### Issues de revisión de código (F16-003) — ✅ Resueltos (P1-11)
 
-> Registrados desde el Review Agent. Prioridad: I = importante, M = menor.
+> Cerrados como parte de P1-11 durante el refinamiento H1 del mega-plan. El bloque F16/F22 queda completamente resuelto.
 
-- [F16] **I2 — Form missing inline validation.** `lib/features/admin/widgets/operator_form_dialog.dart`. Campos sin validación en tiempo real.
-- [F16] **I3 — No unique constraint violation handling.** `lib/data/operator/remote/operator_remote_repository.dart`. Errores de slug duplicado no se capturan con mensaje amigable.
-- [F16] **I4 — Row-to-model mapping duplicated.** `operator_remote_repository.dart` y `admin_operators_screen.dart`. Extraer helper compartido.
-- [F16] **I5 — Local repo has redundant create/update alongside upsert.** Simplificar API en `lib/data/operator/`.
-- [F16] **M1 — Unused `_mockData` field.** `lib/data/operator/local/operator_mock_repository.dart`.
-- [F16] **M2 — `shortName` derivation duplicated in 4 places.** Extraer a método helper.
-- [F16] **M3 — `phone` field always hardcoded to empty string.** Asignar desde modelo o UI.
+- ✅ **I2 — Form missing inline validation.** `lib/features/admin/widgets/operator_form_dialog.dart`. Campos sin validación en tiempo real.
+- ✅ **I3 — No unique constraint violation handling.** `lib/data/operator/remote/operator_remote_repository.dart`. Errores de slug duplicado no se capturan con mensaje amigable.
+- ✅ **I4 — Row-to-model mapping duplicated.** `operator_remote_repository.dart` y `admin_operators_screen.dart`. Extraer helper compartido.
+- ✅ **I5 — Local repo has redundant create/update alongside upsert.** Simplificar API en `lib/data/operator/`.
+- ✅ **M1 — Unused `_mockData` field.** `lib/data/operator/local/operator_mock_repository.dart`.
+- ✅ **M2 — `shortName` derivation duplicated in 4 places.** Extraer a método helper.
+- ✅ **M3 — `phone` field always hardcoded to empty string.** Asignar desde modelo o UI.
 
-##### Issues de revisión de código (F16-004)
+##### Issues de revisión de código (F16-004) — ✅ Resueltos (P1-11)
 
-> Registrados desde el Tracker Agent. Prioridad: I = importante, M = menor.
+> Cerrados como parte de P1-11 durante el refinamiento H1 del mega-plan. El bloque F16/F22 queda completamente resuelto.
 
-- [F22] **I1 — `updateStatus` lacks offline queue.** `manager_inbox_screen.dart`. Los cambios de estado (approve/reject/resolve) no se encolan cuando no hay conexión.
-- [F22] **I2 — No loading on status update buttons.** `manager_inbox_screen.dart`. Los botones de cambio de estado no muestran indicador de carga durante la operación.
-- [F22] **I3 — Full `_loadData()` after each status update.** `manager_inbox_screen.dart`. Se recargan todos los datos tras cada cambio de estado en lugar de hacer actualización optimista.
-- [F22] **M1 — `_feedbackStatusFromString` duplicated.** `manager_inbox_screen.dart`. Método duplicado; extraer a helper compartido en `data/route_feedback/`.
-- [F22] **M2 — 3 l10n keys unused.** Claves de localización definidas en ARB pero sin consumidor en la UI.
-- [F22] **M3 — `Color.mix` should be in `core/theme`.** Uso de `Color.mix` inline en la UI; mover a helper de tokens de diseño.
-- [F22] **M4 — Suggestions tab lacks resolve/reject.** La pestaña de sugerencias en `ManagerInboxScreen` no tiene acciones de resolver/rechazar como feedback e incidents.
+- ✅ **I1 — `updateStatus` lacks offline queue.** `manager_inbox_screen.dart`. Los cambios de estado (approve/reject/resolve) no se encolan cuando no hay conexión.
+- ✅ **I2 — No loading on status update buttons.** `manager_inbox_screen.dart`. Los botones de cambio de estado no muestran indicador de carga durante la operación.
+- ✅ **I3 — Full `_loadData()` after each status update.** `manager_inbox_screen.dart`. Se recargan todos los datos tras cada cambio de estado en lugar de hacer actualización optimista.
+- ✅ **M1 — `_feedbackStatusFromString` duplicated.** `manager_inbox_screen.dart`. Método duplicado; extraer a helper compartido en `data/route_feedback/`.
+- ✅ **M2 — 3 l10n keys unused.** Claves de localización definidas en ARB pero sin consumidor en la UI.
+- ✅ **M3 — `Color.mix` should be in `core/theme`.** Uso de `Color.mix` inline en la UI; mover a helper de tokens de diseño.
+- ✅ **M4 — Suggestions tab lacks resolve/reject.** La pestaña de sugerencias en `ManagerInboxScreen` no tiene acciones de resolver/rechazar como feedback e incidents.
 
 ---
 
@@ -283,5 +285,5 @@ Cada entidad necesita el mismo conjunto de 5 archivos: interfaz abstracta + remo
 
 ---
 
-**Última actualización:** 2026-05-22 · Post refinamiento mega-plan (102/190, 53,7 %). **304 tests** (1 skipped), cobertura ~24,8 %, `flutter analyze` 0 errors (22 info).
+**Última actualización:** 2026-05-22 · Post refinamiento mega-plan (112/190, 58,9 %). **304 tests** (1 skipped), cobertura ~24,3 %, `flutter analyze` 0 errors (22 info). F16/F22 cerrados completos (14 issues resueltos vía P1-11). Plan v2: 28/28 fases (100 %).
 _Snapshot anterior (2026-05-17): 143 tests, cobertura ~23,2 %. F0→F25 completadas (26/28 fases, 92.9 %)._

@@ -13,6 +13,7 @@ import '../../shared/models/schedule_model.dart';
 import '../../shared/providers/derived/schedule_providers.dart';
 import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_button.dart';
+import 'widgets/route_list_section.dart';
 
 class StartRouteScreen extends ConsumerStatefulWidget {
   const StartRouteScreen({super.key});
@@ -147,58 +148,14 @@ class _StartRouteScreenState extends ConsumerState<StartRouteScreen> {
 
             const SizedBox(height: 24),
 
-            // ── b) SELECCIONAR LÍNEA ──
-            Text(l10n.driverStartSelectLine,
-                key: _routeListKey,
-                style: TransitTypography.sectionTitle(c.textMid)),
-            const SizedBox(height: 12),
-            GridView.count(
-              crossAxisCount: 2,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              mainAxisSpacing: 8,
-              crossAxisSpacing: 8,
-              childAspectRatio: 2.0,
-              children: driverRoutes.map((route) {
-                final isSelected = _selectedRouteId == route.id;
-                return GestureDetector(
-                  onTap: () => setState(() {
-                    _selectedRouteId = route.id;
-                    _selectedTime = null;
-                  }),
-                  child: Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: c.bgSurface,
-                      border: Border.all(
-                        color: isSelected ? c.accent : c.border,
-                        width: isSelected ? 1 : 0.5,
-                      ),
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          route.code,
-                          style: GoogleFonts.ibmPlexMono(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                            color: c.accent,
-                          ),
-                        ),
-                        Text(
-                          route.name,
-                          style: TransitTypography.bodySmall(c.textMid),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              }).toList(),
+            RouteListSection(
+              routes: driverRoutes,
+              selectedRouteId: _selectedRouteId,
+              onRouteSelected: (id) => setState(() {
+                _selectedRouteId = id;
+                _selectedTime = null;
+              }),
+              routeListKey: _routeListKey,
             ),
 
             // ── c) SELECCIONAR HORARIO ──

@@ -202,6 +202,18 @@ jobs:
           path: build/app/outputs/flutter-apk/*.apk
           if-no-files-found: warn
 
+      - name: Flutter build AAB (release)
+        run: |
+          flutter build appbundle --release \
+            --dart-define=SUPABASE_URL=${{ env.SUPABASE_URL }} \
+            --dart-define=SUPABASE_ANON_KEY=${{ env.SUPABASE_ANON_KEY }}
+
+      - name: Verify AAB signature
+        run: |
+          jarsigner -verify -verbose -certs \
+            build/app/outputs/bundle/release/app-release.aab 2>&1 | head -5
+
+
   gitleaks:
     name: Gitleaks Scan
     runs-on: ubuntu-latest

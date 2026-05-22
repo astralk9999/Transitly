@@ -52,6 +52,14 @@ abstract final class Env {
       _optional('POSTHOG_HOST') ?? 'https://eu.posthog.com';
   static String? get sentryDsn => _optional('SENTRY_DSN');
 
+  // ── Legal (opcionales) ──────────────────────────────────────
+
+  static String get tosUrl =>
+      _optional('TRANSITLY_TOS_URL') ?? 'https://transitly.app/terms';
+
+  static String get privacyUrl =>
+      _optional('TRANSITLY_PRIVACY_URL') ?? 'https://transitly.app/privacy';
+
   // ── Mapas (opcional, F20) ───────────────────────────────────
 
   static String? get mapTilerApiKey => _optional('MAPTILER_API_KEY');

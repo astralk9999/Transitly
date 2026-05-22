@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:supabase_flutter/supabase_flutter.dart'
     show
         AuthChangeEvent,
@@ -167,6 +168,11 @@ class AuthRepositorySupabase implements AuthRepository {
   @override
   Future<void> signOut() async {
     try {
+      try {
+        await FirebaseMessaging.instance.deleteToken();
+      } catch (_) {
+        AppLogger.warn('Auth', 'FCM token delete failed — continuing sign out');
+      }
       await _client.auth.signOut();
     } catch (e, st) {
       AppLogger.error(_logTag, 'signOut failed', e, st);

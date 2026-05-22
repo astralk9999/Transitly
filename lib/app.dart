@@ -44,11 +44,14 @@ class TransitlyApp extends ConsumerWidget {
 
         final systemScale = MediaQuery.textScalerOf(context).scale(14);
         final combined = (systemScale * themeNotifier.fontScale).clamp(0.8, 2.5);
-        return MediaQuery(
-          data: MediaQuery.of(context).copyWith(
-            textScaler: TextScaler.linear(combined),
+        return FocusTraversalGroup(
+          policy: WidgetOrderTraversalPolicy(),
+          child: MediaQuery(
+            data: MediaQuery.of(context).copyWith(
+              textScaler: TextScaler.linear(combined),
+            ),
+            child: result,
           ),
-          child: result,
         );
       },
     );

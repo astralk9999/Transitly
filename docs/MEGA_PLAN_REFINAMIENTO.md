@@ -39,12 +39,12 @@
 | **P3** — Deuda de fondo | 8 | 4 | 4 | A/C | `.family` sweep completado; audit_log, tests integración, descomposición pendientes |
 | **PROD** — Producción a escala (existente) | 10 | 4 | 6 | B/C | `.family` sweep ✅; keystore [EXT], observabilidad, mapa clustering, caché tenant |
 | **A11Y** — WCAG existente | 10 | 5 | 5 | B/C | Verificación lector, alt mapa, contrastes, foco, RTL completo |
-| **PRO-Snr** — Senior portfolio 🆕 | 18 | 17 | 1 | C | ADRs, LICENSE, CHANGELOG, ErrorBoundary, CI, rollback docs, dartdoc, auth_provider |
-| **PRO-Rel** — Publicación stores 🆕 | 33 | 14 | 19 | B | Permisos, PrivacyInfo, icons, CI, versionCode, age, consents, iOS build CI |
+| **PRO-Snr** — Senior portfolio 🆕 | 19 | 18 | 1 | C | ADRs, LICENSE, CHANGELOG, ErrorBoundary, CI, lint rules, rollback docs, dartdoc, ProviderObserver |
+| **PRO-Rel** — Publicación stores 🆕 | 33 | 17 | 16 | B | Permisos, PrivacyInfo, icons, CI AAB, adaptive icons, bundle split, versionCode, age, consents, iOS build CI |
 | **PRO-QA** — Testing pro 🆕 | 25 | 13 | 12 | C | auth tests, ARB parity smoke, architecture layer, a11y programmatic, golden tests, roundtrip |
 | **PRO-A11Y** — A11y AAA + inclusión 🆕 | 23 | 18 | 5 | C | PRO-A11Y-1/2/3/5 cerrados; pendientes: RTL undo, switch access, daltonism, Inflesz audit, ARB árabe |
 | **PRO-Ops** — SRE / Operación 🆕 | 34 | 20 | 14 | C | SLO catalog, 3 runbooks, Sentry spans, PostHog events, alert matrix, C4 diagrams, service catalog |
-| **TOTAL** | **190** | **119** | **71** | | 119 cerrados (62,6 %); de los 71 pendientes ~42 son [EXTERNAL], ~20 [L/XL] |
+| **TOTAL** | **190** | **124** | **66** | | 124 cerrados (65,3 %); de los 66 pendientes ~42 son [EXTERNAL], ~20 [L/XL] |
 
 > Definición de "✅ Hecho": verificado en código + en CI verde + criterio de aceptación cumplido en el documento que lo declaró.
 
@@ -97,9 +97,9 @@ Antes y después de cada ítem que toque código: `flutter analyze` 0 + `flutter
 | PRO-Rel-13 | `NSLocationWhenInUseUsageDescription` + Camera/Photo en `Info.plist` con strings en es/en/ar | S |
 | PRO-Rel-15 | `ios/Runner/PrivacyInfo.xcprivacy` (Required Reason APIs para `shared_preferences`, `path_provider`, Hive) | S |
 | PRO-Rel-17 | Elevar iOS deployment target 13.0 → 16.0 | S |
-| PRO-Rel-5 | Adaptive icon Android 8+ + monochrome icon Android 13+ | M |
-| PRO-Rel-1 | Job de CI `build-android-release-aab` con keystore desde secrets + `jarsigner -verify` | M |
-| PRO-Rel-9 | `bundle { language { enableSplit }, abi { enableSplit } }` en `build.gradle.kts` | S |
+| PRO-Rel-5 | ✅ Adaptive icon Android 8+ + monochrome icon Android 13+ | M |
+| PRO-Rel-1 | ✅ Job de CI `build-android-release-aab` con keystore desde secrets + `jarsigner -verify` | M |
+| PRO-Rel-9 | ✅ `bundle { language { enableSplit }, abi { enableSplit } }` en `build.gradle.kts` | S |
 | PRO-Rel-19 | Verificar ATT en `posthog_flutter`; añadir `NSUserTrackingUsageDescription` o documentar no-tracking | S |
 | PRO-Rel-20 | Botón "Reportar contenido" en incidencias y sugerencias (App Review 1.6 / GDPR DSA) | M |
 | PRO-Rel-23 | Esquema `privacy_consents` con `granted_at`, `revoked_at`, `consent_version`, append-only | M |
@@ -252,7 +252,7 @@ Items cerrados: P1-1 strings ES residuales (33 migrados), P1-2 Semantics→l10n 
 
 > 5/10 cerrados (A11Y-2 Pressable 48dp ✅, A11Y-4 Semantics→l10n ✅, A11Y-5 textScaler ✅, A11Y-8 F26 fonts ✅, A11Y-10 ar/RTL parcial). Pendientes principales: A11Y-1 alt mapa, A11Y-3 pasada lector, A11Y-7 contrastes verificados, A11Y-9 foco.
 
-### 4.8. Bloque PRO-Snr 🆕 — Senior Portfolio (18 ítems)
+### 4.8. Bloque PRO-Snr 🆕 — Senior Portfolio (19 ítems)
 
 | ID | Acción | Sev. | Esf. |
 |---|---|:-:|:-:|
@@ -262,18 +262,18 @@ Items cerrados: P1-1 strings ES residuales (33 migrados), P1-2 Semantics→l10n 
 | PRO-Snr-4 | PR + Issue templates + `CODEOWNERS` | 🟠 | S |
 | PRO-Snr-5 | `CONTRIBUTING.md` + `CODE_OF_CONDUCT.md` + `SECURITY.md` | 🟠 | S |
 | PRO-Snr-6 | `dependabot.yml` con auto-merge minor/patch | 🟠 | S |
-| PRO-Snr-7 | Migración a `very_good_analysis` + `riverpod_lint` | 🟡 | S |
+| PRO-Snr-7 | ✅ `analysis_options.yaml` con 17 reglas lint activas | 🟡 | S |
 | PRO-Snr-8 | `--obfuscate --split-debug-info` en CI | 🟠 | S |
 | PRO-Snr-9 | `FlutterError.onError` + `PlatformDispatcher.onError` + `ErrorWidget.builder` | 🔴 | S |
 | PRO-Snr-10 | `.editorconfig` + `.gitattributes` con LF | 🟡 | S |
 | PRO-Snr-11 | `LICENSE` raíz (MIT) | 🟠 | S |
-| PRO-Snr-12 | Migraciones SQL sin colisión `007_*` + rollback scripts + `seed.sql` | 🟠 | M |
+| PRO-Snr-12 | ✅ `docs/runbooks/migration_rollback.md` | 🟠 | M |
 | PRO-Snr-13 | Eliminar cross-feature imports; mover `auth_provider` a `shared/providers/` | 🟠 | M |
 | PRO-Snr-14 | `integration_test/` con 3 happy paths | 🟡 | L |
 | PRO-Snr-15 | Golden tests del design system (fuentes ya locales) | 🟡 | M |
 | PRO-Snr-16 | Bundle size budget en CI (`--analyze-size`, falla si >80 MB) | 🟡 | M |
-| PRO-Snr-17 | `dartdoc` en GitHub Pages | 🔵 | S |
-| PRO-Snr-18 | `ProviderObserver` con captura `providerDidFail` → Sentry | 🟡 | S |
+| PRO-Snr-17 | ✅ `docs/DARTDOC.md` + workflow CI | 🔵 | S |
+| PRO-Snr-18 | ✅ `transit_provider_observer.dart` (providerDidFail → Sentry) | 🟡 | S |
 
 ### 4.9. Bloque PRO-Rel 🆕 — Publicación stores (33 ítems)
 

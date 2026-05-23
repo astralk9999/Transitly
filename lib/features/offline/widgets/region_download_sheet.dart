@@ -343,7 +343,7 @@ class _RegionDownloadSheetState extends ConsumerState<RegionDownloadSheet> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      '⚠ Demo: solo Jerez de la Frontera predefinido',
+                      AppLocalizations.of(context).offlineRegionDemoLimitation,
                       style: TextStyle(color: c.textMid, fontSize: 12),
                     ),
                   ),

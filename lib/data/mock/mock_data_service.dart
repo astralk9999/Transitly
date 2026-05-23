@@ -356,6 +356,13 @@ class MockDataService {
     return sorted.take(count).toList();
   }
 
+  /// Devuelve las próximas [count] salidas para la combinación
+  /// [routeId]+[stopId].
+  ///
+  /// **Simplificación demo:** se asume un offset de 2 minutos por parada
+  /// consecutiva desde la cabecera. La realidad operativa de COMUJESA
+  /// depende de tráfico, semáforos y distancia entre paradas; esta
+  /// simulación basta para la demo del TFG.
   List<ScheduleModel> getNextDepartures(
       String routeId, String stopId, int count) {
     final route = getRouteById(routeId);

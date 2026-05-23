@@ -1,3 +1,5 @@
+> **Estado actual (2026-05-23):** servicio cableado, 17 eventos definidos como métodos en `lib/data/analytics/posthog_service.dart`, **0 invocaciones desde `lib/features/`**. La revocación de consentimiento (privacy_screen) sí funciona; el envío real de eventos no. Plan post-TFG: invocar `analyticsService.track('<evento>', {...})` en cada feature según catálogo (fase F4.4 del plan v2).
+
 # PostHog Product Events — Transitly
 
 > **Version:** 1.0 · **Consent:** Opt-in after GDPR consent · **Owner:** Product

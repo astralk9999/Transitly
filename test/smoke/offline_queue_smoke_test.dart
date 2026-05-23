@@ -11,7 +11,9 @@ void main() {
   late OfflineSyncService syncService;
 
   setUp(() async {
-    Hive.init('./test/hive_temp');
+    try {
+      Hive.init('./test/hive_temp');
+    } catch (_) {}
     box = await Hive.openBox<Map<dynamic, dynamic>>('test_pending');
     deadBox = await Hive.openBox<Map<dynamic, dynamic>>('test_dead');
     queue = PendingActionsQueue(box: box, deadBox: deadBox);

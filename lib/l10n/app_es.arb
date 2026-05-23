@@ -783,6 +783,14 @@
   "routeShareError": "Error al compartir ruta",
   "routeShareErrorGeneratingLink": "Error al generar enlace",
   "routeDetailNotFound": "Ruta no encontrada",
+  "routeDetailAddFavorite": "AÑADIR A MIS LÍNEAS ★",
+  "@routeDetailAddFavorite": {"description": "Button to add route to user favorites"},
+  "routeDetailRemoveFavorite": "EN MIS LÍNEAS ✓",
+  "@routeDetailRemoveFavorite": {"description": "Button to remove route from user favorites"},
+  "favoriteAdded": "Línea añadida a tus favoritas",
+  "@favoriteAdded": {"description": "SnackBar message when a line is added to favorites"},
+  "favoriteRemoved": "Línea eliminada de tus favoritas",
+  "@favoriteRemoved": {"description": "SnackBar message when a line is removed from favorites"},
   "stopDetailNotFound": "Parada no encontrada",
   "feedbackErrorSending": "Error al enviar mejora",
   "incidentErrorSending": "Error al enviar reporte",
@@ -1115,5 +1123,13 @@
   "accessibilitySystemPrefFootnote": "Estos ajustes se leen del sistema operativo. Cámbialos desde los ajustes del dispositivo para que la app responda.",
   "@accessibilitySystemPrefFootnote": {
     "description": "Accessibility system preferences footnote"
-  }
+  },
+  "operatorAdminMissingOperator": "No se encontró el operador asociado a tu cuenta. Contacta con soporte.",
+  "@operatorAdminMissingOperator": {"description": "Error when operator_admin has no operator_id in their profile"},
+  "adminUsersLoadError": "No se pudo cargar la lista de usuarios. Inténtalo de nuevo.",
+  "@adminUsersLoadError": {"description": "Error genérico al cargar admin/users"},
+  "offlineRegionDemoLimitation": "Versión demo: solo se puede descargar la región de Jerez de la Frontera. Selección libre de región disponible en próximas versiones.",
+  "@offlineRegionDemoLimitation": {"description": "Banner indicating offline region is limited to Jerez in demo version"},
+  "editorDraftSaved": "Borrador guardado correctamente",
+  "@editorDraftSaved": {"description": "SnackBar message when a route editor draft is saved locally"}
 }

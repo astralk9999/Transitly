@@ -2728,6 +2728,30 @@ abstract class AppLocalizations {
   /// **'Ruta no encontrada'**
   String get routeDetailNotFound;
 
+  /// Button to add route to user favorites
+  ///
+  /// In es, this message translates to:
+  /// **'AÑADIR A MIS LÍNEAS ★'**
+  String get routeDetailAddFavorite;
+
+  /// Button to remove route from user favorites
+  ///
+  /// In es, this message translates to:
+  /// **'EN MIS LÍNEAS ✓'**
+  String get routeDetailRemoveFavorite;
+
+  /// SnackBar message when a line is added to favorites
+  ///
+  /// In es, this message translates to:
+  /// **'Línea añadida a tus favoritas'**
+  String get favoriteAdded;
+
+  /// SnackBar message when a line is removed from favorites
+  ///
+  /// In es, this message translates to:
+  /// **'Línea eliminada de tus favoritas'**
+  String get favoriteRemoved;
+
   /// No description provided for @stopDetailNotFound.
   ///
   /// In es, this message translates to:
@@ -3824,6 +3848,30 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Estos ajustes se leen del sistema operativo. Cámbialos desde los ajustes del dispositivo para que la app responda.'**
   String get accessibilitySystemPrefFootnote;
+
+  /// Error when operator_admin has no operator_id in their profile
+  ///
+  /// In es, this message translates to:
+  /// **'No se encontró el operador asociado a tu cuenta. Contacta con soporte.'**
+  String get operatorAdminMissingOperator;
+
+  /// Error genérico al cargar admin/users
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo cargar la lista de usuarios. Inténtalo de nuevo.'**
+  String get adminUsersLoadError;
+
+  /// Banner indicating offline region is limited to Jerez in demo version
+  ///
+  /// In es, this message translates to:
+  /// **'Versión demo: solo se puede descargar la región de Jerez de la Frontera. Selección libre de región disponible en próximas versiones.'**
+  String get offlineRegionDemoLimitation;
+
+  /// SnackBar message when a route editor draft is saved locally
+  ///
+  /// In es, this message translates to:
+  /// **'Borrador guardado correctamente'**
+  String get editorDraftSaved;
 }
 
 class _AppLocalizationsDelegate

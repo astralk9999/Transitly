@@ -1291,6 +1291,8 @@ deno test supabase/functions/*/test.ts    # verde
 
 ### F3.1 · flutterfire configure → firebase_options.dart
 
+**Estado (2026-05-23):** PENDIENTE. El archivo `lib/firebase_options.dart` no existe. Sin esto, push notifications no funcionan en device real (en demo TFG sobre emulador, FCM no se demuestra). Bloqueador release pero no TFG.
+
 **Acción:**
 ```bash
 dart pub global activate flutterfire_cli
@@ -2109,6 +2111,8 @@ store.stats.realTimeWatch.listen((stats) {
 
 ### F5.5 · Helper repository factory
 
+**Estado (2026-05-23):** PENDIENTE. No implementado. Aceptable para TFG (la duplicación es cosmética); recomendado post-defensa.
+
 **Archivo nuevo:** `lib/data/_shared/repository_factory.dart`
 
 **Acción:**
@@ -2346,6 +2350,8 @@ flutter drive --target=integration_test/perf_map_test.dart --profile
 ## FASE 6 — POLISH HASTA 10/10 (≈1 semana)
 
 ### F6.1 · Integration tests reales
+
+**Estado (2026-05-23):** PENDIENTE. Carpeta `integration_test/` no existe. Aceptable para defensa TFG (la rúbrica no exige integration tests).
 
 **Acción:**
 1. `flutter pub add --dev integration_test`

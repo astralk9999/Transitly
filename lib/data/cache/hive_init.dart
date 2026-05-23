@@ -38,6 +38,7 @@ abstract class HiveBoxes {
   static const featureRequests = 'feature_requests';
   static const notifications = 'notifications';
   static const editorDrafts = 'editor_drafts';
+  static const userFavorites = 'userFavorites';
 
   /// Cola de mutaciones offline. Cada entrada es la serialización
   /// JSON de `PendingAction` (`lib/data/sync/pending_action.dart`).
@@ -85,6 +86,7 @@ abstract class HiveInit {
     await _open<FeatureRequest>(HiveBoxes.featureRequests);
     await _open<AppNotification>(HiveBoxes.notifications);
     await _open<Map<dynamic, dynamic>>(HiveBoxes.editorDrafts);
+    await _open<List<dynamic>>(HiveBoxes.userFavorites);
 
     final encryptionCipher = HiveAesCipher(await _encryptionKey());
 

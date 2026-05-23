@@ -1428,6 +1428,18 @@ class AppLocalizationsEs extends AppLocalizations {
   String get routeDetailNotFound => 'Ruta no encontrada';
 
   @override
+  String get routeDetailAddFavorite => 'AÑADIR A MIS LÍNEAS ★';
+
+  @override
+  String get routeDetailRemoveFavorite => 'EN MIS LÍNEAS ✓';
+
+  @override
+  String get favoriteAdded => 'Línea añadida a tus favoritas';
+
+  @override
+  String get favoriteRemoved => 'Línea eliminada de tus favoritas';
+
+  @override
   String get stopDetailNotFound => 'Parada no encontrada';
 
   @override
@@ -2041,4 +2053,19 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get accessibilitySystemPrefFootnote =>
       'Estos ajustes se leen del sistema operativo. Cámbialos desde los ajustes del dispositivo para que la app responda.';
+
+  @override
+  String get operatorAdminMissingOperator =>
+      'No se encontró el operador asociado a tu cuenta. Contacta con soporte.';
+
+  @override
+  String get adminUsersLoadError =>
+      'No se pudo cargar la lista de usuarios. Inténtalo de nuevo.';
+
+  @override
+  String get offlineRegionDemoLimitation =>
+      'Versión demo: solo se puede descargar la región de Jerez de la Frontera. Selección libre de región disponible en próximas versiones.';
+
+  @override
+  String get editorDraftSaved => 'Borrador guardado correctamente';
 }

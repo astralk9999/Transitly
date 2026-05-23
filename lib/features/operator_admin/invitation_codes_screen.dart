@@ -74,8 +74,17 @@ class _InvitationCodesScreenState extends ConsumerState<InvitationCodesScreen> {
       final session = client.auth.currentSession;
       if (session == null) return;
 
+      final operatorId = await _resolveOperatorId(client, session.user.id);
+      if (operatorId == null) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(AppLocalizations.of(context).operatorAdminMissingOperator)),
+          );
+        }
+        return;
+      }
       final result = await client.rpc('create_invitation_code', params: {
-        'p_operator_id': '00000000-0000-0000-0000-000000000000',
+        'p_operator_id': operatorId,
         'p_max_uses': maxUses,
       });
 
@@ -160,6 +169,19 @@ class _InvitationCodesScreenState extends ConsumerState<InvitationCodesScreen> {
           SnackBar(content: Text(AppLocalizations.of(context).invitationCodesErrorRevoking)),
         );
       }
+    }
+  }
+
+  Future<String?> _resolveOperatorId(dynamic client, String userId) async {
+    try {
+      final row = await client
+          .from('profiles')
+          .select('operator_id')
+          .eq('id', userId)
+          .maybeSingle();
+      return row?['operator_id'] as String?;
+    } catch (_) {
+      return null;
     }
   }
 

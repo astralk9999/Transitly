@@ -1,3 +1,5 @@
+> **Estado actual (2026-05-23):** 1 de 6 spans operativos. Solo el wrapper genérico `Sentry.startTransaction(name, op)` en `lib/core/utils/sentry_setup.dart:90` está disponible. Los 6 spans del catálogo (auth.signIn, map.initial_render, nfc.read, network.fetch_routes, push.send, auth.refresh) no se invocan desde el código de features. Plan post-TFG: instrumentar los 5 puntos restantes (fase F4.1 del plan v2).
+
 ## Status: PROD-7 ✅ Implemented
 
 Sentry spans active for auth.signIn, nfc.read, network.*. PostHog 17 events wired.

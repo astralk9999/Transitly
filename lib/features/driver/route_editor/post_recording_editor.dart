@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:latlong2/latlong.dart';
+import '../../../data/cache/hive_init.dart';
 
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
@@ -259,10 +261,24 @@ class _PostRecordingEditorState extends State<PostRecordingEditor> {
                         child: TransitButton(
                           label: 'GUARDAR BORRADOR',
                           isPrimary: false,
-                          onPressed: () {
+                          onPressed: () async {
+                            final box = await Hive.openBox<Map<dynamic, dynamic>>(HiveBoxes.editorDrafts);
+                            final draftId = DateTime.now().millisecondsSinceEpoch.toString();
+                            await box.put(draftId, {
+                              'recorded_at': DateTime.now().toIso8601String(),
+                              'stops': _stops.map((s) => {
+                                'name': s.name ?? 'sin nombre',
+                                'lat': s.position.latitude,
+                                'lng': s.position.longitude,
+                                'arrival_offset': s.arrivalOffset.inSeconds,
+                              }).toList(),
+                              'trace': widget.trace.map((p) => {
+                                'lat': p.latitude, 'lng': p.longitude,
+                              }).toList(),
+                            });
+                            if (!context.mounted) return;
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text('Borrador guardado')),
+                              SnackBar(content: Text(AppLocalizations.of(context).editorDraftSaved)),
                             );
                             context.pop();
                           },
@@ -272,12 +288,28 @@ class _PostRecordingEditorState extends State<PostRecordingEditor> {
                       Expanded(
                         child: TransitButton(
                           label: 'GUARDAR LOCAL (prototipo)',
-                          onPressed: () {
+                          onPressed: () async {
+                            final box = await Hive.openBox<Map<dynamic, dynamic>>(HiveBoxes.editorDrafts);
+                            final draftId = DateTime.now().millisecondsSinceEpoch.toString();
+                            await box.put(draftId, {
+                              'recorded_at': DateTime.now().toIso8601String(),
+                              'name': 'Ruta grabada ${draftId.substring(draftId.length - 4)}',
+                              'stops': _stops.map((s) => {
+                                'name': s.name ?? 'sin nombre',
+                                'lat': s.position.latitude,
+                                'lng': s.position.longitude,
+                                'arrival_offset': s.arrivalOffset.inSeconds,
+                              }).toList(),
+                              'trace': widget.trace.map((p) => {
+                                'lat': p.latitude, 'lng': p.longitude,
+                              }).toList(),
+                              'published': true,
+                            });
+                            if (!context.mounted) return;
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text('Ruta publicada')),
+                              SnackBar(content: Text(AppLocalizations.of(context).editorDraftSaved)),
                             );
-                            context.go('/home/mapa');
+                            context.go('/home/perfil/mis-contribuciones');
                           },
                         ),
                       ),

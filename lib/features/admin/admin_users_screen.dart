@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../core/utils/app_logger.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../data/supabase/supabase_client_provider.dart';
@@ -94,9 +95,10 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> {
         _applyFilters();
       });
     } catch (e) {
+      AppLogger.warn('admin_users_screen: load failed', e.toString());
       setState(() {
         _loading = false;
-        _error = 'e';
+        _error = '';
       });
     }
   }

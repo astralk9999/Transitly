@@ -101,9 +101,20 @@ class _DriversScreenState extends ConsumerState<DriversScreen> {
 
     try {
       final client = ref.read(supabaseClientProvider);
+      final session = client.auth.currentSession;
+      if (session == null) return;
+      final operatorId = await _resolveOperatorId(client, session.user.id);
+      if (operatorId == null) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(AppLocalizations.of(context).operatorAdminMissingOperator)),
+          );
+        }
+        return;
+      }
       await client.rpc('revoke_driver', params: {
         'p_driver_id': driverId,
-        'p_operator_id': '00000000-0000-0000-0000-000000000000',
+        'p_operator_id': operatorId,
       });
       await _loadDrivers();
     } catch (e) {
@@ -112,6 +123,19 @@ class _DriversScreenState extends ConsumerState<DriversScreen> {
           SnackBar(content: Text(AppLocalizations.of(context).driversErrorRevoking)),
         );
       }
+    }
+  }
+
+  Future<String?> _resolveOperatorId(dynamic client, String userId) async {
+    try {
+      final row = await client
+          .from('profiles')
+          .select('operator_id')
+          .eq('id', userId)
+          .maybeSingle();
+      return row?['operator_id'] as String?;
+    } catch (_) {
+      return null;
     }
   }
 

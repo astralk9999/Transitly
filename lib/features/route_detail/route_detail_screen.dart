@@ -13,6 +13,7 @@ import '../../shared/models/route_stop_model.dart';
 import '../../shared/models/stop_model.dart';
 import '../../shared/providers/derived/schedule_providers.dart';
 import '../../shared/providers/route_lookup_providers.dart';
+import '../../shared/providers/user_favorites_provider.dart';
 import '../../shared/widgets/responsive_scaffold.dart';
 import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_button.dart';
@@ -64,7 +65,8 @@ class RouteDetailScreen extends ConsumerWidget {
       for (final s in mockData.stops) s.id: s,
     };
     final alerts = mockData.getAlertsForRoute(routeId);
-    final isFavorite = mockData.favorites.any((f) => f.routeId == routeId);
+    final favorites = ref.watch(userFavoritesProvider);
+    final isFavorite = favorites.contains(routeId);
 
     // Transfers: memoized stop → route codes lookup (O(1) per stop).
     final stopToRoutes = ref.watch(stopToRouteCodesProvider);
@@ -143,19 +145,25 @@ class RouteDetailScreen extends ConsumerWidget {
                     width: double.infinity,
                     child: TransitButton(
                       label: isFavorite
-                          ? 'EN MIS LÍNEAS ✓'
-                          : 'AÑADIR A MIS LÍNEAS ★',
-                      isPrimary: true,
-                      onPressed: isFavorite
-                          ? null
-                          : () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(AppLocalizations.of(context)
-                                      .featureComingSoon),
-                                ),
-                              );
-                            },
+                          ? AppLocalizations.of(context).routeDetailRemoveFavorite
+                          : AppLocalizations.of(context).routeDetailAddFavorite,
+                      isPrimary: !isFavorite,
+                      onPressed: () async {
+                        final notifier = ref.read(userFavoritesProvider.notifier);
+                        if (isFavorite) {
+                          await notifier.removeLine(routeId);
+                        } else {
+                          await notifier.addLine(routeId);
+                        }
+                        if (!context.mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(isFavorite
+                                ? AppLocalizations.of(context).favoriteRemoved
+                                : AppLocalizations.of(context).favoriteAdded),
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ),

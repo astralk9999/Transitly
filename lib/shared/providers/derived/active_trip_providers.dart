@@ -26,6 +26,11 @@ class ActiveTripDetail {
   final StopModel? nextStop;
   final StopModel firstStop;
   final StopModel lastStop;
+
+  int get estimatedMinutesToNextStop {
+    if (nextStop == null) return 0;
+    return (currentIdx + 1) * 2;
+  }
 }
 
 /// Detalle del trip identificado por [tripId].

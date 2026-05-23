@@ -20,7 +20,7 @@ class SearchTab extends ConsumerStatefulWidget {
 
 class _SearchTabState extends ConsumerState<SearchTab> {
   bool _hasSearched = false;
-  bool _searchLoading = false;
+  final bool _searchLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -44,11 +44,7 @@ class _SearchTabState extends ConsumerState<SearchTab> {
                   availableStops: mockData.stops,
                   onSearch: () {
                     setState(() {
-                      _searchLoading = true;
                       _hasSearched = true;
-                    });
-                    Future.delayed(const Duration(milliseconds: 800), () {
-                      if (mounted) setState(() => _searchLoading = false);
                     });
                   },
                 ),

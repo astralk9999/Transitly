@@ -52,7 +52,7 @@ class CityPickerScreen extends ConsumerWidget {
                           child: Text('No hay operadores disponibles',
                               style: TransitTypography.bodyPrimary(c.textMid)),
                         );
-                      }
+                        }
                       return ListView.builder(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         itemCount: operators.length,
@@ -108,7 +108,7 @@ class _OperatorTile extends ConsumerWidget {
           ),
           child: Center(
             child: Text(
-              operator.shortName.substring(0, 2).toUpperCase(),
+              _safeBadge(operator.shortName),
               style: TextStyle(
                 color: c.accent,
                 fontWeight: FontWeight.w700,
@@ -135,4 +135,10 @@ class _OperatorTile extends ConsumerWidget {
       ),
     );
   }
+}
+
+String _safeBadge(String s) {
+  if (s.isEmpty) return '··';
+  if (s.length == 1) return '${s.toUpperCase()}·';
+  return s.substring(0, 2).toUpperCase();
 }

@@ -358,6 +358,19 @@ class MockDataService {
 
   List<ScheduleModel> getNextDepartures(
       String routeId, String stopId, int count) {
+    final route = getRouteById(routeId);
+    if (route == null) return [];
+
+    final rs = routeStops[routeId];
+    if (rs == null) return [];
+
+    final ordered = List<RouteStopModel>.from(rs)
+      ..sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
+    final stopIndex = ordered.indexWhere((rs) => rs.stopId == stopId);
+    if (stopIndex < 0) return [];
+
+    final offsetMinutes = stopIndex * 2;
+
     final now = DateTime.now();
     final nowMinutes = now.hour * 60 + now.minute;
     final weekday = now.weekday;
@@ -371,7 +384,7 @@ class MockDataService {
     final future = all.where((s) {
       final parts = s.departureTime.split(':');
       final m = int.parse(parts[0]) * 60 + int.parse(parts[1]);
-      return m >= nowMinutes;
+      return m + offsetMinutes >= nowMinutes;
     }).toList()
       ..sort((a, b) => a.departureTime.compareTo(b.departureTime));
 

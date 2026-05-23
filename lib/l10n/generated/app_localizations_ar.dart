@@ -1414,6 +1414,18 @@ class AppLocalizationsAr extends AppLocalizations {
   String get routeDetailNotFound => 'المسار غير موجود';
 
   @override
+  String get routeDetailAddFavorite => 'أضف إلى خطوطي ★';
+
+  @override
+  String get routeDetailRemoveFavorite => 'في خطوطي ✓';
+
+  @override
+  String get favoriteAdded => 'تمت إضافة الخط إلى المفضلة';
+
+  @override
+  String get favoriteRemoved => 'تمت إزالة الخط من المفضلة';
+
+  @override
   String get stopDetailNotFound => 'المحطة غير موجودة';
 
   @override
@@ -2020,4 +2032,19 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get accessibilitySystemPrefFootnote =>
       'تتم قراءة هذه الإعدادات من نظام التشغيل. قم بتغييرها من إعدادات الجهاز لتستجيب التطبيق.';
+
+  @override
+  String get operatorAdminMissingOperator =>
+      'لم يتم العثور على مشغل مرتبط بحسابك. يرجى التواصل مع الدعم.';
+
+  @override
+  String get adminUsersLoadError =>
+      'تعذر تحميل قائمة المستخدمين. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get offlineRegionDemoLimitation =>
+      'نسخة تجريبية: يمكن تنزيل منطقة خيريز دي لا فرونتيرا فقط. اختيار المنطقة الحرة متاح في الإصدارات القادمة.';
+
+  @override
+  String get editorDraftSaved => 'تم حفظ المسودة بنجاح';
 }

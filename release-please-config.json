@@ -1,0 +1,12 @@
+{
+  "packages": {
+    ".": {
+      "release-type": "simple",
+      "package-name": "transitly",
+      "changelog-path": "CHANGELOG.md",
+      "extra-files": [
+        "pubspec.yaml"
+      ]
+    }
+  }
+}

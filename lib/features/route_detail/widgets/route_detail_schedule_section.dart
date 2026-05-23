@@ -31,7 +31,11 @@ class _RouteDetailScheduleSectionState
 
   int _timeToMinutes(String time) {
     final parts = time.split(':');
-    return int.parse(parts[0]) * 60 + int.parse(parts[1]);
+    if (parts.length < 2) return -1;
+    final h = int.tryParse(parts[0]);
+    final m = int.tryParse(parts[1]);
+    if (h == null || m == null) return -1;
+    return h * 60 + m;
   }
 
   @override

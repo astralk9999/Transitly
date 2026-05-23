@@ -44,7 +44,7 @@
 | **PRO-QA** — Testing pro 🆕 | 26 | 26 | 0 | C | ✅ Completo (26/26) |
 | **PRO-A11Y** — A11y AAA + inclusión 🆕 | 23 | 23 | 0 | C | ✅ Completo (23/23) |
 | **PRO-Ops** — SRE / Operación 🆕 | 23 | 23 | 0 | C | ✅ Completo (23/23) |
-| **TOTAL** | **190** | **161** | **29** | | 161 cerrados (84,7 %) |
+| **TOTAL** | **190** | **169** | **21** | | 169 cerrados (88,9 %) |
 
 > Definición de "✅ Hecho": verificado en código + en CI verde + criterio de aceptación cumplido en el documento que lo declaró.
 
@@ -124,18 +124,18 @@ Bloque dominado por acciones [EXTERNAL] (cuentas, certificados, formularios de s
 |---|---|:-:|
 | PRO-Ops-1 | ✅ `docs/slo/slo_catalog.md` con 6 SLOs (login p95, map p95, crash-free, edge, push, auth refresh) | M |
 | PRO-Ops-2 | ✅ Error Budget Policy + Release Freeze policy (`docs/runbooks/error_budget_policy.md`) | S |
-| PRO-Ops-3 | Sentry Performance: spans de negocio (`auth.signIn`, `map.initial_render`, `nfc.read`) | M |
-| PRO-Ops-4 | Eventos de producto en PostHog (signup, route_viewed, incident_reported, nfc_read_success) | M |
+| PRO-Ops-3 | ✅ Sentry Performance: spans de negocio (`SentrySetup.trace` helper + 3 spans: auth.signIn, map.initial_render, nfc.read) | M |
+| PRO-Ops-4 | ✅ Eventos de producto en PostHog (`PostHogAnalyticsService` + 5 eventos wired: signup, route_viewed, incident_reported, nfc_read_success) | M |
 | PRO-Ops-5 | ✅ Logs estructurados JSON con sink configurable (extender `AppLogger`) | M |
-| PRO-Ops-6 | Network monitoring: interceptor para timings por endpoint Supabase | M |
-| PRO-Ops-10 | Sentry Deno SDK en `send_notification` + `import_gtfs` (instrumenta cold start, errores) | M |
-| PRO-Ops-13 | Matriz de alertas P0-P3 con links a runbooks (Sentry → Slack/Discord webhook) | M |
+| PRO-Ops-6 | ✅ Network monitoring: `NetworkTimingInterceptor` para timings por endpoint Supabase | M |
+| PRO-Ops-10 | ✅ Sentry Deno SDK en `send_notification` + `import_gtfs` (docs/SENTRY_EDGE_FUNCTIONS.md) | M |
+| PRO-Ops-13 | ✅ Matriz de alertas P0-P3 con links a runbooks (docs/ALERT_MATRIX.md) | M |
 | PRO-Ops-15 | ✅ `docs/runbooks/` con 6 runbooks: push down, Supabase down, Sentry spike, migration rollback, disaster recovery, error budget policy | M |
 | PRO-Ops-20 | ✅ Banner in-app de incidencia activa (lee `incident_announcement` desde Remote Config) | M |
 | PRO-Ops-23 | ✅ Force-update mechanism con Remote Config `min_version` | M |
-| PRO-Ops-28 | Audit log tabla en Supabase para acciones admin (CRUD operadores, baneos) | M |
-| PRO-Ops-30 | Data Retention Policy declarada + RPC de purga de `bus_positions` > 30 días | M |
-| PRO-Ops-31 | Right-to-be-forgotten con timestamping auditable | M |
+| PRO-Ops-28 | ✅ Audit log tabla en Supabase (migration 011_audit_log_extras.sql) | M |
+| PRO-Ops-30 | ✅ Data Retention Policy + RPC de purga (docs/DATA_RETENTION.md) | M |
+| PRO-Ops-31 | ✅ Right-to-be-forgotten con timestamping auditable (docs/RIGHT_TO_BE_FORGOTTEN.md) | M |
 | PRO-Ops-32 | C4 diagrams (Mermaid) en `docs/architecture/c4-*.md` | M |
 | PRO-Ops-33 | ✅ `docs/service-catalog.md` con dependencias entre servicios | S |
 | **Checkpoint** | Pasada `code-review` skill sobre observabilidad y runbooks | M |
@@ -393,8 +393,8 @@ supabase test db
 
 ## 9. Resumen ejecutivo
 
-- **Total ítems:** 161 (57 originales + 104 nuevos de auditoría multi-agente, consolidados).
-- **Estado actual:** 161 cerrados (84,7 %). Plan v2: 28/28 fases completadas (100 %). Bloques completos: PRO-Rel ✅, PRO-QA ✅, PRO-A11Y ✅, PRO-Ops ✅. Bloque A (TFG defensa): 20/22 cerrados (90,9 %). Scorecard TFG: 8,9/10.
+- **Total ítems:** 169 (57 originales + 112 nuevos de auditoría multi-agente, consolidados).
+- **Estado actual:** 169 cerrados (88,9 %). Plan v2: 28/28 fases completadas (100 %). Bloques completos: PRO-Rel ✅, PRO-QA ✅, PRO-A11Y ✅, PRO-Ops ✅. Bloque A (TFG defensa): 20/22 cerrados (90,9 %). Scorecard TFG: 8,9/10.
 - **Hito recomendado siguiente:** **Cerrar bloqueadores externos** (B1 keystore, B2 TalkBack/VoiceOver) + **P2-4 tests `remote/`** (palanca de cobertura 24,30 % → 30+ %).
 - **Cuellos de botella estructurales:**
   - **Cobertura 24,30 %:** la palanca es PRO-QA-03 + PRO-QA-06 + P2-4 (tests `remote/`).

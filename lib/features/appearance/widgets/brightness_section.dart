@@ -56,6 +56,7 @@ class BrightnessSection extends ConsumerWidget {
             ],
             selected: {mode},
             onSelectionChanged: (newMode) {
+              if (newMode.isEmpty) return;
               ref.read(themeModeProvider.notifier).state = newMode.first;
             },
             style: ButtonStyle(

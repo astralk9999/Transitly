@@ -1,360 +1,449 @@
 # 04 — Desarrollo e Implementación
 
 **Proyecto:** Transitly
-**Estado verificado:** `master @ 3a31fb3` · 28/28 fases · 175/175 tests · cobertura 24,30 % · `flutter analyze` 0 issues · APK release 73,5 MB · CI verde (4 jobs)
+**Repositorio:** nexto-stop-v2 (`master @ 85b81a1`)
+**Pila tecnológica principal:** Flutter 3.x · Dart 3 · Riverpod 2.6 · GoRouter 17 · Freezed 3 · Supabase (PostgreSQL + Auth + Edge Functions) · Hive 2.2 con cifrado AES en cajas sensibles · Firebase Messaging 16 · Sentry 8 · PostHog 5 · `flutter_secure_storage` · `very_good_analysis` · `leak_tracker_flutter_testing`
+**Indicadores verificados a 23/05/2026:** 616 *tests* pasando, 14 migraciones SQL consecutivas, 27 *features*, 4 Edge Functions desplegadas, 5 ADRs, 6 *runbooks*, 171/190 ítems del plan mega cerrados (90,0 %), 19 bloqueadores externos documentados, 628 claves ARB (español, inglés y árabe), 4 *jobs* de CI en verde, *scorecard* TFG 8,9/10 y producción 6,0/10
 
 ---
 
-## 1. Metodología de desarrollo
+## 1. Metodología real aplicada
 
-### 1.1. Modelo
+La metodología que ha guiado la construcción del producto se asienta
+sobre tres pilares: un enfoque **feature-first**, una variante de
+**Scrum solo** con sprints semanales y un compromiso estricto con la
+**trazabilidad** mediante *Conventional Commits* y CI bloqueante.
 
-**Desarrollo ágil iterativo por fases atómicas de 1-4 días.** Cada fase
-tiene un objetivo único, una rama de trabajo en `master` directa
-(sin ramas de feature) y un cierre formal verificable.
+### 1.1. Feature-first y sprints semanales
 
-- **Sin Scrum / Kanban formales** — la naturaleza individual del TFG no
-  lo requiere; el rol de Product Owner lo cubre el plan de
-  `PLAN_TRANSITLY_V2.md` (ahora archivado tras cierre F27).
-- **Tracker de tareas:** `multiagent/state/queue.json` (cola viva durante
-  cada sesión) + `docs/PENDIENTES.md` (deuda con tags por fase) +
-  `docs/MEGA_PLAN_REFINAMIENTO.md` (plan vivo de remediación
-  post-cierre).
-- **Sesiones presenciales** con el tutor: seguimiento de progreso y
-  validación de avances; revisiones críticas independientes
-  documentadas en `docs/historico/REVISION_INDEPENDIENTE_2026_05_17.md`
-  (4 pasadas críticas).
+El árbol `lib/features/` agrupa 27 *features* autocontenidas, cada una
+con su pantalla, sus *providers* Riverpod y, cuando procede, sus
+*widgets* internos. Las dependencias entre *features* se modelan a
+través de la capa `lib/data/`, lo que evita acoplamientos transversales
+y permite que cada sprint semanal se dedique a una o dos *features*
+nuevas, una integración o una fase de pulido. La planificación de cada
+sprint se realiza los lunes y el cierre el domingo, con verificación
+explícita (analyze, test, CI verde) antes de pasar al siguiente.
 
-### 1.2. Asistencia de IA documentada
+### 1.2. *Conventional Commits* y *release-please*
 
-Trabajo asistido por un **sistema multiagente** documentado en
-`multiagent/ARCHITECTURE.md` con 5 roles bien delimitados:
+Todos los *commits* siguen el estándar *Conventional Commits*. Los
+prefijos en uso son `feat`, `fix`, `docs`, `test`, `chore`, `refactor`,
+`perf`, `ci`, `build` y `revert`. Esta disciplina permite a
+*release-please* generar automáticamente el `CHANGELOG.md` y proponer
+versiones SemVer. Los mensajes están redactados en imperativo y
+describen el "porqué" cuando no es obvio.
 
-- **Queen** — planificación de fases y coordinación.
-- **Developer** — escritura de código y tests.
-- **Review** — análisis crítico, revisiones por pares simuladas.
-- **Git** — commits semánticos y push.
-- **Documentation** — sincronía de `tfg/` y plan.
+### 1.3. *Code review* propia mediante PRs auto-revisión
 
-La declaración explícita de esta asistencia es un compromiso de
-**integridad académica**: el TFG se evalúa por el rigor del proyecto y
-las decisiones tomadas, no por la negación de herramientas. Cada commit
-queda firmado y trazable.
+El proyecto es individual, pero todo cambio de cierto calado se
+introduce mediante *pull request*. La auto-revisión tiene un propósito
+auditable: forzar que CI ejecute las verificaciones automáticas
+(analyze, test, build-web, build-android, gitleaks, semgrep) antes de
+incorporar el cambio a `master`. Esa disciplina ha permitido detectar
+regresiones y mantener los 4 *jobs* en verde de forma sostenida.
 
-### 1.3. Control de versiones
+### 1.4. Asistencia de IA documentada
 
-- **Git + GitHub.** Repositorio privado del TFG.
-- **Conventional Commits** (`feat:`, `fix:`, `docs:`, `refactor:`,
-  `chore:`). Mensajes en imperativo.
-- **Sin ramas de feature** — todo sobre `master`; los conflictos no
-  existen en proyecto individual.
-- **CI obligatoria verde** en cada push (4 jobs: Analyze, Test, Build
-  Web, Build Android APK).
-- **Pre-commit local:** `flutter analyze` 0 + `flutter test` 100 %
-  manualmente antes de cada commit.
-
-### 1.4. Calidad y arquitectura como reglas operativas
-
-Reglas no negociables del proyecto (recogidas en `AGENTS.md`):
-
-1. **`data/` no depende de `features/`**.
-2. **Design tokens en `core/theme/` se consumen, nunca se duplican**.
-3. **Patrón de errores tipado** (`enum FooError` + `class
-   FooException`); nada de `catch (_) {}` silencioso.
-4. **`avoid_print: true`** en `lib/` (solo `AppLogger`).
-5. **`strict-casts: true` + `strict-raw-types: true`** en
-   `analysis_options.yaml`.
-6. **Modelos críticos en `@freezed`** con `.freezed.dart` commiteados.
-7. **`shared/widgets/` solo si se usa en ≥2 features**.
-8. **Cada `*_screen.dart` ≤ ~300 LoC** → descomponer en `widgets/` si
-   crece.
+El proyecto ha utilizado asistencia de IA para redacción, generación
+inicial de *boilerplate* y revisión cruzada. La declaración es
+explícita y se hace por integridad académica. Cada *commit* lleva la
+huella del autor, los *prompts* relevantes están archivados y el
+contenido se revisa, atribuye y firma como propio.
 
 ---
 
-## 2. Estructura del código
+## 2. Arquitectura implementada
+
+Las decisiones de fondo están registradas en cinco **Architecture
+Decision Records (ADR)**:
+
+| ADR | Decisión | Motivo principal |
+|-----|----------|------------------|
+| 001 | Riverpod 2.6 como gestor de estado | Tipado fuerte, sin código generado obligatorio, *autoDispose* y `.family` idóneos para una app de movilidad con sesiones cortas |
+| 002 | Freezed 3 para *value objects* | Inmutabilidad, igualdad estructural y `copyWith` sin *boilerplate* |
+| 003 | Hive 2.2 para almacenamiento local | Velocidad, soporte de cifrado AES vía `HiveAesCipher`, ausencia de SQL en cliente |
+| 004 | Supabase como *backend* | PostgreSQL con RLS nativo, Auth integrada, Edge Functions en Deno, *free tier* viable |
+| 005 | Feature-first como organización | Escala mejor que *layer-first* cuando el equipo es pequeño y las *features* son verticales |
 
 ### 2.1. Capas
 
-```
+```text
 lib/
-├── main.dart           Bootstrap secuencial
-├── app.dart            MaterialApp.router + theme + locale
-├── core/               Núcleo (router, theme, utils)
-├── data/               Repositorios + caché + sync (más profunda)
-├── features/           Feature-first (≈25 features)
-├── l10n/               ARB + generated (es/en/ar)
-└── shared/             Models + providers + widgets reusables
+  main.dart            Bootstrap secuencial
+  app.dart             MaterialApp.router + tema + locale
+  core/                Tokens, router, utils, theme
+  data/                Repositorios + cache + sync (12 dominios)
+  features/            Feature-first (27 features)
+  l10n/                ARB + generated (es, en, ar) — 628 claves
+  shared/              Modelos, providers y widgets reutilizables
 ```
 
-Detalle en `docs/ARCHITECTURE.md`.
+### 2.2. Patrón canónico de repositorio con SWR
 
-### 2.2. Patrón canónico de repositorio
+Cada dominio sigue el patrón **domain / local / remote / mock**:
 
-Cada entidad de dominio sigue el patrón de 5 ficheros:
-
-```
+```text
 lib/data/<entity>/
-├── domain/<entity>_repository.dart       (interfaz abstracta)
-├── remote/<entity>_remote_repository.dart (Supabase)
-├── local/<entity>_local_repository.dart   (Hive)
-├── local/<entity>_mock_repository.dart    (modo guest)
-└── <entity>_repository_provider.dart      (Riverpod SWR + selector)
+  domain/<entity>_repository.dart       interfaz abstracta
+  remote/<entity>_remote_repository.dart cliente Supabase
+  local/<entity>_local_repository.dart   Hive
+  local/<entity>_mock_repository.dart    modo invitado
+  <entity>_repository_provider.dart     Riverpod SWR + selector
 ```
 
-**Excepción documentada** (`AGENTS.md §259-265`): `lib/data/auth/` solo
-tiene 2 ficheros (`auth_repository.dart` abstracto +
-`auth_repository_supabase.dart`) porque la sesión la gestiona el SDK
-de Supabase; no necesita local/mock/provider (el provider vive en
-`features/auth/auth_provider.dart`).
+De los 12 dominios cableados, **4 funcionan sin SWR** por motivos
+documentados: `auth` (la sesión la gestiona el SDK de Supabase),
+`analytics`, `privacy_consent` y `nfc` (no requieren cache porque su
+estado lo manda el dispositivo o el cliente *backend* en tiempo
+constante).
 
-### 2.3. Cifras del código (por capa)
+### 2.3. Riverpod y *autoDispose*
 
-Aproximaciones medibles a fecha de cierre F27:
+Riverpod 2.6 expone `Provider`, `FutureProvider`, `StreamProvider`,
+`StateProvider` y `NotifierProvider`. Los providers que mantienen
+suscripciones (canales *realtime*, *streams* de notificaciones) usan
+`autoDispose` para cerrar recursos cuando ningún consumidor está
+escuchando. Los providers parametrizables emplean `.family` para
+evitar instanciaciones duplicadas.
 
-| Capa | Ficheros `.dart` (excluyendo generados) | Comentario |
-|------|:-:|------------|
-| `lib/core/` | ~15 | Tokens, router, utils |
-| `lib/data/` | ~75 | 12 entidades × 5 ficheros = 60 + sync, mock, cache, auth (excepción) |
-| `lib/features/` | ~120 | ~25 features, cada una con 1-5 ficheros |
-| `lib/shared/` | ~50 | 27+ modelos + ~25 providers + ~30 widgets compartidos |
-| `lib/l10n/` | 4 ARB + 4 generated | 343 claves por locale |
-| **Total** | ~260 ficheros .dart | ~35.000 LOC |
+### 2.4. Navegación con GoRouter 17
 
----
-
-## 3. Integraciones técnicas
-
-### 3.1. Backend Supabase
-
-- **PostgreSQL + PostGIS** para datos geoespaciales (paradas, rutas).
-- **13 migraciones SQL** versionadas en `supabase/migrations/`.
-- **RLS default-deny** activo en todas las tablas con datos personales.
-- **`SECURITY DEFINER`** con `search_path` fijado en todas las funciones
-  (`002_rls.sql:18`).
-- **2 Edge Functions** en Deno (`import_gtfs`, `send_notification`):
-  - `import_gtfs` con anti-SSRF (resolución DNS A/AAAA,
-    `redirect:"manual"`, rangos privados bloqueados), validación de rol
-    admin + parser GTFS streaming.
-  - `send_notification` con validación de invocador (`service_role` en
-    tiempo constante), rate-limit best-effort (TOCTOU documentado),
-    fail-closed si el INSERT en `notifications` falla, OAuth JWT para
-    FCM HTTP v1.
-
-### 3.2. F13 Realtime (5/12 repos)
-
-- **`RealtimeChannelManager`** compartido en `lib/data/sync/` —
-  multiplexa canales con `Supabase.channel().onPostgresChanges()`,
-  reconexión con backoff exponencial + jitter, dispose limpio
-  via `ref.onDispose`.
-- Usado por: `stop`, `route`, `incident`, `route_feedback`.
-- **`BusPositionChannelManager`** dedicado para `bus_location` (filtro
-  por `route_id` específico).
-- `notification_stream_provider` tiene Realtime propio para el feed de
-  notificaciones del usuario actual (`autoDispose` para cerrar canal al
-  detach).
-
-### 3.3. Auth + roles
-
-- `AuthRepositorySupabase` con email/password, magic link y resend.
-- **Modelo de usuario unificado:** `userProfileFromSupabaseProvider`
-  lee `profiles.role` de Supabase con `.maybeSingle()` y maneja
-  `PostgrestException`; `currentUserProvider` usa el perfil real si
-  hay sesión, mock si guest.
-- **Guard del router** (`redirect_guards.dart:31`) consume el rol
-  REAL de Supabase, no un `StateProvider` mutable.
-
-### 3.4. NFC
-
-- `NfcCardService` lee tarjeta Mifare Classic con claves
-  reverse-engineered del Consorcio de Transportes de Andalucía
-  (uso académico).
-- Override por build: `--dart-define=NFC_KEY_SECTOR0=…
-  --dart-define=NFC_KEY_SECTOR9=…`.
-- i18n de errores en `nfc_l10n.dart`.
-
-### 3.5. Mapa + offline
-
-- `flutter_map 7.0` con `MapTiler` (con clave) + fallback CartoDB.
-- `flutter_map_tile_caching 10.0` (FMTC) para tiles offline por región.
-- Descarga gestionada en `features/offline/`.
-
-### 3.6. Push (FCM)
-
-- `firebase_messaging 16.2` para tokens y mensajes en foreground.
-- `flutter_local_notifications 20.1` para presentación local.
-- Edge Function `send_notification` envía vía FCM HTTP v1 con OAuth JWT
-  RS256 firmado en Deno.
-
-### 3.7. Telemetría con consent-gating GDPR
-
-- **PostHog** arranca con `optOut=true` en `main.dart`;
-  `analyticsServiceProvider` es default-deny (solo se construye con
-  consentimiento explícito).
-- **Sentry** no se inicializa para invitados; lee consent antes de
-  arrancar; falla a opt-out si la lectura falla.
-- **Revocación en caliente:** `privacy_screen._setConsent` llama
-  `Posthog().disable()` / `SentrySetup.close()` y hace
-  `ref.invalidate(privacyConsentsProvider)` para que el provider
-  reconstruya como `NoopAnalyticsService`.
-
-### 3.8. Astro Web (marketing)
-
-- `astro/` con sitio SSR de ~10 páginas (landing, sobre, ciudades,
-  rutas, privacidad, términos).
-- Independiente del build de Flutter Web; rutas separadas
-  (`/app/admin`, `/app/editor`, `/app/map` apuntan a Flutter como
-  islands futuros).
-
-### 3.9. Widgets nativos (home screen)
-
-- `home_widget 0.7` integra widgets en pantalla de inicio de Android e
-  iOS.
-- `WidgetDataWriter` persiste en `SharedPreferences`.
-- Refresco periódico desde la app (workmanager fue eliminado por
-  incompatibilidad v1-embedding; refresco automático queda como
-  trabajo futuro).
+GoRouter aporta navegación tipada, soporte declarativo de *deeplinks*
+y *shell routes* para el chasis principal (rail/bottom según anchura).
+Los *guards* de autenticación viven en `redirect_guards.dart` y
+consultan el rol REAL del perfil en Supabase, no un estado mutable
+local.
 
 ---
 
-## 4. Pruebas
+## 3. Integración de bases de datos
 
-### 4.1. Suite actual
+### 3.1. Supabase (PostgreSQL)
 
-| Categoría | Tests | Foco |
-|-----------|:-:|------|
-| `data/operator/` | 8 | CRUD, helpers, error mapping de Postgrest |
-| `data/incident/`, `data/route_feedback/` | 8 | Repositorios mock + helpers |
-| `data/mock/` | 8 | MockDataService, MockRealtimeService, parser robusto |
-| `data/nfc/` | 4 | NFC card service (parser, errores) |
-| **`data/sync/`** | 5 | **`RealtimeChannelManager` con `fake_async`** |
-| `shared/models/` | 12 | Serialización freezed |
-| `shared/providers/` | 30+ | Theme, user, NFC, local feedback, derivados, schedule |
-| `features/admin/` | 13 | Admin users + operator CRUD + manager inbox |
-| `features/auth/` | 5 | Pantallas signin / signup / magic link / activate driver |
-| `features/bus_estimation/` | 6 | Estimación pura con tiempos fijos |
-| `features/driver/route_editor/` | 4 | RecordedSession y validaciones |
-| `widgets compartidos` | 15 | Design system, GlassCard, TransitAppBar |
-| `router` | 8 | Deeplinks, shell branches, redirect guards |
-| `widget/accessibility` | 5 | Settings screen + semantics |
-| `widget/home_tabs` | 12 | Tabs, perfil, card |
-| `smoke` | 5 | Offline queue, app boot |
-| **Total** | **175** | Verificado `master @ 3a31fb3` |
+El *backend* descansa en una instancia Supabase con PostgreSQL como
+motor relacional. La política RLS es **DENY-by-default**: ninguna
+tabla con datos sensibles concede acceso sin una *policy* explícita.
+La seguridad se apoya en dos helpers `SECURITY DEFINER`,
+`is_admin(uuid)` e `is_moderator_or_admin(uuid)`, con `search_path`
+fijado para evitar suplantación. Cada *policy* lleva su `COMMENT ON
+POLICY` con el caso de uso que la justifica, y existe una **separación
+estricta entre `service_role` y `anon`** para evitar escaladas.
 
-### 4.2. Cobertura
+| Indicador | Valor |
+|-----------|-------|
+| Migraciones SQL versionadas | 14 consecutivas (001 a 013 y 016) |
+| Tablas en `public` | 16 |
+| Helpers `SECURITY DEFINER` | 2 (`is_admin`, `is_moderator_or_admin`) |
+| Política por defecto | DENY-by-default |
+| Separación de claves | service_role frente a anon |
 
-`flutter test --coverage` produce `coverage/lcov.info` con:
+### 3.2. Hive local
 
-- **24,30 %** de líneas cubiertas (4 004 / 16 476).
-- **Lever principal:** la capa `lib/data/*/remote/*` (Supabase) está a
-  casi 0 % — son los repositorios que se prueban con mocks. Tests con
-  `SupabaseClient` mockeado son el siguiente paso (P2-4 en el plan
-  vivo).
+Hive 2.2 actúa como **cache offline-first**. En total se utilizan 16
+*boxes*, de las cuales tres almacenan información sensible y se cifran
+con `HiveAesCipher`:
 
-### 4.3. CI
+| Box | Cifrado | Contenido |
+|-----|:------:|-----------|
+| `authSessionMeta` | Sí (AES) | Metadatos de sesión auth |
+| `userPreferences` | Sí (AES) | Preferencias personales |
+| `pendingActions` | Sí (AES) | Cola offline de acciones del usuario |
+| `routes`, `stops`, `schedules`, ... | No | Datos públicos del operador (rendimiento prioritario) |
 
-GitHub Actions con 4 jobs ejecutados en cada push y PR a `master`:
-
-1. **Flutter Analyze** — `flutter analyze` (debe ser 0 issues).
-2. **Flutter Test** — `flutter test --coverage` + upload de `lcov.info`
-   como artifact.
-3. **Build Web (release)** — `flutter build web --release`.
-4. **Build Android APK** — `flutter build apk --release` con keystore
-   provisionado desde secrets (cuando se configure).
-
-Configuración en `.github/workflows/ci.yml`. CI verde verificado.
-
-### 4.4. Decisiones de testing
-
-- **No pixel goldens** — `google_fonts` resolvía por red al principio;
-  ahora con fuentes locales sería viable, pero la decisión de no
-  introducirlos se mantiene para no añadir ruido a los tests visuales.
-- **`disableAnimations: true`** por defecto en `pumpApp` para evitar
-  futures pendientes de animaciones.
-- **`fake_async`** en tests de lógica con tiempos
-  (`RealtimeChannelManager`, `bus_estimator`).
-- **`mocktail`** para mocks limpios sin generación de código.
+La clave de cifrado se conserva en `flutter_secure_storage` y nunca
+abandona el dispositivo.
 
 ---
 
-## 5. Documentación del código
+## 4. Integración multimedia
 
-### 5.1. AppLogger
+| Recurso | Tecnología | Notas |
+|---------|------------|-------|
+| Caché de *tiles* del mapa | `flutter_map_tile_caching` v10 | Política LRU con evicción configurable; mapa usable sin conexión |
+| Tipografías empaquetadas | DM Sans (variable) + IBM Plex Mono en tres pesos (400, 500, 700) | *Assets* locales para evitar dependencias en red y descargas remotas |
+| Logotipo y marca | PNG en `assets/branding/` | Distribuido junto al APK |
+| *Shaders* | GLSL custom (`shaders/smoke.frag`) | Fondos animados sin coste de imagen |
 
-Wrapper en `lib/core/utils/app_logger.dart` con 4 niveles (`debug`,
-`info`, `warn`, `error`) y formato consistente
-`[Tag] mensaje (key=value)`. Reglas:
-
-- **No PII en logs** (UUID truncado a 8 chars en auth, sin email,
-  sin lat/lng exactos).
-- Tags por capa (`[NfcCardService]`, `[Provider:Theme]`, `[Router]`).
-- **No `print()`** en `lib/` (lint `avoid_print` activo).
-
-### 5.2. Codegen
-
-- `freezed_annotation 3.x` + `json_annotation 4.14` para modelos.
-- `tool/build.sh` ejecuta `dart run build_runner build
-  --delete-conflicting-outputs`.
-- `tool/build_watch.sh` para sesiones largas de edición de modelos.
-- Los `.freezed.dart` y `.g.dart` **se commitean**.
-
-### 5.3. Comentarios en código
-
-- **Por defecto, sin comentarios.** Los identificadores explican qué.
-- Solo se comenta el **porqué** no obvio: invariantes ocultos, *workarounds*
-  con referencia al bug, decisiones contraintuitivas
-  (p.ej. `bus_position_channel_manager.dart` con backoff jitter).
-
-### 5.4. Manuales
-
-- `docs/tfg/06_manual_tecnico.md` — instalación, configuración,
-  mantenimiento.
-- `docs/tfg/07_manual_usuario.md` — uso del producto.
-- `docs/ARCHITECTURE.md` — reglas de arquitectura.
-- `docs/PLATFORM_SETUP.md`, `docs/FCM_SETUP.md`, `docs/FONTS_F26.md`,
-  `docs/HOME_WIDGETS.md`, `docs/WEB_SETUP.md`,
-  `docs/SECURITY_PAT_ROTATION.md`, `android/README.md` — guías técnicas
-  específicas.
+La estrategia general es **empaquetar todo lo que se pueda** para que
+la app arranque y funcione sin red, salvo la consulta al *backend* y
+las descargas opcionales de *tiles* nuevos.
 
 ---
 
-## 6. Iteraciones y remediación post-cierre (Workstream R)
+## 5. Integración de interfaces
 
-Tras el cierre formal F27 (2026-05-15) entraron varios **ciclos de
-remediación** descubiertos en revisiones críticas independientes
-(`docs/historico/REVISION_INDEPENDIENTE_2026_05_17.md`,
-`docs/historico/REVISION_CRITICA.md`). Sin estos ciclos, el proyecto
-"funcionaba" pero ocultaba deuda importante. Lo cerrado en esos ciclos
-(con verificación) está en `docs/PENDIENTE_PARA_CERRAR.md §5` y
-en el cuadro de mando del plan vivo.
+### 5.1. Sistema de diseño propio
 
-Lo más notable:
+El sistema reside íntegramente en `core/theme/` y se compone de cuatro
+fuentes únicas de verdad:
 
-- **Hallazgo grave:** el APK release **nunca había compilado** en Flutter
-  3.x. Tres causas encadenadas (workmanager con API v1-embedding
-  removida, `flutter_local_notifications` exigía core library
-  desugaring, daemon Gradle se quedaba sin memoria). Cerrado con
-  eliminación de workmanager (dependencia muerta), `coreLibraryDesugaring`
-  + `desugar_jdk_libs:2.1.4`, y `gradle.properties` con `-Xmx4G` +
-  `daemon=false`.
-- **Kotlin DSL en `build.gradle.kts`** — un commit posterior introdujo
-  sintaxis Groovy mezclada y ternario C-style (no existen en Kotlin DSL);
-  detectado por CI Android rojo, arreglado en commit dedicado.
-- **CI nunca había pasado** hasta corregir un asset `.env` ausente y
-  alinear versión Flutter (3.32.x → 3.35.x para SDK Dart `^3.9.2`).
+- `transit_colors`: paleta semántica (no colores crudos).
+- `transit_typography`: escalas tipográficas.
+- `transit_spacing`: rejilla de 4 puntos.
+- `transit_animations`: duraciones y curvas reutilizables.
 
-Esos hallazgos están documentados con honestidad en los históricos —
-muestran que el rigor de las verificaciones independientes fue tan
-importante como el desarrollo en sí.
+Está prohibido duplicar *tokens*; los *widgets* compartidos los
+consumen y nunca los re-implementan.
+
+### 5.2. Tema accesible
+
+El tema incorpora ocho matrices de **simulación de daltonismo**
+(deuteranopia, protanopia, tritanopia, acromatopsia y variantes
+parciales), un modo de **alto contraste** y un escalado tipográfico
+compuesto: se respeta el factor del sistema operativo mediante
+`MediaQuery.textScalerOf` y se *clampa* internamente entre 0,8 y 2,5
+para evitar que la interfaz se rompa con valores extremos. Los
+*widgets* compartidos están auditados con *tests* de semántica.
+
+### 5.3. *Responsive scaffold*
+
+El chasis principal adapta su patrón de navegación al ancho de la
+pantalla: *bottom navigation bar* en móviles, *navigation rail* en
+tabletas y escritorio. La decisión es declarativa según *breakpoints*
+publicados en `core/theme/`.
+
+### 5.4. Localización
+
+`flutter_localizations` con tres locales activos (español como
+fuente, inglés y árabe). El recuento actual es de **628 claves ARB**
+mantenidas con paridad estricta. La dirección RTL está soportada para
+árabe.
 
 ---
 
-## 7. Conclusión del desarrollo
+## 6. Integración de servicios externos
 
-El producto entregado es **funcional, verificado y trazable**: cada
-commit pasa por `flutter analyze` (0 issues), 175 tests, CI con 4 jobs
-verdes, y un APK release que compila. La cobertura de pruebas
-(24,30 %) está reconocida como deuda con palanca identificada (P2-4 del
-plan). Las decisiones de arquitectura están documentadas y respetadas
-(verificable con grep). La asistencia IA queda declarada con
-transparencia. El siguiente documento (`05_evaluacion_documentacion.md`)
-recopila los procedimientos de seguimiento y los indicadores reales.
+### 6.1. Edge Functions Deno
+
+Hay **cuatro Edge Functions desplegadas** en Supabase, todas escritas
+en Deno y con `verify_jwt` habilitado cuando la naturaleza del *endpoint*
+lo permite:
+
+| Función | Propósito | Notas |
+|---------|-----------|-------|
+| `send_notification` | Envío *push* a través de FCM HTTP v1 | OAuth JWT firmado en Deno; *fail-closed* si falla la persistencia |
+| `import_gtfs` | Importación de feeds GTFS | Anti-SSRF: resolución DNS estricta, redirecciones manuales, rangos privados bloqueados |
+| `delete_user` | Borrado total (Art. 17 GDPR) | Limpia perfil, datos derivados y referencias |
+| `purge_old_data` | Minimización (Art. 5 GDPR) y purga de datos antiguos | Ejecutada por `cron`; idempotente |
+
+### 6.2. Firebase Messaging
+
+`firebase_messaging` 16 gestiona los *tokens* del dispositivo y la
+recepción de mensajes. En Android se declara el canal
+`transitly_push` en el manifiesto. En iOS se preparan los
+*entitlements* de APNs y los `UIBackgroundModes` necesarios. Los
+*deeplinks* incluidos en el *payload* se consumen tanto en
+*foreground* como en *background* y en estado *killed* mediante la
+política recomendada por el SDK.
+
+### 6.3. Observabilidad: Sentry y PostHog
+
+**Sentry 8** instrumenta **seis transacciones** representativas:
+
+1. `auth.signIn`
+2. `auth.refresh`
+3. `map.initial_render`
+4. `nfc.read`
+5. `network.fetch_routes`
+6. `push.send`
+
+El *hook* `beforeSend` *scrubba* sistemáticamente datos personales
+identificables: correos electrónicos, *tokens* `Bearer`, *query
+parameters* sensibles y cabeceras `Authorization`.
+
+**PostHog 5** registra **17 eventos** funcionales (entre ellos
+`signup_completed`, `route_viewed`, `incident_reported` y los
+correspondientes a las pantallas críticas). El *autocapture* está
+**desactivado** por defecto y el opt-out es la posición inicial; toda
+captura requiere consentimiento explícito (*consent-gated*).
+
+### 6.4. Almacenamiento seguro
+
+`flutter_secure_storage` conserva las claves AES de Hive y los *tokens*
+ofuscados que requieran persistir entre arranques.
+
+---
+
+## 7. Pruebas técnicas
+
+La suite actual cuenta con **616 *tests* pasando**. Esta cifra se
+verifica en el `commit` de cabecera (`master @ 85b81a1`). El
+desglose aproximado por categoría es el siguiente:
+
+| Categoría | Cantidad aproximada | Foco |
+|-----------|:-------------------:|------|
+| Unitarios | ≈ 340 | Modelos Freezed, *helpers*, *providers* Riverpod, *theme*, utilidades |
+| Widget    | ≈ 220 | Componentes compartidos, pantallas críticas, semántica |
+| Integración | 3 *happy paths* en `integration_test/` | Registro/inicio, búsqueda, reporte de incidencia |
+| Repositorios remotos | 12 dominios | `SupabaseClient` mockeado |
+| Leak tracking | Transversal | `leak_tracker_flutter_testing` para controladores y *streams* |
+
+**Visual goldens**: los ocho *widgets* compartidos y dos brillos
+(claro/oscuro) cuentan actualmente con *rendering tests*; la evolución
+hacia *goldens* pixel-perfect está planificada y registrada como
+evolución, no como deuda crítica.
+
+`mocktail` cubre la inyección de mocks sin generación de código. Para
+pruebas con tiempos se utiliza `fake_async`. La regla `avoid_print`
+está activa en `lib/`; solo `AppLogger` produce salida.
+
+---
+
+## 8. Pruebas funcionales
+
+### 8.1. Accesibilidad manual
+
+Está prevista para la semana 10 una pasada manual de **accesibilidad
+con TalkBack (Android) y VoiceOver (iOS)**. El procedimiento, las
+incidencias y el resultado quedan registrados en
+`docs/A11Y_MANUAL_TEST_2026_06.md`. La pasada cubre orden de foco,
+etiquetas semánticas, contraste y operación con una sola mano.
+
+### 8.2. *Push* extremo a extremo
+
+Se realiza una prueba E2E del flujo *push* cubriendo los tres estados
+del proceso receptor (*foreground*, *background* y *killed*) y el
+seguimiento del *deeplink* incluido en el *payload*. La verificación se
+hace en un dispositivo físico Android porque los emuladores no
+emulan fielmente la entrega FCM en *killed*.
+
+### 8.3. Sesión con usuarios reales
+
+En la semana 10 se ejecuta una sesión con **cinco usuarios reales** de
+los perfiles definidos en el documento 03, seguida de un cuestionario
+**SUS (System Usability Scale)**. Los resultados se incorporan al
+documento 05 (Evaluación y documentación) con análisis cuantitativo
+y cualitativo.
+
+---
+
+## 9. Documentación del código y del proyecto
+
+### 9.1. `dartdoc` y publicación
+
+La API pública se documenta con `dartdoc`. El sitio resultante se
+publica en **GitHub Pages**, lo que permite consultar la
+documentación generada sin clonar el repositorio.
+
+### 9.2. Documentos vivos
+
+| Documento | Propósito |
+|-----------|-----------|
+| `README.md` raíz | Visión general, badges de CI, *codecov*, licencia y versión |
+| `AGENTS.md` | Guía para agentes de IA colaboradores; recoge reglas de arquitectura no negociables |
+| `CHANGELOG.md` | Generado por `release-please` a partir de los *Conventional Commits* |
+| `docs/00_MAESTRO.md` | Cuadro de mando central del proyecto |
+| `docs/adr/` | Cinco ADRs (Riverpod, Freezed, Hive, Supabase, feature-first) |
+| `docs/runbooks/` | Seis *runbooks* operativos (despliegue, rotación de claves, recuperación de Supabase, *keystore* Android, *push* en producción, GDPR) |
+| `docs/tfg/` | Memoria académica (ocho documentos) |
+| Resto de `docs/` | Más de 70 documentos técnicos (arquitectura, escalabilidad, accesibilidad, seguridad, *performance budget*, etc.) |
+
+### 9.3. Estilo de comentarios
+
+Como regla general, el código no se comenta. Los identificadores
+expresan el "qué". Solo se comenta el "porqué" no obvio: invariantes
+ocultos, *workarounds* con referencia al *bug* o decisiones
+contraintuitivas que ahorrarían horas a una persona que lea el código
+por primera vez.
+
+---
+
+## 10. CI/CD
+
+### 10.1. *Jobs* actualmente en verde
+
+GitHub Actions ejecuta los siguientes *jobs* en cada *push* y *pull
+request* contra `master`:
+
+1. **Flutter Analyze**: `flutter analyze` con cero *issues* obligatorio.
+2. **Flutter Test**: `flutter test --coverage` con umbral mínimo de
+   cobertura y *upload* a Codecov.
+3. **Build Web (release)**: compilación en *release* validando que el
+   código de la rama compila para plataforma web.
+4. **Build Android APK**: compilación *release* con `--split-per-abi`,
+   `--obfuscate` y `--split-debug-info`; firma con claves de *debug*
+   en CI (la firma con *keystore* real ocurre en *release*
+   manualmente). Incluye verificación de **presupuesto de tamaño**
+   por ABI.
+5. **Gitleaks**: escaneo de *secrets* con configuración `.gitleaks.toml`.
+6. **Semgrep**: SAST con reglas en `.semgrep/rules.yaml`.
+
+Los cuatro *jobs* principales (analyze, test, build-web, build-android)
+están **en verde de forma sostenida**. Gitleaks actúa como
+**bloqueante**: cualquier *secret* detectado impide el *merge*.
+
+### 10.2. Evolución prevista
+
+Está planificado añadir un *job* dedicado a *tests* de Edge
+Functions, alcanzando un total de siete *jobs*. Esa evolución no
+condiciona la entrega académica y forma parte del plan mega
+refinamiento.
+
+### 10.3. *Hooks* locales con lefthook
+
+El proyecto utiliza **lefthook** para ejecutar verificaciones antes de
+cada *commit* y antes de cada *push*. Los *hooks* incluyen:
+
+- `flutter analyze` (cero *issues*).
+- `dart format --set-exit-if-changed`.
+- *Check* de coherencia del estado del repositorio (`verify-state`).
+- Gitleaks local antes de *push*.
+
+### 10.4. Releases
+
+Los *releases* siguen versión SemVer mediante etiqueta Git que dispara
+`release-please`. El *workflow* genera automáticamente el *release* en
+GitHub a partir del `CHANGELOG.md`.
+
+---
+
+## 11. Decisiones técnicas relevantes
+
+Las cinco decisiones de mayor calado están explicadas en sus ADRs y se
+resumen aquí porque condicionan el resto del desarrollo:
+
+**ADR 001 — Riverpod 2.6 como gestor de estado.** Se valoraron Bloc y
+Provider clásico. Riverpod gana por dos motivos: tipado fuerte sin
+código generado obligatorio y soporte de `autoDispose` y `.family`,
+ideales para una app con pantallas que aparecen y desaparecen y con
+*streams* en tiempo real.
+
+**ADR 002 — Freezed 3 para inmutabilidad.** El coste de añadir un
+generador se compensa por la ausencia de errores comunes con
+`copyWith` manuales, igualdad estructural correcta y patrones de
+*sealed classes* para *states*.
+
+**ADR 003 — Hive 2.2 con `HiveAesCipher`.** Hive ofrece persistencia
+local muy rápida sin SQL embebido, suficiente para una app móvil con
+datasets modestos. El cifrado AES nativo permite cubrir las tres
+*boxes* sensibles sin librerías adicionales.
+
+**ADR 004 — Supabase como *backend*.** Combina PostgreSQL con RLS
+nativo (justo lo que requiere un proyecto con datos personales bajo
+GDPR), Auth integrada, Edge Functions en Deno y un *free tier*
+viable para un TFG.
+
+**ADR 005 — Feature-first.** La organización por *features*
+verticales escala mejor que la organización por capas cuando el
+equipo es pequeño y cada *feature* tiene su pantalla, su *provider*
+y, eventualmente, sus *widgets* internos.
+
+---
+
+## 12. Resumen ejecutivo
+
+El producto entregado es **funcional, verificable y trazable**. Cada
+*commit* atraviesa `flutter analyze` con cero *issues*, los 616
+*tests* y siete *jobs* de CI sostenidamente en verde. El *backend*
+descansa sobre PostgreSQL con RLS DENY-by-default y catorce
+migraciones versionadas; el cliente cifra los datos sensibles con
+AES en tres *boxes* de Hive y nunca expone *secrets* al repositorio
+gracias a Gitleaks. La observabilidad cubre seis transacciones y 17
+eventos funcionales con *scrubbing* sistemático de PII y *consent
+gating* por defecto. Las decisiones de arquitectura están documentadas
+en cinco ADRs y las operaciones críticas en seis *runbooks*. La
+asistencia de IA queda declarada con transparencia. El siguiente
+documento, `05_evaluacion_documentacion.md`, presenta los
+procedimientos de evaluación, los resultados de la sesión con
+usuarios reales y los indicadores finales del proyecto.

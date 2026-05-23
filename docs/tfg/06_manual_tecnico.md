@@ -1,536 +1,335 @@
 # 06 — Manual Técnico
 
-**Proyecto:** Transitly
-**Versión actual:** post-F27 + ciclos de remediación
-**Estado verificado:** `master @ 3a31fb3` · `flutter analyze` 0 · 175/175 tests · CI verde · APK release 73,5 MB
+**Proyecto:** Transitly (nexto-stop-v2)
+**Rama / HEAD:** `master @ 85b81a1`
+**Fecha del anchor:** 2026-05-23
+**Plataformas objetivo:** Android (minSdk 23, targetSdk 34, compileSdk 35), iOS 16.0+, Web (PWA experimental).
 
-> Este documento cubre **instalación, configuración, despliegue y
-> mantenimiento** para un desarrollador o administrador técnico. Para
-> el manual de usuario final ver `07_manual_usuario.md`.
-
----
-
-## 1. Requisitos del sistema
-
-### 1.1. Para desarrollo
-
-| Recurso | Versión mínima recomendada |
-|---------|---------------------------|
-| Sistema operativo | Windows 10/11, macOS 12+, Linux Ubuntu 20.04+ |
-| Flutter SDK | **3.35.x stable** (Dart 3.9+; coincide con CI) |
-| Dart SDK | 3.9+ (incluido con Flutter) |
-| Android Studio o IntelliJ | Hedgehog+ (Android SDK 34+) |
-| Xcode (solo iOS, macOS) | 15+ |
-| Java/JDK | 17 LTS (recomendado para Gradle moderno) |
-| Git | 2.40+ |
-| Node.js (solo Astro web) | 20 LTS |
-| Supabase CLI (opcional, para migraciones locales) | 1.x |
-
-### 1.2. Para el dispositivo de usuario final
-
-| Plataforma | Versión mínima |
-|------------|----------------|
-| Android | API 24 (Android 7.0 Nougat) |
-| iOS | 16.0+ |
-| Web | Navegador con WebGL2 y soporte WebAssembly (Chrome 90+, Firefox 90+, Safari 15+) |
+> Este manual recoge las instrucciones de **instalación, configuración, despliegue y mantenimiento** de Transitly desde la perspectiva de un desarrollador o de un administrador técnico. Para el uso final de la aplicación vease `07_manual_usuario.md`.
 
 ---
 
-## 2. Instalación inicial
+## 1. Visión general de la arquitectura
 
-### 2.1. Clonar el repositorio
+Transitly es una aplicación Flutter con backend Supabase. Las decisiónes estructurales están documentadas como ADRs (`docs/adr/`) y son la referencia normativa:
+
+- **ADR 001 — Riverpod 2.6** como gestor de estado, con uso explicito de `autoDispose` y `family` en las features que lo requieren.
+- **ADR 002 — Freezed** para todos los modelos del dominio (veintisiete modelos inmutables con `copyWith`, `==`, `hashCode` y soporte `json_serializable`).
+- **ADR 003 — Hive 2.2** con `HiveAesCipher` y tres boxes principales como cache local cifrada.
+- **ADR 004 — Supabase** como backend (PostgreSQL, Auth, Realtime, Storage y Edge Functions Deno).
+- **ADR 005 — Feature-first** como organizacion del código en `lib/features/`.
+
+En el anchor actual el proyecto suma **veintisiete features**, **catorce migraciónes SQL consecutivas**, **cuatro Edge Functions** desplegadas, **seis runbooks operativos**, **616 tests** en verde, **628 claves ARB** localizadas a ES/EN/AR y **siete jobs CI** que validan analyze, test, build web y build Android (más dos jobs de seguridad). El cuadro de mando interno marca **TFG 8,9 / 10** y **Produccion 6,0 / 10**, diferenciando con claridad la madurez académica de la madurez productiva.
+
+---
+
+## 2. Requisitos del sistema de desarrollo
+
+### 2.1. Software base
+
+| Herramienta | Versión recomendada | Notas |
+|-------------|---------------------|-------|
+| Flutter SDK | **3.16+** (alíneado con la versión pinneada en CI) | Trae Dart 3 incluido. |
+| Dart SDK | **3.2+** | Si se usa Flutter ≥ 3.16, viene integrado. |
+| Android Studio | **Hedgehog** o superior con Android SDK API 34 | Incluye `platform-tools`, `cmdline-tools`, NDK opcional. |
+| Xcode | **15+** | Solo macOS, requerido para compilar a iOS. |
+| Java / JDK | **17 LTS** | Necesario para Gradle moderno. |
+| Git | **2.40+** | El proyecto asume `git switch`, `git restore`. |
+| Node.js | **20 LTS** | Para tooling auxiliar (Gitleaks local, scripts JS). |
+| Deno | **1.40+** | Necesario para ejecutar las Edge Functions en local. |
+| Supabase CLI | **1.x** | Para `supabase link`, `db push`, `functions deploy`. |
+| Cuenta Supabase | Plan gratuito o superior | Proyecto con PostgreSQL, Auth, Realtime y Storage activos. |
+| Cuenta Firebase | Plan Blaze (FCM HTTP v1) o gratuito según uso | Necesario para FCM. |
+
+### 2.2. Sistema operativo
+
+Soportado en Windows 10/11, macOS 12 o superior y Linux Ubuntu 20.04 o superior. La compilacion a iOS exige macOS por requisito de la cadena de Apple.
+
+---
+
+## 3. Instalación paso a paso
+
+### 3.1. Clonado del repositorio
 
 ```bash
 git clone https://github.com/astralk9999/Transitly.git
 cd Transitly
 ```
 
-### 2.2. Configurar variables de entorno
+### 3.2. Variables de entorno
 
-El proyecto usa `--dart-define` para inyectar variables en tiempo de
-compilación (SEC2 — `.env` ya no se bundlea como asset).
+A partir del refuerzo de seguridad SEC2, las claves se inyectan en tiempo de compilacion mediante `--dart-define` (el fichero `.env` ya no se distribuye como asset). El repositorio incluye `.env.example` como plantilla de referencia con explicación de cada variable.
 
-Para desarrollo, puedes usar un script de arranque o pasarlas a
-`flutter run` directamente:
+```bash
+cp .env.example .env   # solo como referencia local; no se bundlea
+```
+
+Variables obligatorias para arranque:
+
+- `SUPABASE_URL`
+- `SUPABASE_ANON_KEY`
+
+Variables opcionales (degradacion silenciosa si faltan):
+
+- `SUPABASE_FUNCTIONS_URL` (por defecto `<url>/functions/v1`).
+- `POSTHOG_API_KEY`, `POSTHOG_HOST`.
+- `SENTRY_DSN`.
+- `MAPTILER_API_KEY` (necesaria para teselas en línea fuera de la región offline).
+
+### 3.3. Dependencias y generación de código
+
+```bash
+flutter pub get
+flutter pub run build_runner build --delete-conflicting-outputs
+flutter gen-l10n
+```
+
+`flutter pub get` resuelve apróximadamente 150 paquetes (Riverpod 2.6, supabase_flutter, hive 2.2, flutter_map, sentry 8, posthog 5, flutter_secure_storage, very_good_analysis, leak_tracker_flutter_testing, entre otros). `build_runner` regenera los Freezed y `json_serializable`. `flutter gen-l10n` produce las clases tipadas de localización a partir de los ARB.
+
+### 3.4. Firebase Cloud Messaging
+
+Para el target Android e iOS, se requiere generar la configuración de Firebase:
+
+```bash
+flutterfire configure --project=transitly-prod
+```
+
+Esto produce `lib/firebase_options.dart`, `android/app/google-services.json` y `ios/Runner/GoogleService-Info.plist`. Sin estos ficheros el `firebase_setup.dart` degrada silenciosamente: la app funciona sin push.
+
+### 3.5. Ejecución en debug
 
 ```bash
 flutter run \
   --dart-define=SUPABASE_URL=https://<tu-proyecto>.supabase.co \
-  --dart-define=SUPABASE_ANON_KEY=eyJh... \
-  --dart-define=POSTHOG_API_KEY=phc_... \
-  --dart-define=POSTHOG_HOST=https://eu.posthog.com \
-  --dart-define=SENTRY_DSN=https://...@sentry.io/... \
-  --dart-define=MAPTILER_API_KEY=...
+  --dart-define=SUPABASE_ANON_KEY=eyJh...
 ```
 
-Variables obligatorias:
-
-- `SUPABASE_URL` y `SUPABASE_ANON_KEY` — sin estas la app crashea al
-  arrancar (`EnvErrorScreen`).
-
-Variables opcionales (degradación silenciosa si faltan):
-
-- `SUPABASE_FUNCTIONS_URL` (por defecto `<url>/functions/v1`).
-- `POSTHOG_API_KEY`, `POSTHOG_HOST`, `SENTRY_DSN`, `MAPTILER_API_KEY`.
-
-Plantilla con explicaciones en `.env.example` (archivo trackeado).
-
-### 2.3. Instalar dependencias
+### 3.6. Build release
 
 ```bash
-flutter pub get
+flutter build apk --release --split-per-abi \
+  --obfuscate --split-debug-info=build/debug-info \
+  --dart-define=SUPABASE_URL=... \
+  --dart-define=SUPABASE_ANON_KEY=...
 ```
 
-Resuelve ~150 paquetes transitive (Riverpod, go_router, freezed,
-supabase_flutter, hive, flutter_map, etc.). Verifica que termina con
-`Got dependencies!`.
-
-### 2.4. Generar localizaciones e l10n
-
-```bash
-flutter gen-l10n
-```
-
-Produce `lib/l10n/generated/app_localizations.dart`,
-`app_localizations_es.dart`, `_en.dart`, `_ar.dart`. **Obligatorio
-tras un checkout fresco**.
-
-### 2.5. Generar código (`@freezed` + `json_serializable`)
-
-```bash
-tool/build.sh
-# alias de: dart run build_runner build --delete-conflicting-outputs
-```
-
-Para sesiones largas editando modelos:
-
-```bash
-tool/build_watch.sh
-```
-
-### 2.6. Verificar el entorno
-
-```bash
-flutter analyze            # → No issues found!
-flutter test               # → All tests passed! (175/175)
-```
-
-Si esto sale verde, el entorno está listo.
-
-### 2.7. Ejecutar en un dispositivo
-
-```bash
-flutter devices             # lista dispositivos conectados
-flutter run                 # selecciona el dispositivo
-flutter run -d chrome       # web en Chrome
-flutter run -d emulator-5554 # Android emulador concreto
-```
+El binario se firma con la keystore real si existe `android/key.properties`; en caso contrario, se firma con la debug key y el artefacto no es públicable.
 
 ---
 
-## 3. Estructura del repositorio
+## 4. Configuración avanzada
+
+### 4.1. Feature flags y constantes de compilacion
+
+Los `--dart-define` se utilizan también como **feature flags**. Las flags actuales incluyen `ENABLE_NFC`, `ENABLE_WIDGETS_NATIVE`, `ENABLE_REALTIME_DRIVER` y `OPERATOR_DEFAULT_SLUG`. Se ajustan en la línea de compilacion sin tocar código.
+
+### 4.2. Cambiar el operador por defecto
+
+El operador por defecto es COMUJESA (`comujesa`). Para cambiarlo:
+
+1. Insertar el operador objetivo en la base mediante `dart tools/seed_operators.dart`.
+2. Pasar `--dart-define=OPERATOR_DEFAULT_SLUG=<slug>` en el build.
+
+### 4.3. Cambiar la paleta de marca
+
+Las paletas viven en `lib/core/theme/palettes/`. Cada paleta declara los tokens `surfaceHi/Mid/Lo`, `textHi/Mid/Lo`, `primary`, `accent` y `signal*`. Tras editar o anadir una nueva paleta:
+
+1. Ejecutar `dart run tool/contrast_check.dart` para validar WCAG AA.
+2. Anadir el caso al test `accessibility_matrix_test.dart`.
+3. Regenerar `00_MAESTRO.md` con `tool/verify_state.sh`.
+
+### 4.4. Anadir un idioma
+
+1. Crear `lib/l10n/app_<código>.arb` con todas las claves traducidas (628 en el anchor).
+2. Anadir el código en `l10n.yaml`.
+3. Si es RTL, anadir el código en `RTL_LOCALES` (`lib/core/utils/locale_utils.dart`).
+4. Ejecutar `flutter gen-l10n`.
+
+---
+
+## 5. Estructura del repositorio
 
 ```
-Transitly/
-├── lib/                          # Código Dart (~260 ficheros)
-│   ├── main.dart                 # Bootstrap (Env → Hive → Supabase → ProviderScope)
-│   ├── app.dart                  # MaterialApp.router + theme + locale
-│   ├── core/                     # router/, theme/, utils/
-│   ├── data/                     # Capa más profunda; NO depende de features/
-│   │   ├── auth/                 # Repos auth (excepción al patrón canónico)
-│   │   ├── mock/                 # MockDataService, MockRealtimeService
-│   │   ├── cache/                # Hive adapters + boxes + HiveInit
-│   │   ├── nfc/                  # NfcCardService + i18n
-│   │   ├── push/                 # Firebase setup (firebase_setup.dart) + FCM push service
-│   │   ├── sync/                 # RealtimeChannelManager, OfflineSyncService
-│   │   └── <entity>/             # 12 entidades con patrón canónico de 5 ficheros
-│   ├── features/                 # Feature-first (27 features)
-│   ├── l10n/                     # ARB es/en/ar + generated/
-│   └── shared/                   # models/ (27+ @freezed), providers/, widgets/
-├── android/
-│   ├── app/build.gradle.kts      # Kotlin DSL puro (signing condicional)
-│   ├── gradle.properties         # Heap 4G + daemon=false + workers.max=2
-│   ├── key.properties            # GITIGNORED — credenciales keystore
-│   ├── key.properties.example    # Plantilla commiteada
-│   └── README.md                 # Guía de firma de release
-├── ios/                          # Configuración iOS (Info.plist, entitlements)
-├── web/                          # Index, manifest, icons
-├── linux/ macos/ windows/        # Targets desktop
-├── astro/                        # Marketing site SSR (Astro + Tailwind)
-├── assets/
-│   ├── mock/                     # comujesa_data.json (datos seed)
-│   ├── fonts/                    # DM Sans + IBM Plex Mono (F26 bundled)
-│   ├── achievements.json         # Catálogo de logros
-│   └── branding/                 # Logo
-├── shaders/                      # smoke.frag (shader del fondo)
-├── docs/                         # Documentación viva + tfg/ + historico/
-│   ├── README.md                 # Índice (mapeo TFG)
-│   ├── 00_MAESTRO.md             # Fuente única de verdad
-│   ├── SCALABILITY.md            # Dossier producción
-│   ├── ACCESSIBILITY.md          # Dossier WCAG
-│   ├── ARCHITECTURE.md           # Reglas de arquitectura
-│   ├── MEGA_PLAN_REFINAMIENTO.md
-│   ├── PENDIENTE_PARA_CERRAR.md
-│   ├── PENDIENTES.md             # Cola interna [F<n>]
-│   ├── PLATFORM_SETUP.md
-│   ├── FCM_SETUP.md, FONTS_F26.md, HOME_WIDGETS.md, WEB_SETUP.md
-│   ├── SECURITY_PAT_ROTATION.md, RELEASE_CHECKLIST.md
-│   ├── WEARABLE_NIVEL_1.md, PROPUESTAS_FUTURAS.md
-│   ├── tfg/                      # Memoria académica (01..08)
-│   └── historico/                # Documentos archivados (trazabilidad)
-├── multiagent/                   # Documentación del sistema multiagente IA
+nexto-stop-v2/
+├── lib/                      Código Dart (~260 ficheros)
+│   ├── main.dart             Bootstrap (Env → Hive → Supabase → ProviderScope)
+│   ├── app.dart              MaterialApp.router + theme + locale
+│   ├── core/                 router, theme, utils, observability
+│   ├── data/                 12 entidades con repositorio canonico, cache Hive,
+│   │                         realtime channel manager, push, sync, NFC
+│   ├── features/             27 features con `*_screen.dart`
+│   ├── l10n/                 ARB ES/EN/AR + generated
+│   └── shared/               Widgets reutilizables, models Freezed, providers
+├── test/                     616 tests
 ├── supabase/
-│   ├── migrations/               # 15 migraciones SQL
-│   └── functions/                # Edge Functions (import_gtfs, send_notification)
-├── data/seed/                    # spanish_gtfs_feeds.yaml
-├── test/                         # 175 tests Dart
-├── tool/                         # build.sh, build_watch.sh
-├── tools/                        # migrate_comujesa.dart, seed_operators.dart, scripts JS
-├── pubspec.yaml                  # Dependencias Dart
-├── build.yaml                    # Config codegen
-├── analysis_options.yaml         # strict-casts, strict-raw-types, lints
-├── l10n.yaml                     # Config i18n
-├── .github/workflows/ci.yml      # CI 4 jobs
-├── AGENTS.md                     # Guía operativa para agentes IA
-└── README.md                     # Entrada del repositorio
+│   ├── migrations/           14 migraciónes consecutivas
+│   └── functions/            4 Edge Functions Deno
+├── android/                  Kotlin DSL, signing condicional, ABI splits
+├── ios/                      Info.plist, entitlements
+├── web/                      PWA experimental
+├── docs/
+│   ├── 00_MAESTRO.md         Fuente única de verdad
+│   ├── adr/                  5 ADRs vivos
+│   ├── runbooks/             6 runbooks operativos
+│   ├── historico/            Auditorias y planes archivados
+│   └── tfg/                  Memoria académica (01..08)
+├── tool/                     Scripts Dart y shell (verify_state, contrast, build)
+└── .github/workflows/ci.yml  CI con 7 jobs principales + 2 de seguridad
 ```
-
-### 3.1. Arquitectura de capas
-
-Transitly sigue un patrón de 4 capas por entidad de datos, con
-`lib/data/operator/` como implementación de referencia:
-
-| Capa | Directorio | Responsabilidad |
-|------|-----------|----------------|
-| **Domain** | `domain/` | Interfaz abstracta (`OperatorRepository`) + excepciones tipadas |
-| **Remote** | `remote/` | Implementación Supabase (consultas SQL, Realtime) |
-| **Local** | `local/` | Implementación Hive (caché offline, SWR, guest fallback) |
-| **Mock** | `local/` | Datos mock para modo invitado (`MockDataService`) |
-| **Provider** | (raíz) | Provider Riverpod con selector mock vs real + SWR |
-
-Cada entidad produce 5 ficheros: interfaz abstracta, repositorio
-remoto, repositorio local, repositorio mock y provider. Doce entidades
-siguen este patrón: `operator`, `route`, `stop`, `schedule`, `alert`,
-`incident`, `feedback`, `suggestion`, `feature_request`,
-`notification`, `offline_region` y `export`.
-
-#### Caché local (Hive) — 16 cajas
-
-```
-routes · stops · schedules · operators · user_preferences
-offline_regions · alerts · incidents · route_feedback
-route_suggestions · feature_requests · notifications
-editor_drafts · pending_actions · dead_letter_actions
-auth_session_meta
-```
-
-Inicializadas en `lib/data/cache/hive_init.dart` (adapters registrados
-en `lib/data/cache/hive_adapters.dart`). Si una caja está corrupta, se
-borra y se recrea automáticamente al arranque.
-
-#### Features — 27 módulos
-
-```
-accessible_buses · admin · appearance · auth · bus_estimation
-city_picker · contributions · debug · driver · error · feedback
-home · incidents · management · map · notifications · offline
-onboarding · operator_admin · privacy · profile · route_detail
-search · splash · stop_detail · suggestions · widgets_native
-```
-
-Cada feature contiene al menos un `*_screen.dart` (punto de entrada
-navegable) y widgets internos propios. Los widgets compartidos entre
-≥2 features viven en `lib/shared/widgets/` (27 widgets: `GlassCard`,
-`StaggerList`, `RouteCard`, `TransitButton`, etc.).
-
-#### Push notifications
-
-El módulo `lib/data/push/` contiene:
-- `firebase_setup.dart` — inicialización de Firebase (condicional, sin
-  crash si `firebase_options.dart` no existe).
-- `push_service.dart` — registro de tokens FCM en `device_tokens` vía
-  Supabase.
-
-Las notificaciones push se envían desde la Edge Function
-`send_notification` (invocada por triggers SQL vía `pg_net`).
 
 ---
 
-## 4. Base de datos (Supabase)
+## 6. Backend Supabase
 
-### 4.1. Migraciones
+### 6.1. Vinculacion con el proyecto
 
 ```bash
-# Conectar al proyecto remoto (una vez)
 supabase login
-supabase link --project-ref <tu-ref>
+supabase link --project-ref <ref>
+```
 
-# Aplicar migraciones
+### 6.2. Aplicación de migraciónes
+
+```bash
 supabase db push
-
-# Listar estado
 supabase migration list
 ```
 
-15 ficheros en `supabase/migrations/`:
+Las catorce migraciónes consecutivas (`001_init.sql` hasta `016_data_exports.sql`, sin que existan `014` ni `015` tras la consolidacion documentada en la incidencia de 04/05/2026) cubren: schema base, RLS default-deny, parches de `search_path`, storage, RPCs, helpers de votos, helpers de invitación, triggers de notificaciones, tokens FCM, triggers push, auditoria extendida, reputación, exportacion offline y exportaciones GDPR.
 
-- `001_init.sql` — schema base (operadores, paradas, rutas, schedules,
-  perfiles, posiciones).
-- `002_rls.sql` — RLS default-deny + funciones helper (`is_admin`,
-  `is_moderator_or_admin`).
-- `003_rls_fixes.sql` — patches a `search_path` y revocación de
-  permisos a `anon`.
-- `004_storage.sql` — buckets para avatares y adjuntos.
-- `005_functions.sql` — RPCs (búsqueda geográfica, votos).
-- `006_vote_helpers.sql` — helpers para sistema de votos.
-- `007_invitation_helpers.sql` — códigos de invitación.
-- `008_notification_triggers.sql` — triggers de notificaciones.
-- `009_push_tokens.sql` — tabla `device_tokens` para FCM.
-- `010_push_triggers.sql` — triggers SQL para push vía `pg_net`.
-- `011_audit_log_extras.sql` — logging de auditoría extendido.
-- `012_reputation.sql` — sistema de reputación de usuarios.
-- `013_offline_export.sql` — exportación de datos para modo offline.
-- `016_data_exports.sql` — exportaciones GDPR (solicitudes de datos).
+### 6.3. Despliegue de Edge Functions
 
-### 4.2. Tablas principales
-
-| Tabla | Descripción |
-|-------|-------------|
-| `profiles` | 1:1 con `auth.users`; incluye `role` (`passenger`/`driver`/`operator_admin`/`moderator`/`admin`) |
-| `operators` | Operadores de transporte (COMUJESA + 9 más definidos) |
-| `routes`, `stops`, `route_stops`, `schedules` | Modelo GTFS adaptado |
-| `bus_positions` | Posiciones GPS de buses (Realtime activo) |
-| `incidents`, `route_feedback`, `route_suggestions`, `feature_requests` | Contribuciones comunitarias |
-| `notifications`, `device_tokens` | Notificaciones in-app + FCM |
-| `privacy_consents`, `data_exports`, `data_deletion_requests` | GDPR |
-
-### 4.3. Row-Level Security (RLS)
-
-- **Default-deny activo** en todas las tablas con PII.
-- Roles: `anon` (lectura limitada), `authenticated` (lectura/escritura
-  bajo policy), `service_role` (solo backend / Edge Functions).
-- Políticas verificables vía Supabase Dashboard → Database → Policies.
-
-### 4.4. Edge Functions
-
-Las 2 funciones en Deno viven en `supabase/functions/`:
+Las cuatro funciones desplegadas son `delete_user`, `import_gtfs`, `purge_old_data` y `send_notification`. Tres se despliegan con verificación de JWT y la cuarta (`import_gtfs`) sin verificación, porque se invoca desde una cron interna autenticada por `service_role`:
 
 ```bash
-# Desplegar
-supabase functions deploy import_gtfs
-supabase functions deploy send_notification
-
-# Probar localmente
-supabase functions serve import_gtfs
+supabase functions deploy delete_user --verify-jwt
+supabase functions deploy send_notification --verify-jwt
+supabase functions deploy purge_old_data --verify-jwt
+supabase functions deploy import_gtfs --no-verify-jwt
 ```
 
-- `import_gtfs`: requiere rol admin/operator_admin; descarga ZIP GTFS,
-  parsea CSV y hace upsert en `operators`/`stops`/`routes`/`schedules`.
-  Validación anti-SSRF con DNS A/AAAA y `redirect:"manual"`.
-- `send_notification`: invocada por triggers SQL (`pg_net`); valida que
-  el invocador sea `service_role` (tiempo constante), aplica rate-limit
-  best-effort, envía push FCM HTTP v1 con OAuth JWT firmado.
+### 6.4. Secretos en Supabase
+
+```bash
+supabase secrets set FCM_SERVICE_ACCOUNT_JSON="$(cat fcm-service-account.json)"
+supabase secrets set SENTRY_DSN="https://..."
+supabase secrets set ALLOWED_ORIGINS="https://transitly.app,https://app.transitly.app"
+```
+
+### 6.5. Cron interno
+
+Para `purge_old_data` y `delete_user_worker` se habilita `pg_cron` (requiere Supabase Pro) y se programan ejecuciónes diarias con la zona horaria del proyecto.
 
 ---
 
-## 5. Build y release
+## 7. CI/CD
 
-### 5.1. Android — debug
+El workflow `.github/workflows/ci.yml` define **siete jobs principales** ejecutados en cada push y en cada pull request hacia `master`:
 
-```bash
-flutter run --debug
-```
+1. **Flutter Analyze** — bloqueo total ante cualquier error, warning o info.
+2. **Flutter Test** — `flutter test --coverage`, validacion de umbral global y upload a Codecov.
+3. **Build Web (release)** — compilacion del target web.
+4. **Build Android APK / AAB** — APK con `--split-per-abi`, `--obfuscate` y `--split-debug-info`, validacion del budget de tamano, archivado de symbol files y firma del AAB.
 
-### 5.2. Android — release APK
+A estos se anaden dos jobs auxiliares: **Gitleaks** (escaneo de secretos en el repositorio) y **Semgrep** (SAST con reglas locales en `.semgrep/rules.yaml`).
 
-```bash
-flutter build apk --release \
-  --dart-define=SUPABASE_URL=... \
-  --dart-define=SUPABASE_ANON_KEY=...
-# Output: build/app/outputs/flutter-apk/app-release.apk (~73 MB)
-```
+### 7.1. Secrets necesarios en GitHub
 
-**Firma:** el `build.gradle.kts` detecta si `android/key.properties`
-existe. Si sí, firma con la keystore real (release publicable); si no,
-cae al keystore de debug (APK no publicable). Pasos para keystore real
-en `android/README.md`:
+- `ANDROID_KEYSTORE_BASE64`
+- `ANDROID_KEY_PROPERTIES_BASE64`
+- `GOOGLE_SERVICES_JSON_BASE64`
+- `GOOGLE_SERVICES_INFO_PLIST_BASE64`
+- `SUPABASE_ACCESS_TOKEN`
+- `SUPABASE_URL`, `SUPABASE_ANON_KEY`
+- `SENTRY_AUTH_TOKEN`
+- `POSTHOG_API_KEY`
+- `CODECOV_TOKEN`
 
-```bash
-# Generar keystore
-keytool -genkey -v -keystore android/upload-keystore.jks \
-  -keyalg RSA -keysize 2048 -validity 10000 -alias upload
+### 7.2. Releases con `release-please`
 
-# Crear android/key.properties (gitignored) con:
-#   storePassword=...
-#   keyPassword=...
-#   keyAlias=upload
-#   storeFile=upload-keystore.jks
-
-# Verificar firma
-jarsigner -verify -verbose -certs \
-  build/app/outputs/flutter-apk/app-release.apk | head -20
-```
-
-### 5.3. Android — App Bundle (Play Store)
-
-```bash
-flutter build appbundle --release --dart-define=...
-# Output: build/app/outputs/bundle/release/app-release.aab
-```
-
-### 5.4. iOS — release IPA
-
-```bash
-flutter build ios --release --dart-define=...
-# Abrir en Xcode: Product → Archive → Distribute App
-```
-
-Requiere certificado Apple Developer y provisioning profile.
-
-### 5.5. Web
-
-```bash
-flutter build web --release --dart-define=...
-# Output: build/web/
-```
-
-Para integrar con el sitio Astro, copiar `build/web/` al directorio
-público de Astro o servir como subruta.
-
-### 5.6. Desktop (Linux/macOS/Windows)
-
-```bash
-flutter build linux --release
-flutter build macos --release   # solo en macOS
-flutter build windows --release # solo en Windows
-```
+El flujo de release es: anotacion de cambios con Conventional Commits, tag `vX.Y.Z`, `release-please` abre PR de release, al fusionarse se pública GitHub Release con el `CHANGELOG.md` actualizado y se adjuntan los artefactos (APK por ABI, AAB firmado, debug-info).
 
 ---
 
-## 6. CI/CD (GitHub Actions)
+## 8. Mantenimiento rutinario
 
-Workflow en `.github/workflows/ci.yml` con 4 jobs paralelos en cada
-push y PR a `master`:
-
-1. **Flutter Analyze** — `flutter analyze` (debe ser 0 issues).
-2. **Flutter Test** — `flutter test --coverage` + upload de
-   `coverage/lcov.info` como artifact.
-3. **Build Web (release)** — `flutter build web --release`.
-4. **Build Android APK** — `flutter build apk --release` con
-   `--split-per-abi` y `--dart-define` desde secrets.
-
-**Secrets requeridos en GitHub** (Settings → Secrets and variables → Actions):
-
-- `SUPABASE_URL`, `SUPABASE_ANON_KEY` — para builds reales.
-- Para firma de release (cuando se configure): `KEYSTORE_BASE64`,
-  `KEY_STORE_PASSWORD`, `KEY_PASSWORD`, `KEY_ALIAS`. Step que
-  reconstruya `upload-keystore.jks` y `key.properties` antes del build.
-
----
-
-## 7. Mantenimiento operativo
-
-### 7.1. Actualizar dependencias
+### 8.1. Actualizacion mensual de dependencias
 
 ```bash
-flutter pub outdated      # ver pendientes
-flutter pub upgrade       # bump menor + parche
-tool/build.sh             # regenerar codegen si cambian modelos
-flutter analyze && flutter test  # verificar
+flutter pub outdated
+flutter pub upgrade --major-versións
+flutter pub run build_runner build --delete-conflicting-outputs
+flutter analyze && flutter test
 ```
 
-Actualizaciones mayores (Riverpod 3, Sentry 9, etc.) están fijadas en
-`pubspec.yaml` por decisión consciente — actualizarlas requiere
-migración propia documentada como deuda en
-`docs/MEGA_PLAN_REFINAMIENTO.md`.
+Las actualizaciones mayores (Riverpod 3, Sentry 9, etc.) se ejecutan en rama separada con migración documentada en `docs/MEGA_PLAN_REFINAMIENTO.md`.
 
-### 7.2. Añadir nuevo operador
+### 8.2. Rotacion de claves
 
-1. Añadir entrada en `data/seed/spanish_gtfs_feeds.yaml` con `slug`,
-   `name`, `region`, `gtfs_url`.
-2. Ejecutar `dart tools/seed_operators.dart` (inserta la fila en
-   `operators`).
-3. Ejecutar la Edge Function `import_gtfs` con el slug del operador.
+La `anon key` y los PAT de Supabase se rotan cada **seis meses**, siguiendo el procedimiento de `docs/SECURITY_PAT_ROTATION.md`. La rotacion implica generar la nueva clave, actualizar secrets en GitHub, regenerar el build de release y revocar la clave anterior.
 
-### 7.3. Añadir nueva entidad con repositorio
+### 8.3. Auditorias trimestrales
 
-Seguir el patrón canónico de `lib/data/operator/` (referencia):
+Cada trimestre se ejecutan tres scripts de verificación:
 
-1. `lib/data/<entity>/domain/<entity>_repository.dart` — interfaz
-   abstracta + `<Entity>RepositoryException` tipado.
-2. `lib/data/<entity>/remote/<entity>_remote_repository.dart` —
-   implementación Supabase.
-3. `lib/data/<entity>/local/<entity>_local_repository.dart` —
-   implementación Hive.
-4. `lib/data/<entity>/local/<entity>_mock_repository.dart` — fallback
-   modo guest.
-5. `lib/data/<entity>/<entity>_repository_provider.dart` — Provider
-   Riverpod con SWR y selector mock vs real.
+- `tool/verify_state.sh` — confirma cifras del anchor.
+- `tool/check_no_hardcoded.sh` — busca strings hardcodeados fuera de l10n.
+- `dart run tool/contrast_check.dart` — válida contraste WCAG AA de todas las paletas.
 
-### 7.4. Añadir nueva clave de localización
+### 8.4. Backup de la keystore Android
 
-1. Añadir en `lib/l10n/app_es.arb` (template).
-2. Añadir en `lib/l10n/app_en.arb` y `lib/l10n/app_ar.arb` (traducción).
-3. Si tiene placeholders, declarar `@key` con `placeholders` en
-   `app_es.arb`.
-4. `flutter gen-l10n` para regenerar.
-5. Usar como `AppLocalizations.of(context).<key>(args)`.
-
-### 7.5. Rotar PAT de Supabase
-
-Procedimiento en `docs/SECURITY_PAT_ROTATION.md`. Resumen:
-
-1. Generar nuevo PAT en `supabase.com/dashboard/account/tokens` con
-   alcance mínimo.
-2. Sustituir en `.mcp.json` local (gitignored).
-3. Revocar el PAT viejo en el dashboard.
-
-### 7.6. Backup y restauración
-
-- **Datos Supabase:** `supabase db dump > backup.sql`.
-- **Hive local:** los boxes están en el directorio de aplicación del
-  dispositivo; no requieren backup manual (se reconstruyen del backend).
-- **Código:** repositorio Git con CI que valida cada push.
+La keystore de release es irreemplazable: una perdida obliga a públicar la app como una nueva entrada en Play Store. Por ello se guarda en **tres ubicaciónes independientes** (gestor de secretos personal, copia cifrada offline y backup en almacenamiento frio), y nunca se elimina del repositorio personal de claves.
 
 ---
 
-## 8. Solución de problemas frecuentes
+## 9. Runbooks operativos
 
-| Problema | Solución |
-|----------|----------|
-| `flutter pub get` falla con "SDK constraint" | Asegurar Flutter 3.35+; alinear con `analysis_options.yaml` y `pubspec.yaml` |
-| `flutter build apk --release` falla con "Duplicate class androidx.work" | Causa: workmanager versión antigua. Solución: ya eliminado en este proyecto; si vuelve a aparecer, no añadirla. |
-| "Core library desugaring required" | Confirmar `isCoreLibraryDesugaringEnabled = true` y dependencia `coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")` en `build.gradle.kts` |
-| Gradle daemon "disappeared unexpectedly" | Reducir heap en `android/gradle.properties` a `-Xmx4G`, añadir `org.gradle.daemon=false` |
-| `flutter analyze` rojo con `info` triviales | Para libs externos: añadir `// ignore: lint_name` con justificación |
-| Tests fallan con `Supabase.instance` no inicializado | `pumpApp` debe llamar al setup mock en `test/helpers/pump_app.dart` |
-| App muestra `EnvErrorScreen` al arrancar | Variables `SUPABASE_URL` o `SUPABASE_ANON_KEY` faltan en `--dart-define` |
-| Lector de pantalla anuncia en español con app en inglés | Asegurar que `Semantics(label: ...)` usa `AppLocalizations.of(context).<key>`, no string literal |
-| Sentry/PostHog no reportan crashes/eventos | El usuario debe haber otorgado consentimiento en Privacidad → toggle correspondiente |
+Los seis runbooks de `docs/runbooks/` describen incidentes habituales en producción. Resumen por archivo:
+
+- **`disaster_recovery.md`.** Procedimiento de recuperacion ante perdida de datos o de proyecto Supabase: restaurar desde el último `pg_dump` validado, comprobar consistencia de RLS y notificar a usuarios via push y banner in-app.
+- **`error_budget_policy.md`.** Define el error budget mensual (objetivo 99,5 % de exito en arranques en frio y 99,0 % en envio de push) y la política de freeze de releases cuando se consume el 75 % del budget.
+- **`migration_rollback.md`.** Pasos para revertir una migración erronea: marcar como `down` la migración en `supabase/migrations/_meta`, aplicar el inverso manual y reanunciar el estado al equipo. Incluye el aprendizaje de la incidencia 04/05/2026.
+- **`push_down.md`.** Diagnostico cuando FCM deja de enviar: validar el JWT firmado, comprobar la cuota del proyecto Firebase, verificar el ratio de errores en `device_tokens` y forzar reenvio del token desde la app.
+- **`sentry_spike.md`.** Procedimiento ante un pico de errores en Sentry: bisecar la versión implicada con `release-please`, aplicar un kill-switch via feature flag remoto si procede y abrir incidencia con plantilla postmortem.
+- **`supabase_down.md`.** Actuacion ante caida del backend: activar banner offline en la app (ya cableado), confirmar el estado en `status.supabase.com` y, si la caida supera quince minutos, comúnicar a usuarios y replanificar la sesión de demo.
 
 ---
 
-## 9. Monitorización y observabilidad
+## 10. Resolucion de problemas frecuentes
 
-- **Sentry** (`SENTRY_DSN` configurado) — issues, eventos, alertas.
-- **PostHog** (`POSTHOG_API_KEY` configurado) — analítica de producto.
-- **Supabase Dashboard** — logs de Edge Functions, queries lentas, RLS
-  policies.
-- **GitHub Actions** — historial de builds, artefactos de cobertura.
-
-A producción a escala faltan SLO declarados, tracing distribuido y
-alertas (PROD-7 del plan vivo).
+| Sintoma | Causa probable | Solucion |
+|---------|----------------|----------|
+| Firebase `initializeApp` falla en arranque. | Falta `firebase_options.dart` o `google-services.json`. | Ejecutar `flutterfire configure --project=transitly-prod`. Si no se desea push, dejar el degradado silencioso del `firebase_setup.dart`. |
+| RLS responde con error `42501`. | Política de Row Level Security denegada por falta de rol. | Revisar `is_admin()`, `is_moderator_or_admin()` y el campo `role` en `profiles`. |
+| `flutter build apk --release` falla con duplicado `androidx.work`. | Reintroduccion accidental de `workmanager`. | Eliminar el plugin del `pubspec.yaml`. Esta es la incidencia historica de 22/04/2026. |
+| Los tests de `integration_test` fallan en CI. | Emulador inadecuado o falta `integration_test` en `dev_dependencies`. | Usar emulador Pixel 6 API 34 y confirmar la dependencia. |
+| Las teselas del mapa no aparecen sin red. | `FMTC StoreDirectory` no inicializado en el arranque. | Inicializar `FMTCStore` antes de `runApp` en `main.dart`. |
+| Hive lanza `HiveError: Cipher mismatch`. | Se abrio un box antes de inicializar `flutter_secure_storage`. | Asegurar el orden: `SecureStorage` → `HiveAesCipher` → `Hive.openBox`. |
+| Sentry no captura nada en release. | Uso de `print` en lugar de `AppLogger.error`. | Sustituir `print` por `AppLogger.error(...)`; en release los breadcrumbs se anaden fuera del bloque `kDebugMode`. |
 
 ---
 
-## 10. Referencias
+## 11. Versiónado y release notes
 
-- `docs/00_MAESTRO.md` — fuente única de verdad.
-- `docs/ARCHITECTURE.md` — reglas de arquitectura.
-- `docs/PLATFORM_SETUP.md`, `docs/FCM_SETUP.md`, `docs/HOME_WIDGETS.md`,
-  `docs/WEB_SETUP.md` — guías por plataforma/feature.
-- `docs/SECURITY_PAT_ROTATION.md` — rotación de PAT.
-- `docs/RELEASE_CHECKLIST.md` — checklist pre-release.
-- `AGENTS.md` — guía operativa para agentes (sesiones de desarrollo
-  asistido).
+El proyecto sigue **SemVer** (`MAJOR.MINOR.PATCH`) y aprovecha **Conventional Commits** como entrada para `release-please`. El flujo es:
+
+1. Todos los commits hacia `master` usan los tipos `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`, `perf:` o `build:`.
+2. `release-please` mantiene una pull request de release abierta con la versión siguiente y el `CHANGELOG.md` autogenerado.
+3. Al fusionar la PR, se crea el tag `vX.Y.Z` y la `GitHub Release` con los artefactos adjuntos.
+4. El `CHANGELOG.md` queda commiteado y trazable.
+
+---
+
+## 12. Referencias internas
+
+- `docs/00_MAESTRO.md` — fuente única de verdad de las cifras del proyecto.
+- `docs/adr/` — cinco ADRs vivos.
+- `docs/runbooks/` — seis runbooks operativos.
+- `docs/MEGA_PLAN_REFINAMIENTO.md` — plan vivo con clasificacion P0-P3.
+- `docs/EXTERNAL_BLOCKERS.md` — diecinueve bloqueadores externos al alcance individual.
+- `docs/SECURITY_PAT_ROTATION.md` — rotacion de PAT y claves anon.
+- `docs/RELEASE_CHECKLIST.md` — comprobaciones previas al release.
+- `docs/historico/AUDIT_2026_05_22.md` — auditoria deep-dive con trece sub-agentes.
+- `docs/historico/PLAN_ACCION_REMEDIACION_v2.md` — plan v2 en seis fases.
+- `AGENTS.md` — guia operativa para sesiónes de desarrollo asistido por IA.
 - `android/README.md` — flujo de firma de release y Play App Signing.

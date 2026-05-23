@@ -49,7 +49,7 @@ Verified quality metrics (2026-05-22):
 | Metric | Value |
 |--------|-------|
 | `flutter analyze` | **0 issues** |
-| `flutter test` | **201 / 201 passing** |
+| `flutter test` | **616 / 616 passing** |
 | Line coverage | **~25,5 %** — known debt |
 | `flutter build apk --release` | **OK** (73,5 MB) |
 | CI GitHub Actions | **4 jobs green** (Analyze, Test, Build Web, Build Android APK) |
@@ -117,7 +117,7 @@ TAG`).
 ## Tests
 
 ```bash
-flutter test                       # 175 tests
+flutter test                       # 616 tests
 flutter test --coverage            # writes coverage/lcov.info (24,30 % lines)
 ```
 

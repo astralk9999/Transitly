@@ -1,347 +1,85 @@
 # 02 — Diseño del Proyecto
 
-**Proyecto:** Transitly
-**Estado verificado:** `master @ 3a31fb3` · 28/28 fases · `flutter analyze` 0 issues · 175/175 tests · cobertura 24,30 % · APK release 73,5 MB · CI verde
+**Proyecto:** Transitly (repositorio `nexto-stop-v2`).
+**Estado verificado:** `master @ 85b81a1` (23 de mayo de 2026); **616 tests** declarados pasando, **14 migraciones SQL** consecutivas (`001`–`013` más `016`), **27 features**, **4 Edge Functions** desplegadas, **5 ADRs**, **6 runbooks**, **73 documentos** en `docs/`, **171 ítems** del mega plan cerrados sobre 190 (90,0 %), **628 claves ARB** en tres locales (ES/EN/AR). Scorecard maestro: **TFG 8,9/10 · Producción 6,0/10** (`docs/00_MAESTRO.md` línea 11).
 
 ---
 
-## 1. Información técnica de la aplicación
+## 1. Información técnica recopilada
 
-### 1.1. Visión general
+Transitly se sustenta sobre un conjunto de **estándares abiertos** y **especificaciones normativas** que se han estudiado y consolidado antes de iniciar la fase de implementación. El estándar de datos estáticos es **GTFS** (General Transit Feed Specification), formato canónico publicado por Google y la fundación MobilityData para describir redes de transporte público; el feed estático contiene agencias, rutas, paradas, viajes y calendarios. Su complemento dinámico, **GTFS-Realtime**, expone posiciones de vehículo, predicciones de paso y alertas de servicio mediante mensajes Protobuf consumibles vía HTTP; no se integra aún por no estar disponible en COMUJESA, pero el modelo de datos lo contempla.
 
-Transitly es una **aplicación multiplataforma de transporte público en
-tiempo real**. Una sola base de código produce binarios para:
+La cartografía se apoya en **OpenStreetMap** mediante capas vectoriales servidas por proveedores compatibles (MapTiler como primario, CartoDB como respaldo). La interoperación con la tarjeta de transporte se realiza sobre **NFC Mifare Classic 1K**, tecnología empleada por el Consorcio de Transportes de Andalucía y leída en modo solo lectura, lo que evita la necesidad de certificación bancaria. Las notificaciones se vehiculan por **Firebase Cloud Messaging** sobre la API HTTP v1 con autenticación OAuth JWT. La seguridad a nivel de fila se delega en el motor de **Row Level Security de PostgreSQL** con política DENY-by-default.
 
-- **Android** (APK release verificado, 73,5 MB).
-- **iOS** (`flutter build ios` configurado; requiere keystore Apple para
-  publicación).
-- **Web** (`flutter build web` ejecutado en CI en cada push).
-- **Linux / macOS / Windows** (targets soportados aunque no priorizados).
-
-La capa de datos es **mock-first con backend Supabase opcional**: si
-existe sesión autenticada, los repositorios consumen Supabase; si no, se
-sirven datos mock (operador piloto COMUJESA) para que la app sea
-operativa sin red.
-
-### 1.2. Stack tecnológico (versiones verificadas)
-
-| Capa | Tecnología | Justificación |
-|------|-----------|---------------|
-| UI / runtime | **Flutter 3.9.2+ / Dart 3** con `strict-casts` y `strict-raw-types` | Multiplataforma real (móvil, web, desktop) desde un solo codebase; estable y maduro |
-| Gestión de estado | **Riverpod 2.6.1** (con `autoDispose` en streams/timers/futures) | Compile-safe, testeable, sin dependencia de `BuildContext` |
-| Navegación | **go_router 17.2** con `StatefulShellRoute` + `redirect` por ruta | Declarativa, deep-linking, guards por rol |
-| Modelos | **freezed 3.x + json_serializable 6.14** | Inmutabilidad, `copyWith`, igualdad por valor, serialización |
-| Backend principal | **Supabase** (`supabase_flutter 2.8`) | PostgreSQL + Auth + RLS + Realtime + Storage + Edge Functions |
-| Migraciones SQL | 13 migraciones en `supabase/migrations/` | RLS default-deny; `search_path` fijado en todas las `SECURITY DEFINER` |
-| Edge Functions | 2 (`import_gtfs`, `send_notification`) en Deno | Anti-SSRF con resolución DNS, validación de invocador, rate-limit |
-| Caché local | **Hive 2.2** + `hive_flutter` | NoSQL embebido, rápido; con `live_recorder_draft` cifrado pendiente |
-| Cola offline | `OfflineSyncService` propio con backoff exponencial | Drenado FIFO, dead-letter tras 10 reintentos |
-| Mapas | **flutter_map 7.0** + **MapTiler** + **FMTC** offline | Tiles externos sin lock-in con Google |
-| NFC | `nfc_manager 3.5` (Mifare Classic) | Lectura del saldo de la *Tarjeta del Consorcio Andaluz* |
-| Push | **Firebase Messaging** + `flutter_local_notifications` | FCM HTTP v1 desde Edge Function con OAuth JWT |
-| Telemetría | **Sentry 8.14** + **PostHog 5.24** | Crash reporting y producto, con consent-gating GDPR |
-| Tipografía | **DM Sans + IBM Plex Mono** bundleadas como assets locales (F26) | Privacidad: sin petición a Google en runtime |
-| Internacionalización | `flutter_localizations` + ARB | **es / en / ar (RTL)**, 343 claves por locale |
-| Tests | `flutter_test` + `mocktail` | 175 tests pasando |
-| CI/CD | **GitHub Actions** con 4 jobs | Analyze, Test, Build Web, Build Android APK |
-| Marketing | **Astro** SSR en `astro/` | Páginas estáticas SEO-friendly |
-
-### 1.3. Arquitectura de capas (resumen)
-
-```
-lib/
-├── main.dart           # Bootstrap: Env → Hive → Supabase → MockData → ProviderScope
-├── app.dart            # MaterialApp.router (themeMode + locale + go_router)
-├── core/
-│   ├── router/         # go_router + redirect_guards
-│   ├── theme/          # transit_colors, transit_typography, transit_spacing, transit_animations
-│   └── utils/          # AppLogger, sentry_setup, uuid, helpers
-├── data/               # Capa más profunda; NO depende de features/
-│   ├── auth/           # Excepción documentada al patrón (ver AGENTS.md §Arquitectura)
-│   ├── mock/           # MockDataService + MockRealtimeService (con pause/resume por lifecycle)
-│   ├── cache/          # Hive adapters + boxes + HiveInit
-│   ├── nfc/            # NfcCardService + i18n de errores
-│   ├── <entity>/       # 5 ficheros: abstract, remote, local, mock, repository_provider
-│   └── sync/           # PendingAction, PendingActionsQueue, OfflineSyncService, RealtimeChannelManager
-├── features/           # Una carpeta por dominio funcional (feature-first)
-│   └── <feature>/
-│       ├── *_screen.dart
-│       ├── widgets/
-│       └── *_controller.dart (opcional)
-├── l10n/               # ARB es/en/ar + generated/
-└── shared/
-    ├── models/         # Entidades de dominio (27+ con @freezed)
-    ├── providers/      # Estado global Riverpod (autoDispose en streams/timers críticos)
-    └── widgets/        # Reusables (≥2 features): TransitButton, Pressable, GlassCard…
-```
-
-Detalle completo en `docs/ARCHITECTURE.md`.
-
-### 1.4. Modelo de datos (entidades principales)
-
-- **User / Profile** — id, display_name, email, **role**
-  (`passenger` / `driver` / `operator_admin` / `moderator` / `admin`),
-  reputación, idioma. La fuente real es `profiles` en Supabase; el guard
-  del router consume el rol real con fallback gradual a mock.
-- **Operator** — id, slug, nombre, región, web, urls GTFS, bounding box
-  geográfico. Pilot: COMUJESA (Jerez).
-- **Route** — id, operador, código, nombre, color, polyline, paradas
-  ordenadas por sentido, origen del dato (`official` / `community`).
-- **Stop** — id, código, nombre, lat/lng (PostGIS), rutas que pasan.
-- **Schedule** — ruta, parada, hora salida, día de la semana, dirección.
-- **BusLocation** — ruta, lat/lng, timestamp, fuente
-  (`gps_driver` / `simulated` / `interpolated`).
-- **Incident** / **RouteFeedback** / **RouteSuggestion** —
-  contribuciones comunitarias con votación, estado y autor.
-- **Notification** — in-app + canal Supabase Realtime + FCM push.
-- **PendingAction** — encolada cuando falla la red; drenada offline.
-
-### 1.5. Estado de F13 — Realtime real
-
-5 de 12 repositorios `remote/` tienen suscripción Supabase Realtime
-funcional vía `RealtimeChannelManager` compartido (`lib/data/sync/`) con
-backoff exponencial + jitter:
-
-- `bus_location` (con su propio `BusPositionChannelManager` para filtros
-  por `route_id`).
-- `stop`, `route`, `incident`, `route_feedback` (manager compartido).
-
-Los 7 restantes siguen patrón snapshot + refresh manual; decidir caso a
-caso si necesitan vivo (`route_suggestion`, `feature_request`,
-`operator`, `schedule`, `user_preferences`, `offline_region`,
-`notification` — esta última tiene Realtime fuera del repo, en
-`notification_stream_provider`).
+En cuanto al marco normativo, el proyecto se diseña en conformidad con la **WCAG 2.2 nivel AA**, con el **Reglamento (UE) 2016/679 (RGPD)** y su transposición nacional **LOPDGDD (Ley Orgánica 3/2018)**, con el **Real Decreto 1112/2018** sobre accesibilidad del sector público, y con el **Reglamento (UE) 2022/2065 (Digital Services Act)** en lo relativo a obligaciones de transparencia para plataformas con contenido generado por usuarios.
 
 ---
 
-## 2. Objetivos funcionales y no funcionales
+## 2. Objetivos funcionales
 
-### 2.1. Objetivos funcionales (qué debe hacer la aplicación)
+Se han fijado **doce objetivos funcionales** con sus respectivos criterios de aceptación verificables.
 
-Marcados ✅ los cerrados a fecha actual:
-
-| ID | Objetivo | Estado |
-|----|----------|:--:|
-| F-1 | Autenticación email/contraseña + magic link + activación por código de conductor | ✅ |
-| F-2 | Modelo de roles con guard real del router consumiendo `profiles.role` de Supabase | ✅ |
-| F-3 | Importación masiva GTFS multi-operador (`import_gtfs` Edge Function) | ✅ |
-| F-4 | Detección geográfica y *lazy loading* de operador relevante | ✅ |
-| F-5 | Mapa con filtros (oficial/comunitario, incidencias, capacidad) | ✅ |
-| F-6 | Editor de rutas comunitarias (wizard de varios pasos + autosave en `live_recorder_draft`) | ✅ |
-| F-7 | Grabación GPS en vivo para nuevas rutas (driver) | ✅ |
-| F-8 | Estimación de posición de bus por horario cuando no hay vivo | ✅ |
-| F-9 | Tracking GPS del conductor en vivo + canal Realtime | ✅ |
-| F-10 | Sistema de contribuciones: incidencias, feedback, sugerencias, votos | ✅ |
-| F-11 | Panel de administración (operadores, usuarios, moderación) | ✅ |
-| F-12 | Sistema de reputación: rangos, logros, progreso | ✅ |
-| F-13 | NFC lectura saldo Tarjeta del Consorcio Andaluz | ✅ |
-| F-14 | Mapas offline (FMTC) | ✅ |
-| F-15 | Notificaciones push (FCM + in-app + quiet hours) | ✅ |
-| F-16 | Telemetría (Sentry + PostHog) con consent-gating GDPR | ✅ |
-| F-17 | Privacidad GDPR: consents, export, deletion con plazo de 30 días | ✅ |
-| F-18 | Web SSR (Astro) + widgets nativos Android/iOS | ✅ |
-
-### 2.2. Objetivos no funcionales (cómo debe comportarse)
-
-| Categoría | Objetivo | Estado real |
-|-----------|----------|-------------|
-| **Rendimiento** | Arranque < 2 s en frío | Mediable; sin perf tests automatizados aún |
-| **Rendimiento** | 60 fps en mapa con gestos | Sin perf tests; `RepaintBoundary` ausente en `features/` — deuda |
-| **Offline** | Funcionalidad básica sin red | ✅ (caché Hive + cola offline + tiles FMTC) |
-| **Escalabilidad** | Soporte multi-operador con RLS | Arquitectura preparada; ~9 operadores no poblados |
-| **Seguridad** | RLS default-deny + `search_path` SECURITY DEFINER | ✅ verificado en migraciones |
-| **Seguridad** | Sin secretos en bundle | ✅ `.env` removido de assets; `Env` lee `--dart-define` |
-| **Accesibilidad** | WCAG 2.2 AA *parcial / en progreso* — los fundamentos cerrados (Pressable 48 dp, textScaler del SO, Semantics localizados, fuentes locales, contraste configurable, daltonismo, dislexia, reduce-motion, RTL/árabe) | Verificado en código; **falta paso real con TalkBack/VoiceOver** para defender AA pleno (ver `docs/ACCESSIBILITY.md`) |
-| **i18n** | Múltiples idiomas | ✅ es / en / ar (RTL), 343 claves por locale |
-| **Privacidad** | GDPR-compliant | ✅ consent-gating real; revocación efectiva en caliente; export + deletion vía `data_deletion_requests` |
-| **Testabilidad** | Tests reproducibles | ✅ 175 tests, sin red, sin tiempo real (`fake_async` donde aplica) |
-| **Mantenibilidad** | `flutter analyze` siempre a 0 | ✅ verificado en cada commit y CI |
-
-### 2.3. Casos de uso clave
-
-1. **Pasajero anónimo (guest)**: abre la app, ve el mapa de Jerez, busca
-   una línea, comprueba el próximo bus simulado/estimado, lee el saldo de
-   su tarjeta NFC, todo sin registrarse.
-2. **Pasajero registrado**: además de lo anterior, contribuye incidencias,
-   vota sugerencias, recibe notificaciones push, configura preferencias
-   de accesibilidad sincronizadas.
-3. **Conductor**: introduce su código de invitación, activa modo
-   conductor para su ruta, su posición se publica al canal Realtime de la
-   ruta.
-4. **Admin / operator_admin**: gestiona operadores, modera incidencias y
-   sugerencias, importa feeds GTFS desde URL pública.
+1. **Consulta de rutas, paradas y horarios** del operador piloto COMUJESA; aceptación: el listado completo se renderiza en menos de un segundo desde caché Hive.
+2. **Visualización del autobús en mapa con estimación de posición**; aceptación: la posición se interpola a partir del horario y de la posición real del conductor cuando esta existe en el canal Realtime.
+3. **Lectura del saldo de la tarjeta NFC del Consorcio Andaluz** mediante Mifare Classic; aceptación: el saldo se muestra en menos de tres segundos tras el contacto físico.
+4. **Reporte de incidencias** geolocalizadas con votación de la comunidad; aceptación: la incidencia se persiste en `incidents` con su geometría PostGIS y se replica vía Realtime.
+5. **Feedback sobre rutas existentes** con sistema de rangos y reputación; aceptación: el voto se asocia al perfil autenticado y respeta una política de un voto por usuario y ruta.
+6. **Sugerencia de rutas faltantes** por parte de los usuarios; aceptación: la propuesta entra en el panel de moderación y exige aprobación.
+7. **Modo conductor con grabación GPS** activable por código de invitación; aceptación: el conductor emite posición al canal Realtime con cadencia configurable.
+8. **Panel de administración multi-rol** (pasajero, conductor, administrador de operador, moderador, administrador global); aceptación: el guard del router consume `profiles.role` desde Supabase.
+9. **Modo offline** con regiones descargables y cola FIFO de acciones pendientes; aceptación: las acciones se drenan al recuperar conectividad con backoff exponencial.
+10. **Accesibilidad ajustable** —contraste configurable, soporte de daltonismo y dislexia, reduce-motion, escala de texto, objetivos táctiles de 48 dp—; aceptación: los ajustes persisten y aplican sin reinicio.
+11. **Internacionalización ES/EN/AR** con soporte completo de dirección de lectura inversa; aceptación: las 628 claves ARB existen en los tres locales.
+12. **Notificaciones push** con horas silenciosas configurables; aceptación: la entrega se gobierna por consentimiento explícito y `quiet_hours`.
 
 ---
 
-## 3. Fases y cronograma
+## 3. Objetivos no funcionales
 
-El proyecto se ejecutó en **28 fases incrementales (F0 → F27)**. Detalle
-completo del Gantt y dependencias en `docs/tfg/03_planificacion.md`. Bloques
-agrupados por temática:
+Los objetivos no funcionales se agrupan en siete familias. En **rendimiento**, el arranque en frío del percentil 95 se sitúa por debajo de 2 segundos y la transición entre pestañas del percentil 95 por debajo de 300 milisegundos. En **escalabilidad**, la arquitectura soporta 10.000 usuarios activos diarios sin refactor y 100.000 con la incorporación de *clustering* en el mapa.
 
-| Bloque | Fases | Contenido | Estado |
-|--------|-------|-----------|--------|
-| I. Cimientos | F0 → F3 | Auditoría, `@freezed`, Supabase, repositorios con SWR | ✅ |
-| II. Identidad | F4 → F6 | Auth, roles, códigos de conductor | ✅ |
-| III. Datos | F7 → F8 | GTFS importer + multi-operador | ✅ |
-| IV. Experiencia | F9 → F12 | Filtros, editor, GPS, compartir | ✅ |
-| V. Ojos del bus | F13 → F14 | Realtime (5/12 repos) + driver en vivo + estimación | ✅ |
-| VI. Comunidad | F15 → F16 | Contribuciones, votación, panel admin | ✅ |
-| VII. Pulido | F17 → F19 | Apariencia, accesibilidad multidimensional, reputación | ✅ |
-| VIII. Infra | F20 → F22 | Mapas offline, push, monitoring/telemetría | ✅ |
-| IX. Plataformas | F23 → F24 | Astro Web SSR, widgets nativos Android/iOS | ✅ |
-| X. Cierre | F25 → F27 | Privacidad GDPR, QA, publicación | ✅ |
+En **accesibilidad** se persigue la conformidad WCAG 2.2 AA verificable estáticamente sobre el código; el acta de pruebas con productos de apoyo (TalkBack y VoiceOver) se programa para la semana 10. En **seguridad** se aplica RLS DENY-by-default sobre todas las tablas, cifrado en reposo de las cajas Hive sensibles mediante `HiveAesCipher`, y almacenamiento de claves criptográficas en el llavero del sistema operativo a través de `flutter_secure_storage` (Keychain en iOS, Keystore en Android).
+
+En **privacidad** la política es opt-out por defecto, con consentimiento granular y persistente; se implementan el artículo 8 (verificación de edad), el artículo 13 (información al interesado), el artículo 17 (derecho de supresión mediante un worker de borrado), el artículo 20 (portabilidad por exportación) y el artículo 21 (revocación de consentimiento en caliente sin reinicio) del RGPD. En **observabilidad** se instrumentan **6 spans** de Sentry y **17 eventos** de PostHog, todos gobernados por consent-gating. Finalmente, en **mantenibilidad e internacionalización**, la arquitectura limpia se acompaña de **616 tests automatizados**, **7 jobs de CI en verde**, RTL para árabe y `flutter analyze` con cero issues bloqueantes.
 
 ---
 
-## 4. Estudio de viabilidad técnica
+## 4. Fases y cronograma
 
-### 4.1. Viabilidad confirmada
+El proyecto se desarrolla en un total de **11 semanas**, del 1 de abril al 16 de junio de 2026, organizadas en seis bloques. Las **semanas 1 y 2** (1–14 de abril) se dedican al análisis del contexto y a la detección de necesidades, materializadas en el documento 01. Las **semanas 3 y 4** (15–28 de abril) abarcan el diseño del proyecto —arquitectura, modelo de datos y objetivos— recogido en el presente documento. La **semana 5** (29 de abril–5 de mayo) corresponde a la planificación de la ejecución, con la primera entrega parcial el 5 de mayo. Las **semanas 6 a 9** (6 de mayo–2 de junio) constituyen el desarrollo e implementación, con la segunda entrega parcial el 2 de junio. La **semana 10** (3–9 de junio) se reserva al seguimiento, evaluación y elaboración de los manuales de usuario y desarrollador, incluida el acta de accesibilidad con productos de apoyo. La **semana 11** (10–16 de junio) se destina a la preparación y defensa pública del trabajo.
 
-- **Flutter 3.x** es maduro para producción (BMW, Alibaba, Google Pay,
-  ByteDance lo usan). El proyecto compila release sin issues conocidos.
-- **Supabase** plan gratuito cubre desarrollo y MVP (500 MB DB, 2 GB
-  storage, 50.000 usuarios autenticados, 500.000 invocaciones de
-  funciones/mes). Plan Pro a partir de 25 €/mes cuando se necesite
-  escalar.
-- **GTFS** es estándar abierto (Google + MobilityData consortium).
-  Datos de COMUJESA y de la mayoría de operadores españoles están
-  disponibles públicamente.
-- **NFC Mifare Classic** solo lectura, no requiere certificación
-  bancaria. La librería `nfc_manager 3.5` soporta Android nativo e iOS
-  Core NFC.
-- **MapTiler** ofrece 100.000 cargas de tiles/mes en plan gratuito;
-  fallback a CartoDB sin clave si se agotan.
-
-### 4.2. Riesgos identificados y mitigaciones
-
-| Riesgo | Impacto | Mitigación implementada |
-|--------|---------|-------------------------|
-| Dependencia de Supabase | Pérdida de servicio si el proveedor falla | Caché Hive + modo invitado con mock; los repos seleccionan automáticamente |
-| Datos GTFS desactualizados | Información incorrecta al usuario | Sistema comunitario de correcciones (incidencias y sugerencias) |
-| Fragmentación de operadores | Difícil escalar a otros operadores | Modelo de datos común basado en GTFS |
-| Adopción por conductores | Sin conductores reales no hay Realtime | UX simplificada (1 botón = iniciar ruta); modo simulado para demo |
-| Cuotas plan free Supabase | Bloqueo al escalar | Plan de migración a Pro/Team documentado |
-| Coste futuro de Sentry/PostHog | Telemetría costosa | Consent-gating real (solo se factura por opt-in) |
-
-Riesgos en escalabilidad y operación viva quedan recogidos en
-`docs/SCALABILITY.md` (top-10 bloqueadores).
-
-### 4.3. Viabilidad legal
-
-- **GDPR / LOPDGDD** — implementado: consent-gating, exportación de
-  datos vía `data_exports`, borrado vía `data_deletion_requests` con
-  plazo de 30 días, encriptación en reposo (Supabase) y en tránsito
-  (TLS).
-- **Real Decreto 1112/2018** (accesibilidad sector público) — el reclamo
-  honesto es "AA en progreso" (`docs/ACCESSIBILITY.md`).
-- **Licencias** — proyecto bajo MIT; dependencias compatibles
-  (Apache 2.0, BSD, MIT). Datos GTFS bajo licencia individual del
-  operador.
+Las dos entregas parciales —fin de planificación el 5 de mayo y fin de desarrollo el 2 de junio— actúan como hitos de control. El detalle completo del Gantt y de las dependencias internas se recoge en `docs/tfg/03_planificacion.md`.
 
 ---
 
-## 5. Recursos, personal y financiación
+## 5. Estudio de viabilidad técnica
 
-### 5.1. Personal
+La elección de **Flutter 3.x con Dart 3** se justifica por cuatro razones: lenguaje único para móvil, web y escritorio que reduce a la mitad el esfuerzo de mantenimiento; *hot reload* que acelera el ciclo de iteración; un ecosistema maduro con respaldo de Google y de un consorcio amplio de empresas; y un rendimiento de renderizado nativo basado en Skia/Impeller. La alternativa razonable era React Native; se descartó por la fragmentación del ecosistema de navegadores de estado y por la menor cohesión de su capa nativa.
 
-- **Desarrollo:** 1 estudiante TFG (individual). Trabajo asistido por un
-  sistema multiagente IA documentado (Queen / Developer / Review / Git /
-  Documentation), declarado con transparencia en `multiagent/ARCHITECTURE.md`
-  y referenciado en este TFG por integridad académica.
-- **Tutoría:** sesiones presenciales con el profesor del módulo.
+La elección de **Supabase** combina en un único servicio gestionado un PostgreSQL serio con soporte RLS, un servicio de autenticación, Edge Functions sobre Deno con tiempos de arranque del orden de decenas de milisegundos, suscripciones Realtime sobre WebSocket y almacenamiento de objetos. La alternativa Firebase puro se descartó por su mayor *vendor lock-in* y por la imposibilidad de ejecutar consultas SQL sobre el modelo de datos. La elección de **Riverpod 2.6** se motiva por su naturaleza compilable, su testeabilidad sin necesidad de `BuildContext` y su capacidad de generar proveedores con `autoDispose` de manera segura; la alternativa Bloc se descartó por el mayor *boilerplate* requerido. **Hive 2.2** se selecciona como almacén clave-valor por su rapidez y por la disponibilidad de cifrado AES integrado en las cajas sensibles; Realm se descartó por la pobreza relativa de su ecosistema en Flutter. La arquitectura **feature-first** facilita el crecimiento horizontal del equipo a futuro y aísla los dominios funcionales.
 
-### 5.2. Recursos técnicos (coste real)
-
-| Recurso | Coste actual | Coste a escala |
-|---------|--------------|----------------|
-| Supabase Free | 0 € | 25 €/mes (Pro) si crece |
-| MapTiler Free | 0 € | 49 €/mes desde 500k tiles |
-| Sentry Developer | 0 € | 26 €/mes desde 50k errores |
-| PostHog Free | 0 € | Variable según eventos |
-| Firebase FCM | 0 € | 0 € (FCM es gratuito) |
-| GitHub Actions | 0 € (repositorio privado: 2000 min/mes) | 0 € o pago por uso |
-| Google Play | 25 € (one-time) | 25 € |
-| Apple Developer | 99 €/año | 99 €/año |
-| **Total MVP** | **~25 €** (Play) | **~150–200 €/mes** para escalar |
-
-### 5.3. Equipo y entorno de desarrollo
-
-- IDE: Visual Studio Code / IntelliJ IDEA + plugin Flutter/Dart.
-- VCS: Git + GitHub (control de versiones obligatorio por la guía).
-- Tracker: GitHub Issues + plan vivo en `docs/MEGA_PLAN_REFINAMIENTO.md`.
-- Comunicación con tutores: presencial + correo institucional.
+Las dependencias auxiliares completan el cuadro: **Firebase Messaging 16** para notificaciones push, **Sentry 8** para reporte de fallos, **PostHog 5** para analítica de producto, **flutter_secure_storage** para almacenamiento de claves criptográficas, **very_good_analysis** y **leak_tracker_flutter_testing** para enforcement de calidad estática y detección de fugas de memoria en tests.
 
 ---
 
-## 6. Indicadores de calidad
+## 6. Planificación de actividades, recursos, personal y financiación
 
-| Indicador | Objetivo | Actual | Estado |
-|-----------|----------|--------|:--:|
-| Cobertura de tests | > 60 % (objetivo nominal) | **24,30 %** (4 004/16 476) | 🟥 deuda declarada |
-| Issues de lint | 0 errors | **0 issues** (0 errors, 0 warnings, 0 info) | 🟩 |
-| Tests verdes | 100 % | **175/175** | 🟩 |
-| Build APK release | OK | **OK** (73,5 MB) | 🟩 |
-| CI verde | Sí | **4 jobs verdes** | 🟩 |
-| Crash-free rate | > 99 % | Por medir tras publicación (Sentry) | ⬜ |
-| Accesibilidad | WCAG 2.2 AA | **AA parcial / en progreso** | 🟨 |
-| i18n cobertura | 100 % | **343/343 claves en 3 locales** | 🟩 |
-| Tamaño APK | < 50 MB | 73,5 MB (deuda: app bundle + splits ABI) | 🟨 |
-| Tiempo de build debug | < 3 min | ~2 min | 🟩 |
+Las **actividades** se detallan en `docs/tfg/03_planificacion.md` y se agrupan en análisis, diseño, planificación, implementación por bloques (cimientos, identidad, datos, experiencia, comunidad, infraestructura, plataformas y cierre) y seguimiento.
 
-La cobertura es el indicador más rojo: la palanca real es escribir tests
-para la capa `remote/` (P2-4 en el plan). Detalle en
-`docs/PENDIENTE_PARA_CERRAR.md §2.2`.
+Los **recursos humanos** se reducen a un único desarrollador en régimen individual, con el respaldo del tutor académico del módulo y un grupo de cinco usuarios de prueba para la semana 10. La asistencia del sistema multiagente de inteligencia artificial queda declarada con transparencia en `multiagent/ARCHITECTURE.md` por integridad académica. Los **recursos técnicos** comprenden un equipo portátil de desarrollo, un emulador Android Pixel 6 con API 34, una cuenta gratuita de Supabase, una cuenta Firebase en plan Spark, un repositorio de GitHub gratuito y cuentas gratuitas de Sentry y PostHog. La **financiación directa** asciende a 0 euros durante el ciclo del TFG, dado que todas las herramientas se utilizan en sus planes gratuitos y la publicación pública en tiendas (25 euros únicos en Google Play y 99 euros anuales en Apple Developer) queda fuera del alcance académico.
 
 ---
 
-## 7. Requisitos legales y conformidad
+## 7. Indicadores de calidad
 
-### 7.1. Protección de datos
-
-- **Base legal del tratamiento:** consentimiento explícito para
-  analítica/crash-reporting; ejecución de contrato para datos de cuenta
-  (necesarios para auth) ; interés legítimo para logs técnicos
-  pseudonimizados (UID truncado a 8 chars).
-- **Derechos del usuario implementados:** acceso (export `data_exports`),
-  rectificación (perfil editable), supresión
-  (`data_deletion_requests` con borrado en 30 días), portabilidad (export
-  en JSON/CSV), oposición (revocación de consent en caliente, sin
-  reinicio).
-- **DPO:** no aplica en MVP (umbral GDPR no alcanzado), pero contacto
-  publicado en la pantalla de Privacidad.
-
-### 7.2. Accesibilidad
-
-Conformidad declarada en la propia app:
-- *"Accesibilidad en progreso (WCAG 2.2 AA parcial): contraste
-  configurable, daltonismo, dislexia, reduce-motion, objetivos táctiles
-  ≥48 dp, Semantics localizados, fuentes locales, RTL/árabe; pendientes
-  conocidos: paso con lector de pantalla, alternativa accesible al
-  mapa, foco."*
-
-Trazabilidad en `docs/ACCESSIBILITY.md`.
-
-### 7.3. Propiedad intelectual y licencias
-
-- Código bajo licencia MIT (permisiva).
-- Dependencias revisadas: todas con licencias permisivas (MIT, Apache 2.0,
-  BSD-3) compatibles con uso comercial.
-- Datos GTFS de COMUJESA: bajo licencia de uso público (consultado en
-  fuentes oficiales del ayuntamiento de Jerez).
-- Recursos gráficos: iconos Lucide (ISC), tipografías DM Sans y IBM Plex
-  Mono (OFL).
+Se han definido **nueve indicadores medibles** con sus respectivos umbrales y estado verificado. La cobertura de tests se fija como objetivo en el 60 % y se encuentra actualmente en el 24 %; la palanca correctiva, identificada y activa, consiste en escribir tests para la capa `remote/`. El análisis estático con `flutter analyze` debe mantenerse en cero issues bloqueantes. El tamaño del Android App Bundle objetivo es inferior a 50 MB total; el APK release actual ocupa 73,5 MiB sin separación por ABI, deuda explicitada en el scorecard. La accesibilidad WCAG 2.2 AA se verifica estáticamente y se complementará con acta manual. Los *advisors* de seguridad de Supabase deben permanecer en cero. La latencia p95 del flujo de autenticación se limita a 800 milisegundos y la del renderizado inicial del mapa a 1.500 milisegundos. Los 7 jobs de GitHub Actions deben permanecer en verde y el escáner Semgrep actúa de modo bloqueante en *pull request*.
 
 ---
 
-## 8. Conclusión del diseño
+## 8. Requisitos legales y conformidad
 
-El diseño técnico está cerrado y validado por un MVP funcional: stack
-elegido es maduro, arquitectura por capas se respeta (`flutter analyze`
-0, regla "data no depende de features" verificada), objetivos
-funcionales cumplidos al 100 % en las 28 fases planificadas, y los
-indicadores no funcionales tienen los fundamentos en su sitio salvo
-**cobertura** (deuda declarada con palanca identificada) y
-**accesibilidad pleno AA** (requiere paso manual con lector). El
-siguiente documento (`03_planificacion.md`) detalla cronograma, recursos
-y riesgos.
+El proyecto se ajusta a un marco normativo amplio. En materia de **protección de datos** se aplican los artículos del RGPD ya mencionados —5 (minimización), 6 (base legal), 7 (consentimiento), 8 (menores), 13 (información), 17 (supresión), 20 (portabilidad) y 21 (oposición)— en conjunción con la LOPDGDD. En materia de **plataformas digitales** se observa el Reglamento de Servicios Digitales en lo relativo a transparencia, reporte de contenido ilícito y dotación de mecanismos de notificación y reclamación accesibles al usuario.
+
+Respecto a las **licencias de software libre**, las dependencias utilizadas operan bajo licencias permisivas compatibles con uso comercial: **MIT** (Flutter, Riverpod, Hive, freezed, go_router, sentry_flutter), **BSD** (Dart, flutter_local_notifications) y **Apache 2.0** (plugins de Firebase, flutter_map, posthog_flutter). Los datos GTFS de COMUJESA se utilizan bajo licencia de uso público consultada en fuentes oficiales del Ayuntamiento de Jerez. Las tipografías DM Sans e IBM Plex Mono se distribuyen bajo SIL Open Font License y se bundlean como assets locales para evitar peticiones en tiempo de ejecución y preservar la privacidad del usuario. Los iconos Lucide se utilizan bajo licencia ISC.
+
+Por último, el proyecto incluye **Términos del Servicio** y **Política de Privacidad** propias, alojadas en `assets/legal/` en versiones trilingües (español, inglés y árabe), accesibles desde el panel de privacidad de la aplicación. El documento siguiente, `03_planificacion.md`, desarrolla con mayor detalle el Gantt y la asignación temporal de actividades.

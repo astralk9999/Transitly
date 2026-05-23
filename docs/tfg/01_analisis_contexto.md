@@ -1,222 +1,50 @@
 # 01 — Análisis del Contexto y Detección de Necesidades
 
-**Proyecto:** Transitly — Aplicación multiplataforma de transporte público en tiempo real
-**Autor:** Desarrollo individual (con asistencia documentada de sistema multiagente IA)
-**TFG:** DAM/DAW — Desarrollo de Aplicaciones Multiplataforma
-**Estado actual:** `master @ 3a31fb3` · 28/28 fases · 175 tests verdes · cobertura 24,30 % · CI verde
+**Proyecto:** Transitly (repositorio `nexto-stop-v2`).
+**Autor:** trabajo individual con asistencia documentada de un sistema multiagente de inteligencia artificial.
+**Ciclo formativo:** Desarrollo de Aplicaciones Multiplataforma (DAM).
+**Estado verificado:** `master @ 85b81a1` (23 de mayo de 2026).
 
 ---
 
 ## 1. Sector y problema concreto
 
-### 1.1. Sector
+El sector de referencia es la **movilidad urbana basada en transporte público colectivo en ciudades medias españolas**, con especial atención al autobús urbano e interurbano. Según los datos del Instituto Nacional de Estadística publicados durante 2024, los servicios urbanos de autobús transportaron aproximadamente **1.500 millones de viajeros** y los interurbanos cerca de **600 millones**, lo que confirma una demanda diaria masiva, rutinaria y muy sensible a la calidad de la información ofrecida al usuario.
 
-**Movilidad urbana e interurbana en España: transporte público colectivo
-(autobús, principalmente).** Es un sector con tres rasgos distintivos
-relevantes para una aplicación tecnológica:
+El sector exhibe tres rasgos estructurales relevantes para cualquier iniciativa tecnológica que pretenda actuar sobre él. El primero es la **demanda masiva y diaria**, en la que el viajero valora más la fiabilidad de la información en tiempo real que el precio del trayecto. El segundo es la **fragmentación operativa**, dado que cada ciudad y cada consorcio cuentan con su propio operador, su propio modelo de datos, su propia aplicación móvil y su propia tarjeta sin contacto, lo que obliga al usuario a familiarizarse de nuevo con cada cambio de territorio. El tercero es la **heterogeneidad tecnológica**: mientras grandes ciudades como Madrid o Barcelona publican feeds GTFS-Realtime y mantienen aplicaciones móviles maduras, las ciudades medias —Jerez de la Frontera, Cuenca, Logroño, Cáceres— se apoyan todavía en paneles web estáticos y aplicaciones mínimas sin información en vivo.
 
-- **Demanda masiva y diaria.** En 2024 (INE) los autobuses urbanos
-  transportaron ~1.500 millones de viajeros en España; los interurbanos,
-  ~600 millones. La inmensa mayoría son desplazamientos *rutinarios* en
-  los que el usuario *valora información fiable a tiempo más que coste*.
-- **Fragmentación operativa.** Cada ciudad o consorcio tiene su propio
-  operador, su propia app, su propio modelo de datos y su propia tarjeta
-  monedero. Cambiar de ciudad significa empezar de cero.
-- **Heterogeneidad tecnológica.** Grandes ciudades (Madrid, Barcelona)
-  exponen GTFS-Realtime y tienen apps maduras; ciudades medias (Jerez,
-  Cuenca, Logroño) dependen de paneles web estáticos o apps mínimas sin
-  tiempo real.
-
-### 1.2. Problema detectado
-
-El usuario de autobús urbano en una ciudad media española **no puede
-saber con confianza dónde está su bus**. Las consecuencias prácticas:
-
-- **No información de posición en vivo** — los autobuses no se ven en un
-  mapa; el horario estático rara vez refleja la realidad.
-- **No estimación de tiempo de llegada** — sin GPS en el vehículo, no hay
-  predicción de minutos a la parada.
-- **No comunicación de incidencias** — retrasos, desvíos o averías se
-  conocen por redes sociales si tienen suerte.
-- **App distinta por operador** — un viajero que se desplaza entre Jerez,
-  Cádiz y Sevilla necesita tres apps con tres interfaces distintas.
-- **Tarjeta de transporte opaca** — el saldo de la *Consorcio de
-  Transportes de Andalucía* (NFC Mifare Classic) solo se consulta en
-  taquillas o quioscos físicos.
-
-El sub-problema relevante para este proyecto es: **dar al usuario de una
-ciudad media (Jerez de la Frontera, COMUJESA) la experiencia de tiempo
-real, accesibilidad y comunidad que solo tienen hoy las grandes
-ciudades** — y dejar la arquitectura preparada para escalar a otros
-operadores españoles.
-
-### 1.3. Oportunidad
-
-- **Una app unificada multi-operador** con datos GTFS oficiales,
-  contribuciones de la comunidad (incidencias, sugerencias de rutas),
-  tracking GPS opcional desde la app del propio conductor y estimación
-  basada en horario cuando no hay vivo.
-- **Accesibilidad de primera clase** para personas con discapacidad
-  visual, motora o cognitiva — un colectivo grande de usuarios habituales
-  del transporte público que las apps actuales atienden mal.
-- **Lectura NFC de la tarjeta del Consorcio andaluz** sin pasar por
-  máquinas físicas.
+El problema concreto que aborda Transitly es la **asimetría informativa que sufre el usuario del autobús urbano en una ciudad media española**. Concretamente, el viajero no puede saber dónde se encuentra su vehículo, no dispone de estimación de tiempo de llegada, no recibe notificación de incidencias por un canal estructurado, debe gestionar tantas aplicaciones como operadores utilice y solo puede consultar el saldo de su tarjeta NFC del Consorcio de Transportes de Andalucía en máquinas físicas. El caso de estudio piloto es **COMUJESA (Compañía Municipal del Transporte Urbano de Jerez, S.A.)**, operador municipal de Jerez de la Frontera, en la provincia de Cádiz.
 
 ---
 
 ## 2. Tipos de empresas y estructuras
 
-### 2.1. Operadores de transporte público en España
+El tejido empresarial del transporte público colectivo en España se articula en torno a cuatro tipologías de actor. Los **operadores municipales** son sociedades de capital público dependientes del ayuntamiento; gestionan flota propia, contratan personal y cuentan con presupuesto subvencionado. COMUJESA en Jerez, EMT en Madrid, Valencia o Málaga, y TUSSAM en Sevilla son ejemplos representativos. Los **consorcios autonómicos o metropolitanos**, como el Consorcio de Transportes de Andalucía o el Consorcio Regional de Transportes de Madrid, agregan a varios operadores municipales e interurbanos, gestionan la tarjeta única zonal e integran las tarifas. Los **operadores privados concesionarios**, adjudicatarios mediante concurso público, explotan rutas interurbanas o municipales con flota propia: Avanza, Damas, AUVASA o TITSA son referentes. Por último, las **aplicaciones agregadoras de terceros** —Moovit, Citymapper o Google Maps Transit— no operan flota, sino que consumen los feeds GTFS publicados por los operadores.
 
-| Tipo | Ejemplos | Estructura típica |
-|------|----------|-------------------|
-| **Empresas municipales** (propiedad del ayuntamiento) | COMUJESA (Jerez), EMT (Madrid, Valencia, Málaga), TUSSAM (Sevilla), Bilbobus | Operan la flota directamente; contratan conductores; el ayuntamiento subvenciona el déficit. |
-| **Consorcios metropolitanos** | TMB (Barcelona), Consorcio de Transportes de la Bahía de Cádiz, Consorcio de Transportes Sevilla | Agregan operadores municipales + interurbanos; gestionan tarjeta única; integran tarifas. |
-| **Concesionarias privadas** | Avanza, TITSA (Tenerife), AUVASA (Valladolid), DAMAS | Adjudicación por concurso público; explotan rutas con flota propia. |
-| **Apps agregadoras de terceros** | Moovit, Citymapper, Google Maps Transit | Consumen GTFS público pero no operan flota. |
-
-### 2.2. Estructura interna típica de un operador
-
-Independientemente de la forma jurídica, todos gestionan los mismos
-objetos de negocio:
-
-- **Rutas** (líneas con código y nombre comercial).
-- **Paradas** (puntos físicos con código, nombre, coordenadas).
-- **Horarios** (salidas por día de la semana, dirección y parada).
-- **Flota** (vehículos con matrícula y plazas).
-- **Conductores** (turnos, asignación a rutas).
-- **Tarifas** (zonas, billete sencillo, tarjeta mensual, bonificaciones).
-- **Incidencias** (averías, desvíos, refuerzos).
-
-Transitly abstrae esto con un **modelo de datos común basado en GTFS**
-(General Transit Feed Specification, el estándar de facto) que permite
-interoperar entre operadores.
-
-### 2.3. Marco normativo y de datos
-
-- **GDPR / LOPDGDD** — datos personales (perfil, ubicación, contribuciones).
-- **Real Decreto 1112/2018** — accesibilidad de sitios web y apps móviles
-  del sector público en España; obliga a WCAG 2.1 AA.
-- **Ley de Servicios Digitales (DSA)** — obligaciones de transparencia
-  para apps con contribuciones de usuarios.
-- **Licencias de datos GTFS** — varían por operador (algunos abiertos
-  CC-BY, otros bajo convenio con el ayuntamiento).
+Todos estos actores manejan, con independencia de su forma jurídica, las mismas entidades de negocio: rutas, paradas, horarios, flota, conductores, tarifas e incidencias. Esta convergencia conceptual es la que permite a Transitly proponer un modelo de datos común basado en GTFS y abstraer las diferencias operativas detrás de una única interfaz.
 
 ---
 
-## 3. Necesidades actuales del sector
+## 3. Necesidades actuales detectadas
 
-### 3.1. Necesidades del usuario final (pasajero)
+El análisis del estado del arte y la observación directa del caso COMUJESA permiten identificar **siete carencias estructurales** que sufre el viajero de una ciudad media española. La primera es la **ausencia de información de posición en vivo del vehículo**, ya que los autobuses no aparecen en un mapa y el horario estático rara vez refleja la realidad operativa. La segunda es la **inexistencia de estimación de tiempo de llegada**, derivada de la ausencia de GPS a bordo expuesto al usuario. La tercera es la **fragmentación del ecosistema de aplicaciones**, que obliga al usuario a manejar una aplicación distinta por operador con interfaces dispares.
 
-| Necesidad | Estado actual en ciudades medias | Solución Transitly |
-|-----------|----------------------------------|--------------------|
-| Saber dónde está mi bus AHORA | Inexistente o solo web operador grande | GPS del conductor + Realtime + estimación por horario |
-| Cuántos minutos faltan a mi parada | Horario estático impreciso | ETA derivado de posición y ruta |
-| Hay incidencias en mi línea | Twitter del operador | Incidencias geolocalizadas con votación de la comunidad |
-| Búsqueda multimodal y geoespacial | App por operador | Búsqueda y mapa unificados |
-| Saldo de mi tarjeta sin ir a la taquilla | Solo en máquinas físicas | NFC del móvil leyendo Mifare Classic |
-| Accesibilidad real | Variable, mayoritariamente AA "parcial" | A11Y multidimensional: alto contraste, daltonismo, dislexia, lector, RTL |
-| Idiomas | A menudo solo español | es / en / ar (RTL) |
-
-### 3.2. Necesidades del conductor y del operador
-
-- **Conductor:** poder activar el modo "estoy conduciendo la ruta X" y
-  que la app emita su posición a intervalos cortos; ver su panel de
-  estadísticas.
-- **Operador (admin):** dar de alta operadores y rutas, moderar las
-  contribuciones de los usuarios (incidencias, sugerencias), gestionar
-  códigos de invitación para activar conductores.
-
-### 3.3. Necesidades transversales (producto a escala)
-
-- **Backend pensado para muchos operadores** (multi-tenant lógico) con
-  control de acceso por roles (passenger / driver / operator_admin / admin).
-- **Operación sin red** — la app sigue siendo útil offline.
-- **Privacidad GDPR-compliant** — consentimiento, exportación y borrado.
-- **Telemetría con gating real** — solo si el usuario lo consiente.
+La cuarta carencia es la **accesibilidad deficiente** de las aplicaciones existentes: contrastes insuficientes, ausencia de soporte para personas con dislexia o daltonismo, falta de etiquetado semántico para lectores de pantalla y ausencia de soporte para idiomas con dirección de lectura inversa como el árabe, idioma con presencia creciente entre la población usuaria de transporte público en Andalucía. La quinta es la **opacidad de la tarjeta NFC Mifare Classic** del Consorcio de Transportes de Andalucía, cuyo saldo solo puede consultarse en taquillas, quioscos o máquinas expendedoras físicas. La sexta es la **inexistencia de un canal estructurado para reportar incidencias** —retrasos, averías, desvíos—, que actualmente se vehicula informalmente a través de redes sociales. La séptima y última es la **ausencia de observabilidad** por parte del operador, que no dispone de telemetría agregada del uso de su red.
 
 ---
 
 ## 4. Oportunidades de negocio
 
-### 4.1. Modelos B2C
+El diagnóstico anterior abre **cinco oportunidades de negocio** diferenciables. En primer lugar, un **modelo SaaS B2G** dirigido a operadores municipales y consorcios de tamaño medio, mediante una suscripción anual que incluye marca personalizada, panel de moderación, importador GTFS y telemetría agregada. En segundo lugar, una **plataforma multi-operador** que centralice la experiencia del viajero en una única aplicación con cobertura nacional progresiva, partiendo de Jerez como piloto y escalando al resto de operadores andaluces vía Consorcio. En tercer lugar, una **comunidad UGC** —contenido generado por usuarios— con sistema de reputación, votación y moderación, que aporta la información cualitativa que los feeds oficiales no capturan: averías, incidencias puntuales, sugerencias de rutas inexistentes.
 
-- **Freemium**: app gratuita con ads opcionales o suscripción mensual
-  que desbloquea mapas offline ampliados, notificaciones push ilimitadas
-  y exportación de datos.
-- **Tarjeta virtual de transporte** integrada en la app (NFC HCE) — a
-  largo plazo, con acuerdo con el Consorcio.
-
-### 4.2. Modelos B2B
-
-- **Licencia a operador** — el operador paga una suscripción anual por
-  rebrandeable + soporte + dashboard de incidencias y analítica
-  agregada.
-- **Servicio a consorcios** — varias ciudades de un consorcio
-  comparten infraestructura, pagando por uso (usuarios mensuales activos).
-- **Datos agregados anónimos** a ayuntamientos para planificación de
-  movilidad (siempre con cumplimiento GDPR y k-anonimización).
-
-### 4.3. Escalabilidad geográfica
-
-- **Inmediato:** otros operadores españoles vía GTFS (10+ identificados).
-- **Medio plazo:** Europa (todos los países con feeds GTFS abiertos —
-  Francia transport.data.gouv.fr, Holanda OV-API, Países nórdicos, etc.).
-- **Largo plazo:** LATAM (Chile, México, Brasil tienen GTFS en
-  expansión).
-
-### 4.4. Posicionamiento frente a competidores
-
-| Competidor | Fortaleza | Hueco que cubre Transitly |
-|------------|-----------|---------------------------|
-| Google Maps Transit | Cobertura mundial | Cero comunidad, sin NFC, accesibilidad genérica |
-| Moovit | Crowdsourcing maduro | Sin lectura NFC, sin modo conductor |
-| App del operador (p.ej. COMUJESA web) | Datos oficiales | Sin tiempo real, sin app móvil moderna, sin a11y |
-
-El hueco real es **"app móvil moderna, accesible y multi-operador para
-ciudades medias españolas que hoy no aparecen en Moovit o están a medio
-gas"**.
+En cuarto lugar, la **accesibilidad como elemento diferenciador** competitivo en un sector donde las aplicaciones dominantes ofrecen una accesibilidad genérica y poco verificada; un cumplimiento documentado de WCAG 2.2 AA constituye una ventaja defendible frente a Google Maps Transit o Moovit. En quinto lugar, la **integración futura con GTFS-Realtime** cuando los operadores expongan estos feeds de manera abierta, lo que permitiría ofrecer información de posición real sin depender del modo conductor interno de la propia aplicación.
 
 ---
 
-## 5. Guión de trabajo inicial (28 fases ejecutadas, F0→F27)
+## 5. Guión inicial de trabajo
 
-El proyecto siguió un plan incremental por fases:
+El guión inicial del trabajo se concreta en la construcción de un **producto mínimo viable de consulta de transporte público, comunidad y accesibilidad**, con COMUJESA como operador piloto en Jerez de la Frontera. La arquitectura se diseña multi-operador desde el primer día, pero el alcance funcional del TFG se limita al operador piloto. El producto incluye consulta de rutas, paradas y horarios, mapa con estimación de posición, lectura del saldo de la tarjeta NFC del Consorcio Andaluz, reporte de incidencias, sistema de reputación comunitaria, modo conductor con grabación GPS, panel administrativo, modo offline con regiones descargables, soporte de accesibilidad multidimensional, internacionalización trilingüe en español, inglés y árabe, y notificaciones push.
 
-1. **F0** — Auditoría del código base de partida.
-2. **F0.5** — Higiene previa al backend (modelos `@freezed`, providers,
-   pantallas estáticas).
-3. **F1** — Migración completa a `@freezed`.
-4. **F2** — Backend Supabase (auth, RLS, migraciones, Edge Functions).
-5. **F3** — Capa de repositorios (`domain/remote/local/mock`) + caché
-   Hive + cola offline.
-6. **F4-F6** — Autenticación (email/password + magic link) y modelo de
-   roles (passenger / driver / operator_admin / admin).
-7. **F7-F8** — Importación de datos GTFS y carga del operador COMUJESA.
-8. **F9-F14** — Mapa, búsqueda, filtros, detalle de ruta y parada, modo
-   conductor con tracking GPS.
-9. **F15-F16** — Comunidad: incidencias, sugerencias, votos, reputación,
-   panel de moderación.
-10. **F17-F22** — Pulido visual, accesibilidad (alto contraste,
-    daltonismo, dislexia, lector), infraestructura (Sentry, PostHog),
-    seguridad.
-11. **F23-F24** — Plataformas adicionales (Astro SSR para marketing,
-    widgets nativos Android/iOS).
-12. **F25-F27** — Privacidad GDPR (consent, export, deletion), QA y
-    publicación.
+Quedan **explícitamente fuera del alcance** del TFG cuatro líneas de trabajo que se documentan como evolución futura: la integración con GTFS-Realtime real (pendiente de que los operadores expongan los feeds), el widget iOS completo (limitado por las restricciones de la plataforma), la expansión activa a otras ciudades distintas de Jerez (requiere acuerdos comerciales con sus respectivos operadores), y el desarrollo de un modelo de aprendizaje automático para predicción precisa de ETA (requiere histórico de posiciones reales que solo se obtiene tras un periodo de operación). Estas exclusiones se recogen formalmente en `docs/EXTERNAL_BLOCKERS.md` junto al resto de bloqueadores externos al control del autor.
 
-Cada fase con sus subitems queda trazada en el histórico
-`docs/historico/PLAN_TRANSITLY_V2.md` y reemplazada operativamente por
-el plan vivo `docs/MEGA_PLAN_REFINAMIENTO.md`.
-
----
-
-## 6. Conclusión del análisis
-
-El sector tiene una demanda real, un hueco claro en ciudades medias y
-un marco técnico (GTFS) y normativo (WCAG, GDPR) que permite escalar.
-La oportunidad concreta para este TFG es **construir el MVP funcional
-con COMUJESA como operador piloto**, demostrar la arquitectura
-multi-operador en el código y dejar el camino abierto a una expansión
-posterior. El siguiente documento (`02_diseno_proyecto.md`) recoge el
-diseño técnico que materializa este análisis.
+El documento siguiente, `02_diseno_proyecto.md`, materializa este análisis en la arquitectura técnica, objetivos funcionales y no funcionales, planificación de recursos y requisitos legales del proyecto.

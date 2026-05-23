@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -45,7 +46,9 @@ class RouteDetailScreen extends ConsumerWidget {
       );
     }
 
-    PostHogAnalyticsService.routeViewed(route.id, route.operatorId);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      PostHogAnalyticsService.routeViewed(route.id, route.operatorId);
+    });
 
     final realtimeTrips = ref.watch(realtimeTripsProvider);
     final tripsList = realtimeTrips.valueOrNull ?? mockData.activeTrips;

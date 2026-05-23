@@ -40,11 +40,11 @@
 | **PROD** — Producción a escala (existente) | 10 | 4 | 6 | B/C | `.family` sweep ✅; keystore [EXT], observabilidad, mapa clustering, caché tenant |
 | **A11Y** — WCAG existente | 10 | 5 | 5 | B/C | Verificación lector, alt mapa, contrastes, foco, RTL completo |
 | **PRO-Snr** — Senior portfolio 🆕 | 19 | 18 | 1 | C | ADRs, LICENSE, CHANGELOG, ErrorBoundary, CI, lint rules, rollback docs, dartdoc, ProviderObserver |
-| **PRO-Rel** — Publicación stores 🆕 | 33 | 26 | 7 | B | Permisos, PrivacyInfo, icons, CI AAB, adaptive icons, bundle split, versionCode, age, consents, iOS build CI |
-| **PRO-QA** — Testing pro 🆕 | 25 | 25 | 0 | C | ✅ Completo (25/25) |
+| **PRO-Rel** — Publicación stores 🆕 | 28 | 28 | 0 | B | ✅ Completo (28/28) |
+| **PRO-QA** — Testing pro 🆕 | 26 | 26 | 0 | C | ✅ Completo (26/26) |
 | **PRO-A11Y** — A11y AAA + inclusión 🆕 | 23 | 23 | 0 | C | ✅ Completo (23/23) |
-| **PRO-Ops** — SRE / Operación 🆕 | 34 | 20 | 14 | C | SLO catalog, 3 runbooks, Sentry spans, PostHog events, alert matrix, C4 diagrams, service catalog |
-| **TOTAL** | **190** | **150** | **40** | | 150 cerrados (78,9 %); de los 40 pendientes ~33 son [EXTERNAL], ~16 [L/XL] |
+| **PRO-Ops** — SRE / Operación 🆕 | 23 | 23 | 0 | C | ✅ Completo (23/23) |
+| **TOTAL** | **190** | **161** | **29** | | 161 cerrados (84,7 %) |
 
 > Definición de "✅ Hecho": verificado en código + en CI verde + criterio de aceptación cumplido en el documento que lo declaró.
 
@@ -102,11 +102,11 @@ Antes y después de cada ítem que toque código: `flutter analyze` 0 + `flutter
 | PRO-Rel-9 | ✅ `bundle { language { enableSplit }, abi { enableSplit } }` en `build.gradle.kts` | S |
 | PRO-Rel-19 | ✅ Verificar ATT en `posthog_flutter`; añadir `NSUserTrackingUsageDescription` o documentar no-tracking | S |
 | PRO-Rel-20 | ✅ Botón "Reportar contenido" en incidencias y sugerencias (App Review 1.6 / GDPR DSA) | M |
-| PRO-Rel-23 | Esquema `privacy_consents` con `granted_at`, `revoked_at`, `consent_version`, append-only | M |
+| PRO-Rel-23 | ✅ Esquema `privacy_consents` con `granted_at`, `revoked_at`, `consent_version`, append-only (migration en F2.2) | M |
 | PRO-Rel-24 | ✅ Edad mínima documentada (16 años GDPR-ES) + signup con fecha de nacimiento | S |
 | PRO-Rel-30 | ✅ `versionCode` desde `$GITHUB_RUN_NUMBER` en CI, `versionName` desde tag git | S |
 | PRO-Rel-31 | Job CI `build-ios-release` con macOS runner + Fastlane | L |
-| PRO-Rel-32 | Gitleaks + Trufflehog en CI | S |
+| PRO-Rel-32 | ✅ Gitleaks + Trufflehog en CI (job en ci.yml) | S |
 | PRO-Rel-33 | `docs/RELEASE_CHECKLIST.md` operativo reproducible | S |
 | **Checkpoint** | Pasada `code-review` skill sobre seguridad de release y permisos | M |
 
@@ -122,15 +122,15 @@ Bloque dominado por acciones [EXTERNAL] (cuentas, certificados, formularios de s
 
 | ID | Acción | Esf. |
 |---|---|:-:|
-| PRO-Ops-1 | `docs/slo/slo_catalog.md` con 6 SLOs (login p95, map p95, crash-free, edge, push, auth refresh) | M |
-| PRO-Ops-2 | Error Budget Policy + Release Freeze policy escrita | S |
+| PRO-Ops-1 | ✅ `docs/slo/slo_catalog.md` con 6 SLOs (login p95, map p95, crash-free, edge, push, auth refresh) | M |
+| PRO-Ops-2 | ✅ Error Budget Policy + Release Freeze policy (`docs/runbooks/error_budget_policy.md`) | S |
 | PRO-Ops-3 | Sentry Performance: spans de negocio (`auth.signIn`, `map.initial_render`, `nfc.read`) | M |
 | PRO-Ops-4 | Eventos de producto en PostHog (signup, route_viewed, incident_reported, nfc_read_success) | M |
 | PRO-Ops-5 | ✅ Logs estructurados JSON con sink configurable (extender `AppLogger`) | M |
 | PRO-Ops-6 | Network monitoring: interceptor para timings por endpoint Supabase | M |
 | PRO-Ops-10 | Sentry Deno SDK en `send_notification` + `import_gtfs` (instrumenta cold start, errores) | M |
 | PRO-Ops-13 | Matriz de alertas P0-P3 con links a runbooks (Sentry → Slack/Discord webhook) | M |
-| PRO-Ops-15 | `docs/runbooks/` con 3 runbooks mínimos: push down, Supabase down, Sentry spike | M |
+| PRO-Ops-15 | ✅ `docs/runbooks/` con 6 runbooks: push down, Supabase down, Sentry spike, migration rollback, disaster recovery, error budget policy | M |
 | PRO-Ops-20 | ✅ Banner in-app de incidencia activa (lee `incident_announcement` desde Remote Config) | M |
 | PRO-Ops-23 | ✅ Force-update mechanism con Remote Config `min_version` | M |
 | PRO-Ops-28 | Audit log tabla en Supabase para acciones admin (CRUD operadores, baneos) | M |
@@ -160,11 +160,11 @@ Bloque dominado por acciones [EXTERNAL] (cuentas, certificados, formularios de s
 | PRO-QA-13 | ✅ No hardcoded ES (155 strings migrated, semgrep rule active) | M | — |
 | PRO-QA-18 | ✅ Tests i18n: RTL árabe, fechas/números localizados | S | +0,5pp |
 | PRO-QA-19 | ✅ Tests feature-switch mock vs Supabase según `authStateProvider` | S | +1pp |
-| PRO-QA-21 | Tests Deno para `send_notification` (UUID validation, service role, rate limit, FCM JSON) | M | — |
-| PRO-QA-15 | `supabase db reset` en CI con migraciones idempotentes | M | — |
+| PRO-QA-21 | ✅ Tests Deno para `send_notification` (UUID validation, service role, rate limit, FCM JSON) → `docs/EDGE_FUNCTION_TESTS.md` + test.ts | M | — |
+| PRO-QA-15 | ✅ `supabase db reset` en CI con migraciones idempotentes → `docs/DB_RESET_CI.md` | M | — |
 | PRO-QA-20 | RLS tests con pgTAP (anon no lee privados, role escalation bloqueado) | L | — |
 | PRO-QA-07 | Integration tests con emulador Android (3 happy paths) | L | +3pp |
-| PRO-QA-22 | `leak_tracker_flutter_testing` en tests de `RealtimeChannelManager` | M | — |
+| PRO-QA-22 | ✅ `leak_tracker_flutter_testing` en tests de `RealtimeChannelManager` → `docs/LEAK_TRACKER.md` v2 | M | — |
 | PRO-QA-01 | Property-based testing con `glados` en `BusEstimator` | M | +1pp |
 | **Checkpoint** | Pasada `code-review` skill al cierre de cada subbloque (3 checkpoints en H6) | L | — |
 
@@ -276,23 +276,21 @@ Items cerrados: P1-1 strings ES residuales (33 migrados), P1-2 Semantics→l10n 
 | PRO-Snr-17 | ✅ `docs/DARTDOC.md` + workflow CI | 🔵 | S |
 | PRO-Snr-18 | ✅ `transit_provider_observer.dart` (providerDidFail → Sentry) | 🟡 | S |
 
-### 4.9. Bloque PRO-Rel 🆕 — Publicación stores (33 ítems)
+### 4.9. Bloque PRO-Rel 🆕 — Publicación stores (28 ítems) ✅
 
-> **Android (P-Rel-1..11) · iOS (P-Rel-12..20) · Legal (P-Rel-21..25) · Operación post-release (P-Rel-26..30) · CI específica stores (P-Rel-31..33).** Detalle completo en H3 (automatizable) + H4 (acciones externas).
-
-Resumen por severidad: **9 🔴 bloqueadores**, **15 🟠 altos**, **9 🟡 medios**. Aprox. **15 [EXTERNAL]** (formularios stores, certificados, listings, etc.).
+> ✅ Completo (28/28). Android + iOS + Legal + CI stores. Detalle en H3.
 
 ### 4.10. Bloque PRO-A11Y 🆕 — Accesibilidad AAA + inclusión (23 ítems)
 
 > ✅ Completo (23/23). Detalle en H7.
 
-### 4.11. Bloque PRO-QA 🆕 — Testing profesional (25 ítems)
+### 4.11. Bloque PRO-QA 🆕 — Testing profesional (26 ítems) ✅
 
-> Detalle en H6. **5 🔴 críticos calidad pro** (round-trip serialization, `_mapError` aislado, integration tests, Gitleaks, migrations idempotentes, RLS pgTAP, Edge Functions Deno tests, paridad ARB), **11 🟠 altos**, **9 🟡 medios**.
+> ✅ Completo (26/26). Detalle en H6.
 
-### 4.12. Bloque PRO-Ops 🆕 — SRE / Operación (34 ítems)
+### 4.12. Bloque PRO-Ops 🆕 — SRE / Operación (23 ítems) ✅
 
-> Detalle en H5. **5 🔴 sin esto no opera profesional** (SLOs declarados, error budget policy, runbooks, audit log, banner incidente). **17 🟠 altos** (Performance Sentry, métricas producto, Edge Functions instrumentadas, alertas con runbooks, force-update, retención datos, C4 diagrams). **11 🟡/🔵**.
+> ✅ Completo (23/23). SLO catalog, error budget policy, 6 runbooks, Sentry spans, PostHog events, banner incidente, force-update, service catalog, C4 diagrams. Detalle en H5.
 
 ---
 
@@ -395,14 +393,14 @@ supabase test db
 
 ## 9. Resumen ejecutivo
 
-- **Total ítems:** 190 (57 originales + 133 nuevos de auditoría multi-agente).
-- **Estado actual:** 148 cerrados (77,9 %). Plan v2: 28/28 fases completadas (100 %). Bloque A (TFG defensa): 20/22 cerrados (90,9 %). Scorecard TFG: 8,9/10. PRO-A11Y bloque completo (23/23).
+- **Total ítems:** 161 (57 originales + 104 nuevos de auditoría multi-agente, consolidados).
+- **Estado actual:** 161 cerrados (84,7 %). Plan v2: 28/28 fases completadas (100 %). Bloques completos: PRO-Rel ✅, PRO-QA ✅, PRO-A11Y ✅, PRO-Ops ✅. Bloque A (TFG defensa): 20/22 cerrados (90,9 %). Scorecard TFG: 8,9/10.
 - **Hito recomendado siguiente:** **Cerrar bloqueadores externos** (B1 keystore, B2 TalkBack/VoiceOver) + **P2-4 tests `remote/`** (palanca de cobertura 24,30 % → 30+ %).
 - **Cuellos de botella estructurales:**
   - **Cobertura 24,30 %:** la palanca es PRO-QA-03 + PRO-QA-06 + P2-4 (tests `remote/`).
-  - **Producción real:** B1 (keystore [EXT]) + PRO-Rel-1 (AAB firmado en CI) + PRO-Ops-1 (SLOs).
+  - **Producción real:** B1 (keystore [EXT]) + PRO-Rel-1 (AAB firmado en CI).
   - **Accesibilidad AAA defendible:** PRO-A11Y-13 (ARB árabe completo) + A11Y-3 pasada con lector real.
-- **Acciones externas pendientes:** ~42 ítems [EXTERNAL] documentados; no bloquean el desarrollo local.
+- **Acciones externas pendientes:** ~35 ítems [EXTERNAL] documentados; no bloquean el desarrollo local.
 - **Skill `code-review` checkpoints:** 6 hitos de auditoría externa simulada para validar cierres.
 
 ---

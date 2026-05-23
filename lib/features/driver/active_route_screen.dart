@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,6 +26,7 @@ class ActiveRouteScreen extends ConsumerStatefulWidget {
 
 class _ActiveRouteScreenState extends ConsumerState<ActiveRouteScreen> {
   bool _isPressed = false;
+  Timer? _justRegisteredTimer;
   bool _justRegistered = false;
   String _registeredTime = '';
   final List<_RegisteredStop> _history = [];
@@ -169,7 +172,9 @@ class _ActiveRouteScreenState extends ConsumerState<ActiveRouteScreen> {
                       ),
                     ),
                     Text(
-                      '--',
+                      detail.nextStop != null
+                          ? '${detail.estimatedMinutesToNextStop} min'
+                          : '--',
                       style: GoogleFonts.ibmPlexMono(
                           fontSize: 18, color: c.textMid),
                     ),
@@ -178,7 +183,9 @@ class _ActiveRouteScreenState extends ConsumerState<ActiveRouteScreen> {
                 const SizedBox(height: 8),
                 Center(
                   child: Text(
-                    '--',
+                    detail.nextStop != null
+                        ? '${detail.estimatedMinutesToNextStop} min'
+                        : '--',
                     style: GoogleFonts.ibmPlexMono(
                       fontSize: 32,
                       fontWeight: FontWeight.w700,
@@ -317,9 +324,16 @@ class _ActiveRouteScreenState extends ConsumerState<ActiveRouteScreen> {
       _history.add(_RegisteredStop(stopName, time));
     });
 
-    Future.delayed(const Duration(milliseconds: 800), () {
+    _justRegisteredTimer?.cancel();
+    _justRegisteredTimer = Timer(const Duration(milliseconds: 800), () {
       if (mounted) setState(() => _justRegistered = false);
     });
+  }
+
+  @override
+  void dispose() {
+    _justRegisteredTimer?.cancel();
+    super.dispose();
   }
 
   void _confirmFinish(BuildContext context, TransitColorScheme c) {

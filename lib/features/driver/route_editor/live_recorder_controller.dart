@@ -86,6 +86,7 @@ class LiveRecorderController extends ChangeNotifier {
   Timer? _gpsTimer;
   Timer? _clockTimer;
   Timer? _blinkTimer;
+  Timer? _flashTimer;
   StreamSubscription<Position>? _gpsSub;
 
   /// Callback fired whenever a stop is marked. Use to show snackbars or
@@ -207,7 +208,8 @@ class LiveRecorderController extends ChangeNotifier {
     flashVisible = true;
     notifyListeners();
 
-    Future.delayed(const Duration(milliseconds: 100), () {
+    _flashTimer?.cancel();
+    _flashTimer = Timer(const Duration(milliseconds: 100), () {
       flashVisible = false;
       notifyListeners();
     });
@@ -242,6 +244,7 @@ class LiveRecorderController extends ChangeNotifier {
 
   @override
   void dispose() {
+    _flashTimer?.cancel();
     stop();
     mapController.dispose();
     super.dispose();

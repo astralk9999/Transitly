@@ -255,10 +255,22 @@ class _RegionDownloadSheetState extends ConsumerState<RegionDownloadSheet> {
     );
   }
 
+  static const Color _defaultRouteColor = Color(0xFF888888);
+
   static Color _parseHexColor(String hex) {
-    var clean = hex.startsWith('#') ? hex.substring(1) : hex;
-    if (clean.length == 6) clean = 'FF$clean';
-    return Color(int.parse(clean, radix: 16));
+    try {
+      var clean = hex.startsWith('#') ? hex.substring(1) : hex;
+      if (clean.startsWith('0x') || clean.startsWith('0X')) {
+        clean = clean.substring(2);
+      }
+      if (clean.length != 6 && clean.length != 8) return _defaultRouteColor;
+      if (clean.length == 6) clean = 'FF$clean';
+      final value = int.tryParse(clean, radix: 16);
+      if (value == null) return _defaultRouteColor;
+      return Color(value);
+    } catch (_) {
+      return _defaultRouteColor;
+    }
   }
 
   @override
@@ -323,6 +335,18 @@ class _RegionDownloadSheetState extends ConsumerState<RegionDownloadSheet> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    margin: const EdgeInsets.only(bottom: 12),
+                    decoration: BoxDecoration(
+                      color: c.accent.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      '⚠ Demo: solo Jerez de la Frontera predefinido',
+                      style: TextStyle(color: c.textMid, fontSize: 12),
+                    ),
+                  ),
                   Text(l10n.offlineRegionsRegionName,
                       style: TransitTypography.bodySmall(c.textLo)),
                   const SizedBox(height: 6),

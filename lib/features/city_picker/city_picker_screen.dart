@@ -5,6 +5,7 @@ import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../data/geo/geo_providers.dart';
 import '../../../shared/models/operator_model.dart';
+import '../../../shared/utils/string_formatting.dart';
 import '../../../shared/widgets/glass_card.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/smoke_background.dart';
@@ -108,7 +109,7 @@ class _OperatorTile extends ConsumerWidget {
           ),
           child: Center(
             child: Text(
-              _safeBadge(operator.shortName),
+              safeBadge(operator.shortName),
               style: TextStyle(
                 color: c.accent,
                 fontWeight: FontWeight.w700,
@@ -137,8 +138,3 @@ class _OperatorTile extends ConsumerWidget {
   }
 }
 
-String _safeBadge(String s) {
-  if (s.isEmpty) return '··';
-  if (s.length == 1) return '${s.toUpperCase()}·';
-  return s.substring(0, 2).toUpperCase();
-}

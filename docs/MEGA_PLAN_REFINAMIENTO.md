@@ -44,7 +44,7 @@
 | **PRO-QA** — Testing pro 🆕 | 26 | 26 | 0 | C | ✅ Completo (26/26) |
 | **PRO-A11Y** — A11y AAA + inclusión 🆕 | 23 | 23 | 0 | C | ✅ Completo (23/23) |
 | **PRO-Ops** — SRE / Operación 🆕 | 23 | 23 | 0 | C | ✅ Completo (23/23) |
-| **TOTAL** | **190** | **169** | **21** | | 169 cerrados (88,9 %) |
+| **TOTAL** | **190** | **171** | **19** | | 171 cerrados (90,0 %) |
 
 > Definición de "✅ Hecho": verificado en código + en CI verde + criterio de aceptación cumplido en el documento que lo declaró.
 
@@ -136,7 +136,7 @@ Bloque dominado por acciones [EXTERNAL] (cuentas, certificados, formularios de s
 | PRO-Ops-28 | ✅ Audit log tabla en Supabase (migration 011_audit_log_extras.sql) | M |
 | PRO-Ops-30 | ✅ Data Retention Policy + RPC de purga (docs/DATA_RETENTION.md) | M |
 | PRO-Ops-31 | ✅ Right-to-be-forgotten con timestamping auditable (docs/RIGHT_TO_BE_FORGOTTEN.md) | M |
-| PRO-Ops-32 | C4 diagrams (Mermaid) en `docs/architecture/c4-*.md` | M |
+| PRO-Ops-32 | ✅ C4 diagrams (Mermaid) en `docs/architecture/c4-diagrams.md` | M |
 | PRO-Ops-33 | ✅ `docs/service-catalog.md` con dependencias entre servicios | S |
 | **Checkpoint** | Pasada `code-review` skill sobre observabilidad y runbooks | M |
 
@@ -339,7 +339,7 @@ Estos quedan fuera del plan automatizable, pero sin ellos los hitos B (publicabl
 - **PRO-Ops-25:** load testing con k6 contra staging
 - **PRO-Ops-26, 27:** forecast crecimiento + cost monitoring
 - **PRO-Ops-29:** firmar DPA con Supabase
-- **PRO-Ops-34:** DR plan con RPO/RTO
+- **PRO-Ops-34:** ✅ DR plan con RPO/RTO (`docs/runbooks/disaster_recovery.md`)
 
 ### Accesibilidad
 - **A11Y-3 / PRO-A11Y-18 (parcial):** pasada REAL con TalkBack/VoiceOver con acta
@@ -394,7 +394,7 @@ supabase test db
 ## 9. Resumen ejecutivo
 
 - **Total ítems:** 169 (57 originales + 112 nuevos de auditoría multi-agente, consolidados).
-- **Estado actual:** 169 cerrados (88,9 %). Plan v2: 28/28 fases completadas (100 %). Bloques completos: PRO-Rel ✅, PRO-QA ✅, PRO-A11Y ✅, PRO-Ops ✅. Bloque A (TFG defensa): 20/22 cerrados (90,9 %). Scorecard TFG: 8,9/10.
+- **Estado actual:** 171 cerrados (90,0 %). Plan v2: 28/28 fases completadas (100 %). Bloques completos: PRO-Rel ✅, PRO-QA ✅, PRO-A11Y ✅, PRO-Ops ✅. Bloque A (TFG defensa): 20/22 cerrados (90,9 %). Scorecard TFG: 8,9/10.
 - **Hito recomendado siguiente:** **Cerrar bloqueadores externos** (B1 keystore, B2 TalkBack/VoiceOver) + **P2-4 tests `remote/`** (palanca de cobertura 24,30 % → 30+ %).
 - **Cuellos de botella estructurales:**
   - **Cobertura 24,30 %:** la palanca es PRO-QA-03 + PRO-QA-06 + P2-4 (tests `remote/`).

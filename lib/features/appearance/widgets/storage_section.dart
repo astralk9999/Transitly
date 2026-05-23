@@ -8,6 +8,7 @@ import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../core/utils/app_logger.dart';
 import '../../../data/cache/hive_init.dart';
+import '../../../data/cache/storage_repository.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/models/offline_region.dart';
 import '../../../shared/widgets/glass_card.dart';
@@ -30,14 +31,8 @@ class StorageSection extends ConsumerWidget {
     return '${(bytes / (1024 * 1024 * 1024)).toStringAsFixed(2)} GB';
   }
 
-  static int _fileSize(String boxName) {
-    try {
-      final path = Hive.box(boxName).path;
-      if (path != null) return File(path).lengthSync();
-    } catch (e) {
-      AppLogger.warn('Appearance', 'file size unavailable for $boxName', e);
-    }
-    return 0;
+  int _fileSize(WidgetRef ref, String boxName) {
+    return ref.read(storageRepositoryProvider).fileSize(boxName);
   }
 
   static int _directorySize(Directory dir) {
@@ -53,7 +48,7 @@ class StorageSection extends ConsumerWidget {
     return total;
   }
 
-  int _computeHiveSize() {
+  int _computeHiveSize(WidgetRef ref) {
     var total = 0;
     const boxNames = [
       HiveBoxes.routes,
@@ -72,22 +67,22 @@ class StorageSection extends ConsumerWidget {
       HiveBoxes.authSessionMeta,
     ];
     for (final name in boxNames) {
-      total += _fileSize(name);
+      total += _fileSize(ref, name);
     }
     return total;
   }
 
-  int _computePendingSize() {
+  int _computePendingSize(WidgetRef ref) {
     var total = 0;
     for (final name in [HiveBoxes.pendingActions, HiveBoxes.deadLetterActions]) {
-      total += _fileSize(name);
+      total += _fileSize(ref, name);
     }
     return total;
   }
 
-  ({int sizeBytes, bool available}) _computeFmtcSize() {
+  ({int sizeBytes, bool available}) _computeFmtcSize(WidgetRef ref) {
     try {
-      final hivePath = Hive.box(HiveBoxes.routes).path;
+      final hivePath = ref.read(storageRepositoryProvider).boxPath(HiveBoxes.routes);
       if (hivePath == null) return (sizeBytes: 0, available: false);
       final appDir = File(hivePath).parent;
       final fmtcDir = Directory(
@@ -100,7 +95,7 @@ class StorageSection extends ConsumerWidget {
     }
   }
 
-  Future<void> _clearCache(BuildContext context) async {
+  Future<void> _clearCache(BuildContext context, WidgetRef ref) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -137,7 +132,7 @@ class StorageSection extends ConsumerWidget {
     }
 
     try {
-      final hivePath = Hive.box(HiveBoxes.routes).path;
+      final hivePath = ref.read(storageRepositoryProvider).boxPath(HiveBoxes.routes);
       if (hivePath != null) {
         final appDir = File(hivePath).parent;
         final fmtcDir = Directory(
@@ -166,9 +161,9 @@ class StorageSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final hiveSize = _computeHiveSize();
-    final pendingSize = _computePendingSize();
-    final fmtc = _computeFmtcSize();
+    final hiveSize = _computeHiveSize(ref);
+    final pendingSize = _computePendingSize(ref);
+    final fmtc = _computeFmtcSize(ref);
     final totalSize = hiveSize + pendingSize + fmtc.sizeBytes;
 
     return GlassCard(
@@ -243,7 +238,7 @@ class StorageSection extends ConsumerWidget {
           SizedBox(
             width: double.infinity,
             child: OutlinedButton.icon(
-              onPressed: () => _clearCache(context),
+              onPressed: () => _clearCache(context, ref),
               icon: Icon(Icons.delete_sweep, color: c.textMid, size: 18),
               label: Text(l10n.appearanceStorageClearCache,
                   style: TransitTypography.bodyPrimary(c.textMid)),

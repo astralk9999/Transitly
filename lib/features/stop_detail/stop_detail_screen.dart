@@ -131,11 +131,18 @@ class StopDetailScreen extends ConsumerWidget {
                       if (nextDeps.isNotEmpty) {
                         timeStr = nextDeps.first.departureTime;
                         final parts = timeStr.split(':');
-                        final depMinutes =
-                            int.parse(parts[0]) * 60 + int.parse(parts[1]);
-                        final diff = depMinutes - nowMinutes;
-                        countdownStr = 'en $diff min';
-                        isNext = diff <= 10;
+                        final h = int.tryParse(parts[0]);
+                        final m = int.tryParse(parts[1]);
+                        if (h == null || m == null) {
+                          timeStr = nextDeps.first.departureTime;
+                          countdownStr = '';
+                          isNext = false;
+                        } else {
+                          final depMinutes = h * 60 + m;
+                          final diff = depMinutes - nowMinutes;
+                          countdownStr = 'en $diff min';
+                          isNext = diff <= 10;
+                        }
                       }
 
                       return Padding(

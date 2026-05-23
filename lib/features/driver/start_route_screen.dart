@@ -170,14 +170,13 @@ class _StartRouteScreenState extends ConsumerState<StartRouteScreen> {
                 children: sortedSchedules.map((s) {
                   final time = s.departureTime;
                   final parts = time.split(':');
-                  final m = int.parse(parts[0]) * 60 + int.parse(parts[1]);
-                  final isPast = m < nowMinutes;
-                  final isNext = !isPast &&
+                   final m = _parseTimeToMinutes(time);
+                   final isPast = m != null && m < nowMinutes;
+                   final isNext = m != null && !isPast &&
                       (sortedSchedules.indexOf(s) ==
                           sortedSchedules.indexWhere((x) {
-                            final p = x.departureTime.split(':');
-                            return int.parse(p[0]) * 60 + int.parse(p[1]) >=
-                                nowMinutes;
+                            final candidate = _parseTimeToMinutes(x.departureTime);
+                            return candidate != null && candidate >= nowMinutes;
                           }));
                   final isSelected = _selectedTime == time;
 
@@ -260,5 +259,14 @@ class _StartRouteScreenState extends ConsumerState<StartRouteScreen> {
         ],
       ),
     );
+  }
+
+  int? _parseTimeToMinutes(String time) {
+    final parts = time.split(':');
+    if (parts.length < 2) return null;
+    final h = int.tryParse(parts[0]);
+    final m = int.tryParse(parts[1]);
+    if (h == null || m == null) return null;
+    return h * 60 + m;
   }
 }

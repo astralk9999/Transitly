@@ -8,6 +8,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 
+import 'package:collection/collection.dart';
+
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../core/utils/app_logger.dart';
@@ -75,11 +77,9 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen> {
         _availableRoutes = routes
             .map((r) {
               final code = r['code'] as String;
-              return mockData.routes.firstWhere(
-                (mr) => mr.code == code,
-                orElse: () => mockData.routes.first,
-              );
+              return mockData.routes.firstWhereOrNull((mr) => mr.code == code);
             })
+            .whereType<RouteModel>()
             .toList();
       } else {
         _availableRoutes = mockData.routes;

@@ -377,3 +377,178 @@ Plan v2:     55/80 (28/28 fases originales)
 | `docs/PENDIENTE_PARA_CERRAR.md` | Session header → CLOSED; F6.12 summary appended |
 | `docs/PROPUESTAS_FUTURAS.md` | Metrics + scoreboard updated; Plan v2 status added |
 | `docs/PLAN_V2_PROGRESS.md` | **NEW** — Clean progress table 28 fases |
+
+---
+
+## 7. Deuda P2/P3 detectada — sesión 2026-05-23 (post-limpieza)
+
+> **Origen:** auditoría independiente con 3 sub-agentes Explore tras la
+> ejecución completa de `docs/historico/GUIA_LIMPIEZA_2026_05_23.md`.
+> Los **6 bugs P0/P1 críticos (N1-N6, B9, N15)** se cerraron en commits
+> atómicos `ca513fb` → `10f3af0`.
+>
+> **Última actualización (2026-05-23, cierre §7):** los 6 bugs P2/P3
+> pendientes se cerraron en commits atómicos `e9eff31` → `7ecfb79`.
+> Detalle en tabla abajo. **§7 cerrado completo.**
+
+### 7.1 Tabla resumen de bugs — CERRADOS
+
+| ID  | Archivo:línea | Tipo | Severidad | Commit |
+|-----|---------------|------|:---------:|--------|
+| N7  | `storage_section.dart:35,90,140` | Arquitectura | P2 | `7ecfb79` |
+| N9  | `signin_screen.dart:51` | Analítica | P2 | `e9eff31` (void, N/A) |
+| N10 | `route_detail_screen.dart:48` | Performance | P2 | `5d463fb` |
+| N11 | `region_download_sheet.dart:334` | i18n | P2 | `a00f9de` |
+| N12 | `city_picker_screen.dart:140` | Refactor | P3 | `df76cf7` |
+| N14 | `mock_data_service.dart:359-395` | Doc | P3 | `cd5655a` |
+| N8  | `editor_controller.dart` | Arquitectura | (RESUELTO) | — |
+| N13 | `Future.delayed` driver/ | Performance | (RESUELTO en A.6) | — |
+
+**Total deuda activa:** 6 bugs · **~4-5 horas** de refactor estimado.
+
+### 7.2 Detalle por bug con fix propuesto
+
+#### N7 · Acceso directo a Hive desde feature (storage_section)
+
+**Archivo:** `lib/features/appearance/widgets/storage_section.dart` líneas 35, 90, 140.
+
+**Problema:** `Hive.box()` se invoca directamente desde el widget, saltándose
+la capa de repositorio. Viola la arquitectura feature → repository → Hive
+documentada en `docs/adr/003-hive.md`.
+
+**Fix propuesto:** crear `lib/data/cache/storage_repository.dart` con métodos
+públicos (`clearTileCache()`, `getCacheSize()`, etc.) y un provider Riverpod.
+Consumir desde el widget vía `ref.read(storageRepositoryProvider)`.
+
+**Por qué no es crítico:** funciona correctamente hoy; es deuda
+arquitectónica que un revisor estricto podría señalar pero no rompe demo.
+
+#### N9 · PostHog signin sin `unawaited()`
+
+**Archivo:** `lib/features/auth/signin_screen.dart:51` (aproximado).
+
+**Problema:** `PostHogAnalyticsService.signin('email')` se invoca tras
+`signInWithEmail()` sin `await` ni `unawaited()`. Si la app se cierra
+rápido tras el login, el evento puede no enviarse y el linter
+`unawaited_futures` debería avisar (si está activo).
+
+**Fix propuesto:**
+
+```dart
+import 'dart:async';
+// ...
+unawaited(PostHogAnalyticsService.signin('email'));
+```
+
+#### N10 · `track()` en `build()` de ConsumerWidget
+
+**Archivo:** `lib/features/route_detail/route_detail_screen.dart:48` (aproximado).
+
+**Problema:** `PostHogAnalyticsService.routeViewed(route.id, ...)` se invoca
+dentro de `build()`. Cada rebuild dispara un evento adicional, distorsionando
+las métricas y desperdiciando red.
+
+**Fix propuesto:** mover a `addPostFrameCallback` la primera vez, o convertir
+a `ConsumerStatefulWidget` y llamar en `initState`. Alternativa: usar
+`useEffect` con `hooks_riverpod` si se introduce.
+
+#### N11 · Banner ES hardcoded en region_download
+
+**Archivo:** `lib/features/offline/widgets/region_download_sheet.dart:334`.
+
+**Problema:** el banner `'⚠ Demo: solo se puede descargar la región de
+Jerez de la Frontera...'` está hardcoded en español. Un usuario con idioma
+inglés o árabe ve español inesperado en la pantalla.
+
+**Fix propuesto:**
+
+1. Añadir a `lib/l10n/app_es.arb`:
+   ```json
+   "offlineRegionDemoLimitation": "Versión demo: solo se puede descargar la región de Jerez de la Frontera. Selección libre de región disponible en próximas versiones."
+   ```
+2. Idem en `app_en.arb` y `app_ar.arb`.
+3. Regenerar: `flutter gen-l10n`.
+4. Sustituir el string hardcoded por
+   `AppLocalizations.of(context).offlineRegionDemoLimitation`.
+
+#### N12 · `_safeBadge()` privado
+
+**Archivo:** `lib/features/city_picker/city_picker_screen.dart:140` (aprox).
+
+**Problema:** el helper `_safeBadge()` (creado en fix B4 de
+`REVISION_FINAL_2026_05_23.md`) protege `substring(0,2)` contra strings
+de longitud < 2. Es privado al screen. Si otros features necesitan el
+mismo guard (probable para badges de usuarios, paradas, líneas), habrá
+duplicación.
+
+**Fix propuesto:** extraer a `lib/shared/utils/string_formatting.dart`
+como función pública:
+
+```dart
+/// Devuelve un badge de 2 caracteres de [s] en mayúsculas, seguro
+/// contra strings de longitud < 2.
+String safeBadge(String s) {
+  if (s.isEmpty) return '··';
+  if (s.length == 1) return '${s.toUpperCase()}·';
+  return s.substring(0, 2).toUpperCase();
+}
+```
+
+Y actualizar `city_picker_screen.dart` para importarlo en lugar del privado.
+
+#### N14 · Documentar simplificación de `getNextDepartures` mock
+
+**Archivo:** `lib/data/mock/mock_data_service.dart:359-395`.
+
+**Problema:** el mock asume offset de 2 minutos entre paradas consecutivas
+(fix B5 de `REVISION_FINAL_2026_05_23.md`). Es una simplificación
+pedagógica; la realidad depende del tráfico, semáforos, distancia entre
+paradas, etc.
+
+**Fix propuesto:** **NO arreglar.** Documentar como simplificación
+intencional añadiendo comentario en la firma del método:
+
+```dart
+/// Devuelve las próximas [count] salidas para la combinación
+/// [routeId]+[stopId].
+///
+/// **Simplificación demo:** se asume un offset de 2 minutos por parada
+/// consecutiva desde la cabecera. La realidad operativa de COMUJESA
+/// depende de tráfico, semáforos y distancia entre paradas; esta
+/// simulación basta para la demo del TFG.
+List<ScheduleModel> getNextDepartures(...) { ... }
+```
+
+### 7.3 Bugs resueltos en sesión 2026-05-23 (referencia)
+
+Para trazabilidad — estos NO requieren acción adicional:
+
+| ID | Bug original | Cerrado en commit |
+|----|--------------|-------------------|
+| B1 | UUID `00000000-...` en operator_admin | (sesión anterior) |
+| B2 | `_error = 'e'` literal | (sesión anterior) |
+| B3 | Botón "AÑADIR A MIS LÍNEAS" cosmético | (sesión anterior) |
+| B4 | substring sin guard en city_picker | (sesión anterior, + N12 documenta extracción a shared) |
+| B5 | getNextDepartures ignora stopId | (sesión anterior, + N14 documenta simplificación residual) |
+| B6 | ETA "--" en active_route | (sesión anterior) |
+| B7 | "PUBLICAR RUTA" cosmético | (sesión anterior) |
+| B8 | bbox Jerez hardcoded | (sesión anterior, + N11 documenta banner ES) |
+| N1+N2 | `.first` sin guard en accessible_buses | `ca513fb` |
+| N3 | `firstWhere`+`orElse` en driver_dashboard | `7e108f7` |
+| N4 | `int.parse` en start_route_screen | `bf2837b` |
+| N5 | `_timeToMinutes` en schedule_section | `d4b6bd0` |
+| N6 | hex parser sin try-catch | `d3e9391` |
+| B9 | `Future.delayed` driver/ → Timer cancelable | `ecb24d6` |
+| N15 | `newMode.first` sin guard en brightness | `da1b040` |
+| N8 | Hive directo en editor_controller | (no encontrado en revisión 2026-05-23 — falso positivo) |
+| N13 | `Future.delayed` jank | (resuelto en A.6 / `ecb24d6`) |
+
+### 7.4 Respuesta sugerida para tribunal
+
+> "Tras la auditoría independiente del 22 de mayo, se detectaron 9 bugs
+> nuevos. Los 7 críticos P0/P1 se cerraron en 7 commits atómicos el 23 de
+> mayo (verificables en `git log` y documentados en
+> `docs/historico/SESION_LIMPIEZA_2026_05_23.md`). Quedan 6 bugs P2/P3
+> menores documentados arriba en §7.1, con archivo:línea y fix propuesto.
+> Estimación de cierre completo: ~4-5 horas de refactor. Aceptable como
+> deuda post-defensa."

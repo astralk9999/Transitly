@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../core/utils/app_logger.dart';
-import 'hive_init.dart';
 
 const _logTag = 'StorageRepo';
 

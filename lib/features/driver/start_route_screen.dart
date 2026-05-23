@@ -169,7 +169,6 @@ class _StartRouteScreenState extends ConsumerState<StartRouteScreen> {
                 runSpacing: 8,
                 children: sortedSchedules.map((s) {
                   final time = s.departureTime;
-                  final parts = time.split(':');
                    final m = _parseTimeToMinutes(time);
                    final isPast = m != null && m < nowMinutes;
                    final isNext = m != null && !isPast &&

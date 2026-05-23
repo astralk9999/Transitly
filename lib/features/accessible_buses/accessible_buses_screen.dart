@@ -71,13 +71,14 @@ class _AccessibleBusesScreenState
     if (stops.isEmpty) return null;
     final idx = trip.currentStopIndex;
     if (idx != null && idx >= 0 && idx < stops.length) return stops[idx].name;
-    return stops.first.name;
+    return stops.firstOrNull?.name;
   }
 
   int? _minutesUntil(MockDataService mockData, ActiveTripModel trip) {
     final next = mockData.getNextDepartures(trip.routeId, '', 1);
-    if (next.isEmpty) return null;
-    final parts = next.first.departureTime.split(':');
+    final departureTime = next.firstOrNull?.departureTime;
+    if (departureTime == null) return null;
+    final parts = departureTime.split(':');
     if (parts.length < 2) return null;
     final h = int.tryParse(parts[0]);
     final m = int.tryParse(parts[1]);

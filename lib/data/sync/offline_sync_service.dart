@@ -63,8 +63,9 @@ class OfflineSyncService {
         final executor = _executors[action.kind];
         if (executor == null) {
           AppLogger.warn(_logTag,
-              'no executor for ${action.kind.name}; stopping drain to keep order');
-          break;
+              'no executor for ${action.kind.name} (id=${action.id}); skipping to avoid blocking drain');
+          await queue.markFailure(action, Exception('no executor for ${action.kind.name}'));
+          continue;
         }
         try {
           await executor(action.payload);

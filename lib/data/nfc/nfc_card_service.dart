@@ -205,7 +205,7 @@ class NfcCardService {
         final ok = await mifare.authenticateSectorWithKeyA(
           sectorIndex: sectorIndex,
           key: key,
-        );
+        ).timeout(const Duration(seconds: 5));
         if (ok) return true;
       } catch (e) {
         AppLogger.warn(_tag, 'auth sector=$sectorIndex attempt=$attempt', e);
@@ -224,7 +224,9 @@ class NfcCardService {
   Future<Uint8List?> _readBlockSafe(
       MifareClassic mifare, int blockIndex) async {
     try {
-      return await mifare.readBlock(blockIndex: blockIndex);
+      return await mifare
+          .readBlock(blockIndex: blockIndex)
+          .timeout(const Duration(seconds: 5));
     } catch (e) {
       AppLogger.warn(_tag, 'readBlock $blockIndex failed', e);
       return null;

@@ -78,7 +78,11 @@ class PendingActionsQueue {
     final controller = StreamController<int>.broadcast();
     controller.add(box.length);
     final sub = box.watch().listen((_) => controller.add(box.length));
-    controller.onCancel = sub.cancel;
+    controller.onCancel = () {
+      try {
+        sub.cancel();
+      } catch (_) {}
+    };
     return controller.stream;
   }
 

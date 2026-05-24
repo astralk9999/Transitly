@@ -128,13 +128,13 @@ class StopDetailScreen extends ConsumerWidget {
                       String countdownStr = '';
                       bool isNext = false;
 
-                      if (nextDeps.isNotEmpty) {
-                        timeStr = nextDeps.first.departureTime;
+                      final nextDep = nextDeps.firstOrNull;
+                      if (nextDep != null) {
+                        timeStr = nextDep.departureTime;
                         final parts = timeStr.split(':');
-                        final h = int.tryParse(parts[0]);
-                        final m = int.tryParse(parts[1]);
+                        final h = parts.length >= 2 ? int.tryParse(parts[0]) : null;
+                        final m = parts.length >= 2 ? int.tryParse(parts[1]) : null;
                         if (h == null || m == null) {
-                          timeStr = nextDeps.first.departureTime;
                           countdownStr = '';
                           isNext = false;
                         } else {

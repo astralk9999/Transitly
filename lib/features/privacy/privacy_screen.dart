@@ -135,6 +135,11 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen> {
         'scheduled_at':
             DateTime.now().toUtc().add(const Duration(days: 30)).toIso8601String(),
       });
+      try {
+        await client.functions.invoke('delete_user');
+      } catch (e) {
+        AppLogger.warn('Privacy', 'delete_user edge function invoke failed', e);
+      }
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(l10n.privacyDeletionRequested)),

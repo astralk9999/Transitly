@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'dart:io' show Platform;
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../core/utils/app_logger.dart';
@@ -123,6 +125,17 @@ class PushService {
 
   @pragma('vm:entry-point')
   static Future<void> onBackgroundMessage(RemoteMessage message) async {
-    AppLogger.info('PushService', 'background message received');
+    AppLogger.info('PushService',
+        'background message received: ${message.messageId}');
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final pending =
+          prefs.getStringList('pending_background_messages') ?? [];
+      pending.add(jsonEncode(message.data));
+      await prefs.setStringList('pending_background_messages', pending);
+    } catch (e) {
+      AppLogger.warn('PushService',
+          'failed to persist background message', e);
+    }
   }
 }

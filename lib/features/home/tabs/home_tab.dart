@@ -50,7 +50,9 @@ class _HomeTabState extends ConsumerState<HomeTab> {
       backgroundColor: Colors.transparent,
       body: RefreshIndicator(
         onRefresh: () async {
-          // no-op: data is loaded synchronously from mock service
+          ref.invalidate(mockDataServiceProvider);
+          ref.invalidate(realtimeTripsProvider);
+          await Future<void>.delayed(const Duration(milliseconds: 400));
         },
         color: c.accent,
         child: _buildContent(context, c, mockData, activeTripsMap),

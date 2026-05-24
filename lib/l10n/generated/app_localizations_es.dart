@@ -2068,4 +2068,45 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get editorDraftSaved => 'Borrador guardado correctamente';
+
+  @override
+  String get cardNfcTitle => 'TARJETA NFC';
+
+  @override
+  String get cardNfcUnavailable => 'NFC NO DISPONIBLE';
+
+  @override
+  String get cardNfcExplanation =>
+      'La lectura de tarjetas de transporte requiere un dispositivo con NFC. Acerca la tarjeta a la parte trasera del móvil.';
+
+  @override
+  String get scheduleHideAll => 'Ocultar ▴';
+
+  @override
+  String get scheduleShowAll => 'Ver todos ▾';
+
+  @override
+  String get activateDriverCodeHint => 'XXX-XXXX-XX';
+
+  @override
+  String get routeFeedbackImproveInfo => 'MEJORAR INFORMACIÓN';
+
+  @override
+  String get routeFeedbackLine => 'Línea:';
+
+  @override
+  String get routeFeedbackStop => 'Parada:';
+
+  @override
+  String get routeFeedbackImproveType => 'Tipo de mejora';
+
+  @override
+  String get offlineDataReloadButton => 'Recargar desde assets';
+
+  @override
+  String get offlineDataExplanation =>
+      'Esta app usa un bundle JSON local con datos de COMUJESA (Jerez).';
+
+  @override
+  String get aiScheduleImportPrototypeBanner => 'PROTOTIPO';
 }

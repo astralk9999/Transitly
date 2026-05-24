@@ -72,16 +72,14 @@ class _OfflineDataScreenState extends ConsumerState<OfflineDataScreen> {
                 _MetadataCard(data: data, c: c),
                 const SizedBox(height: 24),
                 TransitButton(
-                  label: 'Recargar desde assets',
+                  label: AppLocalizations.of(context).offlineDataReloadButton,
                   icon: Icons.refresh,
                   isLoading: _reloading,
                   onPressed: _reload,
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'Esta app usa un bundle JSON local (sin backend). El botón '
-                  'vuelve a leer el archivo desde assets y re-parsea todos '
-                  'los modelos en memoria.',
+                  AppLocalizations.of(context).offlineDataExplanation,
                   style: TransitTypography.bodySmall(c.textLo),
                 ),
               ],

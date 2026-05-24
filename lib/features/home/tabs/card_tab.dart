@@ -40,7 +40,7 @@ class CardTab extends ConsumerWidget {
                     Semantics(
                       header: true,
                       child: Text(
-                        'TARJETA NFC',
+                        AppLocalizations.of(context).cardNfcTitle,
                         style: GoogleFonts.ibmPlexMono(
                           fontSize: 12,
                           fontWeight: FontWeight.w700,
@@ -52,9 +52,9 @@ class CardTab extends ConsumerWidget {
                     const SizedBox(height: 16),
                     nfcAvailable.when(
                       loading: () => _buildLoading(c),
-                      error: (_, __) => _buildUnsupported(c),
+                      error: (_, __) => _buildUnsupported(context, c),
                       data: (available) {
-                        if (!available) return _buildUnsupported(c);
+                        if (!available) return _buildUnsupported(context, c);
                         return _buildNfcContent(context, ref, c, scanState);
                       },
                     ),
@@ -78,7 +78,7 @@ class CardTab extends ConsumerWidget {
     );
   }
 
-  Widget _buildUnsupported(TransitColorScheme c) {
+  Widget _buildUnsupported(BuildContext context, TransitColorScheme c) {
     return GlassCard(
       blur: 24,
       fillOpacity: 0.08,
@@ -88,12 +88,11 @@ class CardTab extends ConsumerWidget {
         children: [
           Icon(Icons.nfc, size: 48, color: c.textLo),
           const SizedBox(height: 16),
-          Text('NFC NO DISPONIBLE',
+          Text(AppLocalizations.of(context).cardNfcUnavailable,
               style: TransitTypography.sectionTitle(c.textLo)),
           const SizedBox(height: 8),
           Text(
-            'La lectura de tarjetas del Consorcio de Transportes solo '
-            'esta disponible en dispositivos Android con NFC.',
+            AppLocalizations.of(context).cardNfcExplanation,
             style: TransitTypography.bodySecondary(c.textMid),
             textAlign: TextAlign.center,
           ),
@@ -114,7 +113,7 @@ class CardTab extends ConsumerWidget {
       case NfcScanStatus.error:
         return _buildError(context, ref, c, scanState);
       case NfcScanStatus.unsupported:
-        return _buildUnsupported(c);
+        return _buildUnsupported(context, c);
     }
   }
 

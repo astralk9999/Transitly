@@ -711,5 +711,18 @@
   "offlineRegionDemoLimitation": "نسخة تجريبية: يمكن تنزيل منطقة خيريز دي لا فرونتيرا فقط. اختيار المنطقة الحرة متاح في الإصدارات القادمة.",
   "@offlineRegionDemoLimitation": {"description": "Banner indicating offline region is limited to Jerez in demo version"},
   "editorDraftSaved": "تم حفظ المسودة بنجاح",
-  "@editorDraftSaved": {"description": "SnackBar message when a route editor draft is saved locally"}
+  "@editorDraftSaved": {"description": "SnackBar message when a route editor draft is saved locally"},
+  "cardNfcTitle": "بطاقة NFC",
+  "cardNfcUnavailable": "NFC غير متوفر",
+  "cardNfcExplanation": "تتطلب قراءة بطاقات النقل جهازا يدعم NFC. قرب البطاقة من الجزء الخلفي للهاتف.",
+  "scheduleHideAll": "إخفاء ▴",
+  "scheduleShowAll": "عرض الكل ▾",
+  "activateDriverCodeHint": "XXX-XXXX-XX",
+  "routeFeedbackImproveInfo": "تحسين المعلومات",
+  "routeFeedbackLine": "الخط:",
+  "routeFeedbackStop": "المحطة:",
+  "routeFeedbackImproveType": "نوع التحسين",
+  "offlineDataReloadButton": "إعادة التحميل من الأصول",
+  "offlineDataExplanation": "يستخدم هذا التطبيق حزمة JSON محلية مع بيانات COMUJESA (خيريز).",
+  "aiScheduleImportPrototypeBanner": "نموذج أولي"
 }

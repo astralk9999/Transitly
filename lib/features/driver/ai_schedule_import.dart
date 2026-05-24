@@ -70,9 +70,9 @@ class _AiScheduleImportState extends State<AiScheduleImport> {
               Container(
                 color: Colors.amber.withValues(alpha: 0.85),
                 padding: const EdgeInsets.symmetric(vertical: 6),
-                child: const Center(
+                child: Center(
                   child: Text(
-                    'PROTOTIPO',
+                    AppLocalizations.of(context).aiScheduleImportPrototypeBanner,
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w700,

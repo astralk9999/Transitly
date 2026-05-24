@@ -60,7 +60,7 @@ class _SuggestionDetailScreenState
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: c.textMid),
-          tooltip: 'Volver',
+          tooltip: AppLocalizations.of(context).actionBack,
           onPressed: () => context.pop(),
         ),
         title: Text('DETALLE SUGERENCIA',

@@ -109,7 +109,7 @@ class _RouteDetailScheduleSectionState
           onTap: () =>
               setState(() => _showAllSchedules = !_showAllSchedules),
           child: Text(
-            _showAllSchedules ? 'Ocultar ▴' : 'Ver todos ▾',
+            _showAllSchedules ? AppLocalizations.of(context).scheduleHideAll : AppLocalizations.of(context).scheduleShowAll,
             style: TransitTypography.bodySecondary(c.accent),
           ),
         ),

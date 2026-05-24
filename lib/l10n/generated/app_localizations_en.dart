@@ -2057,4 +2057,45 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get editorDraftSaved => 'Draft saved successfully';
+
+  @override
+  String get cardNfcTitle => 'NFC CARD';
+
+  @override
+  String get cardNfcUnavailable => 'NFC UNAVAILABLE';
+
+  @override
+  String get cardNfcExplanation =>
+      'Reading transport cards requires a device with NFC. Hold the card near the back of the phone.';
+
+  @override
+  String get scheduleHideAll => 'Hide ▴';
+
+  @override
+  String get scheduleShowAll => 'Show all ▾';
+
+  @override
+  String get activateDriverCodeHint => 'XXX-XXXX-XX';
+
+  @override
+  String get routeFeedbackImproveInfo => 'IMPROVE INFORMATION';
+
+  @override
+  String get routeFeedbackLine => 'Line:';
+
+  @override
+  String get routeFeedbackStop => 'Stop:';
+
+  @override
+  String get routeFeedbackImproveType => 'Improvement type';
+
+  @override
+  String get offlineDataReloadButton => 'Reload from assets';
+
+  @override
+  String get offlineDataExplanation =>
+      'This app uses a local JSON bundle with COMUJESA (Jerez) demo data.';
+
+  @override
+  String get aiScheduleImportPrototypeBanner => 'PROTOTYPE';
 }

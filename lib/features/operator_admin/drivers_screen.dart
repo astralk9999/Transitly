@@ -161,7 +161,7 @@ class _DriversScreenState extends ConsumerState<DriversScreen> {
                       IconButton(
                         icon: const Icon(Icons.arrow_back),
                         color: c.textHi,
-                        tooltip: 'Volver',
+                        tooltip: AppLocalizations.of(context).actionBack,
                         onPressed: () => Navigator.of(context).pop(),
                       ),
                       const SizedBox(width: 8),

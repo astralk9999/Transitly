@@ -774,5 +774,18 @@
   "offlineRegionDemoLimitation": "Demo version: only the Jerez de la Frontera region can be downloaded. Free region selection available in upcoming versions.",
   "@offlineRegionDemoLimitation": {"description": "Banner indicating offline region is limited to Jerez in demo version"},
   "editorDraftSaved": "Draft saved successfully",
-  "@editorDraftSaved": {"description": "SnackBar message when a route editor draft is saved locally"}
+  "@editorDraftSaved": {"description": "SnackBar message when a route editor draft is saved locally"},
+  "cardNfcTitle": "NFC CARD",
+  "cardNfcUnavailable": "NFC UNAVAILABLE",
+  "cardNfcExplanation": "Reading transport cards requires a device with NFC. Hold the card near the back of the phone.",
+  "scheduleHideAll": "Hide ▴",
+  "scheduleShowAll": "Show all ▾",
+  "activateDriverCodeHint": "XXX-XXXX-XX",
+  "routeFeedbackImproveInfo": "IMPROVE INFORMATION",
+  "routeFeedbackLine": "Line:",
+  "routeFeedbackStop": "Stop:",
+  "routeFeedbackImproveType": "Improvement type",
+  "offlineDataReloadButton": "Reload from assets",
+  "offlineDataExplanation": "This app uses a local JSON bundle with COMUJESA (Jerez) demo data.",
+  "aiScheduleImportPrototypeBanner": "PROTOTYPE"
 }

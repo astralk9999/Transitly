@@ -50,7 +50,7 @@ void main() {
     expect(box.isEmpty, isTrue);
   });
 
-  test('drainNow stops when kind not registered', () async {
+  test('drainNow discards action with unknown kind', () async {
     await queue.enqueue(
       PendingAction(
         id: 'exec-3',
@@ -60,7 +60,6 @@ void main() {
     );
     await service.drainNow();
     final actions = await queue.list();
-    expect(actions.length, 1);
-    expect(actions.first.kind, PendingActionKind.voteSuggestion);
+    expect(actions.length, 0);
   });
 }

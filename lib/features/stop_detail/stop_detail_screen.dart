@@ -61,7 +61,7 @@ class StopDetailScreen extends ConsumerWidget {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Tooltip(
-                    message: 'Volver',
+                    message: AppLocalizations.of(context).actionBack,
                     child: GestureDetector(
                       onTap: () => context.pop(),
                       child:

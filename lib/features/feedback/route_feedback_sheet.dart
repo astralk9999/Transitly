@@ -96,7 +96,7 @@ class _RouteFeedbackContentState extends ConsumerState<_RouteFeedbackContent> {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    'MEJORAR INFORMACIÓN',
+                    AppLocalizations.of(context).routeFeedbackImproveInfo,
                     style: TransitTypography.sectionTitle(c.textHi),
                   ),
                 ),
@@ -109,17 +109,17 @@ class _RouteFeedbackContentState extends ConsumerState<_RouteFeedbackContent> {
             const SizedBox(height: 8),
             if (route != null)
               Text(
-                'Línea: ${route.code} · ${route.name}',
+                '${AppLocalizations.of(context).routeFeedbackLine} ${route.code} · ${route.name}',
                 style: TransitTypography.bodySecondary(c.textMid),
               ),
             if (stop != null)
               Text(
-                'Parada: ${stop.name}',
+                '${AppLocalizations.of(context).routeFeedbackStop} ${stop.name}',
                 style: TransitTypography.bodySecondary(c.textMid),
               ),
             const SizedBox(height: 16),
 
-            Text('Tipo de mejora',
+            Text(AppLocalizations.of(context).routeFeedbackImproveType,
                 style: TransitTypography.bodySecondary(c.textMid)),
             const SizedBox(height: 8),
             Wrap(

@@ -36,7 +36,7 @@ class CityPickerScreen extends ConsumerWidget {
                       IconButton(
                         icon: const Icon(Icons.close),
                         color: c.textHi,
-                        tooltip: 'Cerrar',
+                        tooltip: AppLocalizations.of(context).actionClose,
                         onPressed: () => Navigator.of(context).pop(),
                       ),
                       const SizedBox(width: 8),
@@ -50,7 +50,7 @@ class CityPickerScreen extends ConsumerWidget {
                     data: (operators) {
                       if (operators.isEmpty) {
                         return Center(
-                          child: Text('No hay operadores disponibles',
+                          child: Text(AppLocalizations.of(context).cityPickerErrorOperators,
                               style: TransitTypography.bodyPrimary(c.textMid)),
                         );
                         }

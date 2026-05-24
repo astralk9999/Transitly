@@ -3872,6 +3872,84 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Borrador guardado correctamente'**
   String get editorDraftSaved;
+
+  /// Título de la pestaña de tarjeta NFC
+  ///
+  /// In es, this message translates to:
+  /// **'TARJETA NFC'**
+  String get cardNfcTitle;
+
+  /// Mensaje cuando NFC no está disponible
+  ///
+  /// In es, this message translates to:
+  /// **'NFC NO DISPONIBLE'**
+  String get cardNfcUnavailable;
+
+  /// Explicación de uso de NFC
+  ///
+  /// In es, this message translates to:
+  /// **'La lectura de tarjetas de transporte requiere un dispositivo con NFC. Acerca la tarjeta a la parte trasera del móvil.'**
+  String get cardNfcExplanation;
+
+  /// Botón para ocultar horarios
+  ///
+  /// In es, this message translates to:
+  /// **'Ocultar ▴'**
+  String get scheduleHideAll;
+
+  /// Botón para mostrar todos los horarios
+  ///
+  /// In es, this message translates to:
+  /// **'Ver todos ▾'**
+  String get scheduleShowAll;
+
+  /// Placeholder para código de activación
+  ///
+  /// In es, this message translates to:
+  /// **'XXX-XXXX-XX'**
+  String get activateDriverCodeHint;
+
+  /// Título para sugerencia de mejora de ruta
+  ///
+  /// In es, this message translates to:
+  /// **'MEJORAR INFORMACIÓN'**
+  String get routeFeedbackImproveInfo;
+
+  /// Etiqueta Línea en feedback
+  ///
+  /// In es, this message translates to:
+  /// **'Línea:'**
+  String get routeFeedbackLine;
+
+  /// Etiqueta Parada en feedback
+  ///
+  /// In es, this message translates to:
+  /// **'Parada:'**
+  String get routeFeedbackStop;
+
+  /// Etiqueta Tipo de mejora en feedback
+  ///
+  /// In es, this message translates to:
+  /// **'Tipo de mejora'**
+  String get routeFeedbackImproveType;
+
+  /// Botón para recargar datos offline
+  ///
+  /// In es, this message translates to:
+  /// **'Recargar desde assets'**
+  String get offlineDataReloadButton;
+
+  /// Explicación de la fuente de datos offline
+  ///
+  /// In es, this message translates to:
+  /// **'Esta app usa un bundle JSON local con datos de COMUJESA (Jerez).'**
+  String get offlineDataExplanation;
+
+  /// Banner de prototipo en importación IA
+  ///
+  /// In es, this message translates to:
+  /// **'PROTOTIPO'**
+  String get aiScheduleImportPrototypeBanner;
 }
 
 class _AppLocalizationsDelegate

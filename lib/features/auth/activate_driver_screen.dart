@@ -180,7 +180,7 @@ class _ActivateDriverScreenState extends ConsumerState<ActivateDriverScreen> {
                       ),
                       maxLength: 11,
                       decoration: InputDecoration(
-                        hintText: 'XXX-XXXX-XX',
+                        hintText: AppLocalizations.of(context).activateDriverCodeHint,
                         hintStyle: TextStyle(color: c.textLo, fontSize: 24, fontFamily: 'monospace', letterSpacing: 4),
                         counterText: '',
                         filled: true,

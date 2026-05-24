@@ -2047,4 +2047,45 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get editorDraftSaved => 'تم حفظ المسودة بنجاح';
+
+  @override
+  String get cardNfcTitle => 'بطاقة NFC';
+
+  @override
+  String get cardNfcUnavailable => 'NFC غير متوفر';
+
+  @override
+  String get cardNfcExplanation =>
+      'تتطلب قراءة بطاقات النقل جهازا يدعم NFC. قرب البطاقة من الجزء الخلفي للهاتف.';
+
+  @override
+  String get scheduleHideAll => 'إخفاء ▴';
+
+  @override
+  String get scheduleShowAll => 'عرض الكل ▾';
+
+  @override
+  String get activateDriverCodeHint => 'XXX-XXXX-XX';
+
+  @override
+  String get routeFeedbackImproveInfo => 'تحسين المعلومات';
+
+  @override
+  String get routeFeedbackLine => 'الخط:';
+
+  @override
+  String get routeFeedbackStop => 'المحطة:';
+
+  @override
+  String get routeFeedbackImproveType => 'نوع التحسين';
+
+  @override
+  String get offlineDataReloadButton => 'إعادة التحميل من الأصول';
+
+  @override
+  String get offlineDataExplanation =>
+      'يستخدم هذا التطبيق حزمة JSON محلية مع بيانات COMUJESA (خيريز).';
+
+  @override
+  String get aiScheduleImportPrototypeBanner => 'نموذج أولي';
 }

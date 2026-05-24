@@ -10,16 +10,21 @@ import '../../core/utils/app_logger.dart';
 import 'firebase_setup.dart';
 
 class PushService {
+  static PushService? _instance;
   static String? _fcmToken;
   static bool _initialized = false;
 
-  static Future<void> init() async {
-    if (_initialized) return;
-    if (!FirebaseSetup.isAvailable) return;
+  /// Inicializa el servicio y devuelve la instancia singleton.
+  /// Devuelve null si Firebase no está disponible o el permiso fue denegado.
+  static Future<PushService?> init() async {
+    if (_initialized) return _instance;
+    if (!FirebaseSetup.isAvailable) return null;
     try {
       final messaging = FirebaseMessaging.instance;
       final settings = await messaging.requestPermission();
-      if (settings.authorizationStatus != AuthorizationStatus.authorized) return;
+      if (settings.authorizationStatus != AuthorizationStatus.authorized) {
+        return null;
+      }
       _fcmToken = await messaging.getToken();
       AppLogger.info('Push', 'FCM token obtained');
       messaging.onTokenRefresh.listen((token) {
@@ -27,12 +32,16 @@ class PushService {
         AppLogger.info('Push', 'FCM token refreshed');
       });
       _initialized = true;
+      _instance = PushService();
+      return _instance;
     } catch (e) {
       AppLogger.warn('Push', 'init failed', e);
+      return null;
     }
   }
 
   static String? get fcmToken => _fcmToken;
+  static PushService? get instance => _instance;
 
   final SupabaseClient _client;
   final FirebaseMessaging _messaging;

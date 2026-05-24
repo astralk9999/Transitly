@@ -58,14 +58,15 @@ void main() async {
     try {
       await FirebaseSetup.init();
       AppLogger.info('Firebase', 'initialized');
-      await PushService.init();
-        final pushService = PushService();
+      final pushService = await PushService.init();
+      if (pushService != null) {
         pushService.setupBackgroundOpenedHandler((deeplink) {
           AppLogger.info('PushService', 'background deeplink: $deeplink');
         });
         await pushService.handleColdStartMessage((deeplink) {
           AppLogger.info('PushService', 'cold start deeplink: $deeplink');
         });
+      }
     } catch (e) {
       AppLogger.warn('Firebase', 'init failed — push unavailable', e);
     }

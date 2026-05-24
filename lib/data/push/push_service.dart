@@ -103,6 +103,24 @@ class PushService {
     });
   }
 
+  void setupBackgroundOpenedHandler(void Function(String deeplink) onDeeplink) {
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      final deeplink = message.data['deeplink'] as String?;
+      if (deeplink != null && deeplink.isNotEmpty) {
+        onDeeplink(deeplink);
+      }
+    });
+  }
+
+  Future<void> handleColdStartMessage(void Function(String deeplink) onDeeplink) async {
+    final initialMessage = await _messaging.getInitialMessage();
+    if (initialMessage == null) return;
+    final deeplink = initialMessage.data['deeplink'] as String?;
+    if (deeplink != null && deeplink.isNotEmpty) {
+      onDeeplink(deeplink);
+    }
+  }
+
   @pragma('vm:entry-point')
   static Future<void> onBackgroundMessage(RemoteMessage message) async {
     AppLogger.info('PushService', 'background message received');

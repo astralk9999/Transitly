@@ -67,7 +67,6 @@ void main(List<String> args) {
   const lightTextLo = LumColor(0x8888A0, 'textLo(light)');
   const lightAccent = LumColor(0x7B64C0, 'accent(light)');
   const lightBgRoot = LumColor(0xF4F4FB, 'bgRoot(light)');
-  const lightBgSurface = LumColor(0xFFFEFF, 'bgSurface(light)');
 
   // State colors
   const stateOnRoute = LumColor(0x00A0FF, 'stateOnRoute');

@@ -1,7 +1,7 @@
 # 04 — Desarrollo e Implementación
 
 **Proyecto:** Transitly
-**Repositorio:** nexto-stop-v2 (`master @ 85b81a1`)
+**Repositorio:** nexto-stop-v2 (`master @ b908f3c`)
 **Pila tecnológica principal:** Flutter 3.x · Dart 3 · Riverpod 2.6 · GoRouter 17 · Freezed 3 · Supabase (PostgreSQL + Auth + Edge Functions) · Hive 2.2 con cifrado AES en cajas sensibles · Firebase Messaging 16 · Sentry 8 · PostHog 5 · `flutter_secure_storage` · `very_good_analysis` · `leak_tracker_flutter_testing`
 **Indicadores verificados a 23/05/2026:** 616 *tests* pasando, 14 migraciones SQL consecutivas, 27 *features*, 4 Edge Functions desplegadas, 5 ADRs, 6 *runbooks*, 171/190 ítems del plan mega cerrados (90,0 %), 19 bloqueadores externos documentados, 628 claves ARB (español, inglés y árabe), 4 *jobs* de CI en verde, *scorecard* TFG 8,9/10 y producción 6,0/10
 
@@ -268,7 +268,7 @@ ofuscados que requieran persistir entre arranques.
 ## 7. Pruebas técnicas
 
 La suite actual cuenta con **616 *tests* pasando**. Esta cifra se
-verifica en el `commit` de cabecera (`master @ 85b81a1`). El
+verifica en el `commit` de cabecera (`master @ b908f3c`). El
 desglose aproximado por categoría es el siguiente:
 
 | Categoría | Cantidad aproximada | Foco |

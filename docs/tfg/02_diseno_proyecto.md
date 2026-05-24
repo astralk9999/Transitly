@@ -1,7 +1,7 @@
 # 02 — Diseño del Proyecto
 
 **Proyecto:** Transitly (repositorio `nexto-stop-v2`).
-**Estado verificado:** `master @ 85b81a1` (23 de mayo de 2026); **616 tests** declarados pasando, **14 migraciones SQL** consecutivas (`001`–`013` más `016`), **27 features**, **4 Edge Functions** desplegadas, **5 ADRs**, **6 runbooks**, **73 documentos** en `docs/`, **171 ítems** del mega plan cerrados sobre 190 (90,0 %), **628 claves ARB** en tres locales (ES/EN/AR). Scorecard maestro: **TFG 8,9/10 · Producción 6,0/10** (`docs/00_MAESTRO.md` línea 11).
+**Estado verificado:** `master @ b908f3c` (23 de mayo de 2026); **619 tests** declarados pasando, **14 migraciones SQL** consecutivas (`001`–`013` más `016`), **27 features**, **4 Edge Functions** desplegadas, **5 ADRs**, **6 runbooks**, **73 documentos** en `docs/`, **171 ítems** del mega plan cerrados sobre 190 (90,0 %), **628 claves ARB** en tres locales (ES/EN/AR). Scorecard maestro: **TFG 8,9/10 · Producción 6,0/10** (`docs/00_MAESTRO.md` línea 11).
 
 ---
 
@@ -40,7 +40,7 @@ Los objetivos no funcionales se agrupan en siete familias. En **rendimiento**, e
 
 En **accesibilidad** se persigue la conformidad WCAG 2.2 AA verificable estáticamente sobre el código; el acta de pruebas con productos de apoyo (TalkBack y VoiceOver) se programa para la semana 10. En **seguridad** se aplica RLS DENY-by-default sobre todas las tablas, cifrado en reposo de las cajas Hive sensibles mediante `HiveAesCipher`, y almacenamiento de claves criptográficas en el llavero del sistema operativo a través de `flutter_secure_storage` (Keychain en iOS, Keystore en Android).
 
-En **privacidad** la política es opt-out por defecto, con consentimiento granular y persistente; se implementan el artículo 8 (verificación de edad), el artículo 13 (información al interesado), el artículo 17 (derecho de supresión mediante un worker de borrado), el artículo 20 (portabilidad por exportación) y el artículo 21 (revocación de consentimiento en caliente sin reinicio) del RGPD. En **observabilidad** se instrumentan **6 spans** de Sentry y **17 eventos** de PostHog, todos gobernados por consent-gating. Finalmente, en **mantenibilidad e internacionalización**, la arquitectura limpia se acompaña de **616 tests automatizados**, **7 jobs de CI en verde**, RTL para árabe y `flutter analyze` con cero issues bloqueantes.
+En **privacidad** la política es opt-out por defecto, con consentimiento granular y persistente; se implementan el artículo 8 (verificación de edad), el artículo 13 (información al interesado), el artículo 17 (derecho de supresión mediante un worker de borrado), el artículo 20 (portabilidad por exportación) y el artículo 21 (revocación de consentimiento en caliente sin reinicio) del RGPD. En **observabilidad** se instrumentan **6 spans** de Sentry y **17 eventos** de PostHog, todos gobernados por consent-gating. Finalmente, en **mantenibilidad e internacionalización**, la arquitectura limpia se acompaña de **619 tests automatizados**, **6 jobs de CI en verde**, RTL para árabe y `flutter analyze` con cero issues bloqueantes.
 
 ---
 
@@ -72,7 +72,7 @@ Los **recursos humanos** se reducen a un único desarrollador en régimen indivi
 
 ## 7. Indicadores de calidad
 
-Se han definido **nueve indicadores medibles** con sus respectivos umbrales y estado verificado. La cobertura de tests se fija como objetivo en el 60 % y se encuentra actualmente en el 24 %; la palanca correctiva, identificada y activa, consiste en escribir tests para la capa `remote/`. El análisis estático con `flutter analyze` debe mantenerse en cero issues bloqueantes. El tamaño del Android App Bundle objetivo es inferior a 50 MB total; el APK release actual ocupa 73,5 MiB sin separación por ABI, deuda explicitada en el scorecard. La accesibilidad WCAG 2.2 AA se verifica estáticamente y se complementará con acta manual. Los *advisors* de seguridad de Supabase deben permanecer en cero. La latencia p95 del flujo de autenticación se limita a 800 milisegundos y la del renderizado inicial del mapa a 1.500 milisegundos. Los 7 jobs de GitHub Actions deben permanecer en verde y el escáner Semgrep actúa de modo bloqueante en *pull request*.
+Se han definido **nueve indicadores medibles** con sus respectivos umbrales y estado verificado. La cobertura de tests se fija como objetivo en el 60 % y se encuentra actualmente en el 24 %; la palanca correctiva, identificada y activa, consiste en escribir tests para la capa `remote/`. El análisis estático con `flutter analyze` debe mantenerse en cero issues bloqueantes. El tamaño del Android App Bundle objetivo es inferior a 50 MB total; el APK release actual ocupa 73,5 MiB sin separación por ABI, deuda explicitada en el scorecard. La accesibilidad WCAG 2.2 AA se verifica estáticamente y se complementará con acta manual. Los *advisors* de seguridad de Supabase deben permanecer en cero. La latencia p95 del flujo de autenticación se limita a 800 milisegundos y la del renderizado inicial del mapa a 1.500 milisegundos. Los 6 jobs de GitHub Actions deben permanecer en verde y el escáner Semgrep actúa de modo bloqueante en *pull request*.
 
 ---
 

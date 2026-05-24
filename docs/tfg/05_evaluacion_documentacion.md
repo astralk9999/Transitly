@@ -1,7 +1,7 @@
 # 05 — Seguimiento, Evaluación y Documentación
 
 **Proyecto:** Transitly (nexto-stop-v2)
-**Rama / HEAD:** `master @ 85b81a1`
+**Rama / HEAD:** `master @ b908f3c`
 **Fecha de cierre del anchor:** 2026-05-23
 **Ciclo formativo:** DAM (Desarrollo de Aplicaciónes Multiplataforma)
 **Autoria:** Itziar Uruburu Elizalde (autoria individual; asistencia IA documentada).
@@ -69,7 +69,7 @@ Las incidencias significativas detectadas durante el desarrollo se han registrad
 | 2026-05-22 | `AppLogger` quedaba como noop en release, lo que hacia perder los breadcrumbs de Sentry. | Observabilidad | Media | Movimiento de `addBreadcrumb` fuera del bloque `kDebugMode` y test asociado. |
 | 2026-05-23 | Factoria de repositorios duplicada en doce providers (código casi identico). | Deuda técnica | Media | Helper `repositoryWithSessionFallback` reutilizable y refactor coordinado de los doce providers. |
 
-El conjunto de incidencias se encuentra cerrado al cierre del anchor (HEAD `85b81a1`), salvo los diecinueve bloqueadores externos enumerados en `docs/EXTERNAL_BLOCKERS.md`, que dependen de servicios o decisiónes fuera del alcance individual (alta en Play Console, certificado Apple, alta de COMUJESA como entidad colaboradora, etc.).
+El conjunto de incidencias se encuentra cerrado al cierre del anchor (HEAD `b908f3c`), salvo los diecinueve bloqueadores externos enumerados en `docs/EXTERNAL_BLOCKERS.md`, que dependen de servicios o decisiónes fuera del alcance individual (alta en Play Console, certificado Apple, alta de COMUJESA como entidad colaboradora, etc.).
 
 ---
 
@@ -88,7 +88,7 @@ La evolucion de Transitly se materializa en un historial de commits trazables co
 | Capa de datos con repositorio canonico | Refactor | Doce repositorios con domain/remote/local/mock/provider y SWR; helper de fallback de sesión. | 523 → 570 |
 | Cierre de PRO-Ops y EXTERNAL_BLOCKERS | Docs + feat | Runbooks operativos, error budget policy, documentación de bloqueadores externos. | 570 → 616 |
 
-El detalle completo (commits + PRs internas) puede consultarse en `git log --oneline` desde el commit raiz hasta `85b81a1`, junto con los archivos `docs/MEGA_PLAN_REFINAMIENTO.md` y `docs/historico/AUDIT_2026_05_22.md`.
+El detalle completo (commits + PRs internas) puede consultarse en `git log --oneline` desde el commit raiz hasta `b908f3c`, junto con los archivos `docs/MEGA_PLAN_REFINAMIENTO.md` y `docs/historico/AUDIT_2026_05_22.md`.
 
 ---
 
@@ -126,11 +126,11 @@ La sesión formal con los cinco usuarios externos producira un anexo en `docs/hi
 
 ## 5. Metricas finales auditadas
 
-Las cifras siguientes son las verificadas en el anchor `master @ 85b81a1` mediante `tool/verify_state.sh` y se públican como contrato del cierre del TFG:
+Las cifras siguientes son las verificadas en el anchor `master @ b908f3c` mediante `tool/verify_state.sh` y se públican como contrato del cierre del TFG:
 
 | Metrica | Valor | Comentario |
 |---------|-------|------------|
-| Tests automáticos en verde | **616** | Cobertura distribuida entre widgets, modelos, accesibilidad, utilidades y data layer. |
+| Tests automáticos en verde | **619** | Cobertura distribuida entre widgets, modelos, accesibilidad, utilidades y data layer. |
 | Mega plan | **171 / 190 (90,0 %)** | Los diecinueve ítems restantes son bloqueadores externos enumerados en `docs/EXTERNAL_BLOCKERS.md`. |
 | Cobertura global de tests | **24-30 %** | Buena en componentes UI y modelos, débil en capa `data/remote` (deuda reconocida y priorizada en P2-4). |
 | Migraciones SQL aplicadas | **14** consecutivas | Schema completo con RLS default-deny y funciones helper. |

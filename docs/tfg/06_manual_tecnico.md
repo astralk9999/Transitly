@@ -1,7 +1,7 @@
 # 06 — Manual Técnico
 
 **Proyecto:** Transitly (nexto-stop-v2)
-**Rama / HEAD:** `master @ 85b81a1`
+**Rama / HEAD:** `master @ b908f3c`
 **Fecha del anchor:** 2026-05-23
 **Plataformas objetivo:** Android (minSdk 23, targetSdk 34, compileSdk 35), iOS 16.0+, Web (PWA experimental).
 
@@ -19,7 +19,7 @@ Transitly es una aplicación Flutter con backend Supabase. Las decisiónes estru
 - **ADR 004 — Supabase** como backend (PostgreSQL, Auth, Realtime, Storage y Edge Functions Deno).
 - **ADR 005 — Feature-first** como organizacion del código en `lib/features/`.
 
-En el anchor actual el proyecto suma **veintisiete features**, **catorce migraciónes SQL consecutivas**, **cuatro Edge Functions** desplegadas, **seis runbooks operativos**, **616 tests** en verde, **628 claves ARB** localizadas a ES/EN/AR y **siete jobs CI** que validan analyze, test, build web y build Android (más dos jobs de seguridad). El cuadro de mando interno marca **TFG 8,9 / 10** y **Produccion 6,0 / 10**, diferenciando con claridad la madurez académica de la madurez productiva.
+En el anchor actual el proyecto suma **veintisiete features**, **catorce migraciónes SQL consecutivas**, **cuatro Edge Functions** desplegadas, **seis runbooks operativos**, **619 tests** en verde, **628 claves ARB** localizadas a ES/EN/AR y **seis jobs CI** que validan analyze, test, build web y build Android (más dos jobs de seguridad). El cuadro de mando interno marca **TFG 8,9 / 10** y **Produccion 6,0 / 10**, diferenciando con claridad la madurez académica de la madurez productiva.
 
 ---
 
@@ -160,7 +160,7 @@ nexto-stop-v2/
 │   ├── features/             27 features con `*_screen.dart`
 │   ├── l10n/                 ARB ES/EN/AR + generated
 │   └── shared/               Widgets reutilizables, models Freezed, providers
-├── test/                     616 tests
+├── test/                     619 tests
 ├── supabase/
 │   ├── migrations/           14 migraciónes consecutivas
 │   └── functions/            4 Edge Functions Deno
@@ -174,7 +174,7 @@ nexto-stop-v2/
 │   ├── historico/            Auditorias y planes archivados
 │   └── tfg/                  Memoria académica (01..08)
 ├── tool/                     Scripts Dart y shell (verify_state, contrast, build)
-└── .github/workflows/ci.yml  CI con 7 jobs principales + 2 de seguridad
+└── .github/workflows/ci.yml  CI con 6 jobs (4 build + 2 seguridad)
 ```
 
 ---
@@ -224,7 +224,7 @@ Para `purge_old_data` y `delete_user_worker` se habilita `pg_cron` (requiere Sup
 
 ## 7. CI/CD
 
-El workflow `.github/workflows/ci.yml` define **siete jobs principales** ejecutados en cada push y en cada pull request hacia `master`:
+El workflow `.github/workflows/ci.yml` define **seis jobs principales** ejecutados en cada push y en cada pull request hacia `master`:
 
 1. **Flutter Analyze** — bloqueo total ante cualquier error, warning o info.
 2. **Flutter Test** — `flutter test --coverage`, validacion de umbral global y upload a Codecov.

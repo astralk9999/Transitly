@@ -3,7 +3,7 @@
 **Proyecto:** Transitly (repositorio `nexto-stop-v2`).
 **Autor:** trabajo individual con asistencia documentada de un sistema multiagente de inteligencia artificial.
 **Ciclo formativo:** Desarrollo de Aplicaciones Multiplataforma (DAM).
-**Estado verificado:** `master @ 85b81a1` (23 de mayo de 2026).
+**Estado verificado:** `master @ b908f3c` (23 de mayo de 2026).
 
 ---
 

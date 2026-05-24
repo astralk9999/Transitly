@@ -1,7 +1,7 @@
 # 03 — Planificación de la Ejecución
 
 **Proyecto:** Transitly
-**Repositorio:** nexto-stop-v2 (`master @ 85b81a1`)
+**Repositorio:** nexto-stop-v2 (`master @ b908f3c`)
 **Ciclo formativo:** Desarrollo de Aplicaciones Multiplataforma (DAM)
 **Sector:** movilidad urbana — operador COMUJESA (Jerez de la Frontera)
 **Cronograma:** 11 semanas naturales, del 01/04/2026 al 16/06/2026
@@ -98,7 +98,7 @@ gantt
     Sprint 4 features de comunidad     :de4, after de3, 7d
     Integracion Edge Functions         :de5, 2026-05-20, 5d
     Hardening seguridad y RLS          :de6, after de5, 3d
-    Suite de pruebas 616 tests         :de7, 2026-05-25, 6d
+    Suite de pruebas 619 tests         :de7, 2026-05-25, 6d
     ENTREGA 2 (app funcional)          :milestone, e2, 2026-06-02, 0d
 
     section 5. Evaluacion (sem 10)
@@ -162,7 +162,7 @@ defensa ante el tribunal en la semana 11.
 | Sprint 4: comunidad y admin (incidencias, votos, panel) | 7 días | App completa |
 | Integración Edge Functions (4 funciones Deno) | 5 días | Backend en servicio |
 | *Hardening* seguridad: RLS DENY-by-default, scrubbing | 3 días | Capa segura |
-| Suite de pruebas (objetivo verificado: 616 tests) | 6 días | Tests verdes |
+| Suite de pruebas (objetivo verificado: 619 tests) | 6 días | Tests verdes |
 
 ### 3.5. Fase 5 — Evaluación (semana 10)
 
@@ -324,7 +324,7 @@ Cada sprint semanal se cierra el domingo con la siguiente lista de
 verificación:
 
 1. `flutter analyze` con cero *issues*.
-2. `flutter test` con cero fallos sobre los 616 tests del repositorio
+2. `flutter test` con cero fallos sobre los 619 tests del repositorio
    en el momento de la verificación.
 3. `git status` con árbol limpio.
 4. *Commit* convencional (`feat`, `fix`, `docs`, etc.) y *push* a

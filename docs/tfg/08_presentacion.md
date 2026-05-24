@@ -5,7 +5,7 @@
 **Ciclo:** Desarrollo de Aplicaciónes Multiplataforma (DAM)
 **Defensa prevista:** semana 11 del cronograma (10-16 de junio de 2026)
 **Duracion total estimada:** entre 18 y 22 minutos
-**Anclaje:** master @ 85b81a1 · 2026-05-23
+**Anclaje:** master @ b908f3c · 2026-05-23
 
 > Este documento es la base textual sobre la que se montan las
 > diapositivas reales en la herramienta de presentación. Cada sección
@@ -165,7 +165,7 @@ ninguna operación sea posible sin política explicita. (90 segúndos)
 
 ## Diapositiva 11 — Calidad
 
-- **616 tests** automatizados pasando.
+- **619 tests** automatizados pasando.
 - **14 migraciónes SQL** consecutivas verificadas.
 - **27 features** funcionales y empaquetadas.
 - **4 Edge Functions** desplegadas: `delete_user`, `import_gtfs`,
@@ -188,7 +188,7 @@ quedan 19 bloqueadores externos documentados. (60 segúndos)
   relevante.
 - **Documentación como contrato verificable:** todo cambio se refleja
   en `docs/` y se ancla a un commit.
-- **CI:** **7 jobs verdes** (analyze, test, integration, build).
+- **CI:** **6 jobs verdes** (analyze, test, integration, build).
 
 **Notas:** explicar que trabajar en solitario requiere una disciplina
 mayor de revisión externa. (60 segúndos)
@@ -260,7 +260,7 @@ sólida sobre la que construirlo. (60 segúndos)
   exigencias reales de accesibilidad y privacidad.
 - La arquitectura feature-first y la disciplina documental han sido las
   decisiónes de mayor retorno.
-- El TFG se entrega con metrica reproducible: 616 tests, 14 migraciónes,
+- El TFG se entrega con metrica reproducible: 619 tests, 14 migraciónes,
   27 features, 4 Edge Functions y un mega plan al 90,0%.
 
 **Notas:** cerrar con una frase memorable, "Transitly no es una

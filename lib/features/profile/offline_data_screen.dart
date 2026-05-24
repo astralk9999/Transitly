@@ -29,7 +29,7 @@ class _OfflineDataScreenState extends ConsumerState<OfflineDataScreen> {
       await ref.read(mockDataServiceProvider).reload();
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Datos recargados desde assets')),
+        SnackBar(content: Text(AppLocalizations.of(context).offlineDataReloaded)),
       );
     } finally {
       if (mounted) setState(() => _reloading = false);

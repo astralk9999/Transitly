@@ -24,19 +24,36 @@ import 'widgets/route_detail_header_section.dart';
 import 'widgets/route_detail_schedule_section.dart';
 import 'widgets/route_detail_timeline.dart';
 
-class RouteDetailScreen extends ConsumerWidget {
+class RouteDetailScreen extends ConsumerStatefulWidget {
   const RouteDetailScreen({super.key, required this.routeId});
 
   final String routeId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<RouteDetailScreen> createState() => _RouteDetailScreenState();
+}
+
+class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final mockData = ref.read(mockDataServiceProvider);
+      final route = mockData.getRouteById(widget.routeId);
+      if (route != null) {
+        PostHogAnalyticsService.routeViewed(route.id, route.operatorId);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
     final mockData = ref.watch(mockDataServiceProvider);
-    // Refresh countdowns on clock tick.
     ref.watch(realtimeClockProvider);
-    final route = mockData.getRouteById(routeId);
+    final route = mockData.getRouteById(widget.routeId);
 
     if (route == null) {
       return Scaffold(
@@ -45,32 +62,27 @@ class RouteDetailScreen extends ConsumerWidget {
       );
     }
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      PostHogAnalyticsService.routeViewed(route.id, route.operatorId);
-    });
-
     final realtimeTrips = ref.watch(realtimeTripsProvider);
     final tripsList = realtimeTrips.valueOrNull ?? mockData.activeTrips;
     ActiveTripModel? activeTrip;
     for (final t in tripsList) {
-      if (t.routeId == routeId && t.status != TripStatus.cancelled) {
+      if (t.routeId == widget.routeId && t.status != TripStatus.cancelled) {
         activeTrip = t;
         break;
       }
     }
 
-    final routeStopsList = mockData.routeStops[routeId] ?? const [];
+    final routeStopsList = mockData.routeStops[widget.routeId] ?? const [];
     final sortedRouteStops = List<RouteStopModel>.from(routeStopsList)
       ..sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
-    final stopsForRoute = mockData.getStopsForRoute(routeId);
+    final stopsForRoute = mockData.getStopsForRoute(widget.routeId);
     final stopsMap = <String, StopModel>{
       for (final s in mockData.stops) s.id: s,
     };
-    final alerts = mockData.getAlertsForRoute(routeId);
+    final alerts = mockData.getAlertsForRoute(widget.routeId);
     final favorites = ref.watch(userFavoritesProvider);
-    final isFavorite = favorites.contains(routeId);
+    final isFavorite = favorites.contains(widget.routeId);
 
-    // Transfers: memoized stop → route codes lookup (O(1) per stop).
     final stopToRoutes = ref.watch(stopToRouteCodesProvider);
     final transfers = <String, List<String>>{};
     for (final rs in sortedRouteStops) {
@@ -87,7 +99,7 @@ class RouteDetailScreen extends ConsumerWidget {
         : null;
     final estimatedMinutes = lastTimeMinutes ?? (stopsForRoute.length * 3);
 
-    final frequency = ref.watch(routeFrequencyProvider(routeId));
+    final frequency = ref.watch(routeFrequencyProvider(widget.routeId));
 
     final padding = ResponsiveScaffold.screenPadding(context);
 
@@ -128,11 +140,11 @@ class RouteDetailScreen extends ConsumerWidget {
                           ),
                           const SizedBox(height: 24),
                           RouteDetailScheduleSection(
-                              mockData: mockData, routeId: routeId),
+                              mockData: mockData, routeId: widget.routeId),
                           const SizedBox(height: 24),
-                          RouteDetailChangelog(routeId: routeId),
+                          RouteDetailChangelog(routeId: widget.routeId),
                           const SizedBox(height: 24),
-                          RouteDetailFeedbackSection(routeId: routeId),
+                          RouteDetailFeedbackSection(routeId: widget.routeId),
                           const SizedBox(height: 24),
                         ]),
                       ),
@@ -153,9 +165,9 @@ class RouteDetailScreen extends ConsumerWidget {
                       onPressed: () async {
                         final notifier = ref.read(userFavoritesProvider.notifier);
                         if (isFavorite) {
-                          await notifier.removeLine(routeId);
+                          await notifier.removeLine(widget.routeId);
                         } else {
-                          await notifier.addLine(routeId);
+                          await notifier.addLine(widget.routeId);
                         }
                         if (!context.mounted) return;
                         ScaffoldMessenger.of(context).showSnackBar(

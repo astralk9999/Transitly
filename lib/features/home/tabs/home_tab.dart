@@ -373,34 +373,44 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                   ? _minutesUntil(next.first.departureTime)
                   : null;
 
-              return Semantics(
+                  return Semantics(
                 button: true,
                 label: AppLocalizations.of(context).homeRouteSemanticsLabel(route.code, time),
                 child: GestureDetector(
                   onTap: () => context.push('/route/$routeId'),
-                  child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TransitChip(route.code, color: route.routeColor),
-                    const SizedBox(width: 4),
-                    Text(time,
-                        style: TransitTypography.stopTime(c.textHi)),
-                    if (mins != null) ...[
-                      const SizedBox(width: 4),
-                      AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 200),
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 4),
+                    child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TransitChip(route.code, color: route.routeColor),
+                      const SizedBox(width: 6),
+                      Flexible(
                         child: Text(
-                          '${mins}m',
-                          key: ValueKey('$routeId-$mins'),
-                          style: TransitTypography.bodySmall(c.accent),
+                          route.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TransitTypography.bodySmall(c.textMid),
                         ),
                       ),
+                      const SizedBox(width: 6),
+                      Text(time,
+                          style: TransitTypography.stopTime(c.textHi)),
+                      if (mins != null) ...[
+                        const SizedBox(width: 4),
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 200),
+                          child: Text(
+                            '${mins}m',
+                            key: ValueKey('$routeId-$mins'),
+                            style: TransitTypography.bodySmall(c.accent),
+                          ),
+                        ),
+                      ],
                     ],
-                    const SizedBox(width: 4),
-                    Icon(Icons.notifications_none, size: 14, color: c.textLo),
-                  ],
+                  ),
+                  ),
                 ),
-              ),
               );
             }).toList(),
           ),

@@ -15,6 +15,7 @@ import '../../../data/mock/mock_data_service.dart';
 import '../../../data/mock/mock_realtime_service.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/models/enums.dart';
+import '../../../shared/models/route_model.dart';
 import '../../../shared/providers/connectivity_provider.dart';
 import '../../../shared/providers/is_dark_provider.dart';
 import '../../../shared/providers/user_location_provider.dart';

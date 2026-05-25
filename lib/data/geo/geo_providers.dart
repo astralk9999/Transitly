@@ -101,7 +101,9 @@ const _activeOperatorHiveKey = 'geo:active_operator_id';
 void persistActiveOperatorId(String operatorId) {
   try {
     final box = Hive.box<Map<dynamic, dynamic>>('guest_theme_prefs');
-    box.put(_activeOperatorHiveKey, operatorId);
+    final prefs = box.get('prefs', defaultValue: <String, dynamic>{}) ?? <String, dynamic>{};
+    prefs[_activeOperatorHiveKey] = operatorId;
+    box.put('prefs', prefs);
   } catch (_) {}
 }
 
@@ -109,7 +111,8 @@ String? _loadPersistedOperatorId() {
   try {
     if (!Hive.isBoxOpen('guest_theme_prefs')) return null;
     final box = Hive.box<Map<dynamic, dynamic>>('guest_theme_prefs');
-    return box.get(_activeOperatorHiveKey) as String?;
+    final prefs = box.get('prefs', defaultValue: <String, dynamic>{}) ?? <String, dynamic>{};
+    return prefs[_activeOperatorHiveKey] as String?;
   } catch (_) {
     return null;
   }

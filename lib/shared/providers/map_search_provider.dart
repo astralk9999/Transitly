@@ -69,7 +69,6 @@ final mapSearchResultsProvider =
     final stops = mockData.stops.where((s) {
       final q = query.toLowerCase();
       return s.name.toLowerCase().contains(q) ||
-          s.code.toLowerCase().contains(q) ||
           s.officialCode.toLowerCase().contains(q);
     }).take(5);
 
@@ -77,7 +76,7 @@ final mapSearchResultsProvider =
       results.add(MapSearchResult(
         type: MapSearchResultType.stop,
         title: s.name,
-        subtitle: s.code,
+        subtitle: s.officialCode,
         stop: s,
         lat: s.lat,
         lng: s.lng,

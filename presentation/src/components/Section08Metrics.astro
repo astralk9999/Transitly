@@ -3,7 +3,7 @@ import metrics from '../data/metrics.json';
 ---
 
 <section id="metricas" class="py-28 px-6 max-w-6xl mx-auto">
-  <div class="animate-slide-up">
+  <div class="reveal">
     <div class="section-divider mb-6"></div>
     <h2 class="text-4xl md:text-5xl font-bold mb-4">Métricas Verificadas</h2>
     <p class="text-transit-text-mid text-lg max-w-3xl leading-relaxed">
@@ -13,91 +13,91 @@ import metrics from '../data/metrics.json';
 
   <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-14">
 
-    <div class="glass-card p-6 text-center animate-scale-in animation-delay-100 group hover:border-transit-accent/40 transition-all duration-300">
+    <div class="glass-card hover-lift p-6 reveal text-center animate-scale-in data-delay="100" group hover:border-transit-accent/40 transition-all duration-300">
       <div class="text-4xl md:text-5xl font-bold font-mono text-transit-accent mb-2">{metrics.project.phasesCompleted}/{metrics.project.phases}</div>
       <div class="text-xs text-transit-text-lo uppercase tracking-wider">fases completadas</div>
     </div>
 
-    <div class="glass-card p-6 text-center animate-scale-in animation-delay-150 group hover:border-transit-state-success/40 transition-all duration-300">
+    <div class="glass-card hover-lift p-6 reveal text-center animate-scale-in data-delay="150" group hover:border-transit-state-success/40 transition-all duration-300">
       <div class="text-4xl md:text-5xl font-bold font-mono text-transit-state-success mb-2">{metrics.tests.passed}</div>
       <div class="text-xs text-transit-text-lo uppercase tracking-wider">tests verdes</div>
       <div class="text-[10px] text-transit-text-lo mt-1 font-mono">+{metrics.tests.skipped} skipped</div>
     </div>
 
-    <div class="glass-card p-6 text-center animate-scale-in animation-delay-200 group hover:border-transit-state-warning/40 transition-all duration-300">
+    <div class="glass-card hover-lift p-6 reveal text-center animate-scale-in data-delay="200" group hover:border-transit-state-warning/40 transition-all duration-300">
       <div class="text-4xl md:text-5xl font-bold font-mono text-transit-state-warning mb-2">{metrics.tests.coveragePercent}%</div>
       <div class="text-xs text-transit-text-lo uppercase tracking-wider">cobertura</div>
       <div class="text-[10px] text-transit-text-lo mt-1 font-mono">{metrics.tests.coverageCovered}/{metrics.tests.coverageTotal} líneas</div>
     </div>
 
-    <div class="glass-card p-6 text-center animate-scale-in animation-delay-250 group hover:border-transit-state-info/40 transition-all duration-300">
+    <div class="glass-card hover-lift p-6 reveal text-center animate-scale-in data-delay="250" group hover:border-transit-state-info/40 transition-all duration-300">
       <div class="text-4xl md:text-5xl font-bold font-mono text-transit-state-info mb-2">0</div>
       <div class="text-xs text-transit-text-lo uppercase tracking-wider">flutter analyze</div>
       <div class="text-[10px] text-transit-text-lo mt-1 font-mono">issues</div>
     </div>
 
-    <div class="glass-card p-6 text-center animate-scale-in animation-delay-300 group hover:border-transit-accent/40 transition-all duration-300">
+    <div class="glass-card hover-lift p-6 reveal text-center animate-scale-in data-delay="300" group hover:border-transit-accent/40 transition-all duration-300">
       <div class="text-4xl md:text-5xl font-bold font-mono text-transit-accent mb-2">{metrics.release.apkSize}</div>
       <div class="text-xs text-transit-text-lo uppercase tracking-wider">APK release</div>
       <div class="text-[10px] text-transit-text-lo mt-1 font-mono">compila OK</div>
     </div>
 
-    <div class="glass-card p-6 text-center animate-scale-in animation-delay-350 group hover:border-transit-state-info/40 transition-all duration-300">
+    <div class="glass-card hover-lift p-6 reveal text-center animate-scale-in data-delay="350" group hover:border-transit-state-info/40 transition-all duration-300">
       <div class="text-4xl md:text-5xl font-bold font-mono text-transit-state-info mb-2">{metrics.ci.jobs}</div>
       <div class="text-xs text-transit-text-lo uppercase tracking-wider">CI jobs</div>
       <div class="text-[10px] text-transit-text-lo mt-1 font-mono">{metrics.ci.jobsList.join(' + ')}</div>
     </div>
 
-    <div class="glass-card p-6 text-center animate-scale-in animation-delay-400 group hover:border-transit-state-success/40 transition-all duration-300">
+    <div class="glass-card hover-lift p-6 reveal text-center animate-scale-in data-delay="400" group hover:border-transit-state-success/40 transition-all duration-300">
       <div class="text-4xl md:text-5xl font-bold font-mono text-transit-state-success mb-2">{metrics.project.features}</div>
       <div class="text-xs text-transit-text-lo uppercase tracking-wider">features</div>
     </div>
 
-    <div class="glass-card p-6 text-center animate-scale-in animation-delay-450 group hover:border-transit-accent/40 transition-all duration-300">
+    <div class="glass-card hover-lift p-6 reveal text-center animate-scale-in data-delay="450" group hover:border-transit-accent/40 transition-all duration-300">
       <div class="text-4xl md:text-5xl font-bold font-mono text-transit-accent mb-2">{metrics.project.repositoriesCanonical}</div>
       <div class="text-xs text-transit-text-lo uppercase tracking-wider">repos canónicos</div>
     </div>
 
-    <div class="glass-card p-6 text-center animate-scale-in animation-delay-500 group hover:border-transit-state-info/40 transition-all duration-300">
+    <div class="glass-card hover-lift p-6 reveal text-center animate-scale-in data-delay="500" group hover:border-transit-state-info/40 transition-all duration-300">
       <div class="text-4xl md:text-5xl font-bold font-mono text-transit-state-info mb-2">{metrics.project.migrations}</div>
       <div class="text-xs text-transit-text-lo uppercase tracking-wider">migraciones SQL</div>
     </div>
 
-    <div class="glass-card p-6 text-center animate-scale-in animation-delay-550 group hover:border-transit-state-warning/40 transition-all duration-300">
+    <div class="glass-card hover-lift p-6 reveal text-center animate-scale-in data-delay="550" group hover:border-transit-state-warning/40 transition-all duration-300">
       <div class="text-4xl md:text-5xl font-bold font-mono text-transit-state-warning mb-2">{metrics.project.edgeFunctions}</div>
       <div class="text-xs text-transit-text-lo uppercase tracking-wider">Edge Functions</div>
     </div>
 
-    <div class="glass-card p-6 text-center animate-scale-in animation-delay-600 group hover:border-transit-state-success/40 transition-all duration-300">
+    <div class="glass-card hover-lift p-6 reveal text-center animate-scale-in data-delay="600" group hover:border-transit-state-success/40 transition-all duration-300">
       <div class="text-4xl md:text-5xl font-bold font-mono text-transit-state-success mb-2">{metrics.scorecard.tfg}</div>
       <div class="text-xs text-transit-text-lo uppercase tracking-wider">Scorecard TFG</div>
     </div>
 
-    <div class="glass-card p-6 text-center animate-scale-in animation-delay-650 group hover:border-transit-accent/40 transition-all duration-300">
+    <div class="glass-card hover-lift p-6 reveal text-center animate-scale-in data-delay="650" group hover:border-transit-accent/40 transition-all duration-300">
       <div class="text-4xl md:text-5xl font-bold font-mono text-transit-accent mb-2">{metrics.i18n.locales.length}</div>
       <div class="text-xs text-transit-text-lo uppercase tracking-wider">idiomas</div>
       <div class="text-[10px] text-transit-text-lo mt-1 font-mono">{metrics.i18n.keys.es}/{metrics.i18n.keys.en}/{metrics.i18n.keys.ar} claves</div>
     </div>
 
-    <div class="glass-card p-6 text-center animate-scale-in animation-delay-700 group hover:border-transit-state-cancelled/40 transition-all duration-300">
+    <div class="glass-card hover-lift p-6 reveal text-center animate-scale-in data-delay="700" group hover:border-transit-state-cancelled/40 transition-all duration-300">
       <div class="text-4xl md:text-5xl font-bold font-mono text-transit-state-cancelled mb-2">{metrics.project.realtimeRepos}</div>
       <div class="text-xs text-transit-text-lo uppercase tracking-wider">F13 Realtime</div>
       <div class="text-[10px] text-transit-text-lo mt-1 font-mono">repos con canal</div>
     </div>
 
-    <div class="glass-card p-6 text-center animate-scale-in animation-delay-750 group hover:border-transit-state-info/40 transition-all duration-300">
+    <div class="glass-card hover-lift p-6 reveal text-center animate-scale-in data-delay="750" group hover:border-transit-state-info/40 transition-all duration-300">
       <div class="text-4xl md:text-5xl font-bold font-mono text-transit-state-info mb-2">{metrics.project.paginationRepos}</div>
       <div class="text-xs text-transit-text-lo uppercase tracking-wider">paginación</div>
       <div class="text-[10px] text-transit-text-lo mt-1 font-mono">repos de lista</div>
     </div>
 
-    <div class="glass-card p-6 text-center animate-scale-in animation-delay-800 group hover:border-transit-state-success/40 transition-all duration-300">
+    <div class="glass-card hover-lift p-6 reveal text-center animate-scale-in data-delay="800" group hover:border-transit-state-success/40 transition-all duration-300">
       <div class="text-4xl md:text-5xl font-bold font-mono text-transit-state-success mb-2">{metrics.project.autoDisposeProviders}</div>
       <div class="text-xs text-transit-text-lo uppercase tracking-wider">autoDispose</div>
       <div class="text-[10px] text-transit-text-lo mt-1 font-mono">providers críticos</div>
     </div>
 
-    <div class="glass-card p-6 text-center animate-scale-in animation-delay-850 group hover:border-transit-accent/40 transition-all duration-300">
+    <div class="glass-card hover-lift p-6 reveal text-center animate-scale-in data-delay="850" group hover:border-transit-accent/40 transition-all duration-300">
       <div class="text-4xl md:text-5xl font-bold font-mono text-transit-accent mb-2">{metrics.project.freezedModels}+</div>
       <div class="text-xs text-transit-text-lo uppercase tracking-wider">modelos @freezed</div>
     </div>

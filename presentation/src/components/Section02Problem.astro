@@ -3,7 +3,7 @@ import metrics from '../data/metrics.json';
 ---
 
 <section id="problema" class="py-28 px-6 max-w-6xl mx-auto">
-  <div class="animate-slide-up">
+  <div class="reveal">
     <div class="section-divider mb-6"></div>
     <h2 class="text-4xl md:text-5xl font-bold mb-4">El Problema</h2>
     <p class="text-transit-text-mid text-lg max-w-3xl leading-relaxed">
@@ -12,7 +12,7 @@ import metrics from '../data/metrics.json';
   </div>
 
   <div class="grid md:grid-cols-3 gap-6 mt-14">
-    <article class="glass-card p-8 animate-slide-up animation-delay-100 group hover:border-transit-state-cancelled/30 transition-all duration-300">
+    <article class="glass-card hover-lift p-8 reveal" data-delay="100">
       <div class="text-transit-state-cancelled text-5xl font-bold font-mono mb-5">01</div>
       <h3 class="text-xl font-bold mb-3">Sin GPS en tiempo real</h3>
       <p class="text-transit-text-mid leading-relaxed">
@@ -20,7 +20,7 @@ import metrics from '../data/metrics.json';
       </p>
     </article>
 
-    <article class="glass-card p-8 animate-slide-up animation-delay-200 group hover:border-transit-state-warning/30 transition-all duration-300">
+    <article class="glass-card hover-lift p-8 reveal" data-delay="200">
       <div class="text-transit-state-warning text-5xl font-bold font-mono mb-5">02</div>
       <h3 class="text-xl font-bold mb-3">Fragmentación por operador</h3>
       <p class="text-transit-text-mid leading-relaxed">
@@ -28,7 +28,7 @@ import metrics from '../data/metrics.json';
       </p>
     </article>
 
-    <article class="glass-card p-8 animate-slide-up animation-delay-300 group hover:border-transit-accent/30 transition-all duration-300">
+    <article class="glass-card hover-lift p-8 reveal" data-delay="300">
       <div class="text-transit-accent text-5xl font-bold font-mono mb-5">03</div>
       <h3 class="text-xl font-bold mb-3">Accesibilidad insuficiente</h3>
       <p class="text-transit-text-mid leading-relaxed">

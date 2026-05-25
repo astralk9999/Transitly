@@ -1,5 +1,5 @@
 <section id="seguridad" class="py-28 px-6 max-w-6xl mx-auto">
-  <div class="animate-slide-up">
+  <div class="reveal">
     <div class="section-divider mb-6"></div>
     <h2 class="text-4xl md:text-5xl font-bold mb-4">Seguridad y Privacidad GDPR</h2>
     <p class="text-transit-text-mid text-lg max-w-3xl leading-relaxed">
@@ -7,7 +7,7 @@
     </p>
   </div>
 
-  <div class="mt-12 animate-slide-up animation-delay-100">
+  <div class="mt-12 reveal data-delay="100"">
     <h3 class="text-xl font-bold mb-5 text-transit-accent">GDPR Compliance</h3>
     <div class="space-y-2">
       {[
@@ -17,7 +17,7 @@
         { art: 'Art. 20', desc: 'Portabilidad', detail: 'Edge Function generate_data_export: descarga de todos tus datos en formato JSON.' },
         { art: 'Art. 21', desc: 'Oposición', detail: 'Revocación de consentimiento en caliente. Inmediata, sin reinicio de la aplicación.' },
       ].map(item => (
-        <div class="glass-card p-4 flex flex-wrap items-center gap-3 md:gap-6">
+        <div class="glass-card hover-lift p-4 reveal flex flex-wrap items-center gap-3 md:gap-6">
           <div class="flex items-center gap-2 min-w-[120px]">
             <span class="text-xs font-mono font-bold text-transit-accent bg-transit-accent/10 px-2 py-0.5 rounded">{item.art}</span>
             <span class="text-sm font-semibold text-transit-text-hi">{item.desc}</span>
@@ -29,7 +29,7 @@
     </div>
   </div>
 
-  <div class="grid md:grid-cols-2 gap-4 mt-10 animate-slide-up animation-delay-200">
+  <div class="grid md:grid-cols-2 gap-4 mt-10 reveal data-delay="200"">
     {[
       { icon: 'shield', title: 'RLS PostgreSQL DENY-by-default', desc: 'Row Level Security activo en todas las tablas con datos personales. Ningún dato se sirve sin política explícita.', color: 'border-transit-state-cancelled' },
       { icon: 'lock', title: 'Cifrado HiveAesCipher AES-256', desc: 'Cajas sensibles cifradas en dispositivo con AES-256. Claves derivadas de credenciales del usuario. 17 boxes total, 2 cifradas.', color: 'border-transit-state-cancelled' },

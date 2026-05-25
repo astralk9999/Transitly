@@ -125,6 +125,21 @@ const baseUrl = import.meta.env.BASE_URL;
         }
       });
     }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.classList.add('revealed');
+          }, parseInt(entry.target.dataset.delay || '0'));
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale').forEach(el => {
+      observer.observe(el);
+    });
   </script>
 </body>
 </html>

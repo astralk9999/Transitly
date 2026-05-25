@@ -24,7 +24,7 @@ import 'features/error/env_error_screen.dart';
 /// F26 switch point: cuando las fuentes se empaqueten como assets locales,
 /// poner `true` (y seguir `docs/FONTS_F26.md`). Mientras es `false`,
 /// `google_fonts` resuelve por red (comportamiento actual).
-const bool _fontsBundled = true;
+const bool _fontsBundled = false;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -206,6 +206,7 @@ class _AccessibleBusesScreenState
                   trailing: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 80),
                     child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [

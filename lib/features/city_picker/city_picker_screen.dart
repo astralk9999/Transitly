@@ -131,6 +131,7 @@ class _OperatorTile extends ConsumerWidget {
             : null,
         onTap: () {
           ref.read(activeOperatorProvider.notifier).state = operator;
+          persistActiveOperatorId(operator.id);
           Navigator.of(context).pop();
         },
       ),

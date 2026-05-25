@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive/hive.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../core/utils/app_logger.dart';
@@ -95,6 +96,25 @@ final activeOperatorsProvider =
 /// Default: primer operador de activeOperatorsProvider.
 final activeOperatorProvider = StateProvider<OperatorModel?>((ref) => null);
 
+const _activeOperatorHiveKey = 'geo:active_operator_id';
+
+void persistActiveOperatorId(String operatorId) {
+  try {
+    final box = Hive.box<Map<dynamic, dynamic>>('guest_theme_prefs');
+    box.put(_activeOperatorHiveKey, operatorId);
+  } catch (_) {}
+}
+
+String? _loadPersistedOperatorId() {
+  try {
+    if (!Hive.isBoxOpen('guest_theme_prefs')) return null;
+    final box = Hive.box<Map<dynamic, dynamic>>('guest_theme_prefs');
+    return box.get(_activeOperatorHiveKey) as String?;
+  } catch (_) {
+    return null;
+  }
+}
+
 /// Provider que se dispara tras el bootstrap para obtener la
 /// ubicación y precargar los operadores cercanos. El resultado
 /// se consume en splash_screen o home_tab.
@@ -103,5 +123,19 @@ final geoBootstrapProvider = FutureProvider<void>((ref) async {
   await ref.watch(requestLocationProvider.future);
 
   // Precargar operadores cercanos.
-  await ref.watch(activeOperatorsProvider.future);
+  final operators = await ref.watch(activeOperatorsProvider.future);
+
+  // Restaurar operador activo persistido.
+  final persistedId = _loadPersistedOperatorId();
+  if (persistedId != null) {
+    final match = operators.where((op) => op.id == persistedId).firstOrNull;
+    if (match != null) {
+      ref.read(activeOperatorProvider.notifier).state = match;
+      return;
+    }
+  }
+  // Sin selección previa: usar el primero.
+  if (operators.isNotEmpty) {
+    ref.read(activeOperatorProvider.notifier).state = operators.first;
+  }
 });

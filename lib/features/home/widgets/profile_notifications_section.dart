@@ -70,7 +70,7 @@ class ProfileNotificationsSection extends ConsumerWidget {
           Divider(
             height: 1,
             thickness: 0.5,
-            color: Colors.white.withValues(alpha: 0.06),
+            color: c.border,
           ),
           const SizedBox(height: 16),
           GradientText(

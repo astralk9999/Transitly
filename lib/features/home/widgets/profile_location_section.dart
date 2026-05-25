@@ -47,7 +47,7 @@ class ProfileLocationSection extends StatelessWidget {
           Divider(
             height: 24,
             thickness: 0.5,
-            color: Colors.white.withValues(alpha: 0.06),
+            color: c.border,
           ),
           GradientText(
             'MIS FILTROS',
@@ -71,7 +71,7 @@ class ProfileLocationSection extends StatelessWidget {
           Divider(
             height: 24,
             thickness: 0.5,
-            color: Colors.white.withValues(alpha: 0.06),
+            color: c.border,
           ),
           GradientText(
             'DATOS OFFLINE',

@@ -54,7 +54,7 @@ class ProfileContributionsSection extends StatelessWidget {
           Divider(
             height: 24,
             thickness: 0.5,
-            color: Colors.white.withValues(alpha: 0.06),
+            color: c.border,
           ),
           Text(
             'Jerez de la Frontera · 8.2 MB · Actualizado hace 1 día',

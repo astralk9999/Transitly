@@ -236,8 +236,8 @@ class _RouteSearchBarState extends State<RouteSearchBar> {
     return Container(
       margin: const EdgeInsets.only(left: 22, top: 4),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.05),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.08), width: 0.5),
+        color: colors.bgSurface,
+        border: Border.all(color: colors.border, width: 0.5),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(

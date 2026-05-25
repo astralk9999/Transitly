@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../core/theme/transit_colors.dart';
+
 /// Card with frosted glass aesthetic that works reliably across platforms.
 /// Uses solid semi-transparent backgrounds instead of relying on BackdropFilter
 /// which can fail on web and some desktop configurations.
@@ -30,16 +32,16 @@ class GlassCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final c = TransitColorScheme.of(isDark);
 
-    // Use solid surface colors that work without backdrop blur
     final bgColor = isDark
         ? Colors.white.withValues(alpha: fillOpacity)
-        : Colors.white.withValues(alpha: fillOpacity + 0.40);
+        : c.bgSurface;
     final borderColor = useAccentBorder && accentColor != null
         ? accentColor!.withValues(alpha: 0.30)
         : isDark
             ? Colors.white.withValues(alpha: borderOpacity)
-            : Colors.black.withValues(alpha: 0.08);
+            : c.border;
 
     Widget card = Container(
       padding: padding ?? const EdgeInsets.all(16),

@@ -59,12 +59,12 @@ class RouteCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: isDark
                 ? Colors.white.withValues(alpha: 0.10)
-                : Colors.white.withValues(alpha: 0.80),
+                : c.bgSurface,
             borderRadius: BorderRadius.circular(14),
             border: Border.all(
               color: isDark
                   ? Colors.white.withValues(alpha: 0.15)
-                  : Colors.black.withValues(alpha: 0.08),
+                  : c.border,
               width: 1,
             ),
           ),

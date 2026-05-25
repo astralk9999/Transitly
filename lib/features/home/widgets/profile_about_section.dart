@@ -191,7 +191,7 @@ class _ProfileAboutSectionState extends ConsumerState<ProfileAboutSection> {
           Divider(
             height: 24,
             thickness: 0.5,
-            color: Colors.white.withValues(alpha: 0.06),
+            color: c.border,
           ),
           if (isAuth) ...[
             RoleGate(
@@ -219,7 +219,7 @@ class _ProfileAboutSectionState extends ConsumerState<ProfileAboutSection> {
                   Divider(
                     height: 1,
                     thickness: 0.5,
-                    color: Colors.white.withValues(alpha: 0.06),
+                    color: c.border,
                   ),
                 ],
               ),

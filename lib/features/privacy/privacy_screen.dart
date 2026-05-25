@@ -210,7 +210,7 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen> {
                 Divider(
                     height: 1,
                     thickness: 0.5,
-                    color: Colors.white.withValues(alpha: 0.06)),
+                    color: c.border),
                 const SizedBox(height: 12),
                 _ConsentToggle(
                   icon: Icons.bug_report_outlined,
@@ -228,7 +228,7 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen> {
                 Divider(
                     height: 1,
                     thickness: 0.5,
-                    color: Colors.white.withValues(alpha: 0.06)),
+                    color: c.border),
                 const SizedBox(height: 12),
                 _ConsentToggle(
                   icon: Icons.campaign_outlined,
@@ -276,7 +276,7 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen> {
                 Divider(
                     height: 1,
                     thickness: 0.5,
-                    color: Colors.white.withValues(alpha: 0.06)),
+                    color: c.border),
                 const SizedBox(height: 12),
                 _ActionTile(
                   icon: Icons.delete_outline,
@@ -320,7 +320,7 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen> {
                 Divider(
                     height: 1,
                     thickness: 0.5,
-                    color: Colors.white.withValues(alpha: 0.06)),
+                    color: c.border),
                 const SizedBox(height: 12),
                 _ActionTile(
                   icon: Icons.shield_outlined,

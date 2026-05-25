@@ -2115,4 +2115,26 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get profileAdminSectionTitle => 'الإدارة';
+
+  @override
+  String get homeSectionHabitualTrip => 'حافلتك القادمة';
+
+  @override
+  String get homeNoHabitualTrip => 'لا توجد رحلة معتادة';
+
+  @override
+  String get homeNoHabitualTripHint =>
+      'أضف خطاً إلى المفضلة لرؤية حافلتك القادمة هنا';
+
+  @override
+  String get homeNoNearbyStops => 'لا توجد محطات قريبة';
+
+  @override
+  String get homeNoNearbyStopsHint => 'لم يتم العثور على محطات بالقرب من موقعك';
+
+  @override
+  String get homeNoFavorites => 'لا توجد خطوط مفضلة';
+
+  @override
+  String get homeNoFavoritesHint => 'اضغط ☆ على أي خط لحفظه هنا';
 }

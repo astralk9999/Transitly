@@ -4004,6 +4004,48 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'ADMINISTRACIÓN'**
   String get profileAdminSectionTitle;
+
+  /// Título sección viaje habitual en home
+  ///
+  /// In es, this message translates to:
+  /// **'Tu próximo bus'**
+  String get homeSectionHabitualTrip;
+
+  /// Mensaje cuando no hay viaje habitual
+  ///
+  /// In es, this message translates to:
+  /// **'Sin viaje habitual'**
+  String get homeNoHabitualTrip;
+
+  /// Hint cuando no hay viaje habitual
+  ///
+  /// In es, this message translates to:
+  /// **'Añade una línea a favoritos para ver tu próximo bus aquí'**
+  String get homeNoHabitualTripHint;
+
+  /// Mensaje cuando no hay paradas cercanas
+  ///
+  /// In es, this message translates to:
+  /// **'Sin paradas cercanas'**
+  String get homeNoNearbyStops;
+
+  /// Hint cuando no hay paradas cercanas
+  ///
+  /// In es, this message translates to:
+  /// **'No se encontraron paradas cerca de tu ubicación'**
+  String get homeNoNearbyStopsHint;
+
+  /// Mensaje cuando no hay favoritos
+  ///
+  /// In es, this message translates to:
+  /// **'Sin líneas favoritas'**
+  String get homeNoFavorites;
+
+  /// Hint cuando no hay favoritos
+  ///
+  /// In es, this message translates to:
+  /// **'Pulsa ☆ en cualquier línea para guardarla aquí'**
+  String get homeNoFavoritesHint;
 }
 
 class _AppLocalizationsDelegate

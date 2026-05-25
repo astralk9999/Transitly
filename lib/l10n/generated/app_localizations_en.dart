@@ -2126,4 +2126,26 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profileAdminSectionTitle => 'ADMINISTRATION';
+
+  @override
+  String get homeSectionHabitualTrip => 'Your next bus';
+
+  @override
+  String get homeNoHabitualTrip => 'No habitual trip';
+
+  @override
+  String get homeNoHabitualTripHint =>
+      'Add a route to favorites to see your next bus here';
+
+  @override
+  String get homeNoNearbyStops => 'No nearby stops';
+
+  @override
+  String get homeNoNearbyStopsHint => 'No stops found near your location';
+
+  @override
+  String get homeNoFavorites => 'No favorite routes';
+
+  @override
+  String get homeNoFavoritesHint => 'Tap ☆ on any route to save it here';
 }

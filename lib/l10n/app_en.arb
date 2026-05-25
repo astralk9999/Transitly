@@ -797,5 +797,12 @@
   "appTagline": "Universal public transport platform",
   "profileBecomeDriver": "Become a driver",
   "actionSignIn": "Sign in",
-  "profileAdminSectionTitle": "ADMINISTRATION"
+  "profileAdminSectionTitle": "ADMINISTRATION",
+  "homeSectionHabitualTrip": "Your next bus",
+  "homeNoHabitualTrip": "No habitual trip",
+  "homeNoHabitualTripHint": "Add a route to favorites to see your next bus here",
+  "homeNoNearbyStops": "No nearby stops",
+  "homeNoNearbyStopsHint": "No stops found near your location",
+  "homeNoFavorites": "No favorite routes",
+  "homeNoFavoritesHint": "Tap ☆ on any route to save it here"
 }

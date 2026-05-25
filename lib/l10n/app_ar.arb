@@ -734,5 +734,12 @@
   "appTagline": "منصة النقل العام الشاملة",
   "profileBecomeDriver": "كن سائقاً",
   "actionSignIn": "تسجيل الدخول",
-  "profileAdminSectionTitle": "الإدارة"
+  "profileAdminSectionTitle": "الإدارة",
+  "homeSectionHabitualTrip": "حافلتك القادمة",
+  "homeNoHabitualTrip": "لا توجد رحلة معتادة",
+  "homeNoHabitualTripHint": "أضف خطاً إلى المفضلة لرؤية حافلتك القادمة هنا",
+  "homeNoNearbyStops": "لا توجد محطات قريبة",
+  "homeNoNearbyStopsHint": "لم يتم العثور على محطات بالقرب من موقعك",
+  "homeNoFavorites": "لا توجد خطوط مفضلة",
+  "homeNoFavoritesHint": "اضغط ☆ على أي خط لحفظه هنا"
 }

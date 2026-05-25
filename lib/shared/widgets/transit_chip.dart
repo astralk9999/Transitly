@@ -29,6 +29,8 @@ class TransitChip extends StatelessWidget {
       alignment: Alignment.center,
       child: Text(
         code,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
         style: TransitTypography.routeCodeSmall(fg),
       ),
     );

@@ -178,35 +178,47 @@ class _AccessibleBusesScreenState
                   contentPadding: EdgeInsets.zero,
                   leading: CircleAvatar(
                     backgroundColor: c.accent.withValues(alpha: 0.12),
-                    child: Text(
-                      routeCode.isNotEmpty ? routeCode : '?',
-                      style: GoogleFonts.ibmPlexMono(
-                        color: c.accent,
-                        fontWeight: FontWeight.w600,
+                    child: FittedBox(
+                      child: Text(
+                        routeCode.isNotEmpty ? routeCode : '?',
+                        maxLines: 1,
+                        style: GoogleFonts.ibmPlexMono(
+                          color: c.accent,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ),
                   title: Text(
                     routeName.isNotEmpty ? routeName : routeCode,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: TransitTypography.bodyPrimary(c.textHi),
                   ),
                   subtitle: stopName != null
                       ? Text(
                           '${l10n.accessibleBusesNextStop}: $stopName',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: TransitTypography.bodySecondary(c.textMid),
                         )
                       : null,
-                  trailing: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        mins != null ? '$mins min' : '--',
-                        style: TransitTypography.stopTime(c.textHi),
-                      ),
-                      const SizedBox(height: 4),
-                      TransitChip(source, color: c.textLo),
-                    ],
+                  trailing: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 80),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          mins != null ? '$mins min' : '--',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TransitTypography.stopTime(c.textHi),
+                        ),
+                        const SizedBox(height: 4),
+                        TransitChip(source, color: c.textLo),
+                      ],
+                    ),
                   ),
                 ),
               ),

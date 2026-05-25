@@ -1177,5 +1177,19 @@
   "actionSignIn": "Iniciar sesión",
   "@actionSignIn": {"description": "Acción de iniciar sesión"},
   "profileAdminSectionTitle": "ADMINISTRACIÓN",
-  "@profileAdminSectionTitle": {"description": "Título sección admin en perfil"}
+  "@profileAdminSectionTitle": {"description": "Título sección admin en perfil"},
+  "homeSectionHabitualTrip": "Tu próximo bus",
+  "@homeSectionHabitualTrip": {"description": "Título sección viaje habitual en home"},
+  "homeNoHabitualTrip": "Sin viaje habitual",
+  "@homeNoHabitualTrip": {"description": "Mensaje cuando no hay viaje habitual"},
+  "homeNoHabitualTripHint": "Añade una línea a favoritos para ver tu próximo bus aquí",
+  "@homeNoHabitualTripHint": {"description": "Hint cuando no hay viaje habitual"},
+  "homeNoNearbyStops": "Sin paradas cercanas",
+  "@homeNoNearbyStops": {"description": "Mensaje cuando no hay paradas cercanas"},
+  "homeNoNearbyStopsHint": "No se encontraron paradas cerca de tu ubicación",
+  "@homeNoNearbyStopsHint": {"description": "Hint cuando no hay paradas cercanas"},
+  "homeNoFavorites": "Sin líneas favoritas",
+  "@homeNoFavorites": {"description": "Mensaje cuando no hay favoritos"},
+  "homeNoFavoritesHint": "Pulsa ☆ en cualquier línea para guardarla aquí",
+  "@homeNoFavoritesHint": {"description": "Hint cuando no hay favoritos"}
 }

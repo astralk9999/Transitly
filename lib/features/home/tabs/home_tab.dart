@@ -13,6 +13,7 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/models/models.dart';
 import '../../../shared/providers/derived/home_providers.dart';
 import '../../../shared/providers/route_lookup_providers.dart';
+import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/glass_card.dart';
 import '../../../shared/widgets/responsive_scaffold.dart';
 import '../../../shared/widgets/stagger_list.dart';
@@ -119,13 +120,17 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
-                        ref.watch(activeOperatorProvider)?.name ??
-                            AppLocalizations.of(context).homeDefaultCity,
-                        style: GoogleFonts.dmSans(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                          color: c.textMid,
+                      Flexible(
+                        child: Text(
+                          ref.watch(activeOperatorProvider)?.name ??
+                              AppLocalizations.of(context).homeDefaultCity,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.dmSans(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                            color: c.textMid,
+                          ),
                         ),
                       ),
                       const SizedBox(width: 4),
@@ -139,46 +144,70 @@ class _HomeTabState extends ConsumerState<HomeTab> {
               if (habitualRoute != null)
                 _buildHabitualTrip(
                     c, habitualRoute, habitualStop, habitualDest, habitualNext),
+              if (habitualRoute == null) ...[
+                _sectionTitle(
+                    c, AppLocalizations.of(context).homeSectionHabitualTrip),
+                const SizedBox(height: 8),
+                EmptyState(
+                  AppLocalizations.of(context).homeNoHabitualTrip,
+                  AppLocalizations.of(context).homeNoHabitualTripHint,
+                  icon: Icons.directions_bus_outlined,
+                ),
+              ],
               if (habitualRoute != null) const SizedBox(height: 28),
 
               // ── 2) PARADAS CERCANAS ──
               _sectionTitle(c, AppLocalizations.of(context).homeSectionNearbyStops),
               const SizedBox(height: 10),
-              StaggerList(
-                children: nearbyStops
-                    .map((stop) =>
-                        _buildNearbyStop(context, c, mockData, stop))
-                    .toList(),
-              ),
+              if (nearbyStops.isNotEmpty)
+                StaggerList(
+                  children: nearbyStops
+                      .map((stop) =>
+                          _buildNearbyStop(context, c, mockData, stop))
+                      .toList(),
+                )
+              else
+                EmptyState(
+                  AppLocalizations.of(context).homeNoNearbyStops,
+                  AppLocalizations.of(context).homeNoNearbyStopsHint,
+                  icon: Icons.location_off_outlined,
+                ),
               const SizedBox(height: 28),
 
               // ── 3) MIS LINEAS ──
               _sectionTitle(c, AppLocalizations.of(context).homeSectionMyLines),
               const SizedBox(height: 10),
-              StaggerList(
-                children: favorites.map((fav) {
-                  final route = mockData.getRouteById(fav.routeId);
-                  if (route == null) return const SizedBox.shrink();
-                  final trip = activeTripsMap[route.id] ??
-                      mockData.getActiveTripForRoute(route.id);
-                  final stopsForRoute = mockData.getStopsForRoute(route.id);
-                  final next = mockData.getNextDepartures(route.id, '', 1);
-                  final mins = next.isNotEmpty
-                      ? _minutesUntil(next.first.departureTime)
-                      : null;
-                  final minsStr = mins != null ? '${mins}m' : null;
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: RouteCard(
-                      route: route,
-                      activeTrip: trip,
-                      remainingStops: stopsForRoute.length,
-                      estimatedMinutes: minsStr,
-                      onTap: () => context.push('/route/${route.id}'),
-                    ),
-                  );
-                }).toList(),
-              ),
+              if (favorites.isNotEmpty)
+                StaggerList(
+                  children: favorites.map((fav) {
+                    final route = mockData.getRouteById(fav.routeId);
+                    if (route == null) return const SizedBox.shrink();
+                    final trip = activeTripsMap[route.id] ??
+                        mockData.getActiveTripForRoute(route.id);
+                    final stopsForRoute = mockData.getStopsForRoute(route.id);
+                    final next = mockData.getNextDepartures(route.id, '', 1);
+                    final mins = next.isNotEmpty
+                        ? _minutesUntil(next.first.departureTime)
+                        : null;
+                    final minsStr = mins != null ? '${mins}m' : null;
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: RouteCard(
+                        route: route,
+                        activeTrip: trip,
+                        remainingStops: stopsForRoute.length,
+                        estimatedMinutes: minsStr,
+                        onTap: () => context.push('/route/${route.id}'),
+                      ),
+                    );
+                  }).toList(),
+                )
+              else
+                EmptyState(
+                  AppLocalizations.of(context).homeNoFavorites,
+                  AppLocalizations.of(context).homeNoFavoritesHint,
+                  icon: Icons.star_border_outlined,
+                ),
 
               // ── 4) AVISOS ──
               if (favAlerts.isNotEmpty) ...[

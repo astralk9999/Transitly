@@ -38,8 +38,8 @@
     }
   },
   "release": {
-    "version": "1.0.0-tfg",
-    "apkSize": "73,5 MiB",
+    "version": "1.0.0-mvp",
+    "apkSize": "42 MiB",
     "androidMin": "Android 6.0+"
   },
   "scorecard": {

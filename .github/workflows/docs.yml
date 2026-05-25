@@ -30,8 +30,12 @@ jobs:
       - name: Generate dartdoc
         run: dart doc .
 
-      - name: Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages (api subpath)
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: doc/api
+          publish_branch: gh-pages
+          destination_dir: api
+          keep_files: true
+          commit_message: "deploy: dartdoc api update"

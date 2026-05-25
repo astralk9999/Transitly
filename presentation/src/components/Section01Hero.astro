@@ -4,8 +4,35 @@ import metrics from '../data/metrics.json';
 
 <section id="hero" class="relative min-h-screen flex items-center overflow-hidden">
   <div class="absolute inset-0 bg-gradient-to-b from-transit-accent/5 via-transparent to-transit-bg-root pointer-events-none"></div>
-  <div class="absolute top-1/3 left-1/4 w-[600px] h-[600px] rounded-full bg-transit-accent/5 blur-[120px] pointer-events-none"></div>
-  <div class="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] rounded-full bg-transit-state-info/3 blur-[100px] pointer-events-none"></div>
+
+  <!-- Animated background blobs -->
+  <div class="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full bg-transit-accent/8 blur-[120px] pointer-events-none animate-float-slow"></div>
+  <div class="absolute top-1/3 right-1/4 w-[350px] h-[350px] rounded-full bg-transit-accent/8 blur-[100px] pointer-events-none animate-float-medium"></div>
+  <div class="absolute bottom-1/4 left-1/3 w-[400px] h-[400px] rounded-full bg-transit-state-info/5 blur-[110px] pointer-events-none animate-float-fast"></div>
+  <div class="absolute bottom-1/3 right-1/3 w-[250px] h-[250px] rounded-full bg-transit-accent/6 blur-[80px] pointer-events-none animate-float-medium" style="animation-delay: 2s;"></div>
+
+  <!-- Animated ring behind logo -->
+  <div class="absolute top-1/2 right-[15%] lg:right-[8%] w-[350px] h-[350px] -translate-y-1/2 pointer-events-none">
+    <div class="absolute inset-0 rounded-full border border-transit-accent/10 animate-spin-slow"></div>
+    <div class="absolute inset-4 rounded-full border border-transit-accent/5 animate-spin-slow" style="animation-direction: reverse; animation-duration: 20s;"></div>
+    <div class="absolute inset-8 rounded-full border border-transit-state-info/8 animate-spin-slow" style="animation-duration: 25s;"></div>
+  </div>
+
+  <!-- Floating particles -->
+  <div class="absolute top-[20%] right-[30%] w-1.5 h-1.5 rounded-full bg-transit-accent/40 pointer-events-none animate-particle-1"></div>
+  <div class="absolute top-[45%] right-[18%] w-2 h-2 rounded-full bg-transit-state-info/30 pointer-events-none animate-particle-2"></div>
+  <div class="absolute bottom-[30%] right-[25%] w-1 h-1 rounded-full bg-transit-accent/50 pointer-events-none animate-particle-3"></div>
+  <div class="absolute top-[55%] right-[12%] w-1.5 h-1.5 rounded-full bg-transit-accent/30 pointer-events-none animate-particle-4"></div>
+  <div class="absolute top-[35%] right-[22%] w-1 h-1 rounded-full bg-transit-state-success/30 pointer-events-none animate-particle-5"></div>
+
+  <!-- Animated grid dots behind text -->
+  <div class="absolute hidden lg:block top-1/4 left-[8%] opacity-[0.03] pointer-events-none">
+    <div class="grid grid-cols-8 gap-6">
+      {Array.from({length: 64}).map(() => (
+        <div class="w-1 h-1 rounded-full bg-transit-text-hi"></div>
+      ))}
+    </div>
+  </div>
 
   <div class="relative max-w-6xl mx-auto px-6 py-20 w-full">
     <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">

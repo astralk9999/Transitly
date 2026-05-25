@@ -2137,4 +2137,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get homeNoFavoritesHint => 'اضغط ☆ على أي خط لحفظه هنا';
+
+  @override
+  String get requireAuthGeneric => 'سجل الدخول للوصول إلى هذه الميزة';
+
+  @override
+  String requireAuthAction(String action) {
+    return 'سجل الدخول لـ $action';
+  }
 }

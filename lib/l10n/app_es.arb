@@ -1191,5 +1191,14 @@
   "homeNoFavorites": "Sin líneas favoritas",
   "@homeNoFavorites": {"description": "Mensaje cuando no hay favoritos"},
   "homeNoFavoritesHint": "Pulsa ☆ en cualquier línea para guardarla aquí",
-  "@homeNoFavoritesHint": {"description": "Hint cuando no hay favoritos"}
+  "@homeNoFavoritesHint": {"description": "Hint cuando no hay favoritos"},
+  "requireAuthGeneric": "Inicia sesión para acceder a esta función",
+  "@requireAuthGeneric": {"description": "Mensaje genérico cuando se requiere auth"},
+  "requireAuthAction": "Inicia sesión para {action}",
+  "@requireAuthAction": {
+    "description": "Mensaje cuando se requiere auth para una acción específica",
+    "placeholders": {
+      "action": {"type": "String", "example": "reportar un incidente"}
+    }
+  }
 }

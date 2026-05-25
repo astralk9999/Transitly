@@ -741,5 +741,7 @@
   "homeNoNearbyStops": "لا توجد محطات قريبة",
   "homeNoNearbyStopsHint": "لم يتم العثور على محطات بالقرب من موقعك",
   "homeNoFavorites": "لا توجد خطوط مفضلة",
-  "homeNoFavoritesHint": "اضغط ☆ على أي خط لحفظه هنا"
+  "homeNoFavoritesHint": "اضغط ☆ على أي خط لحفظه هنا",
+  "requireAuthGeneric": "سجل الدخول للوصول إلى هذه الميزة",
+  "requireAuthAction": "سجل الدخول لـ {action}"
 }

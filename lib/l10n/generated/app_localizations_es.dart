@@ -2161,4 +2161,12 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get homeNoFavoritesHint =>
       'Pulsa ☆ en cualquier línea para guardarla aquí';
+
+  @override
+  String get requireAuthGeneric => 'Inicia sesión para acceder a esta función';
+
+  @override
+  String requireAuthAction(String action) {
+    return 'Inicia sesión para $action';
+  }
 }

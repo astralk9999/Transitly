@@ -8,6 +8,7 @@ import '../../core/theme/transit_typography.dart';
 import '../../data/route_suggestion/route_suggestion_repository_provider.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../shared/models/route_suggestion_model.dart';
+import '../../shared/utils/require_auth.dart';
 import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_button.dart';
 
@@ -42,6 +43,12 @@ class _SuggestionDetailScreenState
   }
 
   Future<void> _vote() async {
+    final canProceed = await requireAuth(
+      context,
+      ref,
+      action: 'votar',
+    );
+    if (!canProceed) return;
     final repo = ref.read(routeSuggestionRepositoryProvider);
     await repo.castVote(widget.suggestionId);
     _reload();

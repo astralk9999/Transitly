@@ -13,6 +13,7 @@ import '../../shared/models/incident_model.dart';
 import '../../shared/models/route_model.dart';
 import '../../shared/models/stop_model.dart';
 import '../../shared/providers/user_provider.dart';
+import '../../shared/utils/require_auth.dart';
 import '../../shared/widgets/transit_button.dart';
 import '../../shared/widgets/transit_input.dart';
 
@@ -75,6 +76,14 @@ class _ReportIncidentContentState
 
   Future<void> _submit() async {
     if (_selected == null) return;
+
+    final l10n = AppLocalizations.of(context);
+    final canProceed = await requireAuth(
+      context,
+      ref,
+      action: l10n.incidentReportSent,
+    );
+    if (!canProceed) return;
 
     setState(() => _submitting = true);
 

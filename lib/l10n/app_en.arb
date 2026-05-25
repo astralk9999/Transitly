@@ -804,5 +804,7 @@
   "homeNoNearbyStops": "No nearby stops",
   "homeNoNearbyStopsHint": "No stops found near your location",
   "homeNoFavorites": "No favorite routes",
-  "homeNoFavoritesHint": "Tap ☆ on any route to save it here"
+  "homeNoFavoritesHint": "Tap ☆ on any route to save it here",
+  "requireAuthGeneric": "Sign in to access this feature",
+  "requireAuthAction": "Sign in to {action}"
 }

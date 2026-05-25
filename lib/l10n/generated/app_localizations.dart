@@ -4046,6 +4046,18 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Pulsa ☆ en cualquier línea para guardarla aquí'**
   String get homeNoFavoritesHint;
+
+  /// Mensaje genérico cuando se requiere auth
+  ///
+  /// In es, this message translates to:
+  /// **'Inicia sesión para acceder a esta función'**
+  String get requireAuthGeneric;
+
+  /// Mensaje cuando se requiere auth para una acción específica
+  ///
+  /// In es, this message translates to:
+  /// **'Inicia sesión para {action}'**
+  String requireAuthAction(String action);
 }
 
 class _AppLocalizationsDelegate

@@ -2148,4 +2148,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeNoFavoritesHint => 'Tap ☆ on any route to save it here';
+
+  @override
+  String get requireAuthGeneric => 'Sign in to access this feature';
+
+  @override
+  String requireAuthAction(String action) {
+    return 'Sign in to $action';
+  }
 }

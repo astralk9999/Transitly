@@ -19,68 +19,78 @@ class EnvException implements Exception {
   }
 }
 
-/// Acceso tipado a las variables de entorno compiladas vía `--dart-define`
-/// con fallback hardcodeado para desarrollo.
+/// Acceso tipado a las variables de entorno compiladas vía `--dart-define`.
 ///
-/// Cada valor se lee de `String.fromEnvironment` en tiempo de compilación.
-/// Si no está definido, se usa un fallback hardcodeado (solo para APK demo).
-/// Las claves "críticas" (sin las cuales la app no puede arrancar) se
-/// validan vía [_required].
+/// Cada valor se declara como `const String.fromEnvironment('LITERAL')` para
+/// que el AOT compiler de Dart lo embeba en el binario en release. **Importante:**
+/// el nombre DEBE ser un literal en la llamada — `String.fromEnvironment(varName)`
+/// con un parámetro variable devuelve cadena vacía en release (no se const-foldea).
+///
+/// Para desarrollo, pasar las variables en la línea de comandos:
+/// ```bash
+/// flutter run \
+///   --dart-define=SUPABASE_URL=https://xxx.supabase.co \
+///   --dart-define=SUPABASE_ANON_KEY=eyJ...
+/// ```
+/// O usar un fichero: `--dart-define-from-file=dart_defines.json`.
 abstract final class Env {
   Env._();
 
+  // ── Constantes embebidas en build (AOT-friendly) ────────────
+
+  static const String _supabaseUrl = String.fromEnvironment('SUPABASE_URL');
+  static const String _supabaseAnonKey = String.fromEnvironment('SUPABASE_ANON_KEY');
+  static const String _supabaseFunctionsUrl =
+      String.fromEnvironment('SUPABASE_FUNCTIONS_URL');
+  static const String _postHogApiKey = String.fromEnvironment('POSTHOG_API_KEY');
+  static const String _postHogHost = String.fromEnvironment('POSTHOG_HOST');
+  static const String _sentryDsn = String.fromEnvironment('SENTRY_DSN');
+  static const String _tosUrl = String.fromEnvironment('TRANSITLY_TOS_URL');
+  static const String _privacyUrl = String.fromEnvironment('TRANSITLY_PRIVACY_URL');
+  static const String _mapTilerApiKey = String.fromEnvironment('MAPTILER_API_KEY');
+
   // ── Supabase (críticas) ─────────────────────────────────────
 
-  static String get supabaseUrl => _required('SUPABASE_URL');
-  static String get supabaseAnonKey => _required('SUPABASE_ANON_KEY');
+  static String get supabaseUrl => _requireNonEmpty(_supabaseUrl, 'SUPABASE_URL');
+  static String get supabaseAnonKey =>
+      _requireNonEmpty(_supabaseAnonKey, 'SUPABASE_ANON_KEY');
 
   /// Por defecto deriva de [supabaseUrl] (`<url>/functions/v1`). Solo
   /// hace falta override si se usa un dominio dedicado para Edge.
-  static String get supabaseFunctionsUrl =>
-      _optional('SUPABASE_FUNCTIONS_URL') ?? '$supabaseUrl/functions/v1';
+  static String get supabaseFunctionsUrl => _supabaseFunctionsUrl.isEmpty
+      ? '$supabaseUrl/functions/v1'
+      : _supabaseFunctionsUrl;
 
   // ── Telemetría (opcionales) ─────────────────────────────────
 
-  static String? get postHogApiKey => _optional('POSTHOG_API_KEY');
+  static String? get postHogApiKey =>
+      _postHogApiKey.isEmpty ? null : _postHogApiKey;
   static String get postHogHost =>
-      _optional('POSTHOG_HOST') ?? 'https://eu.posthog.com';
-  static String? get sentryDsn => _optional('SENTRY_DSN');
+      _postHogHost.isEmpty ? 'https://eu.posthog.com' : _postHogHost;
+  static String? get sentryDsn => _sentryDsn.isEmpty ? null : _sentryDsn;
 
   // ── Legal (opcionales) ──────────────────────────────────────
 
   static String get tosUrl =>
-      _optional('TRANSITLY_TOS_URL') ?? 'https://transitly.app/terms';
-
+      _tosUrl.isEmpty ? 'https://transitly.app/terms' : _tosUrl;
   static String get privacyUrl =>
-      _optional('TRANSITLY_PRIVACY_URL') ?? 'https://transitly.app/privacy';
+      _privacyUrl.isEmpty ? 'https://transitly.app/privacy' : _privacyUrl;
 
   // ── Mapas (opcional, F20) ───────────────────────────────────
 
-  static String? get mapTilerApiKey => _optional('MAPTILER_API_KEY');
+  static String? get mapTilerApiKey =>
+      _mapTilerApiKey.isEmpty ? null : _mapTilerApiKey;
 
   // ── Helpers privados ────────────────────────────────────────
 
-  static String _required(String key) {
-    final value = String.fromEnvironment(key);
-    if (value.isNotEmpty) return value;
-    // Fallback a hardcode para APK demo/desarrollo.
-    // En producción usar --dart-define (SEC2).
-    const hardcoded = <String, String>{
-      'SUPABASE_URL': 'https://mmzahxtiaurkgtmtehxk.supabase.co',
-      'SUPABASE_ANON_KEY': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1temFoeHRpYXVya2d0bXRlaHhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4MTA3MTksImV4cCI6MjA5MjM4NjcxOX0.wtFxK6ha6WrQXhtN3Jg-Ob7iwOeKhfk7G127gbXGuK8',
-    };
-    final fallback = hardcoded[key];
-    if (fallback != null && fallback.isNotEmpty) return fallback;
-    throw EnvException(
-      error: EnvError.missing,
-      key: key,
-      message: 'No definido en --dart-define ni hardcodeado',
-    );
-  }
-
-  static String? _optional(String key) {
-    final value = String.fromEnvironment(key);
-    if (value.isEmpty) return null;
+  static String _requireNonEmpty(String value, String key) {
+    if (value.isEmpty) {
+      throw EnvException(
+        error: EnvError.missing,
+        key: key,
+        message: 'No definido en --dart-define (o vacío)',
+      );
+    }
     return value;
   }
 }

@@ -50,8 +50,11 @@ android {
                 signingConfigs.getByName("release")
             else
                 signingConfigs.getByName("debug")
-            isMinifyEnabled = true
-            isShrinkResources = true
+            // R8 deshabilitado: el daemon Gradle se cae por OOM en hosts con <8G
+            // RAM libre durante minifyReleaseWithR8. Reactivar cuando el host
+            // tenga margen o se migre a otra máquina.
+            isMinifyEnabled = false
+            isShrinkResources = false
         }
     }
 

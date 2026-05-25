@@ -104,10 +104,30 @@ abstract class HiveInit {
   }
 
   static Future<Box<T>> _open<T>(String name, {HiveAesCipher? cipher}) async {
+    // Si la caja ya está abierta (p.ej. bootstrap reentrante o un provider la
+    // abrió antes de tiempo), reutilizar la referencia en lugar de propagar
+    // el "already open" de Hive.
+    if (Hive.isBoxOpen(name)) {
+      try {
+        return Hive.box<T>(name);
+      } catch (_) {
+        // Está abierta pero con otro tipo: cerrarla para reabrir con T.
+        await Hive.box(name).close();
+      }
+    }
     try {
       return await Hive.openBox<T>(name, encryptionCipher: cipher);
     } catch (e, st) {
+      // `print` se usa intencionadamente en lugar de AppLogger porque éste
+      // filtra por kDebugMode y queremos diagnóstico también en release.
+      // ignore: avoid_print
+      print('[HiveCache] open box "$name" failed: $e\n$st');
       AppLogger.error(_logTag, 'open box "$name" failed; deleting and retrying', e, st);
+      if (Hive.isBoxOpen(name)) {
+        try {
+          await Hive.box(name).close();
+        } catch (_) {}
+      }
       await Hive.deleteBoxFromDisk(name);
       return Hive.openBox<T>(name, encryptionCipher: cipher);
     }

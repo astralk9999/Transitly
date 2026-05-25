@@ -4,7 +4,10 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_spacing.dart';
+import '../../data/auth/auth_repository.dart';
 import '../../l10n/generated/app_localizations.dart';
+import '../../shared/models/user_role.dart';
+import '../../shared/providers/auth_provider.dart';
 import '../../shared/providers/notification_stream_provider.dart';
 import '../../shared/providers/user_provider.dart';
 import '../../shared/widgets/responsive_scaffold.dart';
@@ -28,7 +31,14 @@ class HomeShell extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isDriver = ref.watch(isDriverModeProvider);
+    // El FAB de conductor solo se muestra para usuarios autenticados con rol
+    // de conductor verificado. Antes dependía de `isDriverModeProvider`, un
+    // switch público que cualquier invitado podía activar — ahora se deriva
+    // del rol real del perfil.
+    final isAuth =
+        ref.watch(authStateProvider).valueOrNull is AuthAuthenticated;
+    final isDriver =
+        isAuth && ref.watch(currentUserRoleProvider) == UserRole.driver;
     final unreadCount = ref.watch(unreadCountProvider);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
@@ -36,6 +46,11 @@ class HomeShell extends ConsumerWidget {
     final useRail = screen != ScreenSize.compact;
     final extendedRail = screen == ScreenSize.large;
     final tabs = homeTabsOf(AppLocalizations.of(context));
+    // La campana se oculta en el tab del mapa (index 1): allí estorba a los
+    // controles del mapa y nunca tiene contenido relevante en modo demo.
+    const mapTabIndex = 1;
+    final showNotificationBell =
+        navigationShell.currentIndex != mapTabIndex;
 
     if (useRail) {
       return FocusTraversalGroup(
@@ -58,15 +73,16 @@ class HomeShell extends ConsumerWidget {
                   child: Stack(
                     children: [
                       ResponsiveScaffold(child: navigationShell),
-                      Positioned(
-                        top: TransitSpacing.space8,
-                        right: TransitSpacing.space16,
-                        child: _NotificationBell(
-                          unreadCount: unreadCount,
-                          c: c,
-                          onTap: () => context.push('/notifications'),
+                      if (showNotificationBell)
+                        Positioned(
+                          top: TransitSpacing.space8,
+                          right: TransitSpacing.space16,
+                          child: _NotificationBell(
+                            unreadCount: unreadCount,
+                            c: c,
+                            onTap: () => context.push('/notifications'),
+                          ),
                         ),
-                      ),
                       if (isDriver)
                         Positioned(
                           bottom: TransitSpacing.space16,
@@ -94,18 +110,19 @@ class HomeShell extends ConsumerWidget {
             child: SmokeBackground(color: c.accent, isDark: isDark),
           ),
           navigationShell,
-          Positioned(
-            top: TransitSpacing.space8,
-            right: TransitSpacing.space16,
-            child: SafeArea(
-              bottom: false,
-              child: _NotificationBell(
-                unreadCount: unreadCount,
-                c: c,
-                onTap: () => context.push('/notifications'),
+          if (showNotificationBell)
+            Positioned(
+              top: TransitSpacing.space8,
+              right: TransitSpacing.space16,
+              child: SafeArea(
+                bottom: false,
+                child: _NotificationBell(
+                  unreadCount: unreadCount,
+                  c: c,
+                  onTap: () => context.push('/notifications'),
+                ),
               ),
             ),
-          ),
           if (isDriver)
             Positioned(
               bottom: 80,

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../data/auth/auth_repository.dart';
+import '../../../shared/providers/auth_provider.dart';
 import '../../../shared/providers/user_provider.dart';
 import '../../../shared/widgets/responsive_scaffold.dart';
 import '../widgets/profile_about_section.dart';
@@ -18,6 +20,8 @@ class ProfileTab extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(currentUserProvider);
     final padding = ResponsiveScaffold.screenPadding(context);
+    final isAuthenticated =
+        ref.watch(authStateProvider).valueOrNull is AuthAuthenticated;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -35,8 +39,12 @@ class ProfileTab extends ConsumerWidget {
                     const ProfileAppearanceSection(),
                     const SizedBox(height: 16),
                     const ProfileLocationSection(),
-                    const SizedBox(height: 16),
-                    ProfileContributionsSection(user: user),
+                    // Contribuciones solo tras autenticar — sin login no hay
+                    // datos reales y mostrar mock confunde al usuario.
+                    if (isAuthenticated) ...[
+                      const SizedBox(height: 16),
+                      ProfileContributionsSection(user: user),
+                    ],
                     const SizedBox(height: 16),
                     const ProfileNotificationsSection(),
                     const SizedBox(height: 16),

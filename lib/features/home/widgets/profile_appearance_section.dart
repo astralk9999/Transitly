@@ -8,7 +8,6 @@ import '../../../core/theme/transit_typography.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/providers/is_dark_provider.dart';
 import '../../../shared/providers/theme_provider.dart';
-import '../../../shared/providers/user_provider.dart';
 import '../../../shared/widgets/glass_card.dart';
 import '../../../shared/widgets/gradient_text.dart';
 
@@ -19,7 +18,6 @@ class ProfileAppearanceSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = isDarkMode(ref, context);
     final c = TransitColorScheme.of(isDark);
-    final isDriver = ref.watch(isDriverModeProvider);
     final l10n = AppLocalizations.of(context);
 
     return GlassCard(
@@ -81,40 +79,10 @@ class ProfileAppearanceSection extends ConsumerWidget {
               ],
             ),
           ),
-          Divider(
-            height: 24,
-            thickness: 0.5,
-            color: Colors.white.withValues(alpha: 0.06),
-          ),
-          GradientText(
-            l10n.profileSectionDemoProfile,
-            style: GoogleFonts.ibmPlexMono(
-              fontSize: 11,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 1.5,
-            ),
-            gradient: c.gradientAccent,
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: Text(l10n.driverModeLabel,
-                    style: TransitTypography.bodyPrimary(c.textHi)),
-              ),
-              Switch.adaptive(
-                value: isDriver,
-                activeTrackColor: c.accent,
-                onChanged: (v) {
-                  ref.read(isDriverModeProvider.notifier).state = v;
-                },
-              ),
-            ],
-          ),
-          Text(
-            'Activa para ver las funciones de conductor',
-            style: TransitTypography.bodySmall(c.textLo),
-          ),
+          // El toggle "PERFIL DEMO → modo conductor" se eliminó: el modo
+          // conductor solo debe activarse via flujo de activación verificado
+          // (/activate-driver) tras autenticarse. Un switch público de demo
+          // confunde y permite acceder a UI de conductor sin verificación.
         ],
       ),
     );

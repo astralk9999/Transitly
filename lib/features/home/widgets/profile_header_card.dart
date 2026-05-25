@@ -35,10 +35,81 @@ class ProfileHeaderCard extends ConsumerWidget {
     final authState = ref.watch(authStateProvider).valueOrNull;
     final authUser = authState is AuthAuthenticated ? authState.user : null;
 
-    final displayName = authUser?.userMetadata?['display_name'] as String? ??
-        authUser?.email?.split('@').first ??
+    // Modo invitado: no usar datos mock — mostrar CTA para iniciar sesión.
+    if (authUser == null) {
+      return GlassCard(
+        blur: 20,
+        fillOpacity: 0.06,
+        borderRadius: 16,
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: c.accent.withValues(alpha: 0.12),
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: c.accent.withValues(alpha: 0.25),
+                  width: 0.5,
+                ),
+              ),
+              child: Icon(Icons.person_outline, color: c.accent, size: 24),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'INVITADO',
+                    style: GoogleFonts.ibmPlexMono(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 1.5,
+                      color: c.accent,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    'Inicia sesión para tu perfil',
+                    style: TransitTypography.bodySecondary(c.textMid),
+                  ),
+                ],
+              ),
+            ),
+            GestureDetector(
+              onTap: () => context.push('/signin'),
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color: c.accent.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(8),
+                  border:
+                      Border.all(color: c.accent.withValues(alpha: 0.4), width: 0.5),
+                ),
+                child: Text(
+                  'ENTRAR',
+                  style: GoogleFonts.ibmPlexMono(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1.2,
+                    color: c.accent,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    final displayName = authUser.userMetadata?['display_name'] as String? ??
+        authUser.email?.split('@').first ??
         user.name;
-    final displayEmail = authUser?.email ?? user.email;
+    final displayEmail = authUser.email ?? user.email;
     final initials = _initials(displayName);
 
     return GlassCard(

@@ -202,12 +202,12 @@ class _TransitMapState extends State<TransitMap> {
           ),
           children: [
             TileLayer(
-              urlTemplate: widget.fmtcTileProvider == null
-                  ? MapConfig.tileUrl(
-                      widget.mapStyle ?? (widget.isDark ? 'dark' : 'light'),
-                      apiKey: Env.mapTilerApiKey,
-                    )
-                  : '',
+              // urlTemplate siempre es obligatorio — el FMTCTileProvider solo
+              // añade la capa de cache, no aporta URL propia.
+              urlTemplate: MapConfig.tileUrl(
+                widget.mapStyle ?? (widget.isDark ? 'dark' : 'light'),
+                apiKey: Env.mapTilerApiKey,
+              ),
               tileProvider: widget.fmtcTileProvider,
               subdomains: MapConfig.subdomains,
               retinaMode: false,

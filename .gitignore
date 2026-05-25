@@ -4,6 +4,10 @@
 .env.local
 .env.*.local
 
+# Defines pasados al build (--dart-define-from-file). Contiene anon key
+# de Supabase. Replicar desde .env para builds locales.
+dart_defines.json
+
 # Supabase CLI — caché local, access token y referencia al proyecto
 # vinculado. Generado por `supabase login` y `supabase link`.
 .supabase/

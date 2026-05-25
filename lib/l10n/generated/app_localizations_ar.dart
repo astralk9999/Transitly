@@ -2151,4 +2151,22 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get actionOpenSettings => 'فتح الإعدادات';
+
+  @override
+  String get mapSearchHint => 'ابحث عن خطوط أو محطات أو أماكن...';
+
+  @override
+  String get mapSearchNoResults => 'لا توجد نتائج';
+
+  @override
+  String get mapSearchError => 'خطأ في البحث';
+
+  @override
+  String get mapSearchSectionRoutes => 'الخطوط';
+
+  @override
+  String get mapSearchSectionStops => 'المحطات';
+
+  @override
+  String get mapSearchSectionPlaces => 'الأماكن';
 }

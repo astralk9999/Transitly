@@ -745,5 +745,11 @@
   "requireAuthGeneric": "سجل الدخول للوصول إلى هذه الميزة",
   "requireAuthAction": "سجل الدخول لـ {action}",
   "mapLocationPermissionDenied": "تم رفض إذن الموقع",
-  "actionOpenSettings": "فتح الإعدادات"
+  "actionOpenSettings": "فتح الإعدادات",
+  "mapSearchHint": "ابحث عن خطوط أو محطات أو أماكن...",
+  "mapSearchNoResults": "لا توجد نتائج",
+  "mapSearchError": "خطأ في البحث",
+  "mapSearchSectionRoutes": "الخطوط",
+  "mapSearchSectionStops": "المحطات",
+  "mapSearchSectionPlaces": "الأماكن"
 }

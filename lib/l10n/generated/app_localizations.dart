@@ -4070,6 +4070,42 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Abrir ajustes'**
   String get actionOpenSettings;
+
+  /// Hint del buscador del mapa
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar rutas, paradas o lugares...'**
+  String get mapSearchHint;
+
+  /// Mensaje cuando no hay resultados de búsqueda
+  ///
+  /// In es, this message translates to:
+  /// **'Sin resultados'**
+  String get mapSearchNoResults;
+
+  /// Mensaje de error en búsqueda
+  ///
+  /// In es, this message translates to:
+  /// **'Error al buscar'**
+  String get mapSearchError;
+
+  /// Sección de rutas en resultados
+  ///
+  /// In es, this message translates to:
+  /// **'Rutas'**
+  String get mapSearchSectionRoutes;
+
+  /// Sección de paradas en resultados
+  ///
+  /// In es, this message translates to:
+  /// **'Paradas'**
+  String get mapSearchSectionStops;
+
+  /// Sección de lugares en resultados
+  ///
+  /// In es, this message translates to:
+  /// **'Lugares'**
+  String get mapSearchSectionPlaces;
 }
 
 class _AppLocalizationsDelegate

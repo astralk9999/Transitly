@@ -2162,4 +2162,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get actionOpenSettings => 'Open settings';
+
+  @override
+  String get mapSearchHint => 'Search routes, stops or places...';
+
+  @override
+  String get mapSearchNoResults => 'No results';
+
+  @override
+  String get mapSearchError => 'Search error';
+
+  @override
+  String get mapSearchSectionRoutes => 'Routes';
+
+  @override
+  String get mapSearchSectionStops => 'Stops';
+
+  @override
+  String get mapSearchSectionPlaces => 'Places';
 }

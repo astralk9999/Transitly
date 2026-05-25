@@ -1204,5 +1204,17 @@
   "mapLocationPermissionDenied": "Permiso de ubicación denegado",
   "@mapLocationPermissionDenied": {"description": "Snackbar cuando se deniega permiso de ubicación"},
   "actionOpenSettings": "Abrir ajustes",
-  "@actionOpenSettings": {"description": "Botón para abrir ajustes del sistema"}
+  "@actionOpenSettings": {"description": "Botón para abrir ajustes del sistema"},
+  "mapSearchHint": "Buscar rutas, paradas o lugares...",
+  "@mapSearchHint": {"description": "Hint del buscador del mapa"},
+  "mapSearchNoResults": "Sin resultados",
+  "@mapSearchNoResults": {"description": "Mensaje cuando no hay resultados de búsqueda"},
+  "mapSearchError": "Error al buscar",
+  "@mapSearchError": {"description": "Mensaje de error en búsqueda"},
+  "mapSearchSectionRoutes": "Rutas",
+  "@mapSearchSectionRoutes": {"description": "Sección de rutas en resultados"},
+  "mapSearchSectionStops": "Paradas",
+  "@mapSearchSectionStops": {"description": "Sección de paradas en resultados"},
+  "mapSearchSectionPlaces": "Lugares",
+  "@mapSearchSectionPlaces": {"description": "Sección de lugares en resultados"}
 }

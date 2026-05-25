@@ -27,6 +27,7 @@ import '../../map/sheets/stop_info_sheet.dart';
 import '../../map/sheets/trip_info_sheet.dart';
 import '../../map/transit_map.dart';
 import '../../map/widgets/map_controls.dart';
+import '../../map/widgets/map_search_sheet.dart';
 import '../../map/layers/user_location_layer.dart';
 
 class MapTab extends ConsumerStatefulWidget {
@@ -228,12 +229,11 @@ class _MapTabState extends ConsumerState<MapTab> {
                   }
                 },
                 onFilter: () => showMapFilterSheet(context, ref),
-                onSearch: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        content: Text(AppLocalizations.of(context).mapSearchComingSoon)),
-                  );
-                },
+                onSearch: () => showMapSearchSheet(
+                  context,
+                  ref,
+                  _mapController,
+                ),
               ),
             ],
           ),

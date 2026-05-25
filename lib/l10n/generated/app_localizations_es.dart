@@ -2175,4 +2175,22 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get actionOpenSettings => 'Abrir ajustes';
+
+  @override
+  String get mapSearchHint => 'Buscar rutas, paradas o lugares...';
+
+  @override
+  String get mapSearchNoResults => 'Sin resultados';
+
+  @override
+  String get mapSearchError => 'Error al buscar';
+
+  @override
+  String get mapSearchSectionRoutes => 'Rutas';
+
+  @override
+  String get mapSearchSectionStops => 'Paradas';
+
+  @override
+  String get mapSearchSectionPlaces => 'Lugares';
 }

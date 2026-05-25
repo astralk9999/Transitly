@@ -808,5 +808,11 @@
   "requireAuthGeneric": "Sign in to access this feature",
   "requireAuthAction": "Sign in to {action}",
   "mapLocationPermissionDenied": "Location permission denied",
-  "actionOpenSettings": "Open settings"
+  "actionOpenSettings": "Open settings",
+  "mapSearchHint": "Search routes, stops or places...",
+  "mapSearchNoResults": "No results",
+  "mapSearchError": "Search error",
+  "mapSearchSectionRoutes": "Routes",
+  "mapSearchSectionStops": "Stops",
+  "mapSearchSectionPlaces": "Places"
 }

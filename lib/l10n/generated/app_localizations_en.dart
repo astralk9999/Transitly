@@ -2156,4 +2156,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String requireAuthAction(String action) {
     return 'Sign in to $action';
   }
+
+  @override
+  String get mapLocationPermissionDenied => 'Location permission denied';
+
+  @override
+  String get actionOpenSettings => 'Open settings';
 }

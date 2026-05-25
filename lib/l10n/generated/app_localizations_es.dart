@@ -2169,4 +2169,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String requireAuthAction(String action) {
     return 'Inicia sesión para $action';
   }
+
+  @override
+  String get mapLocationPermissionDenied => 'Permiso de ubicación denegado';
+
+  @override
+  String get actionOpenSettings => 'Abrir ajustes';
 }

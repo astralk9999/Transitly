@@ -1200,5 +1200,9 @@
     "placeholders": {
       "action": {"type": "String", "example": "reportar un incidente"}
     }
-  }
+  },
+  "mapLocationPermissionDenied": "Permiso de ubicación denegado",
+  "@mapLocationPermissionDenied": {"description": "Snackbar cuando se deniega permiso de ubicación"},
+  "actionOpenSettings": "Abrir ajustes",
+  "@actionOpenSettings": {"description": "Botón para abrir ajustes del sistema"}
 }

@@ -2145,4 +2145,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String requireAuthAction(String action) {
     return 'سجل الدخول لـ $action';
   }
+
+  @override
+  String get mapLocationPermissionDenied => 'تم رفض إذن الموقع';
+
+  @override
+  String get actionOpenSettings => 'فتح الإعدادات';
 }

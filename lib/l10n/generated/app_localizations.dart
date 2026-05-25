@@ -4058,6 +4058,18 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Inicia sesión para {action}'**
   String requireAuthAction(String action);
+
+  /// Snackbar cuando se deniega permiso de ubicación
+  ///
+  /// In es, this message translates to:
+  /// **'Permiso de ubicación denegado'**
+  String get mapLocationPermissionDenied;
+
+  /// Botón para abrir ajustes del sistema
+  ///
+  /// In es, this message translates to:
+  /// **'Abrir ajustes'**
+  String get actionOpenSettings;
 }
 
 class _AppLocalizationsDelegate

@@ -806,5 +806,7 @@
   "homeNoFavorites": "No favorite routes",
   "homeNoFavoritesHint": "Tap ☆ on any route to save it here",
   "requireAuthGeneric": "Sign in to access this feature",
-  "requireAuthAction": "Sign in to {action}"
+  "requireAuthAction": "Sign in to {action}",
+  "mapLocationPermissionDenied": "Location permission denied",
+  "actionOpenSettings": "Open settings"
 }

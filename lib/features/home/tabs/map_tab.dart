@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -15,6 +16,7 @@ import '../../../data/mock/mock_realtime_service.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/providers/connectivity_provider.dart';
 import '../../../shared/providers/is_dark_provider.dart';
+import '../../../shared/providers/user_location_provider.dart';
 import '../../../shared/widgets/pressable.dart';
 import '../../../shared/widgets/route_card.dart';
 import '../../map/map_config.dart';
@@ -24,6 +26,7 @@ import '../../map/sheets/stop_info_sheet.dart';
 import '../../map/sheets/trip_info_sheet.dart';
 import '../../map/transit_map.dart';
 import '../../map/widgets/map_controls.dart';
+import '../../map/layers/user_location_layer.dart';
 
 class MapTab extends ConsumerStatefulWidget {
   const MapTab({super.key});
@@ -127,9 +130,38 @@ class _MapTabState extends ConsumerState<MapTab> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _requestLocationPermission();
+  }
+
+  Future<void> _requestLocationPermission() async {
+    try {
+      await ref.read(userLocationPermissionProvider.future);
+    } catch (_) {
+      if (!mounted) return;
+      final l10n = AppLocalizations.of(context);
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            content: Text(l10n.mapLocationPermissionDenied),
+            action: SnackBarAction(
+              label: l10n.actionOpenSettings,
+              onPressed: () => Geolocator.openLocationSettings(),
+            ),
+            duration: const Duration(seconds: 5),
+          ),
+        );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final isDark = isDarkMode(ref, context);
     final c = TransitColorScheme.of(isDark);
+
+    final userLocation = ref.watch(userLocationStreamProvider).valueOrNull;
 
     final mockData = ref.watch(mockDataServiceProvider);
     final realtimeTrips = ref.watch(realtimeTripsProvider);
@@ -148,6 +180,13 @@ class _MapTabState extends ConsumerState<MapTab> {
             isDark: isDark,
             controller: _mapController,
             fmtcTileProvider: fmtcTp,
+            additionalLayers: [
+              if (userLocation != null)
+                UserLocationLayer(
+                  position: userLocation,
+                  isDark: isDark,
+                ),
+            ],
             routes: routes,
             routePathsLod: cache.routePathsLod,
             routeStopsMap: cache.routeStopsMap,
@@ -172,8 +211,13 @@ class _MapTabState extends ConsumerState<MapTab> {
               MapControls(
                 isDark: isDark,
                 onCenter: () {
-                  _mapController.move(
-                      MapConfig.defaultCenter, MapConfig.defaultZoom);
+                  final loc = ref.read(userLocationStreamProvider).valueOrNull;
+                  if (loc != null) {
+                    _mapController.move(loc, 16);
+                  } else {
+                    _mapController.move(
+                        MapConfig.defaultCenter, MapConfig.defaultZoom);
+                  }
                 },
                 onFilter: () => showMapFilterSheet(context, ref),
                 onSearch: () {

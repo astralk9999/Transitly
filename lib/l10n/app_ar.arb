@@ -743,5 +743,7 @@
   "homeNoFavorites": "لا توجد خطوط مفضلة",
   "homeNoFavoritesHint": "اضغط ☆ على أي خط لحفظه هنا",
   "requireAuthGeneric": "سجل الدخول للوصول إلى هذه الميزة",
-  "requireAuthAction": "سجل الدخول لـ {action}"
+  "requireAuthAction": "سجل الدخول لـ {action}",
+  "mapLocationPermissionDenied": "تم رفض إذن الموقع",
+  "actionOpenSettings": "فتح الإعدادات"
 }

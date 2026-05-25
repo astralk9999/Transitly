@@ -19,19 +19,13 @@ class EnvException implements Exception {
   }
 }
 
-/// Acceso tipado a las variables de entorno compiladas vía `--dart-define`.
+/// Acceso tipado a las variables de entorno compiladas vía `--dart-define`
+/// con fallback hardcodeado para desarrollo.
 ///
 /// Cada valor se lee de `String.fromEnvironment` en tiempo de compilación.
+/// Si no está definido, se usa un fallback hardcodeado (solo para APK demo).
 /// Las claves "críticas" (sin las cuales la app no puede arrancar) se
-/// validan vía [_required]. Las "opcionales" (telemetría, mapas premium)
-/// devuelven `null` cuando la integración no está configurada.
-///
-/// Para desarrollo, pasar las variables en la línea de comandos:
-/// ```bash
-/// flutter run \
-///   --dart-define=SUPABASE_URL=https://xxx.supabase.co \
-///   --dart-define=SUPABASE_ANON_KEY=eyJ...
-/// ```
+/// validan vía [_required].
 abstract final class Env {
   Env._();
 
@@ -68,14 +62,20 @@ abstract final class Env {
 
   static String _required(String key) {
     final value = String.fromEnvironment(key);
-    if (value.isEmpty) {
-      throw EnvException(
-        error: EnvError.missing,
-        key: key,
-        message: 'No definido en --dart-define (o vacío)',
-      );
-    }
-    return value;
+    if (value.isNotEmpty) return value;
+    // Fallback a hardcode para APK demo/desarrollo.
+    // En producción usar --dart-define (SEC2).
+    const hardcoded = <String, String>{
+      'SUPABASE_URL': 'https://mmzahxtiaurkgtmtehxk.supabase.co',
+      'SUPABASE_ANON_KEY': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1temFoeHRpYXVya2d0bXRlaHhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4MTA3MTksImV4cCI6MjA5MjM4NjcxOX0.wtFxK6ha6WrQXhtN3Jg-Ob7iwOeKhfk7G127gbXGuK8',
+    };
+    final fallback = hardcoded[key];
+    if (fallback != null && fallback.isNotEmpty) return fallback;
+    throw EnvException(
+      error: EnvError.missing,
+      key: key,
+      message: 'No definido en --dart-define ni hardcodeado',
+    );
   }
 
   static String? _optional(String key) {

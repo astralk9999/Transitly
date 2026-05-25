@@ -1,0 +1,58 @@
+---
+import metrics from '../data/metrics.json';
+---
+
+<section id="seguridad" class="py-24 px-6 max-w-6xl mx-auto">
+  <h2 class="text-4xl font-bold mb-4">Seguridad y privacidad</h2>
+  <p class="text-transit-text-mid mb-12 text-lg max-w-3xl">
+    Cumplimiento GDPR integral con consentimiento granular, cifrado de datos sensibles y RLS por defecto en PostgreSQL.
+  </p>
+
+  <div class="bg-transit-bg-surface rounded-2xl border border-transit-bg-raised overflow-hidden">
+    <table class="w-full text-sm">
+      <thead class="bg-transit-bg-raised/50">
+        <tr>
+          <th class="text-left p-4 font-mono text-transit-accent">Artículo GDPR</th>
+          <th class="text-left p-4">Implementación en Transitly</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-transit-bg-raised">
+        <tr>
+          <td class="p-4 font-mono text-transit-state-info">Art. 8</td>
+          <td class="p-4 text-transit-text-mid">Validación de edad ≥16 en el registro</td>
+        </tr>
+        <tr>
+          <td class="p-4 font-mono text-transit-state-info">Art. 13</td>
+          <td class="p-4 text-transit-text-mid">Privacy screen con política de privacidad completa y consentimiento granular por finalidad</td>
+        </tr>
+        <tr>
+          <td class="p-4 font-mono text-transit-state-info">Art. 17</td>
+          <td class="p-4 text-transit-text-mid">Edge function delete_user + worker programado para borrado completo</td>
+        </tr>
+        <tr>
+          <td class="p-4 font-mono text-transit-state-info">Art. 20</td>
+          <td class="p-4 text-transit-text-mid">Edge function generate_data_export para portabilidad de datos del usuario</td>
+        </tr>
+        <tr>
+          <td class="p-4 font-mono text-transit-state-info">Art. 21</td>
+          <td class="p-4 text-transit-text-mid">Revocación de consentimiento en caliente sin pérdida de funcionalidad básica</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-6 mt-8">
+    <div class="bg-transit-bg-surface p-6 rounded-2xl border border-transit-bg-raised">
+      <h3 class="text-xl font-bold mb-2">RLS PostgreSQL</h3>
+      <p class="text-transit-text-mid text-sm">
+        Row-Level Security con política DENY-by-default en las {metrics.code.migrations} tablas de la base de datos. Cada fila pertenece a su propietario autenticado.
+      </p>
+    </div>
+    <div class="bg-transit-bg-surface p-6 rounded-2xl border border-transit-bg-raised">
+      <h3 class="text-xl font-bold mb-2">Cifrado local</h3>
+      <p class="text-transit-text-mid text-sm">
+        HiveAesCipher con clave AES-256 para {metrics.code.encryptedBoxes} cajas Hive con datos sensibles. Claves NFC cifradas en dispositivo, nunca en servidor.
+      </p>
+    </div>
+  </div>
+</section>

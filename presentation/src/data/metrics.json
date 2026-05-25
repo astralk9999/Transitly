@@ -1,0 +1,41 @@
+{
+  "tests": {
+    "passed": 619,
+    "skipped": 6,
+    "failed": 0
+  },
+  "coverage": {
+    "global": 24.04,
+    "target": 60
+  },
+  "code": {
+    "features": 27,
+    "migrations": 14,
+    "edgeFunctions": 4,
+    "ciJobs": 6,
+    "arbKeys": {
+      "es": 642,
+      "en": 628,
+      "ar": 272
+    },
+    "hiveBoxes": 17,
+    "encryptedBoxes": 2
+  },
+  "scorecard": {
+    "tfg": 9.0,
+    "production": 6.5
+  },
+  "release": {
+    "apkSize": "73,5 MiB",
+    "version": "1.0.0-tfg",
+    "platforms": ["Android"]
+  },
+  "context": {
+    "operator": "COMUJESA",
+    "city": "Jerez de la Frontera",
+    "users": {
+      "urbanRiders2024": "1.500M",
+      "interurbanRiders2024": "600M"
+    }
+  }
+}

@@ -1,0 +1,30 @@
+---
+import metrics from '../data/metrics.json';
+---
+
+<section id="problema" class="py-24 px-6 max-w-6xl mx-auto">
+  <h2 class="text-4xl font-bold mb-4">El problema</h2>
+  <p class="text-transit-text-mid mb-12 text-lg max-w-3xl">
+    El transporte público de ciudades medias españolas presenta carencias estructurales que afectan a más de 2.000 millones de viajeros al año. En {metrics.context.city}, ninguna app ofrece información en tiempo real.
+  </p>
+
+  <div class="grid md:grid-cols-3 gap-6">
+    <article class="bg-transit-bg-surface p-6 rounded-2xl border border-transit-bg-raised">
+      <div class="text-transit-state-cancelled text-3xl font-mono mb-2">01</div>
+      <h3 class="text-xl font-bold mb-2">Sin GPS en tiempo real</h3>
+      <p class="text-transit-text-mid">Los usuarios no saben dónde está su bus. Los horarios estáticos rara vez reflejan la realidad operativa.</p>
+    </article>
+
+    <article class="bg-transit-bg-surface p-6 rounded-2xl border border-transit-bg-raised">
+      <div class="text-transit-state-cancelled text-3xl font-mono mb-2">02</div>
+      <h3 class="text-xl font-bold mb-2">Fragmentación por operador</h3>
+      <p class="text-transit-text-mid">Cada ciudad tiene su propia app. Un viajero entre Jerez y Cádiz necesita tres apps con tres interfaces.</p>
+    </article>
+
+    <article class="bg-transit-bg-surface p-6 rounded-2xl border border-transit-bg-raised">
+      <div class="text-transit-state-cancelled text-3xl font-mono mb-2">03</div>
+      <h3 class="text-xl font-bold mb-2">Accesibilidad pobre</h3>
+      <p class="text-transit-text-mid">Sin lector de pantalla, sin RTL para árabe, sin alto contraste o filtros de daltonismo en la mayoría de apps.</p>
+    </article>
+  </div>
+</section>

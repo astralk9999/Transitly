@@ -1,0 +1,49 @@
+---
+import metrics from '../data/metrics.json';
+---
+
+<section id="accesibilidad" class="py-24 px-6 max-w-6xl mx-auto">
+  <h2 class="text-4xl font-bold mb-4">Accesibilidad e internacionalización</h2>
+  <p class="text-transit-text-mid mb-12 text-lg max-w-3xl">
+    Transitly está diseñada desde cero para ser usable por cualquier persona, independientemente de sus capacidades o idioma.
+  </p>
+
+  <div class="grid md:grid-cols-3 gap-6">
+    <article class="bg-transit-bg-surface p-6 rounded-2xl border border-transit-bg-raised">
+      <div class="text-transit-state-success text-3xl font-mono mb-2">WCAG 2.2</div>
+      <h3 class="text-xl font-bold mb-2">Nivel AA</h3>
+      <ul class="text-transit-text-mid space-y-2 text-sm">
+        <li>Semántica HTML completa con roles ARIA</li>
+        <li>Objetivos táctiles mínimos de 48dp</li>
+        <li>TextScaler para ampliación de texto</li>
+        <li>8 matrices de filtros de daltonismo</li>
+        <li> Alto contraste integrado</li>
+        <li>Verificación TalkBack pendiente (acta pre-defensa)</li>
+      </ul>
+    </article>
+
+    <article class="bg-transit-bg-surface p-6 rounded-2xl border border-transit-bg-raised">
+      <div class="text-transit-state-info text-3xl font-mono mb-2">i18n</div>
+      <h3 class="text-xl font-bold mb-2">3 idiomas</h3>
+      <ul class="text-transit-text-mid space-y-2 text-sm">
+        <li>Español: {metrics.code.arbKeys.es} claves ARB</li>
+        <li>English: {metrics.code.arbKeys.en} claves ARB</li>
+        <li>العربية: {metrics.code.arbKeys.ar} claves ARB</li>
+        <li>Soporte RTL completo (árabe)</li>
+        <li>Cambio de idioma en caliente sin reinicio</li>
+      </ul>
+    </article>
+
+    <article class="bg-transit-bg-surface p-6 rounded-2xl border border-transit-bg-raised">
+      <div class="text-transit-state-warning text-3xl font-mono mb-2">UX</div>
+      <h3 class="text-xl font-bold mb-2">Experiencia universal</h3>
+      <ul class="text-transit-text-mid space-y-2 text-sm">
+        <li>Modo offline para zonas sin cobertura</li>
+        <li>Tipografía DM Sans (alta legibilidad)</li>
+        <li>IBM Plex Mono para datos tabulares</li>
+        <li>Contraste 7:1 en texto principal</li>
+        <li>Animaciones reducidas si el SO lo prefiere</li>
+      </ul>
+    </article>
+  </div>
+</section>

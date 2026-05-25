@@ -1,0 +1,28 @@
+<section id="equipo" class="py-24 px-6 max-w-6xl mx-auto">
+  <h2 class="text-4xl font-bold mb-4">Equipo y reconocimientos</h2>
+  <p class="text-transit-text-mid mb-12 text-lg max-w-3xl">
+    Proyecto de Fin de Grado desarrollado en solitario con el apoyo de la comunidad open source.
+  </p>
+
+  <div class="max-w-md mx-auto bg-transit-bg-surface p-8 rounded-2xl border border-transit-bg-raised text-center mb-12">
+    <div class="w-20 h-20 bg-transit-bg-raised rounded-full mx-auto mb-4 flex items-center justify-center text-3xl">
+      AK
+    </div>
+    <h3 class="text-xl font-bold">Astralk</h3>
+    <p class="text-transit-text-mid text-sm">Autor · Desarrollador Full-stack</p>
+    <a href="https://github.com/astralk9999" class="text-transit-accent text-sm hover:underline mt-2 inline-block" target="_blank" rel="noopener noreferrer">
+      github.com/astralk9999
+    </a>
+  </div>
+
+  <h3 class="text-2xl font-bold mb-6 text-center">Construido con</h3>
+  <div class="flex flex-wrap justify-center gap-4">
+    {["Flutter", "Dart", "Supabase", "Firebase", "Sentry", "PostHog", "Riverpod", "Hive", "GoRouter", "Freezed", "GitHub Actions", "Astro"].map((tech) => (
+      <span class="px-4 py-2 bg-transit-bg-surface border border-transit-bg-raised rounded-full text-sm text-transit-text-mid">{tech}</span>
+    ))}
+  </div>
+
+  <p class="text-transit-text-lo text-sm text-center mt-12 max-w-md mx-auto">
+    Agradecimientos a la comunidad open source, al tutor académico y a todas las personas que han probado la app y aportado feedback durante el desarrollo.
+  </p>
+</section>

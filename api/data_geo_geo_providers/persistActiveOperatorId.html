@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
-  <meta name="description" content="API docs for the geoBootstrapProvider property from the geo_providers library, for the Dart programming language.">
-  <title>geoBootstrapProvider property - geo_providers library - Dart API</title>
+  <meta name="description" content="API docs for the persistActiveOperatorId function from the geo_providers library, for the Dart programming language.">
+  <title>persistActiveOperatorId function - geo_providers library - Dart API</title>
 
 
   
@@ -26,9 +26,9 @@
   <ol class="breadcrumbs gt-separated dark hidden-xs">
     <li><a href="../index.html">transitly</a></li>
     <li><a href="../data_geo_geo_providers/">data&#47;geo&#47;geo_providers.dart</a></li>
-    <li class="self-crumb">geoBootstrapProvider property</li>
+    <li class="self-crumb">persistActiveOperatorId function</li>
   </ol>
-  <div class="self-name">geoBootstrapProvider</div>
+  <div class="self-name">persistActiveOperatorId</div>
   <form class="search navbar-right" role="search">
     <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
@@ -48,50 +48,32 @@
       data-above-sidebar="data_geo_geo_providers&#47;data_geo_geo_providers-library-sidebar.html"
       data-below-sidebar="">
       <div>
-<h1><span class="kind-top-level-property">geoBootstrapProvider</span> top-level property 
+<h1><span class="kind-function">persistActiveOperatorId</span> function 
  
 </h1></div>
 
-        <section class="multi-line-signature">
-          
-          <a href="https://pub.dev/documentation/riverpod/2.6.1/riverpod/FutureProvider-class.html">FutureProvider</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span>
-          <span class="name ">geoBootstrapProvider</span>
-          <div class="features"><span class="feature">final</span></div>
-
-        </section>
+    <section class="multi-line-signature">
         
-<section class="desc markdown">
-  <p>Provider que se dispara tras el bootstrap para obtener la
-ubicación y precargar los operadores cercanos. El resultado
-se consume en splash_screen o home_tab.</p>
-</section>
+<span class="returntype">void</span>
+<span class="name ">persistActiveOperatorId</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="persistActiveOperatorId-param-operatorId"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">operatorId</span></span></li>
+</ol>)
 
         
+
+    </section>
+    
+
+
+    
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">final geoBootstrapProvider = FutureProvider&lt;void&gt;((ref) async {
-  &#47;&#47; Solicitar ubicación (no bloqueante si el usuario rechaza).
-  await ref.watch(requestLocationProvider.future);
-
-  &#47;&#47; Precargar operadores cercanos.
-  final operators = await ref.watch(activeOperatorsProvider.future);
-
-  &#47;&#47; Restaurar operador activo persistido.
-  final persistedId = _loadPersistedOperatorId();
-  if (persistedId != null) {
-    final match = operators.where((op) =&gt; op.id == persistedId).firstOrNull;
-    if (match != null) {
-      ref.read(activeOperatorProvider.notifier).state = match;
-      return;
-    }
-  }
-  &#47;&#47; Sin selección previa: usar el primero.
-  if (operators.isNotEmpty) {
-    ref.read(activeOperatorProvider.notifier).state = operators.first;
-  }
-});</code></pre>
+  <pre class="language-dart"><code class="language-dart">void persistActiveOperatorId(String operatorId) {
+  try {
+    final box = Hive.box&lt;Map&lt;dynamic, dynamic&gt;&gt;(&#39;guest_theme_prefs&#39;);
+    box.put(_activeOperatorHiveKey, operatorId);
+  } catch (_) {}
+}</code></pre>
 </section>
-
 
 
   </div> <!-- /.main-content -->
@@ -105,7 +87,7 @@ se consume en splash_screen o home_tab.</p>
 <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
     <li><a href="../index.html">transitly</a></li>
     <li><a href="../data_geo_geo_providers/">geo_providers</a></li>
-    <li class="self-crumb">geoBootstrapProvider property</li>
+    <li class="self-crumb">persistActiveOperatorId function</li>
 </ol>
 
     <h5>geo_providers library</h5>

@@ -109,6 +109,11 @@ simulación basta para la demo del TFG.</p>
   }).toList()
     ..sort((a, b) =&gt; a.departureTime.compareTo(b.departureTime));
 
+  &#47;&#47; Si no hay salidas hoy, mostrar primeras de mañana.
+  if (future.isEmpty &amp;&amp; all.isNotEmpty) {
+    return all.take(count).toList();
+  }
+
   return future.take(count).toList();
 }</code></pre>
 </section>

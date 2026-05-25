@@ -70,7 +70,9 @@
   <pre class="language-dart"><code class="language-dart">void persistActiveOperatorId(String operatorId) {
   try {
     final box = Hive.box&lt;Map&lt;dynamic, dynamic&gt;&gt;(&#39;guest_theme_prefs&#39;);
-    box.put(_activeOperatorHiveKey, operatorId);
+    final prefs = box.get(&#39;prefs&#39;, defaultValue: &lt;String, dynamic&gt;{}) ?? &lt;String, dynamic&gt;{};
+    prefs[_activeOperatorHiveKey] = operatorId;
+    box.put(&#39;prefs&#39;, prefs);
   } catch (_) {}
 }</code></pre>
 </section>

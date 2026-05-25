@@ -11,83 +11,103 @@ import metrics from '../data/metrics.json';
     </p>
   </div>
 
-  <div class="flex flex-wrap gap-3 mt-10 mb-14 reveal data-delay="100"">
-    {[
-      { label: 'Flutter', ver: '3.9.2+' },
-      { label: 'Dart', ver: '3.9' },
-      { label: 'Riverpod', ver: '2.6.1' },
-      { label: 'go_router', ver: '17.2' },
-      { label: 'freezed', ver: '3.x' },
-      { label: 'Supabase', ver: 'PGRS+RLS+RT' },
-      { label: 'Hive', ver: '2.2' },
-      { label: 'flutter_map', ver: '7.0' },
-      { label: 'nfc_manager', ver: '3.5' },
-      { label: 'Firebase', ver: 'FCM' },
-      { label: 'Sentry', ver: '8.14' },
-      { label: 'PostHog', ver: '5.24' },
-      { label: 'Astro', ver: '6' },
-    ].map(tech => (
-      <span class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-transit-bg-raised/60 rounded-lg text-xs font-mono border border-transit-bg-raised">
-        <span class="text-transit-accent font-semibold">{tech.label}</span>
-        <span class="text-transit-text-lo">{tech.ver}</span>
-      </span>
-    ))}
+  <div class="flex flex-wrap gap-3 mt-10 mb-14 reveal" data-delay="100">
+    <span class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-transit-bg-raised/60 rounded-lg text-xs font-mono border border-transit-bg-raised">
+      <span class="text-transit-accent font-semibold">Flutter</span> <span class="text-transit-text-lo">3.9.2+</span>
+    </span>
+    <span class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-transit-bg-raised/60 rounded-lg text-xs font-mono border border-transit-bg-raised">
+      <span class="text-transit-accent font-semibold">Dart</span> <span class="text-transit-text-lo">3.9</span>
+    </span>
+    <span class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-transit-bg-raised/60 rounded-lg text-xs font-mono border border-transit-bg-raised">
+      <span class="text-transit-accent font-semibold">Riverpod</span> <span class="text-transit-text-lo">2.6.1</span>
+    </span>
+    <span class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-transit-bg-raised/60 rounded-lg text-xs font-mono border border-transit-bg-raised">
+      <span class="text-transit-accent font-semibold">go_router</span> <span class="text-transit-text-lo">17.2</span>
+    </span>
+    <span class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-transit-bg-raised/60 rounded-lg text-xs font-mono border border-transit-bg-raised">
+      <span class="text-transit-accent font-semibold">freezed</span> <span class="text-transit-text-lo">3.x</span>
+    </span>
+    <span class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-transit-bg-raised/60 rounded-lg text-xs font-mono border border-transit-bg-raised">
+      <span class="text-transit-accent font-semibold">Supabase</span> <span class="text-transit-text-lo">PGRS+RLS+RT</span>
+    </span>
+    <span class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-transit-bg-raised/60 rounded-lg text-xs font-mono border border-transit-bg-raised">
+      <span class="text-transit-accent font-semibold">Hive</span> <span class="text-transit-text-lo">2.2</span>
+    </span>
+    <span class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-transit-bg-raised/60 rounded-lg text-xs font-mono border border-transit-bg-raised">
+      <span class="text-transit-accent font-semibold">flutter_map</span> <span class="text-transit-text-lo">7.0</span>
+    </span>
+    <span class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-transit-bg-raised/60 rounded-lg text-xs font-mono border border-transit-bg-raised">
+      <span class="text-transit-accent font-semibold">nfc_manager</span> <span class="text-transit-text-lo">3.5</span>
+    </span>
+    <span class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-transit-bg-raised/60 rounded-lg text-xs font-mono border border-transit-bg-raised">
+      <span class="text-transit-accent font-semibold">Firebase</span> <span class="text-transit-text-lo">FCM</span>
+    </span>
+    <span class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-transit-bg-raised/60 rounded-lg text-xs font-mono border border-transit-bg-raised">
+      <span class="text-transit-accent font-semibold">Sentry</span> <span class="text-transit-text-lo">8.14</span>
+    </span>
+    <span class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-transit-bg-raised/60 rounded-lg text-xs font-mono border border-transit-bg-raised">
+      <span class="text-transit-accent font-semibold">PostHog</span> <span class="text-transit-text-lo">5.24</span>
+    </span>
+    <span class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-transit-bg-raised/60 rounded-lg text-xs font-mono border border-transit-bg-raised">
+      <span class="text-transit-accent font-semibold">Astro</span> <span class="text-transit-text-lo">6</span>
+    </span>
   </div>
 
-  <div class="glass-card overflow-x-auto reveal data-delay="200"">
-    <pre class="p-6 md:p-8 text-xs md:text-sm font-mono text-transit-text-mid leading-relaxed whitespace-pre overflow-x-auto"><code class="text-transit-text-hi">lib/
-├── <span class="text-transit-accent">main.dart</span>            Bootstrap: Env → Hive → Supabase → MockData → ProviderScope
-├── <span class="text-transit-accent">app.dart</span>             MaterialApp.router (themeMode + locale + go_router)
-├── <span class="text-transit-state-info">core/</span>                router/ + theme/ + utils/
-├── <span class="text-transit-state-warning">data/</span>                Capa más profunda; NO depende de features/
-│   ├── auth/            Auth repos (excepción documentada al patrón)
-│   ├── mock/            MockDataService + MockRealtimeService
-│   ├── cache/           Hive adapters + boxes (17 total, 2 cifradas)
-│   ├── nfc/             NfcCardService + i18n de errores
-│   ├── sync/            RealtimeChannelManager + OfflineSyncService
-│   └── &lt;entity>/        12 entidades × 5 ficheros (abstract/remote/local/mock/provider)
-├── <span class="text-transit-state-success">features/</span>            ~25 features feature-first
-├── <span class="text-transit-accent">l10n/</span>                ARB es/en/ar (343 claves/locale) + generated/
-└── <span class="text-transit-text-hi">shared/</span>              models/ (27+ @freezed), providers/, widgets/ (27+)</code></pre>
+  <div class="glass-card overflow-x-auto reveal" data-delay="200">
+    <pre class="p-6 md:p-8 text-xs md:text-sm font-mono text-transit-text-mid leading-relaxed whitespace-pre overflow-x-auto">
+lib/
+  <span class="text-transit-accent">main.dart</span>            Bootstrap: Env &#8594; Hive &#8594; Supabase &#8594; MockData &#8594; ProviderScope
+  <span class="text-transit-accent">app.dart</span>             MaterialApp.router (themeMode + locale + go_router)
+  <span class="text-transit-state-info">core/</span>                router/ + theme/ + utils/
+  <span class="text-transit-state-warning">data/</span>                Capa más profunda; NO depende de features/
+    auth/            Auth repos (excepción documentada al patrón)
+    mock/            MockDataService + MockRealtimeService
+    cache/           Hive adapters + boxes (17 total, 2 cifradas)
+    nfc/             NfcCardService + i18n de errores
+    sync/            RealtimeChannelManager + OfflineSyncService
+    &lt;entity>/        12 entidades &#215; 5 ficheros (abstract/remote/local/mock/provider)
+  <span class="text-transit-state-success">features/</span>            ~25 features feature-first
+  <span class="text-transit-accent">l10n/</span>                ARB es/en/ar (343 claves/locale) + generated/
+  <span class="text-transit-text-hi">shared/</span>              models/ (27+ @freezed), providers/, widgets/ (27+)</pre>
   </div>
 
-  <div class="glass-card hover-lift p-6 reveal mt-8 reveal data-delay="300" border-l-4 border-transit-accent">
+  <div class="glass-card p-6 mt-8 reveal border-l-4 border-transit-accent" data-delay="300">
     <h3 class="text-lg font-bold mb-4 text-transit-accent">Reglas de Oro de la Arquitectura</h3>
     <div class="grid md:grid-cols-2 gap-4 text-sm">
       <div class="flex items-start gap-3">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B0FF00" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0"><polyline points="20 6 9 17 4 12"/></svg>
+        <span class="text-transit-state-success mt-0.5 shrink-0 font-bold">&#10003;</span>
         <span class="text-transit-text-mid"><code class="text-transit-text-hi font-mono text-xs bg-transit-bg-root px-1.5 py-0.5 rounded">data/</code> no depende de <code class="text-transit-text-hi font-mono text-xs bg-transit-bg-root px-1.5 py-0.5 rounded">features/</code></span>
       </div>
       <div class="flex items-start gap-3">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B0FF00" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0"><polyline points="20 6 9 17 4 12"/></svg>
+        <span class="text-transit-state-success mt-0.5 shrink-0 font-bold">&#10003;</span>
         <span class="text-transit-text-mid">Design tokens en <code class="text-transit-text-hi font-mono text-xs bg-transit-bg-root px-1.5 py-0.5 rounded">core/theme/</code> se consumen, nunca se duplican</span>
       </div>
       <div class="flex items-start gap-3">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B0FF00" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0"><polyline points="20 6 9 17 4 12"/></svg>
+        <span class="text-transit-state-success mt-0.5 shrink-0 font-bold">&#10003;</span>
         <span class="text-transit-text-mid">Patrón de errores tipado (<code class="text-transit-text-hi font-mono text-xs bg-transit-bg-root px-1.5 py-0.5 rounded">enum + class Exception</code>)</span>
       </div>
       <div class="flex items-start gap-3">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B0FF00" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0"><polyline points="20 6 9 17 4 12"/></svg>
-        <span class="text-transit-text-mid"><code class="text-transit-text-hi font-mono text-xs bg-transit-bg-root px-1.5 py-0.5 rounded">avoid_print: true</code> · <code class="text-transit-text-hi font-mono text-xs bg-transit-bg-root px-1.5 py-0.5 rounded">strict-casts + strict-raw-types</code></span>
+        <span class="text-transit-state-success mt-0.5 shrink-0 font-bold">&#10003;</span>
+        <span class="text-transit-text-mid"><code class="text-transit-text-hi font-mono text-xs bg-transit-bg-root px-1.5 py-0.5 rounded">avoid_print: true</code> &#183; <code class="text-transit-text-hi font-mono text-xs bg-transit-bg-root px-1.5 py-0.5 rounded">strict-casts + strict-raw-types</code></span>
       </div>
     </div>
   </div>
 
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 reveal data-delay="400"">
-    <div class="glass-card hover-lift p-5 reveal text-center">
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 reveal" data-delay="400">
+    <div class="glass-card p-5 text-center">
       <div class="text-3xl font-bold font-mono text-transit-accent">{metrics.project.dartFiles}</div>
       <div class="text-xs text-transit-text-lo mt-1">ficheros .dart</div>
     </div>
-    <div class="glass-card hover-lift p-5 reveal text-center">
+    <div class="glass-card p-5 text-center">
       <div class="text-3xl font-bold font-mono text-transit-state-info">{metrics.project.loc}</div>
       <div class="text-xs text-transit-text-lo mt-1">líneas de código</div>
     </div>
-    <div class="glass-card hover-lift p-5 reveal text-center">
-      <div class="text-3xl font-bold font-mono text-transit-state-success">{metrics.project.repositoriesCanonical}</div>
+    <div class="glass-card p-5 text-center">
+      <div class="text-3xl font-bold font-mono text-transit-state-success">12</div>
       <div class="text-xs text-transit-text-lo mt-1">repos canónicos</div>
     </div>
-    <div class="glass-card hover-lift p-5 reveal text-center">
-      <div class="text-3xl font-bold font-mono text-transit-state-warning">{metrics.project.freezedModels}+</div>
+    <div class="glass-card p-5 text-center">
+      <div class="text-3xl font-bold font-mono text-transit-state-warning">27+</div>
       <div class="text-xs text-transit-text-lo mt-1">modelos @freezed</div>
     </div>
   </div>

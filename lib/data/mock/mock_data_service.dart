@@ -395,6 +395,11 @@ class MockDataService {
     }).toList()
       ..sort((a, b) => a.departureTime.compareTo(b.departureTime));
 
+    // Si no hay salidas hoy, mostrar primeras de mañana.
+    if (future.isEmpty && all.isNotEmpty) {
+      return all.take(count).toList();
+    }
+
     return future.take(count).toList();
   }
 

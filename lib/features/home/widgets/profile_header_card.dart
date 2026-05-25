@@ -7,6 +7,7 @@ import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../shared/providers/auth_provider.dart';
 import '../../../data/auth/auth_repository.dart';
+import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/models/user_model.dart';
 import '../../../shared/widgets/glass_card.dart';
 import '../../../shared/widgets/reputation_badge.dart';
@@ -37,6 +38,7 @@ class ProfileHeaderCard extends ConsumerWidget {
 
     // Modo invitado: no usar datos mock — mostrar CTA para iniciar sesión.
     if (authUser == null) {
+      final l10n = AppLocalizations.of(context);
       return GlassCard(
         blur: 20,
         fillOpacity: 0.06,
@@ -63,7 +65,7 @@ class ProfileHeaderCard extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'INVITADO',
+                    l10n.profileGuestLabel,
                     style: GoogleFonts.ibmPlexMono(
                       fontSize: 11,
                       fontWeight: FontWeight.w700,
@@ -73,7 +75,7 @@ class ProfileHeaderCard extends ConsumerWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    'Inicia sesión para tu perfil',
+                    l10n.profileGuestCta,
                     style: TransitTypography.bodySecondary(c.textMid),
                   ),
                 ],
@@ -91,7 +93,7 @@ class ProfileHeaderCard extends ConsumerWidget {
                       Border.all(color: c.accent.withValues(alpha: 0.4), width: 0.5),
                 ),
                 child: Text(
-                  'ENTRAR',
+                  l10n.profileGuestSignIn,
                   style: GoogleFonts.ibmPlexMono(
                     fontSize: 11,
                     fontWeight: FontWeight.w700,

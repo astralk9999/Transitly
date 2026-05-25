@@ -1969,7 +1969,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get reputationCurrentRank => 'الحالي';
 
   @override
-  String get appTagline => 'وسيلة نقلتك العامة';
+  String get appTagline => 'منصة النقل العام الشاملة';
 
   @override
   String get homeSectionNearbyStops => 'المحطات القريبة منك';
@@ -2091,4 +2091,28 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get appExitConfirmMessage => 'اضغط مرة أخرى للخروج';
+
+  @override
+  String get profileGuestLabel => 'زائر';
+
+  @override
+  String get profileGuestCta => 'سجل الدخول لرؤية ملفك الشخصي';
+
+  @override
+  String get profileGuestSignIn => 'دخول';
+
+  @override
+  String get profileSignOutConfirmTitle => 'تسجيل الخروج؟';
+
+  @override
+  String get profileSignOutConfirmMessage => 'ستعود إلى شاشة تسجيل الدخول.';
+
+  @override
+  String get profileBecomeDriver => 'كن سائقاً';
+
+  @override
+  String get actionSignIn => 'تسجيل الدخول';
+
+  @override
+  String get profileAdminSectionTitle => 'الإدارة';
 }

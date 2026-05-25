@@ -725,5 +725,14 @@
   "offlineDataReloadButton": "إعادة التحميل من الأصول",
   "offlineDataExplanation": "يستخدم هذا التطبيق حزمة JSON محلية مع بيانات COMUJESA (خيريز).",
   "aiScheduleImportPrototypeBanner": "نموذج أولي",
-  "appExitConfirmMessage": "اضغط مرة أخرى للخروج"
+  "appExitConfirmMessage": "اضغط مرة أخرى للخروج",
+  "profileGuestLabel": "زائر",
+  "profileGuestCta": "سجل الدخول لرؤية ملفك الشخصي",
+  "profileGuestSignIn": "دخول",
+  "profileSignOutConfirmTitle": "تسجيل الخروج؟",
+  "profileSignOutConfirmMessage": "ستعود إلى شاشة تسجيل الدخول.",
+  "appTagline": "منصة النقل العام الشاملة",
+  "profileBecomeDriver": "كن سائقاً",
+  "actionSignIn": "تسجيل الدخول",
+  "profileAdminSectionTitle": "الإدارة"
 }

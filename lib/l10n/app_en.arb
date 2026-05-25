@@ -788,5 +788,14 @@
   "offlineDataReloadButton": "Reload from assets",
   "offlineDataExplanation": "This app uses a local JSON bundle with COMUJESA (Jerez) demo data.",
   "aiScheduleImportPrototypeBanner": "PROTOTYPE",
-  "appExitConfirmMessage": "Press again to exit"
+  "appExitConfirmMessage": "Press again to exit",
+  "profileGuestLabel": "GUEST",
+  "profileGuestCta": "Sign in to see your profile",
+  "profileGuestSignIn": "SIGN IN",
+  "profileSignOutConfirmTitle": "Sign out?",
+  "profileSignOutConfirmMessage": "You will return to the sign in screen.",
+  "appTagline": "Universal public transport platform",
+  "profileBecomeDriver": "Become a driver",
+  "actionSignIn": "Sign in",
+  "profileAdminSectionTitle": "ADMINISTRATION"
 }

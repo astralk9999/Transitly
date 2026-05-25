@@ -1987,7 +1987,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get reputationCurrentRank => 'Actual';
 
   @override
-  String get appTagline => 'TU TRANSPORTE PÚBLICO';
+  String get appTagline => 'Plataforma universal de transporte público';
 
   @override
   String get homeSectionNearbyStops => 'PARADAS CERCA DE TI';
@@ -2112,4 +2112,29 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get appExitConfirmMessage => 'Pulsa de nuevo para salir';
+
+  @override
+  String get profileGuestLabel => 'INVITADO';
+
+  @override
+  String get profileGuestCta => 'Inicia sesión para tu perfil';
+
+  @override
+  String get profileGuestSignIn => 'ENTRAR';
+
+  @override
+  String get profileSignOutConfirmTitle => '¿Cerrar sesión?';
+
+  @override
+  String get profileSignOutConfirmMessage =>
+      'Volverás a la pantalla de inicio de sesión.';
+
+  @override
+  String get profileBecomeDriver => 'Activar modo conductor';
+
+  @override
+  String get actionSignIn => 'Iniciar sesión';
+
+  @override
+  String get profileAdminSectionTitle => 'ADMINISTRACIÓN';
 }

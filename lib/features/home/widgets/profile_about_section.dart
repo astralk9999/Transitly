@@ -30,6 +30,7 @@ class _ProfileAboutSectionState extends ConsumerState<ProfileAboutSection> {
   int _aboutTapCount = 0;
 
   void _showSignOutConfirmation(BuildContext context, TransitColorScheme c) {
+    final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -37,22 +38,22 @@ class _ProfileAboutSectionState extends ConsumerState<ProfileAboutSection> {
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
         title: Text(
-          '¿Cerrar sesión?',
+          l10n.profileSignOutConfirmTitle,
           style: TransitTypography.heading(c.textHi),
         ),
         content: Text(
-          'Volverás a la pantalla de inicio de sesión.',
+          l10n.profileSignOutConfirmMessage,
           style: TransitTypography.bodySecondary(c.textMid),
         ),
         actions: [
           TransitButton(
-            label: AppLocalizations.of(ctx).actionCancel.toUpperCase(),
+            label: l10n.actionCancel.toUpperCase(),
             isPrimary: false,
             isSmall: true,
             onPressed: () => Navigator.of(ctx).pop(),
           ),
           TransitButton(
-            label: AppLocalizations.of(ctx).actionSignOut.toUpperCase(),
+            label: l10n.actionSignOut.toUpperCase(),
             isSmall: true,
             onPressed: () async {
               Navigator.of(ctx).pop();
@@ -175,7 +176,7 @@ class _ProfileAboutSectionState extends ConsumerState<ProfileAboutSection> {
               }
             },
             child: Text(
-              'v0.1.0-demo',
+              'v1.0.0',
               style: GoogleFonts.ibmPlexMono(
                 fontSize: 12,
                 color: c.textLo,
@@ -184,7 +185,7 @@ class _ProfileAboutSectionState extends ConsumerState<ProfileAboutSection> {
           ),
           const SizedBox(height: 4),
           Text(
-            'Plataforma universal de transporte público',
+            l10n.appTagline,
             style: TransitTypography.bodySecondary(c.textMid),
           ),
           Divider(
@@ -198,7 +199,7 @@ class _ProfileAboutSectionState extends ConsumerState<ProfileAboutSection> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('ADMINISTRACIÓN',
+                  Text(l10n.profileAdminSectionTitle,
                       style: TransitTypography.sectionTitle(c.accent)),
                   const SizedBox(height: 8),
                   GestureDetector(
@@ -226,14 +227,14 @@ class _ProfileAboutSectionState extends ConsumerState<ProfileAboutSection> {
             if (isPassenger) ...[
               GestureDetector(
                 onTap: () => context.go('/activate-driver'),
-                child: Text('Activar modo conductor',
+                child: Text(l10n.profileBecomeDriver,
                     style: TransitTypography.bodySecondary(c.accent)),
               ),
               const SizedBox(height: 8),
             ],
             GestureDetector(
               onTap: () => _showSignOutConfirmation(context, c),
-              child: Text('Cerrar sesión',
+              child: Text(l10n.actionSignOut,
                   style: TransitTypography.bodySecondary(c.textMid)),
             ),
             const SizedBox(height: 8),
@@ -251,7 +252,7 @@ class _ProfileAboutSectionState extends ConsumerState<ProfileAboutSection> {
           ] else ...[
             GestureDetector(
               onTap: () => context.go('/sign-in'),
-              child: Text('Iniciar sesión',
+              child: Text(l10n.actionSignIn,
                   style: TransitTypography.bodySecondary(c.accent)),
             ),
             const SizedBox(height: 8),

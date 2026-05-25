@@ -1978,7 +1978,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reputationCurrentRank => 'Current';
 
   @override
-  String get appTagline => 'YOUR PUBLIC TRANSPORT';
+  String get appTagline => 'Universal public transport platform';
 
   @override
   String get homeSectionNearbyStops => 'STOPS NEAR YOU';
@@ -2101,4 +2101,29 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appExitConfirmMessage => 'Press again to exit';
+
+  @override
+  String get profileGuestLabel => 'GUEST';
+
+  @override
+  String get profileGuestCta => 'Sign in to see your profile';
+
+  @override
+  String get profileGuestSignIn => 'SIGN IN';
+
+  @override
+  String get profileSignOutConfirmTitle => 'Sign out?';
+
+  @override
+  String get profileSignOutConfirmMessage =>
+      'You will return to the sign in screen.';
+
+  @override
+  String get profileBecomeDriver => 'Become a driver';
+
+  @override
+  String get actionSignIn => 'Sign in';
+
+  @override
+  String get profileAdminSectionTitle => 'ADMINISTRATION';
 }

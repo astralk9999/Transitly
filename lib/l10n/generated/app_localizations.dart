@@ -3723,10 +3723,10 @@ abstract class AppLocalizations {
   /// **'Actual'**
   String get reputationCurrentRank;
 
-  /// Splash screen tagline below app title
+  /// Tagline de la app
   ///
   /// In es, this message translates to:
-  /// **'TU TRANSPORTE PÚBLICO'**
+  /// **'Plataforma universal de transporte público'**
   String get appTagline;
 
   /// Home tab section: nearby stops
@@ -3956,6 +3956,54 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Pulsa de nuevo para salir'**
   String get appExitConfirmMessage;
+
+  /// Etiqueta de invitado en perfil
+  ///
+  /// In es, this message translates to:
+  /// **'INVITADO'**
+  String get profileGuestLabel;
+
+  /// CTA para iniciar sesión en perfil
+  ///
+  /// In es, this message translates to:
+  /// **'Inicia sesión para tu perfil'**
+  String get profileGuestCta;
+
+  /// Botón de entrar para invitado en perfil
+  ///
+  /// In es, this message translates to:
+  /// **'ENTRAR'**
+  String get profileGuestSignIn;
+
+  /// Título diálogo confirmación cierre sesión
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cerrar sesión?'**
+  String get profileSignOutConfirmTitle;
+
+  /// Mensaje diálogo confirmación cierre sesión
+  ///
+  /// In es, this message translates to:
+  /// **'Volverás a la pantalla de inicio de sesión.'**
+  String get profileSignOutConfirmMessage;
+
+  /// Link para activar modo conductor
+  ///
+  /// In es, this message translates to:
+  /// **'Activar modo conductor'**
+  String get profileBecomeDriver;
+
+  /// Acción de iniciar sesión
+  ///
+  /// In es, this message translates to:
+  /// **'Iniciar sesión'**
+  String get actionSignIn;
+
+  /// Título sección admin en perfil
+  ///
+  /// In es, this message translates to:
+  /// **'ADMINISTRACIÓN'**
+  String get profileAdminSectionTitle;
 }
 
 class _AppLocalizationsDelegate

@@ -4,12 +4,12 @@ plugins {
     id("com.android.application")
     id("kotlin-android")
     id("dev.flutter.flutter-gradle-plugin")
-    id("com.google.gms.google-services")
+    // id("com.google.gms.google-services")  // Descomentar tras flutterfire configure (A.2)
 }
 
 android {
     namespace = "com.transitly.transitly"
-    compileSdk = 35
+    compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
     compileOptions {

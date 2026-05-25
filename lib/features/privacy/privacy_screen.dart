@@ -83,6 +83,14 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen> {
         'user_id': authState.user.id,
         'status': 'queued',
       });
+      try {
+        await client.functions.invoke(
+          'generate_data_export',
+          body: {'user_id': authState.user.id},
+        );
+      } catch (e) {
+        AppLogger.warn('Privacy', 'generate_data_export edge function invoke failed', e);
+      }
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(l10n.privacyDataExportRequested)),

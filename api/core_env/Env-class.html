@@ -56,12 +56,17 @@
 
     
 <section class="desc markdown">
-  <p>Acceso tipado a las variables de entorno compiladas vía <code>--dart-define</code>
-con fallback hardcodeado para desarrollo.</p>
-<p>Cada valor se lee de <code>String.fromEnvironment</code> en tiempo de compilación.
-Si no está definido, se usa un fallback hardcodeado (solo para APK demo).
-Las claves "críticas" (sin las cuales la app no puede arrancar) se
-validan vía <code>_required</code>.</p>
+  <p>Acceso tipado a las variables de entorno compiladas vía <code>--dart-define</code>.</p>
+<p>Cada valor se declara como <code>const String.fromEnvironment('LITERAL')</code> para
+que el AOT compiler de Dart lo embeba en el binario en release. <strong>Importante:</strong>
+el nombre DEBE ser un literal en la llamada — <code>String.fromEnvironment(varName)</code>
+con un parámetro variable devuelve cadena vacía en release (no se const-foldea).</p>
+<p>Para desarrollo, pasar las variables en la línea de comandos:</p>
+<pre class="language-bash"><code class="language-bash">flutter run \
+  --dart-define=SUPABASE_URL=https://xxx.supabase.co \
+  --dart-define=SUPABASE_ANON_KEY=eyJ...
+</code></pre>
+<p>O usar un fichero: <code>--dart-define-from-file=dart_defines.json</code>.</p>
 </section>
 
 

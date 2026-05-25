@@ -74,8 +74,9 @@ hace falta override si se usa un dominio dedicado para Edge.</p>
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">static String get supabaseFunctionsUrl =&gt;
-    _optional(&#39;SUPABASE_FUNCTIONS_URL&#39;) ?? &#39;$supabaseUrl&#47;functions&#47;v1&#39;;</code></pre>
+  <pre class="language-dart"><code class="language-dart">static String get supabaseFunctionsUrl =&gt; _supabaseFunctionsUrl.isEmpty
+    ? &#39;$supabaseUrl&#47;functions&#47;v1&#39;
+    : _supabaseFunctionsUrl;</code></pre>
 </section>
 
   </section>

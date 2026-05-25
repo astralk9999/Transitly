@@ -71,7 +71,7 @@
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">static String get postHogHost =&gt;
-    _optional(&#39;POSTHOG_HOST&#39;) ?? &#39;https:&#47;&#47;eu.posthog.com&#39;;</code></pre>
+    _postHogHost.isEmpty ? &#39;https:&#47;&#47;eu.posthog.com&#39; : _postHogHost;</code></pre>
 </section>
 
   </section>

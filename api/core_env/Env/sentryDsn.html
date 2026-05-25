@@ -70,7 +70,7 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">static String? get sentryDsn =&gt; _optional(&#39;SENTRY_DSN&#39;);</code></pre>
+  <pre class="language-dart"><code class="language-dart">static String? get sentryDsn =&gt; _sentryDsn.isEmpty ? null : _sentryDsn;</code></pre>
 </section>
 
   </section>

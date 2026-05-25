@@ -70,7 +70,8 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">static String? get postHogApiKey =&gt; _optional(&#39;POSTHOG_API_KEY&#39;);</code></pre>
+  <pre class="language-dart"><code class="language-dart">static String? get postHogApiKey =&gt;
+    _postHogApiKey.isEmpty ? null : _postHogApiKey;</code></pre>
 </section>
 
   </section>

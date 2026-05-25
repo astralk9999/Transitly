@@ -169,10 +169,14 @@
       });
     }
   } on EnvException catch (e, st) {
+    &#47;&#47; ignore: avoid_print
+    print(&#39;[Env] failed to load critical key: $e\n$st&#39;);
     AppLogger.error(&#39;Env&#39;, &#39;failed to load critical key&#39;, e, st);
     runApp(EnvErrorApp(exception: e));
     return;
   } catch (e, st) {
+    &#47;&#47; ignore: avoid_print
+    print(&#39;[Startup] init failed (will show EnvErrorApp as malformed): $e\n$st&#39;);
     AppLogger.error(&#39;Supabase&#39;, &#39;initialize failed&#39;, e, st);
     runApp(EnvErrorApp(
       exception: EnvException(

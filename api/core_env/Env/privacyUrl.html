@@ -71,7 +71,7 @@
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">static String get privacyUrl =&gt;
-    _optional(&#39;TRANSITLY_PRIVACY_URL&#39;) ?? &#39;https:&#47;&#47;transitly.app&#47;privacy&#39;;</code></pre>
+    _privacyUrl.isEmpty ? &#39;https:&#47;&#47;transitly.app&#47;privacy&#39; : _privacyUrl;</code></pre>
 </section>
 
   </section>

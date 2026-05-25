@@ -70,7 +70,8 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">static String get supabaseAnonKey =&gt; _required(&#39;SUPABASE_ANON_KEY&#39;);</code></pre>
+  <pre class="language-dart"><code class="language-dart">static String get supabaseAnonKey =&gt;
+    _requireNonEmpty(_supabaseAnonKey, &#39;SUPABASE_ANON_KEY&#39;);</code></pre>
 </section>
 
   </section>

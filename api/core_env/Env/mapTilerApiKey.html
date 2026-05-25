@@ -70,7 +70,8 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">static String? get mapTilerApiKey =&gt; _optional(&#39;MAPTILER_API_KEY&#39;);</code></pre>
+  <pre class="language-dart"><code class="language-dart">static String? get mapTilerApiKey =&gt;
+    _mapTilerApiKey.isEmpty ? null : _mapTilerApiKey;</code></pre>
 </section>
 
   </section>

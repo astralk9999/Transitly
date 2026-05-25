@@ -71,7 +71,7 @@
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">static String get tosUrl =&gt;
-    _optional(&#39;TRANSITLY_TOS_URL&#39;) ?? &#39;https:&#47;&#47;transitly.app&#47;terms&#39;;</code></pre>
+    _tosUrl.isEmpty ? &#39;https:&#47;&#47;transitly.app&#47;terms&#39; : _tosUrl;</code></pre>
 </section>
 
   </section>

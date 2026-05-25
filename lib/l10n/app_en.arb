@@ -787,5 +787,6 @@
   "routeFeedbackImproveType": "Improvement type",
   "offlineDataReloadButton": "Reload from assets",
   "offlineDataExplanation": "This app uses a local JSON bundle with COMUJESA (Jerez) demo data.",
-  "aiScheduleImportPrototypeBanner": "PROTOTYPE"
+  "aiScheduleImportPrototypeBanner": "PROTOTYPE",
+  "appExitConfirmMessage": "Press again to exit"
 }

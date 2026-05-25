@@ -3950,6 +3950,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'PROTOTIPO'**
   String get aiScheduleImportPrototypeBanner;
+
+  /// Mensaje de confirmación al pulsar atrás para salir
+  ///
+  /// In es, this message translates to:
+  /// **'Pulsa de nuevo para salir'**
+  String get appExitConfirmMessage;
 }
 
 class _AppLocalizationsDelegate

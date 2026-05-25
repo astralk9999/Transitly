@@ -2109,4 +2109,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get aiScheduleImportPrototypeBanner => 'PROTOTIPO';
+
+  @override
+  String get appExitConfirmMessage => 'Pulsa de nuevo para salir';
 }

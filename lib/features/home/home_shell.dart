@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -17,24 +18,52 @@ import 'widgets/home_bottom_nav.dart';
 import 'widgets/home_side_nav.dart';
 import 'widgets/home_tab_item.dart';
 
-class HomeShell extends ConsumerWidget {
+class HomeShell extends ConsumerStatefulWidget {
   const HomeShell({super.key, required this.navigationShell});
 
   final StatefulNavigationShell navigationShell;
 
+  @override
+  ConsumerState<HomeShell> createState() => _HomeShellState();
+}
+
+class _HomeShellState extends ConsumerState<HomeShell> {
+  DateTime? _lastBackPress;
+
   void _onTap(int index) {
-    navigationShell.goBranch(
+    widget.navigationShell.goBranch(
       index,
-      initialLocation: index == navigationShell.currentIndex,
+      initialLocation: index == widget.navigationShell.currentIndex,
     );
   }
 
+  void _handleBackPressed() {
+    final nav = widget.navigationShell;
+    if (nav.currentIndex != 0) {
+      nav.goBranch(0);
+      return;
+    }
+    final now = DateTime.now();
+    if (_lastBackPress == null ||
+        now.difference(_lastBackPress!) >
+            const Duration(seconds: 2)) {
+      _lastBackPress = now;
+      final l10n = AppLocalizations.of(context);
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            content: Text(l10n.appExitConfirmMessage),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      return;
+    }
+    SystemNavigator.pop();
+  }
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // El FAB de conductor solo se muestra para usuarios autenticados con rol
-    // de conductor verificado. Antes dependía de `isDriverModeProvider`, un
-    // switch público que cualquier invitado podía activar — ahora se deriva
-    // del rol real del perfil.
+  Widget build(BuildContext context) {
     final isAuth =
         ref.watch(authStateProvider).valueOrNull is AuthAuthenticated;
     final isDriver =
@@ -46,95 +75,106 @@ class HomeShell extends ConsumerWidget {
     final useRail = screen != ScreenSize.compact;
     final extendedRail = screen == ScreenSize.large;
     final tabs = homeTabsOf(AppLocalizations.of(context));
-    // La campana se oculta en el tab del mapa (index 1): allí estorba a los
-    // controles del mapa y nunca tiene contenido relevante en modo demo.
     const mapTabIndex = 1;
     final showNotificationBell =
-        navigationShell.currentIndex != mapTabIndex;
+        widget.navigationShell.currentIndex != mapTabIndex;
 
     if (useRail) {
-      return FocusTraversalGroup(
+      return PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (didPop, _) {
+          if (!didPop) _handleBackPressed();
+        },
+        child: FocusTraversalGroup(
+          child: Scaffold(
+          backgroundColor: c.bgRoot,
+          body: Stack(
+            children: [
+              Positioned.fill(
+                child: SmokeBackground(color: c.accent, isDark: isDark),
+              ),
+              Row(
+                children: [
+                  HomeSideNav(
+                    currentIndex: widget.navigationShell.currentIndex,
+                    onTap: _onTap,
+                    tabs: tabs,
+                    extended: extendedRail,
+                  ),
+                  Expanded(
+                    child: Stack(
+                      children: [
+                        ResponsiveScaffold(
+                            child: widget.navigationShell),
+                        if (showNotificationBell)
+                          Positioned(
+                            top: TransitSpacing.space8,
+                            right: TransitSpacing.space16,
+                            child: _NotificationBell(
+                              unreadCount: unreadCount,
+                              c: c,
+                              onTap: () => context.push('/notifications'),
+                            ),
+                          ),
+                        if (isDriver)
+                          Positioned(
+                            bottom: TransitSpacing.space16,
+                            right: TransitSpacing.space16,
+                            child: _DriverFab(color: c),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        ),
+      );
+    }
+
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) _handleBackPressed();
+      },
+      child: FocusTraversalGroup(
         child: Scaffold(
         backgroundColor: c.bgRoot,
+        extendBody: true,
         body: Stack(
           children: [
             Positioned.fill(
               child: SmokeBackground(color: c.accent, isDark: isDark),
             ),
-            Row(
-              children: [
-                HomeSideNav(
-                  currentIndex: navigationShell.currentIndex,
-                  onTap: _onTap,
-                  tabs: tabs,
-                  extended: extendedRail,
-                ),
-                Expanded(
-                  child: Stack(
-                    children: [
-                      ResponsiveScaffold(child: navigationShell),
-                      if (showNotificationBell)
-                        Positioned(
-                          top: TransitSpacing.space8,
-                          right: TransitSpacing.space16,
-                          child: _NotificationBell(
-                            unreadCount: unreadCount,
-                            c: c,
-                            onTap: () => context.push('/notifications'),
-                          ),
-                        ),
-                      if (isDriver)
-                        Positioned(
-                          bottom: TransitSpacing.space16,
-                          right: TransitSpacing.space16,
-                          child: _DriverFab(color: c),
-                        ),
-                    ],
+            widget.navigationShell,
+            if (showNotificationBell)
+              Positioned(
+                top: TransitSpacing.space8,
+                right: TransitSpacing.space16,
+                child: SafeArea(
+                  bottom: false,
+                  child: _NotificationBell(
+                    unreadCount: unreadCount,
+                    c: c,
+                    onTap: () => context.push('/notifications'),
                   ),
                 ),
-              ],
-            ),
+              ),
+            if (isDriver)
+              Positioned(
+                bottom: 80,
+                right: TransitSpacing.space16,
+                child: _DriverFab(color: c),
+              ),
           ],
         ),
-      ),
-      );
-    }
-
-    return FocusTraversalGroup(
-      child: Scaffold(
-      backgroundColor: c.bgRoot,
-      extendBody: true,
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: SmokeBackground(color: c.accent, isDark: isDark),
+          bottomNavigationBar: HomeBottomNav(
+            currentIndex: widget.navigationShell.currentIndex,
+            onTap: _onTap,
+            tabs: tabs,
           ),
-          navigationShell,
-          if (showNotificationBell)
-            Positioned(
-              top: TransitSpacing.space8,
-              right: TransitSpacing.space16,
-              child: SafeArea(
-                bottom: false,
-                child: _NotificationBell(
-                  unreadCount: unreadCount,
-                  c: c,
-                  onTap: () => context.push('/notifications'),
-                ),
-              ),
-            ),
-          if (isDriver)
-            Positioned(
-              bottom: 80,
-              right: TransitSpacing.space16,
-              child: _DriverFab(color: c),
-            ),
-        ],
-      ),
-        bottomNavigationBar: HomeBottomNav(
-          currentIndex: navigationShell.currentIndex,
-          onTap: _onTap,
-          tabs: tabs,
         ),
       ),
     );

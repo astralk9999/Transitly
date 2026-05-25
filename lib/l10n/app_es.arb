@@ -1157,5 +1157,7 @@
   "offlineDataExplanation": "Esta app usa un bundle JSON local con datos de COMUJESA (Jerez).",
   "@offlineDataExplanation": {"description": "Explicación de la fuente de datos offline"},
   "aiScheduleImportPrototypeBanner": "PROTOTIPO",
-  "@aiScheduleImportPrototypeBanner": {"description": "Banner de prototipo en importación IA"}
+  "@aiScheduleImportPrototypeBanner": {"description": "Banner de prototipo en importación IA"},
+  "appExitConfirmMessage": "Pulsa de nuevo para salir",
+  "@appExitConfirmMessage": {"description": "Mensaje de confirmación al pulsar atrás para salir"}
 }

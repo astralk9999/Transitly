@@ -724,5 +724,6 @@
   "routeFeedbackImproveType": "نوع التحسين",
   "offlineDataReloadButton": "إعادة التحميل من الأصول",
   "offlineDataExplanation": "يستخدم هذا التطبيق حزمة JSON محلية مع بيانات COMUJESA (خيريز).",
-  "aiScheduleImportPrototypeBanner": "نموذج أولي"
+  "aiScheduleImportPrototypeBanner": "نموذج أولي",
+  "appExitConfirmMessage": "اضغط مرة أخرى للخروج"
 }

@@ -2088,4 +2088,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get aiScheduleImportPrototypeBanner => 'نموذج أولي';
+
+  @override
+  String get appExitConfirmMessage => 'اضغط مرة أخرى للخروج';
 }

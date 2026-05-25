@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the notificationStreamProvider property from the notification_stream_provider library, for the Dart programming language.">
+  <title>notificationStreamProvider property - notification_stream_provider library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">transitly</a></li>
+    <li><a href="../shared_providers_notification_stream_provider/">shared&#47;providers&#47;notification_stream_provider.dart</a></li>
+    <li class="self-crumb">notificationStreamProvider property</li>
+  </ol>
+  <div class="self-name">notificationStreamProvider</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+  <div
+      id="dartdoc-main-content"
+      class="main-content"
+      data-above-sidebar="shared_providers_notification_stream_provider&#47;shared_providers_notification_stream_provider-library-sidebar.html"
+      data-below-sidebar="">
+      <div>
+<h1><span class="kind-top-level-property">notificationStreamProvider</span> top-level property 
+ 
+</h1></div>
+
+        <section class="multi-line-signature">
+          
+          <a href="https://pub.dev/documentation/riverpod/2.6.1/riverpod/AutoDisposeStreamProvider-class.html">AutoDisposeStreamProvider</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../shared_models_app_notification/AppNotification-class.html">AppNotification</a></span>&gt;</span></span>&gt;</span>
+          <span class="name ">notificationStreamProvider</span>
+          <div class="features"><span class="feature">final</span></div>
+
+        </section>
+        
+<section class="desc markdown">
+  <p>Stream of <a href="../shared_models_app_notification/AppNotification-class.html">AppNotification</a> objects for the currently authenticated
+user, delivered via Supabase Realtime.</p>
+<p>When the user is not authenticated the stream emits an empty list and
+does not open a Realtime channel.</p>
+</section>
+
+        
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">&#47;&#47; autoDispose: el canal Supabase Realtime se cierra cuando ninguna
+&#47;&#47; pantalla observa el provider (el ref.onDispose de abajo se dispara).
+final notificationStreamProvider =
+    StreamProvider.autoDispose&lt;List&lt;AppNotification&gt;&gt;((ref) {
+  final client = ref.watch(supabaseClientProvider);
+  final userId = client.auth.currentUser?.id;
+
+  if (userId == null) {
+    return const Stream.empty();
+  }
+
+  final repo = ref.watch(notificationRepositoryProvider);
+
+  final controller = StreamController&lt;List&lt;AppNotification&gt;&gt;();
+
+  repo.forUser(userId).then((notifications) {
+    if (!controller.isClosed) controller.add(notifications);
+  }).catchError((Object e) {
+    AppLogger.warn(_logTag, &#39;initial fetch failed&#39;, e);
+  });
+
+  final channel = client
+      .channel(&#39;notifications-$userId&#39;)
+      .onPostgresChanges(
+        event: PostgresChangeEvent.insert,
+        schema: &#39;public&#39;,
+        table: &#39;notifications&#39;,
+        filter: PostgresChangeFilter(
+          type: PostgresChangeFilterType.eq,
+          column: &#39;user_id&#39;,
+          value: userId,
+        ),
+        callback: (payload) {
+          AppLogger.debug(
+              _logTag, &#39;realtime insert (id=${payload.newRecord[&#39;id&#39;]})&#39;);
+          repo.forUser(userId).then((notifications) {
+            if (!controller.isClosed) controller.add(notifications);
+          }).catchError((Object e) {
+            AppLogger.warn(_logTag, &#39;refresh after insert failed&#39;, e);
+          });
+        },
+      )
+      .subscribe();
+
+  ref.onDispose(() {
+    channel.unsubscribe();
+    controller.close();
+  });
+
+  return controller.stream;
+});</code></pre>
+</section>
+
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../index.html">transitly</a></li>
+    <li><a href="../shared_providers_notification_stream_provider/">notification_stream_provider</a></li>
+    <li class="self-crumb">notificationStreamProvider property</li>
+</ol>
+
+    <h5>notification_stream_provider library</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-left-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    transitly
+      1.0.0+1
+  </span>
+  
+</footer>
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

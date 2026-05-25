@@ -1,0 +1,2957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="transitly API docs, for the Dart programming language.">
+  <title>transitly - Dart API docs</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="static-assets/github.css?v1">
+  <link rel="stylesheet" href="static-assets/styles.css?v1">
+  <link rel="icon" href="static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li class="self-crumb">transitly package</li>
+  </ol>
+  <div class="self-name">transitly</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+  <div id="dartdoc-main-content" class="main-content">
+      
+<section class="desc markdown">
+  <h1 id="transitly--nexto-stop-v2">Transitly · <code>nexto-stop-v2</code></h1>
+<blockquote>
+<p>Academic Flutter project (TFG) — a public-transit companion app built around
+<strong>COMUJESA</strong>, the urban bus operator of Jerez de la Frontera (Cádiz, Spain).</p>
+</blockquote>
+<p>Transitly is a portfolio-grade transit companion: live(-ish) arrivals, a real
+route catalogue, an NFC card reader for the <em>Consorcio de Transportes de
+Andalucía</em> prepaid card, a route editor for drivers, community contributions,
+and a polished motion / typography system.</p>
+<p>The data layer is <strong>mock-first with an optional Supabase backend</strong>: COMUJESA
+timetable/stop/line data ships as mock JSON (<code>assets/mock/comujesa_data.json</code>)
+and is served by the mock repositories when there is no authenticated session;
+when a Supabase session exists, the same repositories read/write the remote
+backend. Telemetry (Sentry/PostHog), push (FCM) and the Astro web surface are
+present but optional and consent/env-gated.</p>
+<blockquote>
+<p><strong>Honest scope note (read before evaluating).</strong> Phases F0–F27 (28/28
+completed) added a full Supabase backend, auth, FCM push, telemetry,
+an Astro SSR site and native home widgets. Real-time updates (F13) are
+implemented on the critical repos (5 of 12: <code>bus_location</code>, <code>stop</code>,
+<code>route</code>, <code>incident</code>, <code>route_feedback</code>) via a shared
+<code>RealtimeChannelManager</code> with exponential backoff + jitter. APK
+release builds and CI is green on 4 jobs (incl. Build Android APK).
+The remaining production gaps are documented in
+<a href="./docs/00_MAESTRO.md"><code>docs/00_MAESTRO.md</code></a> — start there.</p>
+</blockquote>
+<hr>
+<h2 id="documentation-entry-point">Documentation entry-point</h2>
+<p>All documentation is indexed in <strong><a href="./docs/README.md"><code>docs/README.md</code></a></strong>,
+which maps each TFG required deliverable to the corresponding file and
+points to the audit dossiers (<code>00_MAESTRO</code>, <code>SCALABILITY</code>,
+<code>ACCESSIBILITY</code>) and the action plan.</p>
+<hr>
+<h2 id="status">Status</h2>
+<p>The project completed 28/28 incremental phases (<strong>F0 → F27</strong>); state in
+<code>multiagent/state/project.json</code>. Development was assisted by an autonomous
+multi-agent system (Queen / Developer / Review / Git / Documentation),
+documented in <code>multiagent/ARCHITECTURE.md</code> and in the TFG memory
+(<code>docs/tfg/03–05</code>).</p>
+<p>Verified quality metrics (2026-05-22):</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>flutter analyze</code></td>
+<td><strong>0 issues</strong></td>
+</tr>
+<tr>
+<td><code>flutter test</code></td>
+<td><strong>616 / 616 passing</strong></td>
+</tr>
+<tr>
+<td>Line coverage</td>
+<td><strong>~25,5 %</strong> — known debt</td>
+</tr>
+<tr>
+<td><code>flutter build apk --release</code></td>
+<td><strong>OK</strong> (73,5 MB)</td>
+</tr>
+<tr>
+<td>CI GitHub Actions</td>
+<td><strong>4 jobs green</strong> (Analyze, Test, Build Web, Build Android APK)</td>
+</tr>
+</tbody>
+</table>
+<p><a href="https://codecov.io/gh/astralk9999/Transitly"><img src="https://codecov.io/gh/astralk9999/Transitly/branch/master/graph/badge.svg" alt="codecov"></a></p>
+<blockquote>
+<p>Coverage is the remaining lever: the <code>remote/</code> data layer (auth + 7
+repos) is at ~0 %. Plan in
+<a href="./docs/MEGA_PLAN_REFINAMIENTO.md"><code>docs/MEGA_PLAN_REFINAMIENTO.md §P2-4</code></a>.</p>
+</blockquote>
+<hr>
+<h2 id="architecture--stack">Architecture / Stack</h2>
+<ul>
+<li><strong>Flutter</strong> 3.9.2+ / <strong>Dart</strong> 3 (strict casts + strict raw types)</li>
+<li><strong>Riverpod</strong> 2.6 (StateProviders, derived providers, <code>autoDispose</code> on
+streams/timers/futures, <code>overrideWith</code> in tests)</li>
+<li><strong>go_router</strong> 17.2 with <code>StatefulShellRoute</code> and per-route <code>redirect</code></li>
+<li><strong>Supabase</strong> (<code>supabase_flutter</code> 2.8) — auth, 13 SQL migrations, 2 Edge
+Functions; <code>domain/local/mock/remote</code> repository pattern per entity</li>
+<li><strong>Firebase / FCM</strong> (<code>firebase_messaging</code>) — push, with graceful degradation</li>
+<li><strong>Sentry + PostHog</strong> — crash reporting / analytics, consent-gated</li>
+<li><strong>flutter_map</strong> 7.0 + <code>latlong2</code>; <strong>MapTiler</strong> + FMTC offline tile caching</li>
+<li><strong>nfc_manager</strong> 3.5 over Mifare Classic (sector keys via <code>--dart-define</code>)</li>
+<li><strong>Astro</strong> SSR marketing site (<code>astro/</code>)</li>
+<li>Native Android/iOS home widgets (<code>home_widget</code>, <code>workmanager</code>)</li>
+<li><strong>DM Sans + IBM Plex Mono</strong> bundled as local assets (F26 closed)</li>
+<li><strong>flutter_localizations</strong> + ARB generation (<code>flutter gen-l10n</code>) — <strong>ES / EN / AR (RTL)</strong>, 343 keys/locale</li>
+</ul>
+<hr>
+<h2 id="getting-started">Getting started</h2>
+<pre class="language-bash"><code class="language-bash">cp .env.example .env       # fill SUPABASE_URL / SUPABASE_ANON_KEY (required to boot)
+flutter pub get
+flutter gen-l10n           # one-shot; generated files live in lib/l10n/generated
+flutter run                # Android emulator or connected device
+</code></pre>
+<p><code>SUPABASE_URL</code> and <code>SUPABASE_ANON_KEY</code> are <strong>required</strong> (<code>lib/core/env.dart</code>
+validates them and the app shows an env-error screen if missing). Telemetry
+(<code>SENTRY_DSN</code>, <code>POSTHOG_API_KEY</code>) and <code>MAPTILER_API_KEY</code> are optional and
+degrade silently. <code>.env</code> is gitignored and must never be committed.</p>
+<h3 id="nfc-sensitive">NFC (sensitive)</h3>
+<p>The default Mifare keys for the <em>Consorcio</em> card live in
+<code>lib/data/nfc/nfc_card_service.dart</code>. They were reverse-engineered from the
+public <code>saldotarjetas</code> Android app and are kept here for <strong>academic</strong> use
+only. To override them at build time, pass:</p>
+<pre class="language-bash"><code class="language-bash">flutter run \
+  --dart-define=NFC_KEY_SECTOR0=&lt;6-byte-hex&gt; \
+  --dart-define=NFC_KEY_SECTOR9=&lt;6-byte-hex&gt;
+</code></pre>
+<p>iOS additionally needs the entitlements declared in <code>ios/Runner/Info.plist</code>
+(<code>NFCReaderUsageDescription</code> + <code>com.apple.developer.nfc.readersession.formats: TAG</code>).</p>
+<hr>
+<h2 id="tests">Tests</h2>
+<pre class="language-bash"><code class="language-bash">flutter test                       # 616 tests
+flutter test --coverage            # writes coverage/lcov.info (24,30 % lines)
+</code></pre>
+<p>The suite covers <code>MockDataService</code>, the NFC parser and error mapping
+(<code>test/data/</code>), Riverpod state transitions (<code>test/shared/providers/</code>), router
+deeplinks/redirects and design-system widgets (<code>test/widget/</code>), plus offline
+queue smoke tests (<code>test/smoke/</code>). Coverage of business logic
+(<code>bus_estimator</code>, offline sync, the remote repositories) is <strong>partial</strong> and is
+acknowledged technical debt rather than a finished safety net.</p>
+<p>Pixel goldens were intentionally <strong>not</strong> committed: <code>google_fonts</code> resolves
+fonts over the network, so byte-identical output across machines is not
+realistic. Structural assertions cover the same surface.</p>
+<hr>
+<h2 id="i18n">i18n</h2>
+<p>Strings live in <code>lib/l10n/app_es.arb</code> (template), <code>lib/l10n/app_en.arb</code>
+and <code>lib/l10n/app_ar.arb</code> (Arabic / RTL), generated into
+<code>lib/l10n/generated/</code>. The selector is at <strong>Profile → Accessibility →
+Idioma</strong> (<code>localeProvider</code>). The three ARB files are <strong>complete and in
+sync</strong> (343 keys each). The driver-side route editor remains
+single-locale (<code>es</code>) — internal tooling for the demo persona.</p>
+<hr>
+<h2 id="accessibility">Accessibility</h2>
+<p>The app implements real accessibility work: <code>Semantics</code> nodes localized
+to ES/EN/AR, high-contrast theme, color-blind matrices
+(protanopia/deuteranopia/tritanopia), an OpenDyslexic font option,
+<code>textScaler</code> that composes with the OS setting, reduced-motion handling,
+a WCAG-AA contrast validator for custom palettes, and a <code>Pressable</code>
+widget enforcing the 48 dp minimum tap target.</p>
+<p>The <strong>"WCAG 2.2 AA"</strong> claim is qualified to <strong>"AA partial / in
+progress"</strong>: there is no manual TalkBack/VoiceOver pass yet, the map
+(<code>flutter_map</code>) still needs an accessible alternative integration, and
+contrast ratios for base tokens are not verified with tooling. Full
+audit and remediation plan in
+<a href="./docs/ACCESSIBILITY.md"><code>docs/ACCESSIBILITY.md</code></a>.</p>
+<hr>
+<h2 id="scope-decisions-what-this-project-deliberately-is--is-not">Scope decisions (what this project deliberately is / is not)</h2>
+<p>This is an academic project (TFG). Conscious boundaries:</p>
+<ul>
+<li>The Supabase backend is <strong>scaffolded with real-time on the 5 critical
+repos</strong>, not yet production-hardened at scale: no FORCE RLS, Edge
+Functions with best-effort anti-SSRF + rate-limit (documented as
+known debt), single-region project. See
+<a href="./docs/SCALABILITY.md"><code>docs/SCALABILITY.md</code></a>.</li>
+<li>Mock data is the primary demonstrable surface; the other ~9 Spanish
+operators referenced in the design depend on a populated Supabase and
+are <strong>future work</strong>.</li>
+<li>No A → B route planner. No migration away from Riverpod.</li>
+<li>No <code>very_good_analysis</code>. Lint rules are layered on top of
+<code>flutter_lints</code> (<code>prefer_single_quotes</code>, <code>unawaited_futures</code>,
+<code>use_build_context_synchronously</code>, etc.) — strict but not noisy.</li>
+</ul>
+<p>The full critical self-review (production-lens scoring, trajectory and
+remediation plan) lives in <strong><a href="./docs/00_MAESTRO.md"><code>docs/00_MAESTRO.md</code></a></strong>
+with detailed dossiers in <a href="./docs/SCALABILITY.md"><code>docs/SCALABILITY.md</code></a>
+and <a href="./docs/ACCESSIBILITY.md"><code>docs/ACCESSIBILITY.md</code></a>. The historical
+trace of the four critical review passes is preserved under
+<a href="./docs/historico/"><code>docs/historico/</code></a>.</p>
+<hr>
+<h2 id="license--data">License &amp; data</h2>
+<p>The COMUJESA timetable / stop / line data shipped under <code>assets/mock/</code> is
+sourced from publicly available timetables and reformatted for educational
+use. This project does not claim authorship of the underlying data.</p>
+</section>
+
+
+      <section class="summary">
+          <h2>Libraries</h2>
+        <dl>
+          <dt id="app">
+  <span class="name"><a href="app/">app</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="app_constants">
+  <span class="name"><a href="core_constants_app_constants/">core/constants/app_constants</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="env">
+  <span class="name"><a href="core_env/">core/env</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="app_router">
+  <span class="name"><a href="core_router_app_router/">core/router/app_router</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="error_builder">
+  <span class="name"><a href="core_router_error_builder/">core/router/error_builder</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="redirect_guards">
+  <span class="name"><a href="core_router_redirect_guards/">core/router/redirect_guards</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="accessibility_matrix">
+  <span class="name"><a href="core_theme_accessibility_matrix/">core/theme/accessibility_matrix</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="app_background">
+  <span class="name"><a href="core_theme_backgrounds_app_background/">core/theme/backgrounds/app_background</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="prefab_backgrounds">
+  <span class="name"><a href="core_theme_backgrounds_prefab_backgrounds/">core/theme/backgrounds/prefab_backgrounds</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="contrast_utils">
+  <span class="name"><a href="core_theme_contrast_utils/">core/theme/contrast_utils</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="high_contrast_theme">
+  <span class="name"><a href="core_theme_high_contrast_theme/">core/theme/high_contrast_theme</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="app_palette">
+  <span class="name"><a href="core_theme_palettes_app_palette/">core/theme/palettes/app_palette</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="custom_colors">
+  <span class="name"><a href="core_theme_palettes_custom_colors/">core/theme/palettes/custom_colors</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="prefab_palettes">
+  <span class="name"><a href="core_theme_palettes_prefab_palettes/">core/theme/palettes/prefab_palettes</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="transit_animations">
+  <span class="name"><a href="core_theme_transit_animations/">core/theme/transit_animations</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="transit_colors">
+  <span class="name"><a href="core_theme_transit_colors/">core/theme/transit_colors</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="transit_spacing">
+  <span class="name"><a href="core_theme_transit_spacing/">core/theme/transit_spacing</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="transit_theme">
+  <span class="name"><a href="core_theme_transit_theme/">core/theme/transit_theme</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="transit_typography">
+  <span class="name"><a href="core_theme_transit_typography/">core/theme/transit_typography</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="app_logger">
+  <span class="name"><a href="core_utils_app_logger/">core/utils/app_logger</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="error_boundary">
+  <span class="name"><a href="core_utils_error_boundary/">core/utils/error_boundary</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="force_update_checker">
+  <span class="name"><a href="core_utils_force_update_checker/">core/utils/force_update_checker</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="network_timing">
+  <span class="name"><a href="core_utils_network_timing/">core/utils/network_timing</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="sentry_setup">
+  <span class="name"><a href="core_utils_sentry_setup/">core/utils/sentry_setup</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="transit_provider_observer">
+  <span class="name"><a href="core_utils_transit_provider_observer/">core/utils/transit_provider_observer</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="uuid">
+  <span class="name"><a href="core_utils_uuid/">core/utils/uuid</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="analytics_provider">
+  <span class="name"><a href="data_analytics_analytics_provider/">data/analytics/analytics_provider</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="analytics_service">
+  <span class="name"><a href="data_analytics_analytics_service/">data/analytics/analytics_service</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="posthog_service">
+  <span class="name"><a href="data_analytics_posthog_service/">data/analytics/posthog_service</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="auth_helpers">
+  <span class="name"><a href="data_auth_auth_helpers/">data/auth/auth_helpers</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="auth_repository">
+  <span class="name"><a href="data_auth_auth_repository/">data/auth/auth_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="auth_repository_supabase">
+  <span class="name"><a href="data_auth_auth_repository_supabase/">data/auth/auth_repository_supabase</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="bus_location_repository_provider">
+  <span class="name"><a href="data_bus_location_bus_location_repository_provider/">data/bus_location/bus_location_repository_provider</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="bus_location_repository">
+  <span class="name"><a href="data_bus_location_domain_bus_location_repository/">data/bus_location/domain/bus_location_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="bus_location_local_repository">
+  <span class="name"><a href="data_bus_location_local_bus_location_local_repository/">data/bus_location/local/bus_location_local_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="bus_location_mock_repository">
+  <span class="name"><a href="data_bus_location_local_bus_location_mock_repository/">data/bus_location/local/bus_location_mock_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="bus_location_remote_repository">
+  <span class="name"><a href="data_bus_location_remote_bus_location_remote_repository/">data/bus_location/remote/bus_location_remote_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="bus_position_channel_manager">
+  <span class="name"><a href="data_bus_location_remote_bus_position_channel_manager/">data/bus_location/remote/bus_position_channel_manager</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="hive_adapters">
+  <span class="name"><a href="data_cache_hive_adapters/">data/cache/hive_adapters</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="hive_box_provider">
+  <span class="name"><a href="data_cache_hive_box_provider/">data/cache/hive_box_provider</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="hive_init">
+  <span class="name"><a href="data_cache_hive_init/">data/cache/hive_init</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="secure_storage">
+  <span class="name"><a href="data_cache_secure_storage/">data/cache/secure_storage</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="storage_repository">
+  <span class="name"><a href="data_cache_storage_repository/">data/cache/storage_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="feature_request_repository">
+  <span class="name"><a href="data_feature_request_domain_feature_request_repository/">data/feature_request/domain/feature_request_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="feature_request_repository_provider">
+  <span class="name"><a href="data_feature_request_feature_request_repository_provider/">data/feature_request/feature_request_repository_provider</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="feature_request_local_repository">
+  <span class="name"><a href="data_feature_request_local_feature_request_local_repository/">data/feature_request/local/feature_request_local_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="feature_request_mock_repository">
+  <span class="name"><a href="data_feature_request_local_feature_request_mock_repository/">data/feature_request/local/feature_request_mock_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="feature_request_remote_repository">
+  <span class="name"><a href="data_feature_request_remote_feature_request_remote_repository/">data/feature_request/remote/feature_request_remote_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="fmtc_provider">
+  <span class="name"><a href="data_fmtc_fmtc_provider/">data/fmtc/fmtc_provider</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="fmtc_service">
+  <span class="name"><a href="data_fmtc_fmtc_service/">data/fmtc/fmtc_service</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="geo_providers">
+  <span class="name"><a href="data_geo_geo_providers/">data/geo/geo_providers</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="location_service">
+  <span class="name"><a href="data_geo_location_service/">data/geo/location_service</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="incident_repository">
+  <span class="name"><a href="data_incident_domain_incident_repository/">data/incident/domain/incident_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="incident_repository_provider">
+  <span class="name"><a href="data_incident_incident_repository_provider/">data/incident/incident_repository_provider</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="incident_local_repository">
+  <span class="name"><a href="data_incident_local_incident_local_repository/">data/incident/local/incident_local_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="incident_mock_repository">
+  <span class="name"><a href="data_incident_local_incident_mock_repository/">data/incident/local/incident_mock_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="incident_remote_repository">
+  <span class="name"><a href="data_incident_remote_incident_remote_repository/">data/incident/remote/incident_remote_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="mock_data_error">
+  <span class="name"><a href="data_mock_mock_data_error/">data/mock/mock_data_error</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="mock_data_exception">
+  <span class="name"><a href="data_mock_mock_data_exception/">data/mock/mock_data_exception</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="mock_data_service">
+  <span class="name"><a href="data_mock_mock_data_service/">data/mock/mock_data_service</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="mock_realtime_service">
+  <span class="name"><a href="data_mock_mock_realtime_service/">data/mock/mock_realtime_service</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="nfc_card_service">
+  <span class="name"><a href="data_nfc_nfc_card_service/">data/nfc/nfc_card_service</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="nfc_l10n">
+  <span class="name"><a href="data_nfc_nfc_l10n/">data/nfc/nfc_l10n</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="notification_repository">
+  <span class="name"><a href="data_notification_domain_notification_repository/">data/notification/domain/notification_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="notification_local_repository">
+  <span class="name"><a href="data_notification_local_notification_local_repository/">data/notification/local/notification_local_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="notification_mock_repository">
+  <span class="name"><a href="data_notification_local_notification_mock_repository/">data/notification/local/notification_mock_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="notification_repository_provider">
+  <span class="name"><a href="data_notification_notification_repository_provider/">data/notification/notification_repository_provider</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="notification_remote_repository">
+  <span class="name"><a href="data_notification_remote_notification_remote_repository/">data/notification/remote/notification_remote_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="offline_region_repository">
+  <span class="name"><a href="data_offline_region_domain_offline_region_repository/">data/offline_region/domain/offline_region_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="offline_region_local_repository">
+  <span class="name"><a href="data_offline_region_local_offline_region_local_repository/">data/offline_region/local/offline_region_local_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="offline_region_mock_repository">
+  <span class="name"><a href="data_offline_region_local_offline_region_mock_repository/">data/offline_region/local/offline_region_mock_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="offline_region_repository_provider">
+  <span class="name"><a href="data_offline_region_offline_region_repository_provider/">data/offline_region/offline_region_repository_provider</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="offline_region_remote_repository">
+  <span class="name"><a href="data_offline_region_remote_offline_region_remote_repository/">data/offline_region/remote/offline_region_remote_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="operator_repository">
+  <span class="name"><a href="data_operator_domain_operator_repository/">data/operator/domain/operator_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="operator_local_repository">
+  <span class="name"><a href="data_operator_local_operator_local_repository/">data/operator/local/operator_local_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="operator_mock_repository">
+  <span class="name"><a href="data_operator_local_operator_mock_repository/">data/operator/local/operator_mock_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="operator_helpers">
+  <span class="name"><a href="data_operator_operator_helpers/">data/operator/operator_helpers</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="operator_repository_provider">
+  <span class="name"><a href="data_operator_operator_repository_provider/">data/operator/operator_repository_provider</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="operator_remote_repository">
+  <span class="name"><a href="data_operator_remote_operator_remote_repository/">data/operator/remote/operator_remote_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="privacy_consent_repository">
+  <span class="name"><a href="data_privacy_consent_privacy_consent_repository/">data/privacy_consent/privacy_consent_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="firebase_setup">
+  <span class="name"><a href="data_push_firebase_setup/">data/push/firebase_setup</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="push_service">
+  <span class="name"><a href="data_push_push_service/">data/push/push_service</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="route_repository">
+  <span class="name"><a href="data_route_domain_route_repository/">data/route/domain/route_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="route_local_repository">
+  <span class="name"><a href="data_route_local_route_local_repository/">data/route/local/route_local_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="route_mock_repository">
+  <span class="name"><a href="data_route_local_route_mock_repository/">data/route/local/route_mock_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="route_remote_repository">
+  <span class="name"><a href="data_route_remote_route_remote_repository/">data/route/remote/route_remote_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="route_repository_provider">
+  <span class="name"><a href="data_route_route_repository_provider/">data/route/route_repository_provider</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="route_feedback_repository">
+  <span class="name"><a href="data_route_feedback_domain_route_feedback_repository/">data/route_feedback/domain/route_feedback_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="route_feedback_local_repository">
+  <span class="name"><a href="data_route_feedback_local_route_feedback_local_repository/">data/route_feedback/local/route_feedback_local_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="route_feedback_mock_repository">
+  <span class="name"><a href="data_route_feedback_local_route_feedback_mock_repository/">data/route_feedback/local/route_feedback_mock_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="route_feedback_remote_repository">
+  <span class="name"><a href="data_route_feedback_remote_route_feedback_remote_repository/">data/route_feedback/remote/route_feedback_remote_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="route_feedback_helpers">
+  <span class="name"><a href="data_route_feedback_route_feedback_helpers/">data/route_feedback/route_feedback_helpers</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="route_feedback_repository_provider">
+  <span class="name"><a href="data_route_feedback_route_feedback_repository_provider/">data/route_feedback/route_feedback_repository_provider</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="route_suggestion_repository">
+  <span class="name"><a href="data_route_suggestion_domain_route_suggestion_repository/">data/route_suggestion/domain/route_suggestion_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="route_suggestion_local_repository">
+  <span class="name"><a href="data_route_suggestion_local_route_suggestion_local_repository/">data/route_suggestion/local/route_suggestion_local_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="route_suggestion_mock_repository">
+  <span class="name"><a href="data_route_suggestion_local_route_suggestion_mock_repository/">data/route_suggestion/local/route_suggestion_mock_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="route_suggestion_remote_repository">
+  <span class="name"><a href="data_route_suggestion_remote_route_suggestion_remote_repository/">data/route_suggestion/remote/route_suggestion_remote_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="route_suggestion_repository_provider">
+  <span class="name"><a href="data_route_suggestion_route_suggestion_repository_provider/">data/route_suggestion/route_suggestion_repository_provider</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="schedule_repository">
+  <span class="name"><a href="data_schedule_domain_schedule_repository/">data/schedule/domain/schedule_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="schedule_local_repository">
+  <span class="name"><a href="data_schedule_local_schedule_local_repository/">data/schedule/local/schedule_local_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="schedule_mock_repository">
+  <span class="name"><a href="data_schedule_local_schedule_mock_repository/">data/schedule/local/schedule_mock_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="schedule_remote_repository">
+  <span class="name"><a href="data_schedule_remote_schedule_remote_repository/">data/schedule/remote/schedule_remote_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="schedule_repository_provider">
+  <span class="name"><a href="data_schedule_schedule_repository_provider/">data/schedule/schedule_repository_provider</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="stop_repository">
+  <span class="name"><a href="data_stop_domain_stop_repository/">data/stop/domain/stop_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="stop_local_repository">
+  <span class="name"><a href="data_stop_local_stop_local_repository/">data/stop/local/stop_local_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="stop_mock_repository">
+  <span class="name"><a href="data_stop_local_stop_mock_repository/">data/stop/local/stop_mock_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="stop_remote_repository">
+  <span class="name"><a href="data_stop_remote_stop_remote_repository/">data/stop/remote/stop_remote_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="stop_repository_provider">
+  <span class="name"><a href="data_stop_stop_repository_provider/">data/stop/stop_repository_provider</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="supabase_client_provider">
+  <span class="name"><a href="data_supabase_supabase_client_provider/">data/supabase/supabase_client_provider</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="offline_sync_provider">
+  <span class="name"><a href="data_sync_offline_sync_provider/">data/sync/offline_sync_provider</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="offline_sync_service">
+  <span class="name"><a href="data_sync_offline_sync_service/">data/sync/offline_sync_service</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="pending_action">
+  <span class="name"><a href="data_sync_pending_action/">data/sync/pending_action</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="pending_actions_queue">
+  <span class="name"><a href="data_sync_pending_actions_queue/">data/sync/pending_actions_queue</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="realtime_channel_manager">
+  <span class="name"><a href="data_sync_realtime_channel_manager/">data/sync/realtime_channel_manager</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="user_preferences_repository">
+  <span class="name"><a href="data_user_preferences_domain_user_preferences_repository/">data/user_preferences/domain/user_preferences_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="user_preferences_local_repository">
+  <span class="name"><a href="data_user_preferences_local_user_preferences_local_repository/">data/user_preferences/local/user_preferences_local_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="user_preferences_mock_repository">
+  <span class="name"><a href="data_user_preferences_local_user_preferences_mock_repository/">data/user_preferences/local/user_preferences_mock_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="user_preferences_remote_repository">
+  <span class="name"><a href="data_user_preferences_remote_user_preferences_remote_repository/">data/user_preferences/remote/user_preferences_remote_repository</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="user_preferences_repository_provider">
+  <span class="name"><a href="data_user_preferences_user_preferences_repository_provider/">data/user_preferences/user_preferences_repository_provider</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="widget_data_writer">
+  <span class="name"><a href="data_widgets_native_widget_data_writer/">data/widgets_native/widget_data_writer</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="accessible_buses_screen">
+  <span class="name"><a href="features_accessible_buses_accessible_buses_screen/">features/accessible_buses/accessible_buses_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="admin_operators_screen">
+  <span class="name"><a href="features_admin_admin_operators_screen/">features/admin/admin_operators_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="admin_screen">
+  <span class="name"><a href="features_admin_admin_screen/">features/admin/admin_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="admin_users_screen">
+  <span class="name"><a href="features_admin_admin_users_screen/">features/admin/admin_users_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="operator_form_dialog">
+  <span class="name"><a href="features_admin_widgets_operator_form_dialog/">features/admin/widgets/operator_form_dialog</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="appearance_screen">
+  <span class="name"><a href="features_appearance_appearance_screen/">features/appearance/appearance_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="custom_palette_screen">
+  <span class="name"><a href="features_appearance_custom_palette_screen/">features/appearance/custom_palette_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="accessibility_section">
+  <span class="name"><a href="features_appearance_widgets_accessibility_section/">features/appearance/widgets/accessibility_section</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="background_selector">
+  <span class="name"><a href="features_appearance_widgets_background_selector/">features/appearance/widgets/background_selector</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="brightness_section">
+  <span class="name"><a href="features_appearance_widgets_brightness_section/">features/appearance/widgets/brightness_section</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="font_section">
+  <span class="name"><a href="features_appearance_widgets_font_section/">features/appearance/widgets/font_section</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="map_style_section">
+  <span class="name"><a href="features_appearance_widgets_map_style_section/">features/appearance/widgets/map_style_section</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="palette_color_picker">
+  <span class="name"><a href="features_appearance_widgets_palette_color_picker/">features/appearance/widgets/palette_color_picker</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="palette_section">
+  <span class="name"><a href="features_appearance_widgets_palette_section/">features/appearance/widgets/palette_section</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="reset_section">
+  <span class="name"><a href="features_appearance_widgets_reset_section/">features/appearance/widgets/reset_section</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="storage_section">
+  <span class="name"><a href="features_appearance_widgets_storage_section/">features/appearance/widgets/storage_section</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="activate_driver_screen">
+  <span class="name"><a href="features_auth_activate_driver_screen/">features/auth/activate_driver_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="email_verify_pending_screen">
+  <span class="name"><a href="features_auth_email_verify_pending_screen/">features/auth/email_verify_pending_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="magic_link_screen">
+  <span class="name"><a href="features_auth_magic_link_screen/">features/auth/magic_link_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="recover_password_screen">
+  <span class="name"><a href="features_auth_recover_password_screen/">features/auth/recover_password_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="signin_screen">
+  <span class="name"><a href="features_auth_signin_screen/">features/auth/signin_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="signup_screen">
+  <span class="name"><a href="features_auth_signup_screen/">features/auth/signup_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="auth_field">
+  <span class="name"><a href="features_auth_widgets_auth_field/">features/auth/widgets/auth_field</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="auth_submit_button">
+  <span class="name"><a href="features_auth_widgets_auth_submit_button/">features/auth/widgets/auth_submit_button</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="bus_estimator">
+  <span class="name"><a href="features_bus_estimation_bus_estimator/">features/bus_estimation/bus_estimator</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="bus_origin_label">
+  <span class="name"><a href="features_bus_estimation_bus_origin_label/">features/bus_estimation/bus_origin_label</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="city_picker_screen">
+  <span class="name"><a href="features_city_picker_city_picker_screen/">features/city_picker/city_picker_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="my_contributions_screen">
+  <span class="name"><a href="features_contributions_my_contributions_screen/">features/contributions/my_contributions_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="suggestions_tab_content">
+  <span class="name"><a href="features_contributions_widgets_suggestions_tab_content/">features/contributions/widgets/suggestions_tab_content</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="component_showcase_screen">
+  <span class="name"><a href="features_debug_component_showcase_screen/">features/debug/component_showcase_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="active_route_screen">
+  <span class="name"><a href="features_driver_active_route_screen/">features/driver/active_route_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="ai_schedule_import">
+  <span class="name"><a href="features_driver_ai_schedule_import/">features/driver/ai_schedule_import</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="driver_dashboard_screen">
+  <span class="name"><a href="features_driver_driver_dashboard_screen/">features/driver/driver_dashboard_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="driver_history_screen">
+  <span class="name"><a href="features_driver_driver_history_screen/">features/driver/driver_history_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="driver_panel">
+  <span class="name"><a href="features_driver_driver_panel/">features/driver/driver_panel</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="driver_stats_screen">
+  <span class="name"><a href="features_driver_driver_stats_screen/">features/driver/driver_stats_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="editor_controller">
+  <span class="name"><a href="features_driver_route_editor_editor_controller/">features/driver/route_editor/editor_controller</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="live_recorder_controller">
+  <span class="name"><a href="features_driver_route_editor_live_recorder_controller/">features/driver/route_editor/live_recorder_controller</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="live_route_recorder">
+  <span class="name"><a href="features_driver_route_editor_live_route_recorder/">features/driver/route_editor/live_route_recorder</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="manual_route_editor">
+  <span class="name"><a href="features_driver_route_editor_manual_route_editor/">features/driver/route_editor/manual_route_editor</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="post_recording_editor">
+  <span class="name"><a href="features_driver_route_editor_post_recording_editor/">features/driver/route_editor/post_recording_editor</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="recorded_session">
+  <span class="name"><a href="features_driver_route_editor_recorded_session/">features/driver/route_editor/recorded_session</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="step_info">
+  <span class="name"><a href="features_driver_route_editor_steps_step_info/">features/driver/route_editor/steps/step_info</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="step_return">
+  <span class="name"><a href="features_driver_route_editor_steps_step_return/">features/driver/route_editor/steps/step_return</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="step_review">
+  <span class="name"><a href="features_driver_route_editor_steps_step_review/">features/driver/route_editor/steps/step_review</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="step_schedules">
+  <span class="name"><a href="features_driver_route_editor_steps_step_schedules/">features/driver/route_editor/steps/step_schedules</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="step_stops">
+  <span class="name"><a href="features_driver_route_editor_steps_step_stops/">features/driver/route_editor/steps/step_stops</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="step_trace">
+  <span class="name"><a href="features_driver_route_editor_steps_step_trace/">features/driver/route_editor/steps/step_trace</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="recorder_live_view">
+  <span class="name"><a href="features_driver_route_editor_widgets_recorder_live_view/">features/driver/route_editor/widgets/recorder_live_view</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="recorder_pre_form">
+  <span class="name"><a href="features_driver_route_editor_widgets_recorder_pre_form/">features/driver/route_editor/widgets/recorder_pre_form</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="start_route_screen">
+  <span class="name"><a href="features_driver_start_route_screen/">features/driver/start_route_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="driver_stats_card">
+  <span class="name"><a href="features_driver_widgets_driver_stats_card/">features/driver/widgets/driver_stats_card</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="route_list_section">
+  <span class="name"><a href="features_driver_widgets_route_list_section/">features/driver/widgets/route_list_section</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="env_error_screen">
+  <span class="name"><a href="features_error_env_error_screen/">features/error/env_error_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="not_found_screen">
+  <span class="name"><a href="features_error_not_found_screen/">features/error/not_found_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="feedback_screen">
+  <span class="name"><a href="features_feedback_feedback_screen/">features/feedback/feedback_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="route_feedback_sheet">
+  <span class="name"><a href="features_feedback_route_feedback_sheet/">features/feedback/route_feedback_sheet</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="home_shell">
+  <span class="name"><a href="features_home_home_shell/">features/home/home_shell</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="card_tab">
+  <span class="name"><a href="features_home_tabs_card_tab/">features/home/tabs/card_tab</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="home_tab">
+  <span class="name"><a href="features_home_tabs_home_tab/">features/home/tabs/home_tab</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="map_tab">
+  <span class="name"><a href="features_home_tabs_map_tab/">features/home/tabs/map_tab</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="profile_tab">
+  <span class="name"><a href="features_home_tabs_profile_tab/">features/home/tabs/profile_tab</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="search_tab">
+  <span class="name"><a href="features_home_tabs_search_tab/">features/home/tabs/search_tab</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="home_alert_item">
+  <span class="name"><a href="features_home_widgets_home_alert_item/">features/home/widgets/home_alert_item</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="home_bottom_nav">
+  <span class="name"><a href="features_home_widgets_home_bottom_nav/">features/home/widgets/home_bottom_nav</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="home_side_nav">
+  <span class="name"><a href="features_home_widgets_home_side_nav/">features/home/widgets/home_side_nav</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="home_tab_item">
+  <span class="name"><a href="features_home_widgets_home_tab_item/">features/home/widgets/home_tab_item</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="nfc_scan_result_card">
+  <span class="name"><a href="features_home_widgets_nfc_scan_result_card/">features/home/widgets/nfc_scan_result_card</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="profile_about_section">
+  <span class="name"><a href="features_home_widgets_profile_about_section/">features/home/widgets/profile_about_section</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="profile_accessibility_section">
+  <span class="name"><a href="features_home_widgets_profile_accessibility_section/">features/home/widgets/profile_accessibility_section</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="profile_appearance_section">
+  <span class="name"><a href="features_home_widgets_profile_appearance_section/">features/home/widgets/profile_appearance_section</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="profile_contributions_section">
+  <span class="name"><a href="features_home_widgets_profile_contributions_section/">features/home/widgets/profile_contributions_section</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="profile_header_card">
+  <span class="name"><a href="features_home_widgets_profile_header_card/">features/home/widgets/profile_header_card</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="profile_location_section">
+  <span class="name"><a href="features_home_widgets_profile_location_section/">features/home/widgets/profile_location_section</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="profile_notifications_section">
+  <span class="name"><a href="features_home_widgets_profile_notifications_section/">features/home/widgets/profile_notifications_section</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="report_incident_sheet">
+  <span class="name"><a href="features_incidents_report_incident_sheet/">features/incidents/report_incident_sheet</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="manager_inbox_screen">
+  <span class="name"><a href="features_management_manager_inbox_screen/">features/management/manager_inbox_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="feedback_list_item">
+  <span class="name"><a href="features_management_widgets_feedback_list_item/">features/management/widgets/feedback_list_item</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="inbox_action_sheets">
+  <span class="name"><a href="features_management_widgets_inbox_action_sheets/">features/management/widgets/inbox_action_sheets</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="resolved_feedback_item">
+  <span class="name"><a href="features_management_widgets_resolved_feedback_item/">features/management/widgets/resolved_feedback_item</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="resolved_incident_item">
+  <span class="name"><a href="features_management_widgets_resolved_incident_item/">features/management/widgets/resolved_incident_item</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="suggestion_list_item">
+  <span class="name"><a href="features_management_widgets_suggestion_list_item/">features/management/widgets/suggestion_list_item</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="route_polylines">
+  <span class="name"><a href="features_map_layers_route_polylines/">features/map/layers/route_polylines</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="map_config">
+  <span class="name"><a href="features_map_map_config/">features/map/map_config</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="map_data_cache">
+  <span class="name"><a href="features_map_map_data_cache/">features/map/map_data_cache</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="map_filter_controller">
+  <span class="name"><a href="features_map_map_filter_controller/">features/map/map_filter_controller</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="map_filter_state">
+  <span class="name"><a href="features_map_map_filter_state/">features/map/map_filter_state</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="bus_marker">
+  <span class="name"><a href="features_map_markers_bus_marker/">features/map/markers/bus_marker</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="stop_marker">
+  <span class="name"><a href="features_map_markers_stop_marker/">features/map/markers/stop_marker</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="stop_info_sheet">
+  <span class="name"><a href="features_map_sheets_stop_info_sheet/">features/map/sheets/stop_info_sheet</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="trip_info_sheet">
+  <span class="name"><a href="features_map_sheets_trip_info_sheet/">features/map/sheets/trip_info_sheet</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="transit_map">
+  <span class="name"><a href="features_map_transit_map/">features/map/transit_map</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="map_controls">
+  <span class="name"><a href="features_map_widgets_map_controls/">features/map/widgets/map_controls</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="map_filter_sheet">
+  <span class="name"><a href="features_map_widgets_map_filter_sheet/">features/map/widgets/map_filter_sheet</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="notifications_screen">
+  <span class="name"><a href="features_notifications_notifications_screen/">features/notifications/notifications_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="offline_regions_screen">
+  <span class="name"><a href="features_offline_offline_regions_screen/">features/offline/offline_regions_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="region_download_sheet">
+  <span class="name"><a href="features_offline_widgets_region_download_sheet/">features/offline/widgets/region_download_sheet</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="region_progress_card">
+  <span class="name"><a href="features_offline_widgets_region_progress_card/">features/offline/widgets/region_progress_card</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="region_status_badge">
+  <span class="name"><a href="features_offline_widgets_region_status_badge/">features/offline/widgets/region_status_badge</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="onboarding_page_data">
+  <span class="name"><a href="features_onboarding_onboarding_page_data/">features/onboarding/onboarding_page_data</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="onboarding_screen">
+  <span class="name"><a href="features_onboarding_onboarding_screen/">features/onboarding/onboarding_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="drivers_screen">
+  <span class="name"><a href="features_operator_admin_drivers_screen/">features/operator_admin/drivers_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="invitation_codes_screen">
+  <span class="name"><a href="features_operator_admin_invitation_codes_screen/">features/operator_admin/invitation_codes_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="operator_dashboard_screen">
+  <span class="name"><a href="features_operator_admin_operator_dashboard_screen/">features/operator_admin/operator_dashboard_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="privacy_screen">
+  <span class="name"><a href="features_privacy_privacy_screen/">features/privacy/privacy_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="accessibility_settings_screen">
+  <span class="name"><a href="features_profile_accessibility_settings_screen/">features/profile/accessibility_settings_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="achievements_screen">
+  <span class="name"><a href="features_profile_achievements_screen/">features/profile/achievements_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="filter_presets_screen">
+  <span class="name"><a href="features_profile_filter_presets_screen/">features/profile/filter_presets_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="offline_data_screen">
+  <span class="name"><a href="features_profile_offline_data_screen/">features/profile/offline_data_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="planned_trips_screen">
+  <span class="name"><a href="features_profile_planned_trips_screen/">features/profile/planned_trips_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="reputation_screen">
+  <span class="name"><a href="features_profile_reputation_screen/">features/profile/reputation_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="achievement_grid_item">
+  <span class="name"><a href="features_profile_widgets_achievement_grid_item/">features/profile/widgets/achievement_grid_item</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="reputation_history_list">
+  <span class="name"><a href="features_profile_widgets_reputation_history_list/">features/profile/widgets/reputation_history_list</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="reputation_level_card">
+  <span class="name"><a href="features_profile_widgets_reputation_level_card/">features/profile/widgets/reputation_level_card</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="route_detail_screen">
+  <span class="name"><a href="features_route_detail_route_detail_screen/">features/route_detail/route_detail_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="route_detail_alerts_list">
+  <span class="name"><a href="features_route_detail_widgets_route_detail_alerts_list/">features/route_detail/widgets/route_detail_alerts_list</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="route_detail_changelog">
+  <span class="name"><a href="features_route_detail_widgets_route_detail_changelog/">features/route_detail/widgets/route_detail_changelog</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="route_detail_feedback_section">
+  <span class="name"><a href="features_route_detail_widgets_route_detail_feedback_section/">features/route_detail/widgets/route_detail_feedback_section</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="route_detail_header">
+  <span class="name"><a href="features_route_detail_widgets_route_detail_header/">features/route_detail/widgets/route_detail_header</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="route_detail_header_section">
+  <span class="name"><a href="features_route_detail_widgets_route_detail_header_section/">features/route_detail/widgets/route_detail_header_section</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="route_detail_schedule_section">
+  <span class="name"><a href="features_route_detail_widgets_route_detail_schedule_section/">features/route_detail/widgets/route_detail_schedule_section</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="route_detail_timeline">
+  <span class="name"><a href="features_route_detail_widgets_route_detail_timeline/">features/route_detail/widgets/route_detail_timeline</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="route_officialize_modal">
+  <span class="name"><a href="features_route_detail_widgets_route_officialize_modal/">features/route_detail/widgets/route_officialize_modal</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="route_share_sheet">
+  <span class="name"><a href="features_route_detail_widgets_route_share_sheet/">features/route_detail/widgets/route_share_sheet</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="splash_screen">
+  <span class="name"><a href="features_splash_splash_screen/">features/splash/splash_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="stop_detail_screen">
+  <span class="name"><a href="features_stop_detail_stop_detail_screen/">features/stop_detail/stop_detail_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="suggest_route_screen">
+  <span class="name"><a href="features_suggestions_suggest_route_screen/">features/suggestions/suggest_route_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="suggestion_contribute_screen">
+  <span class="name"><a href="features_suggestions_suggestion_contribute_screen/">features/suggestions/suggestion_contribute_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="suggestion_detail_screen">
+  <span class="name"><a href="features_suggestions_suggestion_detail_screen/">features/suggestions/suggestion_detail_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="widgets_settings_screen">
+  <span class="name"><a href="features_widgets_native_widgets_settings_screen/">features/widgets_native/widgets_settings_screen</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="firebase_options">
+  <span class="name"><a href="firebase_options/">firebase_options</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="app_localizations">
+  <span class="name"><a href="l10n_generated_app_localizations/">l10n/generated/app_localizations</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="app_localizations_ar">
+  <span class="name"><a href="l10n_generated_app_localizations_ar/">l10n/generated/app_localizations_ar</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="app_localizations_en">
+  <span class="name"><a href="l10n_generated_app_localizations_en/">l10n/generated/app_localizations_en</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="app_localizations_es">
+  <span class="name"><a href="l10n_generated_app_localizations_es/">l10n/generated/app_localizations_es</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="main">
+  <span class="name"><a href="main/">main</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="achievement_model">
+  <span class="name"><a href="shared_models_achievement_model/">shared/models/achievement_model</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="active_trip_model">
+  <span class="name"><a href="shared_models_active_trip_model/">shared/models/active_trip_model</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="alert_model">
+  <span class="name"><a href="shared_models_alert_model/">shared/models/alert_model</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="app_notification">
+  <span class="name"><a href="shared_models_app_notification/">shared/models/app_notification</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="bus_location">
+  <span class="name"><a href="shared_models_bus_location/">shared/models/bus_location</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="driver_invitation_code">
+  <span class="name"><a href="shared_models_driver_invitation_code/">shared/models/driver_invitation_code</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="enums">
+  <span class="name"><a href="shared_models_enums/">shared/models/enums</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="feature_request">
+  <span class="name"><a href="shared_models_feature_request/">shared/models/feature_request</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="feedback_message_model">
+  <span class="name"><a href="shared_models_feedback_message_model/">shared/models/feedback_message_model</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="habitual_trip_model">
+  <span class="name"><a href="shared_models_habitual_trip_model/">shared/models/habitual_trip_model</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="incident_model">
+  <span class="name"><a href="shared_models_incident_model/">shared/models/incident_model</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="models">
+  <span class="name"><a href="shared_models_models/">shared/models/models</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="offline_region">
+  <span class="name"><a href="shared_models_offline_region/">shared/models/offline_region</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="operator_model">
+  <span class="name"><a href="shared_models_operator_model/">shared/models/operator_model</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="permissions">
+  <span class="name"><a href="shared_models_permissions/">shared/models/permissions</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="reputation">
+  <span class="name"><a href="shared_models_reputation/">shared/models/reputation</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="route_changelog_model">
+  <span class="name"><a href="shared_models_route_changelog_model/">shared/models/route_changelog_model</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="route_feedback_model">
+  <span class="name"><a href="shared_models_route_feedback_model/">shared/models/route_feedback_model</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="route_model">
+  <span class="name"><a href="shared_models_route_model/">shared/models/route_model</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="route_share">
+  <span class="name"><a href="shared_models_route_share/">shared/models/route_share</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="route_stop_model">
+  <span class="name"><a href="shared_models_route_stop_model/">shared/models/route_stop_model</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="route_suggestion_model">
+  <span class="name"><a href="shared_models_route_suggestion_model/">shared/models/route_suggestion_model</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="schedule_model">
+  <span class="name"><a href="shared_models_schedule_model/">shared/models/schedule_model</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="stop_model">
+  <span class="name"><a href="shared_models_stop_model/">shared/models/stop_model</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="trip_history_model">
+  <span class="name"><a href="shared_models_trip_history_model/">shared/models/trip_history_model</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="user_achievement_model">
+  <span class="name"><a href="shared_models_user_achievement_model/">shared/models/user_achievement_model</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="user_card_model">
+  <span class="name"><a href="shared_models_user_card_model/">shared/models/user_card_model</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="user_favorite_model">
+  <span class="name"><a href="shared_models_user_favorite_model/">shared/models/user_favorite_model</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="user_model">
+  <span class="name"><a href="shared_models_user_model/">shared/models/user_model</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="user_preferences">
+  <span class="name"><a href="shared_models_user_preferences/">shared/models/user_preferences</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="user_role">
+  <span class="name"><a href="shared_models_user_role/">shared/models/user_role</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="zone_model">
+  <span class="name"><a href="shared_models_zone_model/">shared/models/zone_model</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="auth_provider">
+  <span class="name"><a href="shared_providers_auth_provider/">shared/providers/auth_provider</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="connectivity_provider">
+  <span class="name"><a href="shared_providers_connectivity_provider/">shared/providers/connectivity_provider</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="active_trip_providers">
+  <span class="name"><a href="shared_providers_derived_active_trip_providers/">shared/providers/derived/active_trip_providers</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="home_providers">
+  <span class="name"><a href="shared_providers_derived_home_providers/">shared/providers/derived/home_providers</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="schedule_providers">
+  <span class="name"><a href="shared_providers_derived_schedule_providers/">shared/providers/derived/schedule_providers</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="is_dark_provider">
+  <span class="name"><a href="shared_providers_is_dark_provider/">shared/providers/is_dark_provider</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="local_feedback_provider">
+  <span class="name"><a href="shared_providers_local_feedback_provider/">shared/providers/local_feedback_provider</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="locale_provider">
+  <span class="name"><a href="shared_providers_locale_provider/">shared/providers/locale_provider</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="nfc_provider">
+  <span class="name"><a href="shared_providers_nfc_provider/">shared/providers/nfc_provider</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="notification_stream_provider">
+  <span class="name"><a href="shared_providers_notification_stream_provider/">shared/providers/notification_stream_provider</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="privacy_consent_provider">
+  <span class="name"><a href="shared_providers_privacy_consent_provider/">shared/providers/privacy_consent_provider</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="reputation_events">
+  <span class="name"><a href="shared_providers_reputation_events/">shared/providers/reputation_events</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="route_lookup_providers">
+  <span class="name"><a href="shared_providers_route_lookup_providers/">shared/providers/route_lookup_providers</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="theme_notifier">
+  <span class="name"><a href="shared_providers_theme_notifier/">shared/providers/theme_notifier</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="theme_provider">
+  <span class="name"><a href="shared_providers_theme_provider/">shared/providers/theme_provider</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="user_favorites_provider">
+  <span class="name"><a href="shared_providers_user_favorites_provider/">shared/providers/user_favorites_provider</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="user_provider">
+  <span class="name"><a href="shared_providers_user_provider/">shared/providers/user_provider</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="string_formatting">
+  <span class="name"><a href="shared_utils_string_formatting/">shared/utils/string_formatting</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="background_wrapper">
+  <span class="name"><a href="shared_widgets_background_wrapper/">shared/widgets/background_wrapper</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="capacity_indicator">
+  <span class="name"><a href="shared_widgets_capacity_indicator/">shared/widgets/capacity_indicator</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="contextual_help_button">
+  <span class="name"><a href="shared_widgets_contextual_help_button/">shared/widgets/contextual_help_button</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="data_freshness_indicator">
+  <span class="name"><a href="shared_widgets_data_freshness_indicator/">shared/widgets/data_freshness_indicator</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="empty_state">
+  <span class="name"><a href="shared_widgets_empty_state/">shared/widgets/empty_state</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="error_card">
+  <span class="name"><a href="shared_widgets_error_card/">shared/widgets/error_card</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="glass_card">
+  <span class="name"><a href="shared_widgets_glass_card/">shared/widgets/glass_card</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="gradient_text">
+  <span class="name"><a href="shared_widgets_gradient_text/">shared/widgets/gradient_text</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="incident_banner">
+  <span class="name"><a href="shared_widgets_incident_banner/">shared/widgets/incident_banner</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="offline_banner">
+  <span class="name"><a href="shared_widgets_offline_banner/">shared/widgets/offline_banner</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="pressable">
+  <span class="name"><a href="shared_widgets_pressable/">shared/widgets/pressable</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="report_content_sheet">
+  <span class="name"><a href="shared_widgets_report_content_sheet/">shared/widgets/report_content_sheet</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="reputation_badge">
+  <span class="name"><a href="shared_widgets_reputation_badge/">shared/widgets/reputation_badge</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="responsive_scaffold">
+  <span class="name"><a href="shared_widgets_responsive_scaffold/">shared/widgets/responsive_scaffold</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="role_gate">
+  <span class="name"><a href="shared_widgets_role_gate/">shared/widgets/role_gate</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="route_card">
+  <span class="name"><a href="shared_widgets_route_card/">shared/widgets/route_card</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="route_search_bar">
+  <span class="name"><a href="shared_widgets_route_search_bar/">shared/widgets/route_search_bar</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="shimmer_skeleton">
+  <span class="name"><a href="shared_widgets_shimmer_skeleton/">shared/widgets/shimmer_skeleton</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="single_field_dialog">
+  <span class="name"><a href="shared_widgets_single_field_dialog/">shared/widgets/single_field_dialog</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="smoke_background">
+  <span class="name"><a href="shared_widgets_smoke_background/">shared/widgets/smoke_background</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="stagger_list">
+  <span class="name"><a href="shared_widgets_stagger_list/">shared/widgets/stagger_list</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="status_badge">
+  <span class="name"><a href="shared_widgets_status_badge/">shared/widgets/status_badge</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="stop_list_item">
+  <span class="name"><a href="shared_widgets_stop_list_item/">shared/widgets/stop_list_item</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="stop_timeline">
+  <span class="name"><a href="shared_widgets_stop_timeline/">shared/widgets/stop_timeline</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="transit_app_bar">
+  <span class="name"><a href="shared_widgets_transit_app_bar/">shared/widgets/transit_app_bar</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="transit_bottom_sheet">
+  <span class="name"><a href="shared_widgets_transit_bottom_sheet/">shared/widgets/transit_bottom_sheet</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="transit_button">
+  <span class="name"><a href="shared_widgets_transit_button/">shared/widgets/transit_button</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="transit_checkbox">
+  <span class="name"><a href="shared_widgets_transit_checkbox/">shared/widgets/transit_checkbox</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="transit_chip">
+  <span class="name"><a href="shared_widgets_transit_chip/">shared/widgets/transit_chip</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="transit_input">
+  <span class="name"><a href="shared_widgets_transit_input/">shared/widgets/transit_input</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+        </dl>
+      </section>
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li class="self-crumb">transitly package</li>
+</ol>
+
+    <h5 class="hidden-xs"><span class="package-name">transitly</span> <span class="package-kind">package</span></h5>
+    <ol>
+      <li class="section-title">Libraries</li>
+      <li><a href="app/">app</a></li>
+      <li><a href="core_constants_app_constants/">core/constants/app_constants</a></li>
+      <li><a href="core_env/">core/env</a></li>
+      <li><a href="core_router_app_router/">core/router/app_router</a></li>
+      <li><a href="core_router_error_builder/">core/router/error_builder</a></li>
+      <li><a href="core_router_redirect_guards/">core/router/redirect_guards</a></li>
+      <li><a href="core_theme_accessibility_matrix/">core/theme/accessibility_matrix</a></li>
+      <li><a href="core_theme_backgrounds_app_background/">core/theme/backgrounds/app_background</a></li>
+      <li><a href="core_theme_backgrounds_prefab_backgrounds/">core/theme/backgrounds/prefab_backgrounds</a></li>
+      <li><a href="core_theme_contrast_utils/">core/theme/contrast_utils</a></li>
+      <li><a href="core_theme_high_contrast_theme/">core/theme/high_contrast_theme</a></li>
+      <li><a href="core_theme_palettes_app_palette/">core/theme/palettes/app_palette</a></li>
+      <li><a href="core_theme_palettes_custom_colors/">core/theme/palettes/custom_colors</a></li>
+      <li><a href="core_theme_palettes_prefab_palettes/">core/theme/palettes/prefab_palettes</a></li>
+      <li><a href="core_theme_transit_animations/">core/theme/transit_animations</a></li>
+      <li><a href="core_theme_transit_colors/">core/theme/transit_colors</a></li>
+      <li><a href="core_theme_transit_spacing/">core/theme/transit_spacing</a></li>
+      <li><a href="core_theme_transit_theme/">core/theme/transit_theme</a></li>
+      <li><a href="core_theme_transit_typography/">core/theme/transit_typography</a></li>
+      <li><a href="core_utils_app_logger/">core/utils/app_logger</a></li>
+      <li><a href="core_utils_error_boundary/">core/utils/error_boundary</a></li>
+      <li><a href="core_utils_force_update_checker/">core/utils/force_update_checker</a></li>
+      <li><a href="core_utils_network_timing/">core/utils/network_timing</a></li>
+      <li><a href="core_utils_sentry_setup/">core/utils/sentry_setup</a></li>
+      <li><a href="core_utils_transit_provider_observer/">core/utils/transit_provider_observer</a></li>
+      <li><a href="core_utils_uuid/">core/utils/uuid</a></li>
+      <li><a href="data_analytics_analytics_provider/">data/analytics/analytics_provider</a></li>
+      <li><a href="data_analytics_analytics_service/">data/analytics/analytics_service</a></li>
+      <li><a href="data_analytics_posthog_service/">data/analytics/posthog_service</a></li>
+      <li><a href="data_auth_auth_helpers/">data/auth/auth_helpers</a></li>
+      <li><a href="data_auth_auth_repository/">data/auth/auth_repository</a></li>
+      <li><a href="data_auth_auth_repository_supabase/">data/auth/auth_repository_supabase</a></li>
+      <li><a href="data_bus_location_bus_location_repository_provider/">data/bus_location/bus_location_repository_provider</a></li>
+      <li><a href="data_bus_location_domain_bus_location_repository/">data/bus_location/domain/bus_location_repository</a></li>
+      <li><a href="data_bus_location_local_bus_location_local_repository/">data/bus_location/local/bus_location_local_repository</a></li>
+      <li><a href="data_bus_location_local_bus_location_mock_repository/">data/bus_location/local/bus_location_mock_repository</a></li>
+      <li><a href="data_bus_location_remote_bus_location_remote_repository/">data/bus_location/remote/bus_location_remote_repository</a></li>
+      <li><a href="data_bus_location_remote_bus_position_channel_manager/">data/bus_location/remote/bus_position_channel_manager</a></li>
+      <li><a href="data_cache_hive_adapters/">data/cache/hive_adapters</a></li>
+      <li><a href="data_cache_hive_box_provider/">data/cache/hive_box_provider</a></li>
+      <li><a href="data_cache_hive_init/">data/cache/hive_init</a></li>
+      <li><a href="data_cache_secure_storage/">data/cache/secure_storage</a></li>
+      <li><a href="data_cache_storage_repository/">data/cache/storage_repository</a></li>
+      <li><a href="data_feature_request_domain_feature_request_repository/">data/feature_request/domain/feature_request_repository</a></li>
+      <li><a href="data_feature_request_feature_request_repository_provider/">data/feature_request/feature_request_repository_provider</a></li>
+      <li><a href="data_feature_request_local_feature_request_local_repository/">data/feature_request/local/feature_request_local_repository</a></li>
+      <li><a href="data_feature_request_local_feature_request_mock_repository/">data/feature_request/local/feature_request_mock_repository</a></li>
+      <li><a href="data_feature_request_remote_feature_request_remote_repository/">data/feature_request/remote/feature_request_remote_repository</a></li>
+      <li><a href="data_fmtc_fmtc_provider/">data/fmtc/fmtc_provider</a></li>
+      <li><a href="data_fmtc_fmtc_service/">data/fmtc/fmtc_service</a></li>
+      <li><a href="data_geo_geo_providers/">data/geo/geo_providers</a></li>
+      <li><a href="data_geo_location_service/">data/geo/location_service</a></li>
+      <li><a href="data_incident_domain_incident_repository/">data/incident/domain/incident_repository</a></li>
+      <li><a href="data_incident_incident_repository_provider/">data/incident/incident_repository_provider</a></li>
+      <li><a href="data_incident_local_incident_local_repository/">data/incident/local/incident_local_repository</a></li>
+      <li><a href="data_incident_local_incident_mock_repository/">data/incident/local/incident_mock_repository</a></li>
+      <li><a href="data_incident_remote_incident_remote_repository/">data/incident/remote/incident_remote_repository</a></li>
+      <li><a href="data_mock_mock_data_error/">data/mock/mock_data_error</a></li>
+      <li><a href="data_mock_mock_data_exception/">data/mock/mock_data_exception</a></li>
+      <li><a href="data_mock_mock_data_service/">data/mock/mock_data_service</a></li>
+      <li><a href="data_mock_mock_realtime_service/">data/mock/mock_realtime_service</a></li>
+      <li><a href="data_nfc_nfc_card_service/">data/nfc/nfc_card_service</a></li>
+      <li><a href="data_nfc_nfc_l10n/">data/nfc/nfc_l10n</a></li>
+      <li><a href="data_notification_domain_notification_repository/">data/notification/domain/notification_repository</a></li>
+      <li><a href="data_notification_local_notification_local_repository/">data/notification/local/notification_local_repository</a></li>
+      <li><a href="data_notification_local_notification_mock_repository/">data/notification/local/notification_mock_repository</a></li>
+      <li><a href="data_notification_notification_repository_provider/">data/notification/notification_repository_provider</a></li>
+      <li><a href="data_notification_remote_notification_remote_repository/">data/notification/remote/notification_remote_repository</a></li>
+      <li><a href="data_offline_region_domain_offline_region_repository/">data/offline_region/domain/offline_region_repository</a></li>
+      <li><a href="data_offline_region_local_offline_region_local_repository/">data/offline_region/local/offline_region_local_repository</a></li>
+      <li><a href="data_offline_region_local_offline_region_mock_repository/">data/offline_region/local/offline_region_mock_repository</a></li>
+      <li><a href="data_offline_region_offline_region_repository_provider/">data/offline_region/offline_region_repository_provider</a></li>
+      <li><a href="data_offline_region_remote_offline_region_remote_repository/">data/offline_region/remote/offline_region_remote_repository</a></li>
+      <li><a href="data_operator_domain_operator_repository/">data/operator/domain/operator_repository</a></li>
+      <li><a href="data_operator_local_operator_local_repository/">data/operator/local/operator_local_repository</a></li>
+      <li><a href="data_operator_local_operator_mock_repository/">data/operator/local/operator_mock_repository</a></li>
+      <li><a href="data_operator_operator_helpers/">data/operator/operator_helpers</a></li>
+      <li><a href="data_operator_operator_repository_provider/">data/operator/operator_repository_provider</a></li>
+      <li><a href="data_operator_remote_operator_remote_repository/">data/operator/remote/operator_remote_repository</a></li>
+      <li><a href="data_privacy_consent_privacy_consent_repository/">data/privacy_consent/privacy_consent_repository</a></li>
+      <li><a href="data_push_firebase_setup/">data/push/firebase_setup</a></li>
+      <li><a href="data_push_push_service/">data/push/push_service</a></li>
+      <li><a href="data_route_domain_route_repository/">data/route/domain/route_repository</a></li>
+      <li><a href="data_route_local_route_local_repository/">data/route/local/route_local_repository</a></li>
+      <li><a href="data_route_local_route_mock_repository/">data/route/local/route_mock_repository</a></li>
+      <li><a href="data_route_remote_route_remote_repository/">data/route/remote/route_remote_repository</a></li>
+      <li><a href="data_route_route_repository_provider/">data/route/route_repository_provider</a></li>
+      <li><a href="data_route_feedback_domain_route_feedback_repository/">data/route_feedback/domain/route_feedback_repository</a></li>
+      <li><a href="data_route_feedback_local_route_feedback_local_repository/">data/route_feedback/local/route_feedback_local_repository</a></li>
+      <li><a href="data_route_feedback_local_route_feedback_mock_repository/">data/route_feedback/local/route_feedback_mock_repository</a></li>
+      <li><a href="data_route_feedback_remote_route_feedback_remote_repository/">data/route_feedback/remote/route_feedback_remote_repository</a></li>
+      <li><a href="data_route_feedback_route_feedback_helpers/">data/route_feedback/route_feedback_helpers</a></li>
+      <li><a href="data_route_feedback_route_feedback_repository_provider/">data/route_feedback/route_feedback_repository_provider</a></li>
+      <li><a href="data_route_suggestion_domain_route_suggestion_repository/">data/route_suggestion/domain/route_suggestion_repository</a></li>
+      <li><a href="data_route_suggestion_local_route_suggestion_local_repository/">data/route_suggestion/local/route_suggestion_local_repository</a></li>
+      <li><a href="data_route_suggestion_local_route_suggestion_mock_repository/">data/route_suggestion/local/route_suggestion_mock_repository</a></li>
+      <li><a href="data_route_suggestion_remote_route_suggestion_remote_repository/">data/route_suggestion/remote/route_suggestion_remote_repository</a></li>
+      <li><a href="data_route_suggestion_route_suggestion_repository_provider/">data/route_suggestion/route_suggestion_repository_provider</a></li>
+      <li><a href="data_schedule_domain_schedule_repository/">data/schedule/domain/schedule_repository</a></li>
+      <li><a href="data_schedule_local_schedule_local_repository/">data/schedule/local/schedule_local_repository</a></li>
+      <li><a href="data_schedule_local_schedule_mock_repository/">data/schedule/local/schedule_mock_repository</a></li>
+      <li><a href="data_schedule_remote_schedule_remote_repository/">data/schedule/remote/schedule_remote_repository</a></li>
+      <li><a href="data_schedule_schedule_repository_provider/">data/schedule/schedule_repository_provider</a></li>
+      <li><a href="data_stop_domain_stop_repository/">data/stop/domain/stop_repository</a></li>
+      <li><a href="data_stop_local_stop_local_repository/">data/stop/local/stop_local_repository</a></li>
+      <li><a href="data_stop_local_stop_mock_repository/">data/stop/local/stop_mock_repository</a></li>
+      <li><a href="data_stop_remote_stop_remote_repository/">data/stop/remote/stop_remote_repository</a></li>
+      <li><a href="data_stop_stop_repository_provider/">data/stop/stop_repository_provider</a></li>
+      <li><a href="data_supabase_supabase_client_provider/">data/supabase/supabase_client_provider</a></li>
+      <li><a href="data_sync_offline_sync_provider/">data/sync/offline_sync_provider</a></li>
+      <li><a href="data_sync_offline_sync_service/">data/sync/offline_sync_service</a></li>
+      <li><a href="data_sync_pending_action/">data/sync/pending_action</a></li>
+      <li><a href="data_sync_pending_actions_queue/">data/sync/pending_actions_queue</a></li>
+      <li><a href="data_sync_realtime_channel_manager/">data/sync/realtime_channel_manager</a></li>
+      <li><a href="data_user_preferences_domain_user_preferences_repository/">data/user_preferences/domain/user_preferences_repository</a></li>
+      <li><a href="data_user_preferences_local_user_preferences_local_repository/">data/user_preferences/local/user_preferences_local_repository</a></li>
+      <li><a href="data_user_preferences_local_user_preferences_mock_repository/">data/user_preferences/local/user_preferences_mock_repository</a></li>
+      <li><a href="data_user_preferences_remote_user_preferences_remote_repository/">data/user_preferences/remote/user_preferences_remote_repository</a></li>
+      <li><a href="data_user_preferences_user_preferences_repository_provider/">data/user_preferences/user_preferences_repository_provider</a></li>
+      <li><a href="data_widgets_native_widget_data_writer/">data/widgets_native/widget_data_writer</a></li>
+      <li><a href="features_accessible_buses_accessible_buses_screen/">features/accessible_buses/accessible_buses_screen</a></li>
+      <li><a href="features_admin_admin_operators_screen/">features/admin/admin_operators_screen</a></li>
+      <li><a href="features_admin_admin_screen/">features/admin/admin_screen</a></li>
+      <li><a href="features_admin_admin_users_screen/">features/admin/admin_users_screen</a></li>
+      <li><a href="features_admin_widgets_operator_form_dialog/">features/admin/widgets/operator_form_dialog</a></li>
+      <li><a href="features_appearance_appearance_screen/">features/appearance/appearance_screen</a></li>
+      <li><a href="features_appearance_custom_palette_screen/">features/appearance/custom_palette_screen</a></li>
+      <li><a href="features_appearance_widgets_accessibility_section/">features/appearance/widgets/accessibility_section</a></li>
+      <li><a href="features_appearance_widgets_background_selector/">features/appearance/widgets/background_selector</a></li>
+      <li><a href="features_appearance_widgets_brightness_section/">features/appearance/widgets/brightness_section</a></li>
+      <li><a href="features_appearance_widgets_font_section/">features/appearance/widgets/font_section</a></li>
+      <li><a href="features_appearance_widgets_map_style_section/">features/appearance/widgets/map_style_section</a></li>
+      <li><a href="features_appearance_widgets_palette_color_picker/">features/appearance/widgets/palette_color_picker</a></li>
+      <li><a href="features_appearance_widgets_palette_section/">features/appearance/widgets/palette_section</a></li>
+      <li><a href="features_appearance_widgets_reset_section/">features/appearance/widgets/reset_section</a></li>
+      <li><a href="features_appearance_widgets_storage_section/">features/appearance/widgets/storage_section</a></li>
+      <li><a href="features_auth_activate_driver_screen/">features/auth/activate_driver_screen</a></li>
+      <li><a href="features_auth_email_verify_pending_screen/">features/auth/email_verify_pending_screen</a></li>
+      <li><a href="features_auth_magic_link_screen/">features/auth/magic_link_screen</a></li>
+      <li><a href="features_auth_recover_password_screen/">features/auth/recover_password_screen</a></li>
+      <li><a href="features_auth_signin_screen/">features/auth/signin_screen</a></li>
+      <li><a href="features_auth_signup_screen/">features/auth/signup_screen</a></li>
+      <li><a href="features_auth_widgets_auth_field/">features/auth/widgets/auth_field</a></li>
+      <li><a href="features_auth_widgets_auth_submit_button/">features/auth/widgets/auth_submit_button</a></li>
+      <li><a href="features_bus_estimation_bus_estimator/">features/bus_estimation/bus_estimator</a></li>
+      <li><a href="features_bus_estimation_bus_origin_label/">features/bus_estimation/bus_origin_label</a></li>
+      <li><a href="features_city_picker_city_picker_screen/">features/city_picker/city_picker_screen</a></li>
+      <li><a href="features_contributions_my_contributions_screen/">features/contributions/my_contributions_screen</a></li>
+      <li><a href="features_contributions_widgets_suggestions_tab_content/">features/contributions/widgets/suggestions_tab_content</a></li>
+      <li><a href="features_debug_component_showcase_screen/">features/debug/component_showcase_screen</a></li>
+      <li><a href="features_driver_active_route_screen/">features/driver/active_route_screen</a></li>
+      <li><a href="features_driver_ai_schedule_import/">features/driver/ai_schedule_import</a></li>
+      <li><a href="features_driver_driver_dashboard_screen/">features/driver/driver_dashboard_screen</a></li>
+      <li><a href="features_driver_driver_history_screen/">features/driver/driver_history_screen</a></li>
+      <li><a href="features_driver_driver_panel/">features/driver/driver_panel</a></li>
+      <li><a href="features_driver_driver_stats_screen/">features/driver/driver_stats_screen</a></li>
+      <li><a href="features_driver_route_editor_editor_controller/">features/driver/route_editor/editor_controller</a></li>
+      <li><a href="features_driver_route_editor_live_recorder_controller/">features/driver/route_editor/live_recorder_controller</a></li>
+      <li><a href="features_driver_route_editor_live_route_recorder/">features/driver/route_editor/live_route_recorder</a></li>
+      <li><a href="features_driver_route_editor_manual_route_editor/">features/driver/route_editor/manual_route_editor</a></li>
+      <li><a href="features_driver_route_editor_post_recording_editor/">features/driver/route_editor/post_recording_editor</a></li>
+      <li><a href="features_driver_route_editor_recorded_session/">features/driver/route_editor/recorded_session</a></li>
+      <li><a href="features_driver_route_editor_steps_step_info/">features/driver/route_editor/steps/step_info</a></li>
+      <li><a href="features_driver_route_editor_steps_step_return/">features/driver/route_editor/steps/step_return</a></li>
+      <li><a href="features_driver_route_editor_steps_step_review/">features/driver/route_editor/steps/step_review</a></li>
+      <li><a href="features_driver_route_editor_steps_step_schedules/">features/driver/route_editor/steps/step_schedules</a></li>
+      <li><a href="features_driver_route_editor_steps_step_stops/">features/driver/route_editor/steps/step_stops</a></li>
+      <li><a href="features_driver_route_editor_steps_step_trace/">features/driver/route_editor/steps/step_trace</a></li>
+      <li><a href="features_driver_route_editor_widgets_recorder_live_view/">features/driver/route_editor/widgets/recorder_live_view</a></li>
+      <li><a href="features_driver_route_editor_widgets_recorder_pre_form/">features/driver/route_editor/widgets/recorder_pre_form</a></li>
+      <li><a href="features_driver_start_route_screen/">features/driver/start_route_screen</a></li>
+      <li><a href="features_driver_widgets_driver_stats_card/">features/driver/widgets/driver_stats_card</a></li>
+      <li><a href="features_driver_widgets_route_list_section/">features/driver/widgets/route_list_section</a></li>
+      <li><a href="features_error_env_error_screen/">features/error/env_error_screen</a></li>
+      <li><a href="features_error_not_found_screen/">features/error/not_found_screen</a></li>
+      <li><a href="features_feedback_feedback_screen/">features/feedback/feedback_screen</a></li>
+      <li><a href="features_feedback_route_feedback_sheet/">features/feedback/route_feedback_sheet</a></li>
+      <li><a href="features_home_home_shell/">features/home/home_shell</a></li>
+      <li><a href="features_home_tabs_card_tab/">features/home/tabs/card_tab</a></li>
+      <li><a href="features_home_tabs_home_tab/">features/home/tabs/home_tab</a></li>
+      <li><a href="features_home_tabs_map_tab/">features/home/tabs/map_tab</a></li>
+      <li><a href="features_home_tabs_profile_tab/">features/home/tabs/profile_tab</a></li>
+      <li><a href="features_home_tabs_search_tab/">features/home/tabs/search_tab</a></li>
+      <li><a href="features_home_widgets_home_alert_item/">features/home/widgets/home_alert_item</a></li>
+      <li><a href="features_home_widgets_home_bottom_nav/">features/home/widgets/home_bottom_nav</a></li>
+      <li><a href="features_home_widgets_home_side_nav/">features/home/widgets/home_side_nav</a></li>
+      <li><a href="features_home_widgets_home_tab_item/">features/home/widgets/home_tab_item</a></li>
+      <li><a href="features_home_widgets_nfc_scan_result_card/">features/home/widgets/nfc_scan_result_card</a></li>
+      <li><a href="features_home_widgets_profile_about_section/">features/home/widgets/profile_about_section</a></li>
+      <li><a href="features_home_widgets_profile_accessibility_section/">features/home/widgets/profile_accessibility_section</a></li>
+      <li><a href="features_home_widgets_profile_appearance_section/">features/home/widgets/profile_appearance_section</a></li>
+      <li><a href="features_home_widgets_profile_contributions_section/">features/home/widgets/profile_contributions_section</a></li>
+      <li><a href="features_home_widgets_profile_header_card/">features/home/widgets/profile_header_card</a></li>
+      <li><a href="features_home_widgets_profile_location_section/">features/home/widgets/profile_location_section</a></li>
+      <li><a href="features_home_widgets_profile_notifications_section/">features/home/widgets/profile_notifications_section</a></li>
+      <li><a href="features_incidents_report_incident_sheet/">features/incidents/report_incident_sheet</a></li>
+      <li><a href="features_management_manager_inbox_screen/">features/management/manager_inbox_screen</a></li>
+      <li><a href="features_management_widgets_feedback_list_item/">features/management/widgets/feedback_list_item</a></li>
+      <li><a href="features_management_widgets_inbox_action_sheets/">features/management/widgets/inbox_action_sheets</a></li>
+      <li><a href="features_management_widgets_resolved_feedback_item/">features/management/widgets/resolved_feedback_item</a></li>
+      <li><a href="features_management_widgets_resolved_incident_item/">features/management/widgets/resolved_incident_item</a></li>
+      <li><a href="features_management_widgets_suggestion_list_item/">features/management/widgets/suggestion_list_item</a></li>
+      <li><a href="features_map_layers_route_polylines/">features/map/layers/route_polylines</a></li>
+      <li><a href="features_map_map_config/">features/map/map_config</a></li>
+      <li><a href="features_map_map_data_cache/">features/map/map_data_cache</a></li>
+      <li><a href="features_map_map_filter_controller/">features/map/map_filter_controller</a></li>
+      <li><a href="features_map_map_filter_state/">features/map/map_filter_state</a></li>
+      <li><a href="features_map_markers_bus_marker/">features/map/markers/bus_marker</a></li>
+      <li><a href="features_map_markers_stop_marker/">features/map/markers/stop_marker</a></li>
+      <li><a href="features_map_sheets_stop_info_sheet/">features/map/sheets/stop_info_sheet</a></li>
+      <li><a href="features_map_sheets_trip_info_sheet/">features/map/sheets/trip_info_sheet</a></li>
+      <li><a href="features_map_transit_map/">features/map/transit_map</a></li>
+      <li><a href="features_map_widgets_map_controls/">features/map/widgets/map_controls</a></li>
+      <li><a href="features_map_widgets_map_filter_sheet/">features/map/widgets/map_filter_sheet</a></li>
+      <li><a href="features_notifications_notifications_screen/">features/notifications/notifications_screen</a></li>
+      <li><a href="features_offline_offline_regions_screen/">features/offline/offline_regions_screen</a></li>
+      <li><a href="features_offline_widgets_region_download_sheet/">features/offline/widgets/region_download_sheet</a></li>
+      <li><a href="features_offline_widgets_region_progress_card/">features/offline/widgets/region_progress_card</a></li>
+      <li><a href="features_offline_widgets_region_status_badge/">features/offline/widgets/region_status_badge</a></li>
+      <li><a href="features_onboarding_onboarding_page_data/">features/onboarding/onboarding_page_data</a></li>
+      <li><a href="features_onboarding_onboarding_screen/">features/onboarding/onboarding_screen</a></li>
+      <li><a href="features_operator_admin_drivers_screen/">features/operator_admin/drivers_screen</a></li>
+      <li><a href="features_operator_admin_invitation_codes_screen/">features/operator_admin/invitation_codes_screen</a></li>
+      <li><a href="features_operator_admin_operator_dashboard_screen/">features/operator_admin/operator_dashboard_screen</a></li>
+      <li><a href="features_privacy_privacy_screen/">features/privacy/privacy_screen</a></li>
+      <li><a href="features_profile_accessibility_settings_screen/">features/profile/accessibility_settings_screen</a></li>
+      <li><a href="features_profile_achievements_screen/">features/profile/achievements_screen</a></li>
+      <li><a href="features_profile_filter_presets_screen/">features/profile/filter_presets_screen</a></li>
+      <li><a href="features_profile_offline_data_screen/">features/profile/offline_data_screen</a></li>
+      <li><a href="features_profile_planned_trips_screen/">features/profile/planned_trips_screen</a></li>
+      <li><a href="features_profile_reputation_screen/">features/profile/reputation_screen</a></li>
+      <li><a href="features_profile_widgets_achievement_grid_item/">features/profile/widgets/achievement_grid_item</a></li>
+      <li><a href="features_profile_widgets_reputation_history_list/">features/profile/widgets/reputation_history_list</a></li>
+      <li><a href="features_profile_widgets_reputation_level_card/">features/profile/widgets/reputation_level_card</a></li>
+      <li><a href="features_route_detail_route_detail_screen/">features/route_detail/route_detail_screen</a></li>
+      <li><a href="features_route_detail_widgets_route_detail_alerts_list/">features/route_detail/widgets/route_detail_alerts_list</a></li>
+      <li><a href="features_route_detail_widgets_route_detail_changelog/">features/route_detail/widgets/route_detail_changelog</a></li>
+      <li><a href="features_route_detail_widgets_route_detail_feedback_section/">features/route_detail/widgets/route_detail_feedback_section</a></li>
+      <li><a href="features_route_detail_widgets_route_detail_header/">features/route_detail/widgets/route_detail_header</a></li>
+      <li><a href="features_route_detail_widgets_route_detail_header_section/">features/route_detail/widgets/route_detail_header_section</a></li>
+      <li><a href="features_route_detail_widgets_route_detail_schedule_section/">features/route_detail/widgets/route_detail_schedule_section</a></li>
+      <li><a href="features_route_detail_widgets_route_detail_timeline/">features/route_detail/widgets/route_detail_timeline</a></li>
+      <li><a href="features_route_detail_widgets_route_officialize_modal/">features/route_detail/widgets/route_officialize_modal</a></li>
+      <li><a href="features_route_detail_widgets_route_share_sheet/">features/route_detail/widgets/route_share_sheet</a></li>
+      <li><a href="features_splash_splash_screen/">features/splash/splash_screen</a></li>
+      <li><a href="features_stop_detail_stop_detail_screen/">features/stop_detail/stop_detail_screen</a></li>
+      <li><a href="features_suggestions_suggest_route_screen/">features/suggestions/suggest_route_screen</a></li>
+      <li><a href="features_suggestions_suggestion_contribute_screen/">features/suggestions/suggestion_contribute_screen</a></li>
+      <li><a href="features_suggestions_suggestion_detail_screen/">features/suggestions/suggestion_detail_screen</a></li>
+      <li><a href="features_widgets_native_widgets_settings_screen/">features/widgets_native/widgets_settings_screen</a></li>
+      <li><a href="firebase_options/">firebase_options</a></li>
+      <li><a href="l10n_generated_app_localizations/">l10n/generated/app_localizations</a></li>
+      <li><a href="l10n_generated_app_localizations_ar/">l10n/generated/app_localizations_ar</a></li>
+      <li><a href="l10n_generated_app_localizations_en/">l10n/generated/app_localizations_en</a></li>
+      <li><a href="l10n_generated_app_localizations_es/">l10n/generated/app_localizations_es</a></li>
+      <li><a href="main/">main</a></li>
+      <li><a href="shared_models_achievement_model/">shared/models/achievement_model</a></li>
+      <li><a href="shared_models_active_trip_model/">shared/models/active_trip_model</a></li>
+      <li><a href="shared_models_alert_model/">shared/models/alert_model</a></li>
+      <li><a href="shared_models_app_notification/">shared/models/app_notification</a></li>
+      <li><a href="shared_models_bus_location/">shared/models/bus_location</a></li>
+      <li><a href="shared_models_driver_invitation_code/">shared/models/driver_invitation_code</a></li>
+      <li><a href="shared_models_enums/">shared/models/enums</a></li>
+      <li><a href="shared_models_feature_request/">shared/models/feature_request</a></li>
+      <li><a href="shared_models_feedback_message_model/">shared/models/feedback_message_model</a></li>
+      <li><a href="shared_models_habitual_trip_model/">shared/models/habitual_trip_model</a></li>
+      <li><a href="shared_models_incident_model/">shared/models/incident_model</a></li>
+      <li><a href="shared_models_models/">shared/models/models</a></li>
+      <li><a href="shared_models_offline_region/">shared/models/offline_region</a></li>
+      <li><a href="shared_models_operator_model/">shared/models/operator_model</a></li>
+      <li><a href="shared_models_permissions/">shared/models/permissions</a></li>
+      <li><a href="shared_models_reputation/">shared/models/reputation</a></li>
+      <li><a href="shared_models_route_changelog_model/">shared/models/route_changelog_model</a></li>
+      <li><a href="shared_models_route_feedback_model/">shared/models/route_feedback_model</a></li>
+      <li><a href="shared_models_route_model/">shared/models/route_model</a></li>
+      <li><a href="shared_models_route_share/">shared/models/route_share</a></li>
+      <li><a href="shared_models_route_stop_model/">shared/models/route_stop_model</a></li>
+      <li><a href="shared_models_route_suggestion_model/">shared/models/route_suggestion_model</a></li>
+      <li><a href="shared_models_schedule_model/">shared/models/schedule_model</a></li>
+      <li><a href="shared_models_stop_model/">shared/models/stop_model</a></li>
+      <li><a href="shared_models_trip_history_model/">shared/models/trip_history_model</a></li>
+      <li><a href="shared_models_user_achievement_model/">shared/models/user_achievement_model</a></li>
+      <li><a href="shared_models_user_card_model/">shared/models/user_card_model</a></li>
+      <li><a href="shared_models_user_favorite_model/">shared/models/user_favorite_model</a></li>
+      <li><a href="shared_models_user_model/">shared/models/user_model</a></li>
+      <li><a href="shared_models_user_preferences/">shared/models/user_preferences</a></li>
+      <li><a href="shared_models_user_role/">shared/models/user_role</a></li>
+      <li><a href="shared_models_zone_model/">shared/models/zone_model</a></li>
+      <li><a href="shared_providers_auth_provider/">shared/providers/auth_provider</a></li>
+      <li><a href="shared_providers_connectivity_provider/">shared/providers/connectivity_provider</a></li>
+      <li><a href="shared_providers_derived_active_trip_providers/">shared/providers/derived/active_trip_providers</a></li>
+      <li><a href="shared_providers_derived_home_providers/">shared/providers/derived/home_providers</a></li>
+      <li><a href="shared_providers_derived_schedule_providers/">shared/providers/derived/schedule_providers</a></li>
+      <li><a href="shared_providers_is_dark_provider/">shared/providers/is_dark_provider</a></li>
+      <li><a href="shared_providers_local_feedback_provider/">shared/providers/local_feedback_provider</a></li>
+      <li><a href="shared_providers_locale_provider/">shared/providers/locale_provider</a></li>
+      <li><a href="shared_providers_nfc_provider/">shared/providers/nfc_provider</a></li>
+      <li><a href="shared_providers_notification_stream_provider/">shared/providers/notification_stream_provider</a></li>
+      <li><a href="shared_providers_privacy_consent_provider/">shared/providers/privacy_consent_provider</a></li>
+      <li><a href="shared_providers_reputation_events/">shared/providers/reputation_events</a></li>
+      <li><a href="shared_providers_route_lookup_providers/">shared/providers/route_lookup_providers</a></li>
+      <li><a href="shared_providers_theme_notifier/">shared/providers/theme_notifier</a></li>
+      <li><a href="shared_providers_theme_provider/">shared/providers/theme_provider</a></li>
+      <li><a href="shared_providers_user_favorites_provider/">shared/providers/user_favorites_provider</a></li>
+      <li><a href="shared_providers_user_provider/">shared/providers/user_provider</a></li>
+      <li><a href="shared_utils_string_formatting/">shared/utils/string_formatting</a></li>
+      <li><a href="shared_widgets_background_wrapper/">shared/widgets/background_wrapper</a></li>
+      <li><a href="shared_widgets_capacity_indicator/">shared/widgets/capacity_indicator</a></li>
+      <li><a href="shared_widgets_contextual_help_button/">shared/widgets/contextual_help_button</a></li>
+      <li><a href="shared_widgets_data_freshness_indicator/">shared/widgets/data_freshness_indicator</a></li>
+      <li><a href="shared_widgets_empty_state/">shared/widgets/empty_state</a></li>
+      <li><a href="shared_widgets_error_card/">shared/widgets/error_card</a></li>
+      <li><a href="shared_widgets_glass_card/">shared/widgets/glass_card</a></li>
+      <li><a href="shared_widgets_gradient_text/">shared/widgets/gradient_text</a></li>
+      <li><a href="shared_widgets_incident_banner/">shared/widgets/incident_banner</a></li>
+      <li><a href="shared_widgets_offline_banner/">shared/widgets/offline_banner</a></li>
+      <li><a href="shared_widgets_pressable/">shared/widgets/pressable</a></li>
+      <li><a href="shared_widgets_report_content_sheet/">shared/widgets/report_content_sheet</a></li>
+      <li><a href="shared_widgets_reputation_badge/">shared/widgets/reputation_badge</a></li>
+      <li><a href="shared_widgets_responsive_scaffold/">shared/widgets/responsive_scaffold</a></li>
+      <li><a href="shared_widgets_role_gate/">shared/widgets/role_gate</a></li>
+      <li><a href="shared_widgets_route_card/">shared/widgets/route_card</a></li>
+      <li><a href="shared_widgets_route_search_bar/">shared/widgets/route_search_bar</a></li>
+      <li><a href="shared_widgets_shimmer_skeleton/">shared/widgets/shimmer_skeleton</a></li>
+      <li><a href="shared_widgets_single_field_dialog/">shared/widgets/single_field_dialog</a></li>
+      <li><a href="shared_widgets_smoke_background/">shared/widgets/smoke_background</a></li>
+      <li><a href="shared_widgets_stagger_list/">shared/widgets/stagger_list</a></li>
+      <li><a href="shared_widgets_status_badge/">shared/widgets/status_badge</a></li>
+      <li><a href="shared_widgets_stop_list_item/">shared/widgets/stop_list_item</a></li>
+      <li><a href="shared_widgets_stop_timeline/">shared/widgets/stop_timeline</a></li>
+      <li><a href="shared_widgets_transit_app_bar/">shared/widgets/transit_app_bar</a></li>
+      <li><a href="shared_widgets_transit_bottom_sheet/">shared/widgets/transit_bottom_sheet</a></li>
+      <li><a href="shared_widgets_transit_button/">shared/widgets/transit_button</a></li>
+      <li><a href="shared_widgets_transit_checkbox/">shared/widgets/transit_checkbox</a></li>
+      <li><a href="shared_widgets_transit_chip/">shared/widgets/transit_chip</a></li>
+      <li><a href="shared_widgets_transit_input/">shared/widgets/transit_input</a></li>
+</ol>
+
+  </div>
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div>
+</main>
+<footer>
+  <span class="no-break">
+    transitly
+      1.0.0+1
+  </span>
+  
+</footer>
+
+
+<script src="static-assets/highlight.pack.js?v1"></script>
+<script src="static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

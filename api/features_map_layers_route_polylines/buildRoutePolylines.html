@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the buildRoutePolylines function from the route_polylines library, for the Dart programming language.">
+  <title>buildRoutePolylines function - route_polylines library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">transitly</a></li>
+    <li><a href="../features_map_layers_route_polylines/">features&#47;map&#47;layers&#47;route_polylines.dart</a></li>
+    <li class="self-crumb">buildRoutePolylines function</li>
+  </ol>
+  <div class="self-name">buildRoutePolylines</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+  <div
+      id="dartdoc-main-content"
+      class="main-content"
+      data-above-sidebar="features_map_layers_route_polylines&#47;features_map_layers_route_polylines-library-sidebar.html"
+      data-below-sidebar="">
+      <div>
+<h1><span class="kind-function">buildRoutePolylines</span> function 
+ 
+</h1></div>
+
+    <section class="multi-line-signature">
+        
+<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://pub.dev/documentation/flutter_map/7.0.2/flutter_map/Polyline-class.html">Polyline</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/Object-class.html">Object</a></span>&gt;</span></span>&gt;</span></span>
+<span class="name ">buildRoutePolylines</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="buildRoutePolylines-param-routes"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../shared_models_route_model/RouteModel-class.html">RouteModel</a></span>&gt;</span></span> <span class="parameter-name">routes</span>, </span></li>
+<li><span class="parameter" id="buildRoutePolylines-param-routePathsLod"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Map-class.html">Map</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>, <span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/Map-class.html">Map</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, <span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://pub.dev/documentation/latlong2/0.9.1/latlong2/LatLng-class.html">LatLng</a></span>&gt;</span></span>&gt;</span></span>&gt;</span></span> <span class="parameter-name">routePathsLod</span>, </span></li>
+<li><span class="parameter" id="buildRoutePolylines-param-routeStopsMap"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Map-class.html">Map</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>, <span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../shared_models_stop_model/StopModel-class.html">StopModel</a></span>&gt;</span></span>&gt;</span></span> <span class="parameter-name">routeStopsMap</span>, </span></li>
+<li><span class="parameter" id="buildRoutePolylines-param-routeBounds"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Map-class.html">Map</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>, <span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span>&gt;</span></span>&gt;</span></span> <span class="parameter-name">routeBounds</span> = <span class="default-value">const {}</span>, </span></li>
+<li><span class="parameter" id="buildRoutePolylines-param-selectedRouteId"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">selectedRouteId</span>, </span></li>
+<li><span class="parameter" id="buildRoutePolylines-param-currentZoom"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">currentZoom</span> = <span class="default-value">13.0</span>, </span></li>
+<li><span class="parameter" id="buildRoutePolylines-param-lodLevel"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">lodLevel</span> = <span class="default-value">2</span>, </span></li>
+<li><span class="parameter" id="buildRoutePolylines-param-visibleBounds"><span class="type-annotation"><a href="https://pub.dev/documentation/flutter_map/7.0.2/flutter_map/LatLngBounds-class.html">LatLngBounds</a>?</span> <span class="parameter-name">visibleBounds</span>, </span></li>
+<li><span class="parameter" id="buildRoutePolylines-param-activeRouteIds"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Set-class.html">Set</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>&gt;</span></span> <span class="parameter-name">activeRouteIds</span> = <span class="default-value">const {}</span>, </span></li>
+</ol>})
+
+        
+
+    </section>
+    
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">List&lt;Polyline&gt; buildRoutePolylines({
+  required List&lt;RouteModel&gt; routes,
+  required Map&lt;String, Map&lt;int, List&lt;LatLng&gt;&gt;&gt; routePathsLod,
+  required Map&lt;String, List&lt;StopModel&gt;&gt; routeStopsMap,
+  Map&lt;String, List&lt;double&gt;&gt; routeBounds = const {},
+  String? selectedRouteId,
+  double currentZoom = 13.0,
+  int lodLevel = 2,
+  LatLngBounds? visibleBounds,
+  Set&lt;String&gt; activeRouteIds = const {},
+}) {
+  &#47;&#47; No polylines at very low zoom
+  if (currentZoom &lt; 11.0 &amp;&amp; selectedRouteId == null) return [];
+
+  final polylines = &lt;Polyline&gt;[];
+
+  for (final route in routes) {
+    final bool isSelected =
+        selectedRouteId != null &amp;&amp; route.id == selectedRouteId;
+    final bool isActive = activeRouteIds.contains(route.id);
+
+    &#47;&#47; At medium zoom, only show selected or active routes
+    if (currentZoom &lt; 13.0 &amp;&amp; !isSelected &amp;&amp; !isActive) continue;
+
+    &#47;&#47; Viewport culling: skip routes outside visible area
+    if (visibleBounds != null &amp;&amp; !isSelected) {
+      final bounds = routeBounds[route.id];
+      if (bounds != null &amp;&amp; !_routeIntersectsViewport(bounds, visibleBounds)) {
+        continue;
+      }
+    }
+
+    &#47;&#47; Select points at appropriate LOD level, fall back to nearest available
+    final lodData = routePathsLod[route.id];
+    var points = lodData?[lodLevel] ?? lodData?[4] ?? lodData?.values.last;
+
+    &#47;&#47; Fallback: connect stop coordinates in order
+    if (points == null || points.isEmpty) {
+      final stops = routeStopsMap[route.id];
+      if (stops == null || stops.isEmpty) continue;
+      points = stops.map((s) =&gt; LatLng(s.lat, s.lng)).toList();
+    }
+
+    if (points.isEmpty) continue;
+
+    final bool hasSel = selectedRouteId != null;
+
+    final double opacity = hasSel
+        ? (isSelected ? 0.9 : 0.15)
+        : 0.6;
+    final double width = isSelected ? 4.5 : 3.0;
+
+    &#47;&#47; Shadow&#47;glow under selected line
+    if (isSelected) {
+      polylines.add(Polyline(
+        points: points,
+        color: route.routeColor.withValues(alpha: 0.25),
+        strokeWidth: 10,
+        borderColor: Colors.transparent,
+        borderStrokeWidth: 0,
+      ));
+    }
+
+    polylines.add(Polyline(
+      points: points,
+      color: route.routeColor.withValues(alpha: opacity),
+      strokeWidth: width,
+      borderColor: Colors.black
+          .withValues(alpha: hasSel &amp;&amp; !isSelected ? 0 : 0.15),
+      borderStrokeWidth: hasSel &amp;&amp; !isSelected ? 0 : 0.5,
+    ));
+  }
+
+  return polylines;
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../index.html">transitly</a></li>
+    <li><a href="../features_map_layers_route_polylines/">route_polylines</a></li>
+    <li class="self-crumb">buildRoutePolylines function</li>
+</ol>
+
+    <h5>route_polylines library</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-left-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    transitly
+      1.0.0+1
+  </span>
+  
+</footer>
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

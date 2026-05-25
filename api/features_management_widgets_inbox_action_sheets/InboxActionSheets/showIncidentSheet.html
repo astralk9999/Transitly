@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the showIncidentSheet method from the InboxActionSheets class, for the Dart programming language.">
+  <title>showIncidentSheet method - InboxActionSheets class - inbox_action_sheets library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">transitly</a></li>
+    <li><a href="../../features_management_widgets_inbox_action_sheets/">features&#47;management&#47;widgets&#47;inbox_action_sheets.dart</a></li>
+    <li><a href="../../features_management_widgets_inbox_action_sheets/InboxActionSheets-class.html">InboxActionSheets</a></li>
+    <li class="self-crumb">showIncidentSheet static method</li>
+  </ol>
+  <div class="self-name">showIncidentSheet</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+<div
+    id="dartdoc-main-content"
+    class="main-content"
+    data-above-sidebar="features_management_widgets_inbox_action_sheets&#47;InboxActionSheets-class-sidebar.html"
+    data-below-sidebar="">
+    <div>
+<h1><span class="kind-method">showIncidentSheet</span> static method 
+</h1></div>
+
+    <section class="multi-line-signature">
+      
+<span class="returntype">void</span>
+<span class="name ">showIncidentSheet</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="showIncidentSheet-param-context"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/widgets/BuildContext-class.html">BuildContext</a></span> <span class="parameter-name">context</span>, {</span></li>
+<li><span class="parameter" id="showIncidentSheet-param-incident"><span>required</span> <span class="type-annotation"><a href="../../shared_models_incident_model/IncidentModel-class.html">IncidentModel</a></span> <span class="parameter-name">incident</span>, </span></li>
+<li><span class="parameter" id="showIncidentSheet-param-onMarkInReview"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/VoidCallback.html">VoidCallback</a></span> <span class="parameter-name">onMarkInReview</span>, </span></li>
+<li><span class="parameter" id="showIncidentSheet-param-onResolve"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/VoidCallback.html">VoidCallback</a></span> <span class="parameter-name">onResolve</span>, </span></li>
+<li><span class="parameter" id="showIncidentSheet-param-onReject"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/VoidCallback.html">VoidCallback</a></span> <span class="parameter-name">onReject</span>, </span></li>
+</ol>})
+
+      
+
+    </section>
+    
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">static void showIncidentSheet(
+  BuildContext context, {
+  required IncidentModel incident,
+  required VoidCallback onMarkInReview,
+  required VoidCallback onResolve,
+  required VoidCallback onReject,
+}) {
+  final l10n = AppLocalizations.of(context);
+  final isDark = Theme.of(context).brightness == Brightness.dark;
+  final c = TransitColorScheme.of(isDark);
+  final isOpen =
+      incident.status == &#39;open&#39; || incident.status == &#39;in_review&#39;;
+
+  showTransitBottomSheet(
+    context: context,
+    builder: (ctx) =&gt; Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          incident.incidentType.label.toUpperCase(),
+          style: TransitTypography.inboxTypeTag(c.textMid),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          incident.comment ?? incident.category.label,
+          style: TransitTypography.bodyPrimary(c.textHi),
+        ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            Text(
+              &#39;${l10n.managerInboxStatus}: &#39;,
+              style: TransitTypography.bodySmall(c.textMid),
+            ),
+            Text(
+              incident.status,
+              style: TransitTypography.bodySmall(c.accent),
+            ),
+            const Spacer(),
+            Text(
+              DateFormat(&#39;dd&#47;MM&#47;yy HH:mm&#39;).format(incident.createdAt),
+              style: TransitTypography.bodySmall(c.textLo),
+            ),
+          ],
+        ),
+        if (isOpen) ...[
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: TransitButton(
+                  label: l10n.managerInboxMarkInReview,
+                  isPrimary: false,
+                  isSmall: true,
+                  onPressed: () {
+                    Navigator.pop(ctx);
+                    onMarkInReview();
+                  },
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: TransitButton(
+                  label: l10n.managerInboxResolve,
+                  isPrimary: false,
+                  isSmall: true,
+                  onPressed: () {
+                    Navigator.pop(ctx);
+                    onResolve();
+                  },
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: TransitButton(
+                  label: l10n.managerInboxReject,
+                  isPrimary: false,
+                  isSmall: true,
+                  onPressed: () {
+                    Navigator.pop(ctx);
+                    onReject();
+                  },
+                ),
+              ),
+            ],
+          ),
+        ],
+        const SizedBox(height: 16),
+      ],
+    ),
+  );
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../../index.html">transitly</a></li>
+    <li><a href="../../features_management_widgets_inbox_action_sheets/">inbox_action_sheets</a></li>
+    <li><a href="../../features_management_widgets_inbox_action_sheets/InboxActionSheets-class.html">InboxActionSheets</a></li>
+    <li class="self-crumb">showIncidentSheet static method</li>
+</ol>
+
+    <h5>InboxActionSheets class</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+</div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    transitly
+      1.0.0+1
+  </span>
+  
+</footer>
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the showStopInfoSheet function from the stop_info_sheet library, for the Dart programming language.">
+  <title>showStopInfoSheet function - stop_info_sheet library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">transitly</a></li>
+    <li><a href="../features_map_sheets_stop_info_sheet/">features&#47;map&#47;sheets&#47;stop_info_sheet.dart</a></li>
+    <li class="self-crumb">showStopInfoSheet function</li>
+  </ol>
+  <div class="self-name">showStopInfoSheet</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+  <div
+      id="dartdoc-main-content"
+      class="main-content"
+      data-above-sidebar="features_map_sheets_stop_info_sheet&#47;features_map_sheets_stop_info_sheet-library-sidebar.html"
+      data-below-sidebar="">
+      <div>
+<h1><span class="kind-function">showStopInfoSheet</span> function 
+ 
+</h1></div>
+
+    <section class="multi-line-signature">
+        
+<span class="returntype">void</span>
+<span class="name ">showStopInfoSheet</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="showStopInfoSheet-param-context"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/widgets/BuildContext-class.html">BuildContext</a></span> <span class="parameter-name">context</span>, {</span></li>
+<li><span class="parameter" id="showStopInfoSheet-param-stop"><span>required</span> <span class="type-annotation"><a href="../shared_models_stop_model/StopModel-class.html">StopModel</a></span> <span class="parameter-name">stop</span>, </span></li>
+<li><span class="parameter" id="showStopInfoSheet-param-mockData"><span>required</span> <span class="type-annotation"><a href="../data_mock_mock_data_service/MockDataService-class.html">MockDataService</a></span> <span class="parameter-name">mockData</span>, </span></li>
+</ol>})
+
+        
+
+    </section>
+    
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">void showStopInfoSheet(
+  BuildContext context, {
+  required StopModel stop,
+  required MockDataService mockData,
+}) {
+  final isDark = Theme.of(context).brightness == Brightness.dark;
+  final c = TransitColorScheme.of(isDark);
+
+  &#47;&#47; Find all routes that pass through this stop
+  final routesAtStop = &lt;String&gt;[];
+  for (final entry in mockData.routeStops.entries) {
+    for (final rs in entry.value) {
+      if (rs.stopId == stop.id) {
+        routesAtStop.add(entry.key);
+        break;
+      }
+    }
+  }
+
+  showModalBottomSheet(
+    context: context,
+    backgroundColor: c.bgSurface,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
+    ),
+    builder: (ctx) {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            &#47;&#47; Handle
+            Center(
+              child: Container(
+                width: 32,
+                height: 4,
+                margin: const EdgeInsets.only(bottom: 16),
+                decoration: BoxDecoration(
+                  color: c.textLo,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            &#47;&#47; Stop name
+            Text(stop.name, style: TransitTypography.heading(c.textHi)),
+            const SizedBox(height: 4),
+            &#47;&#47; Municipality + code
+            Text(
+              &#39;${stop.municipality} · ${stop.officialCode}&#39;,
+              style: TransitTypography.bodySecondary(c.textMid),
+            ),
+            &#47;&#47; Service icons
+            if (stop.hasShelter || stop.isAccessible || stop.hasBench) ...[
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  if (stop.hasShelter)
+                    _serviceIcon(Icons.night_shelter_outlined, &#39;Marquesina&#39;, c),
+                  if (stop.isAccessible)
+                    _serviceIcon(Icons.accessible, &#39;Accesible&#39;, c),
+                  if (stop.hasBench)
+                    _serviceIcon(Icons.chair_outlined, &#39;Banco&#39;, c),
+                ],
+              ),
+            ],
+            const SizedBox(height: 16),
+            &#47;&#47; Next arrivals
+            Text(
+              AppLocalizations.of(context).sectionUpcomingArrivals,
+              style: TransitTypography.sectionTitle(c.textMid),
+            ),
+            const SizedBox(height: 8),
+            ...routesAtStop.take(6).map((routeId) {
+              final route = mockData.getRouteById(routeId);
+              if (route == null) return const SizedBox.shrink();
+              final next = mockData.getNextDepartures(routeId, stop.id, 1);
+              final time = next.isNotEmpty ? next.first.departureTime : &#39;--:--&#39;;
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 6),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 24,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: route.routeColor,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Text(
+                        route.code,
+                        style: TransitTypography.routeCodeSmall(Colors.white),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        route.name,
+                        style: TransitTypography.bodySecondary(c.textHi),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    Text(time, style: TransitTypography.stopTime(c.accent)),
+                  ],
+                ),
+              );
+            }),
+            const SizedBox(height: 16),
+            &#47;&#47; Detail button
+            SizedBox(
+              width: double.infinity,
+              height: 44,
+              child: OutlinedButton(
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                  context.push(&#39;&#47;stop&#47;${stop.id}&#39;);
+                },
+                style: OutlinedButton.styleFrom(
+                  side: BorderSide(color: c.border, width: 0.5),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                ),
+                child: Text(
+                  &#39;VER DETALLE →&#39;,
+                  style: TransitTypography.sectionTitle(c.accent),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../index.html">transitly</a></li>
+    <li><a href="../features_map_sheets_stop_info_sheet/">stop_info_sheet</a></li>
+    <li class="self-crumb">showStopInfoSheet function</li>
+</ol>
+
+    <h5>stop_info_sheet library</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-left-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    transitly
+      1.0.0+1
+  </span>
+  
+</footer>
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

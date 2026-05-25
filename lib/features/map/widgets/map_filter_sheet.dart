@@ -33,8 +33,13 @@ void showMapFilterSheet(
               borderRadius:
                   const BorderRadius.vertical(top: Radius.circular(20)),
             ),
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
+              child: SingleChildScrollView(
+                padding: EdgeInsets.fromLTRB(
+                  16,
+                  16,
+                  16,
+                  16 + MediaQuery.of(ctx).padding.bottom,
+                ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

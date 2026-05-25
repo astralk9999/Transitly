@@ -219,12 +219,17 @@ class _Stat extends StatelessWidget {
           Expanded(
             child: Text(label, style: TransitTypography.bodyPrimary(c.textMid)),
           ),
-          Text(
-            value,
-            style: GoogleFonts.ibmPlexMono(
-              fontSize: 13,
-              fontWeight: FontWeight.w500,
-              color: c.textHi,
+          Expanded(
+            child: Text(
+              value,
+              style: GoogleFonts.ibmPlexMono(
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                color: c.textHi,
+              ),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+              textAlign: TextAlign.end,
             ),
           ),
         ],

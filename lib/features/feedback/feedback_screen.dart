@@ -109,6 +109,7 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
 
     return Scaffold(
       backgroundColor: c.bgRoot,
+      extendBody: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,

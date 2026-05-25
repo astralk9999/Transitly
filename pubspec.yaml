@@ -67,7 +67,7 @@ flutter_launcher_icons:
   image_path: "assets/branding/transitly_logo.png"
   adaptive_icon_background: "#FFFFFF"
   adaptive_icon_foreground: "assets/branding/transitly_logo.png"
-  adaptive_icon_foreground_inset: 16
+  adaptive_icon_foreground_inset: 36
   min_sdk_android: 21
   remove_alpha_ios: false
 

@@ -120,9 +120,7 @@ class _SplashScreenState extends State<SplashScreen>
                     label: 'Transitly',
                     image: true,
                     child: Image.asset(
-                      isDark
-                          ? 'assets/branding/transitly_logo.png'
-                          : 'assets/branding/transitly_logo_white.png',
+                      'assets/branding/transitly_logo.png',
                       width: 160,
                       height: 160,
                       filterQuality: FilterQuality.medium,

@@ -14,6 +14,7 @@ import '../../../data/fmtc/fmtc_provider.dart';
 import '../../../data/mock/mock_data_service.dart';
 import '../../../data/mock/mock_realtime_service.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../../shared/models/enums.dart';
 import '../../../shared/providers/connectivity_provider.dart';
 import '../../../shared/providers/is_dark_provider.dart';
 import '../../../shared/providers/user_location_provider.dart';
@@ -40,6 +41,12 @@ class _MapTabState extends ConsumerState<MapTab> {
   final _sheetController = DraggableScrollableController();
   final _scrollController = ScrollController();
   String? _selectedRouteId;
+  ServiceType? _serviceTypeFilter;
+
+  List<RouteModel> _filteredRoutes(List<RouteModel> all) {
+    if (_serviceTypeFilter == null) return all;
+    return all.where((r) => r.serviceType == _serviceTypeFilter).toList();
+  }
 
   @override
   void dispose() {
@@ -167,6 +174,7 @@ class _MapTabState extends ConsumerState<MapTab> {
     final realtimeTrips = ref.watch(realtimeTripsProvider);
     final liveTrips = realtimeTrips.valueOrNull ?? mockData.activeTrips;
     final routes = mockData.routes;
+    final filteredRoutes = _filteredRoutes(routes);
     final stops = mockData.stops;
     final cache = ref.watch(mapDataCacheProvider);
     final offline = ref.watch(isOfflineProvider);
@@ -297,12 +305,12 @@ class _MapTabState extends ConsumerState<MapTab> {
                       ListView.builder(
                         controller: scrollController,
                         padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-                        itemCount: routes.length + 1, // +1 for handle
+                        itemCount: filteredRoutes.length + 1,
                         itemBuilder: (context, index) {
                           if (index == 0) {
-                            return _buildHandle(c, routes.length);
+                            return _buildHandle(c, filteredRoutes.length);
                           }
-                          final route = routes[index - 1];
+                          final route = filteredRoutes[index - 1];
                           final trip =
                               mockData.getActiveTripForRoute(route.id);
                           final routeStops =
@@ -418,7 +426,52 @@ class _MapTabState extends ConsumerState<MapTab> {
             ],
           ),
         ),
+        // Filter chips for service type
+        _buildServiceTypeFilter(c),
       ],
+    );
+  }
+
+  Widget _buildServiceTypeFilter(TransitColorScheme c) {
+    final filterTypes = <ServiceType?>[
+      null,
+      ServiceType.urban,
+      ServiceType.interurban,
+      ServiceType.metropolitan,
+    ];
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Wrap(
+        spacing: 6,
+        runSpacing: 4,
+        children: filterTypes.map((type) {
+          final selected = _serviceTypeFilter == type;
+          String label;
+          if (type == null) {
+            label = 'Todas';
+          } else {
+            label = type.label;
+          }
+          return GestureDetector(
+            onTap: () => setState(() => _serviceTypeFilter = type),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                color: selected ? c.accent : c.bgRaised,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Text(
+                label,
+                style: TextStyle(
+                  color: selected ? c.textHi : c.textMid,
+                  fontSize: 11,
+                  fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+                ),
+              ),
+            ),
+          );
+        }).toList(),
+      ),
     );
   }
 

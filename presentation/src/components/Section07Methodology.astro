@@ -1,0 +1,64 @@
+---
+import metrics from '../data/metrics.json';
+---
+
+<section id="metodologia" class="py-28 px-6 max-w-6xl mx-auto">
+  <div class="animate-slide-up">
+    <div class="section-divider mb-6"></div>
+    <h2 class="text-4xl md:text-5xl font-bold mb-4">Metodología y Planificación</h2>
+    <p class="text-transit-text-mid text-lg max-w-3xl leading-relaxed">
+      Desarrollo ágil iterativo por fases atómicas de 1–4 días con verificación al cierre. {metrics.project.phasesCompleted} fases completadas (F0→F27) en {metrics.context.duration}, del {metrics.context.timelineStart} al {metrics.context.timelineEnd} (defensa).
+    </p>
+  </div>
+
+  <div class="mt-14 space-y-3 animate-slide-up animation-delay-100">
+    {[
+      { block: 'I. Cimientos', range: 'F0–F3', days: '14 días', desc: 'Auditoría inicial, migración a @freezed, conexión Supabase, 12 repositorios canónicos, caché Hive con 17 boxes.', color: 'border-transit-accent' },
+      { block: 'II. Identidad', range: 'F4–F6', days: '6 días', desc: 'Autenticación email/password + magic link, 5 roles de usuario, activación por código de conductor.', color: 'border-transit-state-info' },
+      { block: 'III. Datos', range: 'F7–F8', days: '5 días', desc: 'Importador GTFS con Edge Function, detección de 10 operadores españoles, schedules y route_stops poblados.', color: 'border-transit-state-success' },
+      { block: 'IV. Experiencia', range: 'F9–F12', days: '9 días', desc: 'Mapa interactivo con flutter_map + MapTiler, editor de rutas, GPS del conductor, compartir ubicación.', color: 'border-transit-state-warning' },
+      { block: 'V. Ojos del bus', range: 'F13–F14', days: '5 días', desc: 'Realtime real en 5 repos con Supabase, modo conductor live, RealtimeChannelManager compartido.', color: 'border-transit-state-cancelled' },
+      { block: 'VI. Comunidad', range: 'F15–F16', days: '7 días', desc: 'Incidencias geolocalizadas, votos, sugerencias con wizard, panel de moderación admin.', color: 'border-transit-accent' },
+      { block: 'VII. Pulido', range: 'F17–F19', days: '7 días', desc: 'Apariencia visual, accesibilidad multidimensional, sistema de reputación con 7 rangos y 9 logros.', color: 'border-transit-state-info' },
+      { block: 'VIII. Infraestructura', range: 'F20–F22', days: '8 días', desc: 'Mapas offline con FMTC, notificaciones push FCM, telemetría con Sentry + PostHog.', color: 'border-transit-state-success' },
+      { block: 'IX. Plataformas', range: 'F23–F24', days: '5 días', desc: 'Web SSR con Astro 6 + Tailwind v4, widgets nativos Android/iOS, widget data writer.', color: 'border-transit-state-warning' },
+      { block: 'X. Cierre', range: 'F25–F27', days: '7 días', desc: 'GDPR compliance completo, QA final, publicación APK release, preparación de defensa TFG.', color: 'border-transit-accent' },
+    ].map(b => (
+      <div class={`glass-card p-5 border-l-4 ${b.color} hover:translate-x-1 transition-transform duration-200`}>
+        <div class="flex flex-wrap items-center gap-3 mb-2">
+          <span class="text-sm font-bold text-transit-text-hi">{b.block}</span>
+          <span class="text-xs font-mono px-2 py-0.5 rounded bg-transit-bg-root text-transit-accent">{b.range}</span>
+          <span class="text-xs text-transit-text-lo font-mono">{b.days}</span>
+        </div>
+        <p class="text-transit-text-mid text-sm leading-relaxed">{b.desc}</p>
+      </div>
+    ))
+    }
+  </div>
+
+  <div class="glass-card p-6 mt-8 animate-slide-up animation-delay-200 border border-transit-accent/20">
+    <h3 class="text-lg font-bold mb-4 text-transit-text-hi">Cierre de Fase — Checklist obligatorio</h3>
+    <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+      <div class="flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B0FF00" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <span class="text-transit-text-mid"><code class="text-transit-state-success font-mono text-xs">flutter analyze</code> 0 issues</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B0FF00" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <span class="text-transit-text-mid"><code class="text-transit-state-success font-mono text-xs">flutter test</code> 100% verde</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B0FF00" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <span class="text-transit-text-mid">Commit semántico</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B0FF00" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <span class="text-transit-text-mid">CI: {metrics.ci.jobs} jobs verdes</span>
+      </div>
+    </div>
+  </div>
+
+  <p class="text-transit-text-lo text-sm mt-6 animate-slide-up animation-delay-300">
+    Post-cierre: Workstream R + ciclos P0/P1 de remediación (57 ítems en plan vivo). Sin ramas de feature — todo sobre master con conventional commits. Desarrollo asistido por IA con verificación independiente.
+  </p>
+</section>

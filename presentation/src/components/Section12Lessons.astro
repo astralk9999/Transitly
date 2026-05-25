@@ -1,0 +1,59 @@
+<section id="lecciones" class="py-28 px-6 max-w-6xl mx-auto">
+  <div class="animate-slide-up">
+    <div class="section-divider mb-6"></div>
+    <h2 class="text-4xl md:text-5xl font-bold mb-4">Lecciones Aprendidas</h2>
+    <p class="text-transit-text-mid text-lg max-w-3xl leading-relaxed">
+      Cuatro semanas de desarrollo intensivo con asistencia multiagente IA revelaron patrones sobre verificación, documentación y honestidad técnica.
+    </p>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-5 mt-14">
+    <div class="glass-card p-7 animate-slide-up animation-delay-100 group hover:border-transit-state-cancelled/30 transition-all duration-300">
+      <div class="text-transit-state-cancelled text-3xl font-bold font-mono mb-3">01</div>
+      <h3 class="text-lg font-bold mb-2">Verificar siempre con pipeline completo</h3>
+      <p class="text-transit-text-mid text-sm leading-relaxed">
+        El APK release no compilaba durante semanas porque solo se ejecutaba <code class="font-mono text-xs text-transit-text-hi">flutter build web</code> localmente. Un CI que construye todos los targets —APK, web, tests— es <span class="text-transit-text-hi font-medium">no negociable</span>.
+      </p>
+    </div>
+
+    <div class="glass-card p-7 animate-slide-up animation-delay-150 group hover:border-transit-state-info/30 transition-all duration-300">
+      <div class="text-transit-state-info text-3xl font-bold font-mono mb-3">02</div>
+      <h3 class="text-lg font-bold mb-2">Documentación como contrato verificable</h3>
+      <p class="text-transit-text-mid text-sm leading-relaxed">
+        4 documentos vivos sincronizados: plan de fases, arquitectura, pendientes e inventario de datos. Cada actualización en uno requiere sincronizar los otros tres. Cada auditoría de sincronía detectó desviaciones antes de que fueran deuda técnica.
+      </p>
+    </div>
+
+    <div class="glass-card p-7 animate-slide-up animation-delay-200 group hover:border-transit-accent/30 transition-all duration-300">
+      <div class="text-transit-accent text-3xl font-bold font-mono mb-3">03</div>
+      <h3 class="text-lg font-bold mb-2">Una auditoría independiente vale más que 100 self-reviews</h3>
+      <p class="text-transit-text-mid text-sm leading-relaxed">
+        La auditoría externa del <span class="font-mono text-transit-text-hi">2026-05-22</span> reveló 12 incidencias que ninguna revisión propia había detectado. Un par de ojos externos encuentra lo que el sesgo de confirmación oculta.
+      </p>
+    </div>
+
+    <div class="glass-card p-7 animate-slide-up animation-delay-250 group hover:border-transit-state-warning/30 transition-all duration-300">
+      <div class="text-transit-state-warning text-3xl font-bold font-mono mb-3">04</div>
+      <h3 class="text-lg font-bold mb-2">Asistencia IA exige verificación independiente</h3>
+      <p class="text-transit-text-mid text-sm leading-relaxed">
+        El sistema multiagente genera código de alta calidad pero puede introducir errores sutiles en capas que <code class="font-mono text-xs text-transit-text-hi">flutter analyze</code> no toca: Gradle, Edge Functions Deno, dependencias de paquetes.
+      </p>
+    </div>
+
+    <div class="glass-card p-7 animate-slide-up animation-delay-300 group hover:border-transit-state-success/30 transition-all duration-300">
+      <div class="text-transit-state-success text-3xl font-bold font-mono mb-3">05</div>
+      <h3 class="text-lg font-bold mb-2">Cifras en docs siempre cruzadas con código</h3>
+      <p class="text-transit-text-mid text-sm leading-relaxed">
+        Se descubrieron documentos con métricas desactualizadas que contradecían la realidad del código fuente. Solución: una fuente única de verdad (<code class="font-mono text-xs text-transit-text-hi">00_MAESTRO.md</code>) y regenerar métricas desde el código, nunca copiarlas manualmente.
+      </p>
+    </div>
+
+    <div class="glass-card p-7 animate-slide-up animation-delay-350 group hover:border-transit-accent/30 transition-all duration-300">
+      <div class="text-transit-accent text-3xl font-bold font-mono mb-3">06</div>
+      <h3 class="text-lg font-bold mb-2">Honestidad documental supera el pulido visual</h3>
+      <p class="text-transit-text-mid text-sm leading-relaxed">
+        Declarar <span class="text-transit-text-hi font-medium">"AA parcial"</span> con evidencia concreta de lo implementado y lo pendiente es más valioso que reclamar "AA pleno" sin verificación formal. El tribunal valora rigor, no marketing.
+      </p>
+    </div>
+  </div>
+</section>

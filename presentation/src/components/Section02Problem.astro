@@ -2,29 +2,38 @@
 import metrics from '../data/metrics.json';
 ---
 
-<section id="problema" class="py-24 px-6 max-w-6xl mx-auto">
-  <h2 class="text-4xl font-bold mb-4">El problema</h2>
-  <p class="text-transit-text-mid mb-12 text-lg max-w-3xl">
-    El transporte público de ciudades medias españolas presenta carencias estructurales que afectan a más de 2.000 millones de viajeros al año. En {metrics.context.city}, ninguna app ofrece información en tiempo real.
-  </p>
+<section id="problema" class="py-28 px-6 max-w-6xl mx-auto">
+  <div class="animate-slide-up">
+    <div class="section-divider mb-6"></div>
+    <h2 class="text-4xl md:text-5xl font-bold mb-4">El Problema</h2>
+    <p class="text-transit-text-mid text-lg max-w-3xl leading-relaxed">
+      El sector del transporte público colectivo en España mueve aproximadamente <span class="font-mono text-transit-text-hi font-medium">{metrics.context.urbanRiders2024}</span> de viajeros urbanos y <span class="font-mono text-transit-text-hi font-medium">{metrics.context.interurbanRiders2024}</span> interurbanos al año (INE 2024). Sin embargo, las ciudades medias españolas presentan tres carencias estructurales:
+    </p>
+  </div>
 
-  <div class="grid md:grid-cols-3 gap-6">
-    <article class="bg-transit-bg-surface p-6 rounded-2xl border border-transit-bg-raised">
-      <div class="text-transit-state-cancelled text-3xl font-mono mb-2">01</div>
-      <h3 class="text-xl font-bold mb-2">Sin GPS en tiempo real</h3>
-      <p class="text-transit-text-mid">Los usuarios no saben dónde está su bus. Los horarios estáticos rara vez reflejan la realidad operativa.</p>
+  <div class="grid md:grid-cols-3 gap-6 mt-14">
+    <article class="glass-card p-8 animate-slide-up animation-delay-100 group hover:border-transit-state-cancelled/30 transition-all duration-300">
+      <div class="text-transit-state-cancelled text-5xl font-bold font-mono mb-5">01</div>
+      <h3 class="text-xl font-bold mb-3">Sin GPS en tiempo real</h3>
+      <p class="text-transit-text-mid leading-relaxed">
+        Los usuarios no saben dónde está su bus. Los horarios estáticos rara vez reflejan la realidad operativa. Sin estimación de minutos a la parada, sin trazabilidad del vehículo, sin previsión de llegada. El ciudadano espera a ciegas.
+      </p>
     </article>
 
-    <article class="bg-transit-bg-surface p-6 rounded-2xl border border-transit-bg-raised">
-      <div class="text-transit-state-cancelled text-3xl font-mono mb-2">02</div>
-      <h3 class="text-xl font-bold mb-2">Fragmentación por operador</h3>
-      <p class="text-transit-text-mid">Cada ciudad tiene su propia app. Un viajero entre Jerez y Cádiz necesita tres apps con tres interfaces.</p>
+    <article class="glass-card p-8 animate-slide-up animation-delay-200 group hover:border-transit-state-warning/30 transition-all duration-300">
+      <div class="text-transit-state-warning text-5xl font-bold font-mono mb-5">02</div>
+      <h3 class="text-xl font-bold mb-3">Fragmentación por operador</h3>
+      <p class="text-transit-text-mid leading-relaxed">
+        Cada ciudad o consorcio tiene su propio operador, su propia app, su propio modelo de datos. Cambiar de ciudad significa empezar de cero. Un viajero entre Jerez, Cádiz y Sevilla necesita tres aplicaciones distintas con tres interfaces, tres cuentas y tres curvas de aprendizaje.
+      </p>
     </article>
 
-    <article class="bg-transit-bg-surface p-6 rounded-2xl border border-transit-bg-raised">
-      <div class="text-transit-state-cancelled text-3xl font-mono mb-2">03</div>
-      <h3 class="text-xl font-bold mb-2">Accesibilidad pobre</h3>
-      <p class="text-transit-text-mid">Sin lector de pantalla, sin RTL para árabe, sin alto contraste o filtros de daltonismo en la mayoría de apps.</p>
+    <article class="glass-card p-8 animate-slide-up animation-delay-300 group hover:border-transit-accent/30 transition-all duration-300">
+      <div class="text-transit-accent text-5xl font-bold font-mono mb-5">03</div>
+      <h3 class="text-xl font-bold mb-3">Accesibilidad insuficiente</h3>
+      <p class="text-transit-text-mid leading-relaxed">
+        Sin lector de pantalla, sin RTL para árabe, sin alto contraste o filtros de daltonismo en la mayoría de apps de transporte. La tarjeta de transporte es opaca: el saldo solo se consulta en taquillas físicas, obligando a desplazamientos innecesarios.
+      </p>
     </article>
   </div>
 </section>

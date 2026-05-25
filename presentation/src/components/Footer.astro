@@ -1,17 +1,46 @@
-<footer class="py-12 px-6 max-w-6xl mx-auto border-t border-transit-bg-surface">
-  <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-transit-text-lo">
-    <div class="flex gap-6">
-      <a href="https://github.com/astralk9999/Transitly" class="hover:text-transit-accent transition" target="_blank" rel="noopener noreferrer">
-        GitHub
-      </a>
-      <a href="https://github.com/astralk9999/Transitly/blob/master/LICENSE" class="hover:text-transit-accent transition" target="_blank" rel="noopener noreferrer">
-        MIT License
-      </a>
+---
+import metrics from '../data/metrics.json';
+---
+
+<footer class="py-16 px-6 border-t border-transit-bg-surface">
+  <div class="max-w-6xl mx-auto">
+    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 mb-10">
+      <div>
+        <a href="/Transitly" class="font-bold text-2xl text-transit-accent hover:text-transit-accent/80 transition">Transitly</a>
+        <p class="text-transit-text-lo text-sm mt-1">
+          TFG · Trabajo Fin de Grado · Desarrollo de Aplicaciones Multiplataforma
+        </p>
+      </div>
+      <div class="flex gap-6">
+        <a href="https://github.com/astralk9999/Transitly" class="text-transit-text-mid hover:text-transit-accent transition text-sm" target="_blank" rel="noopener noreferrer">
+          GitHub
+        </a>
+        <a href="https://github.com/astralk9999/Transitly/blob/master/LICENSE" class="text-transit-text-mid hover:text-transit-accent transition text-sm" target="_blank" rel="noopener noreferrer">
+          MIT License
+        </a>
+        <a href="https://github.com/astralk9999/Transitly/tree/master/docs" class="text-transit-text-mid hover:text-transit-accent transition text-sm" target="_blank" rel="noopener noreferrer">
+          Documentación
+        </a>
+      </div>
     </div>
-    <div class="flex items-center gap-4">
-      <span>TFG DAM · 2026</span>
-      <span class="hidden md:inline">·</span>
-      <span>Defensa: 2026-06-09</span>
+
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-transit-text-lo border-t border-transit-bg-surface pt-8">
+      <div class="space-y-1">
+        <p>{metrics.context.author} · {metrics.context.school} · {metrics.context.course}</p>
+      </div>
+      <div class="flex flex-wrap gap-4">
+        <span>Defensa: {metrics.context.defenseDate}</span>
+        <span class="hidden sm:inline text-transit-bg-raised">|</span>
+        <span>Operador piloto: {metrics.context.operator}</span>
+        <span class="hidden sm:inline text-transit-bg-raised">|</span>
+        <span>{metrics.context.city}</span>
+      </div>
+    </div>
+
+    <div class="mt-10 p-6 glass-card border border-transit-accent/10">
+      <p class="text-transit-text-mid text-sm leading-relaxed italic text-center">
+        "Gracias por leer esta memoria. Transitly nace para que cualquier persona —en cualquier ciudad media y con cualquier capacidad— sepa dónde está su autobús ahora mismo."
+      </p>
     </div>
   </div>
 </footer>

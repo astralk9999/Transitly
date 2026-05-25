@@ -1,0 +1,56 @@
+<section id="accesibilidad" class="py-28 px-6 max-w-6xl mx-auto">
+  <div class="animate-slide-up">
+    <div class="section-divider mb-6"></div>
+    <h2 class="text-4xl md:text-5xl font-bold mb-4">Accesibilidad WCAG 2.2 AA</h2>
+  </div>
+
+  <div class="glass-card p-6 mb-10 animate-slide-up animation-delay-100 border border-transit-state-warning/30 bg-transit-state-warning/5">
+    <div class="flex items-start gap-3">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFB000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+      <div>
+        <h3 class="font-bold text-transit-state-warning mb-1">WCAG 2.2 AA parcial / en progreso</h3>
+        <p class="text-transit-text-mid text-sm leading-relaxed">
+          Los fundamentos están implementados y verificados en código. Falta verificación formal con TalkBack/VoiceOver con personas usuarias reales.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-4 animate-slide-up animation-delay-200">
+    {[
+      { icon: 'touch', title: 'Touch targets ≥ 48dp', desc: 'Pressable con mínimo 48dp en todos los targets táctiles, conforme a WCAG 2.5.5.' },
+      { icon: 'scale', title: 'textScaler del SO', desc: 'Escala de texto que compone con la configuración de accesibilidad del sistema operativo.' },
+      { icon: 'lang', title: 'Semantics localizados', desc: 'Etiquetas de accesibilidad en ES, EN y AR para TalkBack/VoiceOver en todos los widgets.' },
+      { icon: 'font', title: 'Fuentes locales bundleadas', desc: 'DM Sans + IBM Plex Mono embebidas. Sin peticiones a Google Fonts (modo offline).' },
+      { icon: 'contrast', title: 'Alto contraste', desc: 'Tema de alto contraste configurable desde Profile → Accessibility.', color: 'text-transit-state-info' },
+      { icon: 'eye', title: '8 matrices de daltonismo', desc: 'Filtros para protanopia, deuteranopia y tritanopia con sus variantes.', color: 'text-transit-accent' },
+      { icon: 'dyslexic', title: 'OpenDyslexic', desc: 'Tipografía específica para dislexia como opción de sistema.', color: 'text-transit-state-success' },
+      { icon: 'motion', title: 'reduce-motion', desc: 'Respeta la preferencia de reducción de movimiento del sistema operativo.' },
+      { icon: 'rtl', title: 'RTL completo para árabe', desc: 'Direccionalidad derecha-a-izquierda automática al seleccionar العربية.', color: 'text-transit-state-warning' },
+      { icon: 'indicator', title: 'Color no es único indicador', desc: 'Iconos + texto acompañan siempre al color para estados (éxito, error, advertencia).' },
+    ].map(item => (
+      <div class="glass-card p-5 flex items-start gap-4">
+        <div class="w-10 h-10 rounded-lg bg-transit-state-success/10 flex items-center justify-center shrink-0">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B0FF00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="min-w-0">
+          <h4 class="font-bold text-sm mb-1">{item.title}</h4>
+          <p class="text-transit-text-mid text-xs leading-relaxed">{item.desc}</p>
+        </div>
+      </div>
+    ))
+    }
+  </div>
+
+  <div class="glass-card p-6 mt-6 animate-slide-up animation-delay-300 border border-transit-text-lo/20">
+    <h3 class="font-bold text-sm mb-2 text-transit-text-mid">Pendiente para cierre AA defendible</h3>
+    <div class="flex flex-wrap gap-3 text-xs">
+      <span class="px-3 py-1.5 bg-transit-bg-root rounded-full text-transit-text-mid">
+        <span class="text-transit-state-warning font-medium">A11Y-1:</span> Verificación TalkBack/VoiceOver
+      </span>
+      <span class="px-3 py-1.5 bg-transit-bg-root rounded-full text-transit-text-mid">
+        <span class="text-transit-state-warning font-medium">A11Y-3:</span> Alternativa accesible al mapa (lista textual)
+      </span>
+    </div>
+  </div>
+</section>

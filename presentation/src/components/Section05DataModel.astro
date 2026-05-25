@@ -1,0 +1,115 @@
+---
+import metrics from '../data/metrics.json';
+---
+
+<section id="datos" class="py-28 px-6 max-w-6xl mx-auto">
+  <div class="animate-slide-up">
+    <div class="section-divider mb-6"></div>
+    <h2 class="text-4xl md:text-5xl font-bold mb-4">Modelo de Datos</h2>
+    <p class="text-transit-text-mid text-lg max-w-3xl leading-relaxed">
+      Supabase PostgreSQL con {metrics.project.migrations} migraciones SQL, RLS default-deny activo y 2 Edge Functions serverless en Deno. Modelo normalizado con trazabilidad completa entre operadores, rutas, paradas y usuarios.
+    </p>
+  </div>
+
+  <div class="mt-14 space-y-4 animate-slide-up animation-delay-100">
+    <div class="glass-card p-6 overflow-x-auto">
+      <div class="min-w-[600px] space-y-3 font-mono text-xs md:text-sm leading-relaxed">
+
+        <div class="flex flex-wrap items-center gap-2 md:gap-4 py-2 px-3 rounded-lg bg-transit-accent/5 border border-transit-accent/10">
+          <span class="text-transit-accent font-bold shrink-0">auth.users</span>
+          <span class="text-transit-text-lo">→</span>
+          <span class="text-transit-state-success font-bold shrink-0">profiles</span>
+          <span class="text-transit-text-lo">→</span>
+          <span class="text-transit-state-info font-bold shrink-0">operators</span>
+          <span class="text-transit-text-lo">→</span>
+          <span class="text-transit-state-warning font-bold shrink-0">routes</span>
+          <span class="text-transit-text-lo">→</span>
+          <span class="text-transit-text-hi font-bold shrink-0">route_stops</span>
+          <span class="text-transit-text-lo">→</span>
+          <span class="text-transit-text-mid font-bold shrink-0">stops</span>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2 md:gap-4 py-2 px-3 rounded-lg bg-transit-bg-raised/50">
+          <span class="text-transit-state-warning font-bold shrink-0">routes</span>
+          <span class="text-transit-text-lo">→</span>
+          <span class="text-transit-text-hi shrink-0">schedules</span>
+          <span class="text-transit-text-mid mx-2">·</span>
+          <span class="text-transit-state-warning font-bold shrink-0">routes</span>
+          <span class="text-transit-text-lo">→</span>
+          <span class="text-transit-state-cancelled font-bold shrink-0">bus_positions</span>
+          <span class="bg-transit-state-cancelled/20 text-transit-state-cancelled text-[10px] px-1.5 py-0.5 rounded font-sans font-medium">Realtime</span>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2 md:gap-4 py-2 px-3 rounded-lg bg-transit-bg-raised/50">
+          <span class="text-transit-accent font-bold shrink-0">profiles</span>
+          <span class="text-transit-text-lo">→</span>
+          <span class="text-transit-text-hi shrink-0">incidents</span>
+          <span class="text-transit-text-mid mx-2">·</span>
+          <span class="text-transit-text-hi shrink-0">route_feedback</span>
+          <span class="text-transit-text-mid mx-2">·</span>
+          <span class="text-transit-text-hi shrink-0">route_suggestions</span>
+          <span class="text-transit-text-mid mx-2">·</span>
+          <span class="text-transit-text-hi shrink-0">feature_requests</span>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2 md:gap-4 py-2 px-3 rounded-lg bg-transit-bg-raised/50">
+          <span class="text-transit-accent font-bold shrink-0">profiles</span>
+          <span class="text-transit-text-lo">→</span>
+          <span class="text-transit-text-hi shrink-0">notifications</span>
+          <span class="bg-transit-state-cancelled/20 text-transit-state-cancelled text-[10px] px-1.5 py-0.5 rounded font-sans font-medium">Realtime</span>
+          <span class="text-transit-text-mid mx-2">·</span>
+          <span class="text-transit-text-hi shrink-0">device_tokens</span>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2 md:gap-4 py-2 px-3 rounded-lg bg-transit-bg-raised/50">
+          <span class="text-transit-accent font-bold shrink-0">profiles</span>
+          <span class="text-transit-text-lo">→</span>
+          <span class="text-transit-text-hi shrink-0">privacy_consents</span>
+          <span class="text-transit-text-mid mx-2">·</span>
+          <span class="text-transit-text-hi shrink-0">data_exports</span>
+          <span class="text-transit-text-mid mx-2">·</span>
+          <span class="text-transit-text-hi shrink-0">data_deletion_requests</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-5 mt-6 animate-slide-up animation-delay-200">
+    <div class="glass-card p-6 border border-transit-accent/20">
+      <div class="flex items-center gap-3 mb-3">
+        <div class="w-10 h-10 rounded-lg bg-transit-state-info/10 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00A0FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </div>
+        <div>
+          <h4 class="font-bold text-sm">import_gtfs</h4>
+          <p class="text-xs text-transit-text-lo">Edge Function con anti-SSRF</p>
+        </div>
+      </div>
+      <p class="text-transit-text-mid text-xs leading-relaxed">
+        Resolución DNS A/AAAA, redirect:"manual", rangos privados bloqueados. Importa datos GTFS de operadores externos con validación de seguridad server-side.
+      </p>
+    </div>
+    <div class="glass-card p-6 border border-transit-accent/20">
+      <div class="flex items-center gap-3 mb-3">
+        <div class="w-10 h-10 rounded-lg bg-transit-state-warning/10 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFB000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        </div>
+        <div>
+          <h4 class="font-bold text-sm">send_notification</h4>
+          <p class="text-xs text-transit-text-lo">Edge Function con OAuth JWT</p>
+        </div>
+      </div>
+      <p class="text-transit-text-mid text-xs leading-relaxed">
+        Envía notificaciones push vía Firebase Cloud Messaging HTTP v1 con token OAuth JWT firmado server-side. Sin secretos en el cliente.
+      </p>
+    </div>
+  </div>
+
+  <div class="glass-card p-5 mt-5 animate-slide-up animation-delay-300 flex flex-wrap items-center gap-4 text-xs font-mono text-transit-text-mid">
+    <span class="text-transit-text-hi font-semibold">Database info:</span>
+    <span class="px-2 py-1 bg-transit-bg-root rounded"><span class="text-transit-state-info">{metrics.project.migrations}</span> migraciones SQL</span>
+    <span class="px-2 py-1 bg-transit-bg-root rounded">RLS <span class="text-transit-state-cancelled">default-deny</span> activo</span>
+    <span class="px-2 py-1 bg-transit-bg-root rounded">search_path fijado en <span class="text-transit-accent">SECURITY DEFINER</span></span>
+    <span class="px-2 py-1 bg-transit-bg-root rounded"><span class="text-transit-state-info">{metrics.project.edgeFunctions}</span> Edge Functions</span>
+  </div>
+</section>

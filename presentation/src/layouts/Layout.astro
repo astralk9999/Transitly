@@ -5,7 +5,7 @@ interface Props {
 }
 const {
   title = 'Transitly — Transporte público en tiempo real',
-  description = 'Aplicacion Android multiplataforma para transporte público en ciudades medias españolas. TFG DAM.',
+  description = 'Aplicación multiplataforma de transporte público en tiempo real para ciudades medias españolas. TFG DAM · Victoria FP.',
 } = Astro.props;
 
 const baseUrl = import.meta.env.BASE_URL;
@@ -31,24 +31,98 @@ const baseUrl = import.meta.env.BASE_URL;
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
 </head>
 <body class="bg-transit-bg-root text-transit-text-hi font-sans antialiased">
-  <nav class="fixed top-0 left-0 right-0 z-50 bg-transit-bg-root/80 backdrop-blur-md border-b border-transit-bg-surface">
-    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-      <a href={baseUrl} class="font-bold text-xl text-transit-accent">Transitly</a>
-      <div class="hidden md:flex gap-6 text-sm">
-        <a href="#problema" class="hover:text-transit-accent transition">Problema</a>
-        <a href="#solucion" class="hover:text-transit-accent transition">Solución</a>
-        <a href="#arquitectura" class="hover:text-transit-accent transition">Arquitectura</a>
-        <a href="#calidad" class="hover:text-transit-accent transition">Calidad</a>
-        <a href="#descargar" class="px-4 py-1.5 bg-transit-accent text-white rounded-full text-xs font-medium hover:bg-transit-accent/90 transition">Descargar APK</a>
+  <nav
+    id="main-nav"
+    class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+  >
+    <div class="bg-transit-bg-root/85 backdrop-blur-xl border-b border-transit-bg-raised/50">
+      <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+        <a href={baseUrl} class="font-bold text-xl text-transit-accent hover:text-transit-accent/80 transition">
+          Transitly
+        </a>
+        <div class="hidden lg:flex items-center gap-6 text-sm">
+          <a href="#problema" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Problema</a>
+          <a href="#solucion" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Solución</a>
+          <a href="#arquitectura" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Arquitectura</a>
+          <a href="#features" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Features</a>
+          <a href="#metodologia" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Metodología</a>
+          <a href="#metricas" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Métricas</a>
+          <a href="#calidad" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Calidad</a>
+          <a href="#seguridad" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Seguridad</a>
+          <a
+            href="https://github.com/astralk9999/Transitly/releases/download/v1.0.0-tfg/app-release.apk"
+            class="px-5 py-2 bg-transit-accent text-white rounded-full text-xs font-semibold hover:bg-transit-accent/85 transition-all"
+            download
+          >
+            Descargar APK
+          </a>
+        </div>
+        <button
+          id="mobile-menu-btn"
+          class="lg:hidden text-transit-text-mid hover:text-transit-text-hi transition-colors"
+          aria-label="Abrir menú"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/>
+          </svg>
+        </button>
       </div>
     </div>
   </nav>
 
+  <div id="mobile-menu" class="fixed inset-0 z-40 bg-transit-bg-root/95 backdrop-blur-xl hidden flex-col items-center justify-center gap-8">
+    <button id="mobile-menu-close" class="absolute top-6 right-6 text-transit-text-mid hover:text-transit-text-hi transition-colors" aria-label="Cerrar menú">
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/>
+      </svg>
+    </button>
+    <a href="#problema" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Problema</a>
+    <a href="#solucion" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Solución</a>
+    <a href="#arquitectura" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Arquitectura</a>
+    <a href="#features" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Features</a>
+    <a href="#metricas" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Métricas</a>
+    <a href="#calidad" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Calidad</a>
+    <a href="#seguridad" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Seguridad</a>
+    <a
+      href="https://github.com/astralk9999/Transitly/releases/download/v1.0.0-tfg/app-release.apk"
+      class="mobile-link px-8 py-3 bg-transit-accent text-white rounded-full text-lg font-semibold hover:bg-transit-accent/85 transition-all"
+      download
+    >
+      Descargar APK
+    </a>
+  </div>
+
   <main class="pt-16">
     <slot />
   </main>
+
+  <script>
+    const menuBtn = document.getElementById('mobile-menu-btn');
+    const menuClose = document.getElementById('mobile-menu-close');
+    const menu = document.getElementById('mobile-menu');
+    const links = menu?.querySelectorAll('.mobile-link');
+    const nav = document.getElementById('main-nav');
+
+    function openMenu() { if (menu) { menu.classList.remove('hidden'); menu.classList.add('flex'); } }
+    function closeMenu() { if (menu) { menu.classList.add('hidden'); menu.classList.remove('flex'); } }
+
+    menuBtn?.addEventListener('click', openMenu);
+    menuClose?.addEventListener('click', closeMenu);
+    links?.forEach(l => l.addEventListener('click', closeMenu));
+
+    if (nav) {
+      const navDiv = nav.querySelector('div');
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 20) {
+          navDiv?.classList.add('shadow-lg', 'shadow-transit-accent/5');
+        } else {
+          navDiv?.classList.remove('shadow-lg', 'shadow-transit-accent/5');
+        }
+      });
+    }
+  </script>
 </body>
 </html>

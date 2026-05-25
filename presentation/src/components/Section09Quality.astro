@@ -1,0 +1,71 @@
+---
+import metrics from '../data/metrics.json';
+---
+
+<section id="calidad" class="py-28 px-6 max-w-6xl mx-auto">
+  <div class="animate-slide-up">
+    <div class="section-divider mb-6"></div>
+    <h2 class="text-4xl md:text-5xl font-bold mb-4">Calidad y Testing</h2>
+    <p class="text-transit-text-mid text-lg max-w-3xl leading-relaxed">
+      {metrics.tests.passed} tests pasando con {metrics.tests.coveragePercent}% de cobertura. Suite completa que cubre modelos freezed, repositorios, providers, widgets compartidos, router y smoke tests.
+    </p>
+  </div>
+
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-3 mt-12 animate-slide-up animation-delay-100">
+    {[
+      { suite: 'data/operator/', tests: 8, desc: 'CRUD, helpers', color: 'text-transit-state-success' },
+      { suite: 'data/incident/ + route_feedback/', tests: 8, desc: 'CRUD, incidencias, feedback', color: 'text-transit-state-success' },
+      { suite: 'data/mock/', tests: 8, desc: 'Parser robusto de datos mock', color: 'text-transit-state-success' },
+      { suite: 'data/nfc/', tests: 4, desc: 'Parser, errores NFC', color: 'text-transit-state-success' },
+      { suite: 'data/sync/', tests: 5, desc: 'RealtimeChannelManager', color: 'text-transit-state-success' },
+      { suite: 'shared/models/', tests: 12, desc: 'Serialización freezed', color: 'text-transit-state-info' },
+      { suite: 'shared/providers/', tests: '30+', desc: 'Theme, user, NFC, bus, etc.', color: 'text-transit-state-info' },
+      { suite: 'features/admin/', tests: 13, desc: 'Panel admin, moderación', color: 'text-transit-state-warning' },
+      { suite: 'features/auth/', tests: 5, desc: 'Signup, login, roles', color: 'text-transit-state-warning' },
+      { suite: 'features/bus_estimation/', tests: 6, desc: 'Estimación horaria', color: 'text-transit-state-warning' },
+      { suite: 'widgets compartidos', tests: 15, desc: 'Pressable, cards, inputs', color: 'text-transit-accent' },
+      { suite: 'router', tests: 8, desc: 'Deeplinks, guards, redirects', color: 'text-transit-accent' },
+      { suite: 'smoke', tests: 5, desc: 'Offline queue, app boot', color: 'text-transit-state-cancelled' },
+      { suite: 'TOTAL', tests: metrics.tests.passed, desc: 'tests pasando en CI', color: 'text-transit-text-hi text-lg font-bold' },
+    ].map(item => (
+      <div class="glass-card p-4 flex items-center justify-between">
+        <div class="min-w-0">
+          <div class="text-xs text-transit-text-lo truncate">{item.suite}</div>
+          <div class="text-[11px] text-transit-text-mid mt-0.5">{item.desc}</div>
+        </div>
+        <span class={`font-mono font-bold text-lg shrink-0 ml-3 ${item.color}`}>{item.tests}</span>
+      </div>
+    ))
+    }
+  </div>
+
+  <div class="grid md:grid-cols-3 gap-5 mt-10">
+    <div class="glass-card p-6 animate-slide-up animation-delay-200">
+      <div class="w-10 h-10 rounded-lg bg-transit-state-info/10 flex items-center justify-center mb-3">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00A0FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
+      </div>
+      <h3 class="font-bold mb-2">CI: GitHub Actions</h3>
+      <p class="text-transit-text-mid text-sm leading-relaxed">
+        <span class="font-mono text-transit-text-hi">{metrics.ci.jobs} jobs</span> ejecutados en cada push a master: {metrics.ci.jobsList.join(', ')}. Sin pre-commit hook local — el CI es el guardián.
+      </p>
+    </div>
+    <div class="glass-card p-6 animate-slide-up animation-delay-300">
+      <div class="w-10 h-10 rounded-lg bg-transit-accent/10 flex items-center justify-center mb-3">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#977DDF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      </div>
+      <h3 class="font-bold mb-2">Codegen: freezed + json</h3>
+      <p class="text-transit-text-mid text-sm leading-relaxed">
+        tool/build.sh genera <code class="font-mono text-xs text-transit-text-hi">.freezed.dart</code> y <code class="font-mono text-xs text-transit-text-hi">.g.dart</code> (commiteados). Modelos con <code class="font-mono text-xs text-transit-text-hi">@freezed</code>, <code class="font-mono text-xs text-transit-text-hi">explicit_to_json: true</code>.
+      </p>
+    </div>
+    <div class="glass-card p-6 animate-slide-up animation-delay-400">
+      <div class="w-10 h-10 rounded-lg bg-transit-state-success/10 flex items-center justify-center mb-3">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B0FF00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      </div>
+      <h3 class="font-bold mb-2">Decisiones de testing</h3>
+      <p class="text-transit-text-mid text-sm leading-relaxed">
+        No pixel goldens (fuentes por red). disableAnimations: true para evitar futures. fake_async + mocktail para aislamiento. pumpApp helper universal con overrides de provider.
+      </p>
+    </div>
+  </div>
+</section>

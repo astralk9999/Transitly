@@ -1,0 +1,50 @@
+<section id="seguridad" class="py-28 px-6 max-w-6xl mx-auto">
+  <div class="animate-slide-up">
+    <div class="section-divider mb-6"></div>
+    <h2 class="text-4xl md:text-5xl font-bold mb-4">Seguridad y Privacidad GDPR</h2>
+    <p class="text-transit-text-mid text-lg max-w-3xl leading-relaxed">
+      Cumplimiento GDPR con consent-gating granular, cifrado AES-256 local, RLS default-deny en base de datos y Edge Functions serverless para operaciones sensibles.
+    </p>
+  </div>
+
+  <div class="mt-12 animate-slide-up animation-delay-100">
+    <h3 class="text-xl font-bold mb-5 text-transit-accent">GDPR Compliance</h3>
+    <div class="space-y-2">
+      {[
+        { art: 'Art. 8', desc: 'Menores', detail: 'Validación de edad ≥16 años en el formulario de registro.' },
+        { art: 'Art. 13', desc: 'Información', detail: 'Privacy screen dedicada + consentimiento granular por cada finalidad de tratamiento.' },
+        { art: 'Art. 17', desc: 'Derecho al olvido', detail: 'Edge Function delete_user + worker programado con plazo máximo de 30 días.' },
+        { art: 'Art. 20', desc: 'Portabilidad', detail: 'Edge Function generate_data_export: descarga de todos tus datos en formato JSON.' },
+        { art: 'Art. 21', desc: 'Oposición', detail: 'Revocación de consentimiento en caliente. Inmediata, sin reinicio de la aplicación.' },
+      ].map(item => (
+        <div class="glass-card p-4 flex flex-wrap items-center gap-3 md:gap-6">
+          <div class="flex items-center gap-2 min-w-[120px]">
+            <span class="text-xs font-mono font-bold text-transit-accent bg-transit-accent/10 px-2 py-0.5 rounded">{item.art}</span>
+            <span class="text-sm font-semibold text-transit-text-hi">{item.desc}</span>
+          </div>
+          <span class="text-transit-text-mid text-sm flex-1">{item.detail}</span>
+        </div>
+      ))
+      }
+    </div>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-4 mt-10 animate-slide-up animation-delay-200">
+    {[
+      { icon: 'shield', title: 'RLS PostgreSQL DENY-by-default', desc: 'Row Level Security activo en todas las tablas con datos personales. Ningún dato se sirve sin política explícita.', color: 'border-transit-state-cancelled' },
+      { icon: 'lock', title: 'Cifrado HiveAesCipher AES-256', desc: 'Cajas sensibles cifradas en dispositivo con AES-256. Claves derivadas de credenciales del usuario. 17 boxes total, 2 cifradas.', color: 'border-transit-state-cancelled' },
+      { icon: 'globe', title: 'TLS 1.3 en tránsito', desc: 'Toda comunicación con Supabase cursa sobre TLS 1.3. Certificate pinning implícito vía SDK oficial.', color: 'border-transit-state-info' },
+      { icon: 'key', title: 'Secretos fuera del bundle', desc: '.env → --dart-define en build (SEC2). Sin secretos en el APK. NFC keys configurables en tiempo de compilación.', color: 'border-transit-state-info' },
+      { icon: 'shield-check', title: 'search_path fijado', desc: 'Funciones con SECURITY DEFINER tienen search_path explícito. Previene privilege escalation vía search_path injection.', color: 'border-transit-state-warning' },
+      { icon: 'eye-off', title: 'PII fuera de logs', desc: 'UUIDs truncados a 8 caracteres en AppLogger. Sin número de tarjeta, lat/lng exactos, email o NFC UID en logs de producción.', color: 'border-transit-state-warning' },
+      { icon: 'server', title: 'Anti-SSRF en Edge Function', desc: 'import_gtfs: resolución DNS A/AAAA, redirect:"manual", rangos privados bloqueados. Sin bypass a redes internas.', color: 'border-transit-state-success' },
+      { icon: 'check', title: 'Consent-gating real', desc: 'Consentimiento granular revocable. Sin tracking hasta que el usuario otorga. PostHog y Sentry solo tras consentimiento explícito.', color: 'border-transit-state-success' },
+    ].map(item => (
+      <div class={`glass-card p-5 border-l-4 ${item.color} hover:translate-x-1 transition-transform duration-200`}>
+        <h4 class="font-bold text-sm mb-2">{item.title}</h4>
+        <p class="text-transit-text-mid text-xs leading-relaxed">{item.desc}</p>
+      </div>
+    ))
+    }
+  </div>
+</section>

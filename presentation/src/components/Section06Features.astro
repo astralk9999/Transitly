@@ -1,0 +1,93 @@
+<section id="features" class="py-28 px-6 max-w-6xl mx-auto">
+  <div class="animate-slide-up">
+    <div class="section-divider mb-6"></div>
+    <h2 class="text-4xl md:text-5xl font-bold mb-4">Funcionalidades Destacadas</h2>
+    <p class="text-transit-text-mid text-lg max-w-3xl leading-relaxed">
+      27 funcionalidades implementadas durante 28 fases de desarrollo iterativo. Cada una integrada con la arquitectura canónica de repositorios, test suite y diseño accesible.
+    </p>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-5 mt-14">
+
+    <article class="glass-card p-7 animate-slide-up animation-delay-100 hover:border-transit-state-cancelled/30 transition-all duration-300">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="inline-block px-2.5 py-0.5 rounded-md bg-transit-state-cancelled/20 text-transit-state-cancelled text-xs font-mono font-bold">F13</span>
+        <h3 class="text-xl font-bold">Realtime</h3>
+      </div>
+      <p class="text-transit-text-mid text-sm leading-relaxed">
+        RealtimeChannelManager compartido con multiplexación + backoff exponencial + jitter. <span class="font-mono text-transit-state-success">5/12 repos</span> con suscripción Supabase Realtime funcional: bus_location (canal dedicado por route_id), stop, route, incident, route_feedback. autoDispose en <span class="font-mono text-transit-text-hi">6 providers críticos</span>.
+      </p>
+    </article>
+
+    <article class="glass-card p-7 animate-slide-up animation-delay-150 hover:border-transit-accent/30 transition-all duration-300">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="inline-block px-2.5 py-0.5 rounded-md bg-transit-accent/20 text-transit-accent text-xs font-mono font-bold">F4-F6</span>
+        <h3 class="text-xl font-bold">Autenticación y Roles</h3>
+      </div>
+      <p class="text-transit-text-mid text-sm leading-relaxed">
+        Email/password + magic link + activación por código de conductor. <span class="font-mono text-transit-text-hi">5 roles</span>: passenger, driver, operator_admin, moderator, admin. Guard del router consume rol REAL de Supabase, no un StateProvider mutable. Modelo de usuario unificado con fallback gradual a mock.
+      </p>
+    </article>
+
+    <article class="glass-card p-7 animate-slide-up animation-delay-200 hover:border-transit-state-info/30 transition-all duration-300">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="inline-block px-2.5 py-0.5 rounded-md bg-transit-state-info/20 text-transit-state-info text-xs font-mono font-bold">F15-F16</span>
+        <h3 class="text-xl font-bold">Sistema de Contribuciones</h3>
+      </div>
+      <p class="text-transit-text-mid text-sm leading-relaxed">
+        Incidencias geolocalizadas con votación de la comunidad. Sugerencias de rutas con wizard multi-paso + autosave. Feedback de confirmación. Votación a favor/en contra. Panel de moderación para admin y operator_admin.
+      </p>
+    </article>
+
+    <article class="glass-card p-7 animate-slide-up animation-delay-250 hover:border-transit-state-warning/30 transition-all duration-300">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="inline-block px-2.5 py-0.5 rounded-md bg-transit-state-warning/20 text-transit-state-warning text-xs font-mono font-bold">F14</span>
+        <h3 class="text-xl font-bold">Modo Conductor</h3>
+      </div>
+      <p class="text-transit-text-mid text-sm leading-relaxed">
+        Código de invitación → activación → emite posición GPS al canal Realtime de la ruta. Dashboard con viaje actual, historial y estadísticas (kilómetros, viajes, valoración). Modo simulado para demo sin conductores reales.
+      </p>
+    </article>
+
+    <article class="glass-card p-7 animate-slide-up animation-delay-300 hover:border-transit-accent/30 transition-all duration-300">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="inline-block px-2.5 py-0.5 rounded-md bg-transit-accent/20 text-transit-accent text-xs font-mono font-bold">F17</span>
+        <h3 class="text-xl font-bold">Accesibilidad Multidimensional</h3>
+      </div>
+      <p class="text-transit-text-mid text-sm leading-relaxed">
+        Alto contraste, <span class="font-mono text-transit-text-hi">8 matrices</span> de daltonismo (protanopia, deuteranopia, tritanopia), OpenDyslexic, Semantics localizados (ES/EN/AR), Pressable con 48dp, textScaler compone con el del SO, reduce-motion, RTL completo para árabe.
+      </p>
+    </article>
+
+    <article class="glass-card p-7 animate-slide-up animation-delay-350 hover:border-transit-state-cancelled/30 transition-all duration-300">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="inline-block px-2.5 py-0.5 rounded-md bg-transit-state-cancelled/20 text-transit-state-cancelled text-xs font-mono font-bold">F21</span>
+        <h3 class="text-xl font-bold">Notificaciones Push</h3>
+      </div>
+      <p class="text-transit-text-mid text-sm leading-relaxed">
+        Firebase Cloud Messaging HTTP v1 con OAuth JWT firmado en Edge Function Deno. flutter_local_notifications para presentación local. Horas tranquilas configurables. Toggles por categoría. Canal Realtime para notificaciones in-app.
+      </p>
+    </article>
+
+    <article class="glass-card p-7 animate-slide-up animation-delay-400 hover:border-transit-state-success/30 transition-all duration-300">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="inline-block px-2.5 py-0.5 rounded-md bg-transit-state-success/20 text-transit-state-success text-xs font-mono font-bold">F5</span>
+        <h3 class="text-xl font-bold">Internacionalización</h3>
+      </div>
+      <p class="text-transit-text-mid text-sm leading-relaxed">
+        <span class="font-mono text-transit-text-hi">3 idiomas</span>: Español (642 claves), English (628), العربية (272). Cambio en caliente sin reinicio. RTL automático al seleccionar árabe. flutter_localizations + ARB. 343 claves por locale con cobertura completa.
+      </p>
+    </article>
+
+    <article class="glass-card p-7 animate-slide-up animation-delay-450 hover:border-transit-state-info/30 transition-all duration-300">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="inline-block px-2.5 py-0.5 rounded-md bg-transit-state-info/20 text-transit-state-info text-xs font-mono font-bold">F23</span>
+        <h3 class="text-xl font-bold">Widgets Nativos</h3>
+      </div>
+      <p class="text-transit-text-mid text-sm leading-relaxed">
+        Android home widget + iOS widget. Próximo bus a parada habitual. Estado de línea favorita. WidgetDataWriter en SharedPreferences para comunicación bidireccional entre widget y app principal.
+      </p>
+    </article>
+
+  </div>
+</section>

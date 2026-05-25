@@ -1,41 +1,77 @@
 {
-  "tests": {
-    "passed": 619,
-    "skipped": 6,
-    "failed": 0
-  },
-  "coverage": {
-    "global": 24.04,
-    "target": 60
-  },
-  "code": {
+  "project": {
+    "name": "Transitly",
+    "phases": 28,
+    "phasesCompleted": 28,
     "features": 27,
-    "migrations": 14,
+    "loc": "35.000",
+    "dartFiles": 260,
+    "repositoriesCanonical": 12,
+    "realtimeRepos": "5/12",
+    "paginationRepos": "11/11",
+    "autoDisposeProviders": 6,
+    "freezedModels": 27,
+    "sharedWidgets": 27,
     "edgeFunctions": 4,
-    "ciJobs": 6,
-    "arbKeys": {
-      "es": 642,
-      "en": 628,
-      "ar": 272
-    },
+    "migrations": 14,
     "hiveBoxes": 17,
     "encryptedBoxes": 2
   },
-  "scorecard": {
-    "tfg": 9.0,
-    "production": 6.5
+  "tests": {
+    "passed": 619,
+    "skipped": 6,
+    "failed": 0,
+    "coverageCovered": 4004,
+    "coverageTotal": 16476,
+    "coveragePercent": 24.04
+  },
+  "ci": {
+    "jobs": 6,
+    "jobsList": ["Analyze", "Test", "Build Web", "Build APK", "Semgrep", "Gitleaks"]
+  },
+  "i18n": {
+    "locales": ["es", "en", "ar"],
+    "keys": {
+      "es": 642,
+      "en": 628,
+      "ar": 272
+    }
   },
   "release": {
-    "apkSize": "73,5 MiB",
     "version": "1.0.0-tfg",
-    "platforms": ["Android"]
+    "apkSize": "73,5 MiB",
+    "androidMin": "Android 6.0+"
+  },
+  "scorecard": {
+    "tfg": "9,0/10",
+    "production": "6,5/10"
   },
   "context": {
     "operator": "COMUJESA",
     "city": "Jerez de la Frontera",
-    "users": {
-      "urbanRiders2024": "1.500M",
-      "interurbanRiders2024": "600M"
-    }
+    "urbanRiders2024": "1.500 millones",
+    "interurbanRiders2024": "600 millones",
+    "author": "Koldo Uruburu",
+    "school": "Victoria FP",
+    "course": "2025/2026",
+    "defenseDate": "2026-06-09",
+    "timelineStart": "2026-04-01",
+    "timelineEnd": "2026-06-09",
+    "duration": "~4 semanas"
+  },
+  "stack": {
+    "flutter": "3.9.2+",
+    "dart": "3.9",
+    "riverpod": "2.6.1",
+    "goRouter": "17.2",
+    "freezed": "3.x",
+    "supabase": "PostgreSQL + RLS + Realtime + Storage + Edge Functions",
+    "hive": "2.2",
+    "flutterMap": "7.0 + MapTiler",
+    "nfcManager": "3.5",
+    "firebase": "Firebase Messaging + flutter_local_notifications",
+    "sentry": "8.14",
+    "postHog": "5.24",
+    "astro": "6"
   }
 }

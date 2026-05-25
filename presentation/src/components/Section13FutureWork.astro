@@ -1,0 +1,74 @@
+<section id="futuro" class="py-28 px-6 max-w-6xl mx-auto">
+  <div class="animate-slide-up">
+    <div class="section-divider mb-6"></div>
+    <h2 class="text-4xl md:text-5xl font-bold mb-4">Trabajo Futuro</h2>
+    <p class="text-transit-text-mid text-lg max-w-3xl leading-relaxed">
+      El MVP actual es funcional y completo para defensa TFG. Estos son los próximos hitos naturales del proyecto hacia un producto real en producción.
+    </p>
+  </div>
+
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5 mt-14">
+    <div class="glass-card p-7 animate-slide-up animation-delay-100 border-t-4 border-transit-accent group hover:border-transit-accent/60 transition-all">
+      <div class="text-transit-accent text-4xl font-bold font-mono mb-4">01</div>
+      <h3 class="text-lg font-bold mb-3">Cerrar accesibilidad AA defendible</h3>
+      <p class="text-transit-text-mid text-sm leading-relaxed mb-3">
+        Verificación formal con TalkBack y VoiceOver en dispositivos reales con personas usuarias. Implementar alternativa accesible al mapa: lista textual de paradas y tiempos para usuarios de lector de pantalla.
+      </p>
+      <span class="text-[10px] font-mono text-transit-accent bg-transit-accent/10 px-2 py-0.5 rounded">Ref: A11Y-3</span>
+    </div>
+
+    <div class="glass-card p-7 animate-slide-up animation-delay-150 border-t-4 border-transit-state-info group hover:border-transit-state-info/60 transition-all">
+      <div class="text-transit-state-info text-4xl font-bold font-mono mb-4">02</div>
+      <h3 class="text-lg font-bold mb-3">Tests de la capa remote/</h3>
+      <p class="text-transit-text-mid text-sm leading-relaxed mb-3">
+        Subir cobertura del <span class="font-mono text-transit-text-hi">24,04%</span> actual al <span class="font-mono text-transit-text-hi">≥35%</span> mockeando SupabaseClient con mocktail. Los repositorios remote son el mayor punto ciego del test suite actual.
+      </p>
+      <span class="text-[10px] font-mono text-transit-state-info bg-transit-state-info/10 px-2 py-0.5 rounded">Ref: P2-4</span>
+    </div>
+
+    <div class="glass-card p-7 animate-slide-up animation-delay-200 border-t-4 border-transit-state-warning group hover:border-transit-state-warning/60 transition-all">
+      <div class="text-transit-state-warning text-4xl font-bold font-mono mb-4">03</div>
+      <h3 class="text-lg font-bold mb-3">Observabilidad en producción</h3>
+      <p class="text-transit-text-mid text-sm leading-relaxed mb-3">
+        Definir SLOs (latencia p99, disponibilidad, tasa de error). Implementar tracing distribuido con Sentry Performance. Configurar alertas en Edge Functions y Realtime channels.
+      </p>
+      <span class="text-[10px] font-mono text-transit-state-warning bg-transit-state-warning/10 px-2 py-0.5 rounded">Ref: PROD-7</span>
+    </div>
+
+    <div class="glass-card p-7 animate-slide-up animation-delay-250 border-t-4 border-transit-state-success group hover:border-transit-state-success/60 transition-all">
+      <div class="text-transit-state-success text-4xl font-bold font-mono mb-4">04</div>
+      <h3 class="text-lg font-bold mb-3">Multi-operador real</h3>
+      <p class="text-transit-text-mid text-sm leading-relaxed mb-3">
+        Poblar más operadores españoles con datos GTFS reales. Implementar clustering visual de paradas en el mapa. Sistema de cambio de operador/ciudad sin fricción para el usuario.
+      </p>
+      <span class="text-[10px] font-mono text-transit-state-success bg-transit-state-success/10 px-2 py-0.5 rounded">10 operadores detectados</span>
+    </div>
+
+    <div class="glass-card p-7 animate-slide-up animation-delay-300 border-t-4 border-transit-state-cancelled group hover:border-transit-state-cancelled/60 transition-all">
+      <div class="text-transit-state-cancelled text-4xl font-bold font-mono mb-4">05</div>
+      <h3 class="text-lg font-bold mb-3">Publicación en stores</h3>
+      <p class="text-transit-text-mid text-sm leading-relaxed mb-3">
+        Generar keystore de release real para Google Play Store. Preparar build iOS con TestFlight. Cumplir requisitos de review de ambas plataformas.
+      </p>
+      <span class="text-[10px] font-mono text-transit-state-cancelled bg-transit-state-cancelled/10 px-2 py-0.5 rounded">Play Store + TestFlight</span>
+    </div>
+
+    <div class="glass-card p-7 animate-slide-up animation-delay-350 lg:col-span-3 border border-transit-accent/20 bg-transit-accent/3">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h3 class="text-lg font-bold mb-2 text-transit-accent">Cost Planning</h3>
+          <p class="text-transit-text-mid text-sm leading-relaxed">
+            <span class="text-transit-text-hi font-semibold">MVP actual:</span> ~25€ (Google Play one-time fee).<br/>
+            <span class="text-transit-text-hi font-semibold">Escalado a 10.000 MAU:</span> ~150–200€/mes (Supabase Pro + MapTiler + Sentry Team).
+          </p>
+        </div>
+        <div class="text-right">
+          <div class="text-3xl font-mono font-bold text-transit-accent">25€</div>
+          <div class="text-xs text-transit-text-lo">one-time</div>
+          <div class="text-xl font-mono font-bold text-transit-state-info mt-2">~175€</div>
+          <div class="text-xs text-transit-text-lo">/mes @ 10K MAU</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

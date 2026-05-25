@@ -23,7 +23,7 @@ final notificationStreamProvider =
   final userId = client.auth.currentUser?.id;
 
   if (userId == null) {
-    return const Stream.empty();
+    return Stream.value(const <AppNotification>[]);
   }
 
   final repo = ref.watch(notificationRepositoryProvider);

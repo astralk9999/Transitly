@@ -28,7 +28,7 @@ class ThemeNotifier extends ChangeNotifier {
   String? _authUserId;
   String _paletteId = 'default';
   Brightness _brightness = Brightness.dark;
-  String _backgroundId = 'smoke';
+  String _backgroundId = 'shaders/smoke.frag';
   bool _backgroundEnabled = true;
   double _backgroundOpacity = 1.0;
   double _fontScale = 1.0;
@@ -331,7 +331,7 @@ class ThemeNotifier extends ChangeNotifier {
       final data = _guestBox!.get('prefs');
       if (data != null) {
         _paletteId = data['paletteId'] as String? ?? 'default';
-        _backgroundId = data['backgroundId'] as String? ?? 'smoke';
+        _backgroundId = data['backgroundId'] as String? ?? 'shaders/smoke.frag';
         _backgroundEnabled = data['backgroundEnabled'] as bool? ?? true;
         _backgroundOpacity = (data['backgroundOpacity'] as num?)?.toDouble() ?? 1.0;
         _fontScale = (data['fontScale'] as num?)?.toDouble() ?? 1.0;

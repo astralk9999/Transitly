@@ -208,7 +208,7 @@ class _OnboardingPage extends StatelessWidget {
           Text(
             page.title,
             textAlign: TextAlign.center,
-            style: GoogleFonts.dmSans(
+            style: TextStyle(fontFamily: 'DM Sans', 
               fontSize: 24,
               fontWeight: FontWeight.w700,
               color: c.textHi,
@@ -219,7 +219,7 @@ class _OnboardingPage extends StatelessWidget {
           Text(
             page.description,
             textAlign: TextAlign.center,
-            style: GoogleFonts.dmSans(
+            style: TextStyle(fontFamily: 'DM Sans', 
               fontSize: 15,
               fontWeight: FontWeight.w400,
               color: c.textMid,

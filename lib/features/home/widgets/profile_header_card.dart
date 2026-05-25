@@ -150,7 +150,7 @@ class ProfileHeaderCard extends ConsumerWidget {
               children: [
                 Text(
                   displayName,
-                  style: GoogleFonts.dmSans(
+                  style: TextStyle(fontFamily: 'DM Sans', 
                     fontSize: 18,
                     fontWeight: FontWeight.w500,
                     color: c.textHi,

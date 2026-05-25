@@ -145,7 +145,7 @@ class _HeaderCard extends StatelessWidget {
               children: [
                 Text(
                   user.name,
-                  style: GoogleFonts.dmSans(
+                  style: TextStyle(fontFamily: 'DM Sans', 
                     fontSize: 18,
                     fontWeight: FontWeight.w500,
                     color: c.textHi,
@@ -238,7 +238,7 @@ class _RankCard extends StatelessWidget {
                 children: [
                   Text(
                     _labelFor(rank),
-                    style: GoogleFonts.dmSans(
+                    style: TextStyle(fontFamily: 'DM Sans', 
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                       color: isCurrent ? rank.color : c.textHi,

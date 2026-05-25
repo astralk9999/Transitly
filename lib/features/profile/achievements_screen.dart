@@ -94,7 +94,7 @@ class AchievementsScreen extends ConsumerWidget {
             padding: EdgeInsets.symmetric(horizontal: padding),
             child: Text(
               l10n.achievementsLevel('Nuevo', 0),
-              style: GoogleFonts.dmSans(
+              style: TextStyle(fontFamily: 'DM Sans', 
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
                 color: c.accent,
@@ -148,7 +148,7 @@ class AchievementsScreen extends ConsumerWidget {
                             const SizedBox(height: 8),
                             Text(
                               ach.name,
-                              style: GoogleFonts.dmSans(
+                              style: TextStyle(fontFamily: 'DM Sans', 
                                 fontSize: 12,
                                 fontWeight: FontWeight.w500,
                                 color: unlocked ? c.textHi : c.textLo,

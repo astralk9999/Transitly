@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../core/theme/transit_colors.dart';
@@ -187,7 +186,7 @@ class _NotificationTile extends StatelessWidget {
                             child: Text(
                               _typeLabel(notification.type, l10n),
                               style: unread
-                                  ? GoogleFonts.dmSans(
+                                  ? TextStyle(fontFamily: 'DM Sans', 
                                       fontSize: 14,
                                       fontWeight: FontWeight.w600,
                                       color: c.textHi,

@@ -24,7 +24,7 @@ import 'features/error/env_error_screen.dart';
 /// F26 switch point: cuando las fuentes se empaqueten como assets locales,
 /// poner `true` (y seguir `docs/FONTS_F26.md`). Mientras es `false`,
 /// `google_fonts` resuelve por red (comportamiento actual).
-const bool _fontsBundled = false;
+const bool _fontsBundled = true;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,7 +38,6 @@ void main() async {
   } else {
     unawaited(GoogleFonts.pendingFonts([
       GoogleFonts.ibmPlexMono(),
-      GoogleFonts.dmSans(),
     ]));
   }
 

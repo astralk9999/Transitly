@@ -151,7 +151,7 @@ class _SplashScreenState extends State<SplashScreen>
                 opacity: _subtitleFade,
                 child: Text(
                       AppLocalizations.of(context).appTagline,
-                  style: GoogleFonts.dmSans(
+                  style: TextStyle(fontFamily: 'DM Sans', 
                     fontSize: 12,
                     fontWeight: FontWeight.w400,
                     color: c.textMid,

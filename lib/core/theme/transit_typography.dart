@@ -87,7 +87,8 @@ abstract final class TransitTypography {
         color: c,
       );
 
-  static TextStyle routeName(Color c) => GoogleFonts.dmSans(
+  static TextStyle routeName(Color c) => TextStyle(
+        fontFamily: 'DM Sans',
         fontSize: 14,
         fontWeight: FontWeight.w500,
         color: c,
@@ -95,39 +96,45 @@ abstract final class TransitTypography {
 
   // ── UI text (DM Sans) ──────────────────────────────────
 
-  static TextStyle navLabel(Color c) => GoogleFonts.dmSans(
+  static TextStyle navLabel(Color c) => TextStyle(
+        fontFamily: 'DM Sans',
         fontSize: 11,
         fontWeight: FontWeight.w400,
         letterSpacing: 0.08 * 11,
         color: c,
       );
 
-  static TextStyle bodyPrimary(Color c) => GoogleFonts.dmSans(
+  static TextStyle bodyPrimary(Color c) => TextStyle(
+        fontFamily: 'DM Sans',
         fontSize: 15,
         fontWeight: FontWeight.w300,
         height: 1.5,
         color: c,
       );
 
-  static TextStyle bodySecondary(Color c) => GoogleFonts.dmSans(
+  static TextStyle bodySecondary(Color c) => TextStyle(
+        fontFamily: 'DM Sans',
         fontSize: 13,
         fontWeight: FontWeight.w400,
         color: c,
       );
 
-  static TextStyle bodySmall(Color c) => GoogleFonts.dmSans(
+  static TextStyle bodySmall(Color c) => TextStyle(
+        fontFamily: 'DM Sans',
         fontSize: 11,
         fontWeight: FontWeight.w400,
         color: c,
       );
 
-  static TextStyle heading(Color c) => GoogleFonts.dmSans(
+  static TextStyle heading(Color c) => TextStyle(
+        fontFamily: 'DM Sans',
         fontSize: 18,
         fontWeight: FontWeight.w500,
         color: c,
       );
 
-  static TextStyle subheading(Color c) => GoogleFonts.dmSans(
+  static TextStyle subheading(Color c) => TextStyle(
+        fontFamily: 'DM Sans',
         fontSize: 14,
         fontWeight: FontWeight.w400,
         color: c,

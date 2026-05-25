@@ -164,7 +164,7 @@ class _ActiveRouteScreenState extends ConsumerState<ActiveRouteScreen> {
                     Expanded(
                       child: Text(
                         nextStop?.name ?? '--',
-                        style: GoogleFonts.dmSans(
+                        style: TextStyle(fontFamily: 'DM Sans', 
                           fontSize: 20,
                           fontWeight: FontWeight.w500,
                           color: c.textHi,

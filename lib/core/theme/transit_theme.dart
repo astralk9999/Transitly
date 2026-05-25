@@ -3,6 +3,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'transit_colors.dart';
 import 'transit_spacing.dart';
 
+TextStyle _dmSansStyle({Color? color, double? fontSize}) => TextStyle(
+      fontFamily: 'DM Sans',
+      color: color,
+      fontSize: fontSize,
+    );
+
 ThemeData buildTransitTheme(
   TransitColorScheme c, {
   double fontScale = 1.0,
@@ -13,21 +19,15 @@ ThemeData buildTransitTheme(
     _ => Brightness.dark,
   };
 
-  final textTheme = dyslexiaFontEnabled
-      ? GoogleFonts.atkinsonHyperlegibleTextTheme(
-          brightness == Brightness.dark
-              ? ThemeData.dark().textTheme
-              : ThemeData.light().textTheme,
-        )
-      : GoogleFonts.dmSansTextTheme(
-          brightness == Brightness.dark
-              ? ThemeData.dark().textTheme
-              : ThemeData.light().textTheme,
-        );
+  final baseTextTheme = brightness == Brightness.dark
+      ? ThemeData.dark().textTheme
+      : ThemeData.light().textTheme;
 
-  final bodyFont = dyslexiaFontEnabled
-      ? GoogleFonts.atkinsonHyperlegible
-      : GoogleFonts.dmSans;
+  final textTheme = dyslexiaFontEnabled
+      ? GoogleFonts.atkinsonHyperlegibleTextTheme(baseTextTheme)
+      : baseTextTheme.apply(fontFamily: 'DM Sans');
+
+  final bodyFont = _dmSansStyle;
 
   return ThemeData(
     useMaterial3: true,

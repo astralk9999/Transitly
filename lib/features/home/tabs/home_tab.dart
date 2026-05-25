@@ -126,7 +126,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                               AppLocalizations.of(context).homeDefaultCity,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.dmSans(
+                          style: TextStyle(fontFamily: 'DM Sans', 
                             fontSize: 14,
                             fontWeight: FontWeight.w400,
                             color: c.textMid,

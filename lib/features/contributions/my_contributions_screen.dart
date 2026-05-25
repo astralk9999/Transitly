@@ -128,7 +128,7 @@ class _MyContributionsScreenState
                                   l10n.myContributionsSummary(_suggestions.length,
                                       _feedbacks.length + localFeedbacks.length,
                                       _incidents.length),
-                                  style: GoogleFonts.dmSans(
+                                  style: TextStyle(fontFamily: 'DM Sans', 
                                       fontSize: 12, color: c.textMid),
                                 ),
                               ),
@@ -401,7 +401,7 @@ class _MyContributionsScreenState
           const SizedBox(width: 8),
           Text(
             label,
-            style: GoogleFonts.dmSans(fontSize: 13, color: c.textMid),
+            style: TextStyle(fontFamily: 'DM Sans', fontSize: 13, color: c.textMid),
           ),
         ],
       ),

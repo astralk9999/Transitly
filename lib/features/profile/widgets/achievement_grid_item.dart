@@ -66,7 +66,7 @@ class AchievementGridItem extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               achievement.name,
-              style: GoogleFonts.dmSans(
+              style: TextStyle(fontFamily: 'DM Sans', 
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
                 color: _unlocked ? c.textHi : c.textLo,

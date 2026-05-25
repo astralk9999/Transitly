@@ -65,10 +65,10 @@ dev_dependencies:
 flutter_launcher_icons:
   android: "ic_launcher"
   ios: false
-  image_path: "assets/branding/ic_launcher_full.png"
+  image_path: "assets/branding/transitly_logo_white.png"
   adaptive_icon_background: "#08081A"
-  adaptive_icon_foreground: "assets/branding/ic_foreground.png"
-  adaptive_icon_foreground_inset: 12
+  adaptive_icon_foreground: "assets/branding/transitly_logo_white.png"
+  adaptive_icon_foreground_inset: 16
   min_sdk_android: 21
   remove_alpha_ios: false
 

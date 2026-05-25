@@ -112,6 +112,8 @@ and</li>
 Widget build(BuildContext context, WidgetRef ref) {
   final user = ref.watch(currentUserProvider);
   final padding = ResponsiveScaffold.screenPadding(context);
+  final isAuthenticated =
+      ref.watch(authStateProvider).valueOrNull is AuthAuthenticated;
 
   return Scaffold(
     backgroundColor: Colors.transparent,
@@ -129,8 +131,12 @@ Widget build(BuildContext context, WidgetRef ref) {
                   const ProfileAppearanceSection(),
                   const SizedBox(height: 16),
                   const ProfileLocationSection(),
-                  const SizedBox(height: 16),
-                  ProfileContributionsSection(user: user),
+                  &#47;&#47; Contribuciones solo tras autenticar — sin login no hay
+                  &#47;&#47; datos reales y mostrar mock confunde al usuario.
+                  if (isAuthenticated) ...[
+                    const SizedBox(height: 16),
+                    ProfileContributionsSection(user: user),
+                  ],
                   const SizedBox(height: 16),
                   const ProfileNotificationsSection(),
                   const SizedBox(height: 16),

@@ -110,7 +110,14 @@ and</li>
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">@override
 Widget build(BuildContext context, WidgetRef ref) {
-  final isDriver = ref.watch(isDriverModeProvider);
+  &#47;&#47; El FAB de conductor solo se muestra para usuarios autenticados con rol
+  &#47;&#47; de conductor verificado. Antes dependía de `isDriverModeProvider`, un
+  &#47;&#47; switch público que cualquier invitado podía activar — ahora se deriva
+  &#47;&#47; del rol real del perfil.
+  final isAuth =
+      ref.watch(authStateProvider).valueOrNull is AuthAuthenticated;
+  final isDriver =
+      isAuth &amp;&amp; ref.watch(currentUserRoleProvider) == UserRole.driver;
   final unreadCount = ref.watch(unreadCountProvider);
   final isDark = Theme.of(context).brightness == Brightness.dark;
   final c = TransitColorScheme.of(isDark);
@@ -118,6 +125,11 @@ Widget build(BuildContext context, WidgetRef ref) {
   final useRail = screen != ScreenSize.compact;
   final extendedRail = screen == ScreenSize.large;
   final tabs = homeTabsOf(AppLocalizations.of(context));
+  &#47;&#47; La campana se oculta en el tab del mapa (index 1): allí estorba a los
+  &#47;&#47; controles del mapa y nunca tiene contenido relevante en modo demo.
+  const mapTabIndex = 1;
+  final showNotificationBell =
+      navigationShell.currentIndex != mapTabIndex;
 
   if (useRail) {
     return FocusTraversalGroup(
@@ -140,15 +152,16 @@ Widget build(BuildContext context, WidgetRef ref) {
                 child: Stack(
                   children: [
                     ResponsiveScaffold(child: navigationShell),
-                    Positioned(
-                      top: TransitSpacing.space8,
-                      right: TransitSpacing.space16,
-                      child: _NotificationBell(
-                        unreadCount: unreadCount,
-                        c: c,
-                        onTap: () =&gt; context.push(&#39;&#47;notifications&#39;),
+                    if (showNotificationBell)
+                      Positioned(
+                        top: TransitSpacing.space8,
+                        right: TransitSpacing.space16,
+                        child: _NotificationBell(
+                          unreadCount: unreadCount,
+                          c: c,
+                          onTap: () =&gt; context.push(&#39;&#47;notifications&#39;),
+                        ),
                       ),
-                    ),
                     if (isDriver)
                       Positioned(
                         bottom: TransitSpacing.space16,
@@ -176,18 +189,19 @@ Widget build(BuildContext context, WidgetRef ref) {
           child: SmokeBackground(color: c.accent, isDark: isDark),
         ),
         navigationShell,
-        Positioned(
-          top: TransitSpacing.space8,
-          right: TransitSpacing.space16,
-          child: SafeArea(
-            bottom: false,
-            child: _NotificationBell(
-              unreadCount: unreadCount,
-              c: c,
-              onTap: () =&gt; context.push(&#39;&#47;notifications&#39;),
+        if (showNotificationBell)
+          Positioned(
+            top: TransitSpacing.space8,
+            right: TransitSpacing.space16,
+            child: SafeArea(
+              bottom: false,
+              child: _NotificationBell(
+                unreadCount: unreadCount,
+                c: c,
+                onTap: () =&gt; context.push(&#39;&#47;notifications&#39;),
+              ),
             ),
           ),
-        ),
         if (isDriver)
           Positioned(
             bottom: 80,

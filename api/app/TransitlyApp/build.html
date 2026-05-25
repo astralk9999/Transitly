@@ -113,13 +113,16 @@ Widget build(BuildContext context, WidgetRef ref) {
   final themeNotifier = ref.watch(themeNotifierProvider);
   final locale = ref.watch(localeProvider);
   final router = ref.watch(routerProvider);
+  &#47;&#47; `themeModeProvider` es la fuente de verdad que cambian los toggles del
+  &#47;&#47; appearance section. `themeNotifier.brightness` es estado interno de
+  &#47;&#47; paleta — antes app.dart lo leía y nunca cambiaba al toggle, por eso el
+  &#47;&#47; modo claro solo afectaba al mapa (que sí usa themeModeProvider).
+  final themeMode = ref.watch(themeModeProvider);
 
   return MaterialApp.router(
     title: &#39;Transitly&#39;,
     debugShowCheckedModeBanner: false,
-    themeMode: themeNotifier.brightness == Brightness.dark
-        ? ThemeMode.dark
-        : ThemeMode.light,
+    themeMode: themeMode,
     theme: themeNotifier.buildTheme(Brightness.light),
     darkTheme: themeNotifier.buildTheme(Brightness.dark),
     locale: locale,
@@ -138,7 +141,10 @@ Widget build(BuildContext context, WidgetRef ref) {
         );
       }
 
-      final systemScale = MediaQuery.textScalerOf(context).scale(14);
+      &#47;&#47; `.scale(1.0)` devuelve el factor multiplicador (no un tamaño en px).
+      &#47;&#47; Usar `.scale(14)` aquí multiplicaba todo por 14× antes del clamp y
+      &#47;&#47; dejaba el texto fijo en 2.5× → overflows masivos.
+      final systemScale = MediaQuery.textScalerOf(context).scale(1.0);
       final combined = (systemScale * themeNotifier.fontScale).clamp(0.8, 2.5);
       return FocusTraversalGroup(
         policy: WidgetOrderTraversalPolicy(),

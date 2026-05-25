@@ -79,21 +79,15 @@
     _ =&gt; Brightness.dark,
   };
 
-  final textTheme = dyslexiaFontEnabled
-      ? GoogleFonts.atkinsonHyperlegibleTextTheme(
-          brightness == Brightness.dark
-              ? ThemeData.dark().textTheme
-              : ThemeData.light().textTheme,
-        )
-      : GoogleFonts.dmSansTextTheme(
-          brightness == Brightness.dark
-              ? ThemeData.dark().textTheme
-              : ThemeData.light().textTheme,
-        );
+  final baseTextTheme = brightness == Brightness.dark
+      ? ThemeData.dark().textTheme
+      : ThemeData.light().textTheme;
 
-  final bodyFont = dyslexiaFontEnabled
-      ? GoogleFonts.atkinsonHyperlegible
-      : GoogleFonts.dmSans;
+  final textTheme = dyslexiaFontEnabled
+      ? GoogleFonts.atkinsonHyperlegibleTextTheme(baseTextTheme)
+      : baseTextTheme.apply(fontFamily: &#39;DM Sans&#39;);
+
+  final bodyFont = _dmSansStyle;
 
   return ThemeData(
     useMaterial3: true,

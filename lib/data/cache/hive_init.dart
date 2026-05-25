@@ -100,7 +100,7 @@ abstract class HiveInit {
       cipher: encryptionCipher,
     );
 
-    AppLogger.info(_logTag, 'opened ${Hive.box(HiveBoxes.routes).path != null ? "all" : "?"} boxes');
+    AppLogger.info(_logTag, 'opened ${Hive.isBoxOpen(HiveBoxes.routes) ? "all" : "?"} boxes');
   }
 
   static Future<Box<T>> _open<T>(String name, {HiveAesCipher? cipher}) async {
@@ -112,7 +112,11 @@ abstract class HiveInit {
         return Hive.box<T>(name);
       } catch (_) {
         // Está abierta pero con otro tipo: cerrarla para reabrir con T.
-        await Hive.box(name).close();
+        try {
+          await Hive.box(name).close();
+        } catch (_) {
+          await Hive.deleteBoxFromDisk(name);
+        }
       }
     }
     try {

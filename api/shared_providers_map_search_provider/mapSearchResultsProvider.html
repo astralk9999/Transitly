@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the mapSearchResultsProvider property from the map_search_provider library, for the Dart programming language.">
+  <title>mapSearchResultsProvider property - map_search_provider library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">transitly</a></li>
+    <li><a href="../shared_providers_map_search_provider/">shared&#47;providers&#47;map_search_provider.dart</a></li>
+    <li class="self-crumb">mapSearchResultsProvider property</li>
+  </ol>
+  <div class="self-name">mapSearchResultsProvider</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+  <div
+      id="dartdoc-main-content"
+      class="main-content"
+      data-above-sidebar="shared_providers_map_search_provider&#47;shared_providers_map_search_provider-library-sidebar.html"
+      data-below-sidebar="">
+      <div>
+<h1><span class="kind-top-level-property">mapSearchResultsProvider</span> top-level property 
+ 
+</h1></div>
+
+        <section class="multi-line-signature">
+          
+          <a href="https://pub.dev/documentation/riverpod/2.6.1/riverpod/AutoDisposeFutureProvider-class.html">AutoDisposeFutureProvider</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../shared_providers_map_search_provider/MapSearchResult-class.html">MapSearchResult</a></span>&gt;</span></span>&gt;</span>
+          <span class="name ">mapSearchResultsProvider</span>
+          <div class="features"><span class="feature">final</span></div>
+
+        </section>
+        
+
+        
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">final mapSearchResultsProvider =
+    FutureProvider.autoDispose&lt;List&lt;MapSearchResult&gt;&gt;((ref) async {
+  final query = ref.watch(mapSearchQueryProvider).trim();
+  if (query.isEmpty) return [];
+
+  await Future&lt;void&gt;.delayed(const Duration(milliseconds: 300));
+
+  final results = &lt;MapSearchResult&gt;[];
+
+  &#47;&#47; Routes
+  try {
+    final mockData = ref.read(mockDataServiceProvider);
+    final routes = mockData.routes.where((r) {
+      final q = query.toLowerCase();
+      return r.code.toLowerCase().contains(q) ||
+          r.name.toLowerCase().contains(q);
+    }).take(5);
+
+    for (final r in routes) {
+      results.add(MapSearchResult(
+        type: MapSearchResultType.route,
+        title: &#39;${r.code} · ${r.name}&#39;,
+        subtitle: r.serviceType.label,
+        route: r,
+      ));
+    }
+  } catch (_) {}
+
+  &#47;&#47; Stops
+  try {
+    final mockData = ref.read(mockDataServiceProvider);
+    final stops = mockData.stops.where((s) {
+      final q = query.toLowerCase();
+      return s.name.toLowerCase().contains(q) ||
+          s.code.toLowerCase().contains(q) ||
+          s.officialCode.toLowerCase().contains(q);
+    }).take(5);
+
+    for (final s in stops) {
+      results.add(MapSearchResult(
+        type: MapSearchResultType.stop,
+        title: s.name,
+        subtitle: s.code,
+        stop: s,
+        lat: s.lat,
+        lng: s.lng,
+      ));
+    }
+  } catch (_) {}
+
+  &#47;&#47; Places via Nominatim
+  if (results.length &lt; 8) {
+    try {
+      final uri = Uri.https(
+        &#39;nominatim.openstreetmap.org&#39;,
+        &#39;&#47;search&#39;,
+        {
+          &#39;q&#39;: query,
+          &#39;format&#39;: &#39;json&#39;,
+          &#39;limit&#39;: &#39;5&#39;,
+          &#39;bounded&#39;: &#39;1&#39;,
+          &#39;viewbox&#39;: &#39;-6.30,36.55,-5.90,36.80&#39;,
+        },
+      );
+      final resp = await http.get(uri).timeout(const Duration(seconds: 5));
+      if (resp.statusCode == 200) {
+        final list = json.decode(resp.body) as List&lt;dynamic&gt;;
+        for (final item in list.take(5)) {
+          final displayName = item[&#39;display_name&#39;] as String;
+          final nameParts = displayName.split(&#39;,&#39;);
+          final title = nameParts.first.trim();
+          final subtitle = nameParts.length &gt; 1
+              ? nameParts.skip(1).take(2).map((s) =&gt; s.trim()).join(&#39;, &#39;)
+              : &#39;&#39;;
+          final lat = double.tryParse(item[&#39;lat&#39;] as String? ?? &#39;&#39;);
+          final lng = double.tryParse(item[&#39;lon&#39;] as String? ?? &#39;&#39;);
+          results.add(MapSearchResult(
+            type: MapSearchResultType.place,
+            title: title,
+            subtitle: subtitle,
+            lat: lat,
+            lng: lng,
+          ));
+        }
+      }
+    } catch (e) {
+      AppLogger.warn(_logTag, &#39;Nominatim search failed&#39;, e);
+    }
+  }
+
+  return results;
+});</code></pre>
+</section>
+
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../index.html">transitly</a></li>
+    <li><a href="../shared_providers_map_search_provider/">map_search_provider</a></li>
+    <li class="self-crumb">mapSearchResultsProvider property</li>
+</ol>
+
+    <h5>map_search_provider library</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-left-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    transitly
+      1.0.0+1
+  </span>
+  
+</footer>
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

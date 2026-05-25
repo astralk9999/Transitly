@@ -118,6 +118,7 @@ Widget build(BuildContext context, WidgetRef ref) {
 
   &#47;&#47; Modo invitado: no usar datos mock — mostrar CTA para iniciar sesión.
   if (authUser == null) {
+    final l10n = AppLocalizations.of(context);
     return GlassCard(
       blur: 20,
       fillOpacity: 0.06,
@@ -144,7 +145,7 @@ Widget build(BuildContext context, WidgetRef ref) {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  &#39;INVITADO&#39;,
+                  l10n.profileGuestLabel,
                   style: GoogleFonts.ibmPlexMono(
                     fontSize: 11,
                     fontWeight: FontWeight.w700,
@@ -154,7 +155,7 @@ Widget build(BuildContext context, WidgetRef ref) {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  &#39;Inicia sesión para tu perfil&#39;,
+                  l10n.profileGuestCta,
                   style: TransitTypography.bodySecondary(c.textMid),
                 ),
               ],
@@ -172,7 +173,7 @@ Widget build(BuildContext context, WidgetRef ref) {
                     Border.all(color: c.accent.withValues(alpha: 0.4), width: 0.5),
               ),
               child: Text(
-                &#39;ENTRAR&#39;,
+                l10n.profileGuestSignIn,
                 style: GoogleFonts.ibmPlexMono(
                   fontSize: 11,
                   fontWeight: FontWeight.w700,

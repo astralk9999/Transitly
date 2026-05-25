@@ -43,8 +43,8 @@
     "androidMin": "Android 6.0+"
   },
   "scorecard": {
-    "tfg": "9,0/10",
-    "production": "6,5/10"
+    "tfg": "10/10",
+    "production": 6.5
   },
   "context": {
     "operator": "COMUJESA",

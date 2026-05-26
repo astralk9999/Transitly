@@ -92,8 +92,9 @@
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">set fontScale(double value) {
-  if (_fontScale == value) return;
-  _fontScale = value;
+  final clamped = value.clamp(0.85, 1.4);
+  if (_fontScale == clamped) return;
+  _fontScale = clamped;
   notifyListeners();
   unawaited(_persist());
 }</code></pre>

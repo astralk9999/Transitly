@@ -84,8 +84,18 @@
       : ThemeData.light().textTheme;
 
   final textTheme = dyslexiaFontEnabled
-      ? GoogleFonts.atkinsonHyperlegibleTextTheme(baseTextTheme)
-      : baseTextTheme.apply(fontFamily: &#39;DM Sans&#39;);
+      ? baseTextTheme.apply(
+          fontFamily: &#39;Atkinson Hyperlegible&#39;,
+          bodyColor: c.textHi,
+          displayColor: c.textHi,
+          fontSizeFactor: fontScale,
+        )
+      : baseTextTheme.apply(
+          fontFamily: &#39;DM Sans&#39;,
+          bodyColor: c.textHi,
+          displayColor: c.textHi,
+          fontSizeFactor: fontScale,
+        );
 
   final bodyFont = _dmSansStyle;
 
@@ -113,11 +123,7 @@
       surfaceContainerHighest: c.bgRaised,
     ),
 
-    textTheme: textTheme.apply(
-      bodyColor: c.textHi,
-      displayColor: c.textHi,
-      fontSizeFactor: fontScale,
-    ),
+    textTheme: textTheme,
 
     appBarTheme: AppBarTheme(
       backgroundColor: c.bgRoot,

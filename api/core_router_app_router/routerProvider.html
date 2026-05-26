@@ -351,11 +351,11 @@
             _slide(state, const CustomPaletteScreen()),
       ),
 
-      &#47;&#47; ── Accessible buses ──
+      &#47;&#47; ── Nearby buses ──
       GoRoute(
-        path: &#39;&#47;accessible-buses&#39;,
+        path: &#39;&#47;nearby-buses&#39;,
         pageBuilder: (context, state) =&gt;
-            _slide(state, const AccessibleBusesScreen()),
+            _slide(state, const NearbyBusesScreen()),
       ),
 
       &#47;&#47; ── Notifications ──
@@ -379,6 +379,29 @@
           pageBuilder: (context, state) =&gt;
               _slide(state, const ComponentShowcaseScreen()),
         ),
+
+      &#47;&#47; ── Place search ──
+      GoRoute(
+        path: &#39;&#47;search&#47;places&#39;,
+        pageBuilder: (context, state) =&gt;
+            _slide(state, const PlaceSearchScreen()),
+      ),
+
+      &#47;&#47; ── Route planner ──
+      GoRoute(
+        path: &#39;&#47;route-plan&#39;,
+        pageBuilder: (context, state) {
+          final extra = state.extra as Map&lt;String, dynamic&gt;;
+          return _slide(
+            state,
+            RoutePlanResultsScreen(
+              fromStopId: extra[&#39;fromStopId&#39;] as String?,
+              toStopId: extra[&#39;toStopId&#39;] as String,
+              useMyLocation: extra[&#39;useMyLocation&#39;] as bool? ?? false,
+            ),
+          );
+        },
+      ),
     ],
   );
 });</code></pre>

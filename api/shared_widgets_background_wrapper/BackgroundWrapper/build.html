@@ -139,6 +139,28 @@ Widget build(BuildContext context, WidgetRef ref) {
       :final alignment,
     ) =&gt;
       _buildImageBg(assetPath, fit, alignment, opacity, child),
+    ProceduralBackground(:final pattern) =&gt; Stack(
+      fit: StackFit.expand,
+      children: [
+        Opacity(
+          opacity: opacity,
+          child: CustomPaint(
+            painter: pattern == ProceduralPattern.softGrid
+                ? SoftGridPainter(
+                    lineColor:
+                        palette.scheme.accent.withValues(alpha: 0.08),
+                    bgColor: palette.scheme.bgRoot,
+                  )
+                : TopoLinesPainter(
+                    lineColor:
+                        palette.scheme.accent.withValues(alpha: 0.06),
+                    bgColor: palette.scheme.bgRoot,
+                  ),
+          ),
+        ),
+        child,
+      ],
+    ),
   };
 }</code></pre>
 </section>

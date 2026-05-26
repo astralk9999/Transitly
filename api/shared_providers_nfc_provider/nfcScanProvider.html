@@ -69,7 +69,19 @@
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">final nfcScanProvider =
     StateNotifierProvider&lt;NfcScanNotifier, NfcScanState&gt;((ref) {
-  return NfcScanNotifier(ref.read(nfcCardServiceProvider));
+  final notifier = NfcScanNotifier(
+    ref.read(nfcCardServiceProvider),
+    ref.read(nfcBalanceRepositoryProvider),
+  );
+
+  &#47;&#47; When coming back online, sync pending scans to Supabase.
+  ref.listen&lt;bool&gt;(isOfflineProvider, (prev, current) {
+    if (prev == true &amp;&amp; current == false) {
+      ref.read(nfcBalanceRepositoryProvider).syncPending();
+    }
+  });
+
+  return notifier;
 });</code></pre>
 </section>
 

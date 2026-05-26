@@ -113,10 +113,6 @@ Widget build(BuildContext context, WidgetRef ref) {
   final themeNotifier = ref.watch(themeNotifierProvider);
   final locale = ref.watch(localeProvider);
   final router = ref.watch(routerProvider);
-  &#47;&#47; `themeModeProvider` es la fuente de verdad que cambian los toggles del
-  &#47;&#47; appearance section. `themeNotifier.brightness` es estado interno de
-  &#47;&#47; paleta — antes app.dart lo leía y nunca cambiaba al toggle, por eso el
-  &#47;&#47; modo claro solo afectaba al mapa (que sí usa themeModeProvider).
   final themeMode = ref.watch(themeModeProvider);
 
   return MaterialApp.router(
@@ -130,7 +126,12 @@ Widget build(BuildContext context, WidgetRef ref) {
     supportedLocales: AppLocalizations.supportedLocales,
     routerConfig: router,
     builder: (context, child) {
-      Widget result = BackgroundWrapper(child: child!);
+      final rebuildKey = &#39;${themeNotifier.visualKey}|${themeMode.name}&#39;;
+
+      Widget result = KeyedSubtree(
+        key: ValueKey(rebuildKey),
+        child: BackgroundWrapper(child: child!),
+      );
 
       if (themeNotifier.colorBlindMode != ColorBlindMode.none) {
         result = ColorFiltered(
@@ -141,16 +142,23 @@ Widget build(BuildContext context, WidgetRef ref) {
         );
       }
 
-      &#47;&#47; `.scale(1.0)` devuelve el factor multiplicador (no un tamaño en px).
-      &#47;&#47; Usar `.scale(14)` aquí multiplicaba todo por 14× antes del clamp y
-      &#47;&#47; dejaba el texto fijo en 2.5× → overflows masivos.
-      final systemScale = MediaQuery.textScalerOf(context).scale(1.0);
-      final combined = (systemScale * themeNotifier.fontScale).clamp(0.8, 2.5);
+      final rawSystem = MediaQuery.textScalerOf(context).scale(1.0);
+      final systemScale =
+          rawSystem.isFinite &amp;&amp; rawSystem &gt; 0 ? rawSystem : 1.0;
+      final combined =
+          (systemScale * themeNotifier.fontScale).clamp(0.8, 2.5);
+
+      if (!combined.isFinite || combined &lt;= 0) {
+        return result;
+      }
+      final mq = MediaQuery.of(context);
       return FocusTraversalGroup(
         policy: WidgetOrderTraversalPolicy(),
         child: MediaQuery(
-          data: MediaQuery.of(context).copyWith(
+          data: mq.copyWith(
             textScaler: TextScaler.linear(combined),
+            disableAnimations:
+                themeNotifier.reduceMotion || mq.disableAnimations,
           ),
           child: result,
         ),

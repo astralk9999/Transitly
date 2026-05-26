@@ -80,6 +80,9 @@
       activeUntil: j[&#39;endDate&#39;] != null
           ? DateTime.tryParse(j[&#39;endDate&#39;] as String)
           : null,
+      lat: (j[&#39;lat&#39;] as num?)?.toDouble(),
+      lng: (j[&#39;lng&#39;] as num?)?.toDouble(),
+      radiusMeters: (j[&#39;radiusMeters&#39;] as num?)?.toDouble(),
     );</code></pre>
 </section>
 

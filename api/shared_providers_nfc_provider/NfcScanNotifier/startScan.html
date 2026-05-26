@@ -75,7 +75,8 @@
   await _service.startScan(
     onResult: (result) {
       PostHogAnalyticsService.nfcReadSuccess(&#39;mifare_classic&#39;, result.balance);
-      final history = [result, ...state.scanHistory].take(_maxHistory).toList();
+      _repo.saveScan(result);
+      final history = _repo.getHistory();
       state = NfcScanState(
         status: NfcScanStatus.success,
         result: result,

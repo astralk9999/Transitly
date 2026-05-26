@@ -76,6 +76,8 @@
 }) {
   final isDark = Theme.of(context).brightness == Brightness.dark;
   final c = TransitColorScheme.of(isDark);
+  final container = ProviderScope.containerOf(context);
+  final l10n = AppLocalizations.of(context);
 
   &#47;&#47; Find all routes that pass through this stop
   final routesAtStop = &lt;String&gt;[];
@@ -95,6 +97,10 @@
       borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
     ),
     builder: (ctx) {
+      final isFav = container
+          .read(userFavoriteStopsProvider)
+          .contains(stop.id);
+
       return Padding(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
         child: Column(
@@ -113,8 +119,40 @@
                 ),
               ),
             ),
-            &#47;&#47; Stop name
-            Text(stop.name, style: TransitTypography.heading(c.textHi)),
+            &#47;&#47; Stop name + star button
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    stop.name,
+                    style: TransitTypography.heading(c.textHi),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(
+                    isFav ? Icons.star : Icons.star_border,
+                    color: c.accent,
+                  ),
+                  tooltip: l10n.actionToggleStopFavorite,
+                  onPressed: () {
+                    container
+                        .read(userFavoriteStopsProvider.notifier)
+                        .toggleStop(stop.id);
+                    ScaffoldMessenger.of(ctx).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          isFav
+                              ? l10n.stopRemovedFromFavorites
+                              : l10n.stopAddedToFavorites,
+                        ),
+                        duration: const Duration(seconds: 1),
+                      ),
+                    );
+                    Navigator.of(ctx).pop();
+                  },
+                ),
+              ],
+            ),
             const SizedBox(height: 4),
             &#47;&#47; Municipality + code
             Text(

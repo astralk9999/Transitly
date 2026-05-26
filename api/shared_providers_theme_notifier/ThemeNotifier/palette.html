@@ -72,17 +72,19 @@
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">AppPalette get palette {
   if (_paletteId == _customPaletteId &amp;&amp; _customColors.isNotEmpty) {
+    final scheme = TransitCustomColors(
+      primary: _customColors[&#39;primary&#39;] ?? const Color(0xFF977DDF),
+      secondary: _customColors[&#39;secondary&#39;] ?? const Color(0xFF6C63FF),
+      bgRoot: _customColors[&#39;bgRoot&#39;] ?? const Color(0xFF08081A),
+      bgSurface: _customColors[&#39;bgSurface&#39;] ?? const Color(0xFF10102A),
+      textHi: _customColors[&#39;textHi&#39;] ?? const Color(0xFFF0F0FA),
+    );
     return AppPalette(
       id: _customPaletteId,
       name: &#39;Custom&#39;,
       isDark: true,
-      scheme: TransitCustomColors(
-        primary: _customColors[&#39;primary&#39;] ?? const Color(0xFF977DDF),
-        secondary: _customColors[&#39;secondary&#39;] ?? const Color(0xFF6C63FF),
-        bgRoot: _customColors[&#39;bgRoot&#39;] ?? const Color(0xFF08081A),
-        bgSurface: _customColors[&#39;bgSurface&#39;] ?? const Color(0xFF10102A),
-        textHi: _customColors[&#39;textHi&#39;] ?? const Color(0xFFF0F0FA),
-      ),
+      scheme: scheme,
+      darkScheme: scheme,
     );
   }
   return paletteFromId(_paletteId);

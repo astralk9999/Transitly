@@ -189,12 +189,20 @@
 
   final mockData = await MockDataService.init();
 
+  final container = ProviderContainer(
+    observers: const [TransitProviderObserver()],
+    overrides: [
+      mockDataServiceProvider.overrideWithValue(mockData),
+    ],
+  );
+  registerAppContainer(container);
+  TransitColorScheme.registerResolver(
+    (isDark) =&gt; resolveActiveScheme(isDark),
+  );
+
   runApp(
-    ProviderScope(
-      observers: const [TransitProviderObserver()],
-      overrides: [
-        mockDataServiceProvider.overrideWithValue(mockData),
-      ],
+    UncontrolledProviderScope(
+      container: container,
       child: const _TransitlyAppWithLifecycle(),
     ),
   );

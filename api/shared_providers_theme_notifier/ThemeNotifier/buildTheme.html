@@ -68,13 +68,17 @@
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">ThemeData buildTheme(Brightness brightness) {
+  final p = palette;
+  final scheme = brightness == Brightness.dark
+      ? (p.darkScheme ?? const TransitDarkColors())
+      : (p.lightScheme ?? const TransitLightColors());
   final base = buildTransitTheme(
-    palette.scheme,
+    scheme,
     fontScale: _fontScale,
     dyslexiaFontEnabled: _dyslexiaFontEnabled,
   );
   if (_highContrast) {
-    return HighContrastTheme.apply(base, palette.scheme);
+    return HighContrastTheme.apply(base, scheme);
   }
   return base;
 }</code></pre>

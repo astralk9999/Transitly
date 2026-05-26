@@ -61,8 +61,8 @@
         </section>
         
 <section class="desc markdown">
-  <p>Avisos activos para las rutas favoritas del usuario.</p>
-<p>Combina <a href="../shared_providers_derived_home_providers/homeFavRouteIdsProvider.html">homeFavRouteIdsProvider</a> con <code>mockData.getAlertsForRoute</code>.</p>
+  <p>Avisos activos para las rutas favoritas del usuario, filtrados por
+proximidad geográfica cuando la alerta tiene restricción de zona.</p>
 </section>
 
         
@@ -71,11 +71,11 @@
   <pre class="language-dart"><code class="language-dart">final homeFavAlertsProvider = Provider.autoDispose&lt;List&lt;AlertModel&gt;&gt;((ref) {
   final mockData = ref.watch(mockDataServiceProvider);
   final favIds = ref.watch(homeFavRouteIdsProvider);
-  final alerts = &lt;AlertModel&gt;[];
-  for (final routeId in favIds) {
-    alerts.addAll(mockData.getAlertsForRoute(routeId));
-  }
-  return alerts;
+  final userLoc = ref.watch(userLocationStreamProvider).valueOrNull;
+  return mockData.getAlertsAffecting(
+    userLocation: userLoc,
+    favoriteRouteIds: favIds.toList(),
+  );
 });</code></pre>
 </section>
 

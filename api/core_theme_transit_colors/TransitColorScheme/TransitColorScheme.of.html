@@ -63,8 +63,13 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">factory TransitColorScheme.of(bool isDark) =&gt;
-    isDark ? const TransitDarkColors() : const TransitLightColors();</code></pre>
+  <pre class="language-dart"><code class="language-dart">factory TransitColorScheme.of(bool isDark) {
+  final resolve = _resolver;
+  if (resolve != null) {
+    return resolve(isDark);
+  }
+  return isDark ? const TransitDarkColors() : const TransitLightColors();
+}</code></pre>
 </section>
 
 

@@ -1,7 +1,7 @@
 name: transitly
 description: "Demo academica (TFG) de companion de transporte publico. Datos mock de COMUJESA (Jerez) con capa Supabase opcional (auth, repos, push, telemetria). Tracking estimado + GPS de conductor (GTFS-Realtime es trabajo futuro), comunidad (incidencias, sugerencias, votos), offline-first, accesibilidad WCAG 2.1 AA parcial, panel de administracion y moderacion."
 publish_to: 'none'
-version: 1.0.0+1
+version: 1.2.0+3
 
 environment:
   sdk: ^3.9.2

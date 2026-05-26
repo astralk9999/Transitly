@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/transit_colors.dart';
@@ -6,6 +7,7 @@ import '../../../core/theme/transit_typography.dart';
 import '../../../data/mock/mock_data_service.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/models/stop_model.dart';
+import '../../../shared/providers/user_favorites_provider.dart';
 
 void showStopInfoSheet(
   BuildContext context, {
@@ -14,6 +16,8 @@ void showStopInfoSheet(
 }) {
   final isDark = Theme.of(context).brightness == Brightness.dark;
   final c = TransitColorScheme.of(isDark);
+  final container = ProviderScope.containerOf(context);
+  final l10n = AppLocalizations.of(context);
 
   // Find all routes that pass through this stop
   final routesAtStop = <String>[];
@@ -33,6 +37,10 @@ void showStopInfoSheet(
       borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
     ),
     builder: (ctx) {
+      final isFav = container
+          .read(userFavoriteStopsProvider)
+          .contains(stop.id);
+
       return Padding(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
         child: Column(
@@ -51,8 +59,40 @@ void showStopInfoSheet(
                 ),
               ),
             ),
-            // Stop name
-            Text(stop.name, style: TransitTypography.heading(c.textHi)),
+            // Stop name + star button
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    stop.name,
+                    style: TransitTypography.heading(c.textHi),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(
+                    isFav ? Icons.star : Icons.star_border,
+                    color: c.accent,
+                  ),
+                  tooltip: l10n.actionToggleStopFavorite,
+                  onPressed: () {
+                    container
+                        .read(userFavoriteStopsProvider.notifier)
+                        .toggleStop(stop.id);
+                    ScaffoldMessenger.of(ctx).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          isFav
+                              ? l10n.stopRemovedFromFavorites
+                              : l10n.stopAddedToFavorites,
+                        ),
+                        duration: const Duration(seconds: 1),
+                      ),
+                    );
+                    Navigator.of(ctx).pop();
+                  },
+                ),
+              ],
+            ),
             const SizedBox(height: 4),
             // Municipality + code
             Text(

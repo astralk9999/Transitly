@@ -8,8 +8,6 @@ final prefabBackgrounds = <AppBackground>[
   const GradientBackground(
     [Color(0xFF1a1a2e), Color(0xFF16213e), Color(0xFF0f3460)],
   ),
-  const ImageBackground('assets/bg/soft_grid.png'),
-  const ImageBackground('assets/bg/topo_lines.png'),
 ];
 
 AppBackground backgroundFromId(String id) =>

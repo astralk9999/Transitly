@@ -12,6 +12,7 @@ class StorageRepository {
 
   int fileSize(String boxName) {
     try {
+      if (!Hive.isBoxOpen(boxName)) return 0;
       final box = Hive.box(boxName);
       final path = box.path;
       if (path != null) return File(path).lengthSync();
@@ -23,6 +24,7 @@ class StorageRepository {
 
   String? boxPath(String boxName) {
     try {
+      if (!Hive.isBoxOpen(boxName)) return null;
       final box = Hive.box(boxName);
       return box.path;
     } catch (e) {

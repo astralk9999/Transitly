@@ -6,7 +6,8 @@ import 'transit_spacing.dart';
 TextStyle _dmSansStyle({Color? color, double? fontSize}) => TextStyle(
       fontFamily: 'DM Sans',
       color: color,
-      fontSize: fontSize,
+      fontSize: fontSize ?? 14,
+      package: null,
     );
 
 ThemeData buildTransitTheme(

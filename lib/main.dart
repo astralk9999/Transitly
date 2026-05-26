@@ -8,6 +8,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'app.dart';
 import 'core/env.dart';
+import 'core/theme/transit_colors.dart';
 import 'core/utils/app_logger.dart';
 import 'core/utils/error_boundary.dart';
 import 'core/utils/sentry_setup.dart';
@@ -20,6 +21,7 @@ import 'data/privacy_consent/privacy_consent_repository.dart';
 import 'data/push/firebase_setup.dart';
 import 'data/push/push_service.dart';
 import 'features/error/env_error_screen.dart';
+import 'shared/providers/active_palette_provider.dart';
 
 /// F26 switch point: cuando las fuentes se empaqueten como assets locales,
 /// poner `true` (y seguir `docs/FONTS_F26.md`). Mientras es `false`,
@@ -149,12 +151,20 @@ void main() async {
 
   final mockData = await MockDataService.init();
 
+  final container = ProviderContainer(
+    observers: const [TransitProviderObserver()],
+    overrides: [
+      mockDataServiceProvider.overrideWithValue(mockData),
+    ],
+  );
+  registerAppContainer(container);
+  TransitColorScheme.registerResolver(
+    (isDark) => resolveActiveScheme(isDark),
+  );
+
   runApp(
-    ProviderScope(
-      observers: const [TransitProviderObserver()],
-      overrides: [
-        mockDataServiceProvider.overrideWithValue(mockData),
-      ],
+    UncontrolledProviderScope(
+      container: container,
       child: const _TransitlyAppWithLifecycle(),
     ),
   );

@@ -1222,53 +1222,65 @@ abstract class AppLocalizations {
   /// **'Alto contraste'**
   String get accessibilityHighContrast;
 
-  /// Accessible buses screen title
+  /// No description provided for @nearbyBusesTitle.
   ///
   /// In es, this message translates to:
   /// **'Buses cercanos'**
-  String get accessibleBusesTitle;
+  String get nearbyBusesTitle;
 
-  /// Accessible buses empty state title
+  /// No description provided for @nearbyBusesEmpty.
   ///
   /// In es, this message translates to:
   /// **'Sin buses activos'**
-  String get accessibleBusesEmpty;
+  String get nearbyBusesEmpty;
 
-  /// Accessible buses empty state subtitle
+  /// No description provided for @nearbyBusesNoActiveBuses.
   ///
   /// In es, this message translates to:
   /// **'No se encontraron buses en operación en este momento'**
-  String get accessibleBusesNoActiveBuses;
+  String get nearbyBusesNoActiveBuses;
 
-  /// Accessible buses error message
+  /// No description provided for @nearbyBusesError.
   ///
   /// In es, this message translates to:
   /// **'Error al cargar buses'**
-  String get accessibleBusesError;
+  String get nearbyBusesError;
 
-  /// Accessible buses next stop label
+  /// No description provided for @nearbyBusesNextStop.
   ///
   /// In es, this message translates to:
   /// **'Próxima parada'**
-  String get accessibleBusesNextStop;
+  String get nearbyBusesNextStop;
 
-  /// Accessible buses source tag: estimated
+  /// No description provided for @nearbyBusesSourceEstimated.
   ///
   /// In es, this message translates to:
   /// **'Estimado'**
-  String get accessibleBusesSourceEstimated;
+  String get nearbyBusesSourceEstimated;
 
-  /// Accessible buses source tag: driver
+  /// No description provided for @nearbyBusesSourceDriver.
   ///
   /// In es, this message translates to:
   /// **'Conductor'**
-  String get accessibleBusesSourceDriver;
+  String get nearbyBusesSourceDriver;
 
-  /// Accessible buses link in home tab
+  /// No description provided for @nearbyBusesLinkLabel.
   ///
   /// In es, this message translates to:
   /// **'Ver lista de buses'**
-  String get accessibleBusesLinkLabel;
+  String get nearbyBusesLinkLabel;
+
+  /// No description provided for @nearbyBusesEmptyTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay buses cerca'**
+  String get nearbyBusesEmptyTitle;
+
+  /// No description provided for @nearbyBusesEmptySubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Activa la ubicación para ver los buses operando cerca de ti.'**
+  String get nearbyBusesEmptySubtitle;
 
   /// Onboarding skip button
   ///
@@ -4304,6 +4316,36 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Marca una línea como favorita'**
   String get homeMarkLineFavoriteCTA;
+
+  /// No description provided for @appearanceColorBlindSheetTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Modo daltonismo'**
+  String get appearanceColorBlindSheetTitle;
+
+  /// No description provided for @homeNearbyBusesSection.
+  ///
+  /// In es, this message translates to:
+  /// **'BUSES CERCANOS'**
+  String get homeNearbyBusesSection;
+
+  /// No description provided for @appearancePaletteName.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre de la paleta'**
+  String get appearancePaletteName;
+
+  /// No description provided for @appearanceCustomPalettesSection.
+  ///
+  /// In es, this message translates to:
+  /// **'Mis paletas'**
+  String get appearanceCustomPalettesSection;
+
+  /// No description provided for @appearanceDeletePaletteConfirm.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Eliminar esta paleta?'**
+  String get appearanceDeletePaletteConfirm;
 }
 
 class _AppLocalizationsDelegate

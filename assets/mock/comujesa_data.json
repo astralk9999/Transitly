@@ -57667,90 +57667,7 @@
       }
     }
   ],
-  "activeTrips": [
-    {
-      "id": "trip-001",
-      "lineCode": "L1",
-      "vehicleId": "BUS-JER-042",
-      "status": "inRoute",
-      "delay": 0,
-      "delayLabel": "A tiempo",
-      "currentStopIndex": 4,
-      "currentStopName": "Descalzos",
-      "nextStopName": "Pz. Madre de Dios",
-      "capacity": "halfFull",
-      "capacityLabel": "Medio lleno",
-      "heading": 180,
-      "speed": 22,
-      "lastUpdated": "2026-04-13T09:42:00Z",
-      "currentPosition": {
-        "lat": 36.68,
-        "lng": -6.132
-      },
-      "driverName": "Ana Martín"
-    },
-    {
-      "id": "trip-002",
-      "lineCode": "L3",
-      "vehicleId": "BUS-JER-018",
-      "status": "inRoute",
-      "delay": 5,
-      "delayLabel": "5 min de retraso",
-      "currentStopIndex": 6,
-      "currentStopName": "La Plata",
-      "nextStopName": "Perpetuo Socorro",
-      "capacity": "full",
-      "capacityLabel": "Lleno",
-      "heading": 45,
-      "speed": 15,
-      "lastUpdated": "2026-04-13T09:40:00Z",
-      "currentPosition": {
-        "lat": 36.6969,
-        "lng": -6.1445
-      },
-      "driverName": "Miguel Torres"
-    },
-    {
-      "id": "trip-003",
-      "lineCode": "L5",
-      "vehicleId": "BUS-JER-055",
-      "status": "inRoute",
-      "delay": 0,
-      "delayLabel": "A tiempo",
-      "currentStopIndex": 2,
-      "currentStopName": "Arcos",
-      "nextStopName": "Avd. la Paz",
-      "capacity": "seatsAvailable",
-      "capacityLabel": "Asientos libres",
-      "heading": 270,
-      "speed": 28,
-      "lastUpdated": "2026-04-13T09:43:00Z",
-      "currentPosition": {
-        "lat": 36.6828,
-        "lng": -6.1355
-      },
-      "driverName": "Francisco Ruiz"
-    },
-    {
-      "id": "trip-004",
-      "lineCode": "L8",
-      "vehicleId": "BUS-JER-071",
-      "status": "cancelled",
-      "delay": null,
-      "delayLabel": "Cancelado",
-      "currentStopIndex": null,
-      "currentStopName": null,
-      "nextStopName": null,
-      "capacity": null,
-      "capacityLabel": "Sin servicio",
-      "heading": null,
-      "speed": 0,
-      "lastUpdated": "2026-04-13T08:15:00Z",
-      "currentPosition": null,
-      "driverName": null,
-      "cancellationReason": "Avería mecánica"
-    }
-  ],
+  "activeTrips": [],
   "alerts": [
     {
       "id": "alert-001",
@@ -57761,6 +57678,9 @@
       "startDate": "2025-09-08",
       "endDate": null,
       "isActive": true,
+      "lat": 36.6818,
+      "lng": -6.1375,
+      "radiusMeters": 3000,
       "createdAt": "2025-09-08T06:00:00Z"
     },
     {
@@ -57772,6 +57692,9 @@
       "startDate": "2026-03-15",
       "endDate": null,
       "isActive": true,
+      "lat": 36.6825,
+      "lng": -6.1390,
+      "radiusMeters": 800,
       "affectedStops": [
         "Villamarta"
       ],

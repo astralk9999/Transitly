@@ -82,7 +82,7 @@ class ProfileHeaderCard extends ConsumerWidget {
               ),
             ),
             GestureDetector(
-              onTap: () => context.push('/signin'),
+              onTap: () => context.push('/sign-in'),
               child: Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 8),

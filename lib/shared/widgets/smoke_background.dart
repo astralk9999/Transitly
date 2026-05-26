@@ -106,19 +106,20 @@ class _SmokeBackgroundState extends State<SmokeBackground>
             isDark: widget.isDark,
           );
 
-    final content = RepaintBoundary(
-      child: SizedBox.expand(
-        child: CustomPaint(
-          painter: painter,
-          child: widget.child ?? const SizedBox.expand(),
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        Opacity(
+          opacity: widget.opacity.clamp(0.0, 1.0),
+          child: RepaintBoundary(
+            child: SizedBox.expand(
+              child: CustomPaint(painter: painter),
+            ),
+          ),
         ),
-      ),
+        if (widget.child != null) widget.child!,
+      ],
     );
-
-    if (widget.opacity < 1.0) {
-      return Opacity(opacity: widget.opacity, child: content);
-    }
-    return content;
   }
 }
 

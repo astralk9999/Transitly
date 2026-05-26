@@ -11,10 +11,11 @@
 flutter pub get
 flutter gen-l10n                          # Obligatorio: genera lib/l10n/generated/
 tool/build.sh                             # Codegen freezed + json_serializable
-flutter run                               # Dispositivo Android o iOS conectado
+flutter run --dart-define-from-file=dart_defines.json  # Necesita dart-defines (ver abajo)
 ```
 
 - `.env` es **obligatorio** (copiar de `.env.example`). Sin `SUPABASE_URL` y `SUPABASE_ANON_KEY` la app crashea al `EnvErrorScreen`.
+- ⚠️ **`dart_defines.json` es OBLIGATORIO para `flutter run` y `flutter build`.** Se genera desde `.env` una sola vez con: `Get-Content .env | Where-Object { $_ -match '^([A-Z_]+)=(.*)$' } | ForEach-Object { $env[$matches[1]] = $matches[2] }; $env | ConvertTo-Json | Set-Content dart_defines.json -Encoding UTF8`. Sin este archivo, la app crashea en arranque con `EnvException(missing, key=SUPABASE_URL)`. El archivo está en `.gitignore`. VSCode ya está configurado (`.vscode/launch.json`) para usarlo automáticamente. Para CLI siempre pasar `--dart-define-from-file=dart_defines.json`.
 - `tool/build.sh` = `dart run build_runner build --delete-conflicting-outputs`. Usar `tool/build_watch.sh` durante edición de modelos.
 - `flutter gen-l10n` debe ejecutarse al menos una vez tras checkout fresco.
 

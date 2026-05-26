@@ -8,7 +8,7 @@ import '../../core/theme/transit_typography.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../models/stop_model.dart';
 import 'glass_card.dart';
-import 'pressable.dart';
+
 import 'transit_button.dart';
 
 class RouteSearchBar extends ConsumerStatefulWidget {
@@ -279,67 +279,72 @@ class _RouteSearchBarState extends ConsumerState<RouteSearchBar> {
     bool disabled = false,
   }) {
     final isActive = _useMyLocation && !disabled;
-    return Pressable(
-      enabled: !disabled,
-      onTap: () {
-        if (disabled) return;
-        setState(() {
-          _useMyLocation = !_useMyLocation;
-          if (_useMyLocation) {
-            _fromController.text = '📍 ${l10n.myLocation}';
-            _selectedOrigin = null;
-            _showFromSuggestions = false;
-          } else {
-            _fromController.clear();
-            _selectedOrigin = null;
-          }
-        });
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: TransitSpacing.space12,
-          vertical: TransitSpacing.space8,
-        ),
-        decoration: BoxDecoration(
-          color: isActive
-              ? c.accent.withValues(alpha: 0.15)
-              : disabled
-                  ? c.bgSurface.withValues(alpha: 0.5)
-                  : c.bgSurface.withValues(alpha: 0.0),
-          borderRadius: BorderRadius.circular(TransitSpacing.radiusXl + 8),
-          border: Border.all(
-            color: isActive
-                ? c.accent.withValues(alpha: 0.4)
-                : disabled
-                    ? c.border.withValues(alpha: 0.2)
-                    : c.border.withValues(alpha: 0.3),
-            width: TransitSpacing.strokeNormal,
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: InkResponse(
+        containedInkWell: true,
+        radius: TransitSpacing.space24,
+        onTap: disabled
+            ? null
+            : () {
+                setState(() {
+                  _useMyLocation = !_useMyLocation;
+                  if (_useMyLocation) {
+                    _fromController.text = '📍 ${l10n.myLocation}';
+                    _selectedOrigin = null;
+                    _showFromSuggestions = false;
+                  } else {
+                    _fromController.clear();
+                    _selectedOrigin = null;
+                  }
+                });
+              },
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: TransitSpacing.space8,
+            vertical: TransitSpacing.space4,
           ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.my_location,
-              size: 18,
+          decoration: BoxDecoration(
+            color: isActive
+                ? c.accent.withValues(alpha: 0.15)
+                : disabled
+                    ? c.bgSurface.withValues(alpha: 0.5)
+                    : c.bgRaised.withValues(alpha: 0.6),
+            borderRadius: BorderRadius.circular(TransitSpacing.radiusMd),
+            border: Border.all(
               color: isActive
                   ? c.accent
                   : disabled
-                      ? c.textDisabled
-                      : c.textMid,
+                      ? c.border.withValues(alpha: 0.2)
+                      : c.border,
+              width: TransitSpacing.strokeThin,
             ),
-            const SizedBox(width: TransitSpacing.space8),
-            Text(
-              l10n.useMyLocation,
-              style: TransitTypography.bodySecondary(
-                isActive
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.my_location,
+                size: 14,
+                color: isActive
                     ? c.accent
                     : disabled
                         ? c.textDisabled
                         : c.textMid,
               ),
-            ),
-          ],
+              const SizedBox(width: TransitSpacing.space4),
+              Text(
+                l10n.useMyLocation,
+                style: TransitTypography.bodySmall(
+                  isActive
+                      ? c.accent
+                      : disabled
+                          ? c.textDisabled
+                          : c.textMid,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

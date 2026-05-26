@@ -206,14 +206,16 @@
   "appearanceHighContrastSubtitle": "Thicker borders and higher text contrast",
   "accessibilityHighContrast": "High contrast",
 
-  "accessibleBusesTitle": "Nearby buses",
-  "accessibleBusesEmpty": "No active buses",
-  "accessibleBusesNoActiveBuses": "No buses found in operation right now",
-  "accessibleBusesError": "Error loading buses",
-  "accessibleBusesNextStop": "Next stop",
-  "accessibleBusesSourceEstimated": "Estimated",
-  "accessibleBusesSourceDriver": "Driver",
-  "accessibleBusesLinkLabel": "View bus list",
+  "nearbyBusesTitle": "Nearby buses",
+  "nearbyBusesEmpty": "No active buses",
+  "nearbyBusesNoActiveBuses": "No buses found in operation right now",
+  "nearbyBusesError": "Error loading buses",
+  "nearbyBusesNextStop": "Next stop",
+  "nearbyBusesSourceEstimated": "Estimated",
+  "nearbyBusesSourceDriver": "Driver",
+  "nearbyBusesLinkLabel": "View bus list",
+  "nearbyBusesEmptyTitle": "No nearby buses",
+  "nearbyBusesEmptySubtitle": "Enable location to see buses operating near you.",
 
   "onboardingSkip": "Skip",
   "onboardingNext": "Next",
@@ -863,5 +865,10 @@
   "homeNoUpcomingDepartures": "No upcoming departures",
   "stopAddedToFavorites": "Stop added to favorites",
   "stopRemovedFromFavorites": "Stop removed from favorites",
-  "homeMarkLineFavoriteCTA": "Mark a line as favorite"
+  "homeMarkLineFavoriteCTA": "Mark a line as favorite",
+  "appearanceColorBlindSheetTitle": "Color blindness mode",
+  "homeNearbyBusesSection": "NEARBY BUSES",
+  "appearancePaletteName": "Palette name",
+  "appearanceCustomPalettesSection": "My palettes",
+  "appearanceDeletePaletteConfirm": "Delete this palette?"
 }

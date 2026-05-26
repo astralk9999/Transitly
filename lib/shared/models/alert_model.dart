@@ -17,6 +17,9 @@ abstract class AlertModel with _$AlertModel {
     required String body,
     DateTime? activeFrom,
     DateTime? activeUntil,
+    double? lat,
+    double? lng,
+    double? radiusMeters,
   }) = _AlertModel;
 
   static AlertModel fromJson(Map<String, dynamic> j) => AlertModel(
@@ -32,6 +35,9 @@ abstract class AlertModel with _$AlertModel {
         activeUntil: j['endDate'] != null
             ? DateTime.tryParse(j['endDate'] as String)
             : null,
+        lat: (j['lat'] as num?)?.toDouble(),
+        lng: (j['lng'] as num?)?.toDouble(),
+        radiusMeters: (j['radiusMeters'] as num?)?.toDouble(),
       );
 
   Map<String, dynamic> toJson() => <String, dynamic>{
@@ -42,5 +48,8 @@ abstract class AlertModel with _$AlertModel {
         'description': body,
         if (activeFrom != null) 'startDate': activeFrom!.toIso8601String(),
         if (activeUntil != null) 'endDate': activeUntil!.toIso8601String(),
+        if (lat != null) 'lat': lat,
+        if (lng != null) 'lng': lng,
+        if (radiusMeters != null) 'radiusMeters': radiusMeters,
       };
 }

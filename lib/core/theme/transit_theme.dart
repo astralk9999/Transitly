@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'transit_colors.dart';
 import 'transit_spacing.dart';
 
@@ -25,8 +24,18 @@ ThemeData buildTransitTheme(
       : ThemeData.light().textTheme;
 
   final textTheme = dyslexiaFontEnabled
-      ? GoogleFonts.atkinsonHyperlegibleTextTheme(baseTextTheme)
-      : baseTextTheme.apply(fontFamily: 'DM Sans');
+      ? baseTextTheme.apply(
+          fontFamily: 'Atkinson Hyperlegible',
+          bodyColor: c.textHi,
+          displayColor: c.textHi,
+          fontSizeFactor: fontScale,
+        )
+      : baseTextTheme.apply(
+          fontFamily: 'DM Sans',
+          bodyColor: c.textHi,
+          displayColor: c.textHi,
+          fontSizeFactor: fontScale,
+        );
 
   final bodyFont = _dmSansStyle;
 
@@ -54,11 +63,7 @@ ThemeData buildTransitTheme(
       surfaceContainerHighest: c.bgRaised,
     ),
 
-    textTheme: textTheme.apply(
-      bodyColor: c.textHi,
-      displayColor: c.textHi,
-      fontSizeFactor: fontScale,
-    ),
+    textTheme: textTheme,
 
     appBarTheme: AppBarTheme(
       backgroundColor: c.bgRoot,

@@ -45,11 +45,31 @@ class HomeAlertItem extends StatelessWidget {
           ),
           const SizedBox(width: 12),
           Expanded(
-            child: Text(
-              alert.title,
-              style: TransitTypography.bodySecondary(c.textHi),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  alert.title,
+                  style: TransitTypography.bodySecondary(c.textHi),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                if (alert.radiusMeters != null) ...[
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Icon(Icons.location_on,
+                          size: 12, color: c.textMid),
+                      const SizedBox(width: 4),
+                      Text(
+                        '${alert.radiusMeters!.toInt()}m alrededor de zona',
+                        style: TransitTypography.bodySmall(c.textMid),
+                      ),
+                    ],
+                  ),
+                ],
+              ],
             ),
           ),
         ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/backgrounds/app_background.dart';
+import '../../core/theme/backgrounds/procedural_painters.dart';
 import '../providers/theme_notifier.dart';
 import 'smoke_background.dart';
 
@@ -41,6 +42,28 @@ class BackgroundWrapper extends ConsumerWidget {
         :final alignment,
       ) =>
         _buildImageBg(assetPath, fit, alignment, opacity, child),
+      ProceduralBackground(:final pattern) => Stack(
+        fit: StackFit.expand,
+        children: [
+          Opacity(
+            opacity: opacity,
+            child: CustomPaint(
+              painter: pattern == ProceduralPattern.softGrid
+                  ? SoftGridPainter(
+                      lineColor:
+                          palette.scheme.accent.withValues(alpha: 0.08),
+                      bgColor: palette.scheme.bgRoot,
+                    )
+                  : TopoLinesPainter(
+                      lineColor:
+                          palette.scheme.accent.withValues(alpha: 0.06),
+                      bgColor: palette.scheme.bgRoot,
+                    ),
+            ),
+          ),
+          child,
+        ],
+      ),
     };
   }
 

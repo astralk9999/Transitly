@@ -12,6 +12,7 @@ import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_spacing.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../data/fmtc/fmtc_provider.dart';
+import '../../../shared/providers/theme_notifier.dart';
 import '../../../data/geo/location_service.dart';
 import '../../../data/mock/mock_data_service.dart';
 import '../../../data/mock/mock_realtime_service.dart';
@@ -32,7 +33,6 @@ import '../../map/widgets/map_filter_sheet.dart';
 import '../../map/sheets/stop_info_sheet.dart';
 import '../../map/sheets/trip_info_sheet.dart';
 import '../../map/transit_map.dart';
-import '../../map/widgets/map_controls.dart';
 import '../../map/widgets/map_search_sheet.dart';
 import '../../map/layers/user_location_layer.dart';
 
@@ -320,7 +320,9 @@ class _MapTabState extends ConsumerState<MapTab> {
       body: Stack(
         children: [
           TransitMap(
+            key: ValueKey('${isDark ? "d" : "l"}-${ref.watch(themeNotifierProvider).mapStyle}'),
             isDark: isDark,
+            mapStyle: ref.watch(themeNotifierProvider).mapStyle,
             controller: _mapController,
             fmtcTileProvider: fmtcTp,
             additionalLayers: [
@@ -350,19 +352,7 @@ class _MapTabState extends ConsumerState<MapTab> {
               trip: trip,
               mockData: mockData,
             ),
-            overlayWidgets: [
-              MapControls(
-                isDark: isDark,
-                loadingCenter: _loadingCenter,
-                onCenter: _centerOnUser,
-                onFilter: () => showMapFilterSheet(context, ref),
-                onSearch: () => showMapSearchSheet(
-                  context,
-                  ref,
-                  _mapController,
-                ),
-              ),
-            ],
+            overlayWidgets: const [],
           ),
           if (offline)
             Positioned(
@@ -486,6 +476,18 @@ class _MapTabState extends ConsumerState<MapTab> {
               );
             },
           ),
+          _AnchoredMapControls(
+            sheetController: _sheetController,
+            isDark: isDark,
+            loadingCenter: _loadingCenter,
+            onCenter: _centerOnUser,
+            onFilter: () => showMapFilterSheet(context, ref),
+            onSearch: () => showMapSearchSheet(
+              context,
+              ref,
+              _mapController,
+            ),
+          ),
         ],
       ),
     );
@@ -607,6 +609,138 @@ class _MapTabState extends ConsumerState<MapTab> {
       0.22,
       duration: const Duration(milliseconds: 250),
       curve: Curves.easeInOut,
+    );
+  }
+}
+
+class _AnchoredMapControls extends StatefulWidget {
+  const _AnchoredMapControls({
+    required this.sheetController,
+    required this.isDark,
+    required this.loadingCenter,
+    required this.onCenter,
+    required this.onFilter,
+    required this.onSearch,
+  });
+
+  final DraggableScrollableController sheetController;
+  final bool isDark;
+  final bool loadingCenter;
+  final VoidCallback onCenter;
+  final VoidCallback onFilter;
+  final VoidCallback onSearch;
+
+  @override
+  State<_AnchoredMapControls> createState() => _AnchoredMapControlsState();
+}
+
+class _AnchoredMapControlsState extends State<_AnchoredMapControls> {
+  double _sheetFraction = 0.22;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.sheetController.addListener(_onSheet);
+  }
+
+  void _onSheet() {
+    if (!widget.sheetController.isAttached) return;
+    final s = widget.sheetController.size;
+    if ((s - _sheetFraction).abs() > 0.005) {
+      setState(() => _sheetFraction = s);
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.sheetController.removeListener(_onSheet);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final screenH = MediaQuery.of(context).size.height;
+    final sheetTop = screenH * (1 - _sheetFraction);
+    final fabBottom = screenH - sheetTop + 12;
+    final c = TransitColorScheme.of(widget.isDark);
+
+    return SafeArea(
+      child: Stack(
+        children: [
+          Positioned(
+            top: 16,
+            left: 16,
+            child: _FabButton(
+              icon: Icons.search,
+              colors: c,
+              onTap: widget.onSearch,
+            ),
+          ),
+          Positioned(
+            top: 16,
+            right: 16,
+            child: _FabButton(
+              icon: Icons.tune,
+              colors: c,
+              onTap: widget.onFilter,
+            ),
+          ),
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 80),
+            right: 16,
+            bottom: fabBottom,
+            child: _FabButton(
+              icon: Icons.my_location,
+              colors: c,
+              onTap: widget.loadingCenter ? () {} : widget.onCenter,
+              loading: widget.loadingCenter,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _FabButton extends StatelessWidget {
+  const _FabButton({
+    required this.icon,
+    required this.colors,
+    required this.onTap,
+    this.loading = false,
+  });
+
+  final IconData icon;
+  final TransitColorScheme colors;
+  final VoidCallback onTap;
+  final bool loading;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: loading ? null : onTap,
+      child: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          color: colors.bgSurface,
+          shape: BoxShape.circle,
+          border: Border.all(color: colors.border, width: 0.5),
+        ),
+        child: loading
+            ? Center(
+                child: SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor:
+                        AlwaysStoppedAnimation<Color>(colors.textHi),
+                  ),
+                ),
+              )
+            : Icon(icon, size: 20, color: colors.textHi),
+      ),
     );
   }
 }

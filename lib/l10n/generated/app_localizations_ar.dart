@@ -578,29 +578,36 @@ class AppLocalizationsAr extends AppLocalizations {
   String get accessibilityHighContrast => 'تباين عالي';
 
   @override
-  String get accessibleBusesTitle => 'الحافلات القريبة';
+  String get nearbyBusesTitle => 'الحافلات القريبة';
 
   @override
-  String get accessibleBusesEmpty => 'لا توجد حافلات نشطة';
+  String get nearbyBusesEmpty => 'لا توجد حافلات نشطة';
 
   @override
-  String get accessibleBusesNoActiveBuses =>
+  String get nearbyBusesNoActiveBuses =>
       'لم يتم العثور على حافلات قيد التشغيل حالياً';
 
   @override
-  String get accessibleBusesError => 'خطأ في تحميل الحافلات';
+  String get nearbyBusesError => 'خطأ في تحميل الحافلات';
 
   @override
-  String get accessibleBusesNextStop => 'المحطة التالية';
+  String get nearbyBusesNextStop => 'المحطة التالية';
 
   @override
-  String get accessibleBusesSourceEstimated => 'تقديري';
+  String get nearbyBusesSourceEstimated => 'تقديري';
 
   @override
-  String get accessibleBusesSourceDriver => 'السائق';
+  String get nearbyBusesSourceDriver => 'السائق';
 
   @override
-  String get accessibleBusesLinkLabel => 'عرض قائمة الحافلات';
+  String get nearbyBusesLinkLabel => 'عرض قائمة الحافلات';
+
+  @override
+  String get nearbyBusesEmptyTitle => 'لا توجد حافلات قريبة';
+
+  @override
+  String get nearbyBusesEmptySubtitle =>
+      'قم بتفعيل الموقع لرؤية الحافلات التي تعمل بالقرب منك.';
 
   @override
   String get onboardingSkip => 'تخطي';
@@ -2284,4 +2291,19 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get homeMarkLineFavoriteCTA => 'ضع علامة على خط كمفضل';
+
+  @override
+  String get appearanceColorBlindSheetTitle => 'وضع عمى الألوان';
+
+  @override
+  String get homeNearbyBusesSection => 'حافلات قريبة';
+
+  @override
+  String get appearancePaletteName => 'اسم اللوحة';
+
+  @override
+  String get appearanceCustomPalettesSection => 'لوحاتي';
+
+  @override
+  String get appearanceDeletePaletteConfirm => 'حذف هذه اللوحة؟';
 }

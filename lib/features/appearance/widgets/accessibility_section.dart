@@ -29,6 +29,70 @@ class AccessibilitySection extends ConsumerWidget {
     };
   }
 
+  void _showCbmSheet(BuildContext context, WidgetRef ref, TransitColorScheme c) {
+    final cbm = ref.read(themeNotifierProvider).colorBlindMode;
+    showModalBottomSheet<ColorBlindMode>(
+      context: context,
+      backgroundColor: c.bgRaised,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (sheetContext) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 12),
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: c.border,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    l10n.appearanceColorBlindSheetTitle,
+                    style: TransitTypography.sectionLabel(c.textHi),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Flexible(
+                child: ListView(
+                  shrinkWrap: true,
+                  children: ColorBlindMode.values.map((mode) {
+                    return RadioListTile<ColorBlindMode>(
+                      value: mode,
+                      groupValue: cbm,
+                      activeColor: c.accent,
+                      title: Text(
+                        _cbmLabel(mode),
+                        style: TransitTypography.bodyPrimary(c.textHi),
+                      ),
+                      onChanged: (v) {
+                        if (v != null) {
+                          ref.read(themeNotifierProvider).colorBlindMode = v;
+                        }
+                        Navigator.pop(sheetContext, v);
+                      },
+                    );
+                  }).toList(),
+                ),
+              ),
+              const SizedBox(height: 12),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final cbm =
@@ -61,31 +125,34 @@ class AccessibilitySection extends ConsumerWidget {
                 ),
               ),
               const SizedBox(width: 8),
-              DropdownButton<ColorBlindMode>(
-                value: cbm,
-                underline: const SizedBox.shrink(),
-                dropdownColor: c.bgRaised,
-                style: TransitTypography.bodySmall(c.textHi),
-                icon: Icon(Icons.expand_more, color: c.textMid, size: 20),
-                selectedItemBuilder: (_) => ColorBlindMode.values
-                    .map((m) => Align(
-                          alignment: Alignment.centerRight,
-                          child: Text(_cbmLabel(m),
-                              style:
-                                  TransitTypography.bodySmall(c.textHi)),
-                        ))
-                    .toList(),
-                items: ColorBlindMode.values
-                    .map((m) => DropdownMenuItem(
-                          value: m,
-                          child: Text(_cbmLabel(m)),
-                        ))
-                    .toList(),
-                onChanged: (v) {
-                  if (v != null) {
-                    ref.read(themeNotifierProvider).colorBlindMode = v;
-                  }
-                },
+              GestureDetector(
+                onTap: () => _showCbmSheet(context, ref, c),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: c.bgSurface.withValues(alpha: 0.6),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: c.border),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        _cbmLabel(cbm),
+                        style: TransitTypography.bodySmall(c.textHi),
+                      ),
+                      const SizedBox(width: 4),
+                      Icon(
+                        Icons.unfold_more,
+                        size: 16,
+                        color: c.textMid,
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),

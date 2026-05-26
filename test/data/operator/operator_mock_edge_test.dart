@@ -3,7 +3,6 @@ import 'package:latlong2/latlong.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'package:transitly/data/mock/mock_data_service.dart';
-import 'package:transitly/data/operator/domain/operator_repository.dart';
 import 'package:transitly/data/operator/local/operator_mock_repository.dart';
 import 'package:transitly/shared/models/operator_model.dart';
 

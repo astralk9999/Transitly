@@ -37,7 +37,7 @@ void main() {
 
       expect(restored.payload['theme'], 'dark');
       expect(restored.payload['locale'], 'es');
-      expect(restored.payload['prefs'], isA<Map>());
+      expect(restored.payload['prefs'], isA<Map<dynamic, dynamic>>());
       expect(
         (restored.payload['prefs'] as Map)['notifications'],
         true,

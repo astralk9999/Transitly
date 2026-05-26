@@ -68,7 +68,7 @@ class ResetSection extends ConsumerWidget {
             onPressed: () {
               final tn = ref.read(themeNotifierProvider);
               tn.paletteId = 'default';
-              tn.backgroundId = 'smoke';
+              tn.backgroundId = 'shaders/smoke.frag';
               tn.backgroundEnabled = true;
               tn.backgroundOpacity = 1.0;
               tn.fontScale = 1.0;

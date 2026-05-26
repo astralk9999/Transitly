@@ -1,8 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:transitly/core/theme/transit_colors.dart';
-import 'package:transitly/core/theme/transit_spacing.dart';
 
 void main() {
   group('TransitColorScheme', () {

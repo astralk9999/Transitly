@@ -281,10 +281,12 @@ class TransitMonoColors implements TransitColorScheme {
 // ── Light palette (using existing TransitLightColors) ──────
 
 const defaultLightPalette = AppPalette(
-  id: 'default',
-  name: 'Default',
+  id: 'default-light',
+  name: 'Default claro',
   isDark: false,
   scheme: TransitLightColors(),
+  lightScheme: TransitLightColors(),
+  darkScheme: TransitDarkColors(),
 );
 
 // ── Prefab list ────────────────────────────────────────────
@@ -292,9 +294,11 @@ const defaultLightPalette = AppPalette(
 final prefabPalettes = <AppPalette>[
   const AppPalette(
     id: 'default',
-    name: 'Default',
+    name: 'Default oscuro',
     isDark: true,
     scheme: TransitDarkColors(),
+    lightScheme: TransitLightColors(),
+    darkScheme: TransitDarkColors(),
   ),
   defaultLightPalette,
   const AppPalette(
@@ -302,30 +306,40 @@ final prefabPalettes = <AppPalette>[
     name: 'Sunrise',
     isDark: true,
     scheme: TransitSunriseColors(),
+    lightScheme: TransitLightColors(),
+    darkScheme: TransitSunriseColors(),
   ),
   const AppPalette(
     id: 'forest',
     name: 'Forest',
     isDark: true,
     scheme: TransitForestColors(),
+    lightScheme: TransitLightColors(),
+    darkScheme: TransitForestColors(),
   ),
   const AppPalette(
     id: 'midnight',
     name: 'Midnight',
     isDark: true,
     scheme: TransitMidnightColors(),
+    lightScheme: TransitLightColors(),
+    darkScheme: TransitMidnightColors(),
   ),
   const AppPalette(
     id: 'ocean',
     name: 'Ocean',
     isDark: true,
     scheme: TransitOceanColors(),
+    lightScheme: TransitLightColors(),
+    darkScheme: TransitOceanColors(),
   ),
   const AppPalette(
     id: 'mono',
     name: 'Mono',
     isDark: true,
     scheme: TransitMonoColors(),
+    lightScheme: TransitLightColors(),
+    darkScheme: TransitMonoColors(),
   ),
 ];
 

@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AlertModel {
 
- String get id; String get operatorId; String? get routeId; AlertSeverity get severity; String get title; String get body; DateTime? get activeFrom; DateTime? get activeUntil;
+ String get id; String get operatorId; String? get routeId; AlertSeverity get severity; String get title; String get body; DateTime? get activeFrom; DateTime? get activeUntil; double? get lat; double? get lng; double? get radiusMeters;
 /// Create a copy of AlertModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $AlertModelCopyWith<AlertModel> get copyWith => _$AlertModelCopyWithImpl<AlertMo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AlertModel&&(identical(other.id, id) || other.id == id)&&(identical(other.operatorId, operatorId) || other.operatorId == operatorId)&&(identical(other.routeId, routeId) || other.routeId == routeId)&&(identical(other.severity, severity) || other.severity == severity)&&(identical(other.title, title) || other.title == title)&&(identical(other.body, body) || other.body == body)&&(identical(other.activeFrom, activeFrom) || other.activeFrom == activeFrom)&&(identical(other.activeUntil, activeUntil) || other.activeUntil == activeUntil));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AlertModel&&(identical(other.id, id) || other.id == id)&&(identical(other.operatorId, operatorId) || other.operatorId == operatorId)&&(identical(other.routeId, routeId) || other.routeId == routeId)&&(identical(other.severity, severity) || other.severity == severity)&&(identical(other.title, title) || other.title == title)&&(identical(other.body, body) || other.body == body)&&(identical(other.activeFrom, activeFrom) || other.activeFrom == activeFrom)&&(identical(other.activeUntil, activeUntil) || other.activeUntil == activeUntil)&&(identical(other.lat, lat) || other.lat == lat)&&(identical(other.lng, lng) || other.lng == lng)&&(identical(other.radiusMeters, radiusMeters) || other.radiusMeters == radiusMeters));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,operatorId,routeId,severity,title,body,activeFrom,activeUntil);
+int get hashCode => Object.hash(runtimeType,id,operatorId,routeId,severity,title,body,activeFrom,activeUntil,lat,lng,radiusMeters);
 
 @override
 String toString() {
-  return 'AlertModel(id: $id, operatorId: $operatorId, routeId: $routeId, severity: $severity, title: $title, body: $body, activeFrom: $activeFrom, activeUntil: $activeUntil)';
+  return 'AlertModel(id: $id, operatorId: $operatorId, routeId: $routeId, severity: $severity, title: $title, body: $body, activeFrom: $activeFrom, activeUntil: $activeUntil, lat: $lat, lng: $lng, radiusMeters: $radiusMeters)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $AlertModelCopyWith<$Res>  {
   factory $AlertModelCopyWith(AlertModel value, $Res Function(AlertModel) _then) = _$AlertModelCopyWithImpl;
 @useResult
 $Res call({
- String id, String operatorId, String? routeId, AlertSeverity severity, String title, String body, DateTime? activeFrom, DateTime? activeUntil
+ String id, String operatorId, String? routeId, AlertSeverity severity, String title, String body, DateTime? activeFrom, DateTime? activeUntil, double? lat, double? lng, double? radiusMeters
 });
 
 
@@ -62,7 +62,7 @@ class _$AlertModelCopyWithImpl<$Res>
 
 /// Create a copy of AlertModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? operatorId = null,Object? routeId = freezed,Object? severity = null,Object? title = null,Object? body = null,Object? activeFrom = freezed,Object? activeUntil = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? operatorId = null,Object? routeId = freezed,Object? severity = null,Object? title = null,Object? body = null,Object? activeFrom = freezed,Object? activeUntil = freezed,Object? lat = freezed,Object? lng = freezed,Object? radiusMeters = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,operatorId: null == operatorId ? _self.operatorId : operatorId // ignore: cast_nullable_to_non_nullable
@@ -72,7 +72,10 @@ as AlertSeverity,title: null == title ? _self.title : title // ignore: cast_null
 as String,body: null == body ? _self.body : body // ignore: cast_nullable_to_non_nullable
 as String,activeFrom: freezed == activeFrom ? _self.activeFrom : activeFrom // ignore: cast_nullable_to_non_nullable
 as DateTime?,activeUntil: freezed == activeUntil ? _self.activeUntil : activeUntil // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as DateTime?,lat: freezed == lat ? _self.lat : lat // ignore: cast_nullable_to_non_nullable
+as double?,lng: freezed == lng ? _self.lng : lng // ignore: cast_nullable_to_non_nullable
+as double?,radiusMeters: freezed == radiusMeters ? _self.radiusMeters : radiusMeters // ignore: cast_nullable_to_non_nullable
+as double?,
   ));
 }
 
@@ -157,10 +160,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String operatorId,  String? routeId,  AlertSeverity severity,  String title,  String body,  DateTime? activeFrom,  DateTime? activeUntil)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String operatorId,  String? routeId,  AlertSeverity severity,  String title,  String body,  DateTime? activeFrom,  DateTime? activeUntil,  double? lat,  double? lng,  double? radiusMeters)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AlertModel() when $default != null:
-return $default(_that.id,_that.operatorId,_that.routeId,_that.severity,_that.title,_that.body,_that.activeFrom,_that.activeUntil);case _:
+return $default(_that.id,_that.operatorId,_that.routeId,_that.severity,_that.title,_that.body,_that.activeFrom,_that.activeUntil,_that.lat,_that.lng,_that.radiusMeters);case _:
   return orElse();
 
 }
@@ -178,10 +181,10 @@ return $default(_that.id,_that.operatorId,_that.routeId,_that.severity,_that.tit
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String operatorId,  String? routeId,  AlertSeverity severity,  String title,  String body,  DateTime? activeFrom,  DateTime? activeUntil)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String operatorId,  String? routeId,  AlertSeverity severity,  String title,  String body,  DateTime? activeFrom,  DateTime? activeUntil,  double? lat,  double? lng,  double? radiusMeters)  $default,) {final _that = this;
 switch (_that) {
 case _AlertModel():
-return $default(_that.id,_that.operatorId,_that.routeId,_that.severity,_that.title,_that.body,_that.activeFrom,_that.activeUntil);case _:
+return $default(_that.id,_that.operatorId,_that.routeId,_that.severity,_that.title,_that.body,_that.activeFrom,_that.activeUntil,_that.lat,_that.lng,_that.radiusMeters);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -198,10 +201,10 @@ return $default(_that.id,_that.operatorId,_that.routeId,_that.severity,_that.tit
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String operatorId,  String? routeId,  AlertSeverity severity,  String title,  String body,  DateTime? activeFrom,  DateTime? activeUntil)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String operatorId,  String? routeId,  AlertSeverity severity,  String title,  String body,  DateTime? activeFrom,  DateTime? activeUntil,  double? lat,  double? lng,  double? radiusMeters)?  $default,) {final _that = this;
 switch (_that) {
 case _AlertModel() when $default != null:
-return $default(_that.id,_that.operatorId,_that.routeId,_that.severity,_that.title,_that.body,_that.activeFrom,_that.activeUntil);case _:
+return $default(_that.id,_that.operatorId,_that.routeId,_that.severity,_that.title,_that.body,_that.activeFrom,_that.activeUntil,_that.lat,_that.lng,_that.radiusMeters);case _:
   return null;
 
 }
@@ -213,7 +216,7 @@ return $default(_that.id,_that.operatorId,_that.routeId,_that.severity,_that.tit
 
 
 class _AlertModel extends AlertModel {
-  const _AlertModel({required this.id, required this.operatorId, this.routeId, required this.severity, required this.title, required this.body, this.activeFrom, this.activeUntil}): super._();
+  const _AlertModel({required this.id, required this.operatorId, this.routeId, required this.severity, required this.title, required this.body, this.activeFrom, this.activeUntil, this.lat, this.lng, this.radiusMeters}): super._();
   
 
 @override final  String id;
@@ -224,6 +227,9 @@ class _AlertModel extends AlertModel {
 @override final  String body;
 @override final  DateTime? activeFrom;
 @override final  DateTime? activeUntil;
+@override final  double? lat;
+@override final  double? lng;
+@override final  double? radiusMeters;
 
 /// Create a copy of AlertModel
 /// with the given fields replaced by the non-null parameter values.
@@ -235,16 +241,16 @@ _$AlertModelCopyWith<_AlertModel> get copyWith => __$AlertModelCopyWithImpl<_Ale
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AlertModel&&(identical(other.id, id) || other.id == id)&&(identical(other.operatorId, operatorId) || other.operatorId == operatorId)&&(identical(other.routeId, routeId) || other.routeId == routeId)&&(identical(other.severity, severity) || other.severity == severity)&&(identical(other.title, title) || other.title == title)&&(identical(other.body, body) || other.body == body)&&(identical(other.activeFrom, activeFrom) || other.activeFrom == activeFrom)&&(identical(other.activeUntil, activeUntil) || other.activeUntil == activeUntil));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AlertModel&&(identical(other.id, id) || other.id == id)&&(identical(other.operatorId, operatorId) || other.operatorId == operatorId)&&(identical(other.routeId, routeId) || other.routeId == routeId)&&(identical(other.severity, severity) || other.severity == severity)&&(identical(other.title, title) || other.title == title)&&(identical(other.body, body) || other.body == body)&&(identical(other.activeFrom, activeFrom) || other.activeFrom == activeFrom)&&(identical(other.activeUntil, activeUntil) || other.activeUntil == activeUntil)&&(identical(other.lat, lat) || other.lat == lat)&&(identical(other.lng, lng) || other.lng == lng)&&(identical(other.radiusMeters, radiusMeters) || other.radiusMeters == radiusMeters));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,operatorId,routeId,severity,title,body,activeFrom,activeUntil);
+int get hashCode => Object.hash(runtimeType,id,operatorId,routeId,severity,title,body,activeFrom,activeUntil,lat,lng,radiusMeters);
 
 @override
 String toString() {
-  return 'AlertModel(id: $id, operatorId: $operatorId, routeId: $routeId, severity: $severity, title: $title, body: $body, activeFrom: $activeFrom, activeUntil: $activeUntil)';
+  return 'AlertModel(id: $id, operatorId: $operatorId, routeId: $routeId, severity: $severity, title: $title, body: $body, activeFrom: $activeFrom, activeUntil: $activeUntil, lat: $lat, lng: $lng, radiusMeters: $radiusMeters)';
 }
 
 
@@ -255,7 +261,7 @@ abstract mixin class _$AlertModelCopyWith<$Res> implements $AlertModelCopyWith<$
   factory _$AlertModelCopyWith(_AlertModel value, $Res Function(_AlertModel) _then) = __$AlertModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String operatorId, String? routeId, AlertSeverity severity, String title, String body, DateTime? activeFrom, DateTime? activeUntil
+ String id, String operatorId, String? routeId, AlertSeverity severity, String title, String body, DateTime? activeFrom, DateTime? activeUntil, double? lat, double? lng, double? radiusMeters
 });
 
 
@@ -272,7 +278,7 @@ class __$AlertModelCopyWithImpl<$Res>
 
 /// Create a copy of AlertModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? operatorId = null,Object? routeId = freezed,Object? severity = null,Object? title = null,Object? body = null,Object? activeFrom = freezed,Object? activeUntil = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? operatorId = null,Object? routeId = freezed,Object? severity = null,Object? title = null,Object? body = null,Object? activeFrom = freezed,Object? activeUntil = freezed,Object? lat = freezed,Object? lng = freezed,Object? radiusMeters = freezed,}) {
   return _then(_AlertModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,operatorId: null == operatorId ? _self.operatorId : operatorId // ignore: cast_nullable_to_non_nullable
@@ -282,7 +288,10 @@ as AlertSeverity,title: null == title ? _self.title : title // ignore: cast_null
 as String,body: null == body ? _self.body : body // ignore: cast_nullable_to_non_nullable
 as String,activeFrom: freezed == activeFrom ? _self.activeFrom : activeFrom // ignore: cast_nullable_to_non_nullable
 as DateTime?,activeUntil: freezed == activeUntil ? _self.activeUntil : activeUntil // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as DateTime?,lat: freezed == lat ? _self.lat : lat // ignore: cast_nullable_to_non_nullable
+as double?,lng: freezed == lng ? _self.lng : lng // ignore: cast_nullable_to_non_nullable
+as double?,radiusMeters: freezed == radiusMeters ? _self.radiusMeters : radiusMeters // ignore: cast_nullable_to_non_nullable
+as double?,
   ));
 }
 

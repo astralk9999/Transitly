@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:latlong2/latlong.dart';
 
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../data/mock/mock_data_service.dart';
+import '../../features/map/map_config.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../shared/models/models.dart';
+import '../../shared/providers/home_reference_stop_provider.dart';
+import '../../shared/providers/user_location_provider.dart';
 import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/error_card.dart';
 import '../../shared/widgets/glass_card.dart';
@@ -16,16 +20,16 @@ import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_app_bar.dart';
 import '../../shared/widgets/transit_chip.dart';
 
-class AccessibleBusesScreen extends ConsumerStatefulWidget {
-  const AccessibleBusesScreen({super.key});
+class NearbyBusesScreen extends ConsumerStatefulWidget {
+  const NearbyBusesScreen({super.key});
 
   @override
-  ConsumerState<AccessibleBusesScreen> createState() =>
-      _AccessibleBusesScreenState();
+  ConsumerState<NearbyBusesScreen> createState() =>
+      _NearbyBusesScreenState();
 }
 
-class _AccessibleBusesScreenState
-    extends ConsumerState<AccessibleBusesScreen> {
+class _NearbyBusesScreenState
+    extends ConsumerState<NearbyBusesScreen> {
   List<ActiveTripModel> _trips = [];
   bool _loading = true;
   String? _error;
@@ -44,13 +48,29 @@ class _AccessibleBusesScreenState
 
     try {
       final mockData = ref.read(mockDataServiceProvider);
-      final active = mockData.activeTrips
+      final allTrips = mockData.activeTrips
           .where((t) =>
               t.status != TripStatus.cancelled &&
               t.status != TripStatus.completed)
           .toList();
+
+      final center = _computeCenter(mockData);
+      const maxDistanceM = 5000.0;
+
+      final filtered = allTrips.where((trip) {
+        if (center == null) return true;
+        final tripLoc = _tripLocation(mockData, trip);
+        if (tripLoc == null) return false;
+        final dist = const Distance().as(
+          LengthUnit.Meter,
+          center,
+          tripLoc,
+        );
+        return dist <= maxDistanceM;
+      }).toList();
+
       setState(() {
-        _trips = active;
+        _trips = filtered;
         _loading = false;
       });
     } catch (e) {
@@ -61,9 +81,32 @@ class _AccessibleBusesScreenState
     }
   }
 
+  LatLng? _computeCenter(MockDataService mockData) {
+    final userLoc = ref.read(userLocationStreamProvider).valueOrNull;
+    if (userLoc != null) return userLoc;
+
+    final refStopId = ref.read(homeReferenceStopProvider);
+    if (refStopId != null) {
+      final stop = mockData.getStopById(refStopId);
+      if (stop != null) return LatLng(stop.lat, stop.lng);
+    }
+
+    return MapConfig.defaultCenter;
+  }
+
+  LatLng? _tripLocation(MockDataService mockData, ActiveTripModel trip) {
+    if (trip.currentLat != null && trip.currentLng != null) {
+      return LatLng(trip.currentLat!, trip.currentLng!);
+    }
+    final stops = mockData.getStopsForRoute(trip.routeId);
+    final first = stops.firstOrNull;
+    if (first != null) return LatLng(first.lat, first.lng);
+    return null;
+  }
+
   String _sourceLabel(AppLocalizations l10n, ActiveTripModel trip) {
-    if (trip.driverId != null) return l10n.accessibleBusesSourceDriver;
-    return l10n.accessibleBusesSourceEstimated;
+    if (trip.driverId != null) return l10n.nearbyBusesSourceDriver;
+    return l10n.nearbyBusesSourceEstimated;
   }
 
   String? _nextStopName(MockDataService mockData, ActiveTripModel trip) {
@@ -103,7 +146,7 @@ class _AccessibleBusesScreenState
           ),
           Column(
             children: [
-              TransitAppBar(title: l10n.accessibleBusesTitle),
+              TransitAppBar(title: l10n.nearbyBusesTitle),
               Expanded(child: _buildContent(c, l10n)),
             ],
           ),
@@ -125,15 +168,15 @@ class _AccessibleBusesScreenState
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: ErrorCard(l10n.accessibleBusesError, onRetry: _loadBuses),
+          child: ErrorCard(l10n.nearbyBusesError, onRetry: _loadBuses),
         ),
       );
     }
 
     if (_trips.isEmpty) {
       return EmptyState(
-        l10n.accessibleBusesEmpty,
-        l10n.accessibleBusesNoActiveBuses,
+        l10n.nearbyBusesEmptyTitle,
+        l10n.nearbyBusesEmptySubtitle,
         icon: Icons.directions_bus_outlined,
       );
     }
@@ -155,7 +198,7 @@ class _AccessibleBusesScreenState
         final semanticsParts = <String>[
           routeCode,
           if (routeName.isNotEmpty) routeName,
-          '${l10n.accessibleBusesNextStop}: ${stopName ?? '?'}',
+          '${l10n.nearbyBusesNextStop}: ${stopName ?? '?'}',
           if (mins != null) '$mins min' else '--',
           source,
         ];
@@ -197,14 +240,14 @@ class _AccessibleBusesScreenState
                   ),
                   subtitle: stopName != null
                       ? Text(
-                          '${l10n.accessibleBusesNextStop}: $stopName',
+                          '${l10n.nearbyBusesNextStop}: $stopName',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TransitTypography.bodySecondary(c.textMid),
                         )
                       : null,
-                  trailing: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 80),
+                  trailing: FittedBox(
+                    fit: BoxFit.scaleDown,
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,

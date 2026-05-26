@@ -54,6 +54,7 @@ class MockRealtimeService {
   }
 
   void _tick() {
+    if (_currentTrips.isEmpty) return;
     _tickCount++;
     final updated = <ActiveTripModel>[];
 

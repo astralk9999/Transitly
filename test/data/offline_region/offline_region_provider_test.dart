@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:transitly/data/offline_region/domain/offline_region_repository.dart';
 import 'package:transitly/data/offline_region/local/offline_region_mock_repository.dart';
 import 'package:transitly/shared/models/offline_region.dart';
 

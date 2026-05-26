@@ -8,6 +8,8 @@ final prefabBackgrounds = <AppBackground>[
   const GradientBackground(
     [Color(0xFF1a1a2e), Color(0xFF16213e), Color(0xFF0f3460)],
   ),
+  const ProceduralBackground(ProceduralPattern.softGrid),
+  const ProceduralBackground(ProceduralPattern.topoLines),
 ];
 
 AppBackground backgroundFromId(String id) =>

@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:transitly/data/incident/domain/incident_repository.dart';
-import 'package:transitly/shared/models/enums.dart';
 import 'package:transitly/shared/models/incident_model.dart';
 
 void main() {

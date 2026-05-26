@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:transitly/core/router/redirect_guards.dart';
 import 'package:transitly/data/auth/auth_repository.dart';
 import 'package:transitly/data/mock/mock_data_service.dart';
 import 'package:transitly/shared/models/user_role.dart';

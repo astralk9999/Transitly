@@ -5,8 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:transitly/data/mock/mock_data_error.dart';
-import 'package:transitly/data/mock/mock_data_exception.dart';
 import 'package:transitly/data/mock/mock_data_service.dart';
 
 const _emptyJson = '''

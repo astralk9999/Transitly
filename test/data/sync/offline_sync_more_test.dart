@@ -16,12 +16,9 @@ void main() {
       final queue = PendingActionsQueue(box: box, deadBox: deadBox);
       final service = OfflineSyncService(queue: queue);
 
-      var executed = false;
       service.registerExecutor(
         PendingActionKind.createIncident,
-        (payload) async {
-          executed = true;
-        },
+        (payload) async {},
       );
 
       expect(service.queue, equals(queue));

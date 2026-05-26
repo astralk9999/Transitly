@@ -4,6 +4,7 @@ import 'package:latlong2/latlong.dart';
 import '../../../data/mock/mock_data_service.dart';
 import '../../models/alert_model.dart';
 import '../../models/stop_model.dart';
+import '../user_location_provider.dart';
 import '../user_provider.dart';
 
 /// Conjunto de routeIds favoritos del usuario actual.
@@ -48,15 +49,14 @@ final homeNearbyStopsProvider =
   );
 });
 
-/// Avisos activos para las rutas favoritas del usuario.
-///
-/// Combina [homeFavRouteIdsProvider] con `mockData.getAlertsForRoute`.
+/// Avisos activos para las rutas favoritas del usuario, filtrados por
+/// proximidad geográfica cuando la alerta tiene restricción de zona.
 final homeFavAlertsProvider = Provider.autoDispose<List<AlertModel>>((ref) {
   final mockData = ref.watch(mockDataServiceProvider);
   final favIds = ref.watch(homeFavRouteIdsProvider);
-  final alerts = <AlertModel>[];
-  for (final routeId in favIds) {
-    alerts.addAll(mockData.getAlertsForRoute(routeId));
-  }
-  return alerts;
+  final userLoc = ref.watch(userLocationStreamProvider).valueOrNull;
+  return mockData.getAlertsAffecting(
+    userLocation: userLoc,
+    favoriteRouteIds: favIds.toList(),
+  );
 });

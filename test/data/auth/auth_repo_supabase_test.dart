@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:supabase_flutter/supabase_flutter.dart'
-    show AuthException, GoTrueClient, SupabaseClient;
+    show GoTrueClient, SupabaseClient;
 
 import 'package:transitly/data/auth/auth_helpers.dart';
 import 'package:transitly/data/auth/auth_repository.dart';

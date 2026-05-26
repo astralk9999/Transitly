@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-import 'package:transitly/data/bus_location/domain/bus_location_repository.dart';
 import 'package:transitly/data/bus_location/local/bus_location_mock_repository.dart';
 import 'package:transitly/data/mock/mock_data_service.dart';
 import 'package:transitly/shared/models/models.dart';

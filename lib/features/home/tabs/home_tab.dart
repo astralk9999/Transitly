@@ -298,13 +298,13 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                 ),
               ],
 
-              // ── 6) ACCESIBLE BUSES LINK ──
+              // ── 6) BUSES CERCANOS LINK ──
               const SizedBox(height: 28),
               _sectionTitle(
-                  c, l10n.profileSectionAccessibility),
+                  c, l10n.homeNearbyBusesSection),
               const SizedBox(height: 10),
               Semantics(
-                label: l10n.accessibleBusesLinkLabel,
+                label: l10n.nearbyBusesLinkLabel,
                 child: GlassCard(
                   blur: 16,
                   fillOpacity: 0.05,
@@ -315,19 +315,19 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                     leading: Icon(Icons.list_alt,
                         size: 24, color: c.accent),
                     title: Text(
-                      l10n.accessibleBusesLinkLabel,
+                      l10n.nearbyBusesLinkLabel,
                       style: TransitTypography.bodyPrimary(
                           c.textHi),
                     ),
                     subtitle: Text(
-                      l10n.accessibleBusesEmpty,
+                      l10n.nearbyBusesEmpty,
                       style: TransitTypography.bodySecondary(
                           c.textMid),
                     ),
                     trailing: Icon(Icons.chevron_right,
                         color: c.textMid),
                     onTap: () =>
-                        context.push('/accessible-buses'),
+                        context.push('/nearby-buses'),
                   ),
                 ),
               ),

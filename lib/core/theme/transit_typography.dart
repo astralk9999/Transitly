@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../shared/providers/active_palette_provider.dart';
+
 abstract final class TransitTypography {
+  static String get _bodyFontFamily =>
+      isDyslexiaEnabled() ? 'Atkinson Hyperlegible' : 'DM Sans';
+
   // ── Data / times / numbers (IBM Plex Mono) ──────────────
 
   static TextStyle displayTime(Color c) => GoogleFonts.ibmPlexMono(
@@ -88,16 +93,16 @@ abstract final class TransitTypography {
       );
 
   static TextStyle routeName(Color c) => TextStyle(
-        fontFamily: 'DM Sans',
+        fontFamily: _bodyFontFamily,
         fontSize: 14,
         fontWeight: FontWeight.w500,
         color: c,
       );
 
-  // ── UI text (DM Sans) ──────────────────────────────────
+  // ── UI text (DM Sans / Atkinson Hyperlegible) ──────────────
 
   static TextStyle navLabel(Color c) => TextStyle(
-        fontFamily: 'DM Sans',
+        fontFamily: _bodyFontFamily,
         fontSize: 11,
         fontWeight: FontWeight.w400,
         letterSpacing: 0.08 * 11,
@@ -105,7 +110,7 @@ abstract final class TransitTypography {
       );
 
   static TextStyle bodyPrimary(Color c) => TextStyle(
-        fontFamily: 'DM Sans',
+        fontFamily: _bodyFontFamily,
         fontSize: 15,
         fontWeight: FontWeight.w300,
         height: 1.5,
@@ -113,28 +118,28 @@ abstract final class TransitTypography {
       );
 
   static TextStyle bodySecondary(Color c) => TextStyle(
-        fontFamily: 'DM Sans',
+        fontFamily: _bodyFontFamily,
         fontSize: 13,
         fontWeight: FontWeight.w400,
         color: c,
       );
 
   static TextStyle bodySmall(Color c) => TextStyle(
-        fontFamily: 'DM Sans',
+        fontFamily: _bodyFontFamily,
         fontSize: 11,
         fontWeight: FontWeight.w400,
         color: c,
       );
 
   static TextStyle heading(Color c) => TextStyle(
-        fontFamily: 'DM Sans',
+        fontFamily: _bodyFontFamily,
         fontSize: 18,
         fontWeight: FontWeight.w500,
         color: c,
       );
 
   static TextStyle subheading(Color c) => TextStyle(
-        fontFamily: 'DM Sans',
+        fontFamily: _bodyFontFamily,
         fontSize: 14,
         fontWeight: FontWeight.w400,
         color: c,

@@ -58,8 +58,21 @@ abstract class TransitColorScheme {
   Color get glassBg;
   Color get glassBorder;
 
-  factory TransitColorScheme.of(bool isDark) =>
-      isDark ? const TransitDarkColors() : const TransitLightColors();
+  factory TransitColorScheme.of(bool isDark) {
+    final resolve = _resolver;
+    if (resolve != null) {
+      return resolve(isDark);
+    }
+    return isDark ? const TransitDarkColors() : const TransitLightColors();
+  }
+
+  static TransitColorScheme Function(bool isDark)? _resolver;
+
+  static void registerResolver(
+    TransitColorScheme Function(bool isDark) resolve,
+  ) {
+    _resolver = resolve;
+  }
 }
 
 class TransitDarkColors implements TransitColorScheme {

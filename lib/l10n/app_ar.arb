@@ -416,14 +416,16 @@
   "appearanceHighContrastSubtitle": "حدود أكثر سمكاً وتباين نص أعلى",
   "accessibilityHighContrast": "تباين عالي",
 
-  "accessibleBusesTitle": "الحافلات القريبة",
-  "accessibleBusesEmpty": "لا توجد حافلات نشطة",
-  "accessibleBusesNoActiveBuses": "لم يتم العثور على حافلات قيد التشغيل حالياً",
-  "accessibleBusesError": "خطأ في تحميل الحافلات",
-  "accessibleBusesNextStop": "المحطة التالية",
-  "accessibleBusesSourceEstimated": "تقديري",
-  "accessibleBusesSourceDriver": "السائق",
-  "accessibleBusesLinkLabel": "عرض قائمة الحافلات",
+  "nearbyBusesTitle": "الحافلات القريبة",
+  "nearbyBusesEmpty": "لا توجد حافلات نشطة",
+  "nearbyBusesNoActiveBuses": "لم يتم العثور على حافلات قيد التشغيل حالياً",
+  "nearbyBusesError": "خطأ في تحميل الحافلات",
+  "nearbyBusesNextStop": "المحطة التالية",
+  "nearbyBusesSourceEstimated": "تقديري",
+  "nearbyBusesSourceDriver": "السائق",
+  "nearbyBusesLinkLabel": "عرض قائمة الحافلات",
+  "nearbyBusesEmptyTitle": "لا توجد حافلات قريبة",
+  "nearbyBusesEmptySubtitle": "قم بتفعيل الموقع لرؤية الحافلات التي تعمل بالقرب منك.",
 
   "onboardingSkip": "تخطي",
   "onboardingNext": "التالي",
@@ -800,5 +802,10 @@
   "homeNoUpcomingDepartures": "لا توجد مغادرات قادمة",
   "stopAddedToFavorites": "تمت إضافة المحطة إلى المفضلة",
   "stopRemovedFromFavorites": "تمت إزالة المحطة من المفضلة",
-  "homeMarkLineFavoriteCTA": "ضع علامة على خط كمفضل"
+  "homeMarkLineFavoriteCTA": "ضع علامة على خط كمفضل",
+  "appearanceColorBlindSheetTitle": "وضع عمى الألوان",
+  "homeNearbyBusesSection": "حافلات قريبة",
+  "appearancePaletteName": "اسم اللوحة",
+  "appearanceCustomPalettesSection": "لوحاتي",
+  "appearanceDeletePaletteConfirm": "حذف هذه اللوحة؟"
 }

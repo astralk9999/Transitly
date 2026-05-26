@@ -18,10 +18,6 @@ class TransitlyApp extends ConsumerWidget {
     final themeNotifier = ref.watch(themeNotifierProvider);
     final locale = ref.watch(localeProvider);
     final router = ref.watch(routerProvider);
-    // `themeModeProvider` es la fuente de verdad que cambian los toggles del
-    // appearance section. `themeNotifier.brightness` es estado interno de
-    // paleta — antes app.dart lo leía y nunca cambiaba al toggle, por eso el
-    // modo claro solo afectaba al mapa (que sí usa themeModeProvider).
     final themeMode = ref.watch(themeModeProvider);
 
     return MaterialApp.router(
@@ -35,7 +31,12 @@ class TransitlyApp extends ConsumerWidget {
       supportedLocales: AppLocalizations.supportedLocales,
       routerConfig: router,
       builder: (context, child) {
-        Widget result = BackgroundWrapper(child: child!);
+        final rebuildKey = '${themeNotifier.visualKey}|${themeMode.name}';
+
+        Widget result = KeyedSubtree(
+          key: ValueKey(rebuildKey),
+          child: BackgroundWrapper(child: child!),
+        );
 
         if (themeNotifier.colorBlindMode != ColorBlindMode.none) {
           result = ColorFiltered(
@@ -46,11 +47,15 @@ class TransitlyApp extends ConsumerWidget {
           );
         }
 
-        // `.scale(1.0)` devuelve el factor multiplicador (no un tamaño en px).
-        // Usar `.scale(14)` aquí multiplicaba todo por 14× antes del clamp y
-        // dejaba el texto fijo en 2.5× → overflows masivos.
-        final systemScale = MediaQuery.textScalerOf(context).scale(1.0);
-        final combined = (systemScale * themeNotifier.fontScale).clamp(0.8, 2.5);
+        final rawSystem = MediaQuery.textScalerOf(context).scale(1.0);
+        final systemScale =
+            rawSystem.isFinite && rawSystem > 0 ? rawSystem : 1.0;
+        final combined =
+            (systemScale * themeNotifier.fontScale).clamp(0.8, 2.5);
+
+        if (!combined.isFinite || combined <= 0) {
+          return result;
+        }
         final mq = MediaQuery.of(context);
         return FocusTraversalGroup(
           policy: WidgetOrderTraversalPolicy(),

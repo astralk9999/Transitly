@@ -80,23 +80,45 @@ class ThemeNotifier extends ChangeNotifier {
 
   AppPalette get palette {
     if (_paletteId == _customPaletteId && _customColors.isNotEmpty) {
+      final scheme = TransitCustomColors(
+        primary: _customColors['primary'] ?? const Color(0xFF977DDF),
+        secondary: _customColors['secondary'] ?? const Color(0xFF6C63FF),
+        bgRoot: _customColors['bgRoot'] ?? const Color(0xFF08081A),
+        bgSurface: _customColors['bgSurface'] ?? const Color(0xFF10102A),
+        textHi: _customColors['textHi'] ?? const Color(0xFFF0F0FA),
+      );
       return AppPalette(
         id: _customPaletteId,
         name: 'Custom',
         isDark: true,
-        scheme: TransitCustomColors(
-          primary: _customColors['primary'] ?? const Color(0xFF977DDF),
-          secondary: _customColors['secondary'] ?? const Color(0xFF6C63FF),
-          bgRoot: _customColors['bgRoot'] ?? const Color(0xFF08081A),
-          bgSurface: _customColors['bgSurface'] ?? const Color(0xFF10102A),
-          textHi: _customColors['textHi'] ?? const Color(0xFFF0F0FA),
-        ),
+        scheme: scheme,
+        darkScheme: scheme,
       );
     }
     return paletteFromId(_paletteId);
   }
 
   AppBackground get background => backgroundFromId(_backgroundId);
+
+  String get visualKey {
+    final custom = _customColors.entries
+        .map((e) => '${e.key}:${_colorToHex(e.value)}')
+        .toList()
+      ..sort();
+    return [
+      _paletteId,
+      _backgroundId,
+      _backgroundEnabled,
+      _backgroundOpacity.toStringAsFixed(2),
+      _fontScale.toStringAsFixed(2),
+      _colorBlindMode.name,
+      _dyslexiaFontEnabled,
+      _reduceMotion,
+      _highContrast,
+      _mapStyle,
+      ...custom,
+    ].join('|');
+  }
 
   // ── Setters ──────────────────────────────────────────────
 
@@ -137,8 +159,9 @@ class ThemeNotifier extends ChangeNotifier {
   }
 
   set fontScale(double value) {
-    if (_fontScale == value) return;
-    _fontScale = value;
+    final clamped = value.clamp(0.85, 1.4);
+    if (_fontScale == clamped) return;
+    _fontScale = clamped;
     notifyListeners();
     unawaited(_persist());
   }
@@ -238,9 +261,10 @@ class ThemeNotifier extends ChangeNotifier {
   // ── Theme building ───────────────────────────────────────
 
   ThemeData buildTheme(Brightness brightness) {
+    final p = palette;
     final scheme = brightness == Brightness.dark
-        ? palette.scheme
-        : const TransitLightColors();
+        ? (p.darkScheme ?? const TransitDarkColors())
+        : (p.lightScheme ?? const TransitLightColors());
     final base = buildTransitTheme(
       scheme,
       fontScale: _fontScale,

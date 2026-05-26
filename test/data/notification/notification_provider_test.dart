@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:transitly/data/notification/local/notification_mock_repository.dart';
-import 'package:transitly/shared/models/app_notification.dart';
 
 void main() {
   group('NotificationMockRepository', () {

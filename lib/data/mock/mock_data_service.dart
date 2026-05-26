@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show AssetBundle, PlatformException, rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:latlong2/latlong.dart';
 
 import '../../core/utils/app_logger.dart';
 import '../../shared/models/models.dart';
@@ -412,6 +413,42 @@ class MockDataService {
 
   List<AlertModel> getAlertsForRoute(String routeId) =>
       alerts.where((a) => a.routeId == routeId).toList();
+
+  List<AlertModel> getAlertsAffecting({
+    LatLng? userLocation,
+    List<String>? favoriteRouteIds,
+  }) {
+    return alerts.where((a) {
+      if (a.lat == null || a.lng == null || a.radiusMeters == null) {
+        if (favoriteRouteIds != null && a.routeId != null) {
+          return favoriteRouteIds.contains(a.routeId);
+        }
+        return true;
+      }
+      if (userLocation != null) {
+        final d = const Distance().as(
+          LengthUnit.Meter,
+          userLocation,
+          LatLng(a.lat!, a.lng!),
+        );
+        if (d <= a.radiusMeters!) return true;
+      }
+      if (favoriteRouteIds != null &&
+          a.routeId != null &&
+          favoriteRouteIds.contains(a.routeId)) {
+        final routeStops_ = getStopsForRoute(a.routeId!);
+        for (final stop in routeStops_) {
+          final d = const Distance().as(
+            LengthUnit.Meter,
+            LatLng(stop.lat, stop.lng),
+            LatLng(a.lat!, a.lng!),
+          );
+          if (d <= a.radiusMeters!) return true;
+        }
+      }
+      return false;
+    }).toList();
+  }
 
   List<IncidentModel> getIncidentsForRoute(String routeId) =>
       incidents.where((i) => i.routeId == routeId).toList();

@@ -581,29 +581,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get accessibilityHighContrast => 'High contrast';
 
   @override
-  String get accessibleBusesTitle => 'Nearby buses';
+  String get nearbyBusesTitle => 'Nearby buses';
 
   @override
-  String get accessibleBusesEmpty => 'No active buses';
+  String get nearbyBusesEmpty => 'No active buses';
 
   @override
-  String get accessibleBusesNoActiveBuses =>
+  String get nearbyBusesNoActiveBuses =>
       'No buses found in operation right now';
 
   @override
-  String get accessibleBusesError => 'Error loading buses';
+  String get nearbyBusesError => 'Error loading buses';
 
   @override
-  String get accessibleBusesNextStop => 'Next stop';
+  String get nearbyBusesNextStop => 'Next stop';
 
   @override
-  String get accessibleBusesSourceEstimated => 'Estimated';
+  String get nearbyBusesSourceEstimated => 'Estimated';
 
   @override
-  String get accessibleBusesSourceDriver => 'Driver';
+  String get nearbyBusesSourceDriver => 'Driver';
 
   @override
-  String get accessibleBusesLinkLabel => 'View bus list';
+  String get nearbyBusesLinkLabel => 'View bus list';
+
+  @override
+  String get nearbyBusesEmptyTitle => 'No nearby buses';
+
+  @override
+  String get nearbyBusesEmptySubtitle =>
+      'Enable location to see buses operating near you.';
 
   @override
   String get onboardingSkip => 'Skip';
@@ -2294,4 +2301,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeMarkLineFavoriteCTA => 'Mark a line as favorite';
+
+  @override
+  String get appearanceColorBlindSheetTitle => 'Color blindness mode';
+
+  @override
+  String get homeNearbyBusesSection => 'NEARBY BUSES';
+
+  @override
+  String get appearancePaletteName => 'Palette name';
+
+  @override
+  String get appearanceCustomPalettesSection => 'My palettes';
+
+  @override
+  String get appearanceDeletePaletteConfirm => 'Delete this palette?';
 }

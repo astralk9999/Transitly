@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
-import '../../../core/theme/transit_colors.dart';
-
 class UserLocationLayer extends StatelessWidget {
   const UserLocationLayer({
     super.key,
@@ -16,8 +14,6 @@ class UserLocationLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = TransitColorScheme.of(isDark);
-
     return MarkerLayer(
       markers: [
         Marker(

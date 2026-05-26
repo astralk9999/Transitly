@@ -584,29 +584,36 @@ class AppLocalizationsEs extends AppLocalizations {
   String get accessibilityHighContrast => 'Alto contraste';
 
   @override
-  String get accessibleBusesTitle => 'Buses cercanos';
+  String get nearbyBusesTitle => 'Buses cercanos';
 
   @override
-  String get accessibleBusesEmpty => 'Sin buses activos';
+  String get nearbyBusesEmpty => 'Sin buses activos';
 
   @override
-  String get accessibleBusesNoActiveBuses =>
+  String get nearbyBusesNoActiveBuses =>
       'No se encontraron buses en operación en este momento';
 
   @override
-  String get accessibleBusesError => 'Error al cargar buses';
+  String get nearbyBusesError => 'Error al cargar buses';
 
   @override
-  String get accessibleBusesNextStop => 'Próxima parada';
+  String get nearbyBusesNextStop => 'Próxima parada';
 
   @override
-  String get accessibleBusesSourceEstimated => 'Estimado';
+  String get nearbyBusesSourceEstimated => 'Estimado';
 
   @override
-  String get accessibleBusesSourceDriver => 'Conductor';
+  String get nearbyBusesSourceDriver => 'Conductor';
 
   @override
-  String get accessibleBusesLinkLabel => 'Ver lista de buses';
+  String get nearbyBusesLinkLabel => 'Ver lista de buses';
+
+  @override
+  String get nearbyBusesEmptyTitle => 'No hay buses cerca';
+
+  @override
+  String get nearbyBusesEmptySubtitle =>
+      'Activa la ubicación para ver los buses operando cerca de ti.';
 
   @override
   String get onboardingSkip => 'Saltar';
@@ -2311,4 +2318,19 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get homeMarkLineFavoriteCTA => 'Marca una línea como favorita';
+
+  @override
+  String get appearanceColorBlindSheetTitle => 'Modo daltonismo';
+
+  @override
+  String get homeNearbyBusesSection => 'BUSES CERCANOS';
+
+  @override
+  String get appearancePaletteName => 'Nombre de la paleta';
+
+  @override
+  String get appearanceCustomPalettesSection => 'Mis paletas';
+
+  @override
+  String get appearanceDeletePaletteConfirm => '¿Eliminar esta paleta?';
 }

@@ -47,7 +47,7 @@ import '../../features/profile/planned_trips_screen.dart';
 import '../../features/profile/reputation_screen.dart';
 import '../../features/admin/admin_screen.dart';
 import '../../features/admin/admin_users_screen.dart';
-import '../../features/accessible_buses/accessible_buses_screen.dart';
+import '../../features/nearby_buses/nearby_buses_screen.dart';
 import '../../features/admin/admin_operators_screen.dart';
 import '../../features/appearance/appearance_screen.dart';
 import '../../features/appearance/custom_palette_screen.dart';
@@ -353,11 +353,11 @@ final routerProvider = Provider<GoRouter>((ref) {
             _slide(state, const CustomPaletteScreen()),
       ),
 
-      // ── Accessible buses ──
+      // ── Nearby buses ──
       GoRoute(
-        path: '/accessible-buses',
+        path: '/nearby-buses',
         pageBuilder: (context, state) =>
-            _slide(state, const AccessibleBusesScreen()),
+            _slide(state, const NearbyBusesScreen()),
       ),
 
       // ── Notifications ──

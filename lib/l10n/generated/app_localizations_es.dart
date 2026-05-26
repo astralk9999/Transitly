@@ -2214,4 +2214,101 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get accessibilityLanguageArSubtitle => 'Forzar árabe';
+
+  @override
+  String get useMyLocation => 'Usar mi ubicación';
+
+  @override
+  String get myLocation => 'Mi ubicación';
+
+  @override
+  String get homeSearchPlacesHint => 'Buscar paradas, líneas o lugares...';
+
+  @override
+  String get locationDisabledTooltip =>
+      'Activa la ubicación en Ajustes para usar esta opción';
+
+  @override
+  String get routeSearchFromHint => 'Desde...';
+
+  @override
+  String get routeSearchToHint => 'Hasta...';
+
+  @override
+  String get searchButtonLabel => 'BUSCAR RUTA';
+
+  @override
+  String get homeConfigureHabitualTitle => 'Configurar viaje habitual';
+
+  @override
+  String get homeConfigureHabitualRoute => 'Línea';
+
+  @override
+  String get homeConfigureHabitualStop => 'Parada';
+
+  @override
+  String get homeConfigureHabitualSelectRouteFirst =>
+      'Selecciona una línea primero';
+
+  @override
+  String get homeConfigureHabitualCTA => 'Configura tu viaje habitual';
+
+  @override
+  String get homeConfigureHabitualCTAHint =>
+      'Elige línea y parada para ver tu próximo bus';
+
+  @override
+  String get homeConfigureHabitualAction => 'Configurar';
+
+  @override
+  String get homeReferenceStopTitle => 'Elige una parada de referencia';
+
+  @override
+  String get homeReferenceStopSearchHint => 'Buscar parada...';
+
+  @override
+  String get homePickReferenceCTA => 'Sin ubicación';
+
+  @override
+  String get homePickReferenceCTAHint =>
+      'Selecciona una parada para ver paradas cercanas';
+
+  @override
+  String get homePickReferenceAction => 'Elegir parada';
+
+  @override
+  String homeNearbyDistance(String distance) {
+    return '$distance m';
+  }
+
+  @override
+  String homeNextBus(String time) {
+    return 'en $time min';
+  }
+
+  @override
+  String get homeMyStops => 'MIS PARADAS';
+
+  @override
+  String get homeNoFavoriteStops => 'Sin paradas favoritas';
+
+  @override
+  String get homeNoFavoriteStopsHint =>
+      'Marca paradas como favoritas desde el mapa';
+
+  @override
+  String get actionToggleStopFavorite =>
+      'Marcar/Desmarcar parada como favorita';
+
+  @override
+  String get homeNoUpcomingDepartures => 'Sin próximas salidas';
+
+  @override
+  String get stopAddedToFavorites => 'Parada añadida a favoritas';
+
+  @override
+  String get stopRemovedFromFavorites => 'Parada eliminada de favoritas';
+
+  @override
+  String get homeMarkLineFavoriteCTA => 'Marca una línea como favorita';
 }

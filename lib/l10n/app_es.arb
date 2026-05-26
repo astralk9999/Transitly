@@ -1226,5 +1226,44 @@
   "@mapSearchSectionPlaces": {"description": "Sección de lugares en resultados"},
   "mapLinesSectionTitle": "Líneas",
   "accessibilityLanguageAr": "العربية",
-  "accessibilityLanguageArSubtitle": "Forzar árabe"
+  "accessibilityLanguageArSubtitle": "Forzar árabe",
+  "useMyLocation": "Usar mi ubicación",
+  "myLocation": "Mi ubicación",
+  "homeSearchPlacesHint": "Buscar paradas, líneas o lugares...",
+  "locationDisabledTooltip": "Activa la ubicación en Ajustes para usar esta opción",
+  "routeSearchFromHint": "Desde...",
+  "routeSearchToHint": "Hasta...",
+  "searchButtonLabel": "BUSCAR RUTA",
+  "homeConfigureHabitualTitle": "Configurar viaje habitual",
+  "homeConfigureHabitualRoute": "Línea",
+  "homeConfigureHabitualStop": "Parada",
+  "homeConfigureHabitualSelectRouteFirst": "Selecciona una línea primero",
+  "homeConfigureHabitualCTA": "Configura tu viaje habitual",
+  "homeConfigureHabitualCTAHint": "Elige línea y parada para ver tu próximo bus",
+  "homeConfigureHabitualAction": "Configurar",
+  "homeReferenceStopTitle": "Elige una parada de referencia",
+  "homeReferenceStopSearchHint": "Buscar parada...",
+  "homePickReferenceCTA": "Sin ubicación",
+  "homePickReferenceCTAHint": "Selecciona una parada para ver paradas cercanas",
+  "homePickReferenceAction": "Elegir parada",
+  "homeNearbyDistance": "{distance} m",
+  "@homeNearbyDistance": {
+    "placeholders": {
+      "distance": { "type": "String", "example": "350" }
+    }
+  },
+  "homeNextBus": "en {time} min",
+  "@homeNextBus": {
+    "placeholders": {
+      "time": { "type": "String", "example": "5" }
+    }
+  },
+  "homeMyStops": "MIS PARADAS",
+  "homeNoFavoriteStops": "Sin paradas favoritas",
+  "homeNoFavoriteStopsHint": "Marca paradas como favoritas desde el mapa",
+  "actionToggleStopFavorite": "Marcar/Desmarcar parada como favorita",
+  "homeNoUpcomingDepartures": "Sin próximas salidas",
+  "stopAddedToFavorites": "Parada añadida a favoritas",
+  "stopRemovedFromFavorites": "Parada eliminada de favoritas",
+  "homeMarkLineFavoriteCTA": "Marca una línea como favorita"
 }

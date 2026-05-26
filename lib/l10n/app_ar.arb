@@ -761,5 +761,44 @@
   "mapSearchSectionPlaces": "الأماكن",
   "mapLinesSectionTitle": "خطوط",
   "accessibilityLanguageAr": "العربية",
-  "accessibilityLanguageArSubtitle": "فرض العربية"
+  "accessibilityLanguageArSubtitle": "فرض العربية",
+  "useMyLocation": "استخدم موقعي",
+  "myLocation": "موقعي",
+  "homeSearchPlacesHint": "البحث عن محطات، خطوط أو أماكن...",
+  "locationDisabledTooltip": "فعل الموقع في الإعدادات لاستخدام هذا الخيار",
+  "routeSearchFromHint": "من...",
+  "routeSearchToHint": "إلى...",
+  "searchButtonLabel": "ابحث عن مسار",
+  "homeConfigureHabitualTitle": "إعداد رحلتك المعتادة",
+  "homeConfigureHabitualRoute": "الخط",
+  "homeConfigureHabitualStop": "المحطة",
+  "homeConfigureHabitualSelectRouteFirst": "اختر خطاً أولاً",
+  "homeConfigureHabitualCTA": "إعداد رحلتك المعتادة",
+  "homeConfigureHabitualCTAHint": "اختر خطاً ومحطة لرؤية حافلتك القادمة",
+  "homeConfigureHabitualAction": "إعداد",
+  "homeReferenceStopTitle": "اختر محطة مرجعية",
+  "homeReferenceStopSearchHint": "ابحث عن محطة...",
+  "homePickReferenceCTA": "لا يوجد موقع",
+  "homePickReferenceCTAHint": "اختر محطة لعرض المحطات القريبة",
+  "homePickReferenceAction": "اختر محطة",
+  "homeNearbyDistance": "{distance} م",
+  "@homeNearbyDistance": {
+    "placeholders": {
+      "distance": { "type": "String", "example": "350" }
+    }
+  },
+  "homeNextBus": "خلال {time} دقيقة",
+  "@homeNextBus": {
+    "placeholders": {
+      "time": { "type": "String", "example": "5" }
+    }
+  },
+  "homeMyStops": "محطاتي",
+  "homeNoFavoriteStops": "لا توجد محطات مفضلة",
+  "homeNoFavoriteStopsHint": "ضع علامة على المحطات كمفضلة من الخريطة",
+  "actionToggleStopFavorite": "تبديل تفضيل المحطة",
+  "homeNoUpcomingDepartures": "لا توجد مغادرات قادمة",
+  "stopAddedToFavorites": "تمت إضافة المحطة إلى المفضلة",
+  "stopRemovedFromFavorites": "تمت إزالة المحطة من المفضلة",
+  "homeMarkLineFavoriteCTA": "ضع علامة على خط كمفضل"
 }

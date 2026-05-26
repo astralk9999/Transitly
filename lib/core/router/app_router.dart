@@ -36,6 +36,7 @@ import '../../features/management/manager_inbox_screen.dart';
 import '../../features/operator_admin/operator_dashboard_screen.dart';
 import '../../features/operator_admin/invitation_codes_screen.dart';
 import '../../features/operator_admin/drivers_screen.dart';
+import '../../features/home/screens/place_search_screen.dart';
 import '../../features/onboarding/onboarding_screen.dart';
 import '../../features/profile/accessibility_settings_screen.dart';
 import '../../features/profile/achievements_screen.dart';
@@ -379,6 +380,13 @@ final routerProvider = Provider<GoRouter>((ref) {
           pageBuilder: (context, state) =>
               _slide(state, const ComponentShowcaseScreen()),
         ),
+
+      // ── Place search ──
+      GoRoute(
+        path: '/search/places',
+        pageBuilder: (context, state) =>
+            _slide(state, const PlaceSearchScreen()),
+      ),
     ],
   );
 });

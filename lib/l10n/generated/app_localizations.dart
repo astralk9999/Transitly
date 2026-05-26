@@ -4130,6 +4130,180 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Forzar árabe'**
   String get accessibilityLanguageArSubtitle;
+
+  /// No description provided for @useMyLocation.
+  ///
+  /// In es, this message translates to:
+  /// **'Usar mi ubicación'**
+  String get useMyLocation;
+
+  /// No description provided for @myLocation.
+  ///
+  /// In es, this message translates to:
+  /// **'Mi ubicación'**
+  String get myLocation;
+
+  /// No description provided for @homeSearchPlacesHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar paradas, líneas o lugares...'**
+  String get homeSearchPlacesHint;
+
+  /// No description provided for @locationDisabledTooltip.
+  ///
+  /// In es, this message translates to:
+  /// **'Activa la ubicación en Ajustes para usar esta opción'**
+  String get locationDisabledTooltip;
+
+  /// No description provided for @routeSearchFromHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Desde...'**
+  String get routeSearchFromHint;
+
+  /// No description provided for @routeSearchToHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Hasta...'**
+  String get routeSearchToHint;
+
+  /// No description provided for @searchButtonLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'BUSCAR RUTA'**
+  String get searchButtonLabel;
+
+  /// No description provided for @homeConfigureHabitualTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Configurar viaje habitual'**
+  String get homeConfigureHabitualTitle;
+
+  /// No description provided for @homeConfigureHabitualRoute.
+  ///
+  /// In es, this message translates to:
+  /// **'Línea'**
+  String get homeConfigureHabitualRoute;
+
+  /// No description provided for @homeConfigureHabitualStop.
+  ///
+  /// In es, this message translates to:
+  /// **'Parada'**
+  String get homeConfigureHabitualStop;
+
+  /// No description provided for @homeConfigureHabitualSelectRouteFirst.
+  ///
+  /// In es, this message translates to:
+  /// **'Selecciona una línea primero'**
+  String get homeConfigureHabitualSelectRouteFirst;
+
+  /// No description provided for @homeConfigureHabitualCTA.
+  ///
+  /// In es, this message translates to:
+  /// **'Configura tu viaje habitual'**
+  String get homeConfigureHabitualCTA;
+
+  /// No description provided for @homeConfigureHabitualCTAHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige línea y parada para ver tu próximo bus'**
+  String get homeConfigureHabitualCTAHint;
+
+  /// No description provided for @homeConfigureHabitualAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Configurar'**
+  String get homeConfigureHabitualAction;
+
+  /// No description provided for @homeReferenceStopTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige una parada de referencia'**
+  String get homeReferenceStopTitle;
+
+  /// No description provided for @homeReferenceStopSearchHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar parada...'**
+  String get homeReferenceStopSearchHint;
+
+  /// No description provided for @homePickReferenceCTA.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin ubicación'**
+  String get homePickReferenceCTA;
+
+  /// No description provided for @homePickReferenceCTAHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Selecciona una parada para ver paradas cercanas'**
+  String get homePickReferenceCTAHint;
+
+  /// No description provided for @homePickReferenceAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegir parada'**
+  String get homePickReferenceAction;
+
+  /// No description provided for @homeNearbyDistance.
+  ///
+  /// In es, this message translates to:
+  /// **'{distance} m'**
+  String homeNearbyDistance(String distance);
+
+  /// No description provided for @homeNextBus.
+  ///
+  /// In es, this message translates to:
+  /// **'en {time} min'**
+  String homeNextBus(String time);
+
+  /// No description provided for @homeMyStops.
+  ///
+  /// In es, this message translates to:
+  /// **'MIS PARADAS'**
+  String get homeMyStops;
+
+  /// No description provided for @homeNoFavoriteStops.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin paradas favoritas'**
+  String get homeNoFavoriteStops;
+
+  /// No description provided for @homeNoFavoriteStopsHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Marca paradas como favoritas desde el mapa'**
+  String get homeNoFavoriteStopsHint;
+
+  /// No description provided for @actionToggleStopFavorite.
+  ///
+  /// In es, this message translates to:
+  /// **'Marcar/Desmarcar parada como favorita'**
+  String get actionToggleStopFavorite;
+
+  /// No description provided for @homeNoUpcomingDepartures.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin próximas salidas'**
+  String get homeNoUpcomingDepartures;
+
+  /// No description provided for @stopAddedToFavorites.
+  ///
+  /// In es, this message translates to:
+  /// **'Parada añadida a favoritas'**
+  String get stopAddedToFavorites;
+
+  /// No description provided for @stopRemovedFromFavorites.
+  ///
+  /// In es, this message translates to:
+  /// **'Parada eliminada de favoritas'**
+  String get stopRemovedFromFavorites;
+
+  /// No description provided for @homeMarkLineFavoriteCTA.
+  ///
+  /// In es, this message translates to:
+  /// **'Marca una línea como favorita'**
+  String get homeMarkLineFavoriteCTA;
 }
 
 class _AppLocalizationsDelegate

@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/theme/transit_animations.dart';
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../data/mock/mock_data_service.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../../shared/models/stop_model.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/responsive_scaffold.dart';
 import '../../../shared/widgets/route_search_bar.dart';
@@ -37,22 +39,16 @@ class _SearchTabState extends ConsumerState<SearchTab> {
         child: SafeArea(
           child: Column(
             children: [
-              // Search bar
               Padding(
                 padding: EdgeInsets.all(padding),
                 child: RouteSearchBar(
                   availableStops: mockData.stops,
-                  onSearch: () {
-                    setState(() {
-                      _hasSearched = true;
-                    });
-                  },
+                  onSearchWith: _handleSearch,
                 ),
               ),
-              // Results or empty state
               Expanded(
                 child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
+                  duration: TransitAnimations.normal,
                   child: _hasSearched
                       ? (_searchLoading
                           ? _buildSearchShimmer(context)
@@ -88,6 +84,16 @@ class _SearchTabState extends ConsumerState<SearchTab> {
         ),
       ),
     );
+  }
+
+  void _handleSearch(StopModel? origin, StopModel? destination, bool useMyLocation) {
+    if ((!useMyLocation && origin == null) || destination == null) return;
+    setState(() => _hasSearched = true);
+    context.push('/route-plan', extra: {
+      'fromStopId': origin?.id,
+      'toStopId': destination.id,
+      'useMyLocation': useMyLocation,
+    });
   }
 
   Widget _buildSearchShimmer(BuildContext context) {

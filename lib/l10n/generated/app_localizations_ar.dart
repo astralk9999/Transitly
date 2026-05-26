@@ -2190,4 +2190,98 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get accessibilityLanguageArSubtitle => 'فرض العربية';
+
+  @override
+  String get useMyLocation => 'استخدم موقعي';
+
+  @override
+  String get myLocation => 'موقعي';
+
+  @override
+  String get homeSearchPlacesHint => 'البحث عن محطات، خطوط أو أماكن...';
+
+  @override
+  String get locationDisabledTooltip =>
+      'فعل الموقع في الإعدادات لاستخدام هذا الخيار';
+
+  @override
+  String get routeSearchFromHint => 'من...';
+
+  @override
+  String get routeSearchToHint => 'إلى...';
+
+  @override
+  String get searchButtonLabel => 'ابحث عن مسار';
+
+  @override
+  String get homeConfigureHabitualTitle => 'إعداد رحلتك المعتادة';
+
+  @override
+  String get homeConfigureHabitualRoute => 'الخط';
+
+  @override
+  String get homeConfigureHabitualStop => 'المحطة';
+
+  @override
+  String get homeConfigureHabitualSelectRouteFirst => 'اختر خطاً أولاً';
+
+  @override
+  String get homeConfigureHabitualCTA => 'إعداد رحلتك المعتادة';
+
+  @override
+  String get homeConfigureHabitualCTAHint =>
+      'اختر خطاً ومحطة لرؤية حافلتك القادمة';
+
+  @override
+  String get homeConfigureHabitualAction => 'إعداد';
+
+  @override
+  String get homeReferenceStopTitle => 'اختر محطة مرجعية';
+
+  @override
+  String get homeReferenceStopSearchHint => 'ابحث عن محطة...';
+
+  @override
+  String get homePickReferenceCTA => 'لا يوجد موقع';
+
+  @override
+  String get homePickReferenceCTAHint => 'اختر محطة لعرض المحطات القريبة';
+
+  @override
+  String get homePickReferenceAction => 'اختر محطة';
+
+  @override
+  String homeNearbyDistance(String distance) {
+    return '$distance م';
+  }
+
+  @override
+  String homeNextBus(String time) {
+    return 'خلال $time دقيقة';
+  }
+
+  @override
+  String get homeMyStops => 'محطاتي';
+
+  @override
+  String get homeNoFavoriteStops => 'لا توجد محطات مفضلة';
+
+  @override
+  String get homeNoFavoriteStopsHint =>
+      'ضع علامة على المحطات كمفضلة من الخريطة';
+
+  @override
+  String get actionToggleStopFavorite => 'تبديل تفضيل المحطة';
+
+  @override
+  String get homeNoUpcomingDepartures => 'لا توجد مغادرات قادمة';
+
+  @override
+  String get stopAddedToFavorites => 'تمت إضافة المحطة إلى المفضلة';
+
+  @override
+  String get stopRemovedFromFavorites => 'تمت إزالة المحطة من المفضلة';
+
+  @override
+  String get homeMarkLineFavoriteCTA => 'ضع علامة على خط كمفضل';
 }

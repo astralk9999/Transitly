@@ -824,5 +824,44 @@
   "mapSearchSectionPlaces": "Places",
   "mapLinesSectionTitle": "Lines",
   "accessibilityLanguageAr": "العربية",
-  "accessibilityLanguageArSubtitle": "Force Arabic"
+  "accessibilityLanguageArSubtitle": "Force Arabic",
+  "useMyLocation": "Use my location",
+  "myLocation": "My location",
+  "homeSearchPlacesHint": "Search stops, lines or places...",
+  "locationDisabledTooltip": "Enable location in Settings to use this option",
+  "routeSearchFromHint": "From...",
+  "routeSearchToHint": "To...",
+  "searchButtonLabel": "SEARCH ROUTE",
+  "homeConfigureHabitualTitle": "Set up your habitual trip",
+  "homeConfigureHabitualRoute": "Line",
+  "homeConfigureHabitualStop": "Stop",
+  "homeConfigureHabitualSelectRouteFirst": "Select a line first",
+  "homeConfigureHabitualCTA": "Set up your habitual trip",
+  "homeConfigureHabitualCTAHint": "Choose a line and stop to see your next bus",
+  "homeConfigureHabitualAction": "Configure",
+  "homeReferenceStopTitle": "Choose a reference stop",
+  "homeReferenceStopSearchHint": "Search stop...",
+  "homePickReferenceCTA": "No location",
+  "homePickReferenceCTAHint": "Select a stop to see nearby stops",
+  "homePickReferenceAction": "Choose stop",
+  "homeNearbyDistance": "{distance} m",
+  "@homeNearbyDistance": {
+    "placeholders": {
+      "distance": { "type": "String", "example": "350" }
+    }
+  },
+  "homeNextBus": "in {time} min",
+  "@homeNextBus": {
+    "placeholders": {
+      "time": { "type": "String", "example": "5" }
+    }
+  },
+  "homeMyStops": "MY STOPS",
+  "homeNoFavoriteStops": "No favorite stops",
+  "homeNoFavoriteStopsHint": "Mark stops as favorites from the map",
+  "actionToggleStopFavorite": "Toggle stop favorite",
+  "homeNoUpcomingDepartures": "No upcoming departures",
+  "stopAddedToFavorites": "Stop added to favorites",
+  "stopRemovedFromFavorites": "Stop removed from favorites",
+  "homeMarkLineFavoriteCTA": "Mark a line as favorite"
 }

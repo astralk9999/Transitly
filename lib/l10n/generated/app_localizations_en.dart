@@ -2201,4 +2201,97 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get accessibilityLanguageArSubtitle => 'Force Arabic';
+
+  @override
+  String get useMyLocation => 'Use my location';
+
+  @override
+  String get myLocation => 'My location';
+
+  @override
+  String get homeSearchPlacesHint => 'Search stops, lines or places...';
+
+  @override
+  String get locationDisabledTooltip =>
+      'Enable location in Settings to use this option';
+
+  @override
+  String get routeSearchFromHint => 'From...';
+
+  @override
+  String get routeSearchToHint => 'To...';
+
+  @override
+  String get searchButtonLabel => 'SEARCH ROUTE';
+
+  @override
+  String get homeConfigureHabitualTitle => 'Set up your habitual trip';
+
+  @override
+  String get homeConfigureHabitualRoute => 'Line';
+
+  @override
+  String get homeConfigureHabitualStop => 'Stop';
+
+  @override
+  String get homeConfigureHabitualSelectRouteFirst => 'Select a line first';
+
+  @override
+  String get homeConfigureHabitualCTA => 'Set up your habitual trip';
+
+  @override
+  String get homeConfigureHabitualCTAHint =>
+      'Choose a line and stop to see your next bus';
+
+  @override
+  String get homeConfigureHabitualAction => 'Configure';
+
+  @override
+  String get homeReferenceStopTitle => 'Choose a reference stop';
+
+  @override
+  String get homeReferenceStopSearchHint => 'Search stop...';
+
+  @override
+  String get homePickReferenceCTA => 'No location';
+
+  @override
+  String get homePickReferenceCTAHint => 'Select a stop to see nearby stops';
+
+  @override
+  String get homePickReferenceAction => 'Choose stop';
+
+  @override
+  String homeNearbyDistance(String distance) {
+    return '$distance m';
+  }
+
+  @override
+  String homeNextBus(String time) {
+    return 'in $time min';
+  }
+
+  @override
+  String get homeMyStops => 'MY STOPS';
+
+  @override
+  String get homeNoFavoriteStops => 'No favorite stops';
+
+  @override
+  String get homeNoFavoriteStopsHint => 'Mark stops as favorites from the map';
+
+  @override
+  String get actionToggleStopFavorite => 'Toggle stop favorite';
+
+  @override
+  String get homeNoUpcomingDepartures => 'No upcoming departures';
+
+  @override
+  String get stopAddedToFavorites => 'Stop added to favorites';
+
+  @override
+  String get stopRemovedFromFavorites => 'Stop removed from favorites';
+
+  @override
+  String get homeMarkLineFavoriteCTA => 'Mark a line as favorite';
 }

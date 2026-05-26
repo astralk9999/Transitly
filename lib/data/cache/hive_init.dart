@@ -52,6 +52,11 @@ abstract class HiveBoxes {
   /// Metadatos de la sesión Auth (último uid, expiración tokens, …).
   /// Sirve para mostrar UI placeholder mientras Supabase rehidrata.
   static const authSessionMeta = 'auth_session_meta';
+
+  /// Escaneos NFC de tarjetas de transporte (offline-first).
+  /// Cada entrada es `Map<String, dynamic>` con cardId, balance,
+  /// scannedAt y flag synced.
+  static const nfcScans = 'nfc_scans';
 }
 
 /// Inicializa Hive (registro de adapters + apertura de cajas).
@@ -87,6 +92,7 @@ abstract class HiveInit {
     await _open<AppNotification>(HiveBoxes.notifications);
     await _open<Map<dynamic, dynamic>>(HiveBoxes.editorDrafts);
     await _open<List<dynamic>>(HiveBoxes.userFavorites);
+    await _open<Map<dynamic, dynamic>>(HiveBoxes.nfcScans);
 
     final encryptionCipher = HiveAesCipher(await _encryptionKey());
 

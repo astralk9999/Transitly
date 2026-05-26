@@ -99,3 +99,10 @@ final authSessionMetaBoxProvider = Provider<Box<Map<dynamic, dynamic>>>(
 final editorDraftsBoxProvider = Provider<Box<Map<dynamic, dynamic>>>(
   (_) => Hive.box<Map<dynamic, dynamic>>(HiveBoxes.editorDrafts),
 );
+
+/// Escaneos NFC de tarjetas (offline-first). Cada entrada es un
+/// `Map<String, dynamic>` con `cardId`, `balance`, `scannedAt` y
+/// flag `synced`.
+final nfcScansBoxProvider = Provider<Box<Map<dynamic, dynamic>>>(
+  (_) => Hive.box<Map<dynamic, dynamic>>(HiveBoxes.nfcScans),
+);

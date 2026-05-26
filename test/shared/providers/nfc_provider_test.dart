@@ -1,7 +1,16 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hive/hive.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import 'package:transitly/data/nfc/nfc_balance_repository.dart';
 import 'package:transitly/data/nfc/nfc_card_service.dart';
 import 'package:transitly/shared/providers/nfc_provider.dart';
+
+class MockSupabaseClient extends Mock implements SupabaseClient {}
+
+class MockGoTrueClient extends Mock implements GoTrueClient {}
 
 /// Fake service that drives [onResult]/[onError] deterministically.
 class _FakeNfcCardService implements NfcCardService {
@@ -25,7 +34,7 @@ class _FakeNfcCardService implements NfcCardService {
         onResult(NfcCardResult(
           cardId: 'DEADBEEF',
           balance: 12.34,
-          scannedAt: DateTime(2026, 4, 22, 10, 0),
+          scannedAt: DateTime(2026, 4, 22, 10, 0).add(Duration(seconds: startCalls)),
         ));
       case _Scenario.error:
         onError(const NfcCardException(NfcCardError.tagLost));
@@ -44,9 +53,36 @@ class _FakeNfcCardService implements NfcCardService {
 enum _Scenario { success, error }
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
+  late Box<Map<dynamic, dynamic>> box;
+  late NfcBalanceRepository repo;
+
+  setUpAll(() {
+    Hive.init('test/.hive_test_nfc_provider');
+  });
+
+  setUp(() async {
+    box =
+        await Hive.openBox<Map<dynamic, dynamic>>('nfc_scans_test_provider');
+    await box.clear();
+
+    final supabase = MockSupabaseClient();
+    final auth = MockGoTrueClient();
+    when(() => supabase.auth).thenReturn(auth);
+    when(() => auth.currentUser).thenReturn(null);
+
+    repo = NfcBalanceRepository(supabase, box);
+  });
+
+  tearDown(() async {
+    await box.close();
+  });
+
   ProviderContainer containerWith(_FakeNfcCardService fake) {
     final container = ProviderContainer(overrides: [
       nfcCardServiceProvider.overrideWithValue(fake),
+      nfcBalanceRepositoryProvider.overrideWithValue(repo),
     ]);
     addTearDown(container.dispose);
     return container;
@@ -73,6 +109,11 @@ void main() {
     expect(s.result?.balance, 12.34);
     expect(s.scanHistory.length, 1);
     expect(fake.startCalls, 1);
+
+    // Verify the scan was persisted to the box
+    expect(box.length, 1);
+    final saved = box.get(box.keys.first);
+    expect(saved?['cardId'], 'DEADBEEF');
   });
 
   test('startScan on error transitions to error with message', () async {

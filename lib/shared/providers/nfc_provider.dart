@@ -2,7 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/analytics/posthog_service.dart';
+import '../../data/nfc/nfc_balance_repository.dart';
 import '../../data/nfc/nfc_card_service.dart';
+import 'connectivity_provider.dart';
 
 /// The service instance. Override in tests with a fake.
 final nfcCardServiceProvider =
@@ -57,10 +59,10 @@ class NfcScanState {
 
 /// Notifier managing the NFC scan lifecycle.
 class NfcScanNotifier extends StateNotifier<NfcScanState> {
-  NfcScanNotifier(this._service) : super(const NfcScanState());
+  NfcScanNotifier(this._service, this._repo) : super(const NfcScanState());
 
   final NfcCardService _service;
-  static const _maxHistory = 10;
+  final NfcBalanceRepository _repo;
 
   /// Start scanning for an NFC card.
   Future<void> startScan() async {
@@ -69,7 +71,8 @@ class NfcScanNotifier extends StateNotifier<NfcScanState> {
     await _service.startScan(
       onResult: (result) {
         PostHogAnalyticsService.nfcReadSuccess('mifare_classic', result.balance);
-        final history = [result, ...state.scanHistory].take(_maxHistory).toList();
+        _repo.saveScan(result);
+        final history = _repo.getHistory();
         state = NfcScanState(
           status: NfcScanStatus.success,
           result: result,
@@ -97,6 +100,12 @@ class NfcScanNotifier extends StateNotifier<NfcScanState> {
     state = state.copyWith(status: NfcScanStatus.idle, errorMessage: null);
   }
 
+  /// Refresh scan history from the persistent repository.
+  void refreshHistory() {
+    final history = _repo.getHistory();
+    state = state.copyWith(scanHistory: history);
+  }
+
   @override
   void dispose() {
     _service.stopScan();
@@ -107,5 +116,17 @@ class NfcScanNotifier extends StateNotifier<NfcScanState> {
 /// Main provider for NFC scan state.
 final nfcScanProvider =
     StateNotifierProvider<NfcScanNotifier, NfcScanState>((ref) {
-  return NfcScanNotifier(ref.read(nfcCardServiceProvider));
+  final notifier = NfcScanNotifier(
+    ref.read(nfcCardServiceProvider),
+    ref.read(nfcBalanceRepositoryProvider),
+  );
+
+  // When coming back online, sync pending scans to Supabase.
+  ref.listen<bool>(isOfflineProvider, (prev, current) {
+    if (prev == true && current == false) {
+      ref.read(nfcBalanceRepositoryProvider).syncPending();
+    }
+  });
+
+  return notifier;
 });

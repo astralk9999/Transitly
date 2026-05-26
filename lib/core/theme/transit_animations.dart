@@ -7,6 +7,7 @@ abstract final class TransitAnimations {
   static const Duration normal = Duration(milliseconds: 250);
   static const Duration slow = Duration(milliseconds: 400);
   static const Duration feedback = Duration(milliseconds: 800);
+  static const Duration shake = Duration(milliseconds: 600);
 
   // ── Durations by element type ───────────────────────────
   static const Duration durationButton = Duration(milliseconds: 120);

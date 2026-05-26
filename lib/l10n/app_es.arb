@@ -448,6 +448,13 @@
   "@notificationsMarkAllRead": { "description": "Mark all notifications as read button" },
   "notificationsAllRead": "Todo leído",
   "@notificationsAllRead": { "description": "All notifications marked as read toast" },
+  "notificationsBellSemantics": "{unreadCount, plural, =0{Notificaciones, ninguna sin leer} =1{Notificaciones, 1 sin leer} other{Notificaciones, {unreadCount} sin leer}}",
+  "@notificationsBellSemantics": {
+    "description": "Semantic label for notification bell in home shell",
+    "placeholders": {
+      "unreadCount": { "type": "int", "example": "3" }
+    }
+  },
   "notificationTypeIncidentResolved": "Incidencia resuelta",
   "@notificationTypeIncidentResolved": { "description": "Notification type: incident resolved" },
   "notificationTypeRoutePromoted": "Ruta promocionada",
@@ -1216,5 +1223,8 @@
   "mapSearchSectionStops": "Paradas",
   "@mapSearchSectionStops": {"description": "Sección de paradas en resultados"},
   "mapSearchSectionPlaces": "Lugares",
-  "@mapSearchSectionPlaces": {"description": "Sección de lugares en resultados"}
+  "@mapSearchSectionPlaces": {"description": "Sección de lugares en resultados"},
+  "mapLinesSectionTitle": "Líneas",
+  "accessibilityLanguageAr": "العربية",
+  "accessibilityLanguageArSubtitle": "Forzar árabe"
 }

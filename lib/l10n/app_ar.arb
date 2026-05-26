@@ -503,6 +503,13 @@
   "notificationsEmpty": "ليس لديك إشعارات",
   "notificationsMarkAllRead": "تعليم الكل كمقروء",
   "notificationsAllRead": "تمت قراءة الكل",
+  "notificationsBellSemantics": "{unreadCount, plural, =0{إشعارات، لا توجد غير مقروءة} =1{إشعارات، 1 غير مقروءة} other{إشعارات، {unreadCount} غير مقروءة}}",
+  "@notificationsBellSemantics": {
+    "description": "Semantic label for notification bell in home shell",
+    "placeholders": {
+      "unreadCount": { "type": "int", "example": "3" }
+    }
+  },
   "notificationTypeIncidentResolved": "تم حل البلاغ",
   "notificationTypeRoutePromoted": "تم ترقية المسار",
   "notificationTypeShareReceived": "تمت مشاركة مسار معك",
@@ -751,5 +758,8 @@
   "mapSearchError": "خطأ في البحث",
   "mapSearchSectionRoutes": "الخطوط",
   "mapSearchSectionStops": "المحطات",
-  "mapSearchSectionPlaces": "الأماكن"
+  "mapSearchSectionPlaces": "الأماكن",
+  "mapLinesSectionTitle": "خطوط",
+  "accessibilityLanguageAr": "العربية",
+  "accessibilityLanguageArSubtitle": "فرض العربية"
 }

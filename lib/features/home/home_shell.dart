@@ -14,6 +14,7 @@ import '../../shared/providers/user_provider.dart';
 import '../../shared/widgets/responsive_scaffold.dart';
 import '../../shared/widgets/smoke_background.dart';
 import '../driver/driver_panel.dart';
+import '../notifications/widgets/notification_bell.dart';
 import 'widgets/home_bottom_nav.dart';
 import 'widgets/home_side_nav.dart';
 import 'widgets/home_tab_item.dart';
@@ -110,9 +111,8 @@ class _HomeShellState extends ConsumerState<HomeShell> {
                           Positioned(
                             top: TransitSpacing.space8,
                             right: TransitSpacing.space16,
-                            child: _NotificationBell(
+                            child: NotificationBell(
                               unreadCount: unreadCount,
-                              c: c,
                               onTap: () => context.push('/notifications'),
                             ),
                           ),
@@ -155,9 +155,8 @@ class _HomeShellState extends ConsumerState<HomeShell> {
                 right: TransitSpacing.space16,
                 child: SafeArea(
                   bottom: false,
-                  child: _NotificationBell(
+                  child: NotificationBell(
                     unreadCount: unreadCount,
-                    c: c,
                     onTap: () => context.push('/notifications'),
                   ),
                 ),
@@ -214,68 +213,3 @@ class _DriverFab extends StatelessWidget {
   }
 }
 
-class _NotificationBell extends StatelessWidget {
-  const _NotificationBell({
-    required this.unreadCount,
-    required this.c,
-    required this.onTap,
-  });
-
-  final int unreadCount;
-  final TransitColorScheme c;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: c.bgSurface.withValues(alpha: 0.6),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
-        side: BorderSide(color: c.border, width: 0.5),
-      ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(14),
-        onTap: onTap,
-        child: SizedBox(
-          width: 44,
-          height: 44,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Icon(
-                unreadCount > 0
-                    ? Icons.notifications_active
-                    : Icons.notifications_outlined,
-                color: c.textHi,
-                size: 22,
-              ),
-              if (unreadCount > 0)
-                Positioned(
-                  top: 8,
-                  right: 8,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 4, vertical: 1),
-                    decoration: BoxDecoration(
-                      color: c.accent,
-                      borderRadius: BorderRadius.circular(9),
-                    ),
-                    constraints: const BoxConstraints(minWidth: 16),
-                    child: Text(
-                      unreadCount > 99 ? '99+' : '$unreadCount',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 10,
-                        fontWeight: FontWeight.w700,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}

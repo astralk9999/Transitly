@@ -825,6 +825,18 @@ class AppLocalizationsAr extends AppLocalizations {
   String get notificationsAllRead => 'تمت قراءة الكل';
 
   @override
+  String notificationsBellSemantics(int unreadCount) {
+    String _temp0 = intl.Intl.pluralLogic(
+      unreadCount,
+      locale: localeName,
+      other: 'إشعارات، $unreadCount غير مقروءة',
+      one: 'إشعارات، 1 غير مقروءة',
+      zero: 'إشعارات، لا توجد غير مقروءة',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get notificationTypeIncidentResolved => 'تم حل البلاغ';
 
   @override
@@ -2169,4 +2181,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get mapSearchSectionPlaces => 'الأماكن';
+
+  @override
+  String get mapLinesSectionTitle => 'خطوط';
+
+  @override
+  String get accessibilityLanguageAr => 'العربية';
+
+  @override
+  String get accessibilityLanguageArSubtitle => 'فرض العربية';
 }

@@ -1696,6 +1696,12 @@ abstract class AppLocalizations {
   /// **'Todo leído'**
   String get notificationsAllRead;
 
+  /// Semantic label for notification bell in home shell
+  ///
+  /// In es, this message translates to:
+  /// **'{unreadCount, plural, =0{Notificaciones, ninguna sin leer} =1{Notificaciones, 1 sin leer} other{Notificaciones, {unreadCount} sin leer}}'**
+  String notificationsBellSemantics(int unreadCount);
+
   /// Notification type: incident resolved
   ///
   /// In es, this message translates to:
@@ -4106,6 +4112,24 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Lugares'**
   String get mapSearchSectionPlaces;
+
+  /// No description provided for @mapLinesSectionTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Líneas'**
+  String get mapLinesSectionTitle;
+
+  /// No description provided for @accessibilityLanguageAr.
+  ///
+  /// In es, this message translates to:
+  /// **'العربية'**
+  String get accessibilityLanguageAr;
+
+  /// No description provided for @accessibilityLanguageArSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Forzar árabe'**
+  String get accessibilityLanguageArSubtitle;
 }
 
 class _AppLocalizationsDelegate

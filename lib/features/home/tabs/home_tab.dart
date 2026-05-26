@@ -27,6 +27,7 @@ import '../../../shared/widgets/transit_chip.dart';
 import '../widgets/home_alert_item.dart';
 import '../widgets/habitual_config_sheet.dart';
 import '../widgets/reference_stop_picker_sheet.dart';
+import '../widgets/home_search_bar.dart';
 
 const _nearbyCount = 3;
 
@@ -174,6 +175,10 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                   ),
                 ),
               ),
+              const SizedBox(height: 24),
+
+              const SizedBox(height: 8),
+              const HomeSearchBar(),
               const SizedBox(height: 24),
 
               // ── 1) VIAJE HABITUAL ──

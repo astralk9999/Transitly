@@ -10,6 +10,7 @@ import '../../core/theme/palettes/app_palette.dart';
 import '../../core/theme/palettes/custom_colors.dart';
 import '../../core/theme/palettes/prefab_palettes.dart';
 import '../../core/theme/high_contrast_theme.dart';
+import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_theme.dart';
 import '../../core/utils/app_logger.dart';
 import '../../data/user_preferences/domain/user_preferences_repository.dart';
@@ -237,13 +238,16 @@ class ThemeNotifier extends ChangeNotifier {
   // ── Theme building ───────────────────────────────────────
 
   ThemeData buildTheme(Brightness brightness) {
+    final scheme = brightness == Brightness.dark
+        ? palette.scheme
+        : const TransitLightColors();
     final base = buildTransitTheme(
-      palette.scheme,
+      scheme,
       fontScale: _fontScale,
       dyslexiaFontEnabled: _dyslexiaFontEnabled,
     );
     if (_highContrast) {
-      return HighContrastTheme.apply(base, palette.scheme);
+      return HighContrastTheme.apply(base, scheme);
     }
     return base;
   }

@@ -57,24 +57,17 @@ class RouteCard extends StatelessWidget {
         child: Container(
           constraints: const BoxConstraints(minHeight: 80),
           decoration: BoxDecoration(
-            color: isDark
-                ? Colors.white.withValues(alpha: 0.10)
-                : c.bgSurface,
+            color: c.bgRaised,
             borderRadius: BorderRadius.circular(14),
-            border: Border.all(
-              color: isDark
-                  ? Colors.white.withValues(alpha: 0.15)
-                  : c.border,
-              width: 1,
-            ),
+            border: Border.all(color: c.border, width: 1),
           ),
           child: Row(
             children: [
               // Route code box with status color accent
               Container(
-                width: 60,
+                constraints: const BoxConstraints(minWidth: 60, maxWidth: 96),
                 margin: const EdgeInsets.all(10),
-                padding: const EdgeInsets.symmetric(vertical: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
                 decoration: BoxDecoration(
                   color: statusColor.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(10),
@@ -84,9 +77,14 @@ class RouteCard extends StatelessWidget {
                   ),
                 ),
                 child: Center(
-                  child: Text(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
                       route.code,
                       style: TransitTypography.routeCode(c.accent),
+                      maxLines: 1,
+                      overflow: TextOverflow.fade,
+                    ),
                   ),
                 ),
               ),

@@ -365,6 +365,13 @@ class _LanguageSection extends StatelessWidget {
             c: c,
             onTap: () => onChanged(const Locale('en')),
           ),
+          _ThemeOption(
+            label: AppLocalizations.of(context).accessibilityLanguageAr,
+            subtitle: AppLocalizations.of(context).accessibilityLanguageArSubtitle,
+            selected: locale?.languageCode == 'ar',
+            c: c,
+            onTap: () => onChanged(const Locale('ar')),
+          ),
         ],
       ),
     );

@@ -51,11 +51,14 @@ class TransitlyApp extends ConsumerWidget {
         // dejaba el texto fijo en 2.5× → overflows masivos.
         final systemScale = MediaQuery.textScalerOf(context).scale(1.0);
         final combined = (systemScale * themeNotifier.fontScale).clamp(0.8, 2.5);
+        final mq = MediaQuery.of(context);
         return FocusTraversalGroup(
           policy: WidgetOrderTraversalPolicy(),
           child: MediaQuery(
-            data: MediaQuery.of(context).copyWith(
+            data: mq.copyWith(
               textScaler: TextScaler.linear(combined),
+              disableAnimations:
+                  themeNotifier.reduceMotion || mq.disableAnimations,
             ),
             child: result,
           ),

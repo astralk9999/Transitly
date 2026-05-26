@@ -56,13 +56,9 @@ class TransitButton extends StatelessWidget {
         ),
       ];
     } else {
-      bg = isDark
-          ? Colors.white.withValues(alpha: 0.10)
-          : Colors.black.withValues(alpha: 0.06);
+      bg = c.bgRaised;
       fg = c.textHi;
-      borderColor = isDark
-          ? Colors.white.withValues(alpha: 0.15)
-          : Colors.black.withValues(alpha: 0.12);
+      borderColor = c.border;
       shadows = [];
     }
 

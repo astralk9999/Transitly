@@ -34,13 +34,11 @@ class GlassCard extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
 
-    final bgColor = isDark
-        ? Colors.white.withValues(alpha: fillOpacity)
-        : c.bgSurface;
+    final bgColor = isDark ? c.glassBg : c.bgSurface;
     final borderColor = useAccentBorder && accentColor != null
         ? accentColor!.withValues(alpha: 0.30)
         : isDark
-            ? Colors.white.withValues(alpha: borderOpacity)
+            ? c.glassBorder
             : c.border;
 
     Widget card = Container(

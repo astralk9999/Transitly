@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -11,18 +12,22 @@ import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_spacing.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../data/fmtc/fmtc_provider.dart';
+import '../../../data/geo/location_service.dart';
 import '../../../data/mock/mock_data_service.dart';
 import '../../../data/mock/mock_realtime_service.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/models/enums.dart';
 import '../../../shared/models/route_model.dart';
+import '../../../shared/models/route_stop_model.dart';
 import '../../../shared/providers/connectivity_provider.dart';
 import '../../../shared/providers/is_dark_provider.dart';
+import '../../../shared/providers/user_favorites_provider.dart';
 import '../../../shared/providers/user_location_provider.dart';
 import '../../../shared/widgets/pressable.dart';
 import '../../../shared/widgets/route_card.dart';
 import '../../map/map_config.dart';
 import '../../map/map_data_cache.dart';
+import '../../map/map_filter_controller.dart';
 import '../../map/widgets/map_filter_sheet.dart';
 import '../../map/sheets/stop_info_sheet.dart';
 import '../../map/sheets/trip_info_sheet.dart';
@@ -44,10 +49,62 @@ class _MapTabState extends ConsumerState<MapTab> {
   final _scrollController = ScrollController();
   String? _selectedRouteId;
   ServiceType? _serviceTypeFilter;
+  bool _didInitialCenter = false;
+  bool _loadingCenter = false;
 
   List<RouteModel> _filteredRoutes(List<RouteModel> all) {
-    if (_serviceTypeFilter == null) return all;
-    return all.where((r) => r.serviceType == _serviceTypeFilter).toList();
+    var filtered = all;
+
+    if (_serviceTypeFilter != null) {
+      filtered =
+          filtered.where((r) => r.serviceType == _serviceTypeFilter).toList();
+    }
+
+    final f = ref.read(mapFilterControllerProvider);
+
+    if (!f.showOfficial) {
+      filtered = filtered
+          .where((r) => r.status != RouteStatus.official)
+          .toList();
+    }
+    if (!f.showCommunity) {
+      filtered = filtered
+          .where((r) => r.status == RouteStatus.official)
+          .toList();
+    }
+
+    if (f.onlyAccessible) {
+      final mockData = ref.read(mockDataServiceProvider);
+      filtered = filtered.where((r) {
+        final stops = mockData.getStopsForRoute(r.id);
+        return stops.any((s) => s.isAccessible);
+      }).toList();
+    }
+
+    if (f.onlyFavorites) {
+      final favs = ref.read(userFavoritesProvider);
+      filtered = filtered.where((r) => favs.contains(r.id)).toList();
+    }
+
+    if (f.nextMinutes > 0) {
+      final mockData = ref.read(mockDataServiceProvider);
+      final now = DateTime.now();
+      final nowMins = now.hour * 60 + now.minute;
+      filtered = filtered.where((r) {
+        final rs = mockData.routeStops[r.id];
+        if (rs == null || rs.isEmpty) return false;
+        final ordered = List<RouteStopModel>.from(rs)
+          ..sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
+        final firstStopId = ordered.first.stopId;
+        final deps = mockData.getNextDepartures(r.id, firstStopId, 1);
+        if (deps.isEmpty) return false;
+        final parts = deps.first.departureTime.split(':');
+        final depMins = int.parse(parts[0]) * 60 + int.parse(parts[1]);
+        return depMins >= nowMins && (depMins - nowMins) <= f.nextMinutes;
+      }).toList();
+    }
+
+    return filtered;
   }
 
   @override
@@ -74,7 +131,7 @@ class _MapTabState extends ConsumerState<MapTab> {
   }
 
   String? _findClosestRoute(LatLng point, MapDataCache cache) {
-    const thresholdDeg = 0.003; // ~300m at Jerez latitude
+    const thresholdDeg = 0.003;
     String? bestRouteId;
     double bestDist = double.infinity;
 
@@ -131,7 +188,7 @@ class _MapTabState extends ConsumerState<MapTab> {
     final idx = mockData.routes.indexWhere((r) => r.id == routeId);
     if (idx >= 0 && _scrollController.hasClients) {
       _scrollController.animateTo(
-        idx * 88.0, // approximate card height + margin
+        idx * 88.0,
         duration: const Duration(milliseconds: 250),
         curve: Curves.easeInOut,
       );
@@ -141,7 +198,24 @@ class _MapTabState extends ConsumerState<MapTab> {
   @override
   void initState() {
     super.initState();
-    _requestLocationPermission();
+    _requestLocationPermission().then((_) => _tryInitialCenter());
+  }
+
+  Future<void> _tryInitialCenter() async {
+    if (_didInitialCenter) return;
+    try {
+      final loc = await ref
+          .read(userLocationStreamProvider.future)
+          .timeout(const Duration(seconds: 4));
+      if (loc != null && mounted) {
+        _mapController.move(loc, 14);
+        _didInitialCenter = true;
+      }
+    } on TimeoutException {
+      return;
+    } catch (_) {
+      return;
+    }
   }
 
   Future<void> _requestLocationPermission() async {
@@ -165,6 +239,63 @@ class _MapTabState extends ConsumerState<MapTab> {
     }
   }
 
+  Future<void> _centerOnUser() async {
+    final loc = ref.read(userLocationStreamProvider).valueOrNull;
+    if (loc != null) {
+      _mapController.move(loc, 16);
+      return;
+    }
+
+    setState(() => _loadingCenter = true);
+    try {
+      final permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        final granted = await Geolocator.requestPermission();
+        if (granted != LocationPermission.whileInUse &&
+            granted != LocationPermission.always) {
+          return;
+        }
+      } else if (permission == LocationPermission.deniedForever) {
+        if (mounted) {
+          final l10n = AppLocalizations.of(context);
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              SnackBar(
+                content: Text(l10n.mapLocationPermissionDenied),
+                action: SnackBarAction(
+                  label: l10n.actionOpenSettings,
+                  onPressed: () => Geolocator.openLocationSettings(),
+                ),
+                duration: const Duration(seconds: 5),
+              ),
+            );
+        }
+        return;
+      }
+
+      final service = ref.read(userLocationServiceProvider);
+      final pos = await service.getCurrent(
+        timeout: const Duration(seconds: 10),
+      );
+      if (pos != null && mounted) {
+        _mapController.move(LocationService.toLatLng(pos), 16);
+      } else if (mounted) {
+        _mapController.move(
+            MapConfig.defaultCenter, MapConfig.defaultZoom);
+      }
+    } catch (_) {
+      if (mounted) {
+        _mapController.move(
+            MapConfig.defaultCenter, MapConfig.defaultZoom);
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _loadingCenter = false);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = isDarkMode(ref, context);
@@ -181,6 +312,8 @@ class _MapTabState extends ConsumerState<MapTab> {
     final cache = ref.watch(mapDataCacheProvider);
     final offline = ref.watch(isOfflineProvider);
     final fmtcTp = ref.watch(fmtcTileProviderProvider);
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: c.bgRoot,
@@ -197,7 +330,7 @@ class _MapTabState extends ConsumerState<MapTab> {
                   isDark: isDark,
                 ),
             ],
-            routes: routes,
+            routes: filteredRoutes,
             routePathsLod: cache.routePathsLod,
             routeStopsMap: cache.routeStopsMap,
             routeBounds: cache.routeBounds,
@@ -220,15 +353,8 @@ class _MapTabState extends ConsumerState<MapTab> {
             overlayWidgets: [
               MapControls(
                 isDark: isDark,
-                onCenter: () {
-                  final loc = ref.read(userLocationStreamProvider).valueOrNull;
-                  if (loc != null) {
-                    _mapController.move(loc, 16);
-                  } else {
-                    _mapController.move(
-                        MapConfig.defaultCenter, MapConfig.defaultZoom);
-                  }
-                },
+                loadingCenter: _loadingCenter,
+                onCenter: _centerOnUser,
                 onFilter: () => showMapFilterSheet(context, ref),
                 onSearch: () => showMapSearchSheet(
                   context,
@@ -263,7 +389,7 @@ class _MapTabState extends ConsumerState<MapTab> {
                               size: 14, color: c.stateDelay),
                           const SizedBox(width: 6),
                           Text(
-                            'Sin conexión · mapa offline',
+                            'Sin conexion . mapa offline',
                             style: TransitTypography.bodySmall(c.textMid),
                           ),
                         ],
@@ -273,7 +399,6 @@ class _MapTabState extends ConsumerState<MapTab> {
                 ),
               ),
             ),
-          // DraggableScrollableSheet
           DraggableScrollableSheet(
             controller: _sheetController,
             initialChildSize: 0.22,
@@ -305,11 +430,18 @@ class _MapTabState extends ConsumerState<MapTab> {
                     children: [
                       ListView.builder(
                         controller: scrollController,
-                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                        padding: EdgeInsets.fromLTRB(
+                          16,
+                          0,
+                          16,
+                          24 +
+                              TransitSpacing.heightNavBar +
+                              bottomPadding,
+                        ),
                         itemCount: filteredRoutes.length + 1,
                         itemBuilder: (context, index) {
                           if (index == 0) {
-                            return _buildHandle(c, filteredRoutes.length);
+                            return _buildHandle(c, filteredRoutes.length, l10n);
                           }
                           final route = filteredRoutes[index - 1];
                           final trip =
@@ -328,8 +460,6 @@ class _MapTabState extends ConsumerState<MapTab> {
                           );
                         },
                       ),
-                      // Subtle bottom fade hints that more content scrolls
-                      // beyond the visible region of the sheet.
                       Positioned(
                         left: 0,
                         right: 0,
@@ -361,7 +491,8 @@ class _MapTabState extends ConsumerState<MapTab> {
     );
   }
 
-  Widget _buildHandle(TransitColorScheme c, int routeCount) {
+  Widget _buildHandle(
+      TransitColorScheme c, int routeCount, AppLocalizations l10n) {
     return Column(
       children: [
         const SizedBox(height: 8),
@@ -380,7 +511,7 @@ class _MapTabState extends ConsumerState<MapTab> {
           child: Row(
             children: [
               Text(
-                'LÍNEAS URBANAS',
+                l10n.mapLinesSectionTitle.toUpperCase(),
                 style: TransitTypography.sectionTitle(c.textMid),
               ),
               const SizedBox(width: 8),
@@ -427,24 +558,18 @@ class _MapTabState extends ConsumerState<MapTab> {
             ],
           ),
         ),
-        // Filter chips for service type
         _buildServiceTypeFilter(c),
       ],
     );
   }
 
   Widget _buildServiceTypeFilter(TransitColorScheme c) {
-    final filterTypes = <ServiceType?>[
-      null,
-      ServiceType.urban,
-      ServiceType.interurban,
-      ServiceType.metropolitan,
-    ];
+    final filterTypes = <ServiceType?>[null, ...ServiceType.values];
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Wrap(
         spacing: 6,
-        runSpacing: 4,
+        runSpacing: 6,
         children: filterTypes.map((type) {
           final selected = _serviceTypeFilter == type;
           String label;

@@ -9,12 +9,14 @@ class MapControls extends StatelessWidget {
     required this.onCenter,
     required this.onFilter,
     this.onSearch,
+    this.loadingCenter = false,
   });
 
   final bool isDark;
   final VoidCallback onCenter;
   final VoidCallback onFilter;
   final VoidCallback? onSearch;
+  final bool loadingCenter;
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +57,7 @@ class MapControls extends StatelessWidget {
               icon: Icons.my_location,
               colors: c,
               onTap: onCenter,
+              loading: loadingCenter,
             ),
           ),
         ],
@@ -68,16 +71,18 @@ class _ControlButton extends StatelessWidget {
     required this.icon,
     required this.colors,
     required this.onTap,
+    this.loading = false,
   });
 
   final IconData icon;
   final TransitColorScheme colors;
   final VoidCallback onTap;
+  final bool loading;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: loading ? null : onTap,
       child: Container(
         width: 40,
         height: 40,
@@ -86,7 +91,19 @@ class _ControlButton extends StatelessWidget {
           shape: BoxShape.circle,
           border: Border.all(color: colors.border, width: 0.5),
         ),
-        child: Icon(icon, size: 20, color: colors.textHi),
+        child: loading
+            ? Center(
+                child: SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor:
+                        AlwaysStoppedAnimation<Color>(colors.textHi),
+                  ),
+                ),
+              )
+            : Icon(icon, size: 20, color: colors.textHi),
       ),
     );
   }

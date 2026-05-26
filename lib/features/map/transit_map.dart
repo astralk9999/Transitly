@@ -10,6 +10,7 @@ import '../../shared/models/active_trip_model.dart';
 import '../../shared/models/enums.dart';
 import '../../shared/models/route_model.dart';
 import '../../shared/models/stop_model.dart';
+import 'layers/route_direction_arrows.dart';
 import 'layers/route_polylines.dart';
 import 'map_config.dart';
 import 'markers/bus_marker.dart';
@@ -130,6 +131,46 @@ class _TransitMapState extends State<TransitMap> {
         (old.west - current.west).abs() > threshold;
   }
 
+  List<MarkerLayer> _buildDirectionArrows(
+      Set<String> activeRouteIds, TransitColorScheme c) {
+    final zoom = _currentZoom.round();
+    if (zoom < 14) return [];
+
+    final visibleIds = <String>[];
+    for (final route in widget.routes) {
+      final isSelected =
+          widget.selectedRouteId != null && route.id == widget.selectedRouteId;
+      final isActive = activeRouteIds.contains(route.id);
+      if (_currentZoom < 13.0 && !isSelected && !isActive) continue;
+      if (_visibleBounds != null && !isSelected) {
+        final bounds = widget.routeBounds[route.id];
+        if (bounds != null &&
+            !_routeIntersectsViewportForArrows(bounds, _visibleBounds!)) {
+          continue;
+        }
+      }
+      visibleIds.add(route.id);
+    }
+
+    final arrows = RouteDirectionArrows.build(
+      routePathsLod: widget.routePathsLod,
+      routeIds: visibleIds,
+      zoom: zoom,
+      color: c.accent.withValues(alpha: 0.7),
+    );
+
+    if (arrows.isEmpty) return [];
+    return [MarkerLayer(markers: arrows)];
+  }
+
+  bool _routeIntersectsViewportForArrows(
+      List<double> bounds, LatLngBounds viewport) {
+    return bounds[0] <= viewport.north &&
+        bounds[2] >= viewport.south &&
+        bounds[1] <= viewport.east &&
+        bounds[3] >= viewport.west;
+  }
+
   @override
   Widget build(BuildContext context) {
     final activeRouteIds = <String>{
@@ -216,9 +257,10 @@ class _TransitMapState extends State<TransitMap> {
                 duration: Duration(milliseconds: 200),
               ),
             ),
-            if (polylines.isNotEmpty) PolylineLayer(polylines: polylines),
-            if (stopMarkers.isNotEmpty) MarkerLayer(markers: stopMarkers),
-            if (busMarkers.isNotEmpty) MarkerLayer(markers: busMarkers),
+    if (polylines.isNotEmpty) PolylineLayer(polylines: polylines),
+    if (stopMarkers.isNotEmpty) MarkerLayer(markers: stopMarkers),
+    if (busMarkers.isNotEmpty) MarkerLayer(markers: busMarkers),
+    ..._buildDirectionArrows(activeRouteIds, c),
             ...widget.additionalLayers,
           ],
         ),

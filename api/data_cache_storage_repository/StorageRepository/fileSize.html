@@ -69,6 +69,7 @@
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">int fileSize(String boxName) {
   try {
+    if (!Hive.isBoxOpen(boxName)) return 0;
     final box = Hive.box(boxName);
     final path = box.path;
     if (path != null) return File(path).lengthSync();

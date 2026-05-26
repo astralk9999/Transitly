@@ -69,6 +69,7 @@
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">String? boxPath(String boxName) {
   try {
+    if (!Hive.isBoxOpen(boxName)) return null;
     final box = Hive.box(boxName);
     return box.path;
   } catch (e) {

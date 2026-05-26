@@ -58,6 +58,7 @@ import '../../features/suggestions/suggest_route_screen.dart';
 import '../../features/suggestions/suggestion_contribute_screen.dart';
 import '../../features/suggestions/suggestion_detail_screen.dart';
 import '../../features/notifications/notifications_screen.dart';
+import '../../features/route_planner/route_plan_results_screen.dart';
 import '../../features/privacy/privacy_screen.dart';
 import '../../features/widgets_native/widgets_settings_screen.dart';
 
@@ -386,6 +387,22 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/search/places',
         pageBuilder: (context, state) =>
             _slide(state, const PlaceSearchScreen()),
+      ),
+
+      // ── Route planner ──
+      GoRoute(
+        path: '/route-plan',
+        pageBuilder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>;
+          return _slide(
+            state,
+            RoutePlanResultsScreen(
+              fromStopId: extra['fromStopId'] as String?,
+              toStopId: extra['toStopId'] as String,
+              useMyLocation: extra['useMyLocation'] as bool? ?? false,
+            ),
+          );
+        },
       ),
     ],
   );

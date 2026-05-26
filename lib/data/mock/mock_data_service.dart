@@ -425,6 +425,33 @@ class MockDataService {
     return entries;
   }
 
+  /// Devuelve los IDs de todas las rutas que pasan por [stopId].
+  ///
+  /// Añadido para el planificador A→B (route_planner_service.dart).
+  List<String> getRoutesServingStop(String stopId) {
+    final result = <String>[];
+    for (final entry in routeStops.entries) {
+      for (final rs in entry.value) {
+        if (rs.stopId == stopId) {
+          result.add(entry.key);
+          break;
+        }
+      }
+    }
+    return result;
+  }
+
+  /// Devuelve la lista ordenada de [RouteStopModel] para una ruta.
+  ///
+  /// Añadido para el planificador A→B (route_planner_service.dart).
+  List<RouteStopModel> getOrderedRouteStops(String routeId) {
+    final rs = routeStops[routeId];
+    if (rs == null) return [];
+    final ordered = List<RouteStopModel>.from(rs)
+      ..sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
+    return ordered;
+  }
+
   static double _distSq(double lat1, double lng1, double lat2, double lng2) {
     final dLat = lat1 - lat2;
     final dLng = (lng1 - lng2) * cos(lat1 * pi / 180);

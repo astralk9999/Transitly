@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 
+import '../../core/utils/boot_canary.dart';
+
 import '../../core/theme/backgrounds/app_background.dart';
 import '../../core/theme/backgrounds/prefab_backgrounds.dart';
 import '../../core/theme/palettes/app_palette.dart';
@@ -169,6 +171,7 @@ class ThemeNotifier extends ChangeNotifier {
 
   set backgroundId(String value) {
     if (_backgroundId == value) return;
+    BootCanary.markPendingSensitive('backgroundId');
     _backgroundId = value;
     notifyListeners();
     unawaited(_persist());
@@ -191,6 +194,7 @@ class ThemeNotifier extends ChangeNotifier {
   set fontScale(double value) {
     final clamped = value.clamp(0.85, 1.4);
     if (_fontScale == clamped) return;
+    BootCanary.markPendingSensitive('fontScale');
     _fontScale = clamped;
     notifyListeners();
     unawaited(_persist());
@@ -198,6 +202,7 @@ class ThemeNotifier extends ChangeNotifier {
 
   set colorBlindMode(ColorBlindMode value) {
     if (_colorBlindMode == value) return;
+    BootCanary.markPendingSensitive('colorBlindMode');
     _colorBlindMode = value;
     notifyListeners();
     unawaited(_persist());
@@ -205,6 +210,7 @@ class ThemeNotifier extends ChangeNotifier {
 
   set dyslexiaFontEnabled(bool value) {
     if (_dyslexiaFontEnabled == value) return;
+    BootCanary.markPendingSensitive('dyslexiaFontEnabled');
     _dyslexiaFontEnabled = value;
     notifyListeners();
     unawaited(_persist());
@@ -219,6 +225,7 @@ class ThemeNotifier extends ChangeNotifier {
 
   set highContrast(bool value) {
     if (_highContrast == value) return;
+    BootCanary.markPendingSensitive('highContrast');
     _highContrast = value;
     notifyListeners();
     unawaited(_persist());

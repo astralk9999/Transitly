@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -12,6 +13,7 @@ import 'app.dart';
 import 'core/env.dart';
 import 'core/theme/transit_colors.dart';
 import 'core/utils/app_logger.dart';
+import 'core/utils/boot_canary.dart';
 import 'core/utils/error_boundary.dart';
 import 'core/utils/sentry_setup.dart';
 import 'core/utils/transit_provider_observer.dart';
@@ -24,7 +26,9 @@ import 'data/privacy_consent/privacy_consent_repository.dart';
 import 'data/push/firebase_setup.dart';
 import 'data/push/push_service.dart';
 import 'features/error/env_error_screen.dart';
+import 'features/recovery/recovery_screen.dart';
 import 'core/router/app_router.dart';
+import 'shared/providers/boot_canary_provider.dart';
 import 'shared/services/widget_deep_link_service.dart';
 import 'shared/providers/active_palette_provider.dart';
 import 'shared/providers/auth_provider.dart';
@@ -45,6 +49,27 @@ const bool _fontsBundled = false;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // ── Boot canary: detecta si el arranque anterior crasheó ──
+  final canary = await BootCanary.startBoot();
+  if (canary.crashed) {
+    AppLogger.warn('BootCanary',
+        'previous boot crashed, pending=${canary.pendingChange} streak=${canary.crashStreak}');
+    await BootCanary.incrementCrashStreak();
+    if (canary.pendingChange != null) {
+      await _revertSensitiveSetting(canary.pendingChange!);
+    }
+    if (canary.crashStreak >= 1) {
+      // 2+ crashes consecutivos → recovery mode
+      runApp(ProviderScope(
+        overrides: [
+          bootCanaryStateProvider.overrideWith((ref) => canary),
+        ],
+        child: const RecoveryScreen(),
+      ));
+      return;
+    }
+  }
   // Permitir todas las orientaciones (portrait + landscape). El usuario
   // puede querer ver mapa, formularios o fondos animados en horizontal,
   // y en tablet/web es lo esperable.
@@ -263,6 +288,11 @@ class _TransitlyAppWithLifecycleState
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _setupDeepLinks();
+      BootCanary.markStable();
+      // Persistencia segura: tras 2s sin crash, forzamos persist de prefs
+      Timer(const Duration(seconds: 2), () {
+        BootCanary.markStable();
+      });
     });
   }
 
@@ -306,6 +336,27 @@ Future<void> _initFmtc() async {
     );
   } catch (e) {
     AppLogger.warn('FMTC', 'init failed — map caching unavailable', e);
+  }
+}
+
+Future<void> _revertSensitiveSetting(String change) async {
+  try {
+    final box = await Hive.openBox<Map<dynamic, dynamic>>('guest_theme_prefs');
+    final raw = box.get('prefs');
+    final data = raw != null
+        ? Map<String, dynamic>.from(raw)
+        : <String, dynamic>{};
+    switch (change) {
+      case 'dyslexiaFontEnabled': data['dyslexiaFontEnabled'] = false; break;
+      case 'highContrast': data['highContrast'] = false; break;
+      case 'fontScale': data['fontScale'] = 1.0; break;
+      case 'colorBlindMode': data['colorBlindMode'] = 'none'; break;
+      case 'backgroundId': data['backgroundId'] = 'shaders/smoke.frag'; break;
+    }
+    await box.put('prefs', data);
+    AppLogger.info('BootCanary', 'reverted sensitive setting: $change');
+  } catch (e) {
+    AppLogger.warn('BootCanary', 'revertSensitiveSetting failed', e);
   }
 }
 

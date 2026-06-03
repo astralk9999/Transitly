@@ -516,6 +516,37 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appearanceColorBlindAchromatomaly => 'Achromatomaly';
 
   @override
+  String get profileZoneTitle => 'MAIN ZONE';
+
+  @override
+  String get profileZoneLocation => 'Jerez de la Frontera';
+
+  @override
+  String get profileZoneFilters => 'MY FILTERS';
+
+  @override
+  String get profileZoneAccessible => 'Accessible only';
+
+  @override
+  String get profileZoneFavLines => 'Favorite lines';
+
+  @override
+  String get profileZoneManageArrow => 'MANAGE →';
+
+  @override
+  String get profileZoneOffline => 'OFFLINE DATA';
+
+  @override
+  String get profileZoneCacheDesc => 'View map cache and data';
+
+  @override
+  String get notifPrefZoneAlerts => 'Zone alerts';
+
+  @override
+  String get notifPrefZoneAlertsDesc =>
+      'Notifications for incidents in zones near you';
+
+  @override
   String get appearanceBrightnessSystem => 'System';
 
   @override

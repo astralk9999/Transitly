@@ -48,6 +48,7 @@ class ThemeNotifier extends ChangeNotifier {
   bool _quietHoursEnabled = false;
   String? _quietHoursStart;
   String? _quietHoursEnd;
+  bool _notifZoneAlerts = true;
 
   Map<String, Color> _customColors = <String, Color>{};
   static const _customPaletteId = 'custom';
@@ -79,6 +80,7 @@ class ThemeNotifier extends ChangeNotifier {
   bool get quietHoursEnabled => _quietHoursEnabled;
   String? get quietHoursStart => _quietHoursStart;
   String? get quietHoursEnd => _quietHoursEnd;
+  bool get notifZoneAlerts => _notifZoneAlerts;
 
   Map<String, Color> get customColors => Map.unmodifiable(_customColors);
 
@@ -287,6 +289,13 @@ class ThemeNotifier extends ChangeNotifier {
     unawaited(_persist());
   }
 
+  set notifZoneAlerts(bool value) {
+    if (_notifZoneAlerts == value) return;
+    _notifZoneAlerts = value;
+    notifyListeners();
+    unawaited(_persist());
+  }
+
   void setCustomPalette(Map<String, Color> colors) {
     _customColors = Map.of(colors);
     _paletteId = _customPaletteId;
@@ -401,6 +410,7 @@ class ThemeNotifier extends ChangeNotifier {
     _quietHoursEnabled = prefs.quietHoursEnabled;
     _quietHoursStart = prefs.quietHoursStart;
     _quietHoursEnd = prefs.quietHoursEnd;
+    _notifZoneAlerts = true;
     _customColors = _parseCustomColors(prefs.customColors);
     _initialized = true;
     notifyListeners();
@@ -492,6 +502,7 @@ class ThemeNotifier extends ChangeNotifier {
         _quietHoursEnabled = _safeBool(data['quietHoursEnabled'], false);
         _quietHoursStart = data['quietHoursStart'] as String?;
         _quietHoursEnd = data['quietHoursEnd'] as String?;
+        _notifZoneAlerts = _safeBool(data['notifZoneAlerts'], true);
         final rawCustom = data['customColors'] as Map<dynamic, dynamic>?;
         if (rawCustom != null) {
           _customColors = <String, Color>{};
@@ -548,6 +559,7 @@ class ThemeNotifier extends ChangeNotifier {
         'quietHoursEnabled': _quietHoursEnabled,
         'quietHoursStart': _quietHoursStart,
         'quietHoursEnd': _quietHoursEnd,
+        'notifZoneAlerts': _notifZoneAlerts,
         'customColors': _customColors.map((k, v) => MapEntry(k, _colorToHex(v))),
       });
     } catch (e) {
@@ -613,6 +625,7 @@ class ThemeNotifier extends ChangeNotifier {
     _highContrast = false;
     _reduceMotion = false;
     _mapStyle = 'streets';
+    _notifZoneAlerts = true;
   }
 
   String _colorToHex(Color c) {

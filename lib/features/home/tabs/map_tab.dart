@@ -709,7 +709,7 @@ class _MapTabState extends ConsumerState<MapTab> {
                         Icon(Icons.clear, size: 14, color: c.accent),
                         const SizedBox(width: 6),
                         Text(
-                          'VER TODAS',
+                          l10n.actionClose.toUpperCase(),
                           style: TransitTypography.bodySmall(c.accent),
                         ),
                       ],

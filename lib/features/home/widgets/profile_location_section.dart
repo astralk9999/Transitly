@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
+import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/glass_card.dart';
 import '../../../shared/widgets/gradient_text.dart';
 
@@ -14,6 +15,7 @@ class ProfileLocationSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
+    final l10n = AppLocalizations.of(context);
 
     return GlassCard(
       blur: 16,
@@ -24,7 +26,7 @@ class ProfileLocationSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           GradientText(
-            'ZONA PRINCIPAL',
+            l10n.profileZoneTitle,
             style: GoogleFonts.ibmPlexMono(
               fontSize: 11,
               fontWeight: FontWeight.w700,
@@ -33,16 +35,20 @@ class ProfileLocationSection extends StatelessWidget {
             gradient: c.gradientAccent,
           ),
           const SizedBox(height: 12),
-          Row(
-            children: [
-              Icon(Icons.location_on, size: 16, color: c.accent),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text('Jerez de la Frontera',
-                    style: TransitTypography.bodyPrimary(c.accent)),
-              ),
-              Icon(Icons.chevron_right, size: 20, color: c.textLo),
-            ],
+          GestureDetector(
+            onTap: () => context.push('/city-picker'),
+            behavior: HitTestBehavior.opaque,
+            child: Row(
+              children: [
+                Icon(Icons.location_on, size: 16, color: c.accent),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(l10n.profileZoneLocation,
+                      style: TransitTypography.bodyPrimary(c.accent)),
+                ),
+                Icon(Icons.chevron_right, size: 20, color: c.textLo),
+              ],
+            ),
           ),
           Divider(
             height: 24,
@@ -50,7 +56,7 @@ class ProfileLocationSection extends StatelessWidget {
             color: c.border,
           ),
           GradientText(
-            'MIS FILTROS',
+            l10n.profileZoneFilters,
             style: GoogleFonts.ibmPlexMono(
               fontSize: 11,
               fontWeight: FontWeight.w700,
@@ -59,13 +65,13 @@ class ProfileLocationSection extends StatelessWidget {
             gradient: c.gradientAccent,
           ),
           const SizedBox(height: 12),
-          _FilterItem(label: 'Solo accesibles', color: c),
+          _FilterItem(label: l10n.profileZoneAccessible, color: c),
           const SizedBox(height: 6),
-          _FilterItem(label: 'Líneas favoritas', color: c),
+          _FilterItem(label: l10n.profileZoneFavLines, color: c),
           const SizedBox(height: 8),
           GestureDetector(
             onTap: () => context.push('/profile/filters'),
-            child: Text('GESTIONAR →',
+            child: Text(l10n.profileZoneManageArrow,
                 style: TransitTypography.bodySecondary(c.accent)),
           ),
           Divider(
@@ -74,7 +80,7 @@ class ProfileLocationSection extends StatelessWidget {
             color: c.border,
           ),
           GradientText(
-            'DATOS OFFLINE',
+            l10n.profileZoneOffline,
             style: GoogleFonts.ibmPlexMono(
               fontSize: 11,
               fontWeight: FontWeight.w700,
@@ -85,6 +91,7 @@ class ProfileLocationSection extends StatelessWidget {
           const SizedBox(height: 12),
           GestureDetector(
             onTap: () => context.push('/profile/offline'),
+            behavior: HitTestBehavior.opaque,
             child: Row(
               children: [
                 Icon(Icons.cloud_download_outlined,
@@ -92,7 +99,7 @@ class ProfileLocationSection extends StatelessWidget {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    'Ver caché de mapa y datos',
+                    l10n.profileZoneCacheDesc,
                     style: TransitTypography.bodyPrimary(c.textHi),
                   ),
                 ),

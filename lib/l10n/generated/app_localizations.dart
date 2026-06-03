@@ -1096,6 +1096,66 @@ abstract class AppLocalizations {
   /// **'Acromatomalía'**
   String get appearanceColorBlindAchromatomaly;
 
+  /// No description provided for @profileZoneTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'ZONA PRINCIPAL'**
+  String get profileZoneTitle;
+
+  /// No description provided for @profileZoneLocation.
+  ///
+  /// In es, this message translates to:
+  /// **'Jerez de la Frontera'**
+  String get profileZoneLocation;
+
+  /// No description provided for @profileZoneFilters.
+  ///
+  /// In es, this message translates to:
+  /// **'MIS FILTROS'**
+  String get profileZoneFilters;
+
+  /// No description provided for @profileZoneAccessible.
+  ///
+  /// In es, this message translates to:
+  /// **'Solo accesibles'**
+  String get profileZoneAccessible;
+
+  /// No description provided for @profileZoneFavLines.
+  ///
+  /// In es, this message translates to:
+  /// **'Líneas favoritas'**
+  String get profileZoneFavLines;
+
+  /// No description provided for @profileZoneManageArrow.
+  ///
+  /// In es, this message translates to:
+  /// **'GESTIONAR →'**
+  String get profileZoneManageArrow;
+
+  /// No description provided for @profileZoneOffline.
+  ///
+  /// In es, this message translates to:
+  /// **'DATOS OFFLINE'**
+  String get profileZoneOffline;
+
+  /// No description provided for @profileZoneCacheDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver caché de mapa y datos'**
+  String get profileZoneCacheDesc;
+
+  /// No description provided for @notifPrefZoneAlerts.
+  ///
+  /// In es, this message translates to:
+  /// **'Avisos de zonas'**
+  String get notifPrefZoneAlerts;
+
+  /// No description provided for @notifPrefZoneAlertsDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Notificaciones cuando hay incidencias en zonas cerca de ti'**
+  String get notifPrefZoneAlertsDesc;
+
   /// No description provided for @appearanceBrightnessSystem.
   ///
   /// In es, this message translates to:

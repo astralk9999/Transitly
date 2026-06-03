@@ -514,6 +514,38 @@ class AppLocalizationsAr extends AppLocalizations {
   String get appearanceColorBlindAchromatomaly => 'أكروماتومالي';
 
   @override
+  String get profileZoneTitle => 'المنطقة الرئيسية';
+
+  @override
+  String get profileZoneLocation => 'خيريز دي لا فرونتيرا';
+
+  @override
+  String get profileZoneFilters => 'مرشحاتي';
+
+  @override
+  String get profileZoneAccessible => 'يمكن الوصول فقط';
+
+  @override
+  String get profileZoneFavLines => 'الخطوط المفضلة';
+
+  @override
+  String get profileZoneManageArrow => 'إدارة →';
+
+  @override
+  String get profileZoneOffline => 'بيانات دون اتصال';
+
+  @override
+  String get profileZoneCacheDesc =>
+      'عرض ذاكرة التخزين المؤقت للخريطة والبيانات';
+
+  @override
+  String get notifPrefZoneAlerts => 'تنبيهات المناطق';
+
+  @override
+  String get notifPrefZoneAlertsDesc =>
+      'إشعارات عند وجود حوادث في مناطق قريبة منك';
+
+  @override
   String get appearanceBrightnessSystem => 'النظام';
 
   @override

@@ -66,6 +66,13 @@ class ProfileNotificationsSection extends ConsumerWidget {
             value: notifier.notifFeatureRequestReplied,
             onChanged: (v) => notifier.notifFeatureRequestReplied = v,
           ),
+          _NotifToggle(
+            c: c,
+            icon: Icons.location_on_outlined,
+            label: l10n.notifPrefZoneAlerts,
+            value: notifier.notifZoneAlerts,
+            onChanged: (v) => notifier.notifZoneAlerts = v,
+          ),
           const SizedBox(height: 16),
           Divider(
             height: 1,

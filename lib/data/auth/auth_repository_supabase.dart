@@ -41,26 +41,14 @@ class AuthRepositorySupabase implements AuthRepository {
           event == AuthChangeEvent.tokenRefreshed) {
         if (session?.user != null) {
           final user = session!.user;
-          // OAuth providers (Google, Apple, etc.) ya verifican el email
-          // en su lado. No exigir emailConfirmedAt para usuarios con
-          // identity OAuth — Supabase no siempre lo marca verified.
-          final isOAuthUser = user.identities?.any((i) =>
-              i.provider != null && i.provider != 'email') == true;
-          final emailVerified = isOAuthUser ||
-              user.emailConfirmedAt != null ||
-              user.identities?.any((i) =>
-                  i.identityData?['email_verified'] == true) == true;
-          if (emailVerified) {
-            _stateController.add(AuthAuthenticated(user));
-            // PII: no loguear el UUID completo; prefijo suficiente para correlacionar.
-            final uidShort = user.id.length >= 8
-                ? user.id.substring(0, 8)
-                : user.id;
-            AppLogger.info(_logTag,
-                'signed in uid=$uidShort… (oauth=$isOAuthUser)');
-          } else {
-            _stateController.add(AuthEmailVerificationPending(user));
-          }
+          // Email verification bypass: sistema de correos de Supabase
+          // limitado en free tier. Todos los usuarios autentican directo.
+          _stateController.add(AuthAuthenticated(user));
+          final uidShort = user.id.length >= 8
+              ? user.id.substring(0, 8)
+              : user.id;
+          AppLogger.info(_logTag,
+              'signed in uid=$uidShort… (verification bypassed)');
         }
       } else if (event == AuthChangeEvent.signedOut) {
         _stateController.add(AuthUnauthenticated());

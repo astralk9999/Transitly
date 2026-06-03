@@ -111,24 +111,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             _passwordController.text,
             _nameController.text,
           );
-      if (mounted) {
-        await showDialog(
-          context: context,
-          builder: (ctx) => AlertDialog(
-            title: Text(l10n.authVerifyTitle),
-            content: Text(l10n.authVerifySignupSent(_emailController.text)),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(ctx).pop();
-                  if (mounted) context.go('/sign-in');
-                },
-                child: Text(l10n.actionClose),
-              ),
-            ],
-          ),
-        );
-      }
+      // Email verification bypass: ir directo a home
+      if (mounted) context.go('/home/inicio');
     } on AuthRepoException catch (e) {
       if (mounted) {
         final msg = e.error == AuthError.rateLimited && e.secondsLeft != null

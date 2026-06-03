@@ -24,11 +24,11 @@ final activePaletteSchemeProvider = Provider<TransitColorScheme>((ref) {
   if (brightness == Brightness.dark) {
     scheme = palette.darkScheme ?? const TransitDarkColors();
   } else {
-    scheme = palette.lightScheme ?? const TransitLightColors();
+    scheme = palette.lightScheme ?? _deriveLightFromDark(palette.darkScheme);
   }
 
   if (notifier.highContrast) {
-    scheme = HighContrastSchemeWrapper(scheme);
+    scheme = HighContrastSchemeWrapper(scheme, brightness == Brightness.dark);
   }
 
   return scheme;
@@ -60,11 +60,11 @@ TransitColorScheme resolveActiveScheme(bool isDark) {
     if (brightness == Brightness.dark) {
       scheme = palette.darkScheme ?? const TransitDarkColors();
     } else {
-      scheme = palette.lightScheme ?? const TransitLightColors();
+      scheme = palette.lightScheme ?? _deriveLightFromDark(palette.darkScheme);
     }
 
     if (notifier.highContrast) {
-      scheme = HighContrastSchemeWrapper(scheme);
+      scheme = HighContrastSchemeWrapper(scheme, isDark);
     }
 
     return scheme;
@@ -81,4 +81,52 @@ bool isDyslexiaEnabled() {
   } catch (_) {
     return false;
   }
+}
+
+TransitColorScheme _deriveLightFromDark(TransitColorScheme? dark) {
+  if (dark == null) return const TransitLightColors();
+  return _DerivedLightScheme(dark);
+}
+
+class _DerivedLightScheme implements TransitColorScheme {
+  _DerivedLightScheme(this._dark);
+  final TransitColorScheme _dark;
+
+  Color _invert(Color c) {
+    final hsl = HSLColor.fromColor(c);
+    final newL = 0.95 - hsl.lightness;
+    return hsl.withLightness(newL.clamp(0.05, 0.95)).toColor();
+  }
+
+  @override Color get bgRoot => _invert(_dark.bgRoot);
+  @override Color get bgSidebar => _invert(_dark.bgSidebar);
+  @override Color get bgSurface => _invert(_dark.bgSurface);
+  @override Color get bgRaised => _invert(_dark.bgRaised);
+  @override Color get bgInput => _invert(_dark.bgInput);
+  @override Color get bgElevated => _invert(_dark.bgElevated);
+  @override Color get border => _invert(_dark.border);
+  @override Color get borderFocus => _invert(_dark.borderFocus);
+  @override Color get divider => _invert(_dark.divider);
+  @override Color get accent => _dark.accent;
+  @override Color get accentBg => _invert(_dark.accentBg);
+  @override Color get accentMuted => _dark.accent.withValues(alpha: 0.3);
+  @override Color get neonCyan => _dark.neonCyan;
+  @override Color get neonMagenta => _dark.neonMagenta;
+  @override Color get neonPurple => _dark.neonPurple;
+  @override Color get neonBlue => _dark.neonBlue;
+  @override LinearGradient get gradientAccent => _dark.gradientAccent;
+  @override LinearGradient get gradientNeon => _dark.gradientNeon;
+  @override LinearGradient get gradientWarm => _dark.gradientWarm;
+  @override LinearGradient get gradientCard => _dark.gradientCard;
+  @override Color get stateOnRoute => _dark.stateOnRoute;
+  @override Color get stateOnTime => _dark.stateOnTime;
+  @override Color get stateDelay => _dark.stateDelay;
+  @override Color get stateCancelled => _dark.stateCancelled;
+  @override Color get stateIdle => _dark.stateIdle;
+  @override Color get textHi => _invert(_dark.textHi);
+  @override Color get textMid => _invert(_dark.textMid);
+  @override Color get textLo => _invert(_dark.textLo);
+  @override Color get textDisabled => _invert(_dark.textDisabled);
+  @override Color get glassBg => _invert(_dark.glassBg);
+  @override Color get glassBorder => _invert(_dark.glassBorder);
 }

@@ -12,6 +12,7 @@ import '../../shared/providers/auth_provider.dart';
 import '../../shared/providers/notification_stream_provider.dart';
 import '../../shared/providers/user_provider.dart';
 import '../../shared/providers/widget_data_provider.dart';
+import '../../shared/widgets/background_wrapper.dart';
 import '../../shared/widgets/responsive_scaffold.dart';
 import '../../shared/widgets/smoke_background.dart';
 import '../driver/driver_panel.dart';
@@ -148,15 +149,13 @@ class _HomeShellState extends ConsumerState<HomeShell> {
         if (!didPop) _handleBackPressed();
       },
       child: FocusTraversalGroup(
+        child: BackgroundWrapper(
         child: Scaffold(
-        backgroundColor: c.bgRoot,
-        extendBody: true,
-        body: Stack(
-          children: [
-            Positioned.fill(
-              child: SmokeBackground(color: c.accent, isDark: isDark),
-            ),
-            widget.navigationShell,
+      backgroundColor: c.bgRoot,
+      extendBody: true,
+      body: Stack(
+        children: [
+          widget.navigationShell,
             if (showNotificationBell)
               Positioned(
                 top: TransitSpacing.space8,
@@ -175,14 +174,15 @@ class _HomeShellState extends ConsumerState<HomeShell> {
                 right: TransitSpacing.space16,
                 child: _DriverFab(color: c),
               ),
-          ],
+        ],
+      ),
+        bottomNavigationBar: HomeBottomNav(
+          currentIndex: widget.navigationShell.currentIndex,
+          onTap: _onTap,
+          tabs: tabs,
         ),
-          bottomNavigationBar: HomeBottomNav(
-            currentIndex: widget.navigationShell.currentIndex,
-            onTap: _onTap,
-            tabs: tabs,
-          ),
-        ),
+      ),
+      ), // BackgroundWrapper end
       ),
     );
   }

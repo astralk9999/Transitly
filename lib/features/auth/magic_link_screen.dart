@@ -67,6 +67,14 @@ class _MagicLinkScreenState extends ConsumerState<MagicLinkScreen> {
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: c.textHi),
+          onPressed: () => context.pop(),
+        ),
+      ),
       backgroundColor: c.bgRoot,
       body: Stack(
         children: [

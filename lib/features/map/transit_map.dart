@@ -238,7 +238,7 @@ class _TransitMapState extends State<TransitMap> {
           // entero (tiles cacheadas incluidas) cuando cambia el estilo o
           // el tema. Sin esto, las tiles del estilo anterior siguen
           // mostrandose hasta que vuelvas a la pantalla o reinicies.
-          key: ValueKey('fm-${widget.mapStyle}-${widget.isDark}'),
+          key: const PageStorageKey('map-main'),
           mapController: widget.controller,
           options: MapOptions(
             initialCenter: widget.center ?? MapConfig.defaultCenter,

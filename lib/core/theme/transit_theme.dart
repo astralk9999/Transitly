@@ -23,19 +23,25 @@ ThemeData buildTransitTheme(
       ? ThemeData.dark().textTheme
       : ThemeData.light().textTheme;
 
-  final textTheme = dyslexiaFontEnabled
-      ? baseTextTheme.apply(
-          fontFamily: 'Atkinson Hyperlegible',
-          bodyColor: c.textHi,
-          displayColor: c.textHi,
-          fontSizeFactor: fontScale,
-        )
-      : baseTextTheme.apply(
-          fontFamily: 'DM Sans',
-          bodyColor: c.textHi,
-          displayColor: c.textHi,
-          fontSizeFactor: fontScale,
-        );
+  TextTheme textTheme;
+  try {
+    textTheme = dyslexiaFontEnabled
+        ? baseTextTheme.apply(
+            fontFamily: 'Atkinson Hyperlegible',
+            bodyColor: c.textHi,
+            displayColor: c.textHi,
+          )
+        : baseTextTheme.apply(
+            fontFamily: 'DM Sans',
+            bodyColor: c.textHi,
+            displayColor: c.textHi,
+          );
+  } catch (_) {
+    textTheme = baseTextTheme.apply(
+      bodyColor: c.textHi,
+      displayColor: c.textHi,
+    );
+  }
 
   final bodyFont = _dmSansStyle;
 

@@ -67,6 +67,10 @@ import '../../features/notifications/notifications_screen.dart';
 import '../../features/route_planner/route_plan_results_screen.dart';
 import '../../features/privacy/privacy_screen.dart';
 import '../../features/widgets_native/widgets_settings_screen.dart';
+import '../../features/widgets_config/widgets_config_screen.dart';
+import '../../features/widgets_config/widget_next_bus_config_screen.dart';
+import '../../features/widgets_config/widget_my_line_config_screen.dart';
+import '../../features/widgets_config/widget_nfc_balance_config_screen.dart';
 
 /// Initial location of the app router. Overridable in tests to bypass the
 /// splash screen (which holds a real `Future.delayed(3s)` timer).
@@ -429,11 +433,31 @@ final routerProvider = Provider<GoRouter>((ref) {
             _slide(state, const NotificationsScreen()),
       ),
 
-      // ── Widgets ──
+      // ── Widgets config ──
       GoRoute(
         path: '/profile/widgets',
         pageBuilder: (context, state) =>
             _slide(state, const WidgetsSettingsScreen()),
+      ),
+      GoRoute(
+        path: '/widgets-config',
+        pageBuilder: (context, state) =>
+            _slide(state, const WidgetsConfigScreen()),
+      ),
+      GoRoute(
+        path: '/widgets-config/next-bus',
+        pageBuilder: (context, state) =>
+            _slide(state, const WidgetNextBusConfigScreen()),
+      ),
+      GoRoute(
+        path: '/widgets-config/my-line',
+        pageBuilder: (context, state) =>
+            _slide(state, const WidgetMyLineConfigScreen()),
+      ),
+      GoRoute(
+        path: '/widgets-config/nfc-balance',
+        pageBuilder: (context, state) =>
+            _slide(state, const WidgetNfcBalanceConfigScreen()),
       ),
 
       // ── Debug ──

@@ -504,6 +504,21 @@ class AppLocalizationsEs extends AppLocalizations {
   String get appearanceColorBlindTritanopia => 'Tritanopia';
 
   @override
+  String get appearanceColorBlindProtanomaly => 'Protanomalía';
+
+  @override
+  String get appearanceColorBlindDeuteranomaly => 'Deuteranomalía';
+
+  @override
+  String get appearanceColorBlindTritanomaly => 'Tritanomalía';
+
+  @override
+  String get appearanceColorBlindAchromatopsia => 'Acromatopsia';
+
+  @override
+  String get appearanceColorBlindAchromatomaly => 'Acromatomalía';
+
+  @override
   String get appearanceBrightnessSystem => 'Sistema';
 
   @override

@@ -499,6 +499,21 @@ class AppLocalizationsAr extends AppLocalizations {
   String get appearanceColorBlindTritanopia => 'تريتانوبيا';
 
   @override
+  String get appearanceColorBlindProtanomaly => 'بروتانومالي';
+
+  @override
+  String get appearanceColorBlindDeuteranomaly => 'ديوتيرانومالي';
+
+  @override
+  String get appearanceColorBlindTritanomaly => 'تريتانومالي';
+
+  @override
+  String get appearanceColorBlindAchromatopsia => 'أكروماتوبسيا';
+
+  @override
+  String get appearanceColorBlindAchromatomaly => 'أكروماتومالي';
+
+  @override
   String get appearanceBrightnessSystem => 'النظام';
 
   @override

@@ -46,10 +46,11 @@ void showHabitualConfigSheet(BuildContext context, WidgetRef ref) {
           // de la app. Sin sumar HomeBottomNav.height los botones quedan
           // tapados por la navegación.
           final mq = MediaQuery.of(ctx);
-          final bottomInset = 24 +
+          final bottomInset = (24 +
               mq.viewInsets.bottom +
               mq.padding.bottom +
-              HomeBottomNav.height;
+              HomeBottomNav.height)
+              .clamp(16.0, 100.0);
 
           return Padding(
             padding: EdgeInsets.fromLTRB(16, 8, 16, bottomInset),

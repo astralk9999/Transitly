@@ -142,9 +142,10 @@ class RouteCard extends StatelessWidget {
                   if (onGoToLine != null)
                     GestureDetector(
                       onTap: onGoToLine,
+                      behavior: HitTestBehavior.opaque,
                       child: Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Icon(Icons.gps_fixed, size: 18,
+                        padding: const EdgeInsets.all(14),
+                        child: Icon(Icons.gps_fixed, size: 20,
                             color: c.accent.withValues(alpha: 0.7)),
                       ),
                     ),

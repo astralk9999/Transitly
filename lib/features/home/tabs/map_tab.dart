@@ -585,6 +585,7 @@ class _MapTabState extends ConsumerState<MapTab> {
                               onTap: () =>
                                   context.push('/route/${route.id}'),
                               onGoToLine: () {
+                                setState(() => _selectedRouteId = route.id);
                                 final bounds = cache.routeBounds[route.id];
                                 if (bounds != null && bounds.length == 4) {
                                   _mapController.fitCamera(

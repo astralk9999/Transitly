@@ -172,9 +172,9 @@ class AuthRepositorySupabase implements AuthRepository {
       rethrow;
     } catch (e, st) {
       AppLogger.error(_logTag, 'Google sign in failed', e, st);
-      throw const AuthRepoException(
-        AuthError.unknown,
-        'Error al iniciar sesión con Google',
+      throw AuthRepoException(
+        AuthError.providerCancelled,
+        e.toString(),
       );
     }
   }

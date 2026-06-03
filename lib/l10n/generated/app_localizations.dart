@@ -1066,6 +1066,36 @@ abstract class AppLocalizations {
   /// **'Tritanopia'**
   String get appearanceColorBlindTritanopia;
 
+  /// No description provided for @appearanceColorBlindProtanomaly.
+  ///
+  /// In es, this message translates to:
+  /// **'Protanomalía'**
+  String get appearanceColorBlindProtanomaly;
+
+  /// No description provided for @appearanceColorBlindDeuteranomaly.
+  ///
+  /// In es, this message translates to:
+  /// **'Deuteranomalía'**
+  String get appearanceColorBlindDeuteranomaly;
+
+  /// No description provided for @appearanceColorBlindTritanomaly.
+  ///
+  /// In es, this message translates to:
+  /// **'Tritanomalía'**
+  String get appearanceColorBlindTritanomaly;
+
+  /// No description provided for @appearanceColorBlindAchromatopsia.
+  ///
+  /// In es, this message translates to:
+  /// **'Acromatopsia'**
+  String get appearanceColorBlindAchromatopsia;
+
+  /// No description provided for @appearanceColorBlindAchromatomaly.
+  ///
+  /// In es, this message translates to:
+  /// **'Acromatomalía'**
+  String get appearanceColorBlindAchromatomaly;
+
   /// No description provided for @appearanceBrightnessSystem.
   ///
   /// In es, this message translates to:

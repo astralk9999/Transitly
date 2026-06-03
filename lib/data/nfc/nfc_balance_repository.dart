@@ -5,6 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/utils/app_logger.dart';
 import '../cache/hive_box_provider.dart';
 import '../supabase/supabase_client_provider.dart';
+import '../widgets_native/widget_data_writer.dart';
 import 'nfc_card_service.dart';
 
 class NfcBalanceRepository {
@@ -28,6 +29,11 @@ class NfcBalanceRepository {
       'synced': false,
     };
     await _hive.put(key, entry);
+
+    WidgetDataWriter.writeNfcBalance(
+      balance: scan.balance,
+      scannedAt: scan.scannedAt,
+    );
 
     await _trySyncEntry(key, scan);
   }

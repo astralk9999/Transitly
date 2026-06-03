@@ -98,8 +98,8 @@ class TransitDarkColors implements TransitColorScheme {
   @override Color get neonPurple => const Color(0xFF6C63FF);
   @override Color get neonBlue => const Color(0xFF3B82F6);
 
-  @override LinearGradient get gradientAccent => const LinearGradient(
-    colors: [Color(0xFF977DDF), Color(0xFFB8A5F0)],
+  @override LinearGradient get gradientAccent => LinearGradient(
+    colors: [accent, Color.lerp(accent, const Color(0xFFFFFFFF), 0.18)!],
   );
   @override LinearGradient get gradientNeon => const LinearGradient(
     colors: [Color(0xFF6C63FF), Color(0xFFFF006E)],
@@ -151,8 +151,8 @@ class TransitLightColors implements TransitColorScheme {
   @override Color get neonPurple => const Color(0xFF5A52DD);
   @override Color get neonBlue => const Color(0xFF2563EB);
 
-  @override LinearGradient get gradientAccent => const LinearGradient(
-    colors: [Color(0xFF7B64C0), Color(0xFF9A85D8)],
+  @override LinearGradient get gradientAccent => LinearGradient(
+    colors: [accent, Color.lerp(accent, const Color(0xFFFFFFFF), 0.18)!],
   );
   @override LinearGradient get gradientNeon => const LinearGradient(
     colors: [Color(0xFF5A52DD), Color(0xFFCC0058)],

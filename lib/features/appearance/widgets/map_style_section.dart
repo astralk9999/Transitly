@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:latlong2/latlong.dart';
 
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
@@ -14,6 +16,8 @@ class MapStyleSection extends ConsumerWidget {
 
   final TransitColorScheme c;
   final AppLocalizations l10n;
+
+  static const _jerezCenter = LatLng(36.6852, -6.1366);
 
   String _styleLabel(String key) {
     return switch (key) {
@@ -37,15 +41,13 @@ class MapStyleSection extends ConsumerWidget {
     };
   }
 
-  // Preview swatches para estilos de mapa — colores específicos de
-  // cada tile provider, no duplican tokens de diseño. Intencional.
-  Color _stylePreviewColor(String key) {
+  Color _styleAccent(String key) {
     return switch (key) {
       'streets' => const Color(0xFF4A90D9),
       'basic' => const Color(0xFF7B9EBD),
       'bright' => const Color(0xFFF5A623),
       'dark' => const Color(0xFF1C1C2E),
-      'light' => const Color(0xFFF0F0F0),
+      'light' => const Color(0xFFD0D0D0),
       _ => c.accent,
     };
   }
@@ -71,7 +73,7 @@ class MapStyleSection extends ConsumerWidget {
           ),
           const SizedBox(height: 12),
           SizedBox(
-            height: 80,
+            height: 64,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: styleKeys.length,
@@ -79,18 +81,44 @@ class MapStyleSection extends ConsumerWidget {
               itemBuilder: (_, i) {
                 final key = styleKeys[i];
                 final selected = key == mapStyle;
-                return MapStylePreview(
-                  styleKey: key,
+                return _StyleChip(
                   label: _styleLabel(key),
                   icon: _styleIcon(key),
-                  previewColor: _stylePreviewColor(key),
+                  styleAccent: _styleAccent(key),
                   selected: selected,
                   c: c,
-                  onTap: () {
-                    ref.read(themeNotifierProvider).mapStyle = key;
-                  },
+                  onTap: () =>
+                      ref.read(themeNotifierProvider).mapStyle = key,
                 );
               },
+            ),
+          ),
+          const SizedBox(height: 12),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: SizedBox(
+              width: double.infinity,
+              height: 160,
+              child: IgnorePointer(
+                child: FlutterMap(
+                  key: ValueKey('preview-$mapStyle'),
+                  options: const MapOptions(
+                    initialCenter: _jerezCenter,
+                    initialZoom: 13.5,
+                    interactionOptions: InteractionOptions(
+                      flags: InteractiveFlag.none,
+                    ),
+                  ),
+                  children: [
+                    TileLayer(
+                      urlTemplate: MapConfig.tileUrl(mapStyle),
+                      subdomains: MapConfig.subdomains,
+                      userAgentPackageName: 'com.transitly.transitly',
+                      tileProvider: NetworkTileProvider(),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
         ],
@@ -99,22 +127,19 @@ class MapStyleSection extends ConsumerWidget {
   }
 }
 
-class MapStylePreview extends StatelessWidget {
-  const MapStylePreview({
-    required this.styleKey,
+class _StyleChip extends StatelessWidget {
+  const _StyleChip({
     required this.label,
     required this.icon,
-    required this.previewColor,
+    required this.styleAccent,
     required this.selected,
     required this.c,
     required this.onTap,
-    super.key,
   });
 
-  final String styleKey;
   final String label;
   final IconData icon;
-  final Color previewColor;
+  final Color styleAccent;
   final bool selected;
   final TransitColorScheme c;
   final VoidCallback onTap;
@@ -129,39 +154,28 @@ class MapStylePreview extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         onTap: onTap,
         child: Container(
-          width: 72,
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color:
-                selected ? c.accent.withValues(alpha: 0.15) : c.bgRaised,
+            color: selected
+                ? styleAccent.withValues(alpha: 0.15)
+                : c.bgRaised,
             border: Border.all(
-              color: selected ? c.accent : c.border,
+              color: selected ? styleAccent : c.border,
               width: selected ? 2 : 1,
             ),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                width: 26,
-                height: 26,
-                decoration: BoxDecoration(
-                  color: previewColor,
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: selected ? c.accent : Colors.transparent,
-                    width: 1,
-                  ),
-                ),
-                child: Icon(icon, size: 14, color: Colors.white),
-              ),
-              const SizedBox(height: 6),
+              Icon(icon,
+                  size: 18,
+                  color: selected ? styleAccent : c.textMid),
+              const SizedBox(height: 4),
               Text(label,
                   style: TransitTypography.bodySmall(
-                    selected ? c.accent : c.textMid,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis),
+                    selected ? styleAccent : c.textMid,
+                  )),
             ],
           ),
         ),

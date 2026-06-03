@@ -36,7 +36,7 @@ void main() {
     });
 
     test('toJson roundtrips correctly', () {
-      final s = ScheduleModel(
+      final s = const ScheduleModel(
         id: 's1',
         routeId: 'L1',
         departureTime: '08:00',

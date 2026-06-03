@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/analytics/posthog_service.dart';
 import '../../data/nfc/nfc_balance_repository.dart';
 import '../../data/nfc/nfc_card_service.dart';
+import '../../data/widgets_native/widget_data_writer.dart';
 import 'connectivity_provider.dart';
 
 /// The service instance. Override in tests with a fake.
@@ -59,10 +60,30 @@ class NfcScanState {
 
 /// Notifier managing the NFC scan lifecycle.
 class NfcScanNotifier extends StateNotifier<NfcScanState> {
-  NfcScanNotifier(this._service, this._repo) : super(const NfcScanState());
+  NfcScanNotifier(this._service, this._repo) : super(const NfcScanState()) {
+    _hydrateFromCache();
+  }
 
   final NfcCardService _service;
   final NfcBalanceRepository _repo;
+
+  /// Carga la historia persistente desde Hive al arrancar. Sin esto,
+  /// el saldo del último escaneo no se mostraba al reabrir la app
+  /// (especialmente como invitado, ya que Supabase no tiene su historial).
+  void _hydrateFromCache() {
+    final history = _repo.getHistory();
+    if (history.isEmpty) return;
+    final last = history.first;
+    state = state.copyWith(
+      status: NfcScanStatus.success,
+      result: last,
+      scanHistory: history,
+    );
+    WidgetDataWriter.writeNfcBalance(
+      balance: last.balance,
+      scannedAt: last.scannedAt,
+    );
+  }
 
   /// Start scanning for an NFC card.
   Future<void> startScan() async {

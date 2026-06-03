@@ -15,6 +15,8 @@ import '../../shared/providers/auth_provider.dart';
 import 'widgets/auth_field.dart';
 import 'widgets/auth_submit_button.dart';
 
+const _logTag = 'SignIn';
+
 class SignInScreen extends ConsumerStatefulWidget {
   const SignInScreen({super.key});
 
@@ -51,7 +53,12 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
           .signInWithEmail(_emailController.text, _passwordController.text);
       PostHogAnalyticsService.signin('email');
     } on AuthRepoException catch (e) {
-      if (mounted) setState(() => _error = e.message ?? l10n.authSignInError);
+      if (mounted) {
+        final msg = e.error == AuthError.rateLimited && e.secondsLeft != null
+            ? l10n.authErrorRateLimited(e.secondsLeft!)
+            : e.message ?? l10n.authSignInError;
+        setState(() => _error = msg);
+      }
     } catch (e) {
       AppLogger.warn('SignIn', 'sign in error', e);
       if (mounted) setState(() => _error = l10n.authErrorConnection);
@@ -65,6 +72,18 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
     final l10n = AppLocalizations.of(context);
+
+    // GoRouter no tiene refreshListenable; cuando Supabase autentica
+    // (Google o email) el authStateProvider emite AuthAuthenticated pero
+    // el redirect_guard no se ejecuta hasta que cambia la ruta. Esto
+    // navega manualmente al home en cuanto detectamos el cambio.
+    ref.listen<AsyncValue<AuthSessionState>>(authStateProvider, (prev, next) {
+      final state = next.valueOrNull;
+      if (state is AuthAuthenticated && mounted) {
+        AppLogger.info(_logTag, 'auth detected → navigating /home/inicio');
+        context.go('/home/inicio');
+      }
+    });
 
     return Scaffold(
       backgroundColor: c.bgRoot,
@@ -185,7 +204,10 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                                 .signInWithGoogle();
                           } on AuthRepoException catch (e) {
                             if (mounted) {
-                              setState(() => _error = e.message);
+                              final msg = e.error == AuthError.rateLimited && e.secondsLeft != null
+                                  ? l10n.authErrorRateLimited(e.secondsLeft!)
+                                  : e.message;
+                              setState(() => _error = msg);
                             }
                           } catch (e) {
                             AppLogger.warn('SignIn', 'Google sign in error', e);
@@ -204,6 +226,58 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                         child: Text(l10n.authMagicLink,
                             style:
                                 TransitTypography.bodySmall(c.accent)),
+                      ),
+                      const SizedBox(height: 20),
+
+                      // Modo invitado destacado: para usuarios que quieren
+                      // explorar antes de crear cuenta.
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 14),
+                        decoration: BoxDecoration(
+                          color: c.bgRaised.withValues(alpha: 0.5),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                              color: c.border.withValues(alpha: 0.4),
+                              width: 0.8),
+                        ),
+                        child: Column(
+                          children: [
+                            Text(
+                              '¿Solo quieres explorar?',
+                              style: TransitTypography.bodySecondary(
+                                  c.textMid),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 8),
+                            InkWell(
+                              onTap: () => context.go('/home/inicio'),
+                              borderRadius: BorderRadius.circular(8),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 12),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.explore_outlined,
+                                        size: 18, color: c.accent),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      'Continuar como invitado',
+                                      style: TransitTypography.bodyPrimary(
+                                              c.accent)
+                                          .copyWith(
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                       const SizedBox(height: 32),
                     ],

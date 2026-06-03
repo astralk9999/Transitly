@@ -57,14 +57,15 @@ void main() {
   });
 
   group('AuthError enum', () {
-    test('all 7 error cases are reachable', () {
-      expect(AuthError.values.length, 7);
+    test('all 8 error cases are reachable', () {
+      expect(AuthError.values.length, 8);
       expect(AuthError.values, contains(AuthError.invalidCredentials));
       expect(AuthError.values, contains(AuthError.emailTaken));
       expect(AuthError.values, contains(AuthError.weakPassword));
       expect(AuthError.values, contains(AuthError.networkUnavailable));
       expect(AuthError.values, contains(AuthError.providerCancelled));
       expect(AuthError.values, contains(AuthError.emailNotVerified));
+      expect(AuthError.values, contains(AuthError.rateLimited));
       expect(AuthError.values, contains(AuthError.unknown));
     });
   });

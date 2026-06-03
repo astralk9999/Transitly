@@ -82,7 +82,7 @@ class _NearbyBusesScreenState
   }
 
   LatLng? _computeCenter(MockDataService mockData) {
-    final userLoc = ref.read(userLocationStreamProvider).valueOrNull;
+    final userLoc = ref.read(userLocationLatLngProvider);
     if (userLoc != null) return userLoc;
 
     final refStopId = ref.read(homeReferenceStopProvider);

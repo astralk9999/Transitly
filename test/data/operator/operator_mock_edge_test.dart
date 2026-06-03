@@ -33,7 +33,7 @@ void main() {
     });
 
     test('nearby returns all cached operators regardless of radius', () async {
-      final farCenter = LatLng(-34.0, 150.0);
+      final farCenter = const LatLng(-34.0, 150.0);
       final result = await repo.nearby(farCenter, radiusM: 100);
       expect(result.length, 1);
       expect(result.first.id, 'seed');

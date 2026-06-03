@@ -14,9 +14,11 @@ import '../../../shared/models/models.dart';
 import '../../../shared/providers/derived/home_providers.dart';
 import '../../../shared/providers/home_habitual_config_provider.dart';
 import '../../../shared/providers/home_reference_stop_provider.dart';
+import '../../../shared/providers/auth_provider.dart';
 import '../../../shared/providers/user_favorites_provider.dart';
 import '../../../shared/providers/user_location_provider.dart';
 import '../../../shared/providers/route_lookup_providers.dart';
+import '../../../data/auth/auth_repository.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/glass_card.dart';
 import '../../../shared/widgets/responsive_scaffold.dart';
@@ -71,12 +73,14 @@ class _HomeTabState extends ConsumerState<HomeTab> {
       MockDataService mockData, Map<String, ActiveTripModel> activeTripsMap) {
     final l10n = AppLocalizations.of(context);
     final padding = ResponsiveScaffold.screenPadding(context);
+    final authSt = ref.watch(authStateProvider).valueOrNull;
+    final isAuth = authSt is AuthAuthenticated;
 
     // ── T5: Viaje habitual configurable ──
     final habitualConfig = ref.watch(homeHabitualConfigProvider);
 
     // ── T6: Paradas cerca con GPS + fallback ──
-    final userLoc = ref.watch(userLocationStreamProvider).valueOrNull;
+    final userLoc = ref.watch(userLocationLatLngProvider);
     final refStopId = ref.watch(homeReferenceStopProvider);
     final refStop =
         refStopId != null ? mockData.getStopById(refStopId) : null;
@@ -147,37 +151,36 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                   ),
                 ),
               ),
-              const SizedBox(height: 4),
-              Tooltip(
-                message: l10n.homeChangeCityTooltip,
-                child: GestureDetector(
-                  onTap: () => context.push('/city-picker'),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Flexible(
-                        child: Text(
-                          ref.watch(activeOperatorProvider)?.name ??
-                              l10n.homeDefaultCity,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontFamily: 'DM Sans',
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                            color: Color(0xFF8888A8),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      Icon(Icons.arrow_drop_down, size: 18, color: c.textMid),
-                    ],
-                  ),
-                ),
-              ),
+              const SizedBox(height: 12),
+              // Saludo contextual segun hora — solo si hay usuario auth,
+              // si es invitado no se saluda con nombre.
+              Builder(builder: (_) {
+                final authSt = ref.watch(authStateProvider).valueOrNull;
+                final user = authSt is AuthAuthenticated ? authSt.user : null;
+                final displayName = user?.userMetadata?['display_name']
+                        as String? ??
+                    user?.email?.split('@').first;
+                final hour = DateTime.now().hour;
+                final l10n = AppLocalizations.of(context);
+                final greeting = hour < 6
+                    ? l10n.greetingDawn
+                    : hour < 14
+                        ? l10n.greetingMorning
+                        : hour < 21
+                            ? l10n.greetingAfternoon
+                            : l10n.greetingNight;
+                final greetingText = displayName != null
+                    ? '\u{1F44B} $greeting, $displayName'
+                    : '\u{1F44B} $greeting';
+                return Text(
+                  greetingText,
+                  style: TransitTypography.greeting(c.textHi),
+                );
+              }),
               const SizedBox(height: 24),
-
-              const SizedBox(height: 8),
+              // Operator picker ("Jerez de la Frontera") eliminado:
+              // única operadora COMUJESA. La ruta /city-picker queda
+              // registrada por si se reactiva en el futuro.
               const HomeSearchBar(),
               const SizedBox(height: 24),
 
@@ -213,6 +216,48 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                   icon: Icons.location_off_outlined,
                 ),
               const SizedBox(height: 28),
+
+              if (isAuth) ...[
+                _sectionTitle(c, 'Comunidad'),
+                const SizedBox(height: 10),
+                GlassCard(
+                  blur: 16,
+                  fillOpacity: 0.05,
+                  borderRadius: 12,
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment:
+                              CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '¿Conoces una ruta no oficial?',
+                              style: TransitTypography.bodyPrimary(
+                                  c.textHi),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Compártela con la comunidad de Transitly',
+                              style: TransitTypography.bodySecondary(
+                                  c.textMid),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      TransitButton(
+                        label: 'Crear ruta',
+                        isSmall: true,
+                        onPressed: () =>
+                            context.push('/create-route'),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 28),
+              ],
 
               // ── 3) MIS LINEAS ──
               _sectionTitle(c, l10n.homeSectionMyLines),

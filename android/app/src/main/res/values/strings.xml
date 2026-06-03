@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_next_bus_label">Transitly · Próximo bus</string>
+    <string name="widget_my_line_label">Transitly · Mi línea</string>
+    <string name="widget_nfc_balance_label">Transitly · Saldo bonobús</string>
+    <string name="widget_next_bus_description">Muestra el próximo bus en tu parada habitual con minutos restantes.</string>
+    <string name="widget_my_line_description">Próximas salidas de tu línea favorita ordenadas por tiempo.</string>
+    <string name="widget_nfc_balance_description">Último saldo del bonobús leído por NFC.</string>
+</resources>

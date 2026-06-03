@@ -48,6 +48,7 @@ class TransitMap extends StatefulWidget {
     this.overlayWidgets = const [],
     this.onMapTap,
     this.fmtcTileProvider,
+    this.showAllStops = false,
   });
 
   final bool isDark;
@@ -75,6 +76,10 @@ class TransitMap extends StatefulWidget {
   /// provider serves cached tiles when offline and acts as a transparent
   /// cache when online. Set from F20 region download flow.
   final TileProvider? fmtcTileProvider;
+
+  /// When true, shows stops from ALL visible routes even without a
+  /// selected route. Toggle from the map filter sheet.
+  final bool showAllStops;
 
   @override
   State<TransitMap> createState() => _TransitMapState();
@@ -168,13 +173,33 @@ class _TransitMapState extends State<TransitMap> {
       activeRouteIds: activeRouteIds,
     );
 
-    // Markers (buses + stops) are gated on a selected route — the map stays
-    // visually quiet until the user opens a line, mirroring the way transit
-    // maps surface detail on demand.
     final selectedId = widget.selectedRouteId;
-    final visibleStops = selectedId == null
-        ? const <StopModel>[]
-        : (widget.routeStopsMap[selectedId] ?? const <StopModel>[]);
+    final List<StopModel> visibleStops;
+    if (widget.showAllStops) {
+      final set = <String, StopModel>{};
+      for (final route in widget.routes) {
+        for (final s in widget.routeStopsMap[route.id] ?? <StopModel>[]) {
+          set[s.id] = s;
+        }
+      }
+      var stops = set.values.toList();
+      if (_visibleBounds != null) {
+        stops = stops.where((s) =>
+            s.lat >= _visibleBounds!.south &&
+            s.lat <= _visibleBounds!.north &&
+            s.lng >= _visibleBounds!.west &&
+            s.lng <= _visibleBounds!.east).toList();
+      }
+      if (stops.length > 150) {
+        stops = stops.take(150).toList();
+      }
+      visibleStops = stops;
+    } else if (selectedId != null) {
+      visibleStops =
+          widget.routeStopsMap[selectedId] ?? const <StopModel>[];
+    } else {
+      visibleStops = const <StopModel>[];
+    }
     final visibleTrips = selectedId == null
         ? const <ActiveTripModel>[]
         : widget.activeTrips
@@ -209,6 +234,11 @@ class _TransitMapState extends State<TransitMap> {
       children: [
         RepaintBoundary(
           child: FlutterMap(
+          // Key compuesta: fuerza a flutter_map a desechar el árbol
+          // entero (tiles cacheadas incluidas) cuando cambia el estilo o
+          // el tema. Sin esto, las tiles del estilo anterior siguen
+          // mostrandose hasta que vuelvas a la pantalla o reinicies.
+          key: ValueKey('fm-${widget.mapStyle}-${widget.isDark}'),
           mapController: widget.controller,
           options: MapOptions(
             initialCenter: widget.center ?? MapConfig.defaultCenter,
@@ -221,6 +251,7 @@ class _TransitMapState extends State<TransitMap> {
           ),
           children: [
             TileLayer(
+              key: ValueKey('tiles-${widget.mapStyle}-${widget.isDark}'),
               // urlTemplate siempre es obligatorio — el FMTCTileProvider solo
               // añade la capa de cache, no aporta URL propia.
               urlTemplate: MapConfig.tileUrl(
@@ -252,7 +283,7 @@ class _TransitMapState extends State<TransitMap> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
               child: Text(
-                '\u00a9 MapTiler \u00a9 OpenStreetMap contributors',
+                  '\u00a9 OpenStreetMap contributors \u00b7 \u00a9 CARTO \u00b7 \u00a9 MapTiler',
                 style: TextStyle(
                   fontSize: 9,
                   color: widget.isDark

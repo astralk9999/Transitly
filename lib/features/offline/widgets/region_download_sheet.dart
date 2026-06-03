@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart' show LatLngBounds;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:latlong2/latlong.dart';
 
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../core/utils/app_logger.dart';
 import '../../../data/cache/hive_box_provider.dart';
+import '../../../data/fmtc/fmtc_region_service.dart';
 import '../../../data/offline_region/offline_region_repository_provider.dart';
 import '../../../data/route/local/route_local_repository.dart';
 import '../../../data/schedule/local/schedule_local_repository.dart';
@@ -17,6 +20,7 @@ import '../../../shared/models/offline_region.dart';
 import '../../../shared/models/route_model.dart';
 import '../../../shared/models/schedule_model.dart';
 import '../../../shared/models/stop_model.dart';
+import '../../../shared/providers/theme_notifier.dart';
 import '../../../shared/widgets/gradient_text.dart';
 import '../../../shared/widgets/transit_button.dart';
 import 'region_status_badge.dart';
@@ -148,7 +152,36 @@ class _RegionDownloadSheetState extends ConsumerState<RegionDownloadSheet> {
         }
       }
 
-      setState(() => _downloadProgress = 0.9);
+      setState(() => _downloadProgress = 0.5);
+
+      // Descarga real de tiles con FMTC del estilo activo. La RPC anterior
+      // pobló metadata (stops/routes/schedules); ahora descargamos las
+      // tiles para que el mapa funcione visualmente en offline.
+      final style = ref.read(themeNotifierProvider).mapStyle;
+      try {
+        final tileStream = await FmtcRegionService.downloadRegion(
+          style: style,
+          bounds: LatLngBounds(
+            LatLng(bounds.southLat, bounds.westLng),
+            LatLng(bounds.northLat, bounds.eastLng),
+          ),
+          minZoom: _zoomMin,
+          maxZoom: _zoomMax,
+        );
+        final estimatedTotal = _estimatedTileCount.clamp(1, 1000000);
+        await for (final downloaded in tileStream) {
+          if (!mounted) break;
+          final tileProgress = (downloaded / estimatedTotal).clamp(0.0, 1.0);
+          setState(() {
+            _downloadProgress = 0.5 + tileProgress * 0.4;
+          });
+        }
+      } catch (e) {
+        AppLogger.warn(_logTag, 'fmtc tiles download failed', e);
+        // Continúa: metadata sí descargada, tiles no.
+      }
+
+      setState(() => _downloadProgress = 0.95);
 
       const avgTileBytes = 15000;
       final finalSize = _estimatedTileCount * avgTileBytes;

@@ -8,6 +8,7 @@ import 'shared/models/user_preferences.dart';
 import 'shared/providers/locale_provider.dart';
 import 'shared/providers/theme_notifier.dart';
 import 'shared/providers/theme_provider.dart';
+import 'shared/services/widget_sync_service.dart';
 import 'shared/widgets/background_wrapper.dart';
 
 class TransitlyApp extends ConsumerWidget {
@@ -19,6 +20,7 @@ class TransitlyApp extends ConsumerWidget {
     final locale = ref.watch(localeProvider);
     final router = ref.watch(routerProvider);
     final themeMode = ref.watch(themeModeProvider);
+    ref.watch(widgetSyncListenerProvider);
 
     return MaterialApp.router(
       title: 'Transitly',

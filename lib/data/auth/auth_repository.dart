@@ -9,13 +9,15 @@ enum AuthError {
   networkUnavailable,
   providerCancelled,
   emailNotVerified,
+  rateLimited,
   unknown,
 }
 
 class AuthRepoException implements Exception {
-  const AuthRepoException(this.error, [this.message]);
+  const AuthRepoException(this.error, [this.message, this.secondsLeft]);
   final AuthError error;
   final String? message;
+  final int? secondsLeft;
 
   @override
   String toString() => 'AuthRepoException(${error.name}): ${message ?? ''}';

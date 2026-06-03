@@ -73,7 +73,7 @@ class _AiScheduleImportState extends State<AiScheduleImport> {
                 child: Center(
                   child: Text(
                     AppLocalizations.of(context).aiScheduleImportPrototypeBanner,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w700,
                       color: Colors.black87,

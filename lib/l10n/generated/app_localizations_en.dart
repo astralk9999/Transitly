@@ -27,6 +27,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tabProfile => 'Profile';
 
   @override
+  String get greetingDawn => 'Good early morning';
+
+  @override
+  String get greetingMorning => 'Good morning';
+
+  @override
+  String get greetingAfternoon => 'Good afternoon';
+
+  @override
+  String get greetingNight => 'Good evening';
+
+  @override
   String get nfcErrorUnsupported => 'NFC is not available on this device';
 
   @override
@@ -514,6 +526,36 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appearanceBgTopo => 'Topography';
+
+  @override
+  String get appearanceBgBeams => 'Beams';
+
+  @override
+  String get appearanceBgLightRays => 'Light rays';
+
+  @override
+  String get appearanceBgBalatro => 'Balatro';
+
+  @override
+  String get appearanceBgFloatingLines => 'Floating lines';
+
+  @override
+  String get appearanceBgColorBends => 'Color bends';
+
+  @override
+  String get appearanceBgDotField => 'Dot field';
+
+  @override
+  String get appearanceBgDotGrid => 'Dot grid';
+
+  @override
+  String get appearanceBgDither => 'Dither';
+
+  @override
+  String get appearanceBgFaultyTerminal => 'Faulty terminal';
+
+  @override
+  String get appearanceBgDarkVeil => 'Dark veil';
 
   @override
   String get appearanceTextPreview =>
@@ -1102,6 +1144,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authErrorGoogle => 'Google connection error';
 
   @override
+  String authErrorRateLimited(int seconds) {
+    return 'Too many attempts. Try again in $seconds seconds.';
+  }
+
+  @override
   String get authSignInSubtitle => 'Sign in to continue';
 
   @override
@@ -1188,7 +1235,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authMagicLinkError => 'Error sending the link';
 
   @override
-  String get authVerifyTitle => 'Verify your email';
+  String get authVerifyTitle => 'Check your email';
+
+  @override
+  String authVerifySignupSent(String email) {
+    return 'We\'ve sent an email to $email with a link to verify your account.';
+  }
 
   @override
   String get authVerifyMessage =>
@@ -2316,4 +2368,340 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appearanceDeletePaletteConfirm => 'Delete this palette?';
+
+  @override
+  String get createRouteTitle => 'Create route';
+
+  @override
+  String get createRouteEditTitle => 'Edit route';
+
+  @override
+  String get createRouteStepBasic => 'Basic info';
+
+  @override
+  String get createRouteStepStops => 'Stops';
+
+  @override
+  String get createRouteStepSchedules => 'Schedules';
+
+  @override
+  String get createRouteStepVisibility => 'Visibility';
+
+  @override
+  String get createRouteStepSummary => 'Summary';
+
+  @override
+  String get createRouteNameLabel => 'Route name';
+
+  @override
+  String get createRouteNameHint => 'e.g. Beach route';
+
+  @override
+  String get createRouteDescriptionLabel => 'Description (optional)';
+
+  @override
+  String get createRouteColorLabel => 'Color';
+
+  @override
+  String get createRouteServiceTypeLabel => 'Service type';
+
+  @override
+  String get createRouteServiceUrban => 'Urban';
+
+  @override
+  String get createRouteServiceInterurban => 'Interurban';
+
+  @override
+  String get createRouteServiceLongDistance => 'Long distance';
+
+  @override
+  String get createRouteServiceSchool => 'School';
+
+  @override
+  String get createRouteServiceOnDemand => 'On demand';
+
+  @override
+  String get createRouteServiceCustom => 'Custom';
+
+  @override
+  String get createRouteStopAdd => 'Add stop';
+
+  @override
+  String get createRouteStopSearch => 'Search official stop';
+
+  @override
+  String get createRouteStopNew => 'Create new stop';
+
+  @override
+  String get createRouteStopName => 'Name';
+
+  @override
+  String get createRouteStopLat => 'Latitude';
+
+  @override
+  String get createRouteStopLng => 'Longitude';
+
+  @override
+  String get createRouteStopType => 'Stop type';
+
+  @override
+  String get createRouteStopSuggest => 'Suggest as official stop';
+
+  @override
+  String get createRouteStopDelete => 'Remove stop';
+
+  @override
+  String get createRouteScheduleAdd => 'Add departure';
+
+  @override
+  String get createRouteScheduleTime => 'Departure time';
+
+  @override
+  String get createRouteScheduleDay => 'Day';
+
+  @override
+  String get createRouteScheduleWeekday => 'Mon-Fri';
+
+  @override
+  String get createRouteScheduleSaturday => 'Saturday';
+
+  @override
+  String get createRouteScheduleSunday => 'Sunday';
+
+  @override
+  String get createRouteScheduleHoliday => 'Holiday';
+
+  @override
+  String get createRouteScheduleSummer => 'Summer';
+
+  @override
+  String get createRouteScheduleWinter => 'Winter';
+
+  @override
+  String get createRouteScheduleEveryDay => 'Every day';
+
+  @override
+  String get createRouteScheduleFrequency => 'Generate frequency';
+
+  @override
+  String get createRouteScheduleEvery => 'Every X minutes';
+
+  @override
+  String get createRouteScheduleFrom => 'From';
+
+  @override
+  String get createRouteScheduleTo => 'To';
+
+  @override
+  String get createRouteVisibilityPublic => 'Public';
+
+  @override
+  String get createRouteVisibilityPublicDesc => 'Visible in global search';
+
+  @override
+  String get createRouteVisibilityUnlisted => 'Code/link only';
+
+  @override
+  String get createRouteVisibilityUnlistedDesc => 'Not shown in search';
+
+  @override
+  String get createRouteVisibilityPrivate => 'Private';
+
+  @override
+  String get createRouteVisibilityPrivateDesc => 'Only you can see it';
+
+  @override
+  String createRouteSummaryStops(Object count) {
+    return '$count stops';
+  }
+
+  @override
+  String createRouteSummarySchedules(Object count) {
+    return '$count schedules';
+  }
+
+  @override
+  String createRouteSummaryType(Object type) {
+    return 'Type: $type';
+  }
+
+  @override
+  String get createRouteProposeCommunity => 'Propose as community route';
+
+  @override
+  String get createRoutePublish => 'Publish route';
+
+  @override
+  String get createRouteSaveDraft => 'Save draft';
+
+  @override
+  String get myRoutesTitle => 'My routes';
+
+  @override
+  String get myRoutesEmpty => 'You haven\'t created any routes yet';
+
+  @override
+  String get myRoutesCreate => 'Create first route';
+
+  @override
+  String get myRoutesDeleteConfirm => 'Delete this route?';
+
+  @override
+  String get myRoutesDeleteConfirmDesc => 'This action cannot be undone';
+
+  @override
+  String get communityTitle => 'Community';
+
+  @override
+  String get communitySearchHint => 'Search routes...';
+
+  @override
+  String get communityEmpty => 'No routes found';
+
+  @override
+  String get communityFilterAll => 'All';
+
+  @override
+  String get communityFilterUrban => 'Urban';
+
+  @override
+  String get communityFilterInterurban => 'Interurban';
+
+  @override
+  String get communityFilterLongDistance => 'Long distance';
+
+  @override
+  String get communityRouteStops => 'Stops';
+
+  @override
+  String get communityRouteSchedules => 'Schedules';
+
+  @override
+  String get communityRouteVotes => 'Votes';
+
+  @override
+  String get communityRouteViews => 'Views';
+
+  @override
+  String get communityRouteVote => 'Vote';
+
+  @override
+  String get communityRouteUnvote => 'Remove vote';
+
+  @override
+  String get communityRouteReport => 'Report';
+
+  @override
+  String get communityRouteShare => 'Share';
+
+  @override
+  String get shareRouteTitle => 'Share route';
+
+  @override
+  String get shareRouteCode => 'Code';
+
+  @override
+  String get shareRouteCodeCopy => 'Copy code';
+
+  @override
+  String get shareRouteLink => 'Public link';
+
+  @override
+  String get shareRouteLinkCopy => 'Copy link';
+
+  @override
+  String get shareRouteWhatsApp => 'WhatsApp';
+
+  @override
+  String get shareRouteEmail => 'Email';
+
+  @override
+  String get shareRouteQr => 'QR Code';
+
+  @override
+  String get reportRouteTitle => 'Report route';
+
+  @override
+  String get reportRouteReason => 'Reason';
+
+  @override
+  String get reportRouteReasonSpam => 'Spam';
+
+  @override
+  String get reportRouteReasonInappropriate => 'Inappropriate content';
+
+  @override
+  String get reportRouteReasonWrongData => 'Wrong data';
+
+  @override
+  String get reportRouteReasonDuplicated => 'Duplicated';
+
+  @override
+  String get reportRouteReasonOther => 'Other';
+
+  @override
+  String get reportRouteDescription => 'Description (optional)';
+
+  @override
+  String get reportRouteSubmit => 'Submit report';
+
+  @override
+  String get reportRouteSuccess => 'Report submitted successfully';
+
+  @override
+  String get adminModerationTitle => 'Route moderation';
+
+  @override
+  String get adminModerationPending => 'Pending';
+
+  @override
+  String get adminModerationStops => 'Stops';
+
+  @override
+  String get adminModerationApprove => 'Approve';
+
+  @override
+  String get adminModerationReject => 'Reject';
+
+  @override
+  String get adminModerationRejectReason => 'Rejection reason';
+
+  @override
+  String get adminModerationRouteApproved => 'Route approved as community';
+
+  @override
+  String get adminModerationRouteRejected => 'Route rejected';
+
+  @override
+  String get adminModerationStopApproved => 'Stop promoted to official';
+
+  @override
+  String get adminModerationStopRejected => 'Stop rejected';
+
+  @override
+  String get routeStatusDraft => 'Draft';
+
+  @override
+  String get routeStatusPublished => 'Published';
+
+  @override
+  String get routeStatusReviewPending => 'Under review';
+
+  @override
+  String get routeStatusCommunityApproved => 'Community';
+
+  @override
+  String get routeStatusRejected => 'Rejected';
+
+  @override
+  String get routeStatusReported => 'Reported';
+
+  @override
+  String get visibilityPublic => 'Public';
+
+  @override
+  String get visibilityUnlisted => 'Unlisted';
+
+  @override
+  String get visibilityPrivate => 'Private';
 }

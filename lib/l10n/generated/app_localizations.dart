@@ -136,6 +136,30 @@ abstract class AppLocalizations {
   /// **'Perfil'**
   String get tabProfile;
 
+  /// Greeting: before 6am
+  ///
+  /// In es, this message translates to:
+  /// **'Buena madrugada'**
+  String get greetingDawn;
+
+  /// Greeting: 6am to 2pm
+  ///
+  /// In es, this message translates to:
+  /// **'Buenos días'**
+  String get greetingMorning;
+
+  /// Greeting: 2pm to 9pm
+  ///
+  /// In es, this message translates to:
+  /// **'Buenas tardes'**
+  String get greetingAfternoon;
+
+  /// Greeting: after 9pm
+  ///
+  /// In es, this message translates to:
+  /// **'Buenas noches'**
+  String get greetingNight;
+
   /// No description provided for @nfcErrorUnsupported.
   ///
   /// In es, this message translates to:
@@ -1095,6 +1119,66 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Topografía'**
   String get appearanceBgTopo;
+
+  /// No description provided for @appearanceBgBeams.
+  ///
+  /// In es, this message translates to:
+  /// **'Haces'**
+  String get appearanceBgBeams;
+
+  /// No description provided for @appearanceBgLightRays.
+  ///
+  /// In es, this message translates to:
+  /// **'Rayos de luz'**
+  String get appearanceBgLightRays;
+
+  /// No description provided for @appearanceBgBalatro.
+  ///
+  /// In es, this message translates to:
+  /// **'Balatro'**
+  String get appearanceBgBalatro;
+
+  /// No description provided for @appearanceBgFloatingLines.
+  ///
+  /// In es, this message translates to:
+  /// **'Líneas flotantes'**
+  String get appearanceBgFloatingLines;
+
+  /// No description provided for @appearanceBgColorBends.
+  ///
+  /// In es, this message translates to:
+  /// **'Cintas de color'**
+  String get appearanceBgColorBends;
+
+  /// No description provided for @appearanceBgDotField.
+  ///
+  /// In es, this message translates to:
+  /// **'Campo de puntos'**
+  String get appearanceBgDotField;
+
+  /// No description provided for @appearanceBgDotGrid.
+  ///
+  /// In es, this message translates to:
+  /// **'Rejilla de puntos'**
+  String get appearanceBgDotGrid;
+
+  /// No description provided for @appearanceBgDither.
+  ///
+  /// In es, this message translates to:
+  /// **'Granulado'**
+  String get appearanceBgDither;
+
+  /// No description provided for @appearanceBgFaultyTerminal.
+  ///
+  /// In es, this message translates to:
+  /// **'Terminal averiado'**
+  String get appearanceBgFaultyTerminal;
+
+  /// No description provided for @appearanceBgDarkVeil.
+  ///
+  /// In es, this message translates to:
+  /// **'Velo oscuro'**
+  String get appearanceBgDarkVeil;
 
   /// No description provided for @appearanceTextPreview.
   ///
@@ -2122,6 +2206,12 @@ abstract class AppLocalizations {
   /// **'Error de conexión con Google'**
   String get authErrorGoogle;
 
+  /// Auth: rate limited error with countdown
+  ///
+  /// In es, this message translates to:
+  /// **'Demasiados intentos. Inténtalo en {seconds} segundos.'**
+  String authErrorRateLimited(int seconds);
+
   /// Auth: sign in screen subtitle
   ///
   /// In es, this message translates to:
@@ -2290,11 +2380,17 @@ abstract class AppLocalizations {
   /// **'Error al enviar el enlace'**
   String get authMagicLinkError;
 
-  /// Auth: email verification screen title
+  /// Auth: email verification title
   ///
   /// In es, this message translates to:
-  /// **'Verifica tu email'**
+  /// **'Revisa tu correo'**
   String get authVerifyTitle;
+
+  /// Auth: signup verification email sent dialog body
+  ///
+  /// In es, this message translates to:
+  /// **'Te hemos enviado un email a {email} con un enlace para verificar tu cuenta.'**
+  String authVerifySignupSent(String email);
 
   /// Auth: email verification message
   ///
@@ -4346,6 +4442,666 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'¿Eliminar esta paleta?'**
   String get appearanceDeletePaletteConfirm;
+
+  /// No description provided for @createRouteTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear ruta'**
+  String get createRouteTitle;
+
+  /// No description provided for @createRouteEditTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar ruta'**
+  String get createRouteEditTitle;
+
+  /// No description provided for @createRouteStepBasic.
+  ///
+  /// In es, this message translates to:
+  /// **'Info básica'**
+  String get createRouteStepBasic;
+
+  /// No description provided for @createRouteStepStops.
+  ///
+  /// In es, this message translates to:
+  /// **'Paradas'**
+  String get createRouteStepStops;
+
+  /// No description provided for @createRouteStepSchedules.
+  ///
+  /// In es, this message translates to:
+  /// **'Horarios'**
+  String get createRouteStepSchedules;
+
+  /// No description provided for @createRouteStepVisibility.
+  ///
+  /// In es, this message translates to:
+  /// **'Visibilidad'**
+  String get createRouteStepVisibility;
+
+  /// No description provided for @createRouteStepSummary.
+  ///
+  /// In es, this message translates to:
+  /// **'Resumen'**
+  String get createRouteStepSummary;
+
+  /// No description provided for @createRouteNameLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre de la ruta'**
+  String get createRouteNameLabel;
+
+  /// No description provided for @createRouteNameHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej: Ruta de la playa'**
+  String get createRouteNameHint;
+
+  /// No description provided for @createRouteDescriptionLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Descripción (opcional)'**
+  String get createRouteDescriptionLabel;
+
+  /// No description provided for @createRouteColorLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Color'**
+  String get createRouteColorLabel;
+
+  /// No description provided for @createRouteServiceTypeLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Tipo de servicio'**
+  String get createRouteServiceTypeLabel;
+
+  /// No description provided for @createRouteServiceUrban.
+  ///
+  /// In es, this message translates to:
+  /// **'Urbano'**
+  String get createRouteServiceUrban;
+
+  /// No description provided for @createRouteServiceInterurban.
+  ///
+  /// In es, this message translates to:
+  /// **'Interurbano'**
+  String get createRouteServiceInterurban;
+
+  /// No description provided for @createRouteServiceLongDistance.
+  ///
+  /// In es, this message translates to:
+  /// **'Larga distancia'**
+  String get createRouteServiceLongDistance;
+
+  /// No description provided for @createRouteServiceSchool.
+  ///
+  /// In es, this message translates to:
+  /// **'Escolar'**
+  String get createRouteServiceSchool;
+
+  /// No description provided for @createRouteServiceOnDemand.
+  ///
+  /// In es, this message translates to:
+  /// **'A demanda'**
+  String get createRouteServiceOnDemand;
+
+  /// No description provided for @createRouteServiceCustom.
+  ///
+  /// In es, this message translates to:
+  /// **'Custom'**
+  String get createRouteServiceCustom;
+
+  /// No description provided for @createRouteStopAdd.
+  ///
+  /// In es, this message translates to:
+  /// **'Añadir parada'**
+  String get createRouteStopAdd;
+
+  /// No description provided for @createRouteStopSearch.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar parada oficial'**
+  String get createRouteStopSearch;
+
+  /// No description provided for @createRouteStopNew.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear parada nueva'**
+  String get createRouteStopNew;
+
+  /// No description provided for @createRouteStopName.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre'**
+  String get createRouteStopName;
+
+  /// No description provided for @createRouteStopLat.
+  ///
+  /// In es, this message translates to:
+  /// **'Latitud'**
+  String get createRouteStopLat;
+
+  /// No description provided for @createRouteStopLng.
+  ///
+  /// In es, this message translates to:
+  /// **'Longitud'**
+  String get createRouteStopLng;
+
+  /// No description provided for @createRouteStopType.
+  ///
+  /// In es, this message translates to:
+  /// **'Tipo de parada'**
+  String get createRouteStopType;
+
+  /// No description provided for @createRouteStopSuggest.
+  ///
+  /// In es, this message translates to:
+  /// **'Sugerir como parada oficial'**
+  String get createRouteStopSuggest;
+
+  /// No description provided for @createRouteStopDelete.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar parada'**
+  String get createRouteStopDelete;
+
+  /// No description provided for @createRouteScheduleAdd.
+  ///
+  /// In es, this message translates to:
+  /// **'Añadir salida'**
+  String get createRouteScheduleAdd;
+
+  /// No description provided for @createRouteScheduleTime.
+  ///
+  /// In es, this message translates to:
+  /// **'Hora de salida'**
+  String get createRouteScheduleTime;
+
+  /// No description provided for @createRouteScheduleDay.
+  ///
+  /// In es, this message translates to:
+  /// **'Día'**
+  String get createRouteScheduleDay;
+
+  /// No description provided for @createRouteScheduleWeekday.
+  ///
+  /// In es, this message translates to:
+  /// **'L-V'**
+  String get createRouteScheduleWeekday;
+
+  /// No description provided for @createRouteScheduleSaturday.
+  ///
+  /// In es, this message translates to:
+  /// **'Sábado'**
+  String get createRouteScheduleSaturday;
+
+  /// No description provided for @createRouteScheduleSunday.
+  ///
+  /// In es, this message translates to:
+  /// **'Domingo'**
+  String get createRouteScheduleSunday;
+
+  /// No description provided for @createRouteScheduleHoliday.
+  ///
+  /// In es, this message translates to:
+  /// **'Festivo'**
+  String get createRouteScheduleHoliday;
+
+  /// No description provided for @createRouteScheduleSummer.
+  ///
+  /// In es, this message translates to:
+  /// **'Verano'**
+  String get createRouteScheduleSummer;
+
+  /// No description provided for @createRouteScheduleWinter.
+  ///
+  /// In es, this message translates to:
+  /// **'Invierno'**
+  String get createRouteScheduleWinter;
+
+  /// No description provided for @createRouteScheduleEveryDay.
+  ///
+  /// In es, this message translates to:
+  /// **'Todos los días'**
+  String get createRouteScheduleEveryDay;
+
+  /// No description provided for @createRouteScheduleFrequency.
+  ///
+  /// In es, this message translates to:
+  /// **'Generar frecuencia'**
+  String get createRouteScheduleFrequency;
+
+  /// No description provided for @createRouteScheduleEvery.
+  ///
+  /// In es, this message translates to:
+  /// **'Cada X minutos'**
+  String get createRouteScheduleEvery;
+
+  /// No description provided for @createRouteScheduleFrom.
+  ///
+  /// In es, this message translates to:
+  /// **'Desde'**
+  String get createRouteScheduleFrom;
+
+  /// No description provided for @createRouteScheduleTo.
+  ///
+  /// In es, this message translates to:
+  /// **'Hasta'**
+  String get createRouteScheduleTo;
+
+  /// No description provided for @createRouteVisibilityPublic.
+  ///
+  /// In es, this message translates to:
+  /// **'Pública'**
+  String get createRouteVisibilityPublic;
+
+  /// No description provided for @createRouteVisibilityPublicDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Visible en el buscador global'**
+  String get createRouteVisibilityPublicDesc;
+
+  /// No description provided for @createRouteVisibilityUnlisted.
+  ///
+  /// In es, this message translates to:
+  /// **'Solo con código/enlace'**
+  String get createRouteVisibilityUnlisted;
+
+  /// No description provided for @createRouteVisibilityUnlistedDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'No aparece en el buscador'**
+  String get createRouteVisibilityUnlistedDesc;
+
+  /// No description provided for @createRouteVisibilityPrivate.
+  ///
+  /// In es, this message translates to:
+  /// **'Privada'**
+  String get createRouteVisibilityPrivate;
+
+  /// No description provided for @createRouteVisibilityPrivateDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Solo tú la ves'**
+  String get createRouteVisibilityPrivateDesc;
+
+  /// No description provided for @createRouteSummaryStops.
+  ///
+  /// In es, this message translates to:
+  /// **'{count} paradas'**
+  String createRouteSummaryStops(Object count);
+
+  /// No description provided for @createRouteSummarySchedules.
+  ///
+  /// In es, this message translates to:
+  /// **'{count} horarios'**
+  String createRouteSummarySchedules(Object count);
+
+  /// No description provided for @createRouteSummaryType.
+  ///
+  /// In es, this message translates to:
+  /// **'Tipo: {type}'**
+  String createRouteSummaryType(Object type);
+
+  /// No description provided for @createRouteProposeCommunity.
+  ///
+  /// In es, this message translates to:
+  /// **'Proponer como ruta comunitaria oficial'**
+  String get createRouteProposeCommunity;
+
+  /// No description provided for @createRoutePublish.
+  ///
+  /// In es, this message translates to:
+  /// **'Publicar ruta'**
+  String get createRoutePublish;
+
+  /// No description provided for @createRouteSaveDraft.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar borrador'**
+  String get createRouteSaveDraft;
+
+  /// No description provided for @myRoutesTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Mis rutas'**
+  String get myRoutesTitle;
+
+  /// No description provided for @myRoutesEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no has creado ninguna ruta'**
+  String get myRoutesEmpty;
+
+  /// No description provided for @myRoutesCreate.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear primera ruta'**
+  String get myRoutesCreate;
+
+  /// No description provided for @myRoutesDeleteConfirm.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Eliminar esta ruta?'**
+  String get myRoutesDeleteConfirm;
+
+  /// No description provided for @myRoutesDeleteConfirmDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Esta acción no se puede deshacer'**
+  String get myRoutesDeleteConfirmDesc;
+
+  /// No description provided for @communityTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Comunidad'**
+  String get communityTitle;
+
+  /// No description provided for @communitySearchHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar rutas...'**
+  String get communitySearchHint;
+
+  /// No description provided for @communityEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'No se encontraron rutas'**
+  String get communityEmpty;
+
+  /// No description provided for @communityFilterAll.
+  ///
+  /// In es, this message translates to:
+  /// **'Todas'**
+  String get communityFilterAll;
+
+  /// No description provided for @communityFilterUrban.
+  ///
+  /// In es, this message translates to:
+  /// **'Urbano'**
+  String get communityFilterUrban;
+
+  /// No description provided for @communityFilterInterurban.
+  ///
+  /// In es, this message translates to:
+  /// **'Interurbano'**
+  String get communityFilterInterurban;
+
+  /// No description provided for @communityFilterLongDistance.
+  ///
+  /// In es, this message translates to:
+  /// **'Larga distancia'**
+  String get communityFilterLongDistance;
+
+  /// No description provided for @communityRouteStops.
+  ///
+  /// In es, this message translates to:
+  /// **'Paradas'**
+  String get communityRouteStops;
+
+  /// No description provided for @communityRouteSchedules.
+  ///
+  /// In es, this message translates to:
+  /// **'Horarios'**
+  String get communityRouteSchedules;
+
+  /// No description provided for @communityRouteVotes.
+  ///
+  /// In es, this message translates to:
+  /// **'Votos'**
+  String get communityRouteVotes;
+
+  /// No description provided for @communityRouteViews.
+  ///
+  /// In es, this message translates to:
+  /// **'Visitas'**
+  String get communityRouteViews;
+
+  /// No description provided for @communityRouteVote.
+  ///
+  /// In es, this message translates to:
+  /// **'Votar'**
+  String get communityRouteVote;
+
+  /// No description provided for @communityRouteUnvote.
+  ///
+  /// In es, this message translates to:
+  /// **'Quitar voto'**
+  String get communityRouteUnvote;
+
+  /// No description provided for @communityRouteReport.
+  ///
+  /// In es, this message translates to:
+  /// **'Reportar'**
+  String get communityRouteReport;
+
+  /// No description provided for @communityRouteShare.
+  ///
+  /// In es, this message translates to:
+  /// **'Compartir'**
+  String get communityRouteShare;
+
+  /// No description provided for @shareRouteTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Compartir ruta'**
+  String get shareRouteTitle;
+
+  /// No description provided for @shareRouteCode.
+  ///
+  /// In es, this message translates to:
+  /// **'Código'**
+  String get shareRouteCode;
+
+  /// No description provided for @shareRouteCodeCopy.
+  ///
+  /// In es, this message translates to:
+  /// **'Copiar código'**
+  String get shareRouteCodeCopy;
+
+  /// No description provided for @shareRouteLink.
+  ///
+  /// In es, this message translates to:
+  /// **'Enlace público'**
+  String get shareRouteLink;
+
+  /// No description provided for @shareRouteLinkCopy.
+  ///
+  /// In es, this message translates to:
+  /// **'Copiar enlace'**
+  String get shareRouteLinkCopy;
+
+  /// No description provided for @shareRouteWhatsApp.
+  ///
+  /// In es, this message translates to:
+  /// **'WhatsApp'**
+  String get shareRouteWhatsApp;
+
+  /// No description provided for @shareRouteEmail.
+  ///
+  /// In es, this message translates to:
+  /// **'Email'**
+  String get shareRouteEmail;
+
+  /// No description provided for @shareRouteQr.
+  ///
+  /// In es, this message translates to:
+  /// **'Código QR'**
+  String get shareRouteQr;
+
+  /// No description provided for @reportRouteTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Reportar ruta'**
+  String get reportRouteTitle;
+
+  /// No description provided for @reportRouteReason.
+  ///
+  /// In es, this message translates to:
+  /// **'Motivo'**
+  String get reportRouteReason;
+
+  /// No description provided for @reportRouteReasonSpam.
+  ///
+  /// In es, this message translates to:
+  /// **'Spam'**
+  String get reportRouteReasonSpam;
+
+  /// No description provided for @reportRouteReasonInappropriate.
+  ///
+  /// In es, this message translates to:
+  /// **'Contenido inapropiado'**
+  String get reportRouteReasonInappropriate;
+
+  /// No description provided for @reportRouteReasonWrongData.
+  ///
+  /// In es, this message translates to:
+  /// **'Datos incorrectos'**
+  String get reportRouteReasonWrongData;
+
+  /// No description provided for @reportRouteReasonDuplicated.
+  ///
+  /// In es, this message translates to:
+  /// **'Duplicada'**
+  String get reportRouteReasonDuplicated;
+
+  /// No description provided for @reportRouteReasonOther.
+  ///
+  /// In es, this message translates to:
+  /// **'Otro'**
+  String get reportRouteReasonOther;
+
+  /// No description provided for @reportRouteDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Descripción (opcional)'**
+  String get reportRouteDescription;
+
+  /// No description provided for @reportRouteSubmit.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar reporte'**
+  String get reportRouteSubmit;
+
+  /// No description provided for @reportRouteSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Reporte enviado correctamente'**
+  String get reportRouteSuccess;
+
+  /// No description provided for @adminModerationTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Moderación de rutas'**
+  String get adminModerationTitle;
+
+  /// No description provided for @adminModerationPending.
+  ///
+  /// In es, this message translates to:
+  /// **'Pendientes'**
+  String get adminModerationPending;
+
+  /// No description provided for @adminModerationStops.
+  ///
+  /// In es, this message translates to:
+  /// **'Paradas'**
+  String get adminModerationStops;
+
+  /// No description provided for @adminModerationApprove.
+  ///
+  /// In es, this message translates to:
+  /// **'Aprobar'**
+  String get adminModerationApprove;
+
+  /// No description provided for @adminModerationReject.
+  ///
+  /// In es, this message translates to:
+  /// **'Rechazar'**
+  String get adminModerationReject;
+
+  /// No description provided for @adminModerationRejectReason.
+  ///
+  /// In es, this message translates to:
+  /// **'Motivo del rechazo'**
+  String get adminModerationRejectReason;
+
+  /// No description provided for @adminModerationRouteApproved.
+  ///
+  /// In es, this message translates to:
+  /// **'Ruta aprobada como comunitaria'**
+  String get adminModerationRouteApproved;
+
+  /// No description provided for @adminModerationRouteRejected.
+  ///
+  /// In es, this message translates to:
+  /// **'Ruta rechazada'**
+  String get adminModerationRouteRejected;
+
+  /// No description provided for @adminModerationStopApproved.
+  ///
+  /// In es, this message translates to:
+  /// **'Parada promovida a oficial'**
+  String get adminModerationStopApproved;
+
+  /// No description provided for @adminModerationStopRejected.
+  ///
+  /// In es, this message translates to:
+  /// **'Parada rechazada'**
+  String get adminModerationStopRejected;
+
+  /// No description provided for @routeStatusDraft.
+  ///
+  /// In es, this message translates to:
+  /// **'Borrador'**
+  String get routeStatusDraft;
+
+  /// No description provided for @routeStatusPublished.
+  ///
+  /// In es, this message translates to:
+  /// **'Publicada'**
+  String get routeStatusPublished;
+
+  /// No description provided for @routeStatusReviewPending.
+  ///
+  /// In es, this message translates to:
+  /// **'En revisión'**
+  String get routeStatusReviewPending;
+
+  /// No description provided for @routeStatusCommunityApproved.
+  ///
+  /// In es, this message translates to:
+  /// **'Comunitaria'**
+  String get routeStatusCommunityApproved;
+
+  /// No description provided for @routeStatusRejected.
+  ///
+  /// In es, this message translates to:
+  /// **'Rechazada'**
+  String get routeStatusRejected;
+
+  /// No description provided for @routeStatusReported.
+  ///
+  /// In es, this message translates to:
+  /// **'Reportada'**
+  String get routeStatusReported;
+
+  /// No description provided for @visibilityPublic.
+  ///
+  /// In es, this message translates to:
+  /// **'Pública'**
+  String get visibilityPublic;
+
+  /// No description provided for @visibilityUnlisted.
+  ///
+  /// In es, this message translates to:
+  /// **'No listada'**
+  String get visibilityUnlisted;
+
+  /// No description provided for @visibilityPrivate.
+  ///
+  /// In es, this message translates to:
+  /// **'Privada'**
+  String get visibilityPrivate;
 }
 
 class _AppLocalizationsDelegate

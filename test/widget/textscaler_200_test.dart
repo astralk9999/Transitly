@@ -47,15 +47,15 @@ void main() {
     testWidgets('textScaler at 2.0x with Row children wraps correctly',
         (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: MediaQuery(
             data: MediaQueryData(
-              textScaler: const TextScaler.linear(2.0),
+              textScaler: TextScaler.linear(2.0),
             ),
             child: Scaffold(
               body: SafeArea(
                 child: Row(
-                  children: const [
+                  children: [
                     Text('Label:'),
                     SizedBox(width: 8),
                     Flexible(child: Text('Value that may be long')),
@@ -76,8 +76,8 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: MediaQuery(
-            data: MediaQueryData(
-              textScaler: const TextScaler.linear(2.0),
+            data: const MediaQueryData(
+              textScaler: TextScaler.linear(2.0),
             ),
             child: Scaffold(
               body: Center(

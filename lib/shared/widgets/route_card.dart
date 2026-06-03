@@ -17,6 +17,7 @@ class RouteCard extends StatelessWidget {
     this.remainingStops,
     this.estimatedMinutes,
     this.onTap,
+    this.onGoToLine,
   });
 
   final RouteModel route;
@@ -24,6 +25,7 @@ class RouteCard extends StatelessWidget {
   final int? remainingStops;
   final String? estimatedMinutes;
   final VoidCallback? onTap;
+  final VoidCallback? onGoToLine;
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +51,8 @@ class RouteCard extends StatelessWidget {
     final statusLabel = activeTrip != null ? ', ${activeTrip!.status.label}' : '';
     final minsLabel = estimatedMinutes != null ? ', $estimatedMinutes' : '';
 
+    final lineColor = route.routeColor;
+
     return Semantics(
       label: AppLocalizations.of(context).routeCardSemantics(route.code, route.name, statusLabel, minsLabel),
       button: onTap != null,
@@ -63,17 +67,17 @@ class RouteCard extends StatelessWidget {
           ),
           child: Row(
             children: [
-              // Route code box with status color accent
+              // Route code box with line color
               Container(
                 constraints: const BoxConstraints(minWidth: 60, maxWidth: 96),
                 margin: const EdgeInsets.all(10),
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
                 decoration: BoxDecoration(
-                  color: statusColor.withValues(alpha: 0.15),
+                  color: lineColor.withValues(alpha: 0.18),
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
-                    color: statusColor.withValues(alpha: 0.30),
-                    width: 1,
+                    color: lineColor.withValues(alpha: 0.55),
+                    width: 1.5,
                   ),
                 ),
                 child: Center(
@@ -81,7 +85,7 @@ class RouteCard extends StatelessWidget {
                     fit: BoxFit.scaleDown,
                     child: Text(
                       route.code,
-                      style: TransitTypography.routeCode(c.accent),
+                      style: TransitTypography.routeCode(lineColor),
                       maxLines: 1,
                       overflow: TextOverflow.fade,
                     ),
@@ -131,15 +135,29 @@ class RouteCard extends StatelessWidget {
                   ),
                 ),
               ),
-              // Right: estimated minutes
-              if (estimatedMinutes != null)
-                Padding(
-                  padding: const EdgeInsets.only(right: 14),
-                  child: Text(
-                      estimatedMinutes!,
-                      style: TransitTypography.timeEstimate(c.accent),
-                  ),
-                ),
+              // Right: GPS button + estimated minutes
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (onGoToLine != null)
+                    GestureDetector(
+                      onTap: onGoToLine,
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Icon(Icons.gps_fixed, size: 18,
+                            color: c.accent.withValues(alpha: 0.7)),
+                      ),
+                    ),
+                  if (estimatedMinutes != null)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 14),
+                      child: Text(
+                          estimatedMinutes!,
+                          style: TransitTypography.timeEstimate(c.accent),
+                      ),
+                    ),
+                ],
+              ),
             ],
           ),
         ),

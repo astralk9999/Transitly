@@ -315,6 +315,13 @@ class MockDataService {
 
   // ── Helpers ──────────────────────────────────────────────
 
+  List<OperatorModel> getOperators() => [operator_];
+
+  OperatorModel? getOperatorById(String id) {
+    if (operator_.id == id) return operator_;
+    return null;
+  }
+
   RouteModel? getRouteById(String id) {
     for (final r in routes) {
       if (r.id == id) return r;

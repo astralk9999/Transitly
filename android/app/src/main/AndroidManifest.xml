@@ -62,6 +62,37 @@
                 <action android:name="com.google.firebase.messaging.NEW_TOKEN" />
             </intent-filter>
         </service>
+        <!-- Widget providers -->
+        <receiver
+            android:name=".widgets.NextBusWidgetProvider"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_next_bus_info" />
+        </receiver>
+        <receiver
+            android:name=".widgets.MyLineWidgetProvider"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_my_line_info" />
+        </receiver>
+        <receiver
+            android:name=".widgets.NfcBalanceWidgetProvider"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_nfc_balance_info" />
+        </receiver>
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

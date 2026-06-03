@@ -1,3 +1,6 @@
+import 'dart:math';
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 
 sealed class AppBackground {
@@ -90,7 +93,71 @@ class GradientBackground extends AppBackground {
       };
 }
 
-enum ProceduralPattern { softGrid, topoLines }
+enum ProceduralPattern {
+  softGrid,
+  topoLines,
+  beams,
+  // NOTA: aurora, balatro, floatingLines, dither, colorBends, dotField
+  // se eliminaron del enum porque ahora tienen versión REAL con shader
+  // (AuroraShaderBackground, BalatroShaderBackground, etc.).
+}
+
+// Fondos shader port de react-bits (id: 'shader:*').
+// Aurora eliminado a petición del usuario (no quedaba bien en móvil).
+
+class LightRaysShaderBackground extends AppBackground {
+  const LightRaysShaderBackground();
+  @override
+  String get id => 'shader:lightRays';
+}
+
+class BalatroShaderBackground extends AppBackground {
+  const BalatroShaderBackground();
+  @override
+  String get id => 'shader:balatro';
+}
+
+class FloatingLinesShaderBackground extends AppBackground {
+  const FloatingLinesShaderBackground();
+  @override
+  String get id => 'shader:floatingLines';
+}
+
+class ColorBendsShaderBackground extends AppBackground {
+  const ColorBendsShaderBackground();
+  @override
+  String get id => 'shader:colorBends';
+}
+
+class DotFieldShaderBackground extends AppBackground {
+  const DotFieldShaderBackground();
+  @override
+  String get id => 'shader:dotField';
+}
+
+class DotGridShaderBackground extends AppBackground {
+  const DotGridShaderBackground();
+  @override
+  String get id => 'shader:dotGrid';
+}
+
+class DitherShaderBackground extends AppBackground {
+  const DitherShaderBackground();
+  @override
+  String get id => 'shader:dither';
+}
+
+class FaultyTerminalShaderBackground extends AppBackground {
+  const FaultyTerminalShaderBackground();
+  @override
+  String get id => 'shader:faultyTerminal';
+}
+
+class DarkVeilShaderBackground extends AppBackground {
+  const DarkVeilShaderBackground();
+  @override
+  String get id => 'shader:darkVeil';
+}
 
 class ProceduralBackground extends AppBackground {
   final ProceduralPattern pattern;
@@ -99,8 +166,9 @@ class ProceduralBackground extends AppBackground {
 
   @override
   String get id => switch (pattern) {
-        ProceduralPattern.softGrid => 'assets/bg/soft_grid.png',
-        ProceduralPattern.topoLines => 'assets/bg/topo_lines.png',
+        ProceduralPattern.softGrid => 'procedural:softGrid',
+        ProceduralPattern.topoLines => 'procedural:topoLines',
+        ProceduralPattern.beams => 'procedural:beams',
       };
 
   @override
@@ -124,6 +192,8 @@ class _ProceduralPainter extends CustomPainter {
         _drawSoftGrid(canvas, size);
       case ProceduralPattern.topoLines:
         _drawTopoLines(canvas, size);
+      case ProceduralPattern.beams:
+        _drawBeams(canvas, size);
     }
   }
 
@@ -140,30 +210,57 @@ class _ProceduralPainter extends CustomPainter {
     }
   }
 
+  // Curvas de nivel tipo mapa topográfico. Usamos ruido determinista
+  // (sin librería) sumando varias sinusoides desplazadas. Cada curva es
+  // un loop horizontal de izquierda a derecha modulado por el "ruido".
   void _drawTopoLines(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = const Color(0x07FFFFFF)
-      ..strokeWidth = 0.8
+      ..color = const Color(0x14FFFFFF)
+      ..strokeWidth = 0.9
       ..style = PaintingStyle.stroke;
-    final cx = size.width / 2;
-    final cy = size.height / 2;
-    final maxR = (size.width > size.height ? size.width : size.height) * 0.85;
-    for (double r = 20; r < maxR; r += 28) {
-      final path = Path();
-      const segments = 72;
-      for (int i = 0; i <= segments; i++) {
-        final wobble = (r < 80 ? 6 : 12) * (i % 7 == 0 ? 1.0 : 0.5);
-        final rx = cx + (r + wobble * (i.isEven ? 1 : -1)) * 1.6;
-        final ry = cy + (r + wobble * (i.isOdd ? 1 : -1)) * 1.0;
-        final px = cx + rx * (i / segments * 2 - 1) * 0.5;
-        final py = cy + (ry - cy) * (i.isEven ? 1 : -1);
-        if (i == 0) {
-          path.moveTo(px, py);
-        } else {
-          path.lineTo(px, py);
-        }
+    const lines = 22;
+    final dy = size.height / lines;
+    for (int i = 0; i < lines; i++) {
+      final baseY = i * dy + dy * 0.5;
+      final phase = i * 0.6;
+      final path = Path()..moveTo(0, baseY);
+      const step = 6.0;
+      for (double x = 0; x <= size.width; x += step) {
+        final t = x / size.width;
+        final n = sin(t * pi * 3 + phase) * 14 +
+            sin(t * pi * 7 + phase * 1.7) * 6 +
+            sin(t * pi * 13 + phase * 0.9) * 3;
+        path.lineTo(x, baseY + n);
       }
       canvas.drawPath(path, paint);
+    }
+  }
+
+  // Haces de luz radiales que llenan toda la pantalla. Más haces y
+  // un gradient sutil del centro hacia los bordes.
+  void _drawBeams(Canvas canvas, Size size) {
+    final cx = size.width / 2;
+    final cy = size.height / 2;
+    final maxR = sqrt(size.width * size.width + size.height * size.height) / 2;
+    const beams = 24;
+    for (int i = 0; i < beams; i++) {
+      final angle = (i / beams) * 2 * pi;
+      final alpha = i.isEven ? 0x18 : 0x0C;
+      final paint = Paint()
+        ..shader = ui.Gradient.linear(
+          Offset(cx, cy),
+          Offset(cx + cos(angle) * maxR, cy + sin(angle) * maxR),
+          [
+            Color((alpha << 24) | 0xFFFFFF),
+            const Color(0x00FFFFFF),
+          ],
+        )
+        ..strokeWidth = i.isEven ? 2.5 : 1.5;
+      canvas.drawLine(
+        Offset(cx, cy),
+        Offset(cx + cos(angle) * maxR, cy + sin(angle) * maxR),
+        paint,
+      );
     }
   }
 
@@ -171,3 +268,4 @@ class _ProceduralPainter extends CustomPainter {
   bool shouldRepaint(covariant _ProceduralPainter old) =>
       old.pattern != pattern;
 }
+

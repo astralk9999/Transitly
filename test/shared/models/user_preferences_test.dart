@@ -4,7 +4,7 @@ import 'package:transitly/shared/models/user_preferences.dart';
 void main() {
   group('UserPreferences', () {
     test('defaults are correct', () {
-      final prefs = UserPreferences(userId: 'u1');
+      final prefs = const UserPreferences(userId: 'u1');
       expect(prefs.userId, 'u1');
       expect(prefs.themePaletteId, 'default');
       expect(prefs.backgroundId, 'smoke');
@@ -39,7 +39,7 @@ void main() {
     });
 
     test('extendedTimers can be set and persisted', () {
-      final prefs = UserPreferences(userId: 'u1');
+      final prefs = const UserPreferences(userId: 'u1');
       final updated = prefs.copyWith(extendedTimers: true);
       expect(updated.extendedTimers, true);
       expect(updated.userId, 'u1');

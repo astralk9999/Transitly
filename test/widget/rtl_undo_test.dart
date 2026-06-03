@@ -33,12 +33,12 @@ void main() {
 
     testWidgets('Icon directional awareness in RTL', (tester) async {
       await tester.pumpWidget(
-        Directionality(
+        const Directionality(
           textDirection: TextDirection.rtl,
           child: MaterialApp(
             home: Scaffold(
               body: Row(
-                children: const [
+                children: [
                   BackButton(),
                   Text('رجوع'),
                 ],
@@ -55,13 +55,13 @@ void main() {
 
     testWidgets('EdgeInsetsDirectional works in RTL', (tester) async {
       await tester.pumpWidget(
-        Directionality(
+        const Directionality(
           textDirection: TextDirection.rtl,
           child: MaterialApp(
             home: Scaffold(
               body: Padding(
-                padding: const EdgeInsetsDirectional.only(start: 32, end: 16),
-                child: const Text('مرحباً'),
+                padding: EdgeInsetsDirectional.only(start: 32, end: 16),
+                child: Text('مرحباً'),
               ),
             ),
           ),
@@ -81,13 +81,13 @@ void main() {
 
     testWidgets('Flexible with direction in RTL row', (tester) async {
       await tester.pumpWidget(
-        Directionality(
+        const Directionality(
           textDirection: TextDirection.rtl,
           child: MaterialApp(
             home: Scaffold(
               body: Row(
                 textDirection: TextDirection.rtl,
-                children: const [
+                children: [
                   Flexible(child: Text('محتوى طويل جداً')),
                   SizedBox(width: 8),
                   Icon(Icons.star),

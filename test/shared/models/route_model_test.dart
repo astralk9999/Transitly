@@ -27,13 +27,13 @@ void main() {
     });
 
     test('toJson roundtrips correctly', () {
-      final route = RouteModel(
+      final route = const RouteModel(
         id: 'L2',
         operatorId: 'comujesa',
         code: 'L2',
         name: 'Línea 2',
         serviceType: ServiceType.metropolitan,
-        routeColor: const Color(0xFF00FF00),
+        routeColor: Color(0xFF00FF00),
       );
       final json = route.toJson();
       expect(json['code'], 'L2');
@@ -46,13 +46,13 @@ void main() {
     });
 
     test('copyWith preserves unchanged fields', () {
-      final route = RouteModel(
+      final route = const RouteModel(
         id: 'L3',
         operatorId: 'comujesa',
         code: 'L3',
         name: 'Original',
         serviceType: ServiceType.interurban,
-        routeColor: const Color(0xFF0000FF),
+        routeColor: Color(0xFF0000FF),
       );
       final copy = route.copyWith(name: 'Renamed');
       expect(copy.name, 'Renamed');

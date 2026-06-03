@@ -3,8 +3,8 @@ import 'package:transitly/data/auth/auth_repository.dart';
 
 void main() {
   group('AuthRepository enums and exceptions', () {
-    test('AuthError has all 7 error types', () {
-      expect(AuthError.values.length, 7);
+    test('AuthError has all 8 error types', () {
+      expect(AuthError.values.length, 8);
       expect(AuthError.values, contains(AuthError.invalidCredentials));
       expect(AuthError.values, contains(AuthError.emailTaken));
       expect(AuthError.values, contains(AuthError.weakPassword));

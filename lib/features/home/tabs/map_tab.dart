@@ -44,13 +44,15 @@ class MapTab extends ConsumerStatefulWidget {
 }
 
 class _MapTabState extends ConsumerState<MapTab> {
-  final _mapController = MapController();
+  MapController _mapController = MapController();
   final _sheetController = DraggableScrollableController();
   final _scrollController = ScrollController();
   String? _selectedRouteId;
   ServiceType? _serviceTypeFilter;
   bool _didInitialCenter = false;
   bool _loadingCenter = false;
+  String? _lastMapKey;
+  DateTime? _bypassFmtcUntil;
 
   List<RouteModel> _filteredRoutes(List<RouteModel> all) {
     var filtered = all;
@@ -60,17 +62,21 @@ class _MapTabState extends ConsumerState<MapTab> {
           filtered.where((r) => r.serviceType == _serviceTypeFilter).toList();
     }
 
-    final f = ref.read(mapFilterControllerProvider);
+    final f = ref.watch(mapFilterControllerProvider);
 
-    if (!f.showOfficial) {
-      filtered = filtered
-          .where((r) => r.status != RouteStatus.official)
-          .toList();
-    }
-    if (!f.showCommunity) {
-      filtered = filtered
-          .where((r) => r.status == RouteStatus.official)
-          .toList();
+    if (!f.showOfficial && !f.showCommunity) {
+      // defensivo: si ambos off, no filtrar por status
+    } else {
+      if (!f.showOfficial) {
+        filtered = filtered
+            .where((r) => r.status != RouteStatus.official)
+            .toList();
+      }
+      if (!f.showCommunity) {
+        filtered = filtered
+            .where((r) => r.status == RouteStatus.official)
+            .toList();
+      }
     }
 
     if (f.onlyAccessible) {
@@ -84,6 +90,30 @@ class _MapTabState extends ConsumerState<MapTab> {
     if (f.onlyFavorites) {
       final favs = ref.read(userFavoritesProvider);
       filtered = filtered.where((r) => favs.contains(r.id)).toList();
+    }
+
+    if (f.disabledOperators.isNotEmpty) {
+      filtered = filtered
+          .where((r) => !f.disabledOperators.contains(r.operatorId))
+          .toList();
+    }
+    if (f.disabledKinds.isNotEmpty) {
+      filtered = filtered
+          .where((r) => !f.disabledKinds.contains(r.serviceType.name))
+          .toList();
+    }
+    if (f.disabledZones.isNotEmpty) {
+      final mockData = ref.read(mockDataServiceProvider);
+      filtered = filtered.where((r) {
+        final op = mockData.getOperatorById(r.operatorId);
+        final zone = op?.name ?? op?.region ?? r.operatorId;
+        return !f.disabledZones.contains(zone);
+      }).toList();
+    }
+    if (f.disabledLines.isNotEmpty) {
+      filtered = filtered
+          .where((r) => !f.disabledLines.contains(r.id))
+          .toList();
     }
 
     if (f.nextMinutes > 0) {
@@ -117,7 +147,14 @@ class _MapTabState extends ConsumerState<MapTab> {
 
   void _onMapTap(TapPosition tapPosition, LatLng point) {
     final cache = ref.read(mapDataCacheProvider);
-    final closest = _findClosestRoute(point, cache);
+    final mockData = ref.read(mockDataServiceProvider);
+    // Solo permitir seleccionar rutas que estén visibles segun filtros.
+    // Sin este filtro, el tap encuentra polylines desactivadas (no
+    // dibujadas) y mostraria sus paradas/direcciones aunque la linea
+    // este desactivada en el filtro.
+    final visibleIds =
+        _filteredRoutes(mockData.routes).map((r) => r.id).toSet();
+    final closest = _findClosestRoute(point, cache, visibleIds);
     if (closest != null && closest != _selectedRouteId) {
       setState(() => _selectedRouteId = closest);
       _sheetController.animateTo(0.35,
@@ -130,12 +167,14 @@ class _MapTabState extends ConsumerState<MapTab> {
     }
   }
 
-  String? _findClosestRoute(LatLng point, MapDataCache cache) {
+  String? _findClosestRoute(
+      LatLng point, MapDataCache cache, Set<String> visibleIds) {
     const thresholdDeg = 0.003;
     String? bestRouteId;
     double bestDist = double.infinity;
 
     for (final entry in cache.routePathsLod.entries) {
+      if (!visibleIds.contains(entry.key)) continue;
       final lodData = entry.value;
       final points = lodData[4] ?? lodData.values.last;
       for (int i = 0; i < points.length - 1; i++) {
@@ -148,6 +187,7 @@ class _MapTabState extends ConsumerState<MapTab> {
     }
 
     for (final entry in cache.routeStopsMap.entries) {
+      if (!visibleIds.contains(entry.key)) continue;
       if (cache.routePathsLod.containsKey(entry.key)) continue;
       final stops = entry.value;
       for (int i = 0; i < stops.length - 1; i++) {
@@ -204,11 +244,29 @@ class _MapTabState extends ConsumerState<MapTab> {
   Future<void> _tryInitialCenter() async {
     if (_didInitialCenter) return;
     try {
-      final loc = await ref
+      final fix = await ref
           .read(userLocationStreamProvider.future)
           .timeout(const Duration(seconds: 4));
-      if (loc != null && mounted) {
-        _mapController.move(loc, 14);
+      if (fix != null && mounted) {
+        final dist = const Distance().as(
+          LengthUnit.Meter,
+          fix.position,
+          MapConfig.defaultCenter,
+        );
+        if (dist <= 50000) {
+          _mapController.move(fix.position, 14);
+        } else {
+          _mapController.move(
+              MapConfig.defaultCenter, MapConfig.defaultZoom);
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(
+                  'Estás a ${(dist / 1000).round()} km de Jerez. '
+                  'El mapa muestra las líneas de COMUJESA en Jerez.'),
+              duration: const Duration(seconds: 4),
+            ));
+          }
+        }
         _didInitialCenter = true;
       }
     } on TimeoutException {
@@ -231,7 +289,7 @@ class _MapTabState extends ConsumerState<MapTab> {
             content: Text(l10n.mapLocationPermissionDenied),
             action: SnackBarAction(
               label: l10n.actionOpenSettings,
-              onPressed: () => Geolocator.openLocationSettings(),
+              onPressed: Geolocator.openLocationSettings,
             ),
             duration: const Duration(seconds: 5),
           ),
@@ -240,9 +298,9 @@ class _MapTabState extends ConsumerState<MapTab> {
   }
 
   Future<void> _centerOnUser() async {
-    final loc = ref.read(userLocationStreamProvider).valueOrNull;
-    if (loc != null) {
-      _mapController.move(loc, 16);
+    final locFix = ref.read(userLocationStreamProvider).valueOrNull;
+    if (locFix != null) {
+      _mapController.move(locFix.position, 16);
       return;
     }
 
@@ -255,6 +313,30 @@ class _MapTabState extends ConsumerState<MapTab> {
             granted != LocationPermission.always) {
           return;
         }
+        ref.invalidate(userLocationPermissionProvider);
+
+        // Prewarm: forzar geolocator a verificar permiso
+        final service = ref.read(userLocationServiceProvider);
+        final firstPos = await service.prewarm();
+        if (firstPos != null && mounted) {
+          _mapController.move(LocationService.toLatLng(firstPos), 16);
+          if (mounted) setState(() => _loadingCenter = false);
+          return;
+        }
+
+        ref.invalidate(userLocationStreamProvider);
+        try {
+          final fix = await ref
+              .read(userLocationStreamProvider.future)
+              .timeout(const Duration(seconds: 6));
+          if (fix != null && mounted) {
+            _mapController.move(fix.position, 16);
+            if (mounted) setState(() => _loadingCenter = false);
+            return;
+          }
+        } on TimeoutException {
+          // fall through to getCurrentPosition
+        }
       } else if (permission == LocationPermission.deniedForever) {
         if (mounted) {
           final l10n = AppLocalizations.of(context);
@@ -265,7 +347,7 @@ class _MapTabState extends ConsumerState<MapTab> {
                 content: Text(l10n.mapLocationPermissionDenied),
                 action: SnackBarAction(
                   label: l10n.actionOpenSettings,
-                  onPressed: () => Geolocator.openLocationSettings(),
+                  onPressed: Geolocator.openLocationSettings,
                 ),
                 duration: const Duration(seconds: 5),
               ),
@@ -301,7 +383,7 @@ class _MapTabState extends ConsumerState<MapTab> {
     final isDark = isDarkMode(ref, context);
     final c = TransitColorScheme.of(isDark);
 
-    final userLocation = ref.watch(userLocationStreamProvider).valueOrNull;
+    final userLocationFix = ref.watch(userLocationStreamProvider).valueOrNull;
 
     final mockData = ref.watch(mockDataServiceProvider);
     final realtimeTrips = ref.watch(realtimeTripsProvider);
@@ -311,7 +393,33 @@ class _MapTabState extends ConsumerState<MapTab> {
     final stops = mockData.stops;
     final cache = ref.watch(mapDataCacheProvider);
     final offline = ref.watch(isOfflineProvider);
-    final fmtcTp = ref.watch(fmtcTileProviderProvider);
+    final mapStyle = ref.watch(themeNotifierProvider.select((n) => n.mapStyle));
+    final fmtcTp = ref.watch(fmtcTileProviderProvider(mapStyle));
+    final showAllStops = ref.watch(
+        mapFilterControllerProvider.select((s) => s.showAllStops));
+
+    final currentKey = '${isDark ? "d" : "l"}-$mapStyle';
+    final bool bypassFmtc;
+    if (_lastMapKey != null && _lastMapKey != currentKey) {
+      _bypassFmtcUntil = DateTime.now().add(const Duration(seconds: 3));
+      bypassFmtc = true;
+      final savedCenter = _mapController.camera.center;
+      final savedZoom = _mapController.camera.zoom;
+      _mapController.dispose();
+      _mapController = MapController();
+      _didInitialCenter = false;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _mapController.move(savedCenter, savedZoom);
+      });
+    } else {
+      bypassFmtc = _bypassFmtcUntil != null &&
+          DateTime.now().isBefore(_bypassFmtcUntil!);
+      if (!bypassFmtc && _bypassFmtcUntil != null) {
+        _bypassFmtcUntil = null;
+      }
+    }
+    _lastMapKey = currentKey;
+
     final bottomPadding = MediaQuery.of(context).padding.bottom;
     final l10n = AppLocalizations.of(context);
 
@@ -320,19 +428,20 @@ class _MapTabState extends ConsumerState<MapTab> {
       body: Stack(
         children: [
           TransitMap(
-            key: ValueKey('${isDark ? "d" : "l"}-${ref.watch(themeNotifierProvider).mapStyle}'),
+            key: ValueKey('${isDark ? "d" : "l"}-$mapStyle'),
             isDark: isDark,
-            mapStyle: ref.watch(themeNotifierProvider).mapStyle,
+            mapStyle: mapStyle,
             controller: _mapController,
-            fmtcTileProvider: fmtcTp,
+            fmtcTileProvider: bypassFmtc ? null : fmtcTp,
             additionalLayers: [
-              if (userLocation != null)
+              if (userLocationFix != null)
                 UserLocationLayer(
-                  position: userLocation,
+                  fix: userLocationFix,
                   isDark: isDark,
                 ),
             ],
             routes: filteredRoutes,
+            showAllStops: showAllStops,
             routePathsLod: cache.routePathsLod,
             routeStopsMap: cache.routeStopsMap,
             routeBounds: cache.routeBounds,
@@ -446,6 +555,25 @@ class _MapTabState extends ConsumerState<MapTab> {
                               remainingStops: routeStops.length,
                               onTap: () =>
                                   context.push('/route/${route.id}'),
+                              onGoToLine: () {
+                                final bounds = cache.routeBounds[route.id];
+                                if (bounds != null && bounds.length == 4) {
+                                  _mapController.fitCamera(
+                                    CameraFit.bounds(
+                                      bounds: LatLngBounds(
+                                        LatLng(bounds[2], bounds[3]),
+                                        LatLng(bounds[0], bounds[1]),
+                                      ),
+                                      padding: const EdgeInsets.all(40),
+                                    ),
+                                  );
+                                  _didInitialCenter = true;
+                                  _sheetController.animateTo(0.12,
+                                      duration: const Duration(
+                                          milliseconds: 250),
+                                      curve: Curves.easeInOut);
+                                }
+                              },
                             ),
                           );
                         },
@@ -661,7 +789,7 @@ class _AnchoredMapControlsState extends State<_AnchoredMapControls> {
   Widget build(BuildContext context) {
     final screenH = MediaQuery.of(context).size.height;
     final sheetTop = screenH * (1 - _sheetFraction);
-    final fabBottom = screenH - sheetTop + 12;
+    final fabBottom = screenH - sheetTop - 4;  // 4px overlap para sensación de anclado
     final c = TransitColorScheme.of(widget.isDark);
 
     return SafeArea(

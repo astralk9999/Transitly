@@ -59,15 +59,15 @@ class _RoutePlanResultsScreenState
     }
 
     if (widget.useMyLocation) {
-      final loc = ref.watch(userLocationStreamProvider).valueOrNull;
+      final loc = ref.watch(userLocationLatLngProvider);
       if (loc == null) {
         return Scaffold(
           backgroundColor: c.bgRoot,
-          body: SafeArea(
+          body: const SafeArea(
             child: Column(
               children: [
-                const TransitAppBar(title: 'Ruta'),
-                const EmptyState(
+                TransitAppBar(title: 'Ruta'),
+                EmptyState(
                   'Activa la ubicación',
                   'Necesitamos tu ubicación para buscar rutas desde tu posición actual.',
                   icon: Icons.location_searching,
@@ -106,11 +106,11 @@ class _RoutePlanResultsScreenState
     if (widget.fromStopId == null) {
       return Scaffold(
         backgroundColor: c.bgRoot,
-        body: SafeArea(
+        body: const SafeArea(
           child: Column(
             children: [
-              const TransitAppBar(title: 'Ruta'),
-              const ErrorCard('Falta la parada de origen'),
+              TransitAppBar(title: 'Ruta'),
+              ErrorCard('Falta la parada de origen'),
             ],
           ),
         ),

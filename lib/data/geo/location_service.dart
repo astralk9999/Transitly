@@ -87,6 +87,25 @@ class LocationService {
     return Geolocator.getPositionStream(locationSettings: settings);
   }
 
+  /// Despierta geolocator forzando una verificación de permiso y
+  /// una primera posición. Llamar tras conceder permiso para que
+  /// el siguiente subscribe() funcione inmediatamente.
+  Future<Position?> prewarm() async {
+    try {
+      final hasPermission = await Permission.location.isGranted;
+      if (!hasPermission) return null;
+      return await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          timeLimit: const Duration(seconds: 8),
+        ),
+      ).timeout(const Duration(seconds: 10));
+    } catch (e) {
+      AppLogger.warn(_logTag, 'prewarm failed', e);
+      return null;
+    }
+  }
+
   /// Convierte [Position] a [LatLng].
   static LatLng toLatLng(Position pos) =>
       LatLng(pos.latitude, pos.longitude);

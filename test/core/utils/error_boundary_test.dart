@@ -7,7 +7,7 @@ import 'package:transitly/core/utils/error_boundary.dart';
 void main() {
   group('ErrorBoundary', () {
     test('setup does not throw', () {
-      expect(() => ErrorBoundary.setup(), returnsNormally);
+      expect(ErrorBoundary.setup, returnsNormally);
     });
 
     test('sets FlutterError.onError', () {

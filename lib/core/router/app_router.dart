@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import 'error_builder.dart';
 import 'redirect_guards.dart';
+import 'redirect_guards.dart';
 import '../../features/auth/signin_screen.dart';
 import '../../features/auth/signup_screen.dart';
 import '../../features/auth/magic_link_screen.dart';
@@ -49,11 +50,16 @@ import '../../features/admin/admin_screen.dart';
 import '../../features/admin/admin_users_screen.dart';
 import '../../features/nearby_buses/nearby_buses_screen.dart';
 import '../../features/admin/admin_operators_screen.dart';
+import '../../features/admin/route_moderation_screen.dart';
 import '../../features/appearance/appearance_screen.dart';
 import '../../features/appearance/custom_palette_screen.dart';
 import '../../features/route_detail/route_detail_screen.dart';
+import '../../features/route_detail/user_route_detail_screen.dart';
+import '../../features/community/community_routes_screen.dart';
+import '../../features/my_routes/my_routes_screen.dart';
 import '../../features/splash/splash_screen.dart';
 import '../../features/stop_detail/stop_detail_screen.dart';
+import '../../features/create_route/create_route_wizard.dart';
 import '../../features/suggestions/suggest_route_screen.dart';
 import '../../features/suggestions/suggestion_contribute_screen.dart';
 import '../../features/suggestions/suggestion_detail_screen.dart';
@@ -64,7 +70,20 @@ import '../../features/widgets_native/widgets_settings_screen.dart';
 
 /// Initial location of the app router. Overridable in tests to bypass the
 /// splash screen (which holds a real `Future.delayed(3s)` timer).
-final routerInitialLocationProvider = Provider<String>((ref) => '/splash');
+final routerInitialLocationProvider = Provider<String>((ref) {
+  final path = _widgetLaunchPath;
+  if (path != null) {
+    _widgetLaunchPath = null;
+    return path;
+  }
+  return '/splash';
+});
+
+String? _widgetLaunchPath;
+
+void setWidgetLaunchPath(String? path) {
+  _widgetLaunchPath = path;
+}
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -217,6 +236,22 @@ final routerProvider = Provider<GoRouter>((ref) {
             _slide(state, const AiScheduleImport()),
       ),
 
+      // ── Create Route Wizard ──
+      GoRoute(
+        path: '/create-route',
+        pageBuilder: (context, state) =>
+            _slide(state, const CreateRouteWizard()),
+      ),
+      GoRoute(
+        path: '/create-route/:routeId',
+        pageBuilder: (context, state) => _slide(
+          state,
+          CreateRouteWizard(
+            routeId: state.pathParameters['routeId'],
+          ),
+        ),
+      ),
+
       // ── Suggestions (static paths before parameterized) ──
       GoRoute(
         path: '/suggestions/new',
@@ -235,6 +270,28 @@ final routerProvider = Provider<GoRouter>((ref) {
           SuggestionDetailScreen(
               suggestionId: state.pathParameters['suggestionId']!),
         ),
+      ),
+
+      // ── Community (user-created routes) ──
+      GoRoute(
+        path: '/community',
+        pageBuilder: (context, state) =>
+            _slide(state, const CommunityRoutesScreen()),
+      ),
+      GoRoute(
+        path: '/community/route/:routeId',
+        pageBuilder: (context, state) => _slide(
+          state,
+          UserRouteDetailScreen(
+              routeId: state.pathParameters['routeId']!),
+        ),
+      ),
+
+      // ── My Routes ──
+      GoRoute(
+        path: '/my-routes',
+        pageBuilder: (context, state) =>
+            _slide(state, const MyRoutesScreen()),
       ),
 
       // ── Feedback ──
@@ -268,6 +325,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/admin/operators',
         pageBuilder: (context, state) =>
             _slide(state, const AdminOperatorsScreen()),
+      ),
+      GoRoute(
+        path: '/admin/routes',
+        pageBuilder: (context, state) =>
+            _slide(state, const RouteModerationScreen()),
       ),
 
       // ── Operator Admin ──

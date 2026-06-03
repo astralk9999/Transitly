@@ -18,7 +18,7 @@ void main() {
     });
 
     test('toJson roundtrips correctly', () {
-      final op = OperatorModel(
+      final op = const OperatorModel(
         id: '1',
         name: 'Test',
         shortName: 'TEST',
@@ -34,7 +34,7 @@ void main() {
     });
 
     test('copyWith preserves unchanged fields', () {
-      final op = OperatorModel(
+      final op = const OperatorModel(
         id: '1',
         name: 'Test',
         shortName: 'TEST',

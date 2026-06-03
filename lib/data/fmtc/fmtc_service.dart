@@ -18,10 +18,22 @@ class FmtcService {
   FmtcService._();
 
   static const _logTag = 'Fmtc';
-  static const storeName = 'transitly';
+  static const _storePrefix = 'transitly';
+
+  static const _styleKeys = [
+    'streets',
+    'basic',
+    'bright',
+    'dark',
+    'light',
+  ];
 
   static const databaseSizeDefault = 50 * 1024 * 1024;
   static const maxTileCountDefault = 50000;
+
+  static String storeName(String style) => '$_storePrefix-$style';
+
+  static FMTCStore storeFor(String style) => FMTCStore(storeName(style));
 
   static FMTCTileProvider? _cachedTileProvider;
 
@@ -56,28 +68,27 @@ class FmtcService {
       rethrow;
     }
 
-    const store = FMTCStore(storeName);
-    final isReady = await store.manage.ready;
-    if (!isReady) {
-      await store.manage.create(maxLength: maxTileCount);
-      AppLogger.info(_logTag,
-          'store created (name=$storeName, maxLength=$maxTileCount)');
-    } else {
-      final currentMax = await store.manage.maxLength;
-      if (currentMax == null || currentMax != maxTileCount) {
-        await store.manage.setMaxLength(maxTileCount);
+    for (final style in _styleKeys) {
+      final store = storeFor(style);
+      final isReady = await store.manage.ready;
+      if (!isReady) {
+        await store.manage.create(maxLength: maxTileCount);
         AppLogger.info(_logTag,
-            'store maxLength updated (name=$storeName, maxLength=$maxTileCount)');
+            'store created (name=${storeName(style)}, maxLength=$maxTileCount)');
       }
     }
 
+    final stores = <String, BrowseStoreStrategy>{
+      for (final s in _styleKeys) storeName(s): BrowseStoreStrategy.readUpdateCreate,
+    };
+
     final tileProvider = FMTCTileProvider(
-      stores: const {storeName: BrowseStoreStrategy.readUpdateCreate},
+      stores: stores,
       loadingStrategy: BrowseLoadingStrategy.cacheFirst,
     );
 
     _cachedTileProvider = tileProvider;
-    AppLogger.info(_logTag, 'tile provider ready');
+    AppLogger.info(_logTag, 'tile provider ready (${_styleKeys.length} stores)');
   }
 
   static FMTCTileProvider? get tileProvider => _cachedTileProvider;
@@ -85,9 +96,13 @@ class FmtcService {
   static Future<int> get tileCount async {
     if (_cachedTileProvider == null) return 0;
     try {
-      const store = FMTCStore(storeName);
-      final stats = await store.stats.length;
-      return stats;
+      int total = 0;
+      for (final s in _styleKeys) {
+        final store = storeFor(s);
+        final stats = await store.stats.length;
+        total += stats;
+      }
+      return total;
     } catch (e) {
       AppLogger.warn(_logTag, 'failed to get tile count', e);
       return 0;
@@ -96,11 +111,13 @@ class FmtcService {
 
   static Future<void> deleteStore() async {
     try {
-      const store = FMTCStore(storeName);
-      final isReady = await store.manage.ready;
-      if (isReady) {
-        await store.manage.delete();
-        AppLogger.info(_logTag, 'store deleted (name=$storeName)');
+      for (final s in _styleKeys) {
+        final store = storeFor(s);
+        final isReady = await store.manage.ready;
+        if (isReady) {
+          await store.manage.delete();
+          AppLogger.info(_logTag, 'store deleted (name=${storeName(s)})');
+        }
       }
       _cachedTileProvider = null;
     } catch (e) {

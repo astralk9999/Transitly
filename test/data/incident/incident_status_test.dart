@@ -37,7 +37,7 @@ void main() {
     });
 
     test('IncidentRepositoryException creates correctly', () {
-      final ex = IncidentRepositoryException(
+      final ex = const IncidentRepositoryException(
         error: IncidentRepositoryError.network,
         message: 'Connection failed',
       );

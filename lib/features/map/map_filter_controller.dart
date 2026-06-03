@@ -6,9 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/utils/app_logger.dart';
 import 'map_filter_state.dart';
 
-/// Persiste y expone el estado de los filtros del mapa en
-/// shared_preferences (baja frecuencia de lectura/escritura,
-/// no justifica una caja Hive dedicada).
 final mapFilterControllerProvider =
     StateNotifierProvider<MapFilterController, MapFilterState>((ref) {
   return MapFilterController();
@@ -51,24 +48,77 @@ class MapFilterController extends StateNotifier<MapFilterState> {
   }
 
   void toggleOperator(String opId) {
-    final ops = Set<String>.from(state.activeOperators);
-    if (ops.contains(opId)) {
-      ops.remove(opId);
+    final s = Set<String>.from(state.disabledOperators);
+    if (s.contains(opId)) {
+      s.remove(opId);
     } else {
-      ops.add(opId);
+      s.add(opId);
     }
-    state = state.copyWith(activeOperators: ops);
+    state = state.copyWith(disabledOperators: s);
     _saveToPrefs();
   }
 
   void toggleKind(String kind) {
-    final kinds = Set<String>.from(state.activeKinds);
-    if (kinds.contains(kind)) {
-      kinds.remove(kind);
+    final s = Set<String>.from(state.disabledKinds);
+    if (s.contains(kind)) {
+      s.remove(kind);
     } else {
-      kinds.add(kind);
+      s.add(kind);
     }
-    state = state.copyWith(activeKinds: kinds);
+    state = state.copyWith(disabledKinds: s);
+    _saveToPrefs();
+  }
+
+  void toggleLine(String routeId) {
+    final s = Set<String>.from(state.disabledLines);
+    if (s.contains(routeId)) {
+      s.remove(routeId);
+    } else {
+      s.add(routeId);
+    }
+    state = state.copyWith(disabledLines: s);
+    _saveToPrefs();
+  }
+
+  void selectAllLines(List<String> allIds) {
+    final s = Set<String>.from(state.disabledLines);
+    s.removeAll(allIds);
+    state = state.copyWith(disabledLines: s);
+    _saveToPrefs();
+  }
+
+  void clearAllLines(List<String> allIds) {
+    final s = Set<String>.from(state.disabledLines);
+    s.addAll(allIds);
+    state = state.copyWith(disabledLines: s);
+    _saveToPrefs();
+  }
+
+  void selectAllOperators(List<String> allIds) {
+    final s = Set<String>.from(state.disabledOperators);
+    s.removeAll(allIds);
+    state = state.copyWith(disabledOperators: s);
+    _saveToPrefs();
+  }
+
+  void clearAllOperators(List<String> allIds) {
+    final s = Set<String>.from(state.disabledOperators);
+    s.addAll(allIds);
+    state = state.copyWith(disabledOperators: s);
+    _saveToPrefs();
+  }
+
+  void selectAllKinds(List<String> allIds) {
+    final s = Set<String>.from(state.disabledKinds);
+    s.removeAll(allIds);
+    state = state.copyWith(disabledKinds: s);
+    _saveToPrefs();
+  }
+
+  void clearAllKinds(List<String> allIds) {
+    final s = Set<String>.from(state.disabledKinds);
+    s.addAll(allIds);
+    state = state.copyWith(disabledKinds: s);
     _saveToPrefs();
   }
 
@@ -87,8 +137,38 @@ class MapFilterController extends StateNotifier<MapFilterState> {
     _saveToPrefs();
   }
 
+  void setShowAllStops(bool v) {
+    state = state.copyWith(showAllStops: v);
+    _saveToPrefs();
+  }
+
   void setRadiusMeters(double v) {
     state = state.copyWith(radiusMeters: v);
+    _saveToPrefs();
+  }
+
+  void toggleZone(String zone) {
+    final s = Set<String>.from(state.disabledZones);
+    if (s.contains(zone)) {
+      s.remove(zone);
+    } else {
+      s.add(zone);
+    }
+    state = state.copyWith(disabledZones: s);
+    _saveToPrefs();
+  }
+
+  void selectAllZones(List<String> allIds) {
+    final s = Set<String>.from(state.disabledZones);
+    s.removeAll(allIds);
+    state = state.copyWith(disabledZones: s);
+    _saveToPrefs();
+  }
+
+  void clearAllZones(List<String> allIds) {
+    final s = Set<String>.from(state.disabledZones);
+    s.addAll(allIds);
+    state = state.copyWith(disabledZones: s);
     _saveToPrefs();
   }
 
@@ -97,8 +177,6 @@ class MapFilterController extends StateNotifier<MapFilterState> {
     _saveToPrefs();
   }
 
-  /// Aplica un estado completo de filtros (usado por los presets
-  /// guardados en [FilterPresetsScreen]).
   void applyState(MapFilterState next) {
     state = next;
     _saveToPrefs();

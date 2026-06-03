@@ -19,7 +19,7 @@ void main() {
       await unmount(tester);
     });
     testWidgets('renders route card skeleton', (tester) async {
-      await pumpApp(tester, child: Builder(
+      await pumpApp(tester, child: const Builder(
         builder: ShimmerSkeleton.routeCard,
       ));
       await tester.pump();

@@ -20,7 +20,7 @@ void main() {
     });
 
     test('toJson roundtrips correctly', () {
-      final original = OfflineRegionBounds(
+      final original = const OfflineRegionBounds(
         northLat: 40.4168,
         southLat: 40.3126,
         eastLng: -3.5853,
@@ -75,7 +75,7 @@ void main() {
       final original = OfflineRegion(
         id: 'region-2',
         label: 'Madrid Centro',
-        bounds: OfflineRegionBounds(
+        bounds: const OfflineRegionBounds(
           northLat: 40.5,
           southLat: 40.3,
           eastLng: -3.6,

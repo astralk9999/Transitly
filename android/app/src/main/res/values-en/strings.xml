@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_next_bus_label">Transitly · Next bus</string>
+    <string name="widget_my_line_label">Transitly · My line</string>
+    <string name="widget_nfc_balance_label">Transitly · NFC balance</string>
+    <string name="widget_next_bus_description">Shows the next bus at your usual stop with minutes remaining.</string>
+    <string name="widget_my_line_description">Upcoming departures of your favourite line sorted by time.</string>
+    <string name="widget_nfc_balance_description">Latest NFC-read travel card balance.</string>
+</resources>

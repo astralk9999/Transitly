@@ -27,6 +27,18 @@ class AppLocalizationsEs extends AppLocalizations {
   String get tabProfile => 'Perfil';
 
   @override
+  String get greetingDawn => 'Buena madrugada';
+
+  @override
+  String get greetingMorning => 'Buenos días';
+
+  @override
+  String get greetingAfternoon => 'Buenas tardes';
+
+  @override
+  String get greetingNight => 'Buenas noches';
+
+  @override
   String get nfcErrorUnsupported => 'NFC no disponible en este dispositivo';
 
   @override
@@ -517,6 +529,36 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get appearanceBgTopo => 'Topografía';
+
+  @override
+  String get appearanceBgBeams => 'Haces';
+
+  @override
+  String get appearanceBgLightRays => 'Rayos de luz';
+
+  @override
+  String get appearanceBgBalatro => 'Balatro';
+
+  @override
+  String get appearanceBgFloatingLines => 'Líneas flotantes';
+
+  @override
+  String get appearanceBgColorBends => 'Cintas de color';
+
+  @override
+  String get appearanceBgDotField => 'Campo de puntos';
+
+  @override
+  String get appearanceBgDotGrid => 'Rejilla de puntos';
+
+  @override
+  String get appearanceBgDither => 'Granulado';
+
+  @override
+  String get appearanceBgFaultyTerminal => 'Terminal averiado';
+
+  @override
+  String get appearanceBgDarkVeil => 'Velo oscuro';
 
   @override
   String get appearanceTextPreview =>
@@ -1106,6 +1148,11 @@ class AppLocalizationsEs extends AppLocalizations {
   String get authErrorGoogle => 'Error de conexión con Google';
 
   @override
+  String authErrorRateLimited(int seconds) {
+    return 'Demasiados intentos. Inténtalo en $seconds segundos.';
+  }
+
+  @override
   String get authSignInSubtitle => 'Inicia sesión para continuar';
 
   @override
@@ -1192,7 +1239,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get authMagicLinkError => 'Error al enviar el enlace';
 
   @override
-  String get authVerifyTitle => 'Verifica tu email';
+  String get authVerifyTitle => 'Revisa tu correo';
+
+  @override
+  String authVerifySignupSent(String email) {
+    return 'Te hemos enviado un email a $email con un enlace para verificar tu cuenta.';
+  }
 
   @override
   String get authVerifyMessage =>
@@ -2333,4 +2385,341 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get appearanceDeletePaletteConfirm => '¿Eliminar esta paleta?';
+
+  @override
+  String get createRouteTitle => 'Crear ruta';
+
+  @override
+  String get createRouteEditTitle => 'Editar ruta';
+
+  @override
+  String get createRouteStepBasic => 'Info básica';
+
+  @override
+  String get createRouteStepStops => 'Paradas';
+
+  @override
+  String get createRouteStepSchedules => 'Horarios';
+
+  @override
+  String get createRouteStepVisibility => 'Visibilidad';
+
+  @override
+  String get createRouteStepSummary => 'Resumen';
+
+  @override
+  String get createRouteNameLabel => 'Nombre de la ruta';
+
+  @override
+  String get createRouteNameHint => 'Ej: Ruta de la playa';
+
+  @override
+  String get createRouteDescriptionLabel => 'Descripción (opcional)';
+
+  @override
+  String get createRouteColorLabel => 'Color';
+
+  @override
+  String get createRouteServiceTypeLabel => 'Tipo de servicio';
+
+  @override
+  String get createRouteServiceUrban => 'Urbano';
+
+  @override
+  String get createRouteServiceInterurban => 'Interurbano';
+
+  @override
+  String get createRouteServiceLongDistance => 'Larga distancia';
+
+  @override
+  String get createRouteServiceSchool => 'Escolar';
+
+  @override
+  String get createRouteServiceOnDemand => 'A demanda';
+
+  @override
+  String get createRouteServiceCustom => 'Custom';
+
+  @override
+  String get createRouteStopAdd => 'Añadir parada';
+
+  @override
+  String get createRouteStopSearch => 'Buscar parada oficial';
+
+  @override
+  String get createRouteStopNew => 'Crear parada nueva';
+
+  @override
+  String get createRouteStopName => 'Nombre';
+
+  @override
+  String get createRouteStopLat => 'Latitud';
+
+  @override
+  String get createRouteStopLng => 'Longitud';
+
+  @override
+  String get createRouteStopType => 'Tipo de parada';
+
+  @override
+  String get createRouteStopSuggest => 'Sugerir como parada oficial';
+
+  @override
+  String get createRouteStopDelete => 'Eliminar parada';
+
+  @override
+  String get createRouteScheduleAdd => 'Añadir salida';
+
+  @override
+  String get createRouteScheduleTime => 'Hora de salida';
+
+  @override
+  String get createRouteScheduleDay => 'Día';
+
+  @override
+  String get createRouteScheduleWeekday => 'L-V';
+
+  @override
+  String get createRouteScheduleSaturday => 'Sábado';
+
+  @override
+  String get createRouteScheduleSunday => 'Domingo';
+
+  @override
+  String get createRouteScheduleHoliday => 'Festivo';
+
+  @override
+  String get createRouteScheduleSummer => 'Verano';
+
+  @override
+  String get createRouteScheduleWinter => 'Invierno';
+
+  @override
+  String get createRouteScheduleEveryDay => 'Todos los días';
+
+  @override
+  String get createRouteScheduleFrequency => 'Generar frecuencia';
+
+  @override
+  String get createRouteScheduleEvery => 'Cada X minutos';
+
+  @override
+  String get createRouteScheduleFrom => 'Desde';
+
+  @override
+  String get createRouteScheduleTo => 'Hasta';
+
+  @override
+  String get createRouteVisibilityPublic => 'Pública';
+
+  @override
+  String get createRouteVisibilityPublicDesc => 'Visible en el buscador global';
+
+  @override
+  String get createRouteVisibilityUnlisted => 'Solo con código/enlace';
+
+  @override
+  String get createRouteVisibilityUnlistedDesc => 'No aparece en el buscador';
+
+  @override
+  String get createRouteVisibilityPrivate => 'Privada';
+
+  @override
+  String get createRouteVisibilityPrivateDesc => 'Solo tú la ves';
+
+  @override
+  String createRouteSummaryStops(Object count) {
+    return '$count paradas';
+  }
+
+  @override
+  String createRouteSummarySchedules(Object count) {
+    return '$count horarios';
+  }
+
+  @override
+  String createRouteSummaryType(Object type) {
+    return 'Tipo: $type';
+  }
+
+  @override
+  String get createRouteProposeCommunity =>
+      'Proponer como ruta comunitaria oficial';
+
+  @override
+  String get createRoutePublish => 'Publicar ruta';
+
+  @override
+  String get createRouteSaveDraft => 'Guardar borrador';
+
+  @override
+  String get myRoutesTitle => 'Mis rutas';
+
+  @override
+  String get myRoutesEmpty => 'Aún no has creado ninguna ruta';
+
+  @override
+  String get myRoutesCreate => 'Crear primera ruta';
+
+  @override
+  String get myRoutesDeleteConfirm => '¿Eliminar esta ruta?';
+
+  @override
+  String get myRoutesDeleteConfirmDesc => 'Esta acción no se puede deshacer';
+
+  @override
+  String get communityTitle => 'Comunidad';
+
+  @override
+  String get communitySearchHint => 'Buscar rutas...';
+
+  @override
+  String get communityEmpty => 'No se encontraron rutas';
+
+  @override
+  String get communityFilterAll => 'Todas';
+
+  @override
+  String get communityFilterUrban => 'Urbano';
+
+  @override
+  String get communityFilterInterurban => 'Interurbano';
+
+  @override
+  String get communityFilterLongDistance => 'Larga distancia';
+
+  @override
+  String get communityRouteStops => 'Paradas';
+
+  @override
+  String get communityRouteSchedules => 'Horarios';
+
+  @override
+  String get communityRouteVotes => 'Votos';
+
+  @override
+  String get communityRouteViews => 'Visitas';
+
+  @override
+  String get communityRouteVote => 'Votar';
+
+  @override
+  String get communityRouteUnvote => 'Quitar voto';
+
+  @override
+  String get communityRouteReport => 'Reportar';
+
+  @override
+  String get communityRouteShare => 'Compartir';
+
+  @override
+  String get shareRouteTitle => 'Compartir ruta';
+
+  @override
+  String get shareRouteCode => 'Código';
+
+  @override
+  String get shareRouteCodeCopy => 'Copiar código';
+
+  @override
+  String get shareRouteLink => 'Enlace público';
+
+  @override
+  String get shareRouteLinkCopy => 'Copiar enlace';
+
+  @override
+  String get shareRouteWhatsApp => 'WhatsApp';
+
+  @override
+  String get shareRouteEmail => 'Email';
+
+  @override
+  String get shareRouteQr => 'Código QR';
+
+  @override
+  String get reportRouteTitle => 'Reportar ruta';
+
+  @override
+  String get reportRouteReason => 'Motivo';
+
+  @override
+  String get reportRouteReasonSpam => 'Spam';
+
+  @override
+  String get reportRouteReasonInappropriate => 'Contenido inapropiado';
+
+  @override
+  String get reportRouteReasonWrongData => 'Datos incorrectos';
+
+  @override
+  String get reportRouteReasonDuplicated => 'Duplicada';
+
+  @override
+  String get reportRouteReasonOther => 'Otro';
+
+  @override
+  String get reportRouteDescription => 'Descripción (opcional)';
+
+  @override
+  String get reportRouteSubmit => 'Enviar reporte';
+
+  @override
+  String get reportRouteSuccess => 'Reporte enviado correctamente';
+
+  @override
+  String get adminModerationTitle => 'Moderación de rutas';
+
+  @override
+  String get adminModerationPending => 'Pendientes';
+
+  @override
+  String get adminModerationStops => 'Paradas';
+
+  @override
+  String get adminModerationApprove => 'Aprobar';
+
+  @override
+  String get adminModerationReject => 'Rechazar';
+
+  @override
+  String get adminModerationRejectReason => 'Motivo del rechazo';
+
+  @override
+  String get adminModerationRouteApproved => 'Ruta aprobada como comunitaria';
+
+  @override
+  String get adminModerationRouteRejected => 'Ruta rechazada';
+
+  @override
+  String get adminModerationStopApproved => 'Parada promovida a oficial';
+
+  @override
+  String get adminModerationStopRejected => 'Parada rechazada';
+
+  @override
+  String get routeStatusDraft => 'Borrador';
+
+  @override
+  String get routeStatusPublished => 'Publicada';
+
+  @override
+  String get routeStatusReviewPending => 'En revisión';
+
+  @override
+  String get routeStatusCommunityApproved => 'Comunitaria';
+
+  @override
+  String get routeStatusRejected => 'Rechazada';
+
+  @override
+  String get routeStatusReported => 'Reportada';
+
+  @override
+  String get visibilityPublic => 'Pública';
+
+  @override
+  String get visibilityUnlisted => 'No listada';
+
+  @override
+  String get visibilityPrivate => 'Privada';
 }

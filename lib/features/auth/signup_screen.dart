@@ -111,8 +111,31 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             _passwordController.text,
             _nameController.text,
           );
+      if (mounted) {
+        await showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text(l10n.authVerifyTitle),
+            content: Text(l10n.authVerifySignupSent(_emailController.text)),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                  if (mounted) context.go('/sign-in');
+                },
+                child: Text(l10n.actionClose),
+              ),
+            ],
+          ),
+        );
+      }
     } on AuthRepoException catch (e) {
-      if (mounted) setState(() => _error = e.message ?? l10n.authSignUpError);
+      if (mounted) {
+        final msg = e.error == AuthError.rateLimited && e.secondsLeft != null
+            ? l10n.authErrorRateLimited(e.secondsLeft!)
+            : e.message ?? l10n.authSignUpError;
+        setState(() => _error = msg);
+      }
     } catch (e) {
       AppLogger.warn('SignUp', 'sign up error', e);
       if (mounted) setState(() => _error = l10n.authErrorConnection);

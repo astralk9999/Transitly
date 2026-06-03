@@ -15,6 +15,7 @@ import '../../core/theme/transit_theme.dart';
 import '../../core/utils/app_logger.dart';
 import '../../data/user_preferences/domain/user_preferences_repository.dart';
 import '../../data/user_preferences/user_preferences_repository_provider.dart';
+import '../models/named_custom_palette.dart';
 import '../models/user_preferences.dart';
 
 class ThemeNotifier extends ChangeNotifier {
@@ -49,6 +50,9 @@ class ThemeNotifier extends ChangeNotifier {
   Map<String, Color> _customColors = <String, Color>{};
   static const _customPaletteId = 'custom';
 
+  List<NamedCustomPalette> _customPalettes = [];
+  static const _customPalettesBoxName = 'custom_palettes';
+
   Box<Map<dynamic, dynamic>>? _guestBox;
   bool _initialized = false;
 
@@ -78,6 +82,9 @@ class ThemeNotifier extends ChangeNotifier {
 
   bool get isCustomPalette => _paletteId == _customPaletteId;
 
+  List<NamedCustomPalette> get customPalettes =>
+      List.unmodifiable(_customPalettes);
+
   AppPalette get palette {
     if (_paletteId == _customPaletteId && _customColors.isNotEmpty) {
       final scheme = TransitCustomColors(
@@ -95,6 +102,26 @@ class ThemeNotifier extends ChangeNotifier {
         darkScheme: scheme,
       );
     }
+    if (_paletteId.startsWith('custom-')) {
+      final idx = _customPalettes.indexWhere((p) => p.id == _paletteId);
+      if (idx >= 0) {
+        final cp = _customPalettes[idx];
+        final scheme = TransitCustomColors(
+          primary: cp.colors['primary'] ?? const Color(0xFF977DDF),
+          secondary: cp.colors['secondary'] ?? const Color(0xFF6C63FF),
+          bgRoot: cp.colors['bgRoot'] ?? const Color(0xFF08081A),
+          bgSurface: cp.colors['bgSurface'] ?? const Color(0xFF10102A),
+          textHi: cp.colors['textHi'] ?? const Color(0xFFF0F0FA),
+        );
+        return AppPalette(
+          id: cp.id,
+          name: cp.name,
+          isDark: true,
+          scheme: scheme,
+          darkScheme: scheme,
+        );
+      }
+    }
     return paletteFromId(_paletteId);
   }
 
@@ -104,6 +131,8 @@ class ThemeNotifier extends ChangeNotifier {
     final custom = _customColors.entries
         .map((e) => '${e.key}:${_colorToHex(e.value)}')
         .toList()
+      ..sort();
+    final cpKeys = _customPalettes.map((p) => 'cp:${p.id}:${p.name}').toList()
       ..sort();
     return [
       _paletteId,
@@ -116,6 +145,7 @@ class ThemeNotifier extends ChangeNotifier {
       _reduceMotion,
       _highContrast,
       _mapStyle,
+      ...cpKeys,
       ...custom,
     ].join('|');
   }
@@ -258,6 +288,69 @@ class ThemeNotifier extends ChangeNotifier {
     unawaited(_persist());
   }
 
+  Future<void> saveCustomPalette(NamedCustomPalette p) async {
+    final idx = _customPalettes.indexWhere((x) => x.id == p.id);
+    if (idx >= 0) {
+      _customPalettes[idx] = p;
+    } else {
+      _customPalettes.add(p);
+    }
+    notifyListeners();
+    await _persistCustomPalettes();
+  }
+
+  Future<void> removeCustomPalette(String id) async {
+    _customPalettes.removeWhere((x) => x.id == id);
+    if (_paletteId == id) {
+      _paletteId = 'default';
+      _brightness = palette.brightness;
+    }
+    notifyListeners();
+    await _persistCustomPalettes();
+  }
+
+  Future<void> _loadCustomPalettes() async {
+    try {
+      final box = await Hive.openBox(_customPalettesBoxName);
+      final raw = box.get('list', defaultValue: <dynamic>[]) as List;
+      _customPalettes = raw
+          .map((e) => NamedCustomPalette.fromHive(e as Map<dynamic, dynamic>))
+          .toList();
+
+      if (_customColors.isNotEmpty) {
+        _migrateLegacyCustomColors();
+        _customColors = <String, Color>{};
+      }
+    } catch (e) {
+      AppLogger.warn(_logTag, 'loadCustomPalettes failed', e);
+    }
+  }
+
+  void _migrateLegacyCustomColors() {
+    final legacyId = 'custom-legacy';
+    if (_customPalettes.any((p) => p.id == legacyId)) return;
+    _customPalettes.add(NamedCustomPalette(
+      id: legacyId,
+      name: 'Mi paleta',
+      colors: Map.of(_customColors),
+    ));
+    if (_paletteId == _customPaletteId) {
+      _paletteId = legacyId;
+    }
+    AppLogger.info(_logTag, 'migrated legacy customColors to named palette');
+    unawaited(_persistCustomPalettes());
+  }
+
+  Future<void> _persistCustomPalettes() async {
+    try {
+      final box = await Hive.openBox(_customPalettesBoxName);
+      await box.put('list',
+          _customPalettes.map((p) => p.toHive()).toList());
+    } catch (e) {
+      AppLogger.warn(_logTag, 'persistCustomPalettes failed', e);
+    }
+  }
+
   // ── Theme building ───────────────────────────────────────
 
   ThemeData buildTheme(Brightness brightness) {
@@ -330,6 +423,7 @@ class ThemeNotifier extends ChangeNotifier {
     if (_initialized) return;
 
     _authUserId = userId;
+    await _loadCustomPalettes();
 
     try {
       final prefs = await _prefsRepo.getMine();
@@ -349,7 +443,12 @@ class ThemeNotifier extends ChangeNotifier {
 
   /// Load prefs for guest mode.
   Future<void> loadGuest() async {
+    if (_initialized && _paletteId != 'default') {
+      AppLogger.info(_logTag, 'loadGuest: ya hidratado (palette=$_paletteId), skip');
+      return;
+    }
     _initialized = false;
+    await _loadCustomPalettes();
     await _loadGuestPrefs();
   }
 
@@ -357,6 +456,7 @@ class ThemeNotifier extends ChangeNotifier {
     try {
       _guestBox ??= await _openGuestBox();
       final data = _guestBox!.get('prefs');
+      AppLogger.info(_logTag, 'guestBox hydrate: paletteId=${data?['paletteId']} bgId=${data?['backgroundId']} fontScale=${data?['fontScale']}');
       if (data != null) {
         _paletteId = data['paletteId'] as String? ?? 'default';
         _backgroundId = data['backgroundId'] as String? ?? 'shaders/smoke.frag';
@@ -392,13 +492,16 @@ class ThemeNotifier extends ChangeNotifier {
   }
 
   Future<void> _persist() async {
-    if (!_initialized) return;
+    if (!_initialized) {
+      await _loadGuestPrefs();
+    }
 
     try {
       final uid = _authUserId;
-      if (uid == null) return;
-      await _prefsRepo.update(toPreferences(uid));
-      return;
+      if (uid != null) {
+        await _prefsRepo.update(toPreferences(uid));
+        return;
+      }
     } on UserPreferencesRepositoryException {
       // Fall through to guest persistence
     }

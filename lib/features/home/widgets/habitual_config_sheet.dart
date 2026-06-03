@@ -9,6 +9,7 @@ import '../../../shared/models/route_model.dart';
 import '../../../shared/models/stop_model.dart';
 import '../../../shared/providers/home_habitual_config_provider.dart';
 import '../../../shared/widgets/transit_button.dart';
+import 'home_bottom_nav.dart';
 
 void showHabitualConfigSheet(BuildContext context, WidgetRef ref) {
   final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -20,12 +21,11 @@ void showHabitualConfigSheet(BuildContext context, WidgetRef ref) {
 
   final selectedRoute = _HabitualSheetState<RouteModel>();
   final selectedStop = _HabitualSheetState<StopModel>();
-  final routeController = _SheetDropdownController();
-  final stopController = _SheetDropdownController();
 
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
+    useSafeArea: true,
     backgroundColor: c.bgSurface,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
@@ -33,19 +33,26 @@ void showHabitualConfigSheet(BuildContext context, WidgetRef ref) {
     builder: (ctx) {
       return StatefulBuilder(
         builder: (ctx, setSheetState) {
+          // Paradas únicas (dedupe por stopId) para la ruta elegida.
+          // getStopsForRoute devuelve outbound+inbound; sin dedupe
+          // aparecían paradas duplicadas o de sentido contrario.
           final stopsForRoute = selectedRoute.value != null
-              ? mockData.getStopsForRoute(selectedRoute.value!.id)
+              ? _uniqueStopsFor(mockData, selectedRoute.value!.id)
               : <StopModel>[];
           final canSave =
               selectedRoute.value != null && selectedStop.value != null;
 
+          // Padding inferior que respeta: teclado + safe area + nav bar
+          // de la app. Sin sumar HomeBottomNav.height los botones quedan
+          // tapados por la navegación.
+          final mq = MediaQuery.of(ctx);
+          final bottomInset = 24 +
+              mq.viewInsets.bottom +
+              mq.padding.bottom +
+              HomeBottomNav.height;
+
           return Padding(
-            padding: EdgeInsets.fromLTRB(
-              16,
-              8,
-              16,
-              24 + MediaQuery.of(ctx).viewInsets.bottom,
-            ),
+            padding: EdgeInsets.fromLTRB(16, 8, 16, bottomInset),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,40 +73,71 @@ void showHabitualConfigSheet(BuildContext context, WidgetRef ref) {
                   style: TransitTypography.heading(c.textHi),
                 ),
                 const SizedBox(height: 20),
-                DropdownButtonFormField<RouteModel>(
-                  key: routeController.key,
-                  value: selectedRoute.value,
-                  isExpanded: true,
-                  decoration: _sheetInputDecoration(
-                    c,
-                    l10n.homeConfigureHabitualRoute,
-                  ),
-                  dropdownColor: c.bgRaised,
-                  style: TransitTypography.bodyPrimary(c.textHi),
-                  hint: Text(
-                    l10n.homeConfigureHabitualRoute,
-                    style: TransitTypography.bodySecondary(c.textMid),
-                  ),
-                  items: routes.map((r) {
-                    return DropdownMenuItem<RouteModel>(
-                      value: r,
-                      child: Text(
-                        '${r.code} · ${r.name}',
-                        style: TransitTypography.bodyPrimary(c.textHi),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    );
-                  }).toList(),
-                  onChanged: (v) {
+                // Autocomplete: el usuario escribe parte del código o
+                // nombre (ej. "L1", "estadio") y se filtra. Si tu app
+                // crece a cientos de líneas, esto sigue siendo usable.
+                Autocomplete<RouteModel>(
+                  displayStringForOption: (r) => '${r.code} · ${r.name}',
+                  optionsBuilder: (textEditingValue) {
+                    final q = textEditingValue.text.trim().toLowerCase();
+                    if (q.isEmpty) return routes;
+                    return routes.where((r) =>
+                        r.code.toLowerCase().contains(q) ||
+                        r.name.toLowerCase().contains(q));
+                  },
+                  onSelected: (r) {
                     setSheetState(() {
-                      selectedRoute.value = v;
+                      selectedRoute.value = r;
                       selectedStop.value = null;
                     });
+                  },
+                  fieldViewBuilder:
+                      (ctx, controller, focusNode, onSubmitted) {
+                    return TextField(
+                      controller: controller,
+                      focusNode: focusNode,
+                      style: TransitTypography.bodyPrimary(c.textHi),
+                      decoration: _sheetInputDecoration(
+                        c,
+                        l10n.homeConfigureHabitualRoute,
+                      ).copyWith(
+                        suffixIcon: Icon(Icons.search, color: c.textMid),
+                      ),
+                    );
+                  },
+                  optionsViewBuilder: (ctx, onSelected, options) {
+                    return Align(
+                      alignment: Alignment.topLeft,
+                      child: Material(
+                        color: c.bgRaised,
+                        elevation: 4,
+                        borderRadius: BorderRadius.circular(8),
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxHeight: 240),
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            padding: EdgeInsets.zero,
+                            itemCount: options.length,
+                            itemBuilder: (_, i) {
+                              final r = options.elementAt(i);
+                              return ListTile(
+                                dense: true,
+                                title: Text(
+                                  '${r.code} · ${r.name}',
+                                  style:
+                                      TransitTypography.bodyPrimary(c.textHi),
+                                ),
+                                onTap: () => onSelected(r),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    );
                   },
                 ),
                 const SizedBox(height: 16),
                 DropdownButtonFormField<StopModel>(
-                  key: stopController.key,
                   value: selectedStop.value,
                   isExpanded: true,
                   decoration: _sheetInputDecoration(
@@ -154,6 +192,18 @@ void showHabitualConfigSheet(BuildContext context, WidgetRef ref) {
   );
 }
 
+/// Paradas únicas de una ruta (dedupe por stopId), preservando el orden
+/// del primer encuentro. Necesario porque routeStops contiene outbound
+/// y inbound; sin dedupe el usuario vería "Plaza del Caballo" dos veces.
+List<StopModel> _uniqueStopsFor(MockDataService mock, String routeId) {
+  final seen = <String>{};
+  final result = <StopModel>[];
+  for (final s in mock.getStopsForRoute(routeId)) {
+    if (seen.add(s.id)) result.add(s);
+  }
+  return result;
+}
+
 InputDecoration _sheetInputDecoration(TransitColorScheme c, String label) {
   return InputDecoration(
     labelText: label,
@@ -173,8 +223,4 @@ InputDecoration _sheetInputDecoration(TransitColorScheme c, String label) {
 
 class _HabitualSheetState<T> {
   T? value;
-}
-
-class _SheetDropdownController {
-  final key = GlobalKey<FormFieldState<dynamic>>();
 }

@@ -8,8 +8,8 @@ void main() {
     testWidgets('renders with hint text', (tester) async {
       await pumpApp(
         tester,
-        child: Scaffold(
-          body: const TransitInput(hint: 'Email'),
+        child: const Scaffold(
+          body: TransitInput(hint: 'Email'),
         ),
       );
       await tester.pumpAndSettle();

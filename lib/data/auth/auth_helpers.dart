@@ -24,5 +24,10 @@ AuthRepoException mapAuthError(Exception e) {
     return const AuthRepoException(
         AuthError.emailNotVerified, 'Email not verified');
   }
+  final rateMatch = RegExp(r'for security purposes,? you can only request this after (\d+) seconds').firstMatch(msg);
+  if (rateMatch != null) {
+    final secs = int.parse(rateMatch.group(1)!);
+    return AuthRepoException(AuthError.rateLimited, 'rate_limited', secs);
+  }
   return AuthRepoException(AuthError.unknown, e.toString());
 }

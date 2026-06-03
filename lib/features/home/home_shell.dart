@@ -11,6 +11,7 @@ import '../../shared/models/user_role.dart';
 import '../../shared/providers/auth_provider.dart';
 import '../../shared/providers/notification_stream_provider.dart';
 import '../../shared/providers/user_provider.dart';
+import '../../shared/providers/widget_data_provider.dart';
 import '../../shared/widgets/responsive_scaffold.dart';
 import '../../shared/widgets/smoke_background.dart';
 import '../driver/driver_panel.dart';
@@ -73,12 +74,19 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
     final screen = ResponsiveScaffold.screenSizeOf(context);
-    final useRail = screen != ScreenSize.compact;
+    final mq = MediaQuery.sizeOf(context);
+    final isLandscape = mq.width > mq.height;
+    // Side rail si: no es móvil compact, O el dispositivo está en
+    // landscape (móvil rotado, tablet, web). Así el menú se adapta
+    // automáticamente al girar el dispositivo.
+    final useRail = screen != ScreenSize.compact || isLandscape;
     final extendedRail = screen == ScreenSize.large;
     final tabs = homeTabsOf(AppLocalizations.of(context));
     const mapTabIndex = 1;
     final showNotificationBell =
         widget.navigationShell.currentIndex != mapTabIndex;
+
+    ref.watch(widgetDataSyncProvider);
 
     if (useRail) {
       return PopScope(

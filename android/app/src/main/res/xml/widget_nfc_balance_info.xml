@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="110dp"
+    android:minHeight="60dp"
+    android:targetCellHeight="1"
+    android:updatePeriodMillis="0"
+    android:initialLayout="@layout/widget_nfc_balance"
+    android:previewImage="@drawable/widget_nfc_balance_preview"
+    android:previewLayout="@layout/widget_nfc_balance"
+    android:label="@string/widget_nfc_balance_label"
+    android:description="@string/widget_nfc_balance_description"
+    android:resizeMode="none"
+    android:widgetCategory="home_screen"/>

@@ -3,18 +3,19 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'map_filter_state.freezed.dart';
 part 'map_filter_state.g.dart';
 
-/// Estado de los filtros del mapa. Se persiste en Hive para
-/// sobrevivir al reinicio de la app (key `user_preferences:mapFilters`).
 @freezed
 abstract class MapFilterState with _$MapFilterState {
   const factory MapFilterState({
     @Default(true) bool showOfficial,
     @Default(true) bool showCommunity,
-    @Default(<String>{}) Set<String> activeOperators,
-    @Default(<String>{}) Set<String> activeKinds,
+    @Default(<String>{}) Set<String> disabledOperators,
+    @Default(<String>{}) Set<String> disabledKinds,
+    @Default(<String>{}) Set<String> disabledLines,
+    @Default(<String>{}) Set<String> disabledZones,
     @Default(0) int nextMinutes,
     @Default(false) bool onlyAccessible,
     @Default(false) bool onlyFavorites,
+    @Default(false) bool showAllStops,
     @Default(5000) double radiusMeters,
   }) = _MapFilterState;
 
@@ -22,5 +23,4 @@ abstract class MapFilterState with _$MapFilterState {
       _$MapFilterStateFromJson(json);
 }
 
-/// Kind de ruta para el filtro del mapa (urbano, interurbano, nocturno, etc.).
 enum RouteKind { urbano, interurbano, metropolitano, nocturno, escolar }

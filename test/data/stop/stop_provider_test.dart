@@ -28,7 +28,7 @@ void main() {
 
   setUp(() {
     mockData = MockMockDataService();
-    registerFallbackValue(LatLng(36.7, -6.14));
+    registerFallbackValue(const LatLng(36.7, -6.14));
   });
 
   group('StopMockRepository provider', () {

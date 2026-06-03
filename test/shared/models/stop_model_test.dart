@@ -31,7 +31,7 @@ void main() {
     });
 
     test('toJson roundtrips correctly', () {
-      final stop = StopModel(
+      final stop = const StopModel(
         id: 'S001',
         name: 'Test Stop',
         officialCode: 'S001',
@@ -52,7 +52,7 @@ void main() {
     });
 
     test('copyWith preserves unchanged fields', () {
-      final stop = StopModel(
+      final stop = const StopModel(
         id: 'S001',
         name: 'Original',
         officialCode: 'S001',

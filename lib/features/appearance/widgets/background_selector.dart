@@ -20,8 +20,18 @@ class BackgroundSection extends ConsumerWidget {
       'none' => l10n.appearanceBgNone,
       'shaders/smoke.frag' => l10n.appearanceBgSmoke,
       _ when id.startsWith('gradient:') => l10n.appearanceBgGradient,
-      'assets/bg/soft_grid.png' => l10n.appearanceBgGrid,
-      'assets/bg/topo_lines.png' => l10n.appearanceBgTopo,
+      'procedural:softGrid' => l10n.appearanceBgGrid,
+      'procedural:topoLines' => l10n.appearanceBgTopo,
+      'procedural:beams' => l10n.appearanceBgBeams,
+      'shader:lightRays' => l10n.appearanceBgLightRays,
+      'shader:balatro' => l10n.appearanceBgBalatro,
+      'shader:floatingLines' => l10n.appearanceBgFloatingLines,
+      'shader:colorBends' => l10n.appearanceBgColorBends,
+      'shader:dotField' => l10n.appearanceBgDotField,
+      'shader:dotGrid' => l10n.appearanceBgDotGrid,
+      'shader:dither' => l10n.appearanceBgDither,
+      'shader:faultyTerminal' => l10n.appearanceBgFaultyTerminal,
+      'shader:darkVeil' => l10n.appearanceBgDarkVeil,
       _ => id,
     };
   }
@@ -31,8 +41,18 @@ class BackgroundSection extends ConsumerWidget {
       'none' => Icons.block,
       'shaders/smoke.frag' => Icons.blur_on,
       _ when id.startsWith('gradient:') => Icons.gradient,
-      'assets/bg/soft_grid.png' => Icons.grid_4x4,
-      'assets/bg/topo_lines.png' => Icons.show_chart,
+      'procedural:softGrid' => Icons.grid_4x4,
+      'procedural:topoLines' => Icons.show_chart,
+      'procedural:beams' => Icons.flare,
+      'shader:lightRays' => Icons.wb_sunny_outlined,
+      'shader:balatro' => Icons.blur_circular,
+      'shader:floatingLines' => Icons.timeline,
+      'shader:colorBends' => Icons.waves,
+      'shader:dotField' => Icons.scatter_plot,
+      'shader:dotGrid' => Icons.grid_on,
+      'shader:dither' => Icons.texture,
+      'shader:faultyTerminal' => Icons.developer_mode,
+      'shader:darkVeil' => Icons.dark_mode,
       _ => Icons.wallpaper,
     };
   }
@@ -79,7 +99,7 @@ class BackgroundSection extends ConsumerWidget {
           ),
           const SizedBox(height: 12),
           SizedBox(
-            height: 72,
+            height: 84,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: prefabBackgrounds.length,
@@ -167,7 +187,8 @@ class BgPreview extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         onTap: onTap,
         child: Container(
-          width: 64,
+          width: 88,
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color:
@@ -182,12 +203,17 @@ class BgPreview extends StatelessWidget {
             children: [
               Icon(icon, size: 22, color: selected ? c.accent : c.textMid),
               const SizedBox(height: 4),
-              Text(name,
+              Flexible(
+                child: Text(
+                  name,
                   style: TransitTypography.bodySmall(
                     selected ? c.accent : c.textMid,
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis),
+                  maxLines: 2,
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
             ],
           ),
         ),

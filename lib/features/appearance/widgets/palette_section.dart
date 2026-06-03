@@ -7,6 +7,7 @@ import '../../../core/theme/palettes/prefab_palettes.dart';
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../../shared/models/named_custom_palette.dart';
 import '../../../shared/providers/theme_notifier.dart';
 import '../../../shared/widgets/glass_card.dart';
 import '../../../shared/widgets/gradient_text.dart';
@@ -19,8 +20,9 @@ class PalettesSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final paletteId =
-        ref.watch(themeNotifierProvider.select((n) => n.paletteId));
+    final notifier = ref.watch(themeNotifierProvider);
+    final paletteId = notifier.paletteId;
+    final customs = notifier.customPalettes;
 
     return GlassCard(
       blur: 16,
@@ -59,6 +61,39 @@ class PalettesSection extends ConsumerWidget {
               );
             },
           ),
+          if (customs.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            GradientText(
+              l10n.appearanceCustomPalettesSection,
+              style: TransitTypography.sectionLabel(Colors.white),
+              gradient: c.gradientAccent,
+            ),
+            const SizedBox(height: 12),
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 10,
+                crossAxisSpacing: 10,
+                childAspectRatio: 2.2,
+              ),
+              itemCount: customs.length,
+              itemBuilder: (_, i) {
+                final cp = customs[i];
+                final selected = cp.id == paletteId;
+                return _CustomPaletteCard(
+                  palette: cp,
+                  selected: selected,
+                  c: c,
+                  onTap: () {
+                    ref.read(themeNotifierProvider).paletteId = cp.id;
+                  },
+                  onDelete: () => _confirmDelete(context, ref, cp),
+                );
+              },
+            ),
+          ],
           const SizedBox(height: 10),
           SizedBox(
             width: double.infinity,
@@ -76,6 +111,33 @@ class PalettesSection extends ConsumerWidget {
                     const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _confirmDelete(BuildContext context, WidgetRef ref,
+      NamedCustomPalette cp) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: c.bgSurface,
+        title: Text(l10n.appearanceDeletePaletteConfirm,
+            style: TransitTypography.sectionTitle(c.textHi)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: Text(l10n.actionCancel,
+                style: TextStyle(color: c.textMid)),
+          ),
+          TextButton(
+            onPressed: () {
+              ref.read(themeNotifierProvider).removeCustomPalette(cp.id);
+              Navigator.of(ctx).pop();
+            },
+            child: Text(l10n.actionDelete,
+                style: TextStyle(color: c.stateCancelled)),
           ),
         ],
       ),
@@ -130,6 +192,85 @@ class PaletteCard extends StatelessWidget {
                   color: accentColor,
                   shape: BoxShape.circle,
                 ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                palette.name,
+                style: TransitTypography.bodyPrimary(
+                  selected ? accentColor : c.textHi,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CustomPaletteCard extends StatelessWidget {
+  const _CustomPaletteCard({
+    required this.palette,
+    required this.selected,
+    required this.c,
+    required this.onTap,
+    required this.onDelete,
+  });
+
+  final NamedCustomPalette palette;
+  final bool selected;
+  final TransitColorScheme c;
+  final VoidCallback onTap;
+  final VoidCallback onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    final accentColor = palette.colors['primary'] ?? c.accent;
+
+    return Semantics(
+      button: true,
+      selected: selected,
+      label: palette.name,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: onTap,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: accentColor.withValues(alpha: 0.10),
+            border: Border.all(
+              color:
+                  selected ? accentColor : accentColor.withValues(alpha: 0.25),
+              width: selected ? 2 : 1,
+            ),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 12,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      color: accentColor,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  const Spacer(),
+                  GestureDetector(
+                    onTap: onDelete,
+                    child: Icon(
+                      Icons.close,
+                      size: 16,
+                      color: c.textMid.withValues(alpha: 0.6),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 8),
               Text(

@@ -55,7 +55,7 @@ void main() {
     testWidgets('supports maxLines > 1', (tester) async {
       await pumpApp(
         tester,
-        child: Scaffold(
+        child: const Scaffold(
           body: TransitInput(
             hint: 'Description',
             maxLines: 3,

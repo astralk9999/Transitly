@@ -14,6 +14,7 @@ dependencies:
   firebase_core: ^4.9.0
   firebase_messaging: ^16.2.2
   flex_color_picker: ^3.7.2
+  google_sign_in: ^6.2.1
   flutter:
     sdk: flutter
   flutter_local_notifications: ^20.1.0
@@ -66,19 +67,19 @@ dev_dependencies:
 flutter_launcher_icons:
   android: "ic_launcher"
   ios: true
-  image_path: "assets/branding/transitly_logo_white_padded.png"
+  image_path: "assets/branding/transitly_logo_white_square.png"
   adaptive_icon_background: "#08081A"
-  adaptive_icon_foreground: "assets/branding/transitly_logo_white_padded.png"
+  adaptive_icon_foreground: "assets/branding/transitly_logo_white_square.png"
   adaptive_icon_foreground_inset: 0
   min_sdk_android: 21
   remove_alpha_ios: true
 
 flutter_native_splash:
   color: "#08081A"
-  image: assets/branding/transitly_logo_white_padded.png
+  image: assets/branding/transitly_logo_white_square.png
   android_12:
     icon_background_color: "#08081A"
-    image: assets/branding/transitly_logo_white_padded.png
+    image: assets/branding/transitly_logo_white_square.png
   fullscreen: false
 
 flutter:
@@ -109,6 +110,15 @@ flutter:
           weight: 400
         - asset: assets/fonts/atkinson_hyperlegible/AtkinsonHyperlegible-Bold.ttf
           weight: 700
+    - family: OpenDyslexic
+      fonts:
+        - asset: assets/fonts/opendyslexic/OpenDyslexic-Regular.otf
+          weight: 400
+        - asset: assets/fonts/opendyslexic/OpenDyslexic-Bold.otf
+          weight: 700
 
   shaders:
     - shaders/smoke.frag
+    - shaders/light_rays.frag
+    - shaders/balatro.frag
+    - shaders/floating_lines.frag

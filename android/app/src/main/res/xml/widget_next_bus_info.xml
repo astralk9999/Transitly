@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="180dp"
+    android:minHeight="60dp"
+    android:targetCellHeight="1"
+    android:updatePeriodMillis="900000"
+    android:initialLayout="@layout/widget_next_bus"
+    android:previewImage="@drawable/widget_next_bus_preview"
+    android:previewLayout="@layout/widget_next_bus"
+    android:label="@string/widget_next_bus_label"
+    android:description="@string/widget_next_bus_description"
+    android:resizeMode="horizontal|vertical"
+    android:widgetCategory="home_screen"/>

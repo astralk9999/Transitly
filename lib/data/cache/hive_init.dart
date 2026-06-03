@@ -57,6 +57,7 @@ abstract class HiveBoxes {
   /// Cada entrada es `Map<String, dynamic>` con cardId, balance,
   /// scannedAt y flag synced.
   static const nfcScans = 'nfc_scans';
+  static const arrivalsCache = 'arrivals_cache';
 }
 
 /// Inicializa Hive (registro de adapters + apertura de cajas).
@@ -93,6 +94,7 @@ abstract class HiveInit {
     await _open<Map<dynamic, dynamic>>(HiveBoxes.editorDrafts);
     await _open<List<dynamic>>(HiveBoxes.userFavorites);
     await _open<Map<dynamic, dynamic>>(HiveBoxes.nfcScans);
+    await _open<Map<dynamic, dynamic>>(HiveBoxes.arrivalsCache);
 
     final encryptionCipher = HiveAesCipher(await _encryptionKey());
 

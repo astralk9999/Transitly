@@ -8,9 +8,9 @@ void main() {
     testWidgets('has minimum 48dp tap target via ConstrainedBox', (tester) async {
       await pumpApp(
         tester,
-        child: Scaffold(
+        child: const Scaffold(
           body: Pressable(
-            child: const Text('Tap me'),
+            child: Text('Tap me'),
           ),
         ),
       );

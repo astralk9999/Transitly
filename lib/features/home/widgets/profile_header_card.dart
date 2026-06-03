@@ -66,12 +66,7 @@ class ProfileHeaderCard extends ConsumerWidget {
                 children: [
                   Text(
                     l10n.profileGuestLabel,
-                    style: GoogleFonts.ibmPlexMono(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 1.5,
-                      color: c.accent,
-                    ),
+                    style: TransitTypography.sectionLabel(c.accent),
                   ),
                   const SizedBox(height: 2),
                   Text(

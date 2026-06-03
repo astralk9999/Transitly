@@ -1,13 +1,16 @@
 import 'dart:async';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart'
     show
         AuthChangeEvent,
+        OAuthProvider,
         OtpType,
         SupabaseClient,
         User;
 
+import '../../core/env.dart';
 import '../../core/utils/app_logger.dart';
 import '../../core/utils/sentry_setup.dart';
 import 'auth_helpers.dart';
@@ -38,7 +41,12 @@ class AuthRepositorySupabase implements AuthRepository {
           event == AuthChangeEvent.tokenRefreshed) {
         if (session?.user != null) {
           final user = session!.user;
-          final emailVerified =
+          // OAuth providers (Google, Apple, etc.) ya verifican el email
+          // en su lado. No exigir emailConfirmedAt para usuarios con
+          // identity OAuth — Supabase no siempre lo marca verified.
+          final isOAuthUser = user.identities?.any((i) =>
+              i.provider != null && i.provider != 'email') == true;
+          final emailVerified = isOAuthUser ||
               user.emailConfirmedAt != null ||
               user.identities?.any((i) =>
                   i.identityData?['email_verified'] == true) == true;
@@ -48,7 +56,8 @@ class AuthRepositorySupabase implements AuthRepository {
             final uidShort = user.id.length >= 8
                 ? user.id.substring(0, 8)
                 : user.id;
-            AppLogger.info(_logTag, 'signed in uid=$uidShort…');
+            AppLogger.info(_logTag,
+                'signed in uid=$uidShort… (oauth=$isOAuthUser)');
           } else {
             _stateController.add(AuthEmailVerificationPending(user));
           }
@@ -116,12 +125,58 @@ class AuthRepositorySupabase implements AuthRepository {
   @override
   Future<void> signInWithGoogle() async {
     _stateController.add(AuthLoading());
-    /// Google Sign-In requires platform setup (OAuth consent screen,
-    /// redirect URIs in Supabase dashboard). Stub hasta F4.2.
-    throw const AuthRepoException(
-      AuthError.providerCancelled,
-      'Google Sign-In pendiente de configuración de plataforma',
-    );
+    try {
+      // CRITICAL: el plugin necesita el Web Client ID como `serverClientId`
+      // para que devuelva idToken. Sin él, Google solo entrega accessToken
+      // y Supabase rechaza el signInWithIdToken.
+      final webClientId = Env.googleWebClientId;
+      if (webClientId == null) {
+        throw const AuthRepoException(
+          AuthError.unknown,
+          'GOOGLE_WEB_CLIENT_ID no configurado. Añádelo a dart_defines.json.',
+        );
+      }
+      final googleSignIn = GoogleSignIn(
+        scopes: const ['email', 'profile'],
+        serverClientId: webClientId,
+      );
+      try {
+        await googleSignIn.signOut();
+      } catch (_) {
+        AppLogger.debug(_logTag, 'Google signOut ignored (no prior session)');
+      }
+      final account = await googleSignIn.signIn();
+      if (account == null) {
+        throw const AuthRepoException(
+          AuthError.providerCancelled,
+          'Inicio de sesión con Google cancelado',
+        );
+      }
+      final auth = await account.authentication;
+      final idToken = auth.idToken;
+      final accessToken = auth.accessToken;
+      if (idToken == null) {
+        throw const AuthRepoException(
+          AuthError.providerCancelled,
+          'Google no devolvió un id_token. Verifica el clientId en Google Cloud Console.',
+        );
+      }
+      // Cambiar tokens de Google por sesión Supabase.
+      await _client.auth.signInWithIdToken(
+        provider: OAuthProvider.google,
+        idToken: idToken,
+        accessToken: accessToken,
+      );
+      AppLogger.info(_logTag, 'Google sign in OK');
+    } on AuthRepoException {
+      rethrow;
+    } catch (e, st) {
+      AppLogger.error(_logTag, 'Google sign in failed', e, st);
+      throw const AuthRepoException(
+        AuthError.unknown,
+        'Error al iniciar sesión con Google',
+      );
+    }
   }
 
   @override

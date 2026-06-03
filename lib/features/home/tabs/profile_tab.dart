@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 
+import '../../../core/theme/transit_colors.dart';
+import '../../../core/theme/transit_typography.dart';
 import '../../../data/auth/auth_repository.dart';
+import '../../../shared/widgets/glass_card.dart';
+import '../../../shared/widgets/gradient_text.dart';
 import '../../../shared/providers/auth_provider.dart';
 import '../../../shared/providers/user_provider.dart';
 import '../../../shared/widgets/responsive_scaffold.dart';
@@ -22,6 +28,8 @@ class ProfileTab extends ConsumerWidget {
     final padding = ResponsiveScaffold.screenPadding(context);
     final isAuthenticated =
         ref.watch(authStateProvider).valueOrNull is AuthAuthenticated;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final c = TransitColorScheme.of(isDark);
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -49,6 +57,84 @@ class ProfileTab extends ConsumerWidget {
                     const ProfileNotificationsSection(),
                     const SizedBox(height: 16),
                     const ProfileAccessibilitySection(),
+                    const SizedBox(height: 16),
+                    GlassCard(
+                      blur: 16,
+                      fillOpacity: 0.05,
+                      borderRadius: 14,
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          GradientText(
+                            'Comunidad',
+                            style: GoogleFonts.ibmPlexMono(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 1.5,
+                            ),
+                            gradient: c.gradientAccent,
+                          ),
+                          const SizedBox(height: 12),
+                          if (isAuthenticated) ...[
+                            ListTile(
+                              contentPadding: EdgeInsets.zero,
+                              leading: Icon(Icons.route_outlined,
+                                  size: 24, color: c.accent),
+                              title: Text('Mis rutas',
+                                  style: TransitTypography.bodyPrimary(
+                                      c.textHi)),
+                              trailing: Icon(Icons.chevron_right,
+                                  color: c.textMid),
+                              onTap: () =>
+                                  context.push('/my-routes'),
+                            ),
+                            ListTile(
+                              contentPadding: EdgeInsets.zero,
+                              leading: Icon(Icons.explore_outlined,
+                                  size: 24, color: c.accent),
+                              title: Text('Explorar comunidad',
+                                  style: TransitTypography.bodyPrimary(
+                                      c.textHi)),
+                              trailing: Icon(Icons.chevron_right,
+                                  color: c.textMid),
+                              onTap: () =>
+                                  context.push('/community'),
+                            ),
+                            ListTile(
+                              contentPadding: EdgeInsets.zero,
+                              leading:
+                                  Icon(Icons.add_location_alt_outlined,
+                                      size: 24, color: c.accent),
+                              title: Text('Crear nueva ruta',
+                                  style: TransitTypography.bodyPrimary(
+                                      c.textHi)),
+                              trailing: Icon(Icons.chevron_right,
+                                  color: c.textMid),
+                              onTap: () =>
+                                  context.push('/create-route'),
+                            ),
+                          ] else ...[
+                            ListTile(
+                              contentPadding: EdgeInsets.zero,
+                              leading: Icon(Icons.explore_outlined,
+                                  size: 24, color: c.accent),
+                              title: Text('Explorar comunidad',
+                                  style: TransitTypography.bodyPrimary(
+                                      c.textHi)),
+                              subtitle: Text(
+                                  'Inicia sesión para crear rutas',
+                                  style: TransitTypography.bodySecondary(
+                                      c.textMid)),
+                              trailing: Icon(Icons.chevron_right,
+                                  color: c.textMid),
+                              onTap: () =>
+                                  context.push('/community'),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
                     const SizedBox(height: 16),
                     const ProfileAboutSection(),
                     const SizedBox(height: 100),

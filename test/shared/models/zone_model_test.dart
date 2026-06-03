@@ -32,7 +32,7 @@ void main() {
     });
 
     test('toJson roundtrips and omits null parentZoneId', () {
-      final original = ZoneModel(
+      final original = const ZoneModel(
         id: 'z-3',
         name: 'Sevilla',
         zoneType: 'province',

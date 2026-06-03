@@ -170,11 +170,16 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
                           await notifier.addLine(widget.routeId);
                         }
                         if (!context.mounted) return;
+                        // Floating + margen para evitar quedar tapado por
+                        // bottom nav, FAB o sheets parciales del shell.
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(isFavorite
                                 ? AppLocalizations.of(context).favoriteRemoved
                                 : AppLocalizations.of(context).favoriteAdded),
+                            behavior: SnackBarBehavior.floating,
+                            margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                            duration: const Duration(seconds: 2),
                           ),
                         );
                       },

@@ -30,17 +30,17 @@ void main() {
     });
 
     test('orderIndex reflects the stop sequence', () {
-      final first = RouteStopModel(
+      final first = const RouteStopModel(
         routeId: 'L1',
         stopId: 'S-A',
         orderIndex: 0,
       );
-      final second = RouteStopModel(
+      final second = const RouteStopModel(
         routeId: 'L1',
         stopId: 'S-B',
         orderIndex: 5,
       );
-      final third = RouteStopModel(
+      final third = const RouteStopModel(
         routeId: 'L1',
         stopId: 'S-C',
         orderIndex: 10,

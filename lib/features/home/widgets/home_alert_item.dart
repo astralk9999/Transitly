@@ -55,19 +55,19 @@ class HomeAlertItem extends StatelessWidget {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
-                if (alert.radiusMeters != null) ...[
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Icon(Icons.location_on,
-                          size: 12, color: c.textMid),
-                      const SizedBox(width: 4),
-                      Text(
-                        '${alert.radiusMeters!.toInt()}m alrededor de zona',
-                        style: TransitTypography.bodySmall(c.textMid),
-                      ),
-                    ],
-                  ),
+                  if (alert.radiusMeters != null) ...[
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Icon(Icons.location_on,
+                            size: 12, color: c.textMid),
+                        const SizedBox(width: 4),
+                        Text(
+                          _radiusText(alert.radiusMeters!),
+                          style: TransitTypography.bodySmall(c.textMid),
+                        ),
+                      ],
+                    ),
                 ],
               ],
             ),
@@ -75,5 +75,13 @@ class HomeAlertItem extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  static String _radiusText(double radiusMeters) {
+    final radiusKm = radiusMeters / 1000;
+    final radiusStr = radiusKm < 1
+        ? '${radiusMeters.toInt()} m'
+        : '${radiusKm.toStringAsFixed(1)} km';
+    return 'Afecta $radiusStr a la redonda';
   }
 }

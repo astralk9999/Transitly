@@ -106,3 +106,9 @@ final editorDraftsBoxProvider = Provider<Box<Map<dynamic, dynamic>>>(
 final nfcScansBoxProvider = Provider<Box<Map<dynamic, dynamic>>>(
   (_) => Hive.box<Map<dynamic, dynamic>>(HiveBoxes.nfcScans),
 );
+
+/// Cache de llegadas desde Supabase RPC (90s TTL).
+/// Cada entrada es {ts: int, data: [...]}.
+final arrivalsCacheBoxProvider = Provider<Box<Map<dynamic, dynamic>>>(
+  (_) => Hive.box<Map<dynamic, dynamic>>(HiveBoxes.arrivalsCache),
+);

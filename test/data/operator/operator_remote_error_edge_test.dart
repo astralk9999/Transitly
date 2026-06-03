@@ -7,7 +7,7 @@ void main() {
   group('mapOperatorError edge cases', () {
     test('PostgrestException with empty code maps to unknown', () {
       final ex = mapOperatorError(
-        PostgrestException(message: 'Empty code', code: ''),
+        const PostgrestException(message: 'Empty code', code: ''),
         StackTrace.current,
         'delete',
       );

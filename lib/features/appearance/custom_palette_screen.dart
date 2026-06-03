@@ -8,6 +8,7 @@ import '../../core/theme/palettes/custom_colors.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../l10n/generated/app_localizations.dart';
+import '../../shared/models/named_custom_palette.dart';
 import '../../shared/providers/theme_notifier.dart';
 import '../../shared/widgets/glass_card.dart';
 import '../../shared/widgets/transit_app_bar.dart';
@@ -29,6 +30,7 @@ class _CustomPaletteScreenState extends ConsumerState<CustomPaletteScreen> {
   late Color _bgSurface;
   late Color _textHi;
   bool _saving = false;
+  final _nameController = TextEditingController();
 
   final _colorKeys = const ['primary', 'secondary', 'bgRoot', 'bgSurface', 'textHi'];
 
@@ -60,6 +62,12 @@ class _CustomPaletteScreenState extends ConsumerState<CustomPaletteScreen> {
         bgSurface: _bgSurface,
         textHi: _textHi,
       );
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
+  }
 
   Future<void> _pickColor(String key, Color current) async {
     final picked = await showColorPickerDialog(
@@ -122,13 +130,23 @@ class _CustomPaletteScreenState extends ConsumerState<CustomPaletteScreen> {
   Future<void> _onSave() async {
     setState(() => _saving = true);
     try {
-      ref.read(themeNotifierProvider).setCustomPalette({
-        'primary': _primary,
-        'secondary': _secondary,
-        'bgRoot': _bgRoot,
-        'bgSurface': _bgSurface,
-        'textHi': _textHi,
-      });
+      final id = 'custom-${DateTime.now().millisecondsSinceEpoch}';
+      final name = _nameController.text.trim().isEmpty
+          ? 'Mi paleta'
+          : _nameController.text.trim();
+      final p = NamedCustomPalette(
+        id: id,
+        name: name,
+        colors: {
+          'primary': _primary,
+          'secondary': _secondary,
+          'bgRoot': _bgRoot,
+          'bgSurface': _bgSurface,
+          'textHi': _textHi,
+        },
+      );
+      await ref.read(themeNotifierProvider).saveCustomPalette(p);
+      ref.read(themeNotifierProvider).paletteId = p.id;
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -183,6 +201,24 @@ class _CustomPaletteScreenState extends ConsumerState<CustomPaletteScreen> {
                 children: [
                   _SectionLabel(
                       label: l10n.appearancePalettesSection, scheme: scheme),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: _nameController,
+                    style: TransitTypography.bodyPrimary(scheme.textHi),
+                    decoration: InputDecoration(
+                      labelText: l10n.appearancePaletteName,
+                      labelStyle: TransitTypography.bodySmall(scheme.textMid),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(
+                            color: scheme.textLo.withValues(alpha: 0.2)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: scheme.accent),
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 12),
                   GlassCard(
                     blur: 16,

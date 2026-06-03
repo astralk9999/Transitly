@@ -48,6 +48,8 @@ abstract final class Env {
   static const String _tosUrl = String.fromEnvironment('TRANSITLY_TOS_URL');
   static const String _privacyUrl = String.fromEnvironment('TRANSITLY_PRIVACY_URL');
   static const String _mapTilerApiKey = String.fromEnvironment('MAPTILER_API_KEY');
+  static const String _googleWebClientId =
+      String.fromEnvironment('GOOGLE_WEB_CLIENT_ID');
 
   // ── Supabase (críticas) ─────────────────────────────────────
 
@@ -80,6 +82,14 @@ abstract final class Env {
 
   static String? get mapTilerApiKey =>
       _mapTilerApiKey.isEmpty ? null : _mapTilerApiKey;
+
+  // ── Google Sign-In (opcional) ───────────────────────────────
+
+  /// Web Client ID (no Android) creado en Google Cloud Console para que
+  /// `GoogleSignIn` devuelva `idToken` (usado por Supabase para
+  /// `signInWithIdToken`). Sin este, `idToken` viene null y el login falla.
+  static String? get googleWebClientId =>
+      _googleWebClientId.isEmpty ? null : _googleWebClientId;
 
   // ── Helpers privados ────────────────────────────────────────
 

@@ -7,7 +7,7 @@ class MapConfig {
 
   static const _maptilerBase = 'https://api.maptiler.com/maps';
 
-  static const mapStyles = {
+  static const _maptilerSlugs = {
     'streets': 'streets-v2',
     'basic': 'basic-v2',
     'bright': 'bright-v2',
@@ -15,21 +15,35 @@ class MapConfig {
     'light': 'dataviz-light',
   };
 
+  static const mapStyles = {
+    'streets': 'voyager',
+    'basic': 'standard',
+    'bright': 'light',
+    'dark': 'dark',
+    'light': 'positron',
+  };
+
   static String tileUrl(String style, {String? apiKey}) {
     final key = apiKey ?? Env.mapTilerApiKey;
     if (key != null && key.isNotEmpty) {
-      final slug = mapStyles[style] ?? mapStyles['streets']!;
+      final slug = _maptilerSlugs[style] ?? _maptilerSlugs['streets']!;
       return '$_maptilerBase/$slug/{z}/{x}/{y}@2x.png?key=$key';
     }
-    return _cartoUrl(style);
-  }
-
-  static String _cartoUrl(String style) {
-    final isDark = style == 'dark' || style == 'streets';
-    final tilePath = isDark
-        ? 'dark_nolabels'
-        : 'light_nolabels';
-    return 'https://{s}.basemaps.cartocdn.com/$tilePath/{z}/{x}/{y}@2x.png';
+    final fallback = mapStyles[style] ?? 'voyager';
+    switch (fallback) {
+      case 'standard':
+        return 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+      case 'dark':
+        return 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png';
+      case 'positron':
+        return 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png';
+      case 'voyager':
+        return 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png';
+      case 'light':
+        return 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}@2x.png';
+      default:
+        return 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png';
+    }
   }
 
   static const subdomains = ['a', 'b', 'c', 'd'];

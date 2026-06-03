@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_next_bus_label">ترانزيتلي · الحافلة التالية</string>
+    <string name="widget_my_line_label">ترانزيتلي · خطي</string>
+    <string name="widget_nfc_balance_label">ترانزيتلي · رصيد البطاقة</string>
+    <string name="widget_next_bus_description">يعرض الحافلة التالية في محطتك المعتادة مع الوقت المتبقي.</string>
+    <string name="widget_my_line_description">الرحلات القادمة لخطك المفضل مرتبة حسب الوقت.</string>
+    <string name="widget_nfc_balance_description">آخر رصيد لبطاقة السفر تمت قراءته عبر NFC.</string>
+</resources>

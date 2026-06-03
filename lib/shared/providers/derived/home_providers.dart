@@ -54,7 +54,7 @@ final homeNearbyStopsProvider =
 final homeFavAlertsProvider = Provider.autoDispose<List<AlertModel>>((ref) {
   final mockData = ref.watch(mockDataServiceProvider);
   final favIds = ref.watch(homeFavRouteIdsProvider);
-  final userLoc = ref.watch(userLocationStreamProvider).valueOrNull;
+  final userLoc = ref.watch(userLocationLatLngProvider);
   return mockData.getAlertsAffecting(
     userLocation: userLoc,
     favoriteRouteIds: favIds.toList(),

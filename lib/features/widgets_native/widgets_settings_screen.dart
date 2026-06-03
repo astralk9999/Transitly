@@ -1,6 +1,5 @@
 import 'dart:io' show Platform;
 
-import 'package:flutter/foundation.dart' show kReleaseMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -88,18 +87,7 @@ class _WidgetsSettingsScreenState
         ),
         centerTitle: false,
       ),
-      body: kReleaseMode
-          ? Center(
-              child: Padding(
-                padding: const EdgeInsets.all(32),
-                child: Text(
-                  l10n.featureComingSoon,
-                  style: TransitTypography.bodyPrimary(c.textHi),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            )
-          : Stack(
+      body: Stack(
               children: [
                 Positioned.fill(
                   child: SmokeBackground(color: c.accent, isDark: isDark),

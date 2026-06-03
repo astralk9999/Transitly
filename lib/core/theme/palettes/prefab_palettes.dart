@@ -278,29 +278,17 @@ class TransitMonoColors implements TransitColorScheme {
   @override Color get glassBorder => const Color(0x2DFFFFFF);
 }
 
-// ── Light palette (using existing TransitLightColors) ──────
-
-const defaultLightPalette = AppPalette(
-  id: 'default-light',
-  name: 'Default claro',
-  isDark: false,
-  scheme: TransitLightColors(),
-  lightScheme: TransitLightColors(),
-  darkScheme: TransitDarkColors(),
-);
-
 // ── Prefab list ────────────────────────────────────────────
 
 final prefabPalettes = <AppPalette>[
   const AppPalette(
     id: 'default',
-    name: 'Default oscuro',
+    name: 'Default',
     isDark: true,
     scheme: TransitDarkColors(),
     lightScheme: TransitLightColors(),
     darkScheme: TransitDarkColors(),
   ),
-  defaultLightPalette,
   const AppPalette(
     id: 'sunrise',
     name: 'Sunrise',

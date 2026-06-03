@@ -1,118 +1,131 @@
 import 'package:flutter/material.dart';
 
-import 'transit_colors.dart';
 import 'transit_spacing.dart';
 
 class HighContrastTheme {
   HighContrastTheme._();
 
-  static ThemeData apply(ThemeData base, TransitColorScheme scheme) {
+  static ThemeData apply(ThemeData base, dynamic scheme) {
     final isDark = base.colorScheme.brightness == Brightness.dark;
-    final solidScheme = TransitColorScheme.of(isDark);
+    final hcText = isDark ? const Color(0xFFFFFFFF) : const Color(0xFF000000);
+    final hcBg = isDark ? const Color(0xFF000000) : const Color(0xFFFFFFFF);
+    final hcAccent = isDark ? const Color(0xFFFFFF00) : const Color(0xFF0000FF);
+    final hcBorder = isDark ? const Color(0xFFFFFFFF) : const Color(0xFF000000);
 
     return base.copyWith(
-      scaffoldBackgroundColor: solidScheme.bgRoot,
+      scaffoldBackgroundColor: hcBg,
       splashFactory: NoSplash.splashFactory,
-      highlightColor: solidScheme.bgRoot,
+      highlightColor: hcBg,
+
+      textTheme: base.textTheme.apply(
+        bodyColor: hcText,
+        displayColor: hcText,
+      ),
 
       colorScheme: base.colorScheme.copyWith(
-        surface: solidScheme.bgSurface,
-        surfaceContainerHighest: solidScheme.bgRoot,
+        surface: hcBg,
+        surfaceContainerHighest: hcBg,
+        onSurface: hcText,
+        onBackground: hcText,
+        primary: hcAccent,
+        onPrimary: isDark ? const Color(0xFF000000) : const Color(0xFFFFFFFF),
       ),
 
       cardTheme: base.cardTheme.copyWith(
-        color: solidScheme.bgRoot,
+        color: hcBg,
         shape: RoundedRectangleBorder(
           borderRadius:
               BorderRadius.circular(TransitSpacing.radiusMd),
           side: BorderSide(
-            color: solidScheme.border,
-            width: TransitSpacing.strokeAccent,
+            color: hcBorder,
+            width: 2.0,
           ),
         ),
       ),
 
       inputDecorationTheme: base.inputDecorationTheme.copyWith(
         filled: true,
-        fillColor: solidScheme.bgSurface,
+        fillColor: hcBg,
         border: OutlineInputBorder(
           borderRadius:
               BorderRadius.circular(TransitSpacing.radiusMd),
           borderSide: BorderSide(
-            color: solidScheme.border,
-            width: TransitSpacing.strokeAccent,
+            color: hcBorder,
+            width: 2.0,
           ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius:
               BorderRadius.circular(TransitSpacing.radiusMd),
           borderSide: BorderSide(
-            color: solidScheme.border,
-            width: TransitSpacing.strokeAccent,
+            color: hcBorder,
+            width: 2.0,
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius:
               BorderRadius.circular(TransitSpacing.radiusMd),
           borderSide: BorderSide(
-            color: solidScheme.accent,
-            width: TransitSpacing.strokeStrong,
+            color: hcAccent,
+            width: 2.5,
           ),
         ),
       ),
 
       dividerTheme: base.dividerTheme.copyWith(
-        color: solidScheme.border,
-        thickness: TransitSpacing.strokeAccent,
+        color: hcBorder,
+        thickness: 2.0,
       ),
 
       dialogTheme: base.dialogTheme.copyWith(
-        backgroundColor: solidScheme.bgSurface,
+        backgroundColor: hcBg,
         shape: RoundedRectangleBorder(
           borderRadius:
               BorderRadius.circular(TransitSpacing.radiusLg),
           side: BorderSide(
-            color: solidScheme.border,
-            width: TransitSpacing.strokeAccent,
+            color: hcBorder,
+            width: 2.0,
           ),
         ),
       ),
 
       snackBarTheme: base.snackBarTheme.copyWith(
-        backgroundColor: solidScheme.bgSurface,
+        backgroundColor: hcBg,
         contentTextStyle: base.snackBarTheme.contentTextStyle?.copyWith(
-          color: solidScheme.textHi,
+          color: hcText,
         ),
         shape: RoundedRectangleBorder(
           borderRadius:
               BorderRadius.circular(TransitSpacing.radiusSm),
           side: BorderSide(
-            color: solidScheme.border,
-            width: TransitSpacing.strokeAccent,
+            color: hcBorder,
+            width: 2.0,
           ),
         ),
       ),
 
       bottomSheetTheme: base.bottomSheetTheme.copyWith(
-        backgroundColor: solidScheme.bgSurface,
+        backgroundColor: hcBg,
         shape: RoundedRectangleBorder(
           borderRadius: const BorderRadius.vertical(
             top: Radius.circular(TransitSpacing.radiusLg),
           ),
           side: BorderSide(
-            color: solidScheme.border,
-            width: TransitSpacing.strokeAccent,
+            color: hcBorder,
+            width: 2.0,
           ),
         ),
       ),
 
       bottomNavigationBarTheme: base.bottomNavigationBarTheme.copyWith(
-        backgroundColor: solidScheme.bgSurface,
+        backgroundColor: hcBg,
+        selectedItemColor: hcAccent,
+        unselectedItemColor: hcText.withValues(alpha: 0.6),
       ),
 
       appBarTheme: base.appBarTheme.copyWith(
-        backgroundColor: solidScheme.bgRoot,
-        foregroundColor: solidScheme.textHi,
+        backgroundColor: hcBg,
+        foregroundColor: hcText,
       ),
     );
   }

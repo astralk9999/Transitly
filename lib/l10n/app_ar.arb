@@ -416,6 +416,8 @@
   "widgetsConfigUpdated": "تم تحديث الودجت",
   "widgetsConfigScanNow": "مسح البطاقة الآن",
   "widgetsConfigUnconfigured": "اضبط رحلتك",
+  "widgetsConfigRouteLabel": "الخط",
+  "widgetsConfigStopLabel": "المحطة",
   "widgetsConfigNoFavLines": "ليس لديك خطوط مفضلة.\nحدد خطاً كمفضل أولاً.",
   "appearanceBrightnessSystem": "النظام",
   "appearanceBrightnessLight": "فاتح",

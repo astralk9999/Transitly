@@ -210,6 +210,8 @@
   "widgetsConfigUpdated": "Widget updated",
   "widgetsConfigScanNow": "SCAN CARD NOW",
   "widgetsConfigUnconfigured": "Configure your trip",
+  "widgetsConfigRouteLabel": "Line",
+  "widgetsConfigStopLabel": "Stop",
   "widgetsConfigNoFavLines": "You have no favorite lines.\nMark a line as favorite first.",
   "appearanceBrightnessSystem": "System",
   "appearanceBrightnessLight": "Light",

@@ -288,6 +288,8 @@
   "widgetsConfigUpdated": "Widget actualizado",
   "widgetsConfigScanNow": "ESCANEAR TARJETA AHORA",
   "widgetsConfigUnconfigured": "Configura tu viaje",
+  "widgetsConfigRouteLabel": "Línea",
+  "widgetsConfigStopLabel": "Parada",
   "widgetsConfigNoFavLines": "No tienes líneas favoritas.\nMarca una línea como favorita primero.",
   "appearanceBrightnessSystem": "Sistema",
   "appearanceBrightnessLight": "Claro",

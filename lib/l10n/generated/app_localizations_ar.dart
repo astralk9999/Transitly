@@ -587,6 +587,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get widgetsConfigUnconfigured => 'اضبط رحلتك';
 
   @override
+  String get widgetsConfigRouteLabel => 'الخط';
+
+  @override
+  String get widgetsConfigStopLabel => 'المحطة';
+
+  @override
   String get widgetsConfigNoFavLines =>
       'ليس لديك خطوط مفضلة.\nحدد خطاً كمفضل أولاً.';
 

@@ -1234,6 +1234,18 @@ abstract class AppLocalizations {
   /// **'Configura tu viaje'**
   String get widgetsConfigUnconfigured;
 
+  /// No description provided for @widgetsConfigRouteLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Línea'**
+  String get widgetsConfigRouteLabel;
+
+  /// No description provided for @widgetsConfigStopLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Parada'**
+  String get widgetsConfigStopLabel;
+
   /// No description provided for @widgetsConfigNoFavLines.
   ///
   /// In es, this message translates to:

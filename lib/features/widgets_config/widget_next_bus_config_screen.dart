@@ -12,6 +12,7 @@ import '../../l10n/generated/app_localizations.dart';
 import '../../shared/providers/home_habitual_config_provider.dart';
 import '../../shared/widgets/glass_card.dart';
 import '../../shared/widgets/transit_button.dart';
+import 'widgets/route_autocomplete.dart';
 
 class WidgetNextBusConfigScreen extends ConsumerStatefulWidget {
   const WidgetNextBusConfigScreen({super.key});
@@ -127,36 +128,23 @@ class _WidgetNextBusConfigScreenState
               stop: _previewStop,
             ),
             const SizedBox(height: 24),
-            Text('Línea', style: TransitTypography.bodySecondary(c.textHi)),
+            Text(l10n.widgetsConfigRouteLabel, style: TransitTypography.bodySecondary(c.textHi)),
             const SizedBox(height: 8),
-            DropdownButtonFormField<String>(
-              value: _routeId,
-              dropdownColor: c.bgSurface,
-              style: TransitTypography.bodyPrimary(c.textHi),
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: c.bgInput,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: c.border),
-                ),
-              ),
-              items: routes
-                  .map((r) => DropdownMenuItem(
-                        value: r.id,
-                        child: Text('${r.code} · ${r.name}'),
-                      ))
-                  .toList(),
-              onChanged: (v) {
+            RouteAutocomplete(
+              routes: routes,
+              label: l10n.widgetsConfigRouteLabel,
+              initialValue:
+                  _routeId != null ? mockData.getRouteById(_routeId!) : null,
+              onSelected: (r) {
                 setState(() {
-                  _routeId = v;
+                  _routeId = r.id;
                   _stopId = null;
                 });
               },
             ),
             if (_routeId != null) ...[
               const SizedBox(height: 16),
-              Text('Parada', style: TransitTypography.bodySecondary(c.textHi)),
+              Text(l10n.widgetsConfigStopLabel, style: TransitTypography.bodySecondary(c.textHi)),
               const SizedBox(height: 8),
               DropdownButtonFormField<String>(
                 value: _stopId,

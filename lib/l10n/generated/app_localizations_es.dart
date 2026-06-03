@@ -592,6 +592,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get widgetsConfigUnconfigured => 'Configura tu viaje';
 
   @override
+  String get widgetsConfigRouteLabel => 'Línea';
+
+  @override
+  String get widgetsConfigStopLabel => 'Parada';
+
+  @override
   String get widgetsConfigNoFavLines =>
       'No tienes líneas favoritas.\nMarca una línea como favorita primero.';
 

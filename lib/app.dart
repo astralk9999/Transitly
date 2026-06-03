@@ -52,8 +52,12 @@ class TransitlyApp extends ConsumerWidget {
         final rawSystem = MediaQuery.textScalerOf(context).scale(1.0);
         final systemScale =
             rawSystem.isFinite && rawSystem > 0 ? rawSystem : 1.0;
+        final notifierScale = themeNotifier.fontScale.isFinite &&
+                themeNotifier.fontScale > 0
+            ? themeNotifier.fontScale
+            : 1.0;
         final combined =
-            (systemScale * themeNotifier.fontScale).clamp(0.8, 2.5);
+            (systemScale * notifierScale).clamp(0.8, 2.5);
 
         if (!combined.isFinite || combined <= 0) {
           return result;

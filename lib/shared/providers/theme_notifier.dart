@@ -432,6 +432,11 @@ class ThemeNotifier extends ChangeNotifier {
     } on UserPreferencesRepositoryException {
       await _loadGuestPrefs();
       AppLogger.info(_logTag, 'auth prefs unavailable; loaded guest fallback (palette=$_paletteId)');
+    } catch (e, st) {
+      AppLogger.error(_logTag, 'auth prefs corrupted, resetting to defaults', e, st);
+      _resetToDefaults();
+      _initialized = true;
+      notifyListeners();
     }
   }
 
@@ -458,21 +463,21 @@ class ThemeNotifier extends ChangeNotifier {
       final data = _guestBox!.get('prefs');
       AppLogger.info(_logTag, 'guestBox hydrate: paletteId=${data?['paletteId']} bgId=${data?['backgroundId']} fontScale=${data?['fontScale']}');
       if (data != null) {
-        _paletteId = data['paletteId'] as String? ?? 'default';
-        _backgroundId = data['backgroundId'] as String? ?? 'shaders/smoke.frag';
+        _paletteId = _safeString(data['paletteId'], 'default');
+        _backgroundId = _safeString(data['backgroundId'], 'shaders/smoke.frag');
         _backgroundEnabled = data['backgroundEnabled'] as bool? ?? true;
-        _backgroundOpacity = (data['backgroundOpacity'] as num?)?.toDouble() ?? 1.0;
-        _fontScale = (data['fontScale'] as num?)?.toDouble() ?? 1.0;
+        _backgroundOpacity = _safeDouble(data['backgroundOpacity'], 1.0);
+        _fontScale = _safeDouble(data['fontScale'], 1.0).clamp(0.8, 2.5);
         _colorBlindMode = _parseColorBlindMode(data['colorBlindMode'] as String?);
-        _dyslexiaFontEnabled = data['dyslexiaFontEnabled'] as bool? ?? false;
-        _reduceMotion = data['reduceMotion'] as bool? ?? false;
-        _highContrast = data['highContrast'] as bool? ?? false;
-        _mapStyle = data['mapStyle'] as String? ?? 'streets';
-        _notifIncidentResolved = data['notifIncidentResolved'] as bool? ?? true;
-        _notifRoutePromoted = data['notifRoutePromoted'] as bool? ?? true;
-        _notifBusApproaching = data['notifBusApproaching'] as bool? ?? true;
-        _notifFeatureRequestReplied = data['notifFeatureRequestReplied'] as bool? ?? true;
-        _quietHoursEnabled = data['quietHoursEnabled'] as bool? ?? false;
+        _dyslexiaFontEnabled = _safeBool(data['dyslexiaFontEnabled'], false);
+        _reduceMotion = _safeBool(data['reduceMotion'], false);
+        _highContrast = _safeBool(data['highContrast'], false);
+        _mapStyle = _safeString(data['mapStyle'], 'streets');
+        _notifIncidentResolved = _safeBool(data['notifIncidentResolved'], true);
+        _notifRoutePromoted = _safeBool(data['notifRoutePromoted'], true);
+        _notifBusApproaching = _safeBool(data['notifBusApproaching'], true);
+        _notifFeatureRequestReplied = _safeBool(data['notifFeatureRequestReplied'], true);
+        _quietHoursEnabled = _safeBool(data['quietHoursEnabled'], false);
         _quietHoursStart = data['quietHoursStart'] as String?;
         _quietHoursEnd = data['quietHoursEnd'] as String?;
         final rawCustom = data['customColors'] as Map<dynamic, dynamic>?;
@@ -484,8 +489,13 @@ class ThemeNotifier extends ChangeNotifier {
           }
         }
       }
-    } catch (e) {
-      AppLogger.warn(_logTag, 'guest prefs load failed; using defaults', e);
+    } catch (e, st) {
+      AppLogger.error(_logTag, 'guest prefs corrupted, resetting to defaults', e, st);
+      _resetToDefaults();
+      try {
+        _guestBox ??= await _openGuestBox();
+        await _guestBox!.delete('prefs');
+      } catch (_) {}
     }
     _initialized = true;
     notifyListeners();
@@ -565,6 +575,32 @@ class ThemeNotifier extends ChangeNotifier {
       AppLogger.warn(_logTag, 'parseHexColor failed', e);
       return null;
     }
+  }
+
+  double _safeDouble(dynamic v, double fallback) {
+    if (v is num && v.isFinite) return v.toDouble().clamp(-1000, 1000);
+    return fallback;
+  }
+
+  String _safeString(dynamic v, String fallback) {
+    return v is String && v.isNotEmpty ? v : fallback;
+  }
+
+  bool _safeBool(dynamic v, bool fallback) {
+    return v is bool ? v : fallback;
+  }
+
+  void _resetToDefaults() {
+    _paletteId = 'default';
+    _backgroundId = 'shaders/smoke.frag';
+    _backgroundEnabled = true;
+    _backgroundOpacity = 1.0;
+    _fontScale = 1.0;
+    _colorBlindMode = ColorBlindMode.none;
+    _dyslexiaFontEnabled = false;
+    _highContrast = false;
+    _reduceMotion = false;
+    _mapStyle = 'streets';
   }
 
   String _colorToHex(Color c) {

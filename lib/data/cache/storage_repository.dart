@@ -17,7 +17,7 @@ class StorageRepository {
       final path = box.path;
       if (path != null) return File(path).lengthSync();
     } catch (e) {
-      AppLogger.warn(_logTag, 'file size unavailable for $boxName', e);
+      AppLogger.debug(_logTag, 'file size unavailable for $boxName (box typed)');
     }
     return 0;
   }
@@ -28,7 +28,7 @@ class StorageRepository {
       final box = Hive.box(boxName);
       return box.path;
     } catch (e) {
-      AppLogger.warn(_logTag, 'box path unavailable for $boxName', e);
+      AppLogger.debug(_logTag, 'box path unavailable for $boxName (box typed)');
       return null;
     }
   }

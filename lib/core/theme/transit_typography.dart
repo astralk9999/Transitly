@@ -16,9 +16,9 @@ abstract final class TransitTypography {
   // Atkinson Hyperlegible, que ya esta empaquetada).
   static List<String>? _fallback() {
     if (isDyslexiaEnabled()) {
-      return const ['Atkinson Hyperlegible', 'DM Sans'];
+      return const ['Atkinson Hyperlegible', 'DM Sans', 'sans-serif'];
     }
-    return null;
+    return const ['DM Sans', 'sans-serif'];
   }
 
   // ── Data / times / numbers (default: IBM Plex Mono) ──────

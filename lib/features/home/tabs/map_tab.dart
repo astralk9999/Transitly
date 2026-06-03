@@ -20,6 +20,7 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/models/enums.dart';
 import '../../../shared/models/route_model.dart';
 import '../../../shared/models/route_stop_model.dart';
+import '../../../shared/providers/center_on_stop_provider.dart';
 import '../../../shared/providers/connectivity_provider.dart';
 import '../../../shared/providers/is_dark_provider.dart';
 import '../../../shared/providers/user_favorites_provider.dart';
@@ -399,6 +400,18 @@ class _MapTabState extends ConsumerState<MapTab> {
         mapFilterControllerProvider.select((s) => s.showAllStops));
 
     final currentKey = '${isDark ? "d" : "l"}-$mapStyle';
+
+    ref.listen(centerOnStopIdProvider, (prev, next) {
+      if (next != null) {
+        final stop = mockData.getStopById(next);
+        if (stop != null) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _mapController.move(LatLng(stop.lat, stop.lng), 17);
+          });
+        }
+        ref.read(centerOnStopIdProvider.notifier).state = null;
+      }
+    });
     final bool bypassFmtc;
     if (_lastMapKey != null && _lastMapKey != currentKey) {
       _bypassFmtcUntil = DateTime.now().add(const Duration(seconds: 3));

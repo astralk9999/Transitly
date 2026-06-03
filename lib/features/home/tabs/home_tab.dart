@@ -15,12 +15,14 @@ import '../../../shared/providers/derived/home_providers.dart';
 import '../../../shared/providers/home_habitual_config_provider.dart';
 import '../../../shared/providers/home_reference_stop_provider.dart';
 import '../../../shared/providers/auth_provider.dart';
+import '../../../shared/providers/center_on_stop_provider.dart';
 import '../../../shared/providers/user_favorites_provider.dart';
 import '../../../shared/providers/user_location_provider.dart';
 import '../../../shared/providers/route_lookup_providers.dart';
 import '../../../data/auth/auth_repository.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/glass_card.dart';
+import '../../../shared/widgets/pressable.dart';
 import '../../../shared/widgets/responsive_scaffold.dart';
 import '../../../shared/widgets/stagger_list.dart';
 import '../../../shared/widgets/route_card.dart';
@@ -589,95 +591,101 @@ class _HomeTabState extends ConsumerState<HomeTab> {
         ? l10n.homeNearbyDistance('${distanceMeters.toInt()}')
         : null;
 
-    return GlassCard(
-      blur: 20,
-      fillOpacity: 0.06,
-      borderRadius: 14,
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.all(14),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(stop.name,
-                    style:
-                        TransitTypography.bodyPrimary(c.textHi)),
-              ),
-              if (distStr != null)
-                Text(distStr,
-                    style:
-                        TransitTypography.bodySmall(c.accent)),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 6,
-            runSpacing: 4,
-            children: routesAtStop.take(4).map((routeId) {
-              final route = mockData.getRouteById(routeId);
-              if (route == null) return const SizedBox.shrink();
-              final next =
-                  mockData.getNextDepartures(routeId, stop.id, 1);
-              final time = next.isNotEmpty
-                  ? next.first.departureTime
-                  : '--:--';
-              final mins = next.isNotEmpty
-                  ? _minutesUntil(next.first.departureTime)
-                  : null;
+    return Pressable(
+      onTap: () {
+        ref.read(centerOnStopIdProvider.notifier).state = stop.id;
+        context.go('/home/mapa');
+      },
+      child: GlassCard(
+        blur: 20,
+        fillOpacity: 0.06,
+        borderRadius: 14,
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.all(14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(stop.name,
+                      style:
+                          TransitTypography.bodyPrimary(c.textHi)),
+                ),
+                if (distStr != null)
+                  Text(distStr,
+                      style:
+                          TransitTypography.bodySmall(c.accent)),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 6,
+              runSpacing: 4,
+              children: routesAtStop.take(4).map((routeId) {
+                final route = mockData.getRouteById(routeId);
+                if (route == null) return const SizedBox.shrink();
+                final next =
+                    mockData.getNextDepartures(routeId, stop.id, 1);
+                final time = next.isNotEmpty
+                    ? next.first.departureTime
+                    : '--:--';
+                final mins = next.isNotEmpty
+                    ? _minutesUntil(next.first.departureTime)
+                    : null;
 
-              return Semantics(
-                button: true,
-                label: l10n.homeRouteSemanticsLabel(
-                    route.code, time),
-                child: GestureDetector(
-                  onTap: () =>
-                      context.push('/route/$routeId'),
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 4),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        TransitChip(route.code,
-                            color: route.routeColor),
-                        const SizedBox(width: 6),
-                        Flexible(
-                          child: Text(
-                            route.name,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TransitTypography.bodySmall(
-                                c.textMid),
-                          ),
-                        ),
-                        const SizedBox(width: 6),
-                        Text(time,
-                            style: TransitTypography.stopTime(
-                                c.textHi)),
-                        if (mins != null) ...[
-                          const SizedBox(width: 4),
-                          AnimatedSwitcher(
-                            duration: const Duration(
-                                milliseconds: 200),
+                return Semantics(
+                  button: true,
+                  label: l10n.homeRouteSemanticsLabel(
+                      route.code, time),
+                  child: GestureDetector(
+                    onTap: () =>
+                        context.push('/route/$routeId'),
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 4),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          TransitChip(route.code,
+                              color: route.routeColor),
+                          const SizedBox(width: 6),
+                          Flexible(
                             child: Text(
-                              '${mins}m',
-                              key: ValueKey(
-                                  '$routeId-$mins'),
-                              style:
-                                  TransitTypography.bodySmall(
-                                      c.accent),
+                              route.name,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TransitTypography.bodySmall(
+                                  c.textMid),
                             ),
                           ),
+                          const SizedBox(width: 6),
+                          Text(time,
+                              style: TransitTypography.stopTime(
+                                  c.textHi)),
+                          if (mins != null) ...[
+                            const SizedBox(width: 4),
+                            AnimatedSwitcher(
+                              duration: const Duration(
+                                  milliseconds: 200),
+                              child: Text(
+                                '${mins}m',
+                                key: ValueKey(
+                                    '$routeId-$mins'),
+                                style:
+                                    TransitTypography.bodySmall(
+                                        c.accent),
+                              ),
+                            ),
+                          ],
                         ],
-                      ],
+                      ),
                     ),
                   ),
-                ),
-              );
-            }).toList(),
-          ),
-        ],
+                );
+              }).toList(),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -18,7 +18,7 @@ abstract final class TransitTypography {
     if (isDyslexiaEnabled()) {
       return const ['Atkinson Hyperlegible', 'DM Sans', 'sans-serif'];
     }
-    return const ['DM Sans', 'sans-serif'];
+    return null;
   }
 
   // ── Data / times / numbers (default: IBM Plex Mono) ──────

@@ -17,8 +17,8 @@ void main() {
   });
 
   group('AuthError enum', () {
-    test('AuthError has 8 values', () {
-      expect(AuthError.values.length, 8);
+    test('AuthError has 9 values', () {
+      expect(AuthError.values.length, 9);
     });
 
     test('AuthRepoException stores error and message', () {

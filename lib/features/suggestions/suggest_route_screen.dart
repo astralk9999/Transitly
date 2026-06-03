@@ -54,6 +54,7 @@ class _SuggestRouteScreenState extends ConsumerState<SuggestRouteScreen> {
 
     return Scaffold(
       backgroundColor: c.bgRoot,
+      extendBody: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,

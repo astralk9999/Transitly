@@ -57,8 +57,8 @@ void main() {
   });
 
   group('AuthError enum', () {
-    test('all 8 error cases are reachable', () {
-      expect(AuthError.values.length, 8);
+    test('all 9 error cases are reachable', () {
+      expect(AuthError.values.length, 9);
       expect(AuthError.values, contains(AuthError.invalidCredentials));
       expect(AuthError.values, contains(AuthError.emailTaken));
       expect(AuthError.values, contains(AuthError.weakPassword));

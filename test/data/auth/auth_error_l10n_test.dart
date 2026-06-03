@@ -3,8 +3,8 @@ import 'package:transitly/data/auth/auth_repository.dart';
 
 void main() {
   group('AuthError enum', () {
-    test('has exactly 8 error types', () {
-      expect(AuthError.values.length, 8);
+    test('has exactly 9 error types', () {
+      expect(AuthError.values.length, 9);
     });
 
     test('contains all expected error kinds', () {

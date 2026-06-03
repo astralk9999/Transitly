@@ -10,6 +10,7 @@ enum AuthError {
   providerCancelled,
   emailNotVerified,
   rateLimited,
+  userNotFound,
   unknown,
 }
 

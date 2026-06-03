@@ -12,7 +12,8 @@ AuthRepoException mapAuthError(Exception e) {
         AuthError.invalidCredentials, 'Invalid credentials');
   }
   if (msg.contains('already been registered') ||
-      msg.contains('already registered')) {
+      msg.contains('already registered') ||
+      msg.contains('user already exists')) {
     return const AuthRepoException(
         AuthError.emailTaken, 'Email already registered');
   }
@@ -23,6 +24,14 @@ AuthRepoException mapAuthError(Exception e) {
   if (msg.contains('email not confirmed')) {
     return const AuthRepoException(
         AuthError.emailNotVerified, 'Email not verified');
+  }
+  if (msg.contains('user not found')) {
+    return const AuthRepoException(
+        AuthError.userNotFound, 'User not found');
+  }
+  if (msg.contains('network request failed') || msg.contains('connection refused') || msg.contains('socketexception')) {
+    return const AuthRepoException(
+        AuthError.networkUnavailable, 'Network unavailable');
   }
   final rateMatch = RegExp(r'for security purposes,? you can only request this after (\d+) seconds').firstMatch(msg);
   if (rateMatch != null) {

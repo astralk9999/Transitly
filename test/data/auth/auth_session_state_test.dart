@@ -16,8 +16,8 @@ void main() {
       expect(states[1], isNot(equals(states[2])));
     });
 
-    test('AuthError enum has 8 values', () {
-      expect(AuthError.values.length, 8);
+    test('AuthError enum has 9 values', () {
+      expect(AuthError.values.length, 9);
       expect(AuthError.values, contains(AuthError.invalidCredentials));
       expect(AuthError.values, contains(AuthError.emailTaken));
       expect(AuthError.values, contains(AuthError.weakPassword));

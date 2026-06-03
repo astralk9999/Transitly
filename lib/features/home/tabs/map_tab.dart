@@ -161,6 +161,15 @@ class _MapTabState extends ConsumerState<MapTab> {
       _sheetController.animateTo(0.35,
           duration: const Duration(milliseconds: 250), curve: Curves.easeInOut);
       _scrollToRoute(closest);
+      final route = mockData.getRouteById(closest);
+      if (route != null && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Línea ${route.code} · ${route.name}'),
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.fromLTRB(16, 0, 16, 100 + MediaQuery.of(context).padding.bottom),
+          duration: const Duration(seconds: 2),
+        ));
+      }
     } else if (closest == null && _selectedRouteId != null) {
       setState(() => _selectedRouteId = null);
       _sheetController.animateTo(0.22,
@@ -540,8 +549,15 @@ class _MapTabState extends ConsumerState<MapTab> {
                       const BorderRadius.vertical(top: Radius.circular(20)),
                   child: Stack(
                     children: [
-                      ListView.builder(
-                        controller: scrollController,
+                      NotificationListener<ScrollNotification>(
+                        onNotification: (n) {
+                          if (_sheetController.size < 0.18 && n.metrics.pixels > 0) {
+                            return true;
+                          }
+                          return false;
+                        },
+                        child: ListView.builder(
+                          controller: scrollController,
                         padding: EdgeInsets.fromLTRB(
                           16,
                           0,
@@ -591,6 +607,7 @@ class _MapTabState extends ConsumerState<MapTab> {
                           );
                         },
                       ),
+                      ), // NotificationListener end
                       Positioned(
                         left: 0,
                         right: 0,

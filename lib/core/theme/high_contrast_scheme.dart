@@ -30,9 +30,15 @@ class HighContrastSchemeWrapper implements TransitColorScheme {
       ? _base.accent
       : (_isDark ? const Color(0xFFFFFF00) : const Color(0xFF0000FF));
 
-  @override Color get accentBg => _isDark ? const Color(0x22FFFF00) : const Color(0x220000FF);
+  @override
+  Color get accentBg => _preserveAccent
+      ? _base.accent.withValues(alpha: 0.15)
+      : (_isDark ? const Color(0x22FFFF00) : const Color(0x220000FF));
 
-  @override Color get accentMuted => _isDark ? const Color(0x44FFFF00) : const Color(0x440000FF);
+  @override
+  Color get accentMuted => _preserveAccent
+      ? _base.accent.withValues(alpha: 0.30)
+      : (_isDark ? const Color(0x44FFFF00) : const Color(0x440000FF));
 
   @override Color get neonCyan => _isDark ? const Color(0xFF00FFFF) : const Color(0xFF0055AA);
   @override Color get neonMagenta => _isDark ? const Color(0xFFFF00FF) : const Color(0xFFAA0055);

@@ -5,8 +5,10 @@ import 'package:home_widget/home_widget.dart';
 
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
+import '../../data/mock/mock_data_extensions.dart';
 import '../../data/mock/mock_data_service.dart';
 import '../../data/widgets_native/widget_data_writer.dart';
+import '../../l10n/generated/app_localizations.dart';
 import '../../shared/providers/home_habitual_config_provider.dart';
 import '../../shared/widgets/glass_card.dart';
 import '../../shared/widgets/transit_button.dart';
@@ -74,7 +76,7 @@ class _WidgetNextBusConfigScreenState
       );
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Widget actualizado')),
+          SnackBar(content: Text(AppLocalizations.of(context).widgetsConfigUpdated)),
         );
       }
     }
@@ -88,7 +90,7 @@ class _WidgetNextBusConfigScreenState
       _updatePreview();
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Configuración guardada')),
+          SnackBar(content: Text(AppLocalizations.of(context).widgetsConfigSaved)),
         );
       }
     }
@@ -98,6 +100,7 @@ class _WidgetNextBusConfigScreenState
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
+    final l10n = AppLocalizations.of(context);
     final mockData = ref.watch(mockDataServiceProvider);
     final routes = mockData.routes;
 
@@ -110,8 +113,7 @@ class _WidgetNextBusConfigScreenState
           icon: Icon(Icons.arrow_back, color: c.textHi),
           onPressed: () => context.pop(),
         ),
-        title:
-            Text('Próximo bus', style: TransitTypography.heading(c.textHi)),
+        title: Text(l10n.widgetsConfigNextBus, style: TransitTypography.heading(c.textHi)),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -169,7 +171,7 @@ class _WidgetNextBusConfigScreenState
                   ),
                 ),
                 items: mockData
-                    .getStopsForRoute(_routeId!)
+                    .getUniqueStopsForRoute(_routeId!)
                     .map((s) => DropdownMenuItem(
                           value: s.id,
                           child: Text(s.name),
@@ -183,7 +185,7 @@ class _WidgetNextBusConfigScreenState
               children: [
                 Expanded(
                   child: TransitButton(
-                    label: 'PROBAR WIDGET',
+                    label: l10n.widgetsConfigTestButton,
                     isPrimary: false,
                     onPressed: _routeId != null && _stopId != null
                         ? _testWidget
@@ -193,7 +195,7 @@ class _WidgetNextBusConfigScreenState
                 const SizedBox(width: 12),
                 Expanded(
                   child: TransitButton(
-                    label: 'GUARDAR',
+                    label: l10n.widgetsConfigSaveButton,
                     onPressed: _routeId != null && _stopId != null
                         ? _save
                         : null,
@@ -239,11 +241,7 @@ class _PreviewCard extends StatelessWidget {
             ),
             alignment: Alignment.center,
             child: Text(routeCode,
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold)),
-          ),
+                style: TransitTypography.routeCode(Colors.white)),          ),
           const SizedBox(width: 14),
           Expanded(
             child: Column(

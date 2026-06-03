@@ -547,6 +547,51 @@ class AppLocalizationsEn extends AppLocalizations {
       'Notifications for incidents in zones near you';
 
   @override
+  String get widgetsConfigTitle => 'Widgets';
+
+  @override
+  String get widgetsConfigNextBus => 'Next bus';
+
+  @override
+  String get widgetsConfigNextBusDesc =>
+      'Shows the next departure from your usual stop';
+
+  @override
+  String get widgetsConfigMyLine => 'My line';
+
+  @override
+  String get widgetsConfigMyLineDesc =>
+      'Shows status and next departures of your favorite line';
+
+  @override
+  String get widgetsConfigNfc => 'Bus pass balance';
+
+  @override
+  String get widgetsConfigNfcDesc => 'Shows balance from your last NFC scan';
+
+  @override
+  String get widgetsConfigTestButton => 'TEST WIDGET';
+
+  @override
+  String get widgetsConfigSaveButton => 'SAVE';
+
+  @override
+  String get widgetsConfigSaved => 'Settings saved';
+
+  @override
+  String get widgetsConfigUpdated => 'Widget updated';
+
+  @override
+  String get widgetsConfigScanNow => 'SCAN CARD NOW';
+
+  @override
+  String get widgetsConfigUnconfigured => 'Configure your trip';
+
+  @override
+  String get widgetsConfigNoFavLines =>
+      'You have no favorite lines.\nMark a line as favorite first.';
+
+  @override
   String get appearanceBrightnessSystem => 'System';
 
   @override
@@ -1120,9 +1165,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get widgetsHowToAdd => 'How to add the widget';
-
-  @override
-  String get widgetsConfigSaved => 'Settings saved';
 
   @override
   String get offlineBannerOffline =>

@@ -550,6 +550,52 @@ class AppLocalizationsEs extends AppLocalizations {
       'Notificaciones cuando hay incidencias en zonas cerca de ti';
 
   @override
+  String get widgetsConfigTitle => 'Widgets';
+
+  @override
+  String get widgetsConfigNextBus => 'Próximo bus';
+
+  @override
+  String get widgetsConfigNextBusDesc =>
+      'Muestra la próxima salida de tu parada habitual';
+
+  @override
+  String get widgetsConfigMyLine => 'Mi línea';
+
+  @override
+  String get widgetsConfigMyLineDesc =>
+      'Muestra el estado y próximas salidas de tu línea favorita';
+
+  @override
+  String get widgetsConfigNfc => 'Saldo bonobús';
+
+  @override
+  String get widgetsConfigNfcDesc =>
+      'Muestra el saldo de tu última lectura NFC';
+
+  @override
+  String get widgetsConfigTestButton => 'PROBAR WIDGET';
+
+  @override
+  String get widgetsConfigSaveButton => 'GUARDAR';
+
+  @override
+  String get widgetsConfigSaved => 'Configuración guardada';
+
+  @override
+  String get widgetsConfigUpdated => 'Widget actualizado';
+
+  @override
+  String get widgetsConfigScanNow => 'ESCANEAR TARJETA AHORA';
+
+  @override
+  String get widgetsConfigUnconfigured => 'Configura tu viaje';
+
+  @override
+  String get widgetsConfigNoFavLines =>
+      'No tienes líneas favoritas.\nMarca una línea como favorita primero.';
+
+  @override
   String get appearanceBrightnessSystem => 'Sistema';
 
   @override
@@ -1124,9 +1170,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get widgetsHowToAdd => 'Cómo añadir el widget';
-
-  @override
-  String get widgetsConfigSaved => 'Configuración guardada';
 
   @override
   String get offlineBannerOffline =>

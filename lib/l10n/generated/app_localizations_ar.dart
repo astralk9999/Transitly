@@ -546,6 +546,51 @@ class AppLocalizationsAr extends AppLocalizations {
       'إشعارات عند وجود حوادث في مناطق قريبة منك';
 
   @override
+  String get widgetsConfigTitle => 'الودجات';
+
+  @override
+  String get widgetsConfigNextBus => 'الحافلة التالية';
+
+  @override
+  String get widgetsConfigNextBusDesc =>
+      'يعرض المغادرة التالية من محطتك المعتادة';
+
+  @override
+  String get widgetsConfigMyLine => 'خطي';
+
+  @override
+  String get widgetsConfigMyLineDesc =>
+      'يعرض حالة والمغادرات التالية لخطك المفضل';
+
+  @override
+  String get widgetsConfigNfc => 'رصيد البطاقة';
+
+  @override
+  String get widgetsConfigNfcDesc => 'يعرض الرصيد من آخر مسح NFC';
+
+  @override
+  String get widgetsConfigTestButton => 'تجربة الودجت';
+
+  @override
+  String get widgetsConfigSaveButton => 'حفظ';
+
+  @override
+  String get widgetsConfigSaved => 'تم حفظ الإعدادات';
+
+  @override
+  String get widgetsConfigUpdated => 'تم تحديث الودجت';
+
+  @override
+  String get widgetsConfigScanNow => 'مسح البطاقة الآن';
+
+  @override
+  String get widgetsConfigUnconfigured => 'اضبط رحلتك';
+
+  @override
+  String get widgetsConfigNoFavLines =>
+      'ليس لديك خطوط مفضلة.\nحدد خطاً كمفضل أولاً.';
+
+  @override
   String get appearanceBrightnessSystem => 'النظام';
 
   @override
@@ -1117,9 +1162,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get widgetsHowToAdd => 'كيفية إضافة الودجة';
-
-  @override
-  String get widgetsConfigSaved => 'تم حفظ الإعدادات';
 
   @override
   String get offlineBannerOffline => 'غير متصل';

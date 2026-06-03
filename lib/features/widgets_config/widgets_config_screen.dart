@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
+import '../../l10n/generated/app_localizations.dart';
 import '../../shared/widgets/glass_card.dart';
 
 class WidgetsConfigScreen extends ConsumerWidget {
@@ -13,6 +14,7 @@ class WidgetsConfigScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: c.bgRoot,
@@ -23,7 +25,7 @@ class WidgetsConfigScreen extends ConsumerWidget {
           icon: Icon(Icons.arrow_back, color: c.textHi),
           onPressed: () => context.pop(),
         ),
-        title: Text('Widgets', style: TransitTypography.heading(c.textHi)),
+        title: Text(l10n.widgetsConfigTitle, style: TransitTypography.heading(c.textHi)),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
@@ -31,24 +33,24 @@ class WidgetsConfigScreen extends ConsumerWidget {
           _WidgetListItem(
             c: c,
             icon: Icons.directions_bus,
-            title: 'Próximo bus',
-            subtitle: 'Muestra la próxima salida de tu parada habitual',
+            title: l10n.widgetsConfigNextBus,
+            subtitle: l10n.widgetsConfigNextBusDesc,
             onTap: () => context.push('/widgets-config/next-bus'),
           ),
           const SizedBox(height: 8),
           _WidgetListItem(
             c: c,
             icon: Icons.route_outlined,
-            title: 'Mi línea',
-            subtitle: 'Muestra el estado y próximas salidas de tu línea favorita',
+            title: l10n.widgetsConfigMyLine,
+            subtitle: l10n.widgetsConfigMyLineDesc,
             onTap: () => context.push('/widgets-config/my-line'),
           ),
           const SizedBox(height: 8),
           _WidgetListItem(
             c: c,
             icon: Icons.credit_card,
-            title: 'Saldo bonobús',
-            subtitle: 'Muestra el saldo de tu última lectura NFC',
+            title: l10n.widgetsConfigNfc,
+            subtitle: l10n.widgetsConfigNfcDesc,
             onTap: () => context.push('/widgets-config/nfc-balance'),
           ),
         ],

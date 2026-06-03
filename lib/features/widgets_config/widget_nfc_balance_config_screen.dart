@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
+import '../../l10n/generated/app_localizations.dart';
 import '../../shared/providers/nfc_provider.dart';
 import '../../shared/widgets/glass_card.dart';
 import '../../shared/widgets/transit_button.dart';
@@ -15,6 +16,7 @@ class WidgetNfcBalanceConfigScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
+    final l10n = AppLocalizations.of(context);
     final nfc = ref.watch(nfcScanProvider);
     final hasBalance = nfc.result != null;
 
@@ -27,8 +29,7 @@ class WidgetNfcBalanceConfigScreen extends ConsumerWidget {
           icon: Icon(Icons.arrow_back, color: c.textHi),
           onPressed: () => context.pop(),
         ),
-        title:
-            Text('Saldo bonobús', style: TransitTypography.heading(c.textHi)),
+        title: Text(l10n.widgetsConfigNfc, style: TransitTypography.heading(c.textHi)),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -67,7 +68,7 @@ class WidgetNfcBalanceConfigScreen extends ConsumerWidget {
             SizedBox(
               width: double.infinity,
               child: TransitButton(
-                label: 'ESCANEAR TARJETA AHORA',
+                label: l10n.widgetsConfigScanNow,
                 onPressed: () => context.go('/home/tarjeta'),
               ),
             ),

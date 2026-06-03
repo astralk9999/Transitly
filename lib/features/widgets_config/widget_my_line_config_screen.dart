@@ -7,6 +7,7 @@ import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../data/mock/mock_data_service.dart';
 import '../../data/widgets_native/widget_data_writer.dart';
+import '../../l10n/generated/app_localizations.dart';
 import '../../shared/models/models.dart';
 import '../../shared/providers/user_favorites_provider.dart';
 import '../../shared/widgets/glass_card.dart';
@@ -19,6 +20,7 @@ class WidgetMyLineConfigScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
+    final l10n = AppLocalizations.of(context);
     final mockData = ref.watch(mockDataServiceProvider);
     final favs = ref.watch(userFavoritesProvider);
     final routes = favs
@@ -35,7 +37,7 @@ class WidgetMyLineConfigScreen extends ConsumerWidget {
           icon: Icon(Icons.arrow_back, color: c.textHi),
           onPressed: () => context.pop(),
         ),
-        title: Text('Mi línea', style: TransitTypography.heading(c.textHi)),
+        title: Text(l10n.widgetsConfigMyLine, style: TransitTypography.heading(c.textHi)),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -52,8 +54,8 @@ class WidgetMyLineConfigScreen extends ConsumerWidget {
                 borderRadius: 12,
                 padding: const EdgeInsets.all(24),
                 child: Center(
-                  child: Text('No tienes líneas favoritas.\nMarca una línea como favorita primero.',
-                      textAlign: TextAlign.center,
+                child: Text(l10n.widgetsConfigNoFavLines,
+                    textAlign: TextAlign.center,
                       style: TransitTypography.bodySecondary(c.textMid)),
                 ),
               )

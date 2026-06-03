@@ -20,65 +20,105 @@ class ZoneCompanyLineTree extends ConsumerWidget {
     final operators = mockData.getOperators();
     final routes = mockData.routes;
 
+    final byZone = <String, List<String>>{};
+    for (final op in operators) {
+      final zone = op.region.isNotEmpty ? op.region : 'Otras zonas';
+      byZone.putIfAbsent(zone, () => []).add(op.id);
+    }
+    final zones = byZone.keys.toList()..sort();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: operators.map((op) {
-        final opRoutes = routes.where((r) => r.operatorId == op.id).toList();
-        if (opRoutes.isEmpty) return const SizedBox.shrink();
+      children: zones.map((zone) {
+        final opIds = byZone[zone]!;
+        final opsInZone = operators.where((op) => opIds.contains(op.id)).toList();
+        final routesInZone = routes.where(
+          (r) => opIds.contains(r.operatorId),
+        ).toList();
+        if (routesInZone.isEmpty) return const SizedBox.shrink();
 
-        final allDisabled = opRoutes.every((r) => f.disabledRouteIds.contains(r.id));
-        final noneDisabled = opRoutes.every((r) => !f.disabledRouteIds.contains(r.id));
+        final allDis = routesInZone.every((r) => f.disabledRouteIds.contains(r.id));
+        final noneDis = routesInZone.every((r) => !f.disabledRouteIds.contains(r.id));
 
         return ExpansionTile(
+          initiallyExpanded: true,
           tilePadding: const EdgeInsets.symmetric(horizontal: 4),
-          childrenPadding: const EdgeInsets.only(left: 16),
+          childrenPadding: const EdgeInsets.only(left: 12),
           iconColor: c.accent,
           collapsedIconColor: c.textMid,
           title: Row(
             children: [
               _TriStateCheckbox(
-                value: noneDisabled ? true : (allDisabled ? false : null),
+                value: noneDis ? true : (allDis ? false : null),
                 c: c,
-                onChanged: (v) {
-                  if (v == true || v == null) {
-                    ctrl.setRoutesEnabled(opRoutes.map((r) => r.id), true);
-                  } else {
-                    ctrl.setRoutesEnabled(opRoutes.map((r) => r.id), false);
-                  }
-                },
+                onChanged: (v) => ctrl.setRoutesEnabled(
+                  routesInZone.map((r) => r.id),
+                  v == true,
+                ),
               ),
               const SizedBox(width: 8),
               Expanded(
-                child: Text(op.name, style: TransitTypography.bodyPrimary(c.textHi)),
+                child: Text(zone, style: TransitTypography.heading(c.textHi)),
               ),
             ],
           ),
-          children: opRoutes.map((route) {
-            final disabled = f.disabledRouteIds.contains(route.id);
-            return ListTile(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-              dense: true,
-              leading: Container(
-                width: 12,
-                height: 12,
-                decoration: BoxDecoration(
-                  color: disabled ? c.textLo : route.routeColor,
-                  shape: BoxShape.circle,
-                ),
+          children: opsInZone.map((op) {
+            final opRoutes = routes.where((r) => r.operatorId == op.id).toList();
+            if (opRoutes.isEmpty) return const SizedBox.shrink();
+
+            final allOpDis = opRoutes.every((r) => f.disabledRouteIds.contains(r.id));
+            final noneOpDis = opRoutes.every((r) => !f.disabledRouteIds.contains(r.id));
+
+            return ExpansionTile(
+              tilePadding: const EdgeInsets.symmetric(horizontal: 4),
+              childrenPadding: const EdgeInsets.only(left: 16),
+              iconColor: c.accent,
+              collapsedIconColor: c.textMid,
+              initiallyExpanded: opRoutes.length <= 5,
+              title: Row(
+                children: [
+                  _TriStateCheckbox(
+                    value: noneOpDis ? true : (allOpDis ? false : null),
+                    c: c,
+                    onChanged: (v) => ctrl.setRoutesEnabled(
+                      opRoutes.map((r) => r.id),
+                      v == true,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(op.name, style: TransitTypography.bodyPrimary(c.textHi)),
+                  ),
+                ],
               ),
-              title: Text(
-                '${route.code} · ${route.name}',
-                style: TransitTypography.bodySmall(
-                  disabled ? c.textLo : c.textHi,
-                ),
-              ),
-              trailing: Checkbox(
-                value: !disabled,
-                activeColor: c.accent,
-                visualDensity: VisualDensity.compact,
-                onChanged: (_) => ctrl.toggleRouteId(route.id),
-              ),
-              onTap: () => ctrl.toggleRouteId(route.id),
+              children: opRoutes.map((route) {
+                final disabled = f.disabledRouteIds.contains(route.id);
+                return ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                  dense: true,
+                  leading: Container(
+                    width: 12,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      color: disabled ? c.textLo : route.routeColor,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  title: Text(
+                    '${route.code} · ${route.name}',
+                    style: TransitTypography.bodySmall(
+                      disabled ? c.textLo : c.textHi,
+                    ),
+                  ),
+                  trailing: Checkbox(
+                    value: !disabled,
+                    activeColor: c.accent,
+                    visualDensity: VisualDensity.compact,
+                    onChanged: (_) => ctrl.toggleRouteId(route.id),
+                  ),
+                  onTap: () => ctrl.toggleRouteId(route.id),
+                );
+              }).toList(),
             );
           }).toList(),
         );
@@ -97,12 +137,12 @@ class _TriStateCheckbox extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        final next = value == true ? false : (value == false ? null : true);
+        final next = value == false ? true : false;
         onChanged?.call(next);
       },
       child: Container(
-        width: 20,
-        height: 20,
+        width: 24,
+        height: 24,
         decoration: BoxDecoration(
           border: Border.all(
             color: value != null ? c.accent : c.textLo,
@@ -112,7 +152,7 @@ class _TriStateCheckbox extends StatelessWidget {
           color: value == true ? c.accent : Colors.transparent,
         ),
         child: value == true
-            ? const Icon(Icons.check, size: 14, color: Colors.white)
+            ? const Icon(Icons.check, size: 16, color: Colors.white)
             : value == null
                 ? Icon(Icons.remove, size: 14, color: c.textLo)
                 : null,

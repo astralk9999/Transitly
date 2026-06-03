@@ -1156,6 +1156,90 @@ abstract class AppLocalizations {
   /// **'Notificaciones cuando hay incidencias en zonas cerca de ti'**
   String get notifPrefZoneAlertsDesc;
 
+  /// No description provided for @widgetsConfigTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Widgets'**
+  String get widgetsConfigTitle;
+
+  /// No description provided for @widgetsConfigNextBus.
+  ///
+  /// In es, this message translates to:
+  /// **'Próximo bus'**
+  String get widgetsConfigNextBus;
+
+  /// No description provided for @widgetsConfigNextBusDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Muestra la próxima salida de tu parada habitual'**
+  String get widgetsConfigNextBusDesc;
+
+  /// No description provided for @widgetsConfigMyLine.
+  ///
+  /// In es, this message translates to:
+  /// **'Mi línea'**
+  String get widgetsConfigMyLine;
+
+  /// No description provided for @widgetsConfigMyLineDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Muestra el estado y próximas salidas de tu línea favorita'**
+  String get widgetsConfigMyLineDesc;
+
+  /// No description provided for @widgetsConfigNfc.
+  ///
+  /// In es, this message translates to:
+  /// **'Saldo bonobús'**
+  String get widgetsConfigNfc;
+
+  /// No description provided for @widgetsConfigNfcDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Muestra el saldo de tu última lectura NFC'**
+  String get widgetsConfigNfcDesc;
+
+  /// No description provided for @widgetsConfigTestButton.
+  ///
+  /// In es, this message translates to:
+  /// **'PROBAR WIDGET'**
+  String get widgetsConfigTestButton;
+
+  /// No description provided for @widgetsConfigSaveButton.
+  ///
+  /// In es, this message translates to:
+  /// **'GUARDAR'**
+  String get widgetsConfigSaveButton;
+
+  /// Widget config saved toast
+  ///
+  /// In es, this message translates to:
+  /// **'Configuración guardada'**
+  String get widgetsConfigSaved;
+
+  /// No description provided for @widgetsConfigUpdated.
+  ///
+  /// In es, this message translates to:
+  /// **'Widget actualizado'**
+  String get widgetsConfigUpdated;
+
+  /// No description provided for @widgetsConfigScanNow.
+  ///
+  /// In es, this message translates to:
+  /// **'ESCANEAR TARJETA AHORA'**
+  String get widgetsConfigScanNow;
+
+  /// No description provided for @widgetsConfigUnconfigured.
+  ///
+  /// In es, this message translates to:
+  /// **'Configura tu viaje'**
+  String get widgetsConfigUnconfigured;
+
+  /// No description provided for @widgetsConfigNoFavLines.
+  ///
+  /// In es, this message translates to:
+  /// **'No tienes líneas favoritas.\nMarca una línea como favorita primero.'**
+  String get widgetsConfigNoFavLines;
+
   /// No description provided for @appearanceBrightnessSystem.
   ///
   /// In es, this message translates to:
@@ -2193,12 +2277,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Cómo añadir el widget'**
   String get widgetsHowToAdd;
-
-  /// Widget config saved toast
-  ///
-  /// In es, this message translates to:
-  /// **'Configuración guardada'**
-  String get widgetsConfigSaved;
 
   /// Offline banner: no connectivity, no pending actions
   ///

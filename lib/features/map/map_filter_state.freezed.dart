@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MapFilterState {
 
- bool get showOfficial; bool get showCommunity; Set<String> get disabledOperators; Set<String> get disabledKinds; Set<String> get disabledLines; Set<String> get disabledZones; int get nextMinutes; bool get onlyAccessible; bool get onlyFavorites; bool get showAllStops; double get radiusMeters;
+ bool get showOfficial; bool get showCommunity; Set<String> get disabledOperators; Set<String> get disabledKinds; Set<String> get disabledLines; Set<String> get disabledZones; Set<String> get disabledRouteIds; int get nextMinutes; bool get onlyAccessible; bool get onlyFavorites; bool get showAllStops; double get radiusMeters;
 /// Create a copy of MapFilterState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $MapFilterStateCopyWith<MapFilterState> get copyWith => _$MapFilterStateCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MapFilterState&&(identical(other.showOfficial, showOfficial) || other.showOfficial == showOfficial)&&(identical(other.showCommunity, showCommunity) || other.showCommunity == showCommunity)&&const DeepCollectionEquality().equals(other.disabledOperators, disabledOperators)&&const DeepCollectionEquality().equals(other.disabledKinds, disabledKinds)&&const DeepCollectionEquality().equals(other.disabledLines, disabledLines)&&const DeepCollectionEquality().equals(other.disabledZones, disabledZones)&&(identical(other.nextMinutes, nextMinutes) || other.nextMinutes == nextMinutes)&&(identical(other.onlyAccessible, onlyAccessible) || other.onlyAccessible == onlyAccessible)&&(identical(other.onlyFavorites, onlyFavorites) || other.onlyFavorites == onlyFavorites)&&(identical(other.showAllStops, showAllStops) || other.showAllStops == showAllStops)&&(identical(other.radiusMeters, radiusMeters) || other.radiusMeters == radiusMeters));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MapFilterState&&(identical(other.showOfficial, showOfficial) || other.showOfficial == showOfficial)&&(identical(other.showCommunity, showCommunity) || other.showCommunity == showCommunity)&&const DeepCollectionEquality().equals(other.disabledOperators, disabledOperators)&&const DeepCollectionEquality().equals(other.disabledKinds, disabledKinds)&&const DeepCollectionEquality().equals(other.disabledLines, disabledLines)&&const DeepCollectionEquality().equals(other.disabledZones, disabledZones)&&const DeepCollectionEquality().equals(other.disabledRouteIds, disabledRouteIds)&&(identical(other.nextMinutes, nextMinutes) || other.nextMinutes == nextMinutes)&&(identical(other.onlyAccessible, onlyAccessible) || other.onlyAccessible == onlyAccessible)&&(identical(other.onlyFavorites, onlyFavorites) || other.onlyFavorites == onlyFavorites)&&(identical(other.showAllStops, showAllStops) || other.showAllStops == showAllStops)&&(identical(other.radiusMeters, radiusMeters) || other.radiusMeters == radiusMeters));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,showOfficial,showCommunity,const DeepCollectionEquality().hash(disabledOperators),const DeepCollectionEquality().hash(disabledKinds),const DeepCollectionEquality().hash(disabledLines),const DeepCollectionEquality().hash(disabledZones),nextMinutes,onlyAccessible,onlyFavorites,showAllStops,radiusMeters);
+int get hashCode => Object.hash(runtimeType,showOfficial,showCommunity,const DeepCollectionEquality().hash(disabledOperators),const DeepCollectionEquality().hash(disabledKinds),const DeepCollectionEquality().hash(disabledLines),const DeepCollectionEquality().hash(disabledZones),const DeepCollectionEquality().hash(disabledRouteIds),nextMinutes,onlyAccessible,onlyFavorites,showAllStops,radiusMeters);
 
 @override
 String toString() {
-  return 'MapFilterState(showOfficial: $showOfficial, showCommunity: $showCommunity, disabledOperators: $disabledOperators, disabledKinds: $disabledKinds, disabledLines: $disabledLines, disabledZones: $disabledZones, nextMinutes: $nextMinutes, onlyAccessible: $onlyAccessible, onlyFavorites: $onlyFavorites, showAllStops: $showAllStops, radiusMeters: $radiusMeters)';
+  return 'MapFilterState(showOfficial: $showOfficial, showCommunity: $showCommunity, disabledOperators: $disabledOperators, disabledKinds: $disabledKinds, disabledLines: $disabledLines, disabledZones: $disabledZones, disabledRouteIds: $disabledRouteIds, nextMinutes: $nextMinutes, onlyAccessible: $onlyAccessible, onlyFavorites: $onlyFavorites, showAllStops: $showAllStops, radiusMeters: $radiusMeters)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $MapFilterStateCopyWith<$Res>  {
   factory $MapFilterStateCopyWith(MapFilterState value, $Res Function(MapFilterState) _then) = _$MapFilterStateCopyWithImpl;
 @useResult
 $Res call({
- bool showOfficial, bool showCommunity, Set<String> disabledOperators, Set<String> disabledKinds, Set<String> disabledLines, Set<String> disabledZones, int nextMinutes, bool onlyAccessible, bool onlyFavorites, bool showAllStops, double radiusMeters
+ bool showOfficial, bool showCommunity, Set<String> disabledOperators, Set<String> disabledKinds, Set<String> disabledLines, Set<String> disabledZones, Set<String> disabledRouteIds, int nextMinutes, bool onlyAccessible, bool onlyFavorites, bool showAllStops, double radiusMeters
 });
 
 
@@ -65,7 +65,7 @@ class _$MapFilterStateCopyWithImpl<$Res>
 
 /// Create a copy of MapFilterState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? showOfficial = null,Object? showCommunity = null,Object? disabledOperators = null,Object? disabledKinds = null,Object? disabledLines = null,Object? disabledZones = null,Object? nextMinutes = null,Object? onlyAccessible = null,Object? onlyFavorites = null,Object? showAllStops = null,Object? radiusMeters = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? showOfficial = null,Object? showCommunity = null,Object? disabledOperators = null,Object? disabledKinds = null,Object? disabledLines = null,Object? disabledZones = null,Object? disabledRouteIds = null,Object? nextMinutes = null,Object? onlyAccessible = null,Object? onlyFavorites = null,Object? showAllStops = null,Object? radiusMeters = null,}) {
   return _then(_self.copyWith(
 showOfficial: null == showOfficial ? _self.showOfficial : showOfficial // ignore: cast_nullable_to_non_nullable
 as bool,showCommunity: null == showCommunity ? _self.showCommunity : showCommunity // ignore: cast_nullable_to_non_nullable
@@ -73,6 +73,7 @@ as bool,disabledOperators: null == disabledOperators ? _self.disabledOperators :
 as Set<String>,disabledKinds: null == disabledKinds ? _self.disabledKinds : disabledKinds // ignore: cast_nullable_to_non_nullable
 as Set<String>,disabledLines: null == disabledLines ? _self.disabledLines : disabledLines // ignore: cast_nullable_to_non_nullable
 as Set<String>,disabledZones: null == disabledZones ? _self.disabledZones : disabledZones // ignore: cast_nullable_to_non_nullable
+as Set<String>,disabledRouteIds: null == disabledRouteIds ? _self.disabledRouteIds : disabledRouteIds // ignore: cast_nullable_to_non_nullable
 as Set<String>,nextMinutes: null == nextMinutes ? _self.nextMinutes : nextMinutes // ignore: cast_nullable_to_non_nullable
 as int,onlyAccessible: null == onlyAccessible ? _self.onlyAccessible : onlyAccessible // ignore: cast_nullable_to_non_nullable
 as bool,onlyFavorites: null == onlyFavorites ? _self.onlyFavorites : onlyFavorites // ignore: cast_nullable_to_non_nullable
@@ -163,10 +164,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool showOfficial,  bool showCommunity,  Set<String> disabledOperators,  Set<String> disabledKinds,  Set<String> disabledLines,  Set<String> disabledZones,  int nextMinutes,  bool onlyAccessible,  bool onlyFavorites,  bool showAllStops,  double radiusMeters)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool showOfficial,  bool showCommunity,  Set<String> disabledOperators,  Set<String> disabledKinds,  Set<String> disabledLines,  Set<String> disabledZones,  Set<String> disabledRouteIds,  int nextMinutes,  bool onlyAccessible,  bool onlyFavorites,  bool showAllStops,  double radiusMeters)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MapFilterState() when $default != null:
-return $default(_that.showOfficial,_that.showCommunity,_that.disabledOperators,_that.disabledKinds,_that.disabledLines,_that.disabledZones,_that.nextMinutes,_that.onlyAccessible,_that.onlyFavorites,_that.showAllStops,_that.radiusMeters);case _:
+return $default(_that.showOfficial,_that.showCommunity,_that.disabledOperators,_that.disabledKinds,_that.disabledLines,_that.disabledZones,_that.disabledRouteIds,_that.nextMinutes,_that.onlyAccessible,_that.onlyFavorites,_that.showAllStops,_that.radiusMeters);case _:
   return orElse();
 
 }
@@ -184,10 +185,10 @@ return $default(_that.showOfficial,_that.showCommunity,_that.disabledOperators,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool showOfficial,  bool showCommunity,  Set<String> disabledOperators,  Set<String> disabledKinds,  Set<String> disabledLines,  Set<String> disabledZones,  int nextMinutes,  bool onlyAccessible,  bool onlyFavorites,  bool showAllStops,  double radiusMeters)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool showOfficial,  bool showCommunity,  Set<String> disabledOperators,  Set<String> disabledKinds,  Set<String> disabledLines,  Set<String> disabledZones,  Set<String> disabledRouteIds,  int nextMinutes,  bool onlyAccessible,  bool onlyFavorites,  bool showAllStops,  double radiusMeters)  $default,) {final _that = this;
 switch (_that) {
 case _MapFilterState():
-return $default(_that.showOfficial,_that.showCommunity,_that.disabledOperators,_that.disabledKinds,_that.disabledLines,_that.disabledZones,_that.nextMinutes,_that.onlyAccessible,_that.onlyFavorites,_that.showAllStops,_that.radiusMeters);case _:
+return $default(_that.showOfficial,_that.showCommunity,_that.disabledOperators,_that.disabledKinds,_that.disabledLines,_that.disabledZones,_that.disabledRouteIds,_that.nextMinutes,_that.onlyAccessible,_that.onlyFavorites,_that.showAllStops,_that.radiusMeters);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -204,10 +205,10 @@ return $default(_that.showOfficial,_that.showCommunity,_that.disabledOperators,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool showOfficial,  bool showCommunity,  Set<String> disabledOperators,  Set<String> disabledKinds,  Set<String> disabledLines,  Set<String> disabledZones,  int nextMinutes,  bool onlyAccessible,  bool onlyFavorites,  bool showAllStops,  double radiusMeters)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool showOfficial,  bool showCommunity,  Set<String> disabledOperators,  Set<String> disabledKinds,  Set<String> disabledLines,  Set<String> disabledZones,  Set<String> disabledRouteIds,  int nextMinutes,  bool onlyAccessible,  bool onlyFavorites,  bool showAllStops,  double radiusMeters)?  $default,) {final _that = this;
 switch (_that) {
 case _MapFilterState() when $default != null:
-return $default(_that.showOfficial,_that.showCommunity,_that.disabledOperators,_that.disabledKinds,_that.disabledLines,_that.disabledZones,_that.nextMinutes,_that.onlyAccessible,_that.onlyFavorites,_that.showAllStops,_that.radiusMeters);case _:
+return $default(_that.showOfficial,_that.showCommunity,_that.disabledOperators,_that.disabledKinds,_that.disabledLines,_that.disabledZones,_that.disabledRouteIds,_that.nextMinutes,_that.onlyAccessible,_that.onlyFavorites,_that.showAllStops,_that.radiusMeters);case _:
   return null;
 
 }
@@ -219,7 +220,7 @@ return $default(_that.showOfficial,_that.showCommunity,_that.disabledOperators,_
 @JsonSerializable()
 
 class _MapFilterState implements MapFilterState {
-  const _MapFilterState({this.showOfficial = true, this.showCommunity = true, final  Set<String> disabledOperators = const <String>{}, final  Set<String> disabledKinds = const <String>{}, final  Set<String> disabledLines = const <String>{}, final  Set<String> disabledZones = const <String>{}, this.nextMinutes = 0, this.onlyAccessible = false, this.onlyFavorites = false, this.showAllStops = false, this.radiusMeters = 5000}): _disabledOperators = disabledOperators,_disabledKinds = disabledKinds,_disabledLines = disabledLines,_disabledZones = disabledZones;
+  const _MapFilterState({this.showOfficial = true, this.showCommunity = true, final  Set<String> disabledOperators = const <String>{}, final  Set<String> disabledKinds = const <String>{}, final  Set<String> disabledLines = const <String>{}, final  Set<String> disabledZones = const <String>{}, final  Set<String> disabledRouteIds = const <String>{}, this.nextMinutes = 0, this.onlyAccessible = false, this.onlyFavorites = false, this.showAllStops = false, this.radiusMeters = 5000}): _disabledOperators = disabledOperators,_disabledKinds = disabledKinds,_disabledLines = disabledLines,_disabledZones = disabledZones,_disabledRouteIds = disabledRouteIds;
   factory _MapFilterState.fromJson(Map<String, dynamic> json) => _$MapFilterStateFromJson(json);
 
 @override@JsonKey() final  bool showOfficial;
@@ -252,6 +253,13 @@ class _MapFilterState implements MapFilterState {
   return EqualUnmodifiableSetView(_disabledZones);
 }
 
+ final  Set<String> _disabledRouteIds;
+@override@JsonKey() Set<String> get disabledRouteIds {
+  if (_disabledRouteIds is EqualUnmodifiableSetView) return _disabledRouteIds;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableSetView(_disabledRouteIds);
+}
+
 @override@JsonKey() final  int nextMinutes;
 @override@JsonKey() final  bool onlyAccessible;
 @override@JsonKey() final  bool onlyFavorites;
@@ -271,16 +279,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MapFilterState&&(identical(other.showOfficial, showOfficial) || other.showOfficial == showOfficial)&&(identical(other.showCommunity, showCommunity) || other.showCommunity == showCommunity)&&const DeepCollectionEquality().equals(other._disabledOperators, _disabledOperators)&&const DeepCollectionEquality().equals(other._disabledKinds, _disabledKinds)&&const DeepCollectionEquality().equals(other._disabledLines, _disabledLines)&&const DeepCollectionEquality().equals(other._disabledZones, _disabledZones)&&(identical(other.nextMinutes, nextMinutes) || other.nextMinutes == nextMinutes)&&(identical(other.onlyAccessible, onlyAccessible) || other.onlyAccessible == onlyAccessible)&&(identical(other.onlyFavorites, onlyFavorites) || other.onlyFavorites == onlyFavorites)&&(identical(other.showAllStops, showAllStops) || other.showAllStops == showAllStops)&&(identical(other.radiusMeters, radiusMeters) || other.radiusMeters == radiusMeters));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MapFilterState&&(identical(other.showOfficial, showOfficial) || other.showOfficial == showOfficial)&&(identical(other.showCommunity, showCommunity) || other.showCommunity == showCommunity)&&const DeepCollectionEquality().equals(other._disabledOperators, _disabledOperators)&&const DeepCollectionEquality().equals(other._disabledKinds, _disabledKinds)&&const DeepCollectionEquality().equals(other._disabledLines, _disabledLines)&&const DeepCollectionEquality().equals(other._disabledZones, _disabledZones)&&const DeepCollectionEquality().equals(other._disabledRouteIds, _disabledRouteIds)&&(identical(other.nextMinutes, nextMinutes) || other.nextMinutes == nextMinutes)&&(identical(other.onlyAccessible, onlyAccessible) || other.onlyAccessible == onlyAccessible)&&(identical(other.onlyFavorites, onlyFavorites) || other.onlyFavorites == onlyFavorites)&&(identical(other.showAllStops, showAllStops) || other.showAllStops == showAllStops)&&(identical(other.radiusMeters, radiusMeters) || other.radiusMeters == radiusMeters));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,showOfficial,showCommunity,const DeepCollectionEquality().hash(_disabledOperators),const DeepCollectionEquality().hash(_disabledKinds),const DeepCollectionEquality().hash(_disabledLines),const DeepCollectionEquality().hash(_disabledZones),nextMinutes,onlyAccessible,onlyFavorites,showAllStops,radiusMeters);
+int get hashCode => Object.hash(runtimeType,showOfficial,showCommunity,const DeepCollectionEquality().hash(_disabledOperators),const DeepCollectionEquality().hash(_disabledKinds),const DeepCollectionEquality().hash(_disabledLines),const DeepCollectionEquality().hash(_disabledZones),const DeepCollectionEquality().hash(_disabledRouteIds),nextMinutes,onlyAccessible,onlyFavorites,showAllStops,radiusMeters);
 
 @override
 String toString() {
-  return 'MapFilterState(showOfficial: $showOfficial, showCommunity: $showCommunity, disabledOperators: $disabledOperators, disabledKinds: $disabledKinds, disabledLines: $disabledLines, disabledZones: $disabledZones, nextMinutes: $nextMinutes, onlyAccessible: $onlyAccessible, onlyFavorites: $onlyFavorites, showAllStops: $showAllStops, radiusMeters: $radiusMeters)';
+  return 'MapFilterState(showOfficial: $showOfficial, showCommunity: $showCommunity, disabledOperators: $disabledOperators, disabledKinds: $disabledKinds, disabledLines: $disabledLines, disabledZones: $disabledZones, disabledRouteIds: $disabledRouteIds, nextMinutes: $nextMinutes, onlyAccessible: $onlyAccessible, onlyFavorites: $onlyFavorites, showAllStops: $showAllStops, radiusMeters: $radiusMeters)';
 }
 
 
@@ -291,7 +299,7 @@ abstract mixin class _$MapFilterStateCopyWith<$Res> implements $MapFilterStateCo
   factory _$MapFilterStateCopyWith(_MapFilterState value, $Res Function(_MapFilterState) _then) = __$MapFilterStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool showOfficial, bool showCommunity, Set<String> disabledOperators, Set<String> disabledKinds, Set<String> disabledLines, Set<String> disabledZones, int nextMinutes, bool onlyAccessible, bool onlyFavorites, bool showAllStops, double radiusMeters
+ bool showOfficial, bool showCommunity, Set<String> disabledOperators, Set<String> disabledKinds, Set<String> disabledLines, Set<String> disabledZones, Set<String> disabledRouteIds, int nextMinutes, bool onlyAccessible, bool onlyFavorites, bool showAllStops, double radiusMeters
 });
 
 
@@ -308,7 +316,7 @@ class __$MapFilterStateCopyWithImpl<$Res>
 
 /// Create a copy of MapFilterState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? showOfficial = null,Object? showCommunity = null,Object? disabledOperators = null,Object? disabledKinds = null,Object? disabledLines = null,Object? disabledZones = null,Object? nextMinutes = null,Object? onlyAccessible = null,Object? onlyFavorites = null,Object? showAllStops = null,Object? radiusMeters = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? showOfficial = null,Object? showCommunity = null,Object? disabledOperators = null,Object? disabledKinds = null,Object? disabledLines = null,Object? disabledZones = null,Object? disabledRouteIds = null,Object? nextMinutes = null,Object? onlyAccessible = null,Object? onlyFavorites = null,Object? showAllStops = null,Object? radiusMeters = null,}) {
   return _then(_MapFilterState(
 showOfficial: null == showOfficial ? _self.showOfficial : showOfficial // ignore: cast_nullable_to_non_nullable
 as bool,showCommunity: null == showCommunity ? _self.showCommunity : showCommunity // ignore: cast_nullable_to_non_nullable
@@ -316,6 +324,7 @@ as bool,disabledOperators: null == disabledOperators ? _self._disabledOperators 
 as Set<String>,disabledKinds: null == disabledKinds ? _self._disabledKinds : disabledKinds // ignore: cast_nullable_to_non_nullable
 as Set<String>,disabledLines: null == disabledLines ? _self._disabledLines : disabledLines // ignore: cast_nullable_to_non_nullable
 as Set<String>,disabledZones: null == disabledZones ? _self._disabledZones : disabledZones // ignore: cast_nullable_to_non_nullable
+as Set<String>,disabledRouteIds: null == disabledRouteIds ? _self._disabledRouteIds : disabledRouteIds // ignore: cast_nullable_to_non_nullable
 as Set<String>,nextMinutes: null == nextMinutes ? _self.nextMinutes : nextMinutes // ignore: cast_nullable_to_non_nullable
 as int,onlyAccessible: null == onlyAccessible ? _self.onlyAccessible : onlyAccessible // ignore: cast_nullable_to_non_nullable
 as bool,onlyFavorites: null == onlyFavorites ? _self.onlyFavorites : onlyFavorites // ignore: cast_nullable_to_non_nullable

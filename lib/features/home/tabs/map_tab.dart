@@ -111,6 +111,11 @@ class _MapTabState extends ConsumerState<MapTab> {
         return !f.disabledZones.contains(zone);
       }).toList();
     }
+    if (f.disabledRouteIds.isNotEmpty) {
+      filtered = filtered
+          .where((r) => !f.disabledRouteIds.contains(r.id))
+          .toList();
+    }
     if (f.disabledLines.isNotEmpty) {
       filtered = filtered
           .where((r) => !f.disabledLines.contains(r.id))

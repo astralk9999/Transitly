@@ -30,6 +30,11 @@ _MapFilterState _$MapFilterStateFromJson(Map<String, dynamic> json) =>
               ?.map((e) => e as String)
               .toSet() ??
           const <String>{},
+      disabledRouteIds:
+          (json['disabledRouteIds'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toSet() ??
+          const <String>{},
       nextMinutes: (json['nextMinutes'] as num?)?.toInt() ?? 0,
       onlyAccessible: json['onlyAccessible'] as bool? ?? false,
       onlyFavorites: json['onlyFavorites'] as bool? ?? false,
@@ -45,6 +50,7 @@ Map<String, dynamic> _$MapFilterStateToJson(_MapFilterState instance) =>
       'disabledKinds': instance.disabledKinds.toList(),
       'disabledLines': instance.disabledLines.toList(),
       'disabledZones': instance.disabledZones.toList(),
+      'disabledRouteIds': instance.disabledRouteIds.toList(),
       'nextMinutes': instance.nextMinutes,
       'onlyAccessible': instance.onlyAccessible,
       'onlyFavorites': instance.onlyFavorites,

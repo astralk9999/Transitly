@@ -20,6 +20,7 @@ import 'core/utils/transit_provider_observer.dart';
 import 'data/cache/hive_init.dart';
 import 'data/widgets_native/widget_data_writer.dart';
 import 'data/fmtc/fmtc_service.dart';
+import 'data/fmtc/tile_prewarmer.dart';
 import 'data/mock/mock_data_service.dart';
 import 'data/mock/mock_realtime_service.dart';
 import 'data/privacy_consent/privacy_consent_repository.dart';
@@ -100,6 +101,7 @@ void main() async {
     await HiveInit.bootstrap();
     AppLogger.info('HiveCache', 'bootstrap complete');
     await _initFmtc();
+    unawaited(TilePrewarmer.prewarmOnce());
     await Supabase.initialize(
       url: Env.supabaseUrl,
       anonKey: Env.supabaseAnonKey,

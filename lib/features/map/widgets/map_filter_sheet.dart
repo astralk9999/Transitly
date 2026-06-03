@@ -10,6 +10,7 @@ import '../../../shared/models/models.dart';
 import '../../../shared/widgets/transit_button.dart';
 import '../map_filter_controller.dart';
 import '../map_filter_state.dart';
+import 'zone_company_line_tree.dart';
 
 void showMapFilterSheet(
   BuildContext context,
@@ -68,9 +69,7 @@ void showMapFilterSheet(
                   const SizedBox(height: 16),
 
                   _SectionTitle(c: c, title: 'Zonas'),
-                  _OperatorZoneChips(
-                    c: c, f: f, ctrl: ctrl, mockData: mockData,
-                  ),
+                  const ZoneCompanyLineTree(),
                   const SizedBox(height: 16),
 
                   _SectionTitle(

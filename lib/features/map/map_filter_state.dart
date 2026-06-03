@@ -12,6 +12,7 @@ abstract class MapFilterState with _$MapFilterState {
     @Default(<String>{}) Set<String> disabledKinds,
     @Default(<String>{}) Set<String> disabledLines,
     @Default(<String>{}) Set<String> disabledZones,
+    @Default(<String>{}) Set<String> disabledRouteIds,
     @Default(0) int nextMinutes,
     @Default(false) bool onlyAccessible,
     @Default(false) bool onlyFavorites,

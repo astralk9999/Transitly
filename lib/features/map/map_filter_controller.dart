@@ -172,6 +172,28 @@ class MapFilterController extends StateNotifier<MapFilterState> {
     _saveToPrefs();
   }
 
+  void toggleRouteId(String routeId) {
+    final s = Set<String>.from(state.disabledRouteIds);
+    if (s.contains(routeId)) {
+      s.remove(routeId);
+    } else {
+      s.add(routeId);
+    }
+    state = state.copyWith(disabledRouteIds: s);
+    _saveToPrefs();
+  }
+
+  void setRoutesEnabled(Iterable<String> routeIds, bool enabled) {
+    final s = Set<String>.from(state.disabledRouteIds);
+    if (enabled) {
+      s.removeAll(routeIds);
+    } else {
+      s.addAll(routeIds);
+    }
+    state = state.copyWith(disabledRouteIds: s);
+    _saveToPrefs();
+  }
+
   void reset() {
     state = const MapFilterState();
     _saveToPrefs();

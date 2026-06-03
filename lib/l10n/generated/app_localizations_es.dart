@@ -669,6 +669,9 @@ class AppLocalizationsEs extends AppLocalizations {
       'Bordes más gruesos y mayor contraste de texto';
 
   @override
+  String get appearanceHcPreserveAccent => 'Mantener color de paleta';
+
+  @override
   String get accessibilityHighContrast => 'Alto contraste';
 
   @override

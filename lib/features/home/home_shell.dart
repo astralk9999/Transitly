@@ -14,7 +14,6 @@ import '../../shared/providers/user_provider.dart';
 import '../../shared/providers/widget_data_provider.dart';
 import '../../shared/widgets/background_wrapper.dart';
 import '../../shared/widgets/responsive_scaffold.dart';
-import '../../shared/widgets/smoke_background.dart';
 import '../driver/driver_panel.dart';
 import '../notifications/widgets/notification_bell.dart';
 import 'widgets/home_bottom_nav.dart';
@@ -98,24 +97,20 @@ class _HomeShellState extends ConsumerState<HomeShell> {
         child: FocusTraversalGroup(
           child: Scaffold(
           backgroundColor: c.bgRoot,
-          body: Stack(
-            children: [
-              Positioned.fill(
-                child: SmokeBackground(color: c.accent, isDark: isDark),
-              ),
-              Row(
-                children: [
-                  HomeSideNav(
-                    currentIndex: widget.navigationShell.currentIndex,
-                    onTap: _onTap,
-                    tabs: tabs,
-                    extended: extendedRail,
-                  ),
-                  Expanded(
-                    child: Stack(
-                      children: [
-                        ResponsiveScaffold(
-                            child: widget.navigationShell),
+          body: BackgroundWrapper(
+            child: Row(
+              children: [
+                HomeSideNav(
+                  currentIndex: widget.navigationShell.currentIndex,
+                  onTap: _onTap,
+                  tabs: tabs,
+                  extended: extendedRail,
+                ),
+                Expanded(
+                  child: Stack(
+                    children: [
+                      ResponsiveScaffold(
+                          child: widget.navigationShell),
                         if (showNotificationBell)
                           Positioned(
                             top: TransitSpacing.space8,
@@ -131,17 +126,16 @@ class _HomeShellState extends ConsumerState<HomeShell> {
                             right: TransitSpacing.space16,
                             child: _DriverFab(color: c),
                           ),
-                      ],
-                    ),
+                    ],
                   ),
-                ],
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+          ), // BackgroundWrapper end
         ),
-        ),
-      );
-    }
+      ),
+    );
+  }
 
     return PopScope(
       canPop: false,

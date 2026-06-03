@@ -1390,6 +1390,12 @@ abstract class AppLocalizations {
   /// **'Bordes más gruesos y mayor contraste de texto'**
   String get appearanceHighContrastSubtitle;
 
+  /// No description provided for @appearanceHcPreserveAccent.
+  ///
+  /// In es, this message translates to:
+  /// **'Mantener color de paleta'**
+  String get appearanceHcPreserveAccent;
+
   /// High contrast mode toggle label in accessibility screen
   ///
   /// In es, this message translates to:

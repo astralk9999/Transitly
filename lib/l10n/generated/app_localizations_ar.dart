@@ -664,6 +664,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get appearanceHighContrastSubtitle => 'حدود أكثر سمكاً وتباين نص أعلى';
 
   @override
+  String get appearanceHcPreserveAccent => 'الحفاظ على لون اللوحة';
+
+  @override
   String get accessibilityHighContrast => 'تباين عالي';
 
   @override

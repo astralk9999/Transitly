@@ -3,19 +3,17 @@ import 'package:flutter/material.dart';
 import 'transit_colors.dart';
 
 class HighContrastSchemeWrapper implements TransitColorScheme {
-  HighContrastSchemeWrapper(this._base, this._isDark);
+  HighContrastSchemeWrapper(this._base, this._isDark, {bool preserveAccent = false})
+      : _preserveAccent = preserveAccent;
 
   final TransitColorScheme _base;
   final bool _isDark;
+  final bool _preserveAccent;
 
-  @override
-  Color get bgRoot => _isDark ? const Color(0xFF000000) : const Color(0xFFFFFFFF);
-  @override
-  Color get bgSidebar => _isDark ? const Color(0xFF050505) : const Color(0xFFF5F5F5);
-  @override
-  Color get bgSurface => _isDark ? const Color(0xFF0A0A0A) : const Color(0xFFFAFAFA);
-  @override
-  Color get bgRaised => _isDark ? const Color(0xFF111111) : const Color(0xFFEEEEEE);
+  @override Color get bgRoot => _isDark ? const Color(0xFF000000) : const Color(0xFFFFFFFF);
+  @override Color get bgSidebar => _isDark ? const Color(0xFF050505) : const Color(0xFFF5F5F5);
+  @override Color get bgSurface => _isDark ? const Color(0xFF0A0A0A) : const Color(0xFFFAFAFA);
+  @override Color get bgRaised => _isDark ? const Color(0xFF111111) : const Color(0xFFEEEEEE);
   @override Color get bgInput => _isDark ? const Color(0xFF0C0C0C) : const Color(0xFFF8F8F8);
   @override Color get bgElevated => _isDark ? const Color(0xFF141414) : const Color(0xFFF0F0F0);
 
@@ -27,7 +25,10 @@ class HighContrastSchemeWrapper implements TransitColorScheme {
 
   @override Color get divider => _isDark ? const Color(0x44FFFFFF) : const Color(0x44000000);
 
-  @override Color get accent => _isDark ? const Color(0xFFFFFF00) : const Color(0xFF0000FF);
+  @override
+  Color get accent => _preserveAccent
+      ? _base.accent
+      : (_isDark ? const Color(0xFFFFFF00) : const Color(0xFF0000FF));
 
   @override Color get accentBg => _isDark ? const Color(0x22FFFF00) : const Color(0x220000FF);
 

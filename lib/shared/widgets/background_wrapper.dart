@@ -33,7 +33,7 @@ class BackgroundWrapper extends ConsumerWidget {
         : (palette.lightScheme ?? palette.scheme);
 
     if (!enabled) {
-      return Container(color: scheme.bgRoot, child: child);
+      return RepaintBoundary(child: Container(color: scheme.bgRoot, child: child));
     }
 
     // En la paleta por defecto, accent/neonCyan/neonPurple son los tres
@@ -58,7 +58,7 @@ class BackgroundWrapper extends ConsumerWidget {
     // sin meter un color foráneo.
     final accentLight = withLightness(scheme.accent, 1.4);
 
-    return switch (bg) {
+    return RepaintBoundary(child: switch (bg) {
       NoneBackground() =>
         Container(color: scheme.bgRoot, child: child),
       ShaderBackground() => SmokeBackground(
@@ -215,7 +215,7 @@ class BackgroundWrapper extends ConsumerWidget {
           child,
         ],
       ),
-    };
+    }); // RepaintBoundary end
   }
 
   Widget _buildGradientBg(

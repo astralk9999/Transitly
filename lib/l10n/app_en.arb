@@ -238,6 +238,7 @@
 
   "appearanceHighContrast": "High contrast",
   "appearanceHighContrastSubtitle": "Thicker borders and higher text contrast",
+  "appearanceHcPreserveAccent": "Keep palette color",
   "accessibilityHighContrast": "High contrast",
 
   "nearbyBusesTitle": "Nearby buses",

@@ -40,6 +40,7 @@ class ThemeNotifier extends ChangeNotifier {
   bool _dyslexiaFontEnabled = false;
   bool _reduceMotion = false;
   bool _highContrast = false;
+  bool _hcPreserveAccent = false;
   String _mapStyle = 'streets';
   bool _notifIncidentResolved = true;
   bool _notifRoutePromoted = true;
@@ -71,6 +72,7 @@ class ThemeNotifier extends ChangeNotifier {
   bool get dyslexiaFontEnabled => _dyslexiaFontEnabled;
   bool get reduceMotion => _reduceMotion;
   bool get highContrast => _highContrast;
+  bool get hcPreserveAccent => _hcPreserveAccent;
   String get mapStyle => _mapStyle;
 
   bool get notifIncidentResolved => _notifIncidentResolved;
@@ -229,6 +231,13 @@ class ThemeNotifier extends ChangeNotifier {
     if (_highContrast == value) return;
     BootCanary.markPendingSensitive('highContrast');
     _highContrast = value;
+    notifyListeners();
+    unawaited(_persist());
+  }
+
+  set hcPreserveAccent(bool value) {
+    if (_hcPreserveAccent == value) return;
+    _hcPreserveAccent = value;
     notifyListeners();
     unawaited(_persist());
   }
@@ -402,6 +411,7 @@ class ThemeNotifier extends ChangeNotifier {
     _dyslexiaFontEnabled = prefs.dyslexiaFontEnabled;
     _reduceMotion = prefs.reduceMotion;
     _highContrast = prefs.highContrast;
+    _hcPreserveAccent = false;
     _mapStyle = prefs.mapStyle;
     _notifIncidentResolved = prefs.notifIncidentResolved;
     _notifRoutePromoted = prefs.notifRoutePromoted;
@@ -494,6 +504,7 @@ class ThemeNotifier extends ChangeNotifier {
         _dyslexiaFontEnabled = _safeBool(data['dyslexiaFontEnabled'], false);
         _reduceMotion = _safeBool(data['reduceMotion'], false);
         _highContrast = _safeBool(data['highContrast'], false);
+        _hcPreserveAccent = _safeBool(data['hcPreserveAccent'], false);
         _mapStyle = _safeString(data['mapStyle'], 'streets');
         _notifIncidentResolved = _safeBool(data['notifIncidentResolved'], true);
         _notifRoutePromoted = _safeBool(data['notifRoutePromoted'], true);
@@ -551,6 +562,7 @@ class ThemeNotifier extends ChangeNotifier {
         'dyslexiaFontEnabled': _dyslexiaFontEnabled,
         'reduceMotion': _reduceMotion,
         'highContrast': _highContrast,
+        'hcPreserveAccent': _hcPreserveAccent,
         'mapStyle': _mapStyle,
         'notifIncidentResolved': _notifIncidentResolved,
         'notifRoutePromoted': _notifRoutePromoted,
@@ -623,6 +635,7 @@ class ThemeNotifier extends ChangeNotifier {
     _colorBlindMode = ColorBlindMode.none;
     _dyslexiaFontEnabled = false;
     _highContrast = false;
+    _hcPreserveAccent = false;
     _reduceMotion = false;
     _mapStyle = 'streets';
     _notifZoneAlerts = true;

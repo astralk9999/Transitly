@@ -179,7 +179,8 @@ class _MapTabState extends ConsumerState<MapTab> {
 
   String? _findClosestRoute(
       LatLng point, MapDataCache cache, Set<String> visibleIds) {
-    const thresholdDeg = 0.003;
+    final z = _mapController.camera.zoom.clamp(12.0, 18.0);
+    final thresholdDeg = (0.05 / (z * z)).clamp(0.0003, 0.005);
     String? bestRouteId;
     double bestDist = double.infinity;
 

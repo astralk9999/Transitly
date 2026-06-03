@@ -323,6 +323,7 @@
   "appearanceHighContrast": "Alto contraste",
   "@appearanceHighContrast": { "description": "High contrast mode toggle label" },
   "appearanceHighContrastSubtitle": "Bordes más gruesos y mayor contraste de texto",
+  "appearanceHcPreserveAccent": "Mantener color de paleta",
   "@appearanceHighContrastSubtitle": { "description": "High contrast mode toggle subtitle" },
   "accessibilityHighContrast": "Alto contraste",
   "@accessibilityHighContrast": { "description": "High contrast mode toggle label in accessibility screen" },

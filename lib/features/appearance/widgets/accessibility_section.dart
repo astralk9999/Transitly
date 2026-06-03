@@ -195,10 +195,32 @@ class AccessibilitySection extends ConsumerWidget {
               Switch.adaptive(
                 value: highContrast,
                 activeTrackColor: c.accent,
-                onChanged: (v) {
-                  ref.read(themeNotifierProvider).highContrast = v;
-                },
+            onChanged: (v) {
+              ref.read(themeNotifierProvider).highContrast = v;
+            },
+          ),
+          if (highContrast)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      l10n.appearanceHcPreserveAccent,
+                      style: TransitTypography.bodySecondary(c.textHi),
+                    ),
+                  ),
+                  Switch.adaptive(
+                    value: ref.watch(themeNotifierProvider
+                        .select((n) => n.hcPreserveAccent)),
+                    activeTrackColor: c.accent,
+                    onChanged: (v) {
+                      ref.read(themeNotifierProvider).hcPreserveAccent = v;
+                    },
+                  ),
+                ],
               ),
+            ),
             ],
           ),
         ],

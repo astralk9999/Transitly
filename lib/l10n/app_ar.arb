@@ -445,6 +445,7 @@
   "appearanceHighContrast": "تباين عالي",
   "appearanceHighContrastSubtitle": "حدود أكثر سمكاً وتباين نص أعلى",
   "accessibilityHighContrast": "تباين عالي",
+  "appearanceHcPreserveAccent": "الحفاظ على لون اللوحة",
 
   "nearbyBusesTitle": "الحافلات القريبة",
   "nearbyBusesEmpty": "لا توجد حافلات نشطة",

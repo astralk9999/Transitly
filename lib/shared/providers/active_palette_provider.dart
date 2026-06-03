@@ -28,7 +28,8 @@ final activePaletteSchemeProvider = Provider<TransitColorScheme>((ref) {
   }
 
   if (notifier.highContrast) {
-    scheme = HighContrastSchemeWrapper(scheme, brightness == Brightness.dark);
+    scheme = HighContrastSchemeWrapper(scheme, brightness == Brightness.dark,
+        preserveAccent: notifier.hcPreserveAccent);
   }
 
   return scheme;
@@ -64,7 +65,8 @@ TransitColorScheme resolveActiveScheme(bool isDark) {
     }
 
     if (notifier.highContrast) {
-      scheme = HighContrastSchemeWrapper(scheme, isDark);
+      scheme = HighContrastSchemeWrapper(scheme, isDark,
+          preserveAccent: notifier.hcPreserveAccent);
     }
 
     return scheme;

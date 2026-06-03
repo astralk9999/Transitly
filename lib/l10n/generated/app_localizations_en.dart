@@ -666,6 +666,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Thicker borders and higher text contrast';
 
   @override
+  String get appearanceHcPreserveAccent => 'Keep palette color';
+
+  @override
   String get accessibilityHighContrast => 'High contrast';
 
   @override

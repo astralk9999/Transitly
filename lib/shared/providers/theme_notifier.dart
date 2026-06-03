@@ -364,7 +364,12 @@ class ThemeNotifier extends ChangeNotifier {
       dyslexiaFontEnabled: _dyslexiaFontEnabled,
     );
     if (_highContrast) {
-      return HighContrastTheme.apply(base, scheme);
+      try {
+        return HighContrastTheme.apply(base, scheme);
+      } catch (e, st) {
+        AppLogger.error(_logTag, 'HighContrastTheme.apply failed, using base theme', e, st);
+        return base;
+      }
     }
     return base;
   }

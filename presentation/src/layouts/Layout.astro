@@ -56,6 +56,7 @@ const baseUrl = import.meta.env.BASE_URL;
           <a href="#seguridad" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Seguridad</a>
           <a
             href="https://github.com/astralk9999/Transitly/releases/latest"
+            data-download-apk
             class="px-5 py-2 bg-transit-accent text-white rounded-full text-xs font-semibold hover:bg-transit-accent/85 transition-all"
             target="_blank"
             rel="noopener"
@@ -91,6 +92,7 @@ const baseUrl = import.meta.env.BASE_URL;
     <a href="#seguridad" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Seguridad</a>
     <a
       href="https://github.com/astralk9999/Transitly/releases/latest"
+      data-download-apk
       class="mobile-link px-8 py-3 bg-transit-accent text-white rounded-full text-lg font-semibold hover:bg-transit-accent/85 transition-all"
       target="_blank"
       rel="noopener"
@@ -182,6 +184,41 @@ const baseUrl = import.meta.env.BASE_URL;
 
     document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale').forEach(el => {
       revealObserver.observe(el);
+    });
+
+    // ── Descarga directa del APK del último release ──
+    // Los botones marcados con [data-download-apk] llevan en su href la
+    // página del release (fallback para crawlers y JS desactivado). Al
+    // hacer click, consultamos la GitHub API y redirigimos directamente
+    // al asset .apk, evitando el rebote por la página intermedia.
+    const downloadButtons = document.querySelectorAll('[data-download-apk]');
+    let cachedApkUrl = null;
+    async function resolveApkUrl() {
+      if (cachedApkUrl) return cachedApkUrl;
+      try {
+        const resp = await fetch(
+          'https://api.github.com/repos/astralk9999/Transitly/releases/latest',
+          { headers: { 'Accept': 'application/vnd.github+json' } }
+        );
+        if (!resp.ok) return null;
+        const data = await resp.json();
+        const apkAsset = data.assets?.find(a => a.name && a.name.endsWith('.apk'));
+        if (apkAsset?.browser_download_url) {
+          cachedApkUrl = apkAsset.browser_download_url;
+          return cachedApkUrl;
+        }
+      } catch (_) {}
+      return null;
+    }
+    // Pre-fetch al cargar para que el primer click sea instantáneo.
+    if (downloadButtons.length > 0) resolveApkUrl();
+    downloadButtons.forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const directUrl = await resolveApkUrl();
+        if (!directUrl) return; // fallback al href que abre la página
+        e.preventDefault();
+        window.location.href = directUrl;
+      });
     });
   </script>
 </body>

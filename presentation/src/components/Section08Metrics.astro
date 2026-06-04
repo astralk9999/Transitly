@@ -14,18 +14,18 @@ import metrics from '../data/metrics.json';
   <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-14">
 
     <div class="glass-card hover-lift p-6 reveal text-center animate-scale-in group hover:border-transit-accent/40 transition-all duration-300" data-delay="100">
-      <div class="text-4xl md:text-5xl font-bold font-mono text-transit-accent mb-2">{metrics.project.phasesCompleted}/{metrics.project.phases}</div>
+      <div class="text-4xl md:text-5xl font-bold font-mono text-transit-accent mb-2" data-counter data-counter-target={metrics.project.phasesCompleted} data-counter-suffix={`/${metrics.project.phases}`}>{metrics.project.phasesCompleted}/{metrics.project.phases}</div>
       <div class="text-xs text-transit-text-lo uppercase tracking-wider">fases completadas</div>
     </div>
 
     <div class="glass-card hover-lift p-6 reveal text-center animate-scale-in group hover:border-transit-state-success/40 transition-all duration-300" data-delay="150">
-      <div class="text-4xl md:text-5xl font-bold font-mono text-transit-state-success mb-2">{metrics.tests.passed}</div>
+      <div class="text-4xl md:text-5xl font-bold font-mono text-transit-state-success mb-2" data-counter data-counter-target={metrics.tests.passed}>{metrics.tests.passed}</div>
       <div class="text-xs text-transit-text-lo uppercase tracking-wider">tests verdes</div>
       <div class="text-[10px] text-transit-text-lo mt-1 font-mono">+{metrics.tests.skipped} skipped</div>
     </div>
 
     <div class="glass-card hover-lift p-6 reveal text-center animate-scale-in group hover:border-transit-state-warning/40 transition-all duration-300" data-delay="200">
-      <div class="text-4xl md:text-5xl font-bold font-mono text-transit-state-warning mb-2">{metrics.tests.coveragePercent}%</div>
+      <div class="text-4xl md:text-5xl font-bold font-mono text-transit-state-warning mb-2" data-counter data-counter-target={metrics.tests.coveragePercent} data-counter-suffix="%">{metrics.tests.coveragePercent}%</div>
       <div class="text-xs text-transit-text-lo uppercase tracking-wider">cobertura</div>
       <div class="text-[10px] text-transit-text-lo mt-1 font-mono">{metrics.tests.coverageCovered}/{metrics.tests.coverageTotal} líneas</div>
     </div>

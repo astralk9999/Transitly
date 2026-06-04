@@ -215,3 +215,16 @@ body {
   transform: translateY(-4px);
   box-shadow: 0 20px 40px rgba(151, 125, 223, 0.1), 0 0 0 1px rgba(151, 125, 223, 0.2);
 }
+
+/* ── Smooth scroll ── */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+/* ── Counter animation reset ── */
+[data-counter] { font-variant-numeric: tabular-nums; }

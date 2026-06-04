@@ -131,19 +131,57 @@ const baseUrl = import.meta.env.BASE_URL;
       });
     }
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry, i) => {
+    // ── Scroll spy: highlight active nav link ──
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('nav a[href^="#"]');
+    addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(sec => {
+        if (window.scrollY + 120 >= sec.offsetTop) current = sec.id;
+      });
+      navLinks.forEach(link => {
+        link.classList.toggle('!text-transit-accent', link.hash === `#${current}`);
+      });
+    }, { passive: true });
+
+    // ── Counter animation ──
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        const el = e.target;
+        const target = +el.dataset.counterTarget;
+        const suffix = el.dataset.counterSuffix || '';
+        const dur = 1400;
+        const start = performance.now();
+        const tick = (t) => {
+          const p = Math.min((t - start) / dur, 1);
+          const val = Math.floor(easeOutCubic(p) * target);
+          el.textContent = val + suffix;
+          if (p < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+        counterObserver.unobserve(el);
+      });
+    }, { threshold: 0.4 });
+
+    function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+
+    document.querySelectorAll('[data-counter]').forEach(el => counterObserver.observe(el));
+
+    // ── Scroll reveal ──
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
         if (entry.isIntersecting) {
           setTimeout(() => {
             entry.target.classList.add('revealed');
           }, parseInt(entry.target.dataset.delay || '0'));
-          observer.unobserve(entry.target);
+          revealObserver.unobserve(entry.target);
         }
       });
     }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
 
     document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale').forEach(el => {
-      observer.observe(el);
+      revealObserver.observe(el);
     });
   </script>
 </body>

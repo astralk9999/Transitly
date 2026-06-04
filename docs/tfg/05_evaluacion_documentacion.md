@@ -1,8 +1,10 @@
 # 05 — Seguimiento, Evaluación y Documentación
 
 **Proyecto:** Transitly (nexto-stop-v2)
-**Rama / HEAD:** `master @ b908f3c`
-**Fecha de cierre del anchor:** 2026-05-23
+**Rama / HEAD original:** `master @ b908f3c`
+**Fecha de cierre del anchor original:** 2026-05-23
+**Rama / HEAD actualizado:** `master @ 5231f4c` (2026-06-04, +94 commits)
+**Release pública distribuida:** v1.11.0 — https://github.com/astralk9999/Transitly/releases/tag/v1.11.0
 **Ciclo formativo:** DAM (Desarrollo de Aplicaciónes Multiplataforma)
 **Autoria:** Itziar Uruburu Elizalde (autoria individual; asistencia IA documentada).
 
@@ -166,3 +168,21 @@ El proceso de evaluación arroja cinco lecciónes que conviene fijar como aprend
 5. **El cierre real (commit + grep) y el cierre documental son distintos; solo el primero cuenta.** Esta disciplina ha sido el principal factor diferenciador entre lo declarado y lo entregable.
 
 El proyecto cumple los objetivos académicos definidos en la fase de planificación y deja, al cierre del anchor, un sistema documentado, auditado y verificable, con un plan público para llevarlo desde "TFG aprobado" hasta "producto en producción".
+
+---
+
+## Adenda — Evolución entre 23/05 y 04/06 de 2026
+
+Tras el cierre del anchor original `b908f3c`, se ejecutaron 94 commits adicionales agrupados en cinco oleadas de estabilización post-MVP. Los hechos más relevantes para esta sección de evaluación son los siguientes:
+
+**Cierre de un crash bloqueante identificado en pruebas de usuario.** Durante las sesiones de prueba con dispositivos físicos del 24-27 de mayo se detectó que la combinación simultánea de varias opciones de accesibilidad (dislexia + alto contraste + escala de texto máxima) provocaba un crash nativo del engine de Flutter no capturable por `try/catch` en Dart. La aplicación quedaba inutilizable y la única recuperación era `adb shell pm clear`. La mitigación implementada (BootCanary + persistencia diferida de preferencias + RecoveryScreen) elimina el riesgo: la app detecta el crash al siguiente arranque, revierte la última preferencia tóxica y, tras dos crashes consecutivos, muestra una pantalla de recovery con `MaterialApp` propio sin shaders ni fuentes custom. El indicador "número de crashes que requieren clear data" pasa de no-cero a cero en los criterios de aceptación operativos.
+
+**Resolución de un error PostgreSQL 42P17 detectado en el flujo post-login.** La carga de "Mis contribuciones" en el perfil fallaba con `PostgrestException: infinite recursion detected in policy for relation route_shares`. Auditadas las políticas RLS de las tres tablas involucradas (`route_shares`, `routes`, `user_routes`), se identificó un ciclo cerrado entre `route_shares_select_owner` y `routes_select_visible`. Se desplegó la migración SQL `fix_route_shares_rls_recursion` que introduce la función `public.is_route_owner(uuid)` con `SECURITY DEFINER` para romper la recursión. Verificación: consulta `SELECT count(*) FROM route_shares` ejecuta sin error tras el deploy. Aumenta en uno el contador de migraciones SQL aplicadas (a 15 totales).
+
+**Release pública v1.11.0 con APK como Release Asset en GitHub.** Hasta la fecha del anchor original, las versiones del APK se versionaban en el directorio `presentation/public/` del repositorio para servirlas desde GitHub Pages. Esta práctica generaba dos problemas: (a) GitHub avisaba (>50 MB) y rechazaría (>100 MB) en versiones futuras; (b) cada APK histórico inflaba el `.git/` indefinidamente. La solución implementada elimina los 9 APKs históricos del `HEAD` (~792 MB liberados), añade `*.apk` a `.gitignore` raíz, y publica el APK v1.11.0 como asset del release oficial. La presentación web enlaza ahora a `releases/latest`, URL estable que apunta siempre a la última versión publicada.
+
+**Bypass documentado de verificación de email.** Como deuda explícita por la imposibilidad de configurar SMTP propio dentro del cronograma del TFG, se bypaseó la verificación de email obligatoria de Supabase. El listener emite `AuthAuthenticated` sin esperar a `emailConfirmedAt`, y `signUpWithEmail` realiza un auto-login defensivo si la configuración del dashboard fuerza la creación de usuarios sin sesión activa. La infraestructura para reactivar verificación (`EmailVerifyPendingScreen`, ruta `/verify-email`) queda intacta y documentada en `docs/SUPABASE_SETUP.md`.
+
+**Logs `warn` y `error` activos en builds de release.** Para diagnosticar el bug del flujo Google Sign-In (descrito en `04_desarrollo_implementacion.md` §11.2) fue necesario eliminar el guard `kDebugMode` en los métodos `warn` y `error` de `AppLogger`. Esta decisión permite observabilidad en producción de errores reales sin inflar `logcat` con ruido (los niveles `debug`, `info` y `perf` siguen siendo debug-only). Refuerza el objetivo no funcional de observabilidad.
+
+Los indicadores cuantitativos del anchor original permanecen vigentes y se complementan con: **release v1.11.0 publicada y descargable**, **migraciones SQL: 14 → 15**, **+94 commits**, **+5 documentos técnicos** en `docs/historico/` (planes de acción de las cinco oleadas), **0 crashes bloqueantes que requieran clear data** tras la mitigación, y **3 widgets configurables vía perfil** con preview en vivo.

@@ -1,8 +1,9 @@
 # 06 — Manual Técnico
 
 **Proyecto:** Transitly (nexto-stop-v2)
-**Rama / HEAD:** `master @ b908f3c`
-**Fecha del anchor:** 2026-05-23
+**Rama / HEAD original:** `master @ b908f3c` (2026-05-23)
+**Rama / HEAD actualizado:** `master @ 5231f4c` (2026-06-04, +94 commits)
+**Release distribuible:** v1.11.0 — descargable desde https://github.com/astralk9999/Transitly/releases/tag/v1.11.0
 **Plataformas objetivo:** Android (minSdk 23, targetSdk 34, compileSdk 35), iOS 16.0+, Web (PWA experimental).
 
 > Este manual recoge las instrucciones de **instalación, configuración, despliegue y mantenimiento** de Transitly desde la perspectiva de un desarrollador o de un administrador técnico. Para el uso final de la aplicación vease `07_manual_usuario.md`.
@@ -333,3 +334,64 @@ El proyecto sigue **SemVer** (`MAJOR.MINOR.PATCH`) y aprovecha **Conventional Co
 - `docs/historico/PLAN_ACCION_REMEDIACION_v2.md` — plan v2 en seis fases.
 - `AGENTS.md` — guia operativa para sesiónes de desarrollo asistido por IA.
 - `android/README.md` — flujo de firma de release y Play App Signing.
+
+---
+
+## Adenda — Procedimientos añadidos entre 23/05 y 04/06 de 2026
+
+### Distribución del APK como GitHub Release Asset
+
+Desde la versión v1.11.0 los APKs no se versionan en el repositorio sino que se publican como assets de release en GitHub. El flujo es:
+
+1. Generar el APK release: `flutter build apk --release --dart-define-from-file=dart_defines.json`.
+2. Crear el tag local: `git tag vX.Y.Z <commit>` (por convención el commit del cierre de la versión).
+3. Push del tag: `git push origin vX.Y.Z`.
+4. Crear el release con el APK:
+   ```powershell
+   $apk = "C:\Users\<user>\AppData\Local\Temp\transitly-vX.Y.Z.apk"
+   & "C:\Program Files\GitHub CLI\gh.exe" release create vX.Y.Z `
+     "$apk#Transitly vX.Y.Z (Android APK)" `
+     --title "vX.Y.Z — resumen breve" `
+     --notes "<notas en markdown>"
+   ```
+5. Verificar que `https://github.com/astralk9999/Transitly/releases/latest` redirige al nuevo release.
+
+La presentación web (`presentation/src/`) enlaza siempre a `releases/latest`, por lo que no requiere rebuild tras un release nuevo.
+
+### Aplicación de migraciones SQL adicionales
+
+Las migraciones SQL posteriores al anchor original se aplican vía MCP de Supabase o directamente desde el SQL Editor del dashboard. Para auditar políticas RLS existentes ante un sospechoso de recursión 42P17:
+
+```sql
+SELECT schemaname, tablename, policyname, cmd, qual, with_check
+FROM pg_policies
+WHERE tablename IN ('<tabla_1>', '<tabla_2>', '<tabla_3>')
+ORDER BY tablename, policyname;
+```
+
+La migración `fix_route_shares_rls_recursion` (2026-06-04) introduce la función `public.is_route_owner(uuid)` con `SECURITY DEFINER STABLE` para romper ciclos en políticas de visibilidad. Documentación operativa completa en `docs/SUPABASE_SETUP.md` sección "RLS Policies — gotchas conocidos".
+
+### Recuperación ante crash de arranque
+
+Si la app no arranca tras un cambio en preferencias de accesibilidad:
+
+1. **Recuperación automática esperada:** al detectar dos crashes consecutivos en arranque, `BootCanary` activa `RecoveryScreen` con tres acciones (restaurar valores por defecto, continuar sin cambios, reportar el problema).
+2. **Recuperación manual de último recurso:** `adb shell pm clear com.transitly.transitly` borra todas las preferencias y caches y permite arrancar con la configuración inicial.
+
+### Bypass temporal de verificación de email
+
+Mientras no se configure SMTP propio:
+
+- **Supabase Dashboard → Authentication → Providers → Email:** toggle "Confirm email" en OFF.
+- **Cuentas históricas sin verificar** (creadas antes del bypass): ejecutar en SQL Editor `UPDATE auth.users SET email_confirmed_at = now() WHERE email_confirmed_at IS NULL;` para desbloquearlas.
+- **Reactivar verificación cuando se disponga de SMTP:** seguir los pasos descritos en `docs/SUPABASE_SETUP.md` sección "Estado actual (2026-06-04)" → "Reactivar verificación cuando se configure SMTP".
+
+### Diagnóstico en builds release
+
+Desde el 04/06 los niveles `warn` y `error` de `AppLogger` emiten a `logcat` también en builds release (los niveles `debug`, `info` y `perf` siguen siendo debug-only). Para capturar logs filtrados por el proceso de la app:
+
+```powershell
+$adb = "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe"
+$pid_app = & $adb -s <device-id> shell pidof com.transitly.transitly
+& $adb -s <device-id> logcat -d --pid=$pid_app | Select-String "Auth|WARN|ERROR"
+```

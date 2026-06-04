@@ -1,9 +1,10 @@
 # 04 — Desarrollo e Implementación
 
 **Proyecto:** Transitly
-**Repositorio:** nexto-stop-v2 (`master @ b908f3c`)
+**Repositorio:** nexto-stop-v2 (anclaje original `master @ b908f3c` · 2026-05-23; estado actualizado `master @ 5231f4c` · 2026-06-04)
 **Pila tecnológica principal:** Flutter 3.x · Dart 3 · Riverpod 2.6 · GoRouter 17 · Freezed 3 · Supabase (PostgreSQL + Auth + Edge Functions) · Hive 2.2 con cifrado AES en cajas sensibles · Firebase Messaging 16 · Sentry 8 · PostHog 5 · `flutter_secure_storage` · `very_good_analysis` · `leak_tracker_flutter_testing`
 **Indicadores verificados a 23/05/2026:** 616 *tests* pasando, 14 migraciones SQL consecutivas, 27 *features*, 4 Edge Functions desplegadas, 5 ADRs, 6 *runbooks*, 171/190 ítems del plan mega cerrados (90,0 %), 19 bloqueadores externos documentados, 628 claves ARB (español, inglés y árabe), 4 *jobs* de CI en verde, *scorecard* TFG 8,9/10 y producción 6,0/10
+**Indicadores adicionales a 04/06/2026:** +94 commits posteriores, **release pública v1.11.0** con APK como asset en GitHub Releases (`https://github.com/astralk9999/Transitly/releases/tag/v1.11.0`), **+1 migración SQL** (`fix_route_shares_rls_recursion`), **+1 feature** (`widgets_config` con 3 pantallas configurables y `route_autocomplete` reusable), **+2 utilidades** (`BootCanary` y `TilePrewarmer`), **+1 pantalla de recovery** (`RecoveryScreen`), **+1 widget interactivo** (`MapStopPickerScreen` para wizard de rutas), **+18 claves ARB** para widgets config y avisos de zona. Ver §11 al final del documento para la cronología detallada de cambios.
 
 ---
 
@@ -447,3 +448,47 @@ asistencia de IA queda declarada con transparencia. El siguiente
 documento, `05_evaluacion_documentacion.md`, presenta los
 procedimientos de evaluación, los resultados de la sesión con
 usuarios reales y los indicadores finales del proyecto.
+
+---
+
+## 11. Evolución entre 23/05 y 04/06 de 2026
+
+Tras el cierre del anchor original `b908f3c`, la fase de estabilización post-MVP ha incorporado **94 commits** organizados en cinco oleadas de trabajo. Esta adenda documenta las features añadidas, las mitigaciones de bugs nativos y los cambios SQL relevantes.
+
+### 11.1. Nuevas features añadidas
+
+**Widgets Android configurables (`lib/features/widgets_config/`).** Tres pantallas (`WidgetsConfigScreen`, `WidgetNextBusConfigScreen`, `WidgetMyLineConfigScreen`, `WidgetNfcBalanceConfigScreen`) permiten al usuario configurar cada uno de los tres widgets de pantalla de inicio Android desde el perfil. Cada pantalla incluye preview visual del widget renderizado con datos reales, formulario con buscador `RouteAutocomplete` reutilizable, dedupe de paradas vía extensión `MockDataServiceExt.getUniqueStopsForRoute` y botón "Probar widget" que escribe a `SharedPreferences` y llama `HomeWidget.updateWidget()`. Las cadenas se localizan en `widgetsConfig*` (ES/EN/AR).
+
+**Wizard de creación de rutas con tap en mapa (`lib/features/create_route/widgets/map_stop_picker_screen.dart`).** Sustituye el formulario manual de coordenadas por una pantalla con `FlutterMap` y handler `onTap` que coloca un pin en el punto seleccionado. Integra `mapSearchResultsProvider` (Nominatim/OSM) para buscar lugares por nombre. Incluye selector horizontal de tipo de parada con iconos (hotel, gasolinera, etc.) y devuelve un `WizardStop` al wizard principal vía `Navigator.pop`.
+
+**Filtros del mapa con árbol jerárquico (`lib/features/map/widgets/zone_company_line_tree.dart`).** Sustituye los chips planos por un árbol de tres niveles (zona → operador → líneas) con `ExpansionTile` anidado y checkbox tri-state (todos seleccionados, ninguno, mixed). El estado `MapFilterState` añade el set `disabledRouteIds` para filtrar a nivel de línea individual.
+
+**Boot canary y recovery screen (`lib/core/utils/boot_canary.dart`, `lib/features/recovery/recovery_screen.dart`).** Sistema de detección de crashes nativos en arranque mediante un flag en `SharedPreferences` que se marca como `BOOTING` al inicio de `main()` y se sustituye por `STABLE` tras el primer `addPostFrameCallback`. Si el flag queda en `BOOTING` al siguiente arranque (la app crasheó antes del primer frame), se incrementa un contador de crashes consecutivos y se revierte la última preferencia sensible (`dyslexiaFontEnabled`, `highContrast`, `fontScale`, `colorBlindMode`, `backgroundId`). Tras dos crashes consecutivos se monta `RecoveryScreen` con `MaterialApp` propio sin shaders ni fuentes custom, ofreciendo botones para restaurar valores por defecto o continuar sin cambios.
+
+**TilePrewarmer idempotente (`lib/data/fmtc/tile_prewarmer.dart`).** Pre-descarga al primer arranque los tiles del bbox de Jerez (zoom 13-15) usando FMTC v10. Verifica `store.stats.all.length >= 50` para saltar la descarga si el store ya está hidratado; permite uso offline en arranques posteriores sin red.
+
+### 11.2. Estabilización del flujo de autenticación
+
+**Bypass de verificación de email.** El listener `onAuthStateChange` en `auth_repository_supabase.dart` salta el check `emailConfirmedAt` y emite `AuthAuthenticated` directamente. En `signUpWithEmail` se añadió un auto-login defensivo: si `signUp` retorna `User` pero `currentSession` es null (caso de tener "Confirm email" ON en Supabase Dashboard), se hace `signInWithPassword` con las credenciales recién creadas para garantizar sesión activa. Documentado en `docs/SUPABASE_SETUP.md`.
+
+**Google Sign-In: replay stream + navegación directa.** Se identificó que `StreamController.broadcast` no replicaba el último estado a nuevos suscriptores de Riverpod, dejando al `signin_screen` en `AuthLoading` tras login exitoso con Google. La solución combina dos mecanismos: (a) el getter `authState` ahora es un `async*` que primero `yield`-a `_lastState` y luego delega al stream del controller, garantizando que cualquier suscripción nueva reciba el estado actual; (b) el botón Google en la UI navega directamente con `context.go('/home/inicio')` tras `await signInWithGoogle()` sin depender del listener del provider. Todos los `_stateController.add(...)` se reemplazaron por `_emit(...)` que actualiza `_lastState` antes de notificar.
+
+### 11.3. Migración SQL y RLS
+
+**`fix_route_shares_rls_recursion`.** PostgreSQL detectaba un ciclo entre `route_shares.route_shares_select_owner` y `routes.routes_select_visible` (ambas hacían `EXISTS (SELECT FROM <otra_tabla>)`) que devolvía error **42P17** ("infinite recursion in policy"). Se creó la función `public.is_route_owner(p_route_id uuid)` con `SECURITY DEFINER STABLE` que ejecuta el lookup `SELECT EXISTS FROM routes WHERE owner_id = auth.uid()` bypaseando RLS, lo que rompe el ciclo. Las tres policies de `route_shares` que consultaban `routes` (SELECT, DELETE, INSERT del owner) llaman ahora a la función. La semántica de visibilidad se preserva intacta.
+
+### 11.4. Theming y accesibilidad
+
+**Fondo cross-tab.** Los `Scaffold` de `home_shell.dart` y `map_tab.dart` se cambiaron a `Colors.transparent` para que el `BackgroundWrapper` envolvente fuera visible. Anteriormente sólo se aplicaba en la pantalla "Apariencia" porque los demás Scaffolds tapaban el wrapper con `c.bgRoot`.
+
+**Paleta en modo claro.** Las 5 paletas no-default (Sunrise, Forest, Midnight, Ocean, Mono) dejaron de declarar `lightScheme: TransitLightColors()`. Al hacerlo, el provider cae al fallback `_deriveLightFromDark(palette.darkScheme)` que invierte las luminosidades HSL y mantiene el matiz característico de cada paleta (naranja en Sunset, verde en Forest, etc.) también en modo claro.
+
+**HighContrastSchemeWrapper.** Sustituye al `HighContrastTheme.apply` previo. Implementa la interfaz `TransitColorScheme` y fuerza texto/fondo a valores puros (`#000000`/`#FFFFFF`) y accent a alto contraste (`#FFFF00`/`#0000FF`). Acepta un parámetro `preserveAccent` para mantener el accent de la paleta del usuario cuando se prefiere coherencia visual sobre el accent rígido de alto contraste.
+
+### 11.5. Observabilidad en producción
+
+**AppLogger.warn/error sin guard `kDebugMode`.** Anteriormente los métodos `warn` y `error` sólo emitían a `logcat` en debug builds, lo que impedía diagnosticar incidencias en APK release. Se eliminó el guard para `warn` y `error` (sólo afecta a esos dos niveles; `info`, `debug` y `perf` siguen siendo debug-only). El cambio permitió capturar el flujo de Google Sign-In en producción y diagnosticar el bug del stream descrito en §11.2.
+
+### 11.6. Release pública v1.11.0
+
+El APK release se publica como asset de release en GitHub (`https://github.com/astralk9999/Transitly/releases/tag/v1.11.0`). Los 9 APKs históricos que se versionaban en `presentation/public/` se eliminaron del HEAD del repositorio (~792 MB liberados del `working tree`) y se añadió el patrón `*.apk` al `.gitignore` raíz. La presentación web (`presentation/src/components/Section01Hero.astro`, `Section14Download.astro`, `Layout.astro`) se modificó para enlazar a `https://github.com/astralk9999/Transitly/releases/latest`, una URL estable que apunta siempre a la última versión publicada.

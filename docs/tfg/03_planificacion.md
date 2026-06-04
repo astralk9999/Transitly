@@ -1,7 +1,7 @@
 # 03 — Planificación de la Ejecución
 
 **Proyecto:** Transitly
-**Repositorio:** nexto-stop-v2 (`master @ b908f3c`)
+**Repositorio:** nexto-stop-v2 (anclaje original `master @ b908f3c` · 2026-05-23; estado actualizado `master @ 5231f4c` · 2026-06-04, +94 commits)
 **Ciclo formativo:** Desarrollo de Aplicaciones Multiplataforma (DAM)
 **Sector:** movilidad urbana — operador COMUJESA (Jerez de la Frontera)
 **Cronograma:** 11 semanas naturales, del 01/04/2026 al 16/06/2026
@@ -351,3 +351,25 @@ desarrollo. El coste directo es cero; los riesgos críticos están
 identificados, mitigados y con contingencia escrita. Los entregables
 parciales se anclan a fechas verificables y a criterios de aceptación
 objetivos (CI verde, tests sin fallos, documentación sincronizada).
+
+---
+
+## Adenda — Avance entre el 23 de mayo y el 4 de junio de 2026
+
+Entre la firma del anchor original `b908f3c` (23/05) y el cierre intermedio `5231f4c` (04/06) se han ejecutado **94 commits** repartidos en cinco oleadas de estabilización derivadas del feedback recogido en el primer ciclo de pruebas. La planificación inicial no contemplaba con detalle esta fase intensiva de bugfix posterior al **hito de fin de desarrollo** (02/06), pero se ha integrado en el calendario sin tensionar el cierre del 16/06 gracias al margen reservado a la **semana 10** (seguimiento y evaluación).
+
+**Asignación temporal real entre 23/05 y 04/06:**
+
+| Lote de trabajo | Periodo | Resultado |
+|------------------|---------|-----------|
+| Reparación V3–V5 (personalización, fondos, paletas, dislexia, splash) | 23–25 mayo | Bug crítico de fuentes neutralizado; recuperación de personalización persistente |
+| Mega oleada 14 bugs (auth, widgets, theming, mapa, comunidad) | 26–27 mayo | Cierre de 14 ítems con cobertura cross-sectorial |
+| Crash a11y + recovery boot | 28–29 mayo | `BootCanary` + `RecoveryScreen` operativos |
+| Plan 21 bugs (mapa, perfil, auth, comunidad) | 30 mayo – 1 junio | 16/21 cerrados en el primer pase; 5 cerrados en la oleada siguiente |
+| Plan 8 mejoras + cierre auth Google + RLS 42P17 + release v1.11.0 | 2 – 4 junio | Release pública publicada en GitHub Releases con APK firmado |
+
+**Impacto en el cronograma global:** las semanas 6 a 9 (desarrollo) se cierran con un excedente funcional positivo (widgets configurables, wizard de rutas con tap en mapa, recovery boot) que no estaba en la lista mínima del MVP, y con cero deudas técnicas críticas bloqueantes. La **semana 10** (seguimiento y evaluación, 3–9 junio) absorbe la estabilización post-MVP sin desplazar la fecha de defensa.
+
+**Decisión documentada de alcance:** se confirma sin cambios la exclusión de **GTFS-Realtime real** (pendiente del operador), **widget iOS completo**, **expansión a otras ciudades** y **modelo ML de ETA**, ya recogida en `01_analisis_contexto.md` y en `docs/EXTERNAL_BLOCKERS.md`. Adicionalmente se documenta como **deuda explícita**: configuración SMTP propia (la verificación de email queda bypaseada durante el TFG con el flujo descrito en `docs/SUPABASE_SETUP.md`).
+
+**Riesgo materializado y resuelto:** durante las pruebas con dispositivos físicos se detectó un crash nativo del engine al combinar opciones de accesibilidad. Inicialmente requería `adb shell pm clear` (borrado total). La mitigación implementada (boot canary + persistencia diferida + recovery UI) elimina el riesgo de aplicación brickeada y mantiene la usabilidad sin intervención del usuario más allá de un eventual botón "Restaurar configuración por defecto" en la pantalla de recovery.

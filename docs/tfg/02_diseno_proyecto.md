@@ -1,7 +1,8 @@
 # 02 — Diseño del Proyecto
 
 **Proyecto:** Transitly (repositorio `nexto-stop-v2`).
-**Estado verificado:** `master @ b908f3c` (23 de mayo de 2026); **619 tests** declarados pasando, **14 migraciones SQL** consecutivas (`001`–`013` más `016`), **27 features**, **4 Edge Functions** desplegadas, **5 ADRs**, **6 runbooks**, **73 documentos** en `docs/`, **171 ítems** del mega plan cerrados sobre 190 (90,0 %), **628 claves ARB** en tres locales (ES/EN/AR). Scorecard maestro: **TFG 8,9/10 · Producción 6,0/10** (`docs/00_MAESTRO.md` línea 11).
+**Estado verificado original:** `master @ b908f3c` (23 de mayo de 2026).
+**Estado actualizado:** `master @ 5231f4c` (4 de junio de 2026); **+94 commits** posteriores, **release pública v1.11.0** distribuida en GitHub Releases (https://github.com/astralk9999/Transitly/releases/tag/v1.11.0), migración SQL adicional `fix_route_shares_rls_recursion` aplicada para resolver recursión en políticas RLS. Métricas históricas del anchor original: **619 tests**, **14 migraciones SQL** consecutivas, **27 features**, **4 Edge Functions** desplegadas, **5 ADRs**, **6 runbooks**, **73 documentos** en `docs/`, **171 ítems** del mega plan cerrados sobre 190 (90,0 %), **628 claves ARB** en tres locales (ES/EN/AR). Scorecard maestro: **TFG 8,9/10 · Producción 6,0/10** (`docs/00_MAESTRO.md` línea 11). Ver §9 al final del documento para el resumen consolidado de los cambios de junio.
 
 ---
 
@@ -83,3 +84,27 @@ El proyecto se ajusta a un marco normativo amplio. En materia de **protección d
 Respecto a las **licencias de software libre**, las dependencias utilizadas operan bajo licencias permisivas compatibles con uso comercial: **MIT** (Flutter, Riverpod, Hive, freezed, go_router, sentry_flutter), **BSD** (Dart, flutter_local_notifications) y **Apache 2.0** (plugins de Firebase, flutter_map, posthog_flutter). Los datos GTFS de COMUJESA se utilizan bajo licencia de uso público consultada en fuentes oficiales del Ayuntamiento de Jerez. Las tipografías DM Sans e IBM Plex Mono se distribuyen bajo SIL Open Font License y se bundlean como assets locales para evitar peticiones en tiempo de ejecución y preservar la privacidad del usuario. Los iconos Lucide se utilizan bajo licencia ISC.
 
 Por último, el proyecto incluye **Términos del Servicio** y **Política de Privacidad** propias, alojadas en `assets/legal/` en versiones trilingües (español, inglés y árabe), accesibles desde el panel de privacidad de la aplicación. El documento siguiente, `03_planificacion.md`, desarrolla con mayor detalle el Gantt y la asignación temporal de actividades.
+
+---
+
+## 9. Actualización a 4 de junio de 2026
+
+El diseño del proyecto presentado en este documento se mantiene íntegro: la pila tecnológica, los doce objetivos funcionales, los objetivos no funcionales agrupados en siete familias, el cronograma de 11 semanas y los nueve indicadores de calidad continúan siendo el marco de referencia. Los cambios introducidos entre el 23 de mayo y el 4 de junio responden todos a refuerzo, estabilización o extensión incremental dentro del alcance ya planificado, sin alterar ninguna decisión arquitectónica de fondo.
+
+**Cambios significativos a nivel de arquitectura:**
+
+1. **Recovery boot y persistencia diferida de preferencias**: se introdujo `BootCanary` (`lib/core/utils/boot_canary.dart`) y `RecoveryScreen` (`lib/features/recovery/`) como red de seguridad ante crashes nativos del engine de Flutter al combinar opciones de accesibilidad (dislexia + alto contraste + tamaño de texto). El mecanismo persiste sólo tras el primer frame estable y revierte la última preferencia tóxica si se detectan dos crashes consecutivos en arranque. Esto refuerza el objetivo no funcional de mantenibilidad sin alterar el modelo de datos.
+
+2. **Migración SQL adicional `fix_route_shares_rls_recursion`**: se detectó un ciclo entre las políticas RLS de `route_shares` y `routes` que provocaba error PostgreSQL **42P17** (infinite recursion in policy) al consultar las contribuciones del usuario. Se resolvió mediante una función `SECURITY DEFINER` `public.is_route_owner(uuid)` que bypassa RLS para el lookup, manteniendo la semántica original de visibilidad. Documentado en `docs/SUPABASE_SETUP.md`.
+
+3. **Bypass temporal de verificación de email**: ante la imposibilidad de configurar SMTP propio dentro del cronograma del TFG, se desactivó la verificación obligatoria de correo en el listener de auth (`auth_repository_supabase.dart`) y se añadió un auto-login defensivo en `signUpWithEmail`. La infraestructura `EmailVerifyPendingScreen` queda dormida y reactivable cuando se configure SMTP. Documentado en `docs/SUPABASE_SETUP.md`.
+
+4. **Filtros del mapa con árbol jerárquico**: el filtro plano de operadores se sustituyó por un árbol expandible de tres niveles (zona → compañía → líneas) con checkbox tri-state. Refuerza el objetivo de escalabilidad multi-operador del cronograma futuro.
+
+5. **Widgets Android configurables**: pantallas de configuración en perfil para los tres widgets (Próximo bus, Mi línea, Saldo NFC) con preview y botón "Probar". Implementación en `lib/features/widgets_config/`.
+
+6. **Wizard de creación de rutas con tap en mapa**: el formulario manual de coordenadas se complementa con `MapStopPickerScreen` que permite añadir paradas tocando el mapa y buscar lugares vía Nominatim (OpenStreetMap).
+
+7. **Release pública v1.11.0**: el APK release se publica como asset en GitHub Releases (`https://github.com/astralk9999/Transitly/releases/tag/v1.11.0`). La presentación web ahora enlaza a `releases/latest` en lugar de versionar APKs en el repositorio, lo que ha reducido el `working tree` en ~792 MB y previene el bloqueo de push por archivos >100 MB.
+
+Los demás aspectos del diseño —modelo de datos, objetivos de rendimiento, cronograma, indicadores de calidad y marco legal— continúan vigentes sin modificaciones.

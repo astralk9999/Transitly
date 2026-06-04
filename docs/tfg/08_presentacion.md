@@ -5,7 +5,9 @@
 **Ciclo:** Desarrollo de Aplicaciónes Multiplataforma (DAM)
 **Defensa prevista:** semana 11 del cronograma (10-16 de junio de 2026)
 **Duracion total estimada:** entre 18 y 22 minutos
-**Anclaje:** master @ b908f3c · 2026-05-23
+**Anclaje original:** master @ b908f3c · 2026-05-23
+**Anclaje actualizado:** master @ 5231f4c · 2026-06-04 (+94 commits)
+**Release pública:** v1.11.0 — https://github.com/astralk9999/Transitly/releases/tag/v1.11.0
 
 > Este documento es la base textual sobre la que se montan las
 > diapositivas reales en la herramienta de presentación. Cada sección
@@ -305,3 +307,102 @@ no rellenar con suposiciónes. (300 segúndos)
 
 **Notas:** cerrar con una frase breve de cierre y dar paso al
 tribunal. (30 segúndos)
+
+---
+
+## Diapositivas adicionales — Versión 1.11.0 (4 de junio de 2026)
+
+Estas diapositivas se insertan entre la **slide 8 (Demostración)** y la **slide 9 (Resultados y métricas)** del guion original. Refuerzan el bloque de "trabajo realizado entre el cierre del anchor original y la defensa".
+
+### Slide 8.bis — Estabilización post-MVP en cifras
+
+**Título:** Del MVP al release público — 12 días, 94 commits, una versión instalable.
+
+**Cuerpo:**
+
+- 94 commits entre 23/05 y 04/06 organizados en cinco oleadas de estabilización.
+- Cuatro planes de acción ejecutados (`PLAN_15_BUGS`, `PLAN_8_BUGS_LOGS`, `PLAN_CRASH_NATIVO_RECOVERY`, `PLAN_21_BUGS_MAPA_PERFIL`, `PLAN_8_MEJORAS`, `PLAN_42P17_RLS_RECURSION`).
+- Release oficial v1.11.0 publicado en GitHub Releases con APK firmado.
+- Una migración SQL adicional (`fix_route_shares_rls_recursion`).
+- 18 nuevas claves ARB (widgets config, avisos de zona).
+- Cinco features nuevas: widgets configurables, wizard con mapa, árbol de filtros, recovery boot, tile prewarming.
+
+**Notas para la defensa:** explicar que el ciclo de estabilización post-MVP no estaba contemplado con detalle en el plan original pero se absorbió dentro del margen de la semana 10. Subrayar que cada plan se documenta como `PLAN_*.md` en `docs/historico/`, con causa raíz, decisiones tomadas y criterios de aceptación verificables. (90 segundos)
+
+### Slide 8.ter — Bug crítico que la app sobrevivió por sí sola
+
+**Título:** Boot canary — cómo una app puede recuperarse sola sin clear data.
+
+**Cuerpo:**
+
+Caso real detectado en pruebas con dispositivos físicos:
+1. Usuario activa simultáneamente: dislexia + alto contraste + tamaño de texto máximo + filtro de daltonismo.
+2. La app crashea en el siguiente arranque por una combinación tóxica en el subsistema nativo de Flutter (font + shader + matrix de color).
+3. Las defensas Dart (`try/catch`, validación de NaN, fallbacks) **no capturan** el crash: ocurre en C++, no en Dart.
+4. El estado tóxico ya está persistido en Hive → al reabrir la app vuelve a crashear → bucle.
+
+**Solución implementada:**
+- `BootCanary` marca `BOOTING` al inicio de `main()` y lo cambia a `STABLE` tras el primer `addPostFrameCallback`.
+- Si el siguiente arranque ve `BOOTING` → la app crasheó antes del primer frame → se incrementa el contador.
+- Se revierte la última preferencia sensible (sólo persistimos preferencias después de `markStable`).
+- Tras dos crashes consecutivos, se monta `RecoveryScreen` con `MaterialApp` propio, **sin shaders ni fuentes custom**, con botón "Restaurar valores por defecto".
+
+**Resultado:** indicador "crashes que requieren clear data" pasa de cualquier valor a **cero**. La aplicación se vuelve auto-recuperable.
+
+**Notas para la defensa:** este es uno de los puntos más diferenciadores del proyecto. Resiliencia ante errores nativos no es algo que se enseñe en el ciclo y demuestra capacidad de razonamiento sobre la diferencia entre Dart y el engine subyacente. (120 segundos)
+
+### Slide 8.quater — Detección y resolución de un ciclo recursivo en RLS
+
+**Título:** Error 42P17 — "infinite recursion in policy". Un caso real de auditoría SQL.
+
+**Cuerpo:**
+
+Tras conseguir que el login con Google funcionara, el flujo post-login fallaba al cargar las contribuciones del usuario:
+
+```
+PostgrestException: infinite recursion detected in policy for relation "route_shares"
+code: 42P17
+```
+
+**Auditoría con MCP de Supabase** (consulta a `pg_policies`):
+
+- `route_shares.route_shares_select_owner` hacía `EXISTS (SELECT FROM routes WHERE owner_id = auth.uid())`.
+- `routes.routes_select_visible` hacía `EXISTS (SELECT FROM route_shares WHERE shared_with_id = auth.uid())`.
+- PostgreSQL detecta el ciclo → aborta.
+
+**Solución desplegada** (migración `fix_route_shares_rls_recursion`):
+
+```sql
+CREATE FUNCTION public.is_route_owner(p_route_id uuid)
+RETURNS boolean LANGUAGE sql SECURITY DEFINER STABLE
+AS $$ SELECT EXISTS (SELECT 1 FROM routes WHERE id = p_route_id AND owner_id = auth.uid()); $$;
+```
+
+La función ejecuta con permisos de owner (bypassa RLS) y rompe el ciclo. Las tres policies que consultaban `routes` (SELECT, DELETE, INSERT del owner) llaman ahora a la función. Semántica de visibilidad preservada.
+
+**Notas para la defensa:** explicar conceptualmente qué es Row Level Security y por qué un sistema multi-rol como Transitly lo necesita. Mencionar que la decisión de mantener el patrón `SECURITY DEFINER` versus desnormalizar el schema es un trade-off documentado en `docs/SUPABASE_SETUP.md`. (90 segundos)
+
+### Slide 8.quinta — Release pública y limpieza del repositorio
+
+**Título:** De `presentation/public/*.apk` a GitHub Releases — 792 MB liberados.
+
+**Cuerpo:**
+
+**Estado anterior al 04/06:**
+- 9 APKs históricos versionados en `presentation/public/transitly-v1.{3..11}.0.apk`.
+- ~792 MB en el `working tree`.
+- GitHub avisaba `>50 MB` por archivo y bloquearía con `>100 MB`.
+- Cada nuevo APK duplicaba ~88 MB en el `.git/` indefinidamente.
+
+**Acción tomada:**
+1. Eliminar los 9 APKs del HEAD del repositorio.
+2. Añadir patrón `*.apk` al `.gitignore` raíz.
+3. Cambiar las URLs de descarga en la presentación web a `https://github.com/astralk9999/Transitly/releases/latest` (URL estable que GitHub redirige al último release).
+4. Crear el release oficial `v1.11.0` con el APK como asset usando `gh release create`.
+
+**Resultado:**
+- `working tree` reducido en ~792 MB.
+- Distribución profesional vía Releases (límite 2 GB por archivo, sin contaminar el repo).
+- Una sola URL que la presentación nunca tiene que actualizar.
+
+**Notas para la defensa:** mencionar que esto se descubrió en el aviso de GitHub al hacer `git push` y se decidió aplicar la práctica estándar del ecosistema (Releases para binarios, repo sólo para código). La presentación HTML usaba `import.meta.env.BASE_URL` que apuntaba a `/Transitly/<archivo>.apk`; la sustitución por `releases/latest` deja la web independiente del versionado. (60 segundos)

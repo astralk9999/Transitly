@@ -3,7 +3,7 @@
 **Proyecto:** Transitly (repositorio `nexto-stop-v2`).
 **Autor:** trabajo individual con asistencia documentada de un sistema multiagente de inteligencia artificial.
 **Ciclo formativo:** Desarrollo de Aplicaciones Multiplataforma (DAM).
-**Estado verificado:** `master @ b908f3c` (23 de mayo de 2026).
+**Estado verificado:** `master @ 5231f4c` (4 de junio de 2026); incorpora 94 commits posteriores al anchor `b908f3c` original del 23 de mayo. Ver §6 al final del documento para el resumen de cambios.
 
 ---
 
@@ -48,3 +48,13 @@ El guión inicial del trabajo se concreta en la construcción de un **producto m
 Quedan **explícitamente fuera del alcance** del TFG cuatro líneas de trabajo que se documentan como evolución futura: la integración con GTFS-Realtime real (pendiente de que los operadores expongan los feeds), el widget iOS completo (limitado por las restricciones de la plataforma), la expansión activa a otras ciudades distintas de Jerez (requiere acuerdos comerciales con sus respectivos operadores), y el desarrollo de un modelo de aprendizaje automático para predicción precisa de ETA (requiere histórico de posiciones reales que solo se obtiene tras un periodo de operación). Estas exclusiones se recogen formalmente en `docs/EXTERNAL_BLOCKERS.md` junto al resto de bloqueadores externos al control del autor.
 
 El documento siguiente, `02_diseno_proyecto.md`, materializa este análisis en la arquitectura técnica, objetivos funcionales y no funcionales, planificación de recursos y requisitos legales del proyecto.
+
+---
+
+## 6. Actualización a 4 de junio de 2026
+
+El análisis de contexto y oportunidades originalmente publicado el 23 de mayo permanece vigente sin cambios estructurales. La validación sobre el terreno tras las dos primeras semanas de iteración refuerza el diagnóstico inicial: la asimetría informativa del viajero en ciudad media sigue siendo el problema central, y la inexistencia de feeds GTFS-Realtime en operadores como COMUJESA continúa siendo la principal barrera a la integración con tiempo real, tal y como se anticipó en `docs/EXTERNAL_BLOCKERS.md`.
+
+Las siete carencias detectadas se han abordado todas en mayor o menor medida con la implementación; el grado de cobertura final se documenta en `04_desarrollo_implementacion.md` §10 y en `05_evaluacion_documentacion.md`. La séptima carencia (ausencia de observabilidad) se traslada parcialmente al operador mediante las funciones de panel multi-rol y los paneles de moderación.
+
+No se incorporan nuevas necesidades respecto al análisis inicial: el ámbito funcional se mantiene dentro del catálogo de doce objetivos del documento 02. Los cambios introducidos durante junio responden todos a estabilización (fixes), pulido visual o ampliación de configurabilidad por el usuario (widgets Android, wizard de rutas con tap en mapa), sin alterar el alcance del TFG.

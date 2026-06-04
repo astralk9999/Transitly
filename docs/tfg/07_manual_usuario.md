@@ -1,7 +1,9 @@
 # 07 — Manual de Usuario
 
 **Aplicación:** Transitly
-**Versión del documento:** 2026-05-23
+**Versión del documento original:** 2026-05-23
+**Versión actualizada:** 2026-06-04
+**Versión instalable distribuida:** v1.11.0 — descarga directa desde https://github.com/astralk9999/Transitly/releases/latest
 **Plataformas:** Android, iOS y Web (PWA)
 **Audiencia:** usuario final, sin conocimientos técnicos previos
 
@@ -358,3 +360,30 @@ registraste con cuenta, vuelve a iniciar sesión y se restauraran. Si
 usaste modo invitado, los favoritos se guardan solo en el dispositivo.
 
 **Quiero borrar todos mis datos.** Sigue el paso 14.3 de este manual.
+
+---
+
+## Adenda — Novedades de la versión v1.11.0 (4 de junio de 2026)
+
+Si vienes de una versión anterior, en v1.11.0 encontrarás los siguientes cambios visibles:
+
+**Login con Google funcional.** El botón "Continuar con Google" en la pantalla de inicio de sesión ya funciona en todos los dispositivos. Si tu cuenta no entra al primer intento, espera unos segundos y vuelve a tocarla — la app reintenta automáticamente.
+
+**Sin obligación de verificar email para usar la app.** El flujo de registro envía las credenciales al servidor y entras directamente al inicio sin esperar a un correo de verificación. Esto es temporal mientras se configura el servidor de correo propio; si más adelante recibes un email de verificación, púlsalo igualmente para mantener la cuenta validada.
+
+**Personalización completa y persistente.** Las paletas de color funcionan ahora en modo claro y oscuro, manteniendo el matiz característico de cada una (Sunrise sigue siendo cálida en claro, Forest sigue siendo verde). El fondo animado (Smoke, Aurora, FloatingLines, etc.) se aplica en todas las pestañas, no solo en Apariencia. El alto contraste fuerza texto negro sobre blanco (o blanco sobre negro en modo oscuro) en lugar del scheme original.
+
+**Pantalla de recuperación ante problemas de arranque.** Si activas varias opciones de accesibilidad a la vez y la app no abre en los siguientes dos arranques, verás una pantalla blanca con un triángulo amarillo y la opción "Restaurar configuración por defecto". Toca ese botón y la app volverá a abrir con los valores iniciales. No es necesario borrar datos del sistema.
+
+**Filtros del mapa por compañía y línea.** En el sheet de filtros del mapa, ahora hay un árbol expandible: Jerez → COMUJESA → líneas L1, L2, ... Puedes desmarcar una compañía entera o solo líneas individuales. El estado se guarda y se conserva entre sesiones.
+
+**Widgets de pantalla de inicio configurables.** En Perfil → Widgets puedes configurar cada uno de los tres widgets:
+- **Próximo bus**: elige línea y parada → preview en vivo del widget → "Probar" actualiza el widget de tu launcher en segundos.
+- **Mi línea**: elige una línea favorita → preview con próximas salidas.
+- **Saldo bonobús**: enlaza directamente al escaneo NFC; no requiere configuración.
+
+**Wizard de crear ruta con mapa interactivo.** Al crear una nueva ruta como usuario normal (Perfil → Comunidad → Crear nueva ruta), el paso "Paradas" ahora abre un mapa donde tocas el punto exacto en lugar de teclear coordenadas. También puedes buscar lugares por nombre ("Hotel Jerez", "Gasolinera Cepsa") y la app los localiza automáticamente.
+
+**Click sobre línea en el mapa.** Si tocas una de las líneas de bus dibujadas sobre el mapa, aparece un snackbar con el código y nombre de la línea (p. ej. "Línea L8 · Norte"). El sheet inferior se filtra para mostrar sólo esa línea y sus paradas; toca la X para volver a ver todas.
+
+**Mejor saludo en el inicio.** El saludo de bienvenida ("Buenos días", "Buenas tardes", "Buenas noches", "Buena madrugada") cambia ahora cuatro veces al día y se ajusta al idioma seleccionado.

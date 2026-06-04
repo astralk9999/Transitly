@@ -60,7 +60,8 @@
     </ol>
   </div>
 <span class="returntype"><a href="https://api.flutter.dev/flutter/widgets/Widget-class.html">Widget</a></span>
-<span class="name ">build</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="build-param-context"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/widgets/BuildContext-class.html">BuildContext</a></span> <span class="parameter-name">context</span></span></li>
+<span class="name ">build</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="build-param-context"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/widgets/BuildContext-class.html">BuildContext</a></span> <span class="parameter-name">context</span>, </span></li>
+<li><span class="parameter" id="build-param-ref"><span class="type-annotation"><a href="https://pub.dev/documentation/flutter_riverpod/2.6.1/flutter_riverpod/WidgetRef-class.html">WidgetRef</a></span> <span class="parameter-name">ref</span></span></li>
 </ol>)
 
       <div class="features"><span class="feature">override</span></div>
@@ -108,9 +109,13 @@ and</li>
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">@override
-Widget build(BuildContext context) {
+Widget build(BuildContext context, WidgetRef ref) {
   final isDark = Theme.of(context).brightness == Brightness.dark;
   final c = TransitColorScheme.of(isDark);
+
+  &#47;&#47; Conteos reales desde Supabase. Sin sesión devuelve 0.
+  final statsAsync = ref.watch(myContributionsProvider);
+  final verifiedAsync = ref.watch(myContributionsVerifiedProvider);
 
   return GlassCard(
     blur: 16,
@@ -134,11 +139,65 @@ Widget build(BuildContext context) {
           children: [
             ReputationBadge(user.reputationLevel),
             const SizedBox(width: 12),
-            Text(&#39;12 reportes · 3 verificadas&#39;,
-                style: TransitTypography.bodySecondary(c.textMid)),
+            Expanded(
+              child: statsAsync.when(
+                data: (stats) {
+                  final verified = verifiedAsync.valueOrNull ?? 0;
+                  return Text(
+                    &#39;${stats.total} contribuciones · $verified verificadas&#39;,
+                    style: TransitTypography.bodySecondary(c.textMid),
+                  );
+                },
+                loading: () =&gt; Text(
+                  &#39;Cargando…&#39;,
+                  style: TransitTypography.bodySecondary(c.textMid),
+                ),
+                error: (_, __) =&gt; Text(
+                  &#39;— contribuciones&#39;,
+                  style: TransitTypography.bodySecondary(c.textMid),
+                ),
+              ),
+            ),
           ],
         ),
         const SizedBox(height: 8),
+        &#47;&#47; Mini desglose por categoría — datos reales.
+        statsAsync.when(
+          data: (stats) =&gt; Wrap(
+            spacing: 12,
+            runSpacing: 6,
+            children: [
+              _StatChip(
+                  icon: Icons.report_outlined,
+                  label: &#39;Reportes&#39;,
+                  count: stats.incidents,
+                  c: c),
+              _StatChip(
+                  icon: Icons.alt_route_outlined,
+                  label: &#39;Rutas sugeridas&#39;,
+                  count: stats.suggestions,
+                  c: c),
+              _StatChip(
+                  icon: Icons.edit_note_outlined,
+                  label: &#39;Feedback&#39;,
+                  count: stats.feedback,
+                  c: c),
+              _StatChip(
+                  icon: Icons.lightbulb_outline,
+                  label: &#39;Funciones&#39;,
+                  count: stats.featureRequests,
+                  c: c),
+              _StatChip(
+                  icon: Icons.share_outlined,
+                  label: &#39;Compartidas&#39;,
+                  count: stats.routeShares,
+                  c: c),
+            ],
+          ),
+          loading: () =&gt; const SizedBox.shrink(),
+          error: (_, __) =&gt; const SizedBox.shrink(),
+        ),
+        const SizedBox(height: 10),
         GestureDetector(
           onTap: () =&gt; context.push(&#39;&#47;contributions&#39;),
           child: Text(&#39;VER TODO →&#39;,
@@ -184,7 +243,7 @@ Widget build(BuildContext context) {
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

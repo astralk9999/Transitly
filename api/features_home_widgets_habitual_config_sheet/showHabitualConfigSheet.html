@@ -78,12 +78,11 @@
 
   final selectedRoute = _HabitualSheetState&lt;RouteModel&gt;();
   final selectedStop = _HabitualSheetState&lt;StopModel&gt;();
-  final routeController = _SheetDropdownController();
-  final stopController = _SheetDropdownController();
 
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
+    useSafeArea: true,
     backgroundColor: c.bgSurface,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
@@ -91,19 +90,27 @@
     builder: (ctx) {
       return StatefulBuilder(
         builder: (ctx, setSheetState) {
+          &#47;&#47; Paradas únicas (dedupe por stopId) para la ruta elegida.
+          &#47;&#47; getStopsForRoute devuelve outbound+inbound; sin dedupe
+          &#47;&#47; aparecían paradas duplicadas o de sentido contrario.
           final stopsForRoute = selectedRoute.value != null
-              ? mockData.getStopsForRoute(selectedRoute.value!.id)
+              ? _uniqueStopsFor(mockData, selectedRoute.value!.id)
               : &lt;StopModel&gt;[];
           final canSave =
               selectedRoute.value != null &amp;&amp; selectedStop.value != null;
 
+          &#47;&#47; Padding inferior que respeta: teclado + safe area + nav bar
+          &#47;&#47; de la app. Sin sumar HomeBottomNav.height los botones quedan
+          &#47;&#47; tapados por la navegación.
+          final mq = MediaQuery.of(ctx);
+          final bottomInset = (24 +
+              mq.viewInsets.bottom +
+              mq.padding.bottom +
+              HomeBottomNav.height)
+              .clamp(16.0, 100.0);
+
           return Padding(
-            padding: EdgeInsets.fromLTRB(
-              16,
-              8,
-              16,
-              24 + MediaQuery.of(ctx).viewInsets.bottom,
-            ),
+            padding: EdgeInsets.fromLTRB(16, 8, 16, bottomInset),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,40 +131,71 @@
                   style: TransitTypography.heading(c.textHi),
                 ),
                 const SizedBox(height: 20),
-                DropdownButtonFormField&lt;RouteModel&gt;(
-                  key: routeController.key,
-                  value: selectedRoute.value,
-                  isExpanded: true,
-                  decoration: _sheetInputDecoration(
-                    c,
-                    l10n.homeConfigureHabitualRoute,
-                  ),
-                  dropdownColor: c.bgRaised,
-                  style: TransitTypography.bodyPrimary(c.textHi),
-                  hint: Text(
-                    l10n.homeConfigureHabitualRoute,
-                    style: TransitTypography.bodySecondary(c.textMid),
-                  ),
-                  items: routes.map((r) {
-                    return DropdownMenuItem&lt;RouteModel&gt;(
-                      value: r,
-                      child: Text(
-                        &#39;${r.code} · ${r.name}&#39;,
-                        style: TransitTypography.bodyPrimary(c.textHi),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    );
-                  }).toList(),
-                  onChanged: (v) {
+                &#47;&#47; Autocomplete: el usuario escribe parte del código o
+                &#47;&#47; nombre (ej. &quot;L1&quot;, &quot;estadio&quot;) y se filtra. Si tu app
+                &#47;&#47; crece a cientos de líneas, esto sigue siendo usable.
+                Autocomplete&lt;RouteModel&gt;(
+                  displayStringForOption: (r) =&gt; &#39;${r.code} · ${r.name}&#39;,
+                  optionsBuilder: (textEditingValue) {
+                    final q = textEditingValue.text.trim().toLowerCase();
+                    if (q.isEmpty) return routes;
+                    return routes.where((r) =&gt;
+                        r.code.toLowerCase().contains(q) ||
+                        r.name.toLowerCase().contains(q));
+                  },
+                  onSelected: (r) {
                     setSheetState(() {
-                      selectedRoute.value = v;
+                      selectedRoute.value = r;
                       selectedStop.value = null;
                     });
+                  },
+                  fieldViewBuilder:
+                      (ctx, controller, focusNode, onSubmitted) {
+                    return TextField(
+                      controller: controller,
+                      focusNode: focusNode,
+                      style: TransitTypography.bodyPrimary(c.textHi),
+                      decoration: _sheetInputDecoration(
+                        c,
+                        l10n.homeConfigureHabitualRoute,
+                      ).copyWith(
+                        suffixIcon: Icon(Icons.search, color: c.textMid),
+                      ),
+                    );
+                  },
+                  optionsViewBuilder: (ctx, onSelected, options) {
+                    return Align(
+                      alignment: Alignment.topLeft,
+                      child: Material(
+                        color: c.bgRaised,
+                        elevation: 4,
+                        borderRadius: BorderRadius.circular(8),
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxHeight: 240),
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            padding: EdgeInsets.zero,
+                            itemCount: options.length,
+                            itemBuilder: (_, i) {
+                              final r = options.elementAt(i);
+                              return ListTile(
+                                dense: true,
+                                title: Text(
+                                  &#39;${r.code} · ${r.name}&#39;,
+                                  style:
+                                      TransitTypography.bodyPrimary(c.textHi),
+                                ),
+                                onTap: () =&gt; onSelected(r),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    );
                   },
                 ),
                 const SizedBox(height: 16),
                 DropdownButtonFormField&lt;StopModel&gt;(
-                  key: stopController.key,
                   value: selectedStop.value,
                   isExpanded: true,
                   decoration: _sheetInputDecoration(
@@ -237,7 +275,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

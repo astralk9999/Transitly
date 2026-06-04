@@ -55,7 +55,7 @@
     <section class="multi-line-signature">
       const
       <span class="name ">UserLocationLayer</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="-param-key"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/foundation/Key-class.html">Key</a>?</span> <span class="parameter-name">key</span>, </span></li>
-<li><span class="parameter" id="-param-position"><span>required</span> <span class="type-annotation"><a href="https://pub.dev/documentation/latlong2/0.9.1/latlong2/LatLng-class.html">LatLng</a></span> <span class="parameter-name">position</span>, </span></li>
+<li><span class="parameter" id="-param-fix"><span>required</span> <span class="type-annotation"><a href="../../shared_providers_user_location_provider/UserLocationFix-class.html">UserLocationFix</a></span> <span class="parameter-name">fix</span>, </span></li>
 <li><span class="parameter" id="-param-isDark"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">isDark</span>, </span></li>
 </ol>})
     </section>
@@ -67,7 +67,7 @@
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">const UserLocationLayer({
   super.key,
-  required this.position,
+  required this.fix,
   required this.isDark,
 });</code></pre>
 </section>
@@ -97,7 +97,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

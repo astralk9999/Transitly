@@ -72,14 +72,37 @@
   required String routeCode,
   required List&lt;Map&lt;String, dynamic&gt;&gt; upcoming,
 }) async {
+  final status = upcoming.isNotEmpty ? &#39;En servicio&#39; : &#39;Sin datos&#39;;
+  final updatedAt = DateTime.now().toIso8601String();
+  final times = upcoming.map((d) =&gt; d[&#39;time&#39;] as String).toList();
+  final summary = times.isEmpty
+      ? &#39;Sin próximas salidas&#39;
+      : &#39;Próximos: ${times.take(3).join(&#39; · &#39;)}&#39;;
+  final payload = jsonEncode({
+    &#39;routeCode&#39;: routeCode,
+    &#39;status&#39;: status,
+    &#39;summary&#39;: summary,
+    &#39;updatedAt&#39;: updatedAt,
+    &#39;upcoming&#39;: upcoming,
+  });
+
   final prefs = await SharedPreferences.getInstance();
   final key = &#39;${_lineStatusPrefix}_$routeCode&#39;;
-  final data = jsonEncode({
-    &#39;routeCode&#39;: routeCode,
-    &#39;upcoming&#39;: upcoming,
-    &#39;updatedAt&#39;: DateTime.now().toIso8601String(),
-  });
-  await prefs.setString(key, data);
+  await prefs.setString(key, payload);
+  await prefs.setString(&#39;widget_my_line&#39;, routeCode);
+
+  try {
+    await HomeWidget.setAppGroupId(_appGroupId);
+    await HomeWidget.saveWidgetData(&#39;widget_my_line&#39;, routeCode);
+    await HomeWidget.saveWidgetData(key, payload);
+    await HomeWidget.updateWidget(
+      name: &#39;MyLineWidgetProvider&#39;,
+      androidName: &#39;MyLineWidgetProvider&#39;,
+    );
+  } catch (e) {
+    AppLogger.warn(_tag, &#39;home_widget writeMyLineStatus failed&#39;, e);
+  }
+
   AppLogger.debug(_tag, &#39;writeMyLineStatus saved (key=$key)&#39;);
 }</code></pre>
 </section>
@@ -109,7 +132,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

@@ -76,7 +76,8 @@
         AuthError.invalidCredentials, &#39;Invalid credentials&#39;);
   }
   if (msg.contains(&#39;already been registered&#39;) ||
-      msg.contains(&#39;already registered&#39;)) {
+      msg.contains(&#39;already registered&#39;) ||
+      msg.contains(&#39;user already exists&#39;)) {
     return const AuthRepoException(
         AuthError.emailTaken, &#39;Email already registered&#39;);
   }
@@ -87,6 +88,19 @@
   if (msg.contains(&#39;email not confirmed&#39;)) {
     return const AuthRepoException(
         AuthError.emailNotVerified, &#39;Email not verified&#39;);
+  }
+  if (msg.contains(&#39;user not found&#39;)) {
+    return const AuthRepoException(
+        AuthError.userNotFound, &#39;User not found&#39;);
+  }
+  if (msg.contains(&#39;network request failed&#39;) || msg.contains(&#39;connection refused&#39;) || msg.contains(&#39;socketexception&#39;)) {
+    return const AuthRepoException(
+        AuthError.networkUnavailable, &#39;Network unavailable&#39;);
+  }
+  final rateMatch = RegExp(r&#39;for security purposes,? you can only request this after (\d+) seconds&#39;).firstMatch(msg);
+  if (rateMatch != null) {
+    final secs = int.parse(rateMatch.group(1)!);
+    return AuthRepoException(AuthError.rateLimited, &#39;rate_limited&#39;, secs);
   }
   return AuthRepoException(AuthError.unknown, e.toString());
 }</code></pre>
@@ -116,7 +130,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

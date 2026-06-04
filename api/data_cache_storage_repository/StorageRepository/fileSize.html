@@ -74,7 +74,7 @@
     final path = box.path;
     if (path != null) return File(path).lengthSync();
   } catch (e) {
-    AppLogger.warn(_logTag, &#39;file size unavailable for $boxName&#39;, e);
+    AppLogger.debug(_logTag, &#39;file size unavailable for $boxName (box typed)&#39;);
   }
   return 0;
 }</code></pre>
@@ -105,7 +105,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

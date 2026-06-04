@@ -68,6 +68,36 @@
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  &#47;&#47; ── Boot canary: detecta si el arranque anterior crasheó ──
+  final canary = await BootCanary.startBoot();
+  if (canary.crashed) {
+    AppLogger.warn(&#39;BootCanary&#39;,
+        &#39;previous boot crashed, pending=${canary.pendingChange} streak=${canary.crashStreak}&#39;);
+    await BootCanary.incrementCrashStreak();
+    if (canary.pendingChange != null) {
+      await _revertSensitiveSetting(canary.pendingChange!);
+    }
+    if (canary.crashStreak &gt;= 1) {
+      &#47;&#47; 2+ crashes consecutivos → recovery mode
+      runApp(ProviderScope(
+        overrides: [
+          bootCanaryStateProvider.overrideWith((ref) =&gt; canary),
+        ],
+        child: const RecoveryScreen(),
+      ));
+      return;
+    }
+  }
+  &#47;&#47; Permitir todas las orientaciones (portrait + landscape). El usuario
+  &#47;&#47; puede querer ver mapa, formularios o fondos animados en horizontal,
+  &#47;&#47; y en tablet&#47;web es lo esperable.
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight,
+  ]);
   ErrorBoundary.setup();
 
   &#47;&#47; F26: con fuentes empaquetadas se desactiva el fetch por red (privacidad
@@ -89,11 +119,20 @@
     await HiveInit.bootstrap();
     AppLogger.info(&#39;HiveCache&#39;, &#39;bootstrap complete&#39;);
     await _initFmtc();
+    unawaited(TilePrewarmer.prewarmOnce());
     await Supabase.initialize(
       url: Env.supabaseUrl,
       anonKey: Env.supabaseAnonKey,
+      authOptions: const FlutterAuthClientOptions(
+        authFlowType: AuthFlowType.pkce,
+        autoRefreshToken: true,
+      ),
     );
-    AppLogger.info(&#39;Supabase&#39;, &#39;initialized url=${Env.supabaseUrl}&#39;);
+    final restoredSession = Supabase.instance.client.auth.currentSession;
+    final hasUser = restoredSession?.user != null;
+    final uidShort = restoredSession?.user.id.substring(0, 8) ?? &#39;none&#39;;
+    AppLogger.info(&#39;Supabase&#39;,
+        &#39;initialized url=${Env.supabaseUrl} session=$hasUser uid=$uidShort expiresAt=${restoredSession?.expiresAt}&#39;);
     try {
       await FirebaseSetup.init();
       AppLogger.info(&#39;Firebase&#39;, &#39;initialized&#39;);
@@ -195,10 +234,44 @@
       mockDataServiceProvider.overrideWithValue(mockData),
     ],
   );
+
+  &#47;&#47; FIX bug 7 (sesión se cierra al reabrir):
+  &#47;&#47; En algunos dispositivos `Supabase.initialize` devuelve `currentSession`
+  &#47;&#47; como null inmediatamente aunque la sesión SÍ exista en storage
+  &#47;&#47; (FlutterSecureStorage tarda en hidratar). Damos un pequeño margen
+  &#47;&#47; y reintentamos antes de declarar al usuario como invitado.
+  var session = Supabase.instance.client.auth.currentSession;
+  if (session?.user == null) {
+    await Future&lt;void&gt;.delayed(const Duration(milliseconds: 300));
+    session = Supabase.instance.client.auth.currentSession;
+  }
+  AppLogger.info(&#39;Startup&#39;,
+      &#39;post-init session userId=${session?.user.id.substring(0, 8) ?? &quot;guest&quot;}&#39;);
+  if (session?.user == null) {
+    await container.read(themeNotifierProvider).loadGuest();
+  }
+
   registerAppContainer(container);
   TransitColorScheme.registerResolver(
-    (isDark) =&gt; resolveActiveScheme(isDark),
+    resolveActiveScheme,
   );
+
+  final launchUri = await HomeWidget.initiallyLaunchedFromHomeWidget();
+  if (launchUri != null) {
+    &#47;&#47; Reconstruimos el path uniendo host + pathSegments. El host de URIs
+    &#47;&#47; tipo transitly:&#47;&#47;home&#47;tarjeta es &quot;home&quot; y path &quot;&#47;tarjeta&quot;; concatenar
+    &#47;&#47; crudo produciría &quot;&#47;&#47;tarjeta&quot; si host viniera vacío en algún OEM.
+    final segments = &lt;String&gt;[
+      if ((launchUri.host).isNotEmpty) launchUri.host,
+      ...launchUri.pathSegments,
+    ];
+    final deepPath = &#39;&#47;${segments.join(&#39;&#47;&#39;)}&#39;;
+    setWidgetLaunchPath(deepPath);
+    AppLogger.info(&#39;Startup&#39;,
+        &#39;widget deep link raw=$launchUri host=${launchUri.host} path=${launchUri.path} → resolved=$deepPath&#39;);
+  }
+
+  HomeWidget.registerBackgroundCallback(_widgetBackgroundCallback);
 
   runApp(
     UncontrolledProviderScope(
@@ -206,6 +279,14 @@
       child: const _TransitlyAppWithLifecycle(),
     ),
   );
+
+  Supabase.instance.client.auth.onAuthStateChange.listen((data) {
+    final event = data.event;
+    if (event == AuthChangeEvent.signedIn || event == AuthChangeEvent.tokenRefreshed) {
+      container.invalidate(authStateProvider);
+      AppLogger.info(&#39;Startup&#39;, &#39;auth event=$event → invalidated providers&#39;);
+    }
+  });
 }</code></pre>
 </section>
 
@@ -233,7 +314,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

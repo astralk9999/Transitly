@@ -74,11 +74,12 @@
   if (brightness == Brightness.dark) {
     scheme = palette.darkScheme ?? const TransitDarkColors();
   } else {
-    scheme = palette.lightScheme ?? const TransitLightColors();
+    scheme = palette.lightScheme ?? _deriveLightFromDark(palette.darkScheme);
   }
 
   if (notifier.highContrast) {
-    scheme = HighContrastSchemeWrapper(scheme);
+    scheme = HighContrastSchemeWrapper(scheme, brightness == Brightness.dark,
+        preserveAccent: notifier.hcPreserveAccent);
   }
 
   return scheme;
@@ -110,7 +111,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

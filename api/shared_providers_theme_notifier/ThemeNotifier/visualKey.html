@@ -75,6 +75,8 @@
       .map((e) =&gt; &#39;${e.key}:${_colorToHex(e.value)}&#39;)
       .toList()
     ..sort();
+  final cpKeys = _customPalettes.map((p) =&gt; &#39;cp:${p.id}:${p.name}&#39;).toList()
+    ..sort();
   return [
     _paletteId,
     _backgroundId,
@@ -86,6 +88,7 @@
     _reduceMotion,
     _highContrast,
     _mapStyle,
+    ...cpKeys,
     ...custom,
   ].join(&#39;|&#39;);
 }</code></pre>
@@ -118,7 +121,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

@@ -93,6 +93,7 @@
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">set backgroundId(String value) {
   if (_backgroundId == value) return;
+  BootCanary.markPendingSensitive(&#39;backgroundId&#39;);
   _backgroundId = value;
   notifyListeners();
   unawaited(_persist());
@@ -125,7 +126,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

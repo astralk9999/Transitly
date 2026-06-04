@@ -74,6 +74,7 @@
   if (_initialized) return;
 
   _authUserId = userId;
+  await _loadCustomPalettes();
 
   try {
     final prefs = await _prefsRepo.getMine();
@@ -82,6 +83,11 @@
   } on UserPreferencesRepositoryException {
     await _loadGuestPrefs();
     AppLogger.info(_logTag, &#39;auth prefs unavailable; loaded guest fallback (palette=$_paletteId)&#39;);
+  } catch (e, st) {
+    AppLogger.error(_logTag, &#39;auth prefs corrupted, resetting to defaults&#39;, e, st);
+    _resetToDefaults();
+    _initialized = true;
+    notifyListeners();
   }
 }</code></pre>
 </section>
@@ -111,7 +117,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

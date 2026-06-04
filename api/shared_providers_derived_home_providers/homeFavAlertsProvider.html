@@ -71,7 +71,7 @@ proximidad geográfica cuando la alerta tiene restricción de zona.</p>
   <pre class="language-dart"><code class="language-dart">final homeFavAlertsProvider = Provider.autoDispose&lt;List&lt;AlertModel&gt;&gt;((ref) {
   final mockData = ref.watch(mockDataServiceProvider);
   final favIds = ref.watch(homeFavRouteIdsProvider);
-  final userLoc = ref.watch(userLocationStreamProvider).valueOrNull;
+  final userLoc = ref.watch(userLocationLatLngProvider);
   return mockData.getAlertsAffecting(
     userLocation: userLoc,
     favoriteRouteIds: favIds.toList(),
@@ -104,7 +104,7 @@ proximidad geográfica cuando la alerta tiene restricción de zona.</p>
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

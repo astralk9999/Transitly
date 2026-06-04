@@ -114,6 +114,7 @@ Widget build(BuildContext context, WidgetRef ref) {
   final locale = ref.watch(localeProvider);
   final router = ref.watch(routerProvider);
   final themeMode = ref.watch(themeModeProvider);
+  ref.watch(widgetSyncListenerProvider);
 
   return MaterialApp.router(
     title: &#39;Transitly&#39;,
@@ -145,8 +146,12 @@ Widget build(BuildContext context, WidgetRef ref) {
       final rawSystem = MediaQuery.textScalerOf(context).scale(1.0);
       final systemScale =
           rawSystem.isFinite &amp;&amp; rawSystem &gt; 0 ? rawSystem : 1.0;
+      final notifierScale = themeNotifier.fontScale.isFinite &amp;&amp;
+              themeNotifier.fontScale &gt; 0
+          ? themeNotifier.fontScale
+          : 1.0;
       final combined =
-          (systemScale * themeNotifier.fontScale).clamp(0.8, 2.5);
+          (systemScale * notifierScale).clamp(0.8, 2.5);
 
       if (!combined.isFinite || combined &lt;= 0) {
         return result;
@@ -193,7 +198,7 @@ Widget build(BuildContext context, WidgetRef ref) {
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

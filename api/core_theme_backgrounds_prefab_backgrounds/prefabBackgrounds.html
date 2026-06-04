@@ -70,8 +70,20 @@
   const GradientBackground(
     [Color(0xFF1a1a2e), Color(0xFF16213e), Color(0xFF0f3460)],
   ),
+  &#47;&#47; Procedurales (CustomPainter, estáticos, baratos)
   const ProceduralBackground(ProceduralPattern.softGrid),
   const ProceduralBackground(ProceduralPattern.topoLines),
+  const ProceduralBackground(ProceduralPattern.beams),
+  &#47;&#47; Shaders &#47; fondos avanzados (react-bits port)
+  const LightRaysShaderBackground(),
+  const BalatroShaderBackground(),
+  const FloatingLinesShaderBackground(),
+  const ColorBendsShaderBackground(),
+  const DotFieldShaderBackground(),
+  const DotGridShaderBackground(),
+  const DitherShaderBackground(),
+  const FaultyTerminalShaderBackground(),
+  const DarkVeilShaderBackground(),
 ];</code></pre>
 </section>
 
@@ -100,7 +112,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

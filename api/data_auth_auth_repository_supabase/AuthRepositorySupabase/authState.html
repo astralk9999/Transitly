@@ -76,7 +76,10 @@
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">@override
-Stream&lt;AuthSessionState&gt; get authState =&gt; _stateController.stream;</code></pre>
+Stream&lt;AuthSessionState&gt; get authState async* {
+  yield _lastState;
+  yield* _stateController.stream;
+}</code></pre>
 </section>
 
   </section>
@@ -106,7 +109,7 @@ Stream&lt;AuthSessionState&gt; get authState =&gt; _stateController.stream;</cod
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

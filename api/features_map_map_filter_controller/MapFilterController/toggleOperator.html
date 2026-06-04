@@ -68,13 +68,13 @@
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">void toggleOperator(String opId) {
-  final ops = Set&lt;String&gt;.from(state.activeOperators);
-  if (ops.contains(opId)) {
-    ops.remove(opId);
+  final s = Set&lt;String&gt;.from(state.disabledOperators);
+  if (s.contains(opId)) {
+    s.remove(opId);
   } else {
-    ops.add(opId);
+    s.add(opId);
   }
-  state = state.copyWith(activeOperators: ops);
+  state = state.copyWith(disabledOperators: s);
   _saveToPrefs();
 }</code></pre>
 </section>
@@ -104,7 +104,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

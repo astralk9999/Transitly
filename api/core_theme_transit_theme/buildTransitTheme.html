@@ -83,19 +83,25 @@
       ? ThemeData.dark().textTheme
       : ThemeData.light().textTheme;
 
-  final textTheme = dyslexiaFontEnabled
-      ? baseTextTheme.apply(
-          fontFamily: &#39;Atkinson Hyperlegible&#39;,
-          bodyColor: c.textHi,
-          displayColor: c.textHi,
-          fontSizeFactor: fontScale,
-        )
-      : baseTextTheme.apply(
-          fontFamily: &#39;DM Sans&#39;,
-          bodyColor: c.textHi,
-          displayColor: c.textHi,
-          fontSizeFactor: fontScale,
-        );
+  TextTheme textTheme;
+  try {
+    textTheme = dyslexiaFontEnabled
+        ? baseTextTheme.apply(
+            fontFamily: &#39;Atkinson Hyperlegible&#39;,
+            bodyColor: c.textHi,
+            displayColor: c.textHi,
+          )
+        : baseTextTheme.apply(
+            fontFamily: &#39;DM Sans&#39;,
+            bodyColor: c.textHi,
+            displayColor: c.textHi,
+          );
+  } catch (_) {
+    textTheme = baseTextTheme.apply(
+      bodyColor: c.textHi,
+      displayColor: c.textHi,
+    );
+  }
 
   final bodyFont = _dmSansStyle;
 
@@ -237,7 +243,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

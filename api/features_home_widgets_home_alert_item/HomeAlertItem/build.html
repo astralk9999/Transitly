@@ -147,19 +147,19 @@ Widget build(BuildContext context) {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
-              if (alert.radiusMeters != null) ...[
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    Icon(Icons.location_on,
-                        size: 12, color: c.textMid),
-                    const SizedBox(width: 4),
-                    Text(
-                      &#39;${alert.radiusMeters!.toInt()}m alrededor de zona&#39;,
-                      style: TransitTypography.bodySmall(c.textMid),
-                    ),
-                  ],
-                ),
+                if (alert.radiusMeters != null) ...[
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Icon(Icons.location_on,
+                          size: 12, color: c.textMid),
+                      const SizedBox(width: 4),
+                      Text(
+                        _radiusText(alert.radiusMeters!),
+                        style: TransitTypography.bodySmall(c.textMid),
+                      ),
+                    ],
+                  ),
               ],
             ],
           ),
@@ -195,7 +195,7 @@ Widget build(BuildContext context) {
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

@@ -73,9 +73,13 @@
   <pre class="language-dart"><code class="language-dart">static Future&lt;int&gt; get tileCount async {
   if (_cachedTileProvider == null) return 0;
   try {
-    const store = FMTCStore(storeName);
-    final stats = await store.stats.length;
-    return stats;
+    int total = 0;
+    for (final s in _styleKeys) {
+      final store = storeFor(s);
+      final stats = await store.stats.length;
+      total += stats;
+    }
+    return total;
   } catch (e) {
     AppLogger.warn(_logTag, &#39;failed to get tile count&#39;, e);
     return 0;
@@ -110,7 +114,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

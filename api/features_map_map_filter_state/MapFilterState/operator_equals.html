@@ -103,7 +103,7 @@ the <a href="../../features_map_map_filter_state/MapFilterState/hashCode.html">h
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">@override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&amp;&amp;other is MapFilterState&amp;&amp;(identical(other.showOfficial, showOfficial) || other.showOfficial == showOfficial)&amp;&amp;(identical(other.showCommunity, showCommunity) || other.showCommunity == showCommunity)&amp;&amp;const DeepCollectionEquality().equals(other.activeOperators, activeOperators)&amp;&amp;const DeepCollectionEquality().equals(other.activeKinds, activeKinds)&amp;&amp;(identical(other.nextMinutes, nextMinutes) || other.nextMinutes == nextMinutes)&amp;&amp;(identical(other.onlyAccessible, onlyAccessible) || other.onlyAccessible == onlyAccessible)&amp;&amp;(identical(other.onlyFavorites, onlyFavorites) || other.onlyFavorites == onlyFavorites)&amp;&amp;(identical(other.radiusMeters, radiusMeters) || other.radiusMeters == radiusMeters));
+  return identical(this, other) || (other.runtimeType == runtimeType&amp;&amp;other is MapFilterState&amp;&amp;(identical(other.showOfficial, showOfficial) || other.showOfficial == showOfficial)&amp;&amp;(identical(other.showCommunity, showCommunity) || other.showCommunity == showCommunity)&amp;&amp;const DeepCollectionEquality().equals(other.disabledOperators, disabledOperators)&amp;&amp;const DeepCollectionEquality().equals(other.disabledKinds, disabledKinds)&amp;&amp;const DeepCollectionEquality().equals(other.disabledLines, disabledLines)&amp;&amp;const DeepCollectionEquality().equals(other.disabledZones, disabledZones)&amp;&amp;const DeepCollectionEquality().equals(other.disabledRouteIds, disabledRouteIds)&amp;&amp;(identical(other.nextMinutes, nextMinutes) || other.nextMinutes == nextMinutes)&amp;&amp;(identical(other.onlyAccessible, onlyAccessible) || other.onlyAccessible == onlyAccessible)&amp;&amp;(identical(other.onlyFavorites, onlyFavorites) || other.onlyFavorites == onlyFavorites)&amp;&amp;(identical(other.showAllStops, showAllStops) || other.showAllStops == showAllStops)&amp;&amp;(identical(other.radiusMeters, radiusMeters) || other.radiusMeters == radiusMeters));
 }</code></pre>
 </section>
 
@@ -132,7 +132,7 @@ bool operator ==(Object other) {
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

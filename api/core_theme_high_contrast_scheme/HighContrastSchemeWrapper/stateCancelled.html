@@ -75,7 +75,7 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">@override Color get stateCancelled =&gt; _base.stateCancelled;</code></pre>
+  <pre class="language-dart"><code class="language-dart">@override Color get stateCancelled =&gt; _isDark ? const Color(0xFFFF0000) : const Color(0xFFAA0000);</code></pre>
 </section>
 
   </section>
@@ -105,7 +105,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

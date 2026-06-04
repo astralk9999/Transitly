@@ -75,8 +75,8 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">@override LinearGradient get gradientAccent =&gt; const LinearGradient(
-  colors: [Color(0xFF7B64C0), Color(0xFF9A85D8)],
+  <pre class="language-dart"><code class="language-dart">@override LinearGradient get gradientAccent =&gt; LinearGradient(
+  colors: [accent, Color.lerp(accent, const Color(0xFFFFFFFF), 0.18)!],
 );</code></pre>
 </section>
 
@@ -107,7 +107,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

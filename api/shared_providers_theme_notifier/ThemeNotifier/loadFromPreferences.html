@@ -77,6 +77,7 @@
   _dyslexiaFontEnabled = prefs.dyslexiaFontEnabled;
   _reduceMotion = prefs.reduceMotion;
   _highContrast = prefs.highContrast;
+  _hcPreserveAccent = false;
   _mapStyle = prefs.mapStyle;
   _notifIncidentResolved = prefs.notifIncidentResolved;
   _notifRoutePromoted = prefs.notifRoutePromoted;
@@ -85,6 +86,7 @@
   _quietHoursEnabled = prefs.quietHoursEnabled;
   _quietHoursStart = prefs.quietHoursStart;
   _quietHoursEnd = prefs.quietHoursEnd;
+  _notifZoneAlerts = true;
   _customColors = _parseCustomColors(prefs.customColors);
   _initialized = true;
   notifyListeners();
@@ -116,7 +118,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

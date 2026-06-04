@@ -75,7 +75,10 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">@override Color get accentBg =&gt; _base.accentBg;</code></pre>
+  <pre class="language-dart"><code class="language-dart">@override
+Color get accentBg =&gt; _preserveAccent
+    ? _base.accent.withValues(alpha: 0.15)
+    : (_isDark ? const Color(0x22FFFF00) : const Color(0x220000FF));</code></pre>
 </section>
 
   </section>
@@ -105,7 +108,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

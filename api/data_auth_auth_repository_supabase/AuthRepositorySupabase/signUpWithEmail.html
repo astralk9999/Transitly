@@ -80,13 +80,33 @@ Future&lt;void&gt; signUpWithEmail(
   String password,
   String displayName,
 ) async {
-  _stateController.add(AuthLoading());
+  _emit(AuthLoading());
   try {
-    await _client.auth.signUp(
+    final response = await _client.auth.signUp(
       email: email.trim(),
       password: password,
       data: &lt;String, dynamic&gt;{&#39;display_name&#39;: displayName},
     );
+
+    &#47;&#47; Red de seguridad: si Supabase tiene &quot;Confirm email&quot; ON o config
+    &#47;&#47; legacy, signUp retorna user pero session=null. Sin SMTP propio
+    &#47;&#47; el usuario no recibe email → quedaría atrapado. Forzamos login
+    &#47;&#47; con las credenciales recién creadas para garantizar sesión activa.
+    &#47;&#47; Reactivar cuando se configure SMTP: ver docs&#47;SUPABASE_SETUP.md.
+    if (response.session == null &amp;&amp; response.user != null) {
+      AppLogger.info(_logTag,
+          &#39;signUp returned no session, attempting auto-login&#39;);
+      try {
+        await _client.auth.signInWithPassword(
+          email: email.trim(),
+          password: password,
+        );
+      } catch (e) {
+        AppLogger.warn(_logTag,
+            &#39;auto-login after signup failed (confirm email may still be required)&#39;,
+            e);
+      }
+    }
   } catch (e, st) {
     if (e is Exception) {
       throw mapAuthError(e);
@@ -122,7 +142,7 @@ Future&lt;void&gt; signUpWithEmail(
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

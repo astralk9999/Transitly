@@ -54,50 +54,30 @@
 
         <section class="multi-line-signature">
           
-          <a href="https://pub.dev/documentation/riverpod/2.6.1/riverpod/AutoDisposeStreamProvider-class.html">AutoDisposeStreamProvider</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://pub.dev/documentation/latlong2/0.9.1/latlong2/LatLng-class.html">LatLng</a>?</span>&gt;</span>
+          <a href="https://pub.dev/documentation/riverpod/2.6.1/riverpod/AutoDisposeStreamProvider-class.html">AutoDisposeStreamProvider</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../shared_providers_user_location_provider/UserLocationFix-class.html">UserLocationFix</a>?</span>&gt;</span>
           <span class="name ">userLocationStreamProvider</span>
           <div class="features"><span class="feature">final</span></div>
 
         </section>
         
+<section class="desc markdown">
+  <p>Stream de la ubicación del usuario.</p>
+<p>Implementación crítica: usa <code>async*</code> para poder hacer <code>await</code> sobre el
+permiso ANTES de suscribirse a <code>Geolocator.getPositionStream()</code>. Sin
+esto, geolocator devuelve un stream "muerto" si la primera invocación
+ocurre con permiso denied (aunque luego se conceda y se re-suscriba).</p>
+<p>Cuando el usuario concede permiso en runtime y llamamos
+<code>ref.invalidate(userLocationPermissionProvider)</code>, este provider se
+reconstruye, awaita el permiso ya granted, y arranca geolocator
+limpiamente.</p>
+</section>
 
         
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">final userLocationStreamProvider =
-    StreamProvider.autoDispose&lt;LatLng?&gt;((ref) {
-  final service = ref.read(userLocationServiceProvider);
-
-  Stream&lt;Position&gt; positionStream;
-  try {
-    positionStream = service.subscribe(
-      settings: const LocationSettings(
-        accuracy: LocationAccuracy.high,
-        distanceFilter: 5,
-      ),
-    );
-  } catch (e) {
-    AppLogger.warn(_logTag, &#39;position stream failed&#39;, e);
-    return const Stream.empty();
-  }
-
-  final controller = StreamController&lt;LatLng?&gt;();
-
-  positionStream.listen(
-    (pos) {
-      if (!controller.isClosed) {
-        controller.add(LocationService.toLatLng(pos));
-      }
-    },
-    onError: (e) {
-      AppLogger.warn(_logTag, &#39;position stream error&#39;, e);
-      if (!controller.isClosed) controller.add(null);
-    },
-  );
-
-  ref.onDispose(controller.close);
-
-  return controller.stream;
+    StreamProvider.autoDispose&lt;UserLocationFix?&gt;((ref) {
+  return _locationStream(ref);
 });</code></pre>
 </section>
 
@@ -126,7 +106,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

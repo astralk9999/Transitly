@@ -68,13 +68,13 @@
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">void toggleKind(String kind) {
-  final kinds = Set&lt;String&gt;.from(state.activeKinds);
-  if (kinds.contains(kind)) {
-    kinds.remove(kind);
+  final s = Set&lt;String&gt;.from(state.disabledKinds);
+  if (s.contains(kind)) {
+    s.remove(kind);
   } else {
-    kinds.add(kind);
+    s.add(kind);
   }
-  state = state.copyWith(activeKinds: kinds);
+  state = state.copyWith(disabledKinds: s);
   _saveToPrefs();
 }</code></pre>
 </section>
@@ -104,7 +104,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

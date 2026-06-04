@@ -110,8 +110,9 @@ and</li>
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">@override
 Widget build(BuildContext context, WidgetRef ref) {
-  final paletteId =
-      ref.watch(themeNotifierProvider.select((n) =&gt; n.paletteId));
+  final notifier = ref.watch(themeNotifierProvider);
+  final paletteId = notifier.paletteId;
+  final customs = notifier.customPalettes;
 
   return GlassCard(
     blur: 16,
@@ -150,6 +151,39 @@ Widget build(BuildContext context, WidgetRef ref) {
             );
           },
         ),
+        if (customs.isNotEmpty) ...[
+          const SizedBox(height: 16),
+          GradientText(
+            l10n.appearanceCustomPalettesSection,
+            style: TransitTypography.sectionLabel(Colors.white),
+            gradient: c.gradientAccent,
+          ),
+          const SizedBox(height: 12),
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10,
+              childAspectRatio: 2.2,
+            ),
+            itemCount: customs.length,
+            itemBuilder: (_, i) {
+              final cp = customs[i];
+              final selected = cp.id == paletteId;
+              return _CustomPaletteCard(
+                palette: cp,
+                selected: selected,
+                c: c,
+                onTap: () {
+                  ref.read(themeNotifierProvider).paletteId = cp.id;
+                },
+                onDelete: () =&gt; _confirmDelete(context, ref, cp),
+              );
+            },
+          ),
+        ],
         const SizedBox(height: 10),
         SizedBox(
           width: double.infinity,
@@ -199,7 +233,7 @@ Widget build(BuildContext context, WidgetRef ref) {
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

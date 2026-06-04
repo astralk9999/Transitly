@@ -114,6 +114,8 @@ Widget build(BuildContext context, WidgetRef ref) {
   final padding = ResponsiveScaffold.screenPadding(context);
   final isAuthenticated =
       ref.watch(authStateProvider).valueOrNull is AuthAuthenticated;
+  final isDark = Theme.of(context).brightness == Brightness.dark;
+  final c = TransitColorScheme.of(isDark);
 
   return Scaffold(
     backgroundColor: Colors.transparent,
@@ -141,6 +143,84 @@ Widget build(BuildContext context, WidgetRef ref) {
                   const ProfileNotificationsSection(),
                   const SizedBox(height: 16),
                   const ProfileAccessibilitySection(),
+                  const SizedBox(height: 16),
+                  GlassCard(
+                    blur: 16,
+                    fillOpacity: 0.05,
+                    borderRadius: 14,
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        GradientText(
+                          &#39;Comunidad&#39;,
+                          style: GoogleFonts.ibmPlexMono(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 1.5,
+                          ),
+                          gradient: c.gradientAccent,
+                        ),
+                        const SizedBox(height: 12),
+                        if (isAuthenticated) ...[
+                          ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            leading: Icon(Icons.route_outlined,
+                                size: 24, color: c.accent),
+                            title: Text(&#39;Mis rutas&#39;,
+                                style: TransitTypography.bodyPrimary(
+                                    c.textHi)),
+                            trailing: Icon(Icons.chevron_right,
+                                color: c.textMid),
+                            onTap: () =&gt;
+                                context.push(&#39;&#47;my-routes&#39;),
+                          ),
+                          ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            leading: Icon(Icons.explore_outlined,
+                                size: 24, color: c.accent),
+                            title: Text(&#39;Explorar comunidad&#39;,
+                                style: TransitTypography.bodyPrimary(
+                                    c.textHi)),
+                            trailing: Icon(Icons.chevron_right,
+                                color: c.textMid),
+                            onTap: () =&gt;
+                                context.push(&#39;&#47;community&#39;),
+                          ),
+                          ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            leading:
+                                Icon(Icons.add_location_alt_outlined,
+                                    size: 24, color: c.accent),
+                            title: Text(&#39;Crear nueva ruta&#39;,
+                                style: TransitTypography.bodyPrimary(
+                                    c.textHi)),
+                            trailing: Icon(Icons.chevron_right,
+                                color: c.textMid),
+                            onTap: () =&gt;
+                                context.push(&#39;&#47;create-route&#39;),
+                          ),
+                        ] else ...[
+                          ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            leading: Icon(Icons.explore_outlined,
+                                size: 24, color: c.accent),
+                            title: Text(&#39;Explorar comunidad&#39;,
+                                style: TransitTypography.bodyPrimary(
+                                    c.textHi)),
+                            subtitle: Text(
+                                &#39;Inicia sesión para crear rutas&#39;,
+                                style: TransitTypography.bodySecondary(
+                                    c.textMid)),
+                            trailing: Icon(Icons.chevron_right,
+                                color: c.textMid),
+                            onTap: () =&gt;
+                                context.push(&#39;&#47;community&#39;),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
                   const SizedBox(height: 16),
                   const ProfileAboutSection(),
                   const SizedBox(height: 100),
@@ -180,7 +260,7 @@ Widget build(BuildContext context, WidgetRef ref) {
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

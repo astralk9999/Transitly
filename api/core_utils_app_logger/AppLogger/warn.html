@@ -71,7 +71,10 @@
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">static void warn(String tag, String message, [Object? error]) {
   final suffix = error == null ? &#39;&#39; : &#39; — $error&#39;;
-  if (kDebugMode) _emit(&#39;WARN&#39;, tag, &#39;$message$suffix&#39;);
+  &#47;&#47; warn y error TAMBIÉN emiten en release: son señales que necesitamos
+  &#47;&#47; ver en logcat para diagnosticar problemas en producción. Solo el
+  &#47;&#47; ruido (debug&#47;info&#47;perf) se silencia fuera de debug.
+  _emit(&#39;WARN&#39;, tag, &#39;$message$suffix&#39;);
   SentrySetup.addBreadcrumb(&#39;[$tag] $message$suffix&#39;, category: &#39;warn&#39;);
 }</code></pre>
 </section>
@@ -101,7 +104,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

@@ -152,6 +152,21 @@ y carga lazy del operador cercano.</p>
 
 </dd>
 
+        <dt id="prewarm" class="callable">
+  <span class="name"><a href="../data_geo_location_service/LocationService/prewarm.html">prewarm</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/flutter_test/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://pub.dev/documentation/geolocator_platform_interface/4.2.6/geolocator_platform_interface/Position-class.html">Position</a>?</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Despierta geolocator forzando una verificación de permiso y
+una primera posición. Llamar tras conceder permiso para que
+el siguiente subscribe() funcione inmediatamente.
+  
+
+</dd>
+
         <dt id="subscribe" class="callable">
   <span class="name"><a href="../data_geo_location_service/LocationService/subscribe.html">subscribe</a></span><span class="signature">(<wbr>{<span class="parameter" id="subscribe-param-settings"><span class="type-annotation"><a href="https://pub.dev/documentation/geolocator_platform_interface/4.2.6/geolocator_platform_interface/LocationSettings-class.html">LocationSettings</a></span> <span class="parameter-name">settings</span> = <span class="default-value">const LocationSettings(accuracy: LocationAccuracy.high, distanceFilter: 50)</span></span>})
     <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Stream-class.html">Stream</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://pub.dev/documentation/geolocator_platform_interface/4.2.6/geolocator_platform_interface/Position-class.html">Position</a></span>&gt;</span></span>
@@ -246,7 +261,7 @@ y carga lazy del operador cercano.</p>
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

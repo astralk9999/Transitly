@@ -93,6 +93,7 @@
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">set dyslexiaFontEnabled(bool value) {
   if (_dyslexiaFontEnabled == value) return;
+  BootCanary.markPendingSensitive(&#39;dyslexiaFontEnabled&#39;);
   _dyslexiaFontEnabled = value;
   notifyListeners();
   unawaited(_persist());
@@ -125,7 +126,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

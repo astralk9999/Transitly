@@ -77,8 +77,9 @@
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">@override
 String get id =&gt; switch (pattern) {
-      ProceduralPattern.softGrid =&gt; &#39;assets&#47;bg&#47;soft_grid.png&#39;,
-      ProceduralPattern.topoLines =&gt; &#39;assets&#47;bg&#47;topo_lines.png&#39;,
+      ProceduralPattern.softGrid =&gt; &#39;procedural:softGrid&#39;,
+      ProceduralPattern.topoLines =&gt; &#39;procedural:topoLines&#39;,
+      ProceduralPattern.beams =&gt; &#39;procedural:beams&#39;,
     };</code></pre>
 </section>
 
@@ -109,7 +110,7 @@ String get id =&gt; switch (pattern) {
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

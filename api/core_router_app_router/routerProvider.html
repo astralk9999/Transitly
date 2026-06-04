@@ -215,6 +215,22 @@
             _slide(state, const AiScheduleImport()),
       ),
 
+      &#47;&#47; ── Create Route Wizard ──
+      GoRoute(
+        path: &#39;&#47;create-route&#39;,
+        pageBuilder: (context, state) =&gt;
+            _slide(state, const CreateRouteWizard()),
+      ),
+      GoRoute(
+        path: &#39;&#47;create-route&#47;:routeId&#39;,
+        pageBuilder: (context, state) =&gt; _slide(
+          state,
+          CreateRouteWizard(
+            routeId: state.pathParameters[&#39;routeId&#39;],
+          ),
+        ),
+      ),
+
       &#47;&#47; ── Suggestions (static paths before parameterized) ──
       GoRoute(
         path: &#39;&#47;suggestions&#47;new&#39;,
@@ -233,6 +249,28 @@
           SuggestionDetailScreen(
               suggestionId: state.pathParameters[&#39;suggestionId&#39;]!),
         ),
+      ),
+
+      &#47;&#47; ── Community (user-created routes) ──
+      GoRoute(
+        path: &#39;&#47;community&#39;,
+        pageBuilder: (context, state) =&gt;
+            _slide(state, const CommunityRoutesScreen()),
+      ),
+      GoRoute(
+        path: &#39;&#47;community&#47;route&#47;:routeId&#39;,
+        pageBuilder: (context, state) =&gt; _slide(
+          state,
+          UserRouteDetailScreen(
+              routeId: state.pathParameters[&#39;routeId&#39;]!),
+        ),
+      ),
+
+      &#47;&#47; ── My Routes ──
+      GoRoute(
+        path: &#39;&#47;my-routes&#39;,
+        pageBuilder: (context, state) =&gt;
+            _slide(state, const MyRoutesScreen()),
       ),
 
       &#47;&#47; ── Feedback ──
@@ -266,6 +304,11 @@
         path: &#39;&#47;admin&#47;operators&#39;,
         pageBuilder: (context, state) =&gt;
             _slide(state, const AdminOperatorsScreen()),
+      ),
+      GoRoute(
+        path: &#39;&#47;admin&#47;routes&#39;,
+        pageBuilder: (context, state) =&gt;
+            _slide(state, const RouteModerationScreen()),
       ),
 
       &#47;&#47; ── Operator Admin ──
@@ -365,11 +408,31 @@
             _slide(state, const NotificationsScreen()),
       ),
 
-      &#47;&#47; ── Widgets ──
+      &#47;&#47; ── Widgets config ──
       GoRoute(
         path: &#39;&#47;profile&#47;widgets&#39;,
         pageBuilder: (context, state) =&gt;
             _slide(state, const WidgetsSettingsScreen()),
+      ),
+      GoRoute(
+        path: &#39;&#47;widgets-config&#39;,
+        pageBuilder: (context, state) =&gt;
+            _slide(state, const WidgetsConfigScreen()),
+      ),
+      GoRoute(
+        path: &#39;&#47;widgets-config&#47;next-bus&#39;,
+        pageBuilder: (context, state) =&gt;
+            _slide(state, const WidgetNextBusConfigScreen()),
+      ),
+      GoRoute(
+        path: &#39;&#47;widgets-config&#47;my-line&#39;,
+        pageBuilder: (context, state) =&gt;
+            _slide(state, const WidgetMyLineConfigScreen()),
+      ),
+      GoRoute(
+        path: &#39;&#47;widgets-config&#47;nfc-balance&#39;,
+        pageBuilder: (context, state) =&gt;
+            _slide(state, const WidgetNfcBalanceConfigScreen()),
       ),
 
       &#47;&#47; ── Debug ──
@@ -432,7 +495,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

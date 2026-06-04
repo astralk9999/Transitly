@@ -129,7 +129,7 @@ Widget build(BuildContext context, WidgetRef ref) {
         ),
         const SizedBox(height: 12),
         SizedBox(
-          height: 80,
+          height: 64,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemCount: styleKeys.length,
@@ -137,18 +137,44 @@ Widget build(BuildContext context, WidgetRef ref) {
             itemBuilder: (_, i) {
               final key = styleKeys[i];
               final selected = key == mapStyle;
-              return MapStylePreview(
-                styleKey: key,
+              return _StyleChip(
                 label: _styleLabel(key),
                 icon: _styleIcon(key),
-                previewColor: _stylePreviewColor(key),
+                styleAccent: _styleAccent(key),
                 selected: selected,
                 c: c,
-                onTap: () {
-                  ref.read(themeNotifierProvider).mapStyle = key;
-                },
+                onTap: () =&gt;
+                    ref.read(themeNotifierProvider).mapStyle = key,
               );
             },
+          ),
+        ),
+        const SizedBox(height: 12),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: SizedBox(
+            width: double.infinity,
+            height: 160,
+            child: IgnorePointer(
+              child: FlutterMap(
+                key: ValueKey(&#39;preview-$mapStyle&#39;),
+                options: const MapOptions(
+                  initialCenter: _jerezCenter,
+                  initialZoom: 13.5,
+                  interactionOptions: InteractionOptions(
+                    flags: InteractiveFlag.none,
+                  ),
+                ),
+                children: [
+                  TileLayer(
+                    urlTemplate: MapConfig.tileUrl(mapStyle),
+                    subdomains: MapConfig.subdomains,
+                    userAgentPackageName: &#39;com.transitly.transitly&#39;,
+                    tileProvider: NetworkTileProvider(),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ],
@@ -182,7 +208,7 @@ Widget build(BuildContext context, WidgetRef ref) {
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

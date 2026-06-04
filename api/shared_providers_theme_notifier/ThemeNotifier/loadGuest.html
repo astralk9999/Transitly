@@ -70,7 +70,12 @@
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">Future&lt;void&gt; loadGuest() async {
+  if (_initialized &amp;&amp; _paletteId != &#39;default&#39;) {
+    AppLogger.info(_logTag, &#39;loadGuest: ya hidratado (palette=$_paletteId), skip&#39;);
+    return;
+  }
   _initialized = false;
+  await _loadCustomPalettes();
   await _loadGuestPrefs();
 }</code></pre>
 </section>
@@ -100,7 +105,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

@@ -54,8 +54,10 @@
 
     <section class="multi-line-signature">
       
-      <span class="name ">HighContrastSchemeWrapper</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="-param-_base"><span class="type-annotation"><a href="../../core_theme_transit_colors/TransitColorScheme-class.html">TransitColorScheme</a></span> <span class="parameter-name">_base</span></span></li>
-</ol>)
+      <span class="name ">HighContrastSchemeWrapper</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="-param-_base"><span class="type-annotation"><a href="../../core_theme_transit_colors/TransitColorScheme-class.html">TransitColorScheme</a></span> <span class="parameter-name">_base</span>, </span></li>
+<li><span class="parameter" id="-param-_isDark"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">_isDark</span>, {</span></li>
+<li><span class="parameter" id="-param-preserveAccent"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">preserveAccent</span> = <span class="default-value">false</span>, </span></li>
+</ol>})
     </section>
     
 
@@ -63,7 +65,8 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">HighContrastSchemeWrapper(this._base);</code></pre>
+  <pre class="language-dart"><code class="language-dart">HighContrastSchemeWrapper(this._base, this._isDark, {bool preserveAccent = false})
+    : _preserveAccent = preserveAccent;</code></pre>
 </section>
 
 
@@ -91,7 +94,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

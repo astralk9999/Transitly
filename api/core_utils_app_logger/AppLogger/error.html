@@ -72,8 +72,8 @@
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">static void error(String tag, String message, [Object? error, StackTrace? st]) {
   final suffix = error == null ? &#39;&#39; : &#39; — $error&#39;;
-  if (kDebugMode) _emit(&#39;ERROR&#39;, tag, &#39;$message$suffix&#39;);
-  if (kDebugMode &amp;&amp; st != null) debugPrint(st.toString());
+  _emit(&#39;ERROR&#39;, tag, &#39;$message$suffix&#39;);
+  if (st != null) debugPrint(st.toString());
   SentrySetup.addBreadcrumb(&#39;[$tag] $message$suffix&#39;, category: &#39;error&#39;);
   SentrySetup.captureException(error ?? message, st);
 }</code></pre>
@@ -104,7 +104,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

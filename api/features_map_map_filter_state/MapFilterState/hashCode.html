@@ -106,7 +106,7 @@ like <a href="https://api.flutter.dev/flutter/dart-collection/HashSet-class.html
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">@JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode =&gt; Object.hash(runtimeType,showOfficial,showCommunity,const DeepCollectionEquality().hash(activeOperators),const DeepCollectionEquality().hash(activeKinds),nextMinutes,onlyAccessible,onlyFavorites,radiusMeters);</code></pre>
+int get hashCode =&gt; Object.hash(runtimeType,showOfficial,showCommunity,const DeepCollectionEquality().hash(disabledOperators),const DeepCollectionEquality().hash(disabledKinds),const DeepCollectionEquality().hash(disabledLines),const DeepCollectionEquality().hash(disabledZones),const DeepCollectionEquality().hash(disabledRouteIds),nextMinutes,onlyAccessible,onlyFavorites,showAllStops,radiusMeters);</code></pre>
 </section>
 
   </section>
@@ -136,7 +136,7 @@ int get hashCode =&gt; Object.hash(runtimeType,showOfficial,showCommunity,const 
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

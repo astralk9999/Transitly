@@ -75,37 +75,31 @@
         event == AuthChangeEvent.tokenRefreshed) {
       if (session?.user != null) {
         final user = session!.user;
-        final emailVerified =
-            user.emailConfirmedAt != null ||
-            user.identities?.any((i) =&gt;
-                i.identityData?[&#39;email_verified&#39;] == true) == true;
-        if (emailVerified) {
-          _stateController.add(AuthAuthenticated(user));
-          &#47;&#47; PII: no loguear el UUID completo; prefijo suficiente para correlacionar.
-          final uidShort = user.id.length &gt;= 8
-              ? user.id.substring(0, 8)
-              : user.id;
-          AppLogger.info(_logTag, &#39;signed in uid=$uidShort…&#39;);
-        } else {
-          _stateController.add(AuthEmailVerificationPending(user));
-        }
+        &#47;&#47; Email verification bypass: sistema de correos de Supabase
+        &#47;&#47; limitado en free tier. Todos los usuarios autentican directo.
+        _emit(AuthAuthenticated(user));
+        final uidShort = user.id.length &gt;= 8
+            ? user.id.substring(0, 8)
+            : user.id;
+        AppLogger.info(_logTag,
+            &#39;signed in uid=$uidShort… (verification bypassed)&#39;);
       }
     } else if (event == AuthChangeEvent.signedOut) {
-      _stateController.add(AuthUnauthenticated());
+      _emit(AuthUnauthenticated());
       AppLogger.info(_logTag, &#39;signed out&#39;);
     } else if (event == AuthChangeEvent.userUpdated) {
       final user = session?.user;
       if (user != null) {
-        _stateController.add(AuthAuthenticated(user));
+        _emit(AuthAuthenticated(user));
       }
     }
   });
 
   final session = _client.auth.currentSession;
   if (session?.user != null) {
-    _stateController.add(AuthAuthenticated(session!.user));
+    _emit(AuthAuthenticated(session!.user));
   } else {
-    _stateController.add(AuthUnauthenticated());
+    _emit(AuthUnauthenticated());
   }
 }</code></pre>
 </section>
@@ -135,7 +129,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

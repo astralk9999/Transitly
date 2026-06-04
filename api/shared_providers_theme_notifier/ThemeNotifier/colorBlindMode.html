@@ -93,6 +93,7 @@
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">set colorBlindMode(ColorBlindMode value) {
   if (_colorBlindMode == value) return;
+  BootCanary.markPendingSensitive(&#39;colorBlindMode&#39;);
   _colorBlindMode = value;
   notifyListeners();
   unawaited(_persist());
@@ -125,7 +126,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

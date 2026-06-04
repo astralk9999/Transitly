@@ -99,28 +99,27 @@
     rethrow;
   }
 
-  const store = FMTCStore(storeName);
-  final isReady = await store.manage.ready;
-  if (!isReady) {
-    await store.manage.create(maxLength: maxTileCount);
-    AppLogger.info(_logTag,
-        &#39;store created (name=$storeName, maxLength=$maxTileCount)&#39;);
-  } else {
-    final currentMax = await store.manage.maxLength;
-    if (currentMax == null || currentMax != maxTileCount) {
-      await store.manage.setMaxLength(maxTileCount);
+  for (final style in _styleKeys) {
+    final store = storeFor(style);
+    final isReady = await store.manage.ready;
+    if (!isReady) {
+      await store.manage.create(maxLength: maxTileCount);
       AppLogger.info(_logTag,
-          &#39;store maxLength updated (name=$storeName, maxLength=$maxTileCount)&#39;);
+          &#39;store created (name=${storeName(style)}, maxLength=$maxTileCount)&#39;);
     }
   }
 
+  final stores = &lt;String, BrowseStoreStrategy&gt;{
+    for (final s in _styleKeys) storeName(s): BrowseStoreStrategy.readUpdateCreate,
+  };
+
   final tileProvider = FMTCTileProvider(
-    stores: const {storeName: BrowseStoreStrategy.readUpdateCreate},
+    stores: stores,
     loadingStrategy: BrowseLoadingStrategy.cacheFirst,
   );
 
   _cachedTileProvider = tileProvider;
-  AppLogger.info(_logTag, &#39;tile provider ready&#39;);
+  AppLogger.info(_logTag, &#39;tile provider ready (${_styleKeys.length} stores)&#39;);
 }</code></pre>
 </section>
 
@@ -149,7 +148,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

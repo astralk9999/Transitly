@@ -56,17 +56,21 @@
       
   <div>
     <ol class="annotation-list">
-        <li>@<a href="https://api.flutter.dev/flutter/material/optionalTypeArgs-constant.html">optionalTypeArgs</a></li>
+        <li>@<a href="https://api.flutter.dev/flutter/widgets/optionalTypeArgs-constant.html">optionalTypeArgs</a></li>
     </ol>
   </div>
 <span class="returntype">TResult?</span>
 <span class="name ">whenOrNull</span>&lt;<wbr><span class="type-parameter">TResult extends Object?</span>&gt;(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="whenOrNull-param-$default"><span class="type-annotation">TResult?</span> <span class="parameter-name">$default</span>(<ol class="parameter-list"> <li><span class="parameter" id="param-showOfficial"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">showOfficial</span>, </span></li>
 <li><span class="parameter" id="param-showCommunity"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">showCommunity</span>, </span></li>
-<li><span class="parameter" id="param-activeOperators"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Set-class.html">Set</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>&gt;</span></span> <span class="parameter-name">activeOperators</span>, </span></li>
-<li><span class="parameter" id="param-activeKinds"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Set-class.html">Set</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>&gt;</span></span> <span class="parameter-name">activeKinds</span>, </span></li>
+<li><span class="parameter" id="param-disabledOperators"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Set-class.html">Set</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>&gt;</span></span> <span class="parameter-name">disabledOperators</span>, </span></li>
+<li><span class="parameter" id="param-disabledKinds"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Set-class.html">Set</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>&gt;</span></span> <span class="parameter-name">disabledKinds</span>, </span></li>
+<li><span class="parameter" id="param-disabledLines"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Set-class.html">Set</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>&gt;</span></span> <span class="parameter-name">disabledLines</span>, </span></li>
+<li><span class="parameter" id="param-disabledZones"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Set-class.html">Set</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>&gt;</span></span> <span class="parameter-name">disabledZones</span>, </span></li>
+<li><span class="parameter" id="param-disabledRouteIds"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Set-class.html">Set</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>&gt;</span></span> <span class="parameter-name">disabledRouteIds</span>, </span></li>
 <li><span class="parameter" id="param-nextMinutes"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">nextMinutes</span>, </span></li>
 <li><span class="parameter" id="param-onlyAccessible"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">onlyAccessible</span>, </span></li>
 <li><span class="parameter" id="param-onlyFavorites"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">onlyFavorites</span>, </span></li>
+<li><span class="parameter" id="param-showAllStops"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">showAllStops</span>, </span></li>
 <li><span class="parameter" id="param-radiusMeters"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">radiusMeters</span>, </span></li>
 </ol>)?</span></li>
 </ol>)
@@ -91,10 +95,10 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">@optionalTypeArgs TResult? whenOrNull&lt;TResult extends Object?&gt;(TResult? Function( bool showOfficial,  bool showCommunity,  Set&lt;String&gt; activeOperators,  Set&lt;String&gt; activeKinds,  int nextMinutes,  bool onlyAccessible,  bool onlyFavorites,  double radiusMeters)?  $default,) {final _that = this;
+  <pre class="language-dart"><code class="language-dart">@optionalTypeArgs TResult? whenOrNull&lt;TResult extends Object?&gt;(TResult? Function( bool showOfficial,  bool showCommunity,  Set&lt;String&gt; disabledOperators,  Set&lt;String&gt; disabledKinds,  Set&lt;String&gt; disabledLines,  Set&lt;String&gt; disabledZones,  Set&lt;String&gt; disabledRouteIds,  int nextMinutes,  bool onlyAccessible,  bool onlyFavorites,  bool showAllStops,  double radiusMeters)?  $default,) {final _that = this;
 switch (_that) {
 case _MapFilterState() when $default != null:
-return $default(_that.showOfficial,_that.showCommunity,_that.activeOperators,_that.activeKinds,_that.nextMinutes,_that.onlyAccessible,_that.onlyFavorites,_that.radiusMeters);case _:
+return $default(_that.showOfficial,_that.showCommunity,_that.disabledOperators,_that.disabledKinds,_that.disabledLines,_that.disabledZones,_that.disabledRouteIds,_that.nextMinutes,_that.onlyAccessible,_that.onlyFavorites,_that.showAllStops,_that.radiusMeters);case _:
   return null;
 
 }
@@ -126,7 +130,7 @@ return $default(_that.showOfficial,_that.showCommunity,_that.activeOperators,_th
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

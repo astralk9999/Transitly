@@ -68,7 +68,14 @@ splash screen (which holds a real <code>Future.delayed(3s)</code> timer).</p>
         
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">final routerInitialLocationProvider = Provider&lt;String&gt;((ref) =&gt; &#39;&#47;splash&#39;);</code></pre>
+  <pre class="language-dart"><code class="language-dart">final routerInitialLocationProvider = Provider&lt;String&gt;((ref) {
+  final path = _widgetLaunchPath;
+  if (path != null) {
+    _widgetLaunchPath = null;
+    return path;
+  }
+  return &#39;&#47;splash&#39;;
+});</code></pre>
 </section>
 
 
@@ -96,7 +103,7 @@ splash screen (which holds a real <code>Future.delayed(3s)</code> timer).</p>
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

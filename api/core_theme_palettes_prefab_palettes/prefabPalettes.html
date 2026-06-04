@@ -67,19 +67,23 @@
   <pre class="language-dart"><code class="language-dart">final prefabPalettes = &lt;AppPalette&gt;[
   const AppPalette(
     id: &#39;default&#39;,
-    name: &#39;Default oscuro&#39;,
+    name: &#39;Default&#39;,
     isDark: true,
     scheme: TransitDarkColors(),
     lightScheme: TransitLightColors(),
     darkScheme: TransitDarkColors(),
   ),
-  defaultLightPalette,
+  &#47;&#47; NOTA: las paletas de color no-default DEJAN lightScheme = null
+  &#47;&#47; a propósito. Con lightScheme=TransitLightColors() (genérico claro)
+  &#47;&#47; al cambiar a modo claro perdíamos la paleta seleccionada (Sunrise,
+  &#47;&#47; Forest, etc.). Sin lightScheme, el fallback `_deriveLightFromDark`
+  &#47;&#47; invierte luminosidades del darkScheme y mantiene el accent + matiz
+  &#47;&#47; de la paleta también en claro.
   const AppPalette(
     id: &#39;sunrise&#39;,
     name: &#39;Sunrise&#39;,
     isDark: true,
     scheme: TransitSunriseColors(),
-    lightScheme: TransitLightColors(),
     darkScheme: TransitSunriseColors(),
   ),
   const AppPalette(
@@ -87,7 +91,6 @@
     name: &#39;Forest&#39;,
     isDark: true,
     scheme: TransitForestColors(),
-    lightScheme: TransitLightColors(),
     darkScheme: TransitForestColors(),
   ),
   const AppPalette(
@@ -95,7 +98,6 @@
     name: &#39;Midnight&#39;,
     isDark: true,
     scheme: TransitMidnightColors(),
-    lightScheme: TransitLightColors(),
     darkScheme: TransitMidnightColors(),
   ),
   const AppPalette(
@@ -103,7 +105,6 @@
     name: &#39;Ocean&#39;,
     isDark: true,
     scheme: TransitOceanColors(),
-    lightScheme: TransitLightColors(),
     darkScheme: TransitOceanColors(),
   ),
   const AppPalette(
@@ -111,7 +112,6 @@
     name: &#39;Mono&#39;,
     isDark: true,
     scheme: TransitMonoColors(),
-    lightScheme: TransitLightColors(),
     darkScheme: TransitMonoColors(),
   ),
 ];</code></pre>
@@ -142,7 +142,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

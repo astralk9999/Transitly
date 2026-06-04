@@ -73,13 +73,84 @@
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">@override
 Future&lt;void&gt; signInWithGoogle() async {
-  _stateController.add(AuthLoading());
-  &#47;&#47;&#47; Google Sign-In requires platform setup (OAuth consent screen,
-  &#47;&#47;&#47; redirect URIs in Supabase dashboard). Stub hasta F4.2.
-  throw const AuthRepoException(
-    AuthError.providerCancelled,
-    &#39;Google Sign-In pendiente de configuración de plataforma&#39;,
-  );
+  _emit(AuthLoading());
+  try {
+    &#47;&#47; CRITICAL: el plugin necesita el Web Client ID como `serverClientId`
+    &#47;&#47; para que devuelva idToken. Sin él, Google solo entrega accessToken
+    &#47;&#47; y Supabase rechaza el signInWithIdToken.
+    final webClientId = Env.googleWebClientId;
+    if (webClientId == null) {
+      throw const AuthRepoException(
+        AuthError.unknown,
+        &#39;GOOGLE_WEB_CLIENT_ID no configurado. Añádelo a dart_defines.json.&#39;,
+      );
+    }
+    final googleSignIn = GoogleSignIn(
+      scopes: const [&#39;email&#39;, &#39;profile&#39;],
+      serverClientId: webClientId,
+    );
+    try {
+      await googleSignIn.signOut();
+    } catch (_) {
+      AppLogger.debug(_logTag, &#39;Google signOut ignored (no prior session)&#39;);
+    }
+    final account = await googleSignIn.signIn();
+    if (account == null) {
+      throw const AuthRepoException(
+        AuthError.providerCancelled,
+        &#39;Inicio de sesión con Google cancelado&#39;,
+      );
+    }
+    final auth = await account.authentication;
+    final idToken = auth.idToken;
+    final accessToken = auth.accessToken;
+    if (idToken == null) {
+      throw const AuthRepoException(
+        AuthError.providerCancelled,
+        &#39;Google no devolvió un id_token. Verifica el clientId en Google Cloud Console.&#39;,
+      );
+    }
+    &#47;&#47; Cambiar tokens de Google por sesión Supabase.
+    AppLogger.info(_logTag,
+        &#39;Google: got idToken (len=${idToken.length}) accessToken=${accessToken != null}&#39;);
+    try {
+      final response = await _client.auth.signInWithIdToken(
+        provider: OAuthProvider.google,
+        idToken: idToken,
+        accessToken: accessToken,
+      );
+      AppLogger.info(_logTag,
+          &#39;Google sign in OK: hasSession=${response.session != null}&#39;);
+      &#47;&#47; Emitir SIEMPRE el state autenticado tras signInWithIdToken.
+      &#47;&#47; El listener interno `onAuthStateChange` no se dispara de forma
+      &#47;&#47; confiable para flujos OAuth ID token con PKCE en supabase_flutter,
+      &#47;&#47; dejando al usuario atrapado en &#47;sign-in pese a tener sesión.
+      &#47;&#47; El controlador es broadcast e idempotente — emitir aunque ya
+      &#47;&#47; haya llegado el evento por el listener no causa daño.
+      final user = response.user ?? _client.auth.currentUser;
+      if (user != null) {
+        _emit(AuthAuthenticated(user));
+      } else {
+        throw const AuthRepoException(
+          AuthError.unknown,
+          &#39;Supabase aceptó Google pero no devolvió usuario&#39;,
+        );
+      }
+    } on supa.AuthException catch (e) {
+      AppLogger.error(_logTag,
+          &#39;Supabase signInWithIdToken AuthException: code=${e.code} msg=${e.message}&#39;);
+      throw AuthRepoException(AuthError.unknown,
+          &#39;Supabase rechazó Google: ${e.message}&#39;);
+    }
+  } on AuthRepoException {
+    rethrow;
+  } catch (e, st) {
+    AppLogger.error(_logTag, &#39;Google sign in failed&#39;, e, st);
+    throw AuthRepoException(
+      AuthError.providerCancelled,
+      e.toString(),
+    );
+  }
 }</code></pre>
 </section>
 
@@ -108,7 +179,7 @@ Future&lt;void&gt; signInWithGoogle() async {
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

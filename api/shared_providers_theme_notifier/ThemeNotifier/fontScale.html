@@ -94,6 +94,7 @@
   <pre class="language-dart"><code class="language-dart">set fontScale(double value) {
   final clamped = value.clamp(0.85, 1.4);
   if (_fontScale == clamped) return;
+  BootCanary.markPendingSensitive(&#39;fontScale&#39;);
   _fontScale = clamped;
   notifyListeners();
   unawaited(_persist());
@@ -126,7 +127,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

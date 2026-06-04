@@ -71,10 +71,24 @@
   <pre class="language-dart"><code class="language-dart">static String tileUrl(String style, {String? apiKey}) {
   final key = apiKey ?? Env.mapTilerApiKey;
   if (key != null &amp;&amp; key.isNotEmpty) {
-    final slug = mapStyles[style] ?? mapStyles[&#39;streets&#39;]!;
+    final slug = _maptilerSlugs[style] ?? _maptilerSlugs[&#39;streets&#39;]!;
     return &#39;$_maptilerBase&#47;$slug&#47;{z}&#47;{x}&#47;{y}@2x.png?key=$key&#39;;
   }
-  return _cartoUrl(style);
+  final fallback = mapStyles[style] ?? &#39;voyager&#39;;
+  switch (fallback) {
+    case &#39;standard&#39;:
+      return &#39;https:&#47;&#47;tile.openstreetmap.org&#47;{z}&#47;{x}&#47;{y}.png&#39;;
+    case &#39;dark&#39;:
+      return &#39;https:&#47;&#47;{s}.basemaps.cartocdn.com&#47;dark_all&#47;{z}&#47;{x}&#47;{y}@2x.png&#39;;
+    case &#39;positron&#39;:
+      return &#39;https:&#47;&#47;{s}.basemaps.cartocdn.com&#47;light_all&#47;{z}&#47;{x}&#47;{y}@2x.png&#39;;
+    case &#39;voyager&#39;:
+      return &#39;https:&#47;&#47;{s}.basemaps.cartocdn.com&#47;rastertiles&#47;voyager&#47;{z}&#47;{x}&#47;{y}@2x.png&#39;;
+    case &#39;light&#39;:
+      return &#39;https:&#47;&#47;{s}.basemaps.cartocdn.com&#47;rastertiles&#47;voyager_nolabels&#47;{z}&#47;{x}&#47;{y}@2x.png&#39;;
+    default:
+      return &#39;https:&#47;&#47;{s}.basemaps.cartocdn.com&#47;rastertiles&#47;voyager&#47;{z}&#47;{x}&#47;{y}@2x.png&#39;;
+  }
 }</code></pre>
 </section>
 
@@ -103,7 +117,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

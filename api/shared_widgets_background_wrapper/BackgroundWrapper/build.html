@@ -117,51 +117,198 @@ Widget build(BuildContext context, WidgetRef ref) {
   final opacity = themeNotifier.backgroundOpacity;
   final reduceMotion = themeNotifier.reduceMotion;
 
+  final themeMode = ref.watch(themeModeProvider);
+  final brightness = MediaQuery.platformBrightnessOf(context);
+  final isDark = themeMode == ThemeMode.dark ||
+      (themeMode == ThemeMode.system &amp;&amp; brightness == Brightness.dark);
+  final scheme = isDark
+      ? (palette.darkScheme ?? palette.scheme)
+      : (palette.lightScheme ?? palette.scheme);
+
   if (!enabled) {
-    return Container(color: palette.scheme.bgRoot, child: child);
+    return RepaintBoundary(child: Container(color: scheme.bgRoot, child: child));
   }
 
-  return switch (bg) {
+  &#47;&#47; En la paleta por defecto, accent&#47;neonCyan&#47;neonPurple son los tres
+  &#47;&#47; tonos morados-azules — usarlos juntos hacía que TODOS los fondos
+  &#47;&#47; multicolor se vieran azules. En su lugar derivamos 3 tonos del
+  &#47;&#47; accent con LUMINOSIDADES distintas: así siempre hay contraste sin
+  &#47;&#47; introducir hues ajenos a la paleta del usuario.
+  Color withLightness(Color base, double mul) {
+    final hsl = HSLColor.fromColor(base);
+    final newL = (hsl.lightness * mul).clamp(0.05, 0.95);
+    return hsl.withLightness(newL).toColor();
+  }
+
+  final schemeColors = &lt;Color&gt;[
+    scheme.accent,                          &#47;&#47; tono medio (paleta)
+    withLightness(scheme.accent, 1.55),     &#47;&#47; tono claro del accent
+    withLightness(scheme.accent, 0.5),      &#47;&#47; tono oscuro del accent
+  ];
+
+  &#47;&#47; Color secundario para los shaders de 2 colores (Balatro): una
+  &#47;&#47; versión claramente más clara del accent, garantiza contraste
+  &#47;&#47; sin meter un color foráneo.
+  final accentLight = withLightness(scheme.accent, 1.4);
+
+  return RepaintBoundary(child: switch (bg) {
     NoneBackground() =&gt;
-      Container(color: palette.scheme.bgRoot, child: child),
+      Container(color: scheme.bgRoot, child: child),
     ShaderBackground() =&gt; SmokeBackground(
-        color: palette.scheme.accent,
-        isDark: palette.isDark,
+        color: scheme.accent,
+        isDark: isDark,
         opacity: opacity,
         reduceMotion: reduceMotion,
         child: child,
       ),
-    GradientBackground(:final colors, :final begin, :final end) =&gt;
-      _buildGradientBg(colors, begin, end, opacity, child),
+    GradientBackground(:final begin, :final end) =&gt;
+      &#47;&#47; Ignoramos los colors hardcoded del prefab y usamos el scheme
+      &#47;&#47; activo para que el gradiente respete la paleta del usuario.
+      _buildGradientBg(
+        [scheme.bgRoot, scheme.accent.withValues(alpha: 0.5), scheme.bgRaised],
+        begin,
+        end,
+        opacity,
+        child,
+      ),
     ImageBackground(
       :final assetPath,
       :final fit,
       :final alignment,
     ) =&gt;
       _buildImageBg(assetPath, fit, alignment, opacity, child),
-    ProceduralBackground(:final pattern) =&gt; Stack(
+    ProceduralBackground() =&gt; Stack(
       fit: StackFit.expand,
       children: [
-        Opacity(
+        Container(color: scheme.bgRoot),
+        Opacity(opacity: opacity, child: bg.builder(context)),
+        child,
+      ],
+    ),
+    LightRaysShaderBackground() =&gt; Stack(
+      fit: StackFit.expand,
+      children: [
+        Container(color: scheme.bgRoot),
+        LightRaysBackground(
+          color: scheme.accent,
+          origin: LightRaysOrigin.topCenter,
+          speed: 0.7,
+          &#47;&#47; Intensidad reducida: rayos más cortos, más spread, menos saturación.
+          lightSpread: 0.9,
+          rayLength: 2.2,
+          saturation: 0.55,
+          fadeDistance: 0.7,
           opacity: opacity,
-          child: CustomPaint(
-            painter: pattern == ProceduralPattern.softGrid
-                ? SoftGridPainter(
-                    lineColor:
-                        palette.scheme.accent.withValues(alpha: 0.08),
-                    bgColor: palette.scheme.bgRoot,
-                  )
-                : TopoLinesPainter(
-                    lineColor:
-                        palette.scheme.accent.withValues(alpha: 0.06),
-                    bgColor: palette.scheme.bgRoot,
-                  ),
-          ),
+          reduceMotion: reduceMotion,
         ),
         child,
       ],
     ),
-  };
+    BalatroShaderBackground() =&gt; Stack(
+      fit: StackFit.expand,
+      children: [
+        Container(color: scheme.bgRoot),
+        BalatroBackground(
+          &#47;&#47; accent + versión clara del accent + bgRoot. Sin colores foráneos.
+          color1: scheme.accent,
+          color2: accentLight,
+          color3: scheme.bgRoot,
+          spinSpeed: 4.0,
+          pixelFilter: 1200.0,
+          isRotate: false,
+          opacity: opacity,
+          reduceMotion: reduceMotion,
+        ),
+        child,
+      ],
+    ),
+    FloatingLinesShaderBackground() =&gt; Stack(
+      fit: StackFit.expand,
+      children: [
+        Container(color: scheme.bgRoot),
+        FloatingLinesBackground(
+          color1: schemeColors[0],
+          color2: schemeColors[1],
+          color3: schemeColors[2],
+          opacity: opacity,
+          reduceMotion: reduceMotion,
+        ),
+        child,
+      ],
+    ),
+    ColorBendsShaderBackground() =&gt; Stack(
+      fit: StackFit.expand,
+      children: [
+        Container(color: scheme.bgRoot),
+        ColorBendsBackground(
+          colors: schemeColors,
+          opacity: opacity,
+          reduceMotion: reduceMotion,
+        ),
+        child,
+      ],
+    ),
+    DotFieldShaderBackground() =&gt; Stack(
+      fit: StackFit.expand,
+      children: [
+        Container(color: scheme.bgRoot),
+        DotFieldBackground(
+          colors: schemeColors,
+          opacity: opacity,
+          reduceMotion: reduceMotion,
+        ),
+        child,
+      ],
+    ),
+    DotGridShaderBackground() =&gt; Stack(
+      fit: StackFit.expand,
+      children: [
+        Container(color: scheme.bgRoot),
+        DotGridBackground(
+          colors: schemeColors,
+          opacity: opacity,
+          reduceMotion: reduceMotion,
+        ),
+        child,
+      ],
+    ),
+    DitherShaderBackground() =&gt; Stack(
+      fit: StackFit.expand,
+      children: [
+        Container(color: scheme.bgRoot),
+        DitherBackground(
+          colors: schemeColors,
+          opacity: opacity,
+          reduceMotion: reduceMotion,
+        ),
+        child,
+      ],
+    ),
+    FaultyTerminalShaderBackground() =&gt; Stack(
+      fit: StackFit.expand,
+      children: [
+        Container(color: scheme.bgRoot),
+        FaultyTerminalBackground(
+          colors: schemeColors,
+          opacity: opacity,
+          reduceMotion: reduceMotion,
+        ),
+        child,
+      ],
+    ),
+    DarkVeilShaderBackground() =&gt; Stack(
+      fit: StackFit.expand,
+      children: [
+        Container(color: scheme.bgRoot),
+        DarkVeilBackground(
+          colors: schemeColors,
+          opacity: opacity,
+          reduceMotion: reduceMotion,
+        ),
+        child,
+      ],
+    ),
+  }); &#47;&#47; RepaintBoundary end
 }</code></pre>
 </section>
 
@@ -190,7 +337,7 @@ Widget build(BuildContext context, WidgetRef ref) {
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

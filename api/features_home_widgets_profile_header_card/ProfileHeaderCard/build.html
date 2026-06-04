@@ -146,12 +146,7 @@ Widget build(BuildContext context, WidgetRef ref) {
               children: [
                 Text(
                   l10n.profileGuestLabel,
-                  style: GoogleFonts.ibmPlexMono(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 1.5,
-                    color: c.accent,
-                  ),
+                  style: TransitTypography.sectionLabel(c.accent),
                 ),
                 const SizedBox(height: 2),
                 Text(
@@ -279,7 +274,7 @@ Widget build(BuildContext context, WidgetRef ref) {
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

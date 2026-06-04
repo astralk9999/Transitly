@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the widgetSyncListenerProvider property from the widget_sync_service library, for the Dart programming language.">
+  <title>widgetSyncListenerProvider property - widget_sync_service library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">transitly</a></li>
+    <li><a href="../shared_services_widget_sync_service/">shared&#47;services&#47;widget_sync_service.dart</a></li>
+    <li class="self-crumb">widgetSyncListenerProvider property</li>
+  </ol>
+  <div class="self-name">widgetSyncListenerProvider</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+  <div
+      id="dartdoc-main-content"
+      class="main-content"
+      data-above-sidebar="shared_services_widget_sync_service&#47;shared_services_widget_sync_service-library-sidebar.html"
+      data-below-sidebar="">
+      <div>
+<h1><span class="kind-top-level-property">widgetSyncListenerProvider</span> top-level property 
+ 
+</h1></div>
+
+        <section class="multi-line-signature">
+          
+          <a href="https://pub.dev/documentation/riverpod/2.6.1/riverpod/AutoDisposeProvider-class.html">AutoDisposeProvider</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span>
+          <span class="name ">widgetSyncListenerProvider</span>
+          <div class="features"><span class="feature">final</span></div>
+
+        </section>
+        
+
+        
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">final widgetSyncListenerProvider = Provider.autoDispose&lt;void&gt;((ref) {
+  final mockData = ref.watch(mockDataServiceProvider);
+
+  ref.listen(homeHabitualConfigProvider, (prev, next) async {
+    if (!next.isConfigured) return;
+    if (prev?.routeId == next.routeId &amp;&amp; prev?.stopId == next.stopId) return;
+    AppLogger.debug(_logTag, &#39;config changed → syncNextBus&#39;);
+    try {
+      final route = mockData.getRouteById(next.routeId!);
+      if (route == null) return;
+      final deps = mockData.getNextDepartures(next.routeId!, next.stopId!, 4);
+      if (deps.isEmpty) return;
+      final first = deps.first;
+      final now = DateTime.now();
+      final parts = first.departureTime.split(&#39;:&#39;);
+      final depHour = int.tryParse(parts[0]) ?? 0;
+      final depMin = parts.length &gt; 1 ? (int.tryParse(parts[1]) ?? 0) : 0;
+      final depMinutes = depHour * 60 + depMin;
+      final nowMinutes = now.hour * 60 + now.minute;
+      var eta = depMinutes - nowMinutes;
+      if (eta &lt; 0) eta += 24 * 60;
+      final stop = mockData.getStopById(next.stopId!);
+      await HomeWidget.setAppGroupId(_appGroupId);
+      await WidgetDataWriter.writeNextBus(
+        stopName: stop?.name ?? next.stopId!,
+        routeCode: route.code,
+        etaMinutes: eta,
+        source: &#39;user_config&#39;,
+        updatedAt: now,
+      );
+    } catch (e) {
+      AppLogger.warn(_logTag, &#39;syncNextBus failed&#39;, e);
+    }
+  });
+
+  ref.listen(userFavoritesProvider, (prev, next) async {
+    if (prev == next) return;
+    AppLogger.debug(_logTag, &#39;favs changed → syncMyLine&#39;);
+    try {
+      if (next.isEmpty) return;
+      final routeId = next.first;
+      final route = mockData.getRouteById(routeId);
+      if (route == null) return;
+      final stops = mockData.getStopsForRoute(routeId);
+      final stopId = stops.isNotEmpty ? stops.first.id : &#39;&#39;;
+      final deps = mockData.getNextDepartures(routeId, stopId, 4);
+      final upcoming = deps.map((d) =&gt; {&#39;time&#39;: d.departureTime}).toList();
+      await HomeWidget.setAppGroupId(_appGroupId);
+      await WidgetDataWriter.writeMyLineStatus(
+        routeCode: route.code,
+        upcoming: upcoming,
+      );
+    } catch (e) {
+      AppLogger.warn(_logTag, &#39;syncMyLine failed&#39;, e);
+    }
+  });
+
+  ref.listen(nfcScanProvider, (prev, next) async {
+    if (next.status == NfcScanStatus.success &amp;&amp; next.result != null) {
+      AppLogger.debug(_logTag, &#39;nfc scanned → syncNfcBalance&#39;);
+      try {
+        await HomeWidget.setAppGroupId(_appGroupId);
+        await WidgetDataWriter.writeNfcBalance(
+          balance: next.result!.balance,
+          scannedAt: next.result!.scannedAt,
+        );
+      } catch (e) {
+        AppLogger.warn(_logTag, &#39;syncNfcBalance failed&#39;, e);
+      }
+    }
+  });
+});</code></pre>
+</section>
+
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../index.html">transitly</a></li>
+    <li><a href="../shared_services_widget_sync_service/">widget_sync_service</a></li>
+    <li class="self-crumb">widgetSyncListenerProvider property</li>
+</ol>
+
+    <h5>widget_sync_service library</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-left-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    transitly
+      1.2.0+3
+  </span>
+  
+</footer>
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

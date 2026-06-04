@@ -75,7 +75,7 @@
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">@override
 Future&lt;void&gt; signInWithEmail(String email, String password) async {
-  _stateController.add(AuthLoading());
+  _emit(AuthLoading());
   try {
     await SentrySetup.trace(&#39;auth.signIn&#39;, &#39;task&#39;, () =&gt; _client.auth.signInWithPassword(
       email: email.trim(),
@@ -118,7 +118,7 @@ Future&lt;void&gt; signInWithEmail(String email, String password) async {
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

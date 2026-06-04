@@ -76,7 +76,7 @@
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">@override
-Color get border =&gt; const Color(0xFFFFFFFF);</code></pre>
+Color get border =&gt; _isDark ? const Color(0xFFFFFFFF) : const Color(0xFF000000);</code></pre>
 </section>
 
   </section>
@@ -106,7 +106,7 @@ Color get border =&gt; const Color(0xFFFFFFFF);</code></pre>
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

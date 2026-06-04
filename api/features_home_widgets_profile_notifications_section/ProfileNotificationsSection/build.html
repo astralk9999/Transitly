@@ -161,6 +161,13 @@ Widget build(BuildContext context, WidgetRef ref) {
           value: notifier.notifFeatureRequestReplied,
           onChanged: (v) =&gt; notifier.notifFeatureRequestReplied = v,
         ),
+        _NotifToggle(
+          c: c,
+          icon: Icons.location_on_outlined,
+          label: l10n.notifPrefZoneAlerts,
+          value: notifier.notifZoneAlerts,
+          onChanged: (v) =&gt; notifier.notifZoneAlerts = v,
+        ),
         const SizedBox(height: 16),
         Divider(
           height: 1,
@@ -239,7 +246,7 @@ Widget build(BuildContext context, WidgetRef ref) {
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

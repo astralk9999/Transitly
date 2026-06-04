@@ -74,6 +74,7 @@
 ) {
   final isDark = Theme.of(context).brightness == Brightness.dark;
   final c = TransitColorScheme.of(isDark);
+  final mockData = ref.read(mockDataServiceProvider);
 
   showModalBottomSheet(
     context: context,
@@ -84,6 +85,7 @@
         builder: (ctx, ref, _) {
           final f = ref.watch(mapFilterControllerProvider);
           final ctrl = ref.read(mapFilterControllerProvider.notifier);
+          final l10n = AppLocalizations.of(context);
 
           return Container(
             constraints: BoxConstraints(
@@ -115,29 +117,33 @@
                     ),
                   ),
                   const SizedBox(height: 16),
-                  Text(AppLocalizations.of(context).mapFilterTitle,
-                      style: TransitTypography.heading(c.textHi)),
+
+                  _SectionTitle(c: c, title: &#39;Mostrar líneas&#39;),
+                  _OperatorTree(
+                    c: c, f: f, ctrl: ctrl, mockData: mockData,
+                  ),
+                  const SizedBox(height: 16),
+
+                  _SectionTitle(c: c, title: &#39;Zonas&#39;),
+                  const ZoneCompanyLineTree(),
                   const SizedBox(height: 16),
 
                   _SectionTitle(
                       c: c,
-                      title:
-                          AppLocalizations.of(context).mapFilterRouteSource),
+                      title: l10n.mapFilterRouteSource),
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
                     children: [
                       _FilterChip(
-                        label:
-                            AppLocalizations.of(context).mapFilterOfficial,
+                        label: l10n.mapFilterOfficial,
                         selected: f.showOfficial,
                         c: c,
                         onTap: () =&gt;
                             ctrl.setShowOfficial(!f.showOfficial),
                       ),
                       _FilterChip(
-                        label: AppLocalizations.of(context)
-                            .mapFilterCommunity,
+                        label: l10n.mapFilterCommunity,
                         selected: f.showCommunity,
                         c: c,
                         onTap: () =&gt;
@@ -149,15 +155,13 @@
 
                   _SectionTitle(
                       c: c,
-                      title:
-                          AppLocalizations.of(context).mapFilterUpcoming),
+                      title: l10n.mapFilterUpcoming),
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
                     children: [15, 30, 60]
                         .map((m) =&gt; _FilterChip(
-                              label: AppLocalizations.of(context)
-                                  .mapFilterMinutes(m),
+                              label: l10n.mapFilterMinutes(m),
                               selected: f.nextMinutes == m,
                               c: c,
                               onTap: () =&gt; ctrl.setNextMinutes(
@@ -169,11 +173,9 @@
 
                   _SectionTitle(
                       c: c,
-                      title: AppLocalizations.of(context)
-                          .mapFilterAccessibility),
+                      title: l10n.mapFilterAccessibility),
                   _FilterChip(
-                    label: AppLocalizations.of(context)
-                        .mapFilterOnlyAccessible,
+                    label: l10n.mapFilterOnlyAccessible,
                     selected: f.onlyAccessible,
                     c: c,
                     onTap: () =&gt;
@@ -183,15 +185,29 @@
 
                   _SectionTitle(
                       c: c,
-                      title: AppLocalizations.of(context)
-                          .mapFilterFavorites),
+                      title: l10n.mapFilterFavorites),
                   _FilterChip(
-                    label: AppLocalizations.of(context)
-                        .mapFilterOnlyFavorites,
+                    label: l10n.mapFilterOnlyFavorites,
                     selected: f.onlyFavorites,
                     c: c,
                     onTap: () =&gt;
                         ctrl.setOnlyFavorites(!f.onlyFavorites),
+                  ),
+                  const SizedBox(height: 16),
+
+                  _SectionTitle(c: c, title: &#39;Paradas&#39;),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(&#39;Mostrar paradas&#39;,
+                            style: TransitTypography.bodyPrimary(c.textHi)),
+                      ),
+                      Switch.adaptive(
+                        value: f.showAllStops,
+                        activeTrackColor: c.accent,
+                        onChanged: (v) =&gt; ctrl.setShowAllStops(v),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 24),
 
@@ -199,9 +215,7 @@
                     children: [
                       Expanded(
                         child: TransitButton(
-                          label: AppLocalizations.of(context)
-                              .actionReset
-                              .toUpperCase(),
+                          label: l10n.actionReset.toUpperCase(),
                           isPrimary: false,
                           isSmall: true,
                           onPressed: ctrl.reset,
@@ -210,9 +224,7 @@
                       const SizedBox(width: 12),
                       Expanded(
                         child: TransitButton(
-                          label: AppLocalizations.of(context)
-                              .actionApply
-                              .toUpperCase(),
+                          label: l10n.actionApply.toUpperCase(),
                           isSmall: true,
                           onPressed: () =&gt; Navigator.of(sheetCtx).pop(),
                         ),
@@ -227,8 +239,8 @@
         },
       );
     },
-  );
-}</code></pre>
+    );
+  }</code></pre>
 </section>
 
 
@@ -255,7 +267,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

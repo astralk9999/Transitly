@@ -111,6 +111,7 @@ and</li>
 Widget build(BuildContext context) {
   final isDark = Theme.of(context).brightness == Brightness.dark;
   final c = TransitColorScheme.of(isDark);
+  final l10n = AppLocalizations.of(context);
 
   return GlassCard(
     blur: 16,
@@ -121,7 +122,7 @@ Widget build(BuildContext context) {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         GradientText(
-          &#39;ZONA PRINCIPAL&#39;,
+          l10n.profileZoneTitle,
           style: GoogleFonts.ibmPlexMono(
             fontSize: 11,
             fontWeight: FontWeight.w700,
@@ -130,16 +131,20 @@ Widget build(BuildContext context) {
           gradient: c.gradientAccent,
         ),
         const SizedBox(height: 12),
-        Row(
-          children: [
-            Icon(Icons.location_on, size: 16, color: c.accent),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(&#39;Jerez de la Frontera&#39;,
-                  style: TransitTypography.bodyPrimary(c.accent)),
-            ),
-            Icon(Icons.chevron_right, size: 20, color: c.textLo),
-          ],
+        GestureDetector(
+          onTap: () =&gt; context.push(&#39;&#47;city-picker&#39;),
+          behavior: HitTestBehavior.opaque,
+          child: Row(
+            children: [
+              Icon(Icons.location_on, size: 16, color: c.accent),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(l10n.profileZoneLocation,
+                    style: TransitTypography.bodyPrimary(c.accent)),
+              ),
+              Icon(Icons.chevron_right, size: 20, color: c.textLo),
+            ],
+          ),
         ),
         Divider(
           height: 24,
@@ -147,7 +152,7 @@ Widget build(BuildContext context) {
           color: c.border,
         ),
         GradientText(
-          &#39;MIS FILTROS&#39;,
+          l10n.profileZoneFilters,
           style: GoogleFonts.ibmPlexMono(
             fontSize: 11,
             fontWeight: FontWeight.w700,
@@ -156,13 +161,13 @@ Widget build(BuildContext context) {
           gradient: c.gradientAccent,
         ),
         const SizedBox(height: 12),
-        _FilterItem(label: &#39;Solo accesibles&#39;, color: c),
+        _FilterItem(label: l10n.profileZoneAccessible, color: c),
         const SizedBox(height: 6),
-        _FilterItem(label: &#39;Líneas favoritas&#39;, color: c),
+        _FilterItem(label: l10n.profileZoneFavLines, color: c),
         const SizedBox(height: 8),
         GestureDetector(
           onTap: () =&gt; context.push(&#39;&#47;profile&#47;filters&#39;),
-          child: Text(&#39;GESTIONAR →&#39;,
+          child: Text(l10n.profileZoneManageArrow,
               style: TransitTypography.bodySecondary(c.accent)),
         ),
         Divider(
@@ -171,7 +176,7 @@ Widget build(BuildContext context) {
           color: c.border,
         ),
         GradientText(
-          &#39;DATOS OFFLINE&#39;,
+          l10n.profileZoneOffline,
           style: GoogleFonts.ibmPlexMono(
             fontSize: 11,
             fontWeight: FontWeight.w700,
@@ -182,6 +187,7 @@ Widget build(BuildContext context) {
         const SizedBox(height: 12),
         GestureDetector(
           onTap: () =&gt; context.push(&#39;&#47;profile&#47;offline&#39;),
+          behavior: HitTestBehavior.opaque,
           child: Row(
             children: [
               Icon(Icons.cloud_download_outlined,
@@ -189,7 +195,7 @@ Widget build(BuildContext context) {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  &#39;Ver caché de mapa y datos&#39;,
+                  l10n.profileZoneCacheDesc,
                   style: TransitTypography.bodyPrimary(c.textHi),
                 ),
               ),
@@ -228,7 +234,7 @@ Widget build(BuildContext context) {
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

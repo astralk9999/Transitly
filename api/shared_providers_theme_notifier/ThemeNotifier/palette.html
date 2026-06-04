@@ -87,6 +87,26 @@
       darkScheme: scheme,
     );
   }
+  if (_paletteId.startsWith(&#39;custom-&#39;)) {
+    final idx = _customPalettes.indexWhere((p) =&gt; p.id == _paletteId);
+    if (idx &gt;= 0) {
+      final cp = _customPalettes[idx];
+      final scheme = TransitCustomColors(
+        primary: cp.colors[&#39;primary&#39;] ?? const Color(0xFF977DDF),
+        secondary: cp.colors[&#39;secondary&#39;] ?? const Color(0xFF6C63FF),
+        bgRoot: cp.colors[&#39;bgRoot&#39;] ?? const Color(0xFF08081A),
+        bgSurface: cp.colors[&#39;bgSurface&#39;] ?? const Color(0xFF10102A),
+        textHi: cp.colors[&#39;textHi&#39;] ?? const Color(0xFFF0F0FA),
+      );
+      return AppPalette(
+        id: cp.id,
+        name: cp.name,
+        isDark: true,
+        scheme: scheme,
+        darkScheme: scheme,
+      );
+    }
+  }
   return paletteFromId(_paletteId);
 }</code></pre>
 </section>
@@ -118,7 +138,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

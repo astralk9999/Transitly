@@ -68,7 +68,8 @@
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">static TextStyle bodyPrimary(Color c) =&gt; TextStyle(
-      fontFamily: _bodyFontFamily,
+      fontFamily: _activeFontFamily(),
+      fontFamilyFallback: _fallback(),
       fontSize: 15,
       fontWeight: FontWeight.w300,
       height: 1.5,
@@ -101,7 +102,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

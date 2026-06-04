@@ -117,7 +117,8 @@ Widget build(BuildContext context) {
       borderRadius: BorderRadius.circular(10),
       onTap: onTap,
       child: Container(
-        width: 64,
+        width: 88,
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           color:
@@ -132,12 +133,17 @@ Widget build(BuildContext context) {
           children: [
             Icon(icon, size: 22, color: selected ? c.accent : c.textMid),
             const SizedBox(height: 4),
-            Text(name,
+            Flexible(
+              child: Text(
+                name,
                 style: TransitTypography.bodySmall(
                   selected ? c.accent : c.textMid,
                 ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis),
+                maxLines: 2,
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
           ],
         ),
       ),
@@ -171,7 +177,7 @@ Widget build(BuildContext context) {
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

@@ -68,11 +68,13 @@
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">static Future&lt;void&gt; deleteStore() async {
   try {
-    const store = FMTCStore(storeName);
-    final isReady = await store.manage.ready;
-    if (isReady) {
-      await store.manage.delete();
-      AppLogger.info(_logTag, &#39;store deleted (name=$storeName)&#39;);
+    for (final s in _styleKeys) {
+      final store = storeFor(s);
+      final isReady = await store.manage.ready;
+      if (isReady) {
+        await store.manage.delete();
+        AppLogger.info(_logTag, &#39;store deleted (name=${storeName(s)})&#39;);
+      }
     }
     _cachedTileProvider = null;
   } catch (e) {
@@ -106,7 +108,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

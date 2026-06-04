@@ -73,7 +73,7 @@
     final box = Hive.box(boxName);
     return box.path;
   } catch (e) {
-    AppLogger.warn(_logTag, &#39;box path unavailable for $boxName&#39;, e);
+    AppLogger.debug(_logTag, &#39;box path unavailable for $boxName (box typed)&#39;);
     return null;
   }
 }</code></pre>
@@ -104,7 +104,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

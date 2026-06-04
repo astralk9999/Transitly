@@ -78,16 +78,31 @@
   required String source,
   required DateTime updatedAt,
 }) async {
-  final prefs = await SharedPreferences.getInstance();
-  final key = &#39;${_nextBusPrefix}_$routeCode&#39;;
-  final data = jsonEncode({
-    &#39;stopName&#39;: stopName,
-    &#39;routeCode&#39;: routeCode,
-    &#39;etaMinutes&#39;: etaMinutes,
+  final payload = jsonEncode({
+    &#39;time&#39;: &#39;$etaMinutes min&#39;,
+    &#39;stop&#39;: stopName,
     &#39;source&#39;: source,
     &#39;updatedAt&#39;: updatedAt.toIso8601String(),
+    &#39;etaMinutes&#39;: etaMinutes,
   });
-  await prefs.setString(key, data);
+
+  final prefs = await SharedPreferences.getInstance();
+  final key = &#39;${_nextBusPrefix}_$routeCode&#39;;
+  await prefs.setString(key, payload);
+  await prefs.setString(&#39;widget_fav_line&#39;, routeCode);
+
+  try {
+    await HomeWidget.setAppGroupId(_appGroupId);
+    await HomeWidget.saveWidgetData(&#39;widget_fav_line&#39;, routeCode);
+    await HomeWidget.saveWidgetData(key, payload);
+    await HomeWidget.updateWidget(
+      name: &#39;NextBusWidgetProvider&#39;,
+      androidName: &#39;NextBusWidgetProvider&#39;,
+    );
+  } catch (e) {
+    AppLogger.warn(_tag, &#39;home_widget writeNextBus failed&#39;, e);
+  }
+
   AppLogger.debug(_tag, &#39;writeNextBus saved (key=$key)&#39;);
 }</code></pre>
 </section>
@@ -117,7 +132,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

@@ -67,7 +67,9 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">static TextStyle routeCodeSmall(Color c) =&gt; GoogleFonts.ibmPlexMono(
+  <pre class="language-dart"><code class="language-dart">static TextStyle routeCodeSmall(Color c) =&gt; TextStyle(
+      fontFamily: _activeFontFamily(monospace: true),
+      fontFamilyFallback: _fallback(),
       fontSize: 12,
       fontWeight: FontWeight.w700,
       color: c,
@@ -99,7 +101,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

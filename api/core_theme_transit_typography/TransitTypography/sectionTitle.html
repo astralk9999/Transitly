@@ -67,7 +67,9 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">static TextStyle sectionTitle(Color c) =&gt; GoogleFonts.ibmPlexMono(
+  <pre class="language-dart"><code class="language-dart">static TextStyle sectionTitle(Color c) =&gt; TextStyle(
+      fontFamily: _activeFontFamily(monospace: true),
+      fontFamilyFallback: _fallback(),
       fontSize: 12,
       fontWeight: FontWeight.w600,
       letterSpacing: 0.05 * 12,
@@ -100,7 +102,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.0.0+1
+      1.2.0+3
   </span>
   
 </footer>

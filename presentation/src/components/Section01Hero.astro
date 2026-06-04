@@ -80,9 +80,10 @@ import metrics from '../data/metrics.json';
 
           <div class="reveal flex flex-wrap gap-4" data-delay="400">
             <a
-              href={`${import.meta.env.BASE_URL}/transitly-v1.0.0-mvp.apk`}
+              href="https://github.com/astralk9999/Transitly/releases/latest"
               class="inline-flex items-center gap-2.5 px-8 py-4 bg-transit-accent text-white rounded-full font-semibold text-sm hover:bg-transit-accent/90 transition-all duration-200 accent-glow hover:scale-105"
-              download
+              target="_blank"
+              rel="noopener"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
               Descargar APK · {metrics.release.apkSize}

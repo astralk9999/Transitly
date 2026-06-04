@@ -8,6 +8,11 @@
 # de Supabase. Replicar desde .env para builds locales.
 dart_defines.json
 
+# APKs nunca al repo: GitHub avisa >50MB, bloquea >100MB, e infla el
+# historial git. Distribuir SIEMPRE como GitHub Release assets:
+# https://github.com/astralk9999/Transitly/releases
+*.apk
+
 # Supabase CLI — caché local, access token y referencia al proyecto
 # vinculado. Generado por `supabase login` y `supabase link`.
 .supabase/

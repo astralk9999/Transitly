@@ -7,7 +7,7 @@ import metrics from '../data/metrics.json';
     <div class="section-divider mb-6"></div>
     <h2 class="text-4xl md:text-5xl font-bold mb-4">Calidad y Testing</h2>
     <p class="text-transit-text-mid text-lg max-w-3xl leading-relaxed">
-      {metrics.tests.passed} tests pasando con {metrics.tests.coveragePercent}% de cobertura. Suite completa que cubre modelos freezed, repositorios, providers, widgets compartidos, router y smoke tests.
+      {metrics.tests.passed} tests pasando, 0 fallos. Suite completa que cubre modelos freezed, repositorios, providers, widgets compartidos, router y smoke tests. CI con 6 jobs en verde (Analyze + Test + Build Web + Build APK + Semgrep + Gitleaks).
     </p>
   </div>
 

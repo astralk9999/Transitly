@@ -13,17 +13,14 @@
     "freezedModels": 27,
     "sharedWidgets": 27,
     "edgeFunctions": 4,
-    "migrations": 14,
+    "migrations": 15,
     "hiveBoxes": 17,
     "encryptedBoxes": 2
   },
   "tests": {
     "passed": 619,
     "skipped": 6,
-    "failed": 0,
-    "coverageCovered": 4004,
-    "coverageTotal": 16476,
-    "coveragePercent": 24.04
+    "failed": 0
   },
   "ci": {
     "jobs": 6,
@@ -38,13 +35,14 @@
     }
   },
   "release": {
-    "version": "1.0.0-mvp",
-    "apkSize": "42 MiB",
+    "version": "1.11.0",
+    "apkSize": "88 MB",
     "androidMin": "Android 6.0+"
   },
   "scorecard": {
-    "tfg": "10/10",
-    "production": 6.5
+    "testsPassRate": "619/619",
+    "ciJobs": "6/6 verde",
+    "wcagLevel": "AA"
   },
   "context": {
     "operator": "COMUJESA",

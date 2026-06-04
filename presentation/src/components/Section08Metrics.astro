@@ -24,12 +24,6 @@ import metrics from '../data/metrics.json';
       <div class="text-[10px] text-transit-text-lo mt-1 font-mono">+{metrics.tests.skipped} skipped</div>
     </div>
 
-    <div class="glass-card hover-lift p-6 reveal text-center animate-scale-in group hover:border-transit-state-warning/40 transition-all duration-300" data-delay="200">
-      <div class="text-4xl md:text-5xl font-bold font-mono text-transit-state-warning mb-2" data-counter data-counter-target={metrics.tests.coveragePercent} data-counter-suffix="%">{metrics.tests.coveragePercent}%</div>
-      <div class="text-xs text-transit-text-lo uppercase tracking-wider">cobertura</div>
-      <div class="text-[10px] text-transit-text-lo mt-1 font-mono">{metrics.tests.coverageCovered}/{metrics.tests.coverageTotal} líneas</div>
-    </div>
-
     <div class="glass-card hover-lift p-6 reveal text-center animate-scale-in group hover:border-transit-state-info/40 transition-all duration-300" data-delay="250">
       <div class="text-4xl md:text-5xl font-bold font-mono text-transit-state-info mb-2">0</div>
       <div class="text-xs text-transit-text-lo uppercase tracking-wider">flutter analyze</div>
@@ -69,8 +63,9 @@ import metrics from '../data/metrics.json';
     </div>
 
     <div class="glass-card hover-lift p-6 reveal text-center animate-scale-in group hover:border-transit-state-success/40 transition-all duration-300" data-delay="600">
-      <div class="text-4xl md:text-5xl font-bold font-mono text-transit-state-success mb-2">{metrics.scorecard.tfg}</div>
-      <div class="text-xs text-transit-text-lo uppercase tracking-wider">Scorecard TFG</div>
+      <div class="text-4xl md:text-5xl font-bold font-mono text-transit-state-success mb-2">{metrics.scorecard.wcagLevel}</div>
+      <div class="text-xs text-transit-text-lo uppercase tracking-wider">WCAG 2.2</div>
+      <div class="text-[10px] text-transit-text-lo mt-1 font-mono">verificado estáticamente</div>
     </div>
 
     <div class="glass-card hover-lift p-6 reveal text-center animate-scale-in group hover:border-transit-accent/40 transition-all duration-300" data-delay="650">

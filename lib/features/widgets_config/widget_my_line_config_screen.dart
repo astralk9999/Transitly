@@ -108,8 +108,9 @@ class WidgetMyLineConfigScreen extends ConsumerWidget {
                             );
                             if (context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('Widget actualizado')),
+                                SnackBar(
+                                    content:
+                                        Text(l10n.widgetsConfigUpdated)),
                               );
                             }
                           },

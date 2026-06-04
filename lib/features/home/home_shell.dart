@@ -96,7 +96,11 @@ class _HomeShellState extends ConsumerState<HomeShell> {
         },
         child: FocusTraversalGroup(
           child: Scaffold(
-          backgroundColor: c.bgRoot,
+          // Transparente: BackgroundWrapper se encarga del fondo
+          // (incluido bgRoot cuando el fondo decorativo está desactivado).
+          // Sin esto el Scaffold tapa al BackgroundWrapper y los fondos
+          // configurables solo se ven en la pestaña Apariencia.
+          backgroundColor: Colors.transparent,
           body: BackgroundWrapper(
             child: Row(
               children: [
@@ -145,7 +149,9 @@ class _HomeShellState extends ConsumerState<HomeShell> {
       child: FocusTraversalGroup(
         child: BackgroundWrapper(
         child: Scaffold(
-      backgroundColor: c.bgRoot,
+      // Transparente: el BackgroundWrapper externo es el que pinta el
+      // fondo (incluido bgRoot si el fondo decorativo está desactivado).
+      backgroundColor: Colors.transparent,
       extendBody: true,
       body: Stack(
         children: [

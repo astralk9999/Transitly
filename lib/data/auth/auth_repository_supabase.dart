@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' as supa
+    show AuthException;
 import 'package:supabase_flutter/supabase_flutter.dart'
     show
         AuthChangeEvent,
@@ -26,8 +28,24 @@ class AuthRepositorySupabase implements AuthRepository {
   final StreamController<AuthSessionState> _stateController =
       StreamController<AuthSessionState>.broadcast();
 
+  // Último estado emitido: se reenvía a cualquier nuevo suscriptor en
+  // su primer evento. Sin esto, Riverpod StreamProvider se quedaba en
+  // AsyncLoading cuando se subscribía DESPUÉS del último emit (típico
+  // tras Google sign-in: el emit ocurría antes de que el StreamProvider
+  // estuviera escuchando).
+  AuthSessionState _lastState = AuthUnauthenticated();
+  AuthSessionState get lastState => _lastState;
+
+  void _emit(AuthSessionState state) {
+    _lastState = state;
+    _stateController.add(state);
+  }
+
   @override
-  Stream<AuthSessionState> get authState => _stateController.stream;
+  Stream<AuthSessionState> get authState async* {
+    yield _lastState;
+    yield* _stateController.stream;
+  }
 
   @override
   User? get currentUser => _client.auth.currentUser;
@@ -43,7 +61,7 @@ class AuthRepositorySupabase implements AuthRepository {
           final user = session!.user;
           // Email verification bypass: sistema de correos de Supabase
           // limitado en free tier. Todos los usuarios autentican directo.
-          _stateController.add(AuthAuthenticated(user));
+          _emit(AuthAuthenticated(user));
           final uidShort = user.id.length >= 8
               ? user.id.substring(0, 8)
               : user.id;
@@ -51,27 +69,27 @@ class AuthRepositorySupabase implements AuthRepository {
               'signed in uid=$uidShort… (verification bypassed)');
         }
       } else if (event == AuthChangeEvent.signedOut) {
-        _stateController.add(AuthUnauthenticated());
+        _emit(AuthUnauthenticated());
         AppLogger.info(_logTag, 'signed out');
       } else if (event == AuthChangeEvent.userUpdated) {
         final user = session?.user;
         if (user != null) {
-          _stateController.add(AuthAuthenticated(user));
+          _emit(AuthAuthenticated(user));
         }
       }
     });
 
     final session = _client.auth.currentSession;
     if (session?.user != null) {
-      _stateController.add(AuthAuthenticated(session!.user));
+      _emit(AuthAuthenticated(session!.user));
     } else {
-      _stateController.add(AuthUnauthenticated());
+      _emit(AuthUnauthenticated());
     }
   }
 
   @override
   Future<void> signInWithEmail(String email, String password) async {
-    _stateController.add(AuthLoading());
+    _emit(AuthLoading());
     try {
       await SentrySetup.trace('auth.signIn', 'task', () => _client.auth.signInWithPassword(
         email: email.trim(),
@@ -94,13 +112,33 @@ class AuthRepositorySupabase implements AuthRepository {
     String password,
     String displayName,
   ) async {
-    _stateController.add(AuthLoading());
+    _emit(AuthLoading());
     try {
-      await _client.auth.signUp(
+      final response = await _client.auth.signUp(
         email: email.trim(),
         password: password,
         data: <String, dynamic>{'display_name': displayName},
       );
+
+      // Red de seguridad: si Supabase tiene "Confirm email" ON o config
+      // legacy, signUp retorna user pero session=null. Sin SMTP propio
+      // el usuario no recibe email → quedaría atrapado. Forzamos login
+      // con las credenciales recién creadas para garantizar sesión activa.
+      // Reactivar cuando se configure SMTP: ver docs/SUPABASE_SETUP.md.
+      if (response.session == null && response.user != null) {
+        AppLogger.info(_logTag,
+            'signUp returned no session, attempting auto-login');
+        try {
+          await _client.auth.signInWithPassword(
+            email: email.trim(),
+            password: password,
+          );
+        } catch (e) {
+          AppLogger.warn(_logTag,
+              'auto-login after signup failed (confirm email may still be required)',
+              e);
+        }
+      }
     } catch (e, st) {
       if (e is Exception) {
         throw mapAuthError(e);
@@ -112,7 +150,7 @@ class AuthRepositorySupabase implements AuthRepository {
 
   @override
   Future<void> signInWithGoogle() async {
-    _stateController.add(AuthLoading());
+    _emit(AuthLoading());
     try {
       // CRITICAL: el plugin necesita el Web Client ID como `serverClientId`
       // para que devuelva idToken. Sin él, Google solo entrega accessToken
@@ -150,12 +188,37 @@ class AuthRepositorySupabase implements AuthRepository {
         );
       }
       // Cambiar tokens de Google por sesión Supabase.
-      await _client.auth.signInWithIdToken(
-        provider: OAuthProvider.google,
-        idToken: idToken,
-        accessToken: accessToken,
-      );
-      AppLogger.info(_logTag, 'Google sign in OK');
+      AppLogger.info(_logTag,
+          'Google: got idToken (len=${idToken.length}) accessToken=${accessToken != null}');
+      try {
+        final response = await _client.auth.signInWithIdToken(
+          provider: OAuthProvider.google,
+          idToken: idToken,
+          accessToken: accessToken,
+        );
+        AppLogger.info(_logTag,
+            'Google sign in OK: hasSession=${response.session != null}');
+        // Emitir SIEMPRE el state autenticado tras signInWithIdToken.
+        // El listener interno `onAuthStateChange` no se dispara de forma
+        // confiable para flujos OAuth ID token con PKCE en supabase_flutter,
+        // dejando al usuario atrapado en /sign-in pese a tener sesión.
+        // El controlador es broadcast e idempotente — emitir aunque ya
+        // haya llegado el evento por el listener no causa daño.
+        final user = response.user ?? _client.auth.currentUser;
+        if (user != null) {
+          _emit(AuthAuthenticated(user));
+        } else {
+          throw const AuthRepoException(
+            AuthError.unknown,
+            'Supabase aceptó Google pero no devolvió usuario',
+          );
+        }
+      } on supa.AuthException catch (e) {
+        AppLogger.error(_logTag,
+            'Supabase signInWithIdToken AuthException: code=${e.code} msg=${e.message}');
+        throw AuthRepoException(AuthError.unknown,
+            'Supabase rechazó Google: ${e.message}');
+      }
     } on AuthRepoException {
       rethrow;
     } catch (e, st) {

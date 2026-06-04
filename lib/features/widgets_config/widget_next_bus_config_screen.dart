@@ -27,7 +27,10 @@ class _WidgetNextBusConfigScreenState
   String? _routeId;
   String? _stopId;
   String _previewRoute = '--';
-  String _previewTime = 'Configura tu viaje';
+  // Vacío al inicio; build() lo sustituye por l10n.widgetsConfigUnconfigured
+  // cuando no hay configuración. No podemos usar AppLocalizations aquí
+  // (no hay context disponible en field initializer).
+  String _previewTime = '';
   String _previewStop = '';
 
   @override
@@ -124,7 +127,9 @@ class _WidgetNextBusConfigScreenState
             _PreviewCard(
               c: c,
               routeCode: _previewRoute,
-              time: _previewTime,
+              time: _previewTime.isEmpty
+                  ? l10n.widgetsConfigUnconfigured
+                  : _previewTime,
               stop: _previewStop,
             ),
             const SizedBox(height: 24),

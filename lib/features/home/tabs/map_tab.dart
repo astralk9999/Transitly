@@ -452,7 +452,8 @@ class _MapTabState extends ConsumerState<MapTab> {
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      backgroundColor: c.bgRoot,
+      // Transparente para que el BackgroundWrapper del shell se vea.
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
           TransitMap(

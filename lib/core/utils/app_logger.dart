@@ -41,14 +41,17 @@ class AppLogger {
 
   static void warn(String tag, String message, [Object? error]) {
     final suffix = error == null ? '' : ' — $error';
-    if (kDebugMode) _emit('WARN', tag, '$message$suffix');
+    // warn y error TAMBIÉN emiten en release: son señales que necesitamos
+    // ver en logcat para diagnosticar problemas en producción. Solo el
+    // ruido (debug/info/perf) se silencia fuera de debug.
+    _emit('WARN', tag, '$message$suffix');
     SentrySetup.addBreadcrumb('[$tag] $message$suffix', category: 'warn');
   }
 
   static void error(String tag, String message, [Object? error, StackTrace? st]) {
     final suffix = error == null ? '' : ' — $error';
-    if (kDebugMode) _emit('ERROR', tag, '$message$suffix');
-    if (kDebugMode && st != null) debugPrint(st.toString());
+    _emit('ERROR', tag, '$message$suffix');
+    if (st != null) debugPrint(st.toString());
     SentrySetup.addBreadcrumb('[$tag] $message$suffix', category: 'error');
     SentrySetup.captureException(error ?? message, st);
   }

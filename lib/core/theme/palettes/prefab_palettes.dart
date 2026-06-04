@@ -289,12 +289,17 @@ final prefabPalettes = <AppPalette>[
     lightScheme: TransitLightColors(),
     darkScheme: TransitDarkColors(),
   ),
+  // NOTA: las paletas de color no-default DEJAN lightScheme = null
+  // a propósito. Con lightScheme=TransitLightColors() (genérico claro)
+  // al cambiar a modo claro perdíamos la paleta seleccionada (Sunrise,
+  // Forest, etc.). Sin lightScheme, el fallback `_deriveLightFromDark`
+  // invierte luminosidades del darkScheme y mantiene el accent + matiz
+  // de la paleta también en claro.
   const AppPalette(
     id: 'sunrise',
     name: 'Sunrise',
     isDark: true,
     scheme: TransitSunriseColors(),
-    lightScheme: TransitLightColors(),
     darkScheme: TransitSunriseColors(),
   ),
   const AppPalette(
@@ -302,7 +307,6 @@ final prefabPalettes = <AppPalette>[
     name: 'Forest',
     isDark: true,
     scheme: TransitForestColors(),
-    lightScheme: TransitLightColors(),
     darkScheme: TransitForestColors(),
   ),
   const AppPalette(
@@ -310,7 +314,6 @@ final prefabPalettes = <AppPalette>[
     name: 'Midnight',
     isDark: true,
     scheme: TransitMidnightColors(),
-    lightScheme: TransitLightColors(),
     darkScheme: TransitMidnightColors(),
   ),
   const AppPalette(
@@ -318,7 +321,6 @@ final prefabPalettes = <AppPalette>[
     name: 'Ocean',
     isDark: true,
     scheme: TransitOceanColors(),
-    lightScheme: TransitLightColors(),
     darkScheme: TransitOceanColors(),
   ),
   const AppPalette(
@@ -326,7 +328,6 @@ final prefabPalettes = <AppPalette>[
     name: 'Mono',
     isDark: true,
     scheme: TransitMonoColors(),
-    lightScheme: TransitLightColors(),
     darkScheme: TransitMonoColors(),
   ),
 ];

@@ -13,6 +13,11 @@ class TilePrewarmer {
 
   static const _logTag = 'TilePrewarmer';
 
+  /// Si el store ya tiene >= este número de tiles, asumimos que un
+  /// arranque previo hidrató la zona de Jerez y se hace skip del
+  /// prewarming. Evita descargar tiles innecesariamente en cada boot.
+  static const _minTilesToConsiderWarm = 50;
+
   static Future<void> prewarmOnce() async {
     try {
       const style = 'streets';
@@ -22,6 +27,21 @@ class TilePrewarmer {
       final isReady = await store.manage.ready;
       if (!isReady) {
         await store.manage.create();
+      }
+
+      // Idempotencia: si el store ya tiene tiles cacheadas de un
+      // arranque previo, no volvemos a descargar nada.
+      try {
+        final stats = await store.stats.all;
+        final tileCount = stats.length;
+        if (tileCount >= _minTilesToConsiderWarm) {
+          AppLogger.info(
+              _logTag, 'skip prewarm: store has $tileCount tiles');
+          return;
+        }
+      } catch (e) {
+        AppLogger.warn(
+            _logTag, 'stats check failed, will attempt prewarm anyway', e);
       }
 
       AppLogger.info(_logTag, 'prewarming Jerez (zoom 13-15)');

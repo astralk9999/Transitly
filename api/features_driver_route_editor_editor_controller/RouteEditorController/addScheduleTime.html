@@ -71,6 +71,8 @@
   <pre class="language-dart"><code class="language-dart">void addScheduleTime(String key, String hhmm) {
   final list = schedules[key];
   if (list == null) return;
+  if (!_hhmmRegExp.hasMatch(hhmm)) return;
+  if (list.contains(hhmm)) return;
   list
     ..add(hhmm)
     ..sort();

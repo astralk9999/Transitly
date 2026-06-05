@@ -112,7 +112,9 @@ Widget build(BuildContext context) {
   final isDark = Theme.of(context).brightness == Brightness.dark;
   final c = TransitColorScheme.of(isDark);
 
-  return DefaultTabController(
+  return ListenableBuilder(
+    listenable: controller,
+    builder: (context, _) =&gt; DefaultTabController(
     length: 3,
     child: Column(
       children: [
@@ -176,6 +178,7 @@ Widget build(BuildContext context) {
           ),
         ),
       ],
+    ),
     ),
   );
 }</code></pre>

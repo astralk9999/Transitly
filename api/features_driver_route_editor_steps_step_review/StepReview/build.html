@@ -110,11 +110,14 @@ and</li>
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">@override
 Widget build(BuildContext context, WidgetRef ref) {
-  final c = TransitColorScheme.of(isDark);
-  final tracePoints = controller.tracePoints;
-  final stops = controller.stops;
+  return ListenableBuilder(
+    listenable: controller,
+    builder: (context, _) {
+      final c = TransitColorScheme.of(isDark);
+      final tracePoints = controller.tracePoints;
+      final stops = controller.stops;
 
-  return Column(
+      return Column(
     children: [
       Expanded(
         child: FlutterMap(
@@ -217,26 +220,69 @@ Widget build(BuildContext context, WidgetRef ref) {
                   child: TransitButton(
                     label: AppLocalizations.of(context).actionPublish.toUpperCase(),
                     onPressed: () async {
-                      &#47;&#47; F15: conectar a RouteRepository.create() para
-                      &#47;&#47; persistir ruta comunitaria en Supabase + cola offline.
                       if (controller.codeCtrl.text.isEmpty ||
                           controller.nameCtrl.text.isEmpty ||
                           controller.stops.length &lt; 2) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                              content: Text(
-                                  &#39;Código, nombre y al menos 2 paradas son obligatorios&#39;)),
+                            content: Text(
+                                &#39;Código, nombre y al menos 2 paradas son obligatorios&#39;),
+                            duration: Duration(seconds: 3),
+                          ),
                         );
                         return;
                       }
-                      await controller.saveDraft();
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
+                      try {
+                        await controller.saveDraft();
+                        if (!context.mounted) return;
+                        ScaffoldMessenger.of(context)
+                          ..hideCurrentSnackBar()
+                          ..showSnackBar(
+                            const SnackBar(
                               content: Text(
-                                  &#39;Ruta guardada como borrador. La publicación se habilitará en F15.&#39;)),
-                        );
+                                  &#39;Ruta guardada como borrador. La publicación remota &#39;
+                                  &#39;se habilitará en F15.&#39;),
+                              duration: Duration(seconds: 4),
+                            ),
+                          );
+                        await Future&lt;void&gt;.delayed(
+                            const Duration(milliseconds: 600));
+                        if (!context.mounted) return;
                         context.go(&#39;&#47;home&#47;mapa&#39;);
+                      } catch (e, st) {
+                        if (!context.mounted) return;
+                        ScaffoldMessenger.of(context)
+                          ..hideCurrentSnackBar()
+                          ..showSnackBar(
+                            SnackBar(
+                              backgroundColor: c.stateDelay,
+                              duration: const Duration(seconds: 6),
+                              content: Text(&#39;Error guardando: $e&#39;),
+                              action: SnackBarAction(
+                                label: &#39;REINTENTAR&#39;,
+                                textColor: Colors.white,
+                                onPressed: () async {
+                                  try {
+                                    await controller.saveDraft();
+                                    if (context.mounted) {
+                                      ScaffoldMessenger.of(context)
+                                        ..hideCurrentSnackBar()
+                                        ..showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                                &#39;Ruta guardada como borrador.&#39;),
+                                          ),
+                                        );
+                                    }
+                                  } catch (_) {
+                                    &#47;&#47; El error queda en el log; el usuario
+                                    &#47;&#47; sigue viendo el snackbar con su botón.
+                                  }
+                                },
+                              ),
+                            ),
+                          );
+                        debugPrint(&#39;publish.error: $e\n$st&#39;);
                       }
                     },
                   ),
@@ -247,6 +293,8 @@ Widget build(BuildContext context, WidgetRef ref) {
         ),
       ),
     ],
+  );
+    },
   );
 }</code></pre>
 </section>

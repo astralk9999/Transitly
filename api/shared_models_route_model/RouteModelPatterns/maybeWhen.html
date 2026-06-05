@@ -69,7 +69,9 @@
 <li><span class="parameter" id="param-hasReturn"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">hasReturn</span>, </span></li>
 <li><span class="parameter" id="param-isCircular"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">isCircular</span>, </span></li>
 <li><span class="parameter" id="param-status"><span class="type-annotation"><a href="../../shared_models_enums/RouteStatus.html">RouteStatus</a></span> <span class="parameter-name">status</span>, </span></li>
+<li><span class="parameter" id="param-source"><span class="type-annotation"><a href="../../shared_models_enums/RouteSource.html">RouteSource</a></span> <span class="parameter-name">source</span>, </span></li>
 <li><span class="parameter" id="param-active"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">active</span>, </span></li>
+<li><span class="parameter" id="param-ownerDisplayName"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">ownerDisplayName</span>, </span></li>
 <li><span class="parameter" id="param-lastUpdatedAt"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/DateTime-class.html">DateTime</a>?</span> <span class="parameter-name">lastUpdatedAt</span>, </span></li>
 </ol>)?, {</span></li>
 <li><span class="parameter" id="maybeWhen-param-orElse"><span>required</span> <span class="type-annotation">TResult</span> <span class="parameter-name">orElse</span>(), </span></li>
@@ -95,10 +97,10 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">@optionalTypeArgs TResult maybeWhen&lt;TResult extends Object?&gt;(TResult Function( String id,  String operatorId,  String code,  String name,  ServiceType serviceType,  Color routeColor,  bool hasReturn,  bool isCircular,  RouteStatus status,  bool active,  DateTime? lastUpdatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+  <pre class="language-dart"><code class="language-dart">@optionalTypeArgs TResult maybeWhen&lt;TResult extends Object?&gt;(TResult Function( String id,  String operatorId,  String code,  String name,  ServiceType serviceType,  Color routeColor,  bool hasReturn,  bool isCircular,  RouteStatus status,  RouteSource source,  bool active,  String? ownerDisplayName,  DateTime? lastUpdatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _RouteModel() when $default != null:
-return $default(_that.id,_that.operatorId,_that.code,_that.name,_that.serviceType,_that.routeColor,_that.hasReturn,_that.isCircular,_that.status,_that.active,_that.lastUpdatedAt);case _:
+return $default(_that.id,_that.operatorId,_that.code,_that.name,_that.serviceType,_that.routeColor,_that.hasReturn,_that.isCircular,_that.status,_that.source,_that.active,_that.ownerDisplayName,_that.lastUpdatedAt);case _:
   return orElse();
 
 }

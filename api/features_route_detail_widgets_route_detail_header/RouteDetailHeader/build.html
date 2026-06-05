@@ -172,6 +172,13 @@ Widget build(BuildContext context) {
               _tripStatusColor(c, trip.status),
             ),
           StatusBadge(route.status.label, c.accent),
+          RouteSourceBadge(
+            source: route.source,
+            operatorName: route.source == RouteSource.official
+                ? route.operatorId.toUpperCase()
+                : null,
+            ownerName: route.ownerDisplayName,
+          ),
         ],
       ),
       const SizedBox(height: 8),

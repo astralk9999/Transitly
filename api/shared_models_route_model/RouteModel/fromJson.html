@@ -81,6 +81,11 @@
           (j[&#39;name&#39;] as String).toLowerCase().contains(&#39;circular&#39;) ||
               (j[&#39;name&#39;] as String).toLowerCase().contains(&#39;circunvalación&#39;),
       status: RouteStatus.official,
+      source: switch (j[&#39;source&#39;] as String?) {
+        &#39;community&#39; =&gt; RouteSource.community,
+        _ =&gt; RouteSource.official,
+      },
+      ownerDisplayName: j[&#39;ownerDisplayName&#39;] as String?,
       active: true,
     );</code></pre>
 </section>

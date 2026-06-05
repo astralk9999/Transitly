@@ -63,7 +63,9 @@
 <li><span class="parameter" id="-param-hasReturn"><span>@<a href="https://pub.dev/documentation/freezed_annotation/3.1.0/freezed_annotation/Default-class.html">Default</a>(true)</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">hasReturn</span>, </span></li>
 <li><span class="parameter" id="-param-isCircular"><span>@<a href="https://pub.dev/documentation/freezed_annotation/3.1.0/freezed_annotation/Default-class.html">Default</a>(false)</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">isCircular</span>, </span></li>
 <li><span class="parameter" id="-param-status"><span>@<a href="https://pub.dev/documentation/freezed_annotation/3.1.0/freezed_annotation/Default-class.html">Default</a>(RouteStatus.official)</span> <span class="type-annotation"><a href="../../shared_models_enums/RouteStatus.html">RouteStatus</a></span> <span class="parameter-name">status</span>, </span></li>
+<li><span class="parameter" id="-param-source"><span>@<a href="https://pub.dev/documentation/freezed_annotation/3.1.0/freezed_annotation/Default-class.html">Default</a>(RouteSource.official)</span> <span class="type-annotation"><a href="../../shared_models_enums/RouteSource.html">RouteSource</a></span> <span class="parameter-name">source</span>, </span></li>
 <li><span class="parameter" id="-param-active"><span>@<a href="https://pub.dev/documentation/freezed_annotation/3.1.0/freezed_annotation/Default-class.html">Default</a>(true)</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">active</span>, </span></li>
+<li><span class="parameter" id="-param-ownerDisplayName"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">ownerDisplayName</span>, </span></li>
 <li><span class="parameter" id="-param-lastUpdatedAt"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/DateTime-class.html">DateTime</a>?</span> <span class="parameter-name">lastUpdatedAt</span>, </span></li>
 </ol>})
     </section>
@@ -83,7 +85,9 @@
   @Default(true) bool hasReturn,
   @Default(false) bool isCircular,
   @Default(RouteStatus.official) RouteStatus status,
+  @Default(RouteSource.official) RouteSource source,
   @Default(true) bool active,
+  String? ownerDisplayName,
   DateTime? lastUpdatedAt,
 }) = _RouteModel;</code></pre>
 </section>

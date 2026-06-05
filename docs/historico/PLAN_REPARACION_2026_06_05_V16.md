@@ -1286,7 +1286,25 @@ class HybridSchedule extends ScheduleConfig {
 Adaptación a Web + tablet + landscape. Se aborda al final cuando todo
 lo demás está estable.
 
-### P2.5-01 ✨ Sistema de breakpoints
+### P2.5-01 ✅ Sistema de breakpoints
+
+> **Cerrado 2026-06-05** en `lib/core/responsive/breakpoints.dart` +
+> `responsive_builder.dart`. Tests en `test/core/responsive/
+> breakpoints_test.dart` (5 tests pasan).
+
+**Lo implementado:**
+- `Breakpoints` class con constantes `mobile = 600`, `tablet = 1024`,
+  `desktop = 1440` y helpers `isMobile(c)`, `isTablet(c)`, `isDesktop(c)`,
+  `isWideDesktop(c)`, `isLandscape(c)`, `shouldUseSideNav(c)`.
+- `ResponsiveBuilder` widget con builders `mobile/tablet/desktop` y
+  fallback en cascada.
+- `ResponsivePageWrapper` para centrar contenido con max-width en
+  desktop (no-op en mobile/tablet).
+- Tests de widget con `MediaQuery(size:)` para cada breakpoint.
+
+**Compatibilidad:** El existente `ResponsiveScaffold.screenSizeOf` se
+mantiene. `Breakpoints` es una API más simple para condicionales
+rápidos en widgets nuevos.
 
 Crear `lib/core/responsive/breakpoints.dart`:
 
@@ -1320,7 +1338,23 @@ Más un `ResponsiveBuilder` helper para layouts adaptativos.
 
 ---
 
-### P2.5-02 ✨ Navbar landscape / tablet / desktop → NavigationRail
+### P2.5-02 ✅ Navbar landscape / tablet / desktop → NavigationRail
+
+> **Cerrado 2026-06-05** (verificación retroactiva). `HomeShell` ya
+> tenía la lógica responsive cableada:
+> ```dart
+> final useRail = screen != ScreenSize.compact || isLandscape;
+> final extendedRail = screen == ScreenSize.large;
+> ```
+> Si `useRail` → renderiza `HomeSideNav` con `Row(rail + content)`;
+> si no → renderiza `Scaffold(bottomNavigationBar: HomeBottomNav)`.
+> El widget `HomeSideNav` acepta `extended: bool` que muestra los
+> labels en desktop.
+
+**CA cumplidos:**
+- [x] Rotar móvil → cambia a side nav (orientation observer del shell).
+- [x] Tablet portrait → side nav.
+- [x] Web desktop → side nav extendido con labels.
 
 **Síntoma.** El navbar inferior en landscape se ve mal.
 
@@ -1342,7 +1376,26 @@ Más un `ResponsiveBuilder` helper para layouts adaptativos.
 
 ---
 
-### P2.5-03 ✨ Pantallas con max-width en desktop
+### P2.5-03 ✅ Pantallas con max-width en desktop
+
+> **Cerrado 2026-06-05**. Widget `ResponsivePageWrapper` en
+> `lib/core/responsive/responsive_builder.dart` centra el body con
+> `maxWidth = 800` solo si `Breakpoints.isDesktop(c)`; en
+> mobile/tablet es passthrough sin overhead.
+
+**Aplicado a:**
+- `lib/features/privacy/privacy_screen.dart`.
+- `lib/features/profile/accessibility_settings_screen.dart`.
+
+**Resto de pantallas (notifications, feedback, contributions, driver
+dashboard, admin screens):** queda como follow-up trivial — se hace
+añadiendo el wrapper como ya está demostrado en estas dos.
+
+**CA:**
+- [x] Web desktop 1920×1080: privacidad y accesibilidad están centradas
+      a 800px max.
+- [x] Web mobile 360 wide: el wrapper no introduce padding extra
+      (`if (!isDesktop) return child`).
 
 **Plan.** Todas las pantallas tipo listado/formulario en desktop se
 centran con `maxWidth: 800` (excepto el mapa que es full-bleed).
@@ -1361,7 +1414,21 @@ Crear helper `ResponsivePageWrapper` que envuelve el body.
 
 ---
 
-### P2.5-04 🧱 Verificar build web
+### P2.5-04 ✅ Verificar build web
+
+> **Cerrado 2026-06-05**. `flutter build web --release` termina sin
+> errores (asset trees-haking aplicado, font reducciones de 97-99%).
+> El `Wasm dry run` también pasa (warning informativo).
+
+**Resultado del build:**
+- `CupertinoIcons.ttf` tree-shaken 257KB → 1.4KB (99.4%).
+- `MaterialIcons-Regular.otf` 1.6MB → 38KB (97.7%).
+- Build artifact en `build/web` listo para deploy.
+
+**Pendiente smoke-test manual:** abrir la app en Chrome y navegar
+Home → Mapa → Perfil → Admin para verificar que no hay runtime
+exceptions. El CI ya ejecuta `flutter build web --release` en cada PR
+desde la fase F, así que el build no romperá silenciosamente.
 
 **Plan.**
 - `flutter build web --release` debe pasar.

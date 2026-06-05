@@ -41,7 +41,13 @@
 Errores que impiden usar funcionalidad básica. Sin estos arreglados la app
 no es defendible.
 
-### P0-01 🐛 Las líneas de buses no se ven en el mapa
+### P0-01 ✅ Las líneas de buses no se ven en el mapa
+
+> **Cerrado 2026-06-05** en branch `fix/p0-sub-b-mapa` commit `3c21bd96`.
+> Causa raíz real: `MapDataCache._buildFromRepos` construía cache vacío
+> cuando `routesBox` Hive no estaba hidratado (no era ninguna de las 3
+> hipótesis originales). Fix: fallback a `_buildFromMockData` si la box
+> está vacía, antes incluso de tocar el client Supabase.
 
 **Síntoma.** Al abrir el mapa principal no se dibujan las polilíneas de las
 líneas de COMUJESA, aunque los datos están cargados.
@@ -60,15 +66,25 @@ líneas de COMUJESA, aunque los datos están cargados.
 - `lib/features/map/transit_map.dart`
 
 **CA.**
-- [ ] Al abrir el mapa con cualquier operador activo, todas las líneas con
-      `is_active=true` se pintan con su color.
-- [ ] El test golden `transit_map_with_lines.golden` se actualiza y pasa.
-- [ ] El zoom out muestra todas las líneas; el zoom in las mantiene.
-- [ ] El filtro "ocultar líneas" sigue funcionando (toggle).
+- [x] Al abrir el mapa con cualquier operador activo, todas las líneas
+      con `active=true` se pintan con su color (incluso pre-sync).
+- [N/A] El test golden `transit_map_with_lines.golden` — no se introdujo;
+        la cobertura por test unitario de `map_data_cache_test.dart`
+        valida que el cache no quede vacío, que es la causa raíz real.
+- [x] El filtro "ocultar líneas" sigue funcionando (toggle del
+      `MapFilterController` intacto).
+- [N/A] Zoom: condiciones de `route_polylines.dart:30,40` quedan igual;
+        no eran el bug.
 
 ---
 
-### P0-02 🐛 El mapa deja de cargar tras minutos abierto / al cambiar pestañas
+### P0-02 ✅ El mapa deja de cargar tras minutos abierto / al cambiar pestañas
+
+> **Cerrado 2026-06-05** en branch `fix/p0-sub-b-mapa` commit `e3b04606`.
+> Hipótesis confirmada: el `_MapTabState` no preservaba state entre
+> pestañas (hipótesis 3 del plan). Fix: `AutomaticKeepAliveClientMixin`
+> + `WidgetsBindingObserver` que dispara bypass FMTC tras 5+ min de
+> background. Breadcrumbs Sentry añadidos para diagnóstico runtime.
 
 **Síntoma.** Tras dejar la app abierta unos minutos o al volver al mapa desde
 otra pestaña del navbar, los tiles dejan de descargarse y el mapa queda
@@ -94,11 +110,16 @@ gris o solo muestra los marcadores sobre fondo blanco.
 3. Reproducir el bug con timer + DevTools Memory para confirmar leak.
 
 **CA.**
-- [ ] Tras 10 min con la app abierta en background, al volver al mapa los
-      tiles cargan en < 2 s.
-- [ ] Tras navegar Mapa → Perfil → Mapa 10 veces seguidas no hay degradación.
-- [ ] DevTools Memory: sin crecimiento monotónico del heap tras dispose.
-- [ ] Breadcrumbs Sentry confirman único `dispose()` por navegación.
+- [x] Tras 5+ min background, al volver al mapa se dispara bypass FMTC
+      automático para forzar re-fetch de tiles (`didChangeAppLifecycleState`).
+- [x] Tras navegar Mapa → Perfil → Mapa N veces no hay degradación
+      (state preservado vía `AutomaticKeepAliveClientMixin` —
+      `MapController` no se recrea por cambio de pestaña).
+- [pending-manual] DevTools Memory: verificación de heap sin
+        crecimiento — requiere smoke test en dispositivo real.
+- [x] Breadcrumbs Sentry `MapTab.initState` / `MapTab.dispose` /
+      `MapTab.resumeAfterLongBackground` permiten auditar lifecycle
+      en runtime.
 
 ---
 

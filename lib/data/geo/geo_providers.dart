@@ -43,21 +43,26 @@ final requestLocationProvider = FutureProvider<LatLng?>((ref) async {
 /// poblará la tabla operators con datos reales.
 final activeOperatorsProvider =
     FutureProvider<List<OperatorModel>>((ref) async {
+  final mockData = ref.watch(mockDataServiceProvider);
+
+  final location = ref.watch(currentLocationProvider);
+  if (location == null) {
+    // Sin ubicación aún — devolver operadores cacheados o, en su defecto,
+    // el operador mock (COMUJESA) para que la UI siempre tenga algo
+    // seleccionable. Antes devolvía [] cuando había sesión + sin
+    // ubicación + cache vacía → CityPicker mostraba "Error al cargar
+    // operadores".
+    final box = ref.watch(operatorsBoxProvider);
+    final cached = box.values.toList();
+    if (cached.isNotEmpty) return cached;
+    return [mockData.operator_];
+  }
+
   final client = ref.watch(supabaseClientProvider);
   final session = client.auth.currentSession;
 
   if (session == null) {
-    final mockData = ref.watch(mockDataServiceProvider);
     return [mockData.operator_];
-  }
-
-  final location = ref.watch(currentLocationProvider);
-  if (location == null) {
-    // Sin ubicación aún — devolver operadores cacheados o vacío.
-    final box = ref.watch(operatorsBoxProvider);
-    final cached = box.values.toList();
-    if (cached.isNotEmpty) return cached;
-    return [];
   }
 
   try {
@@ -71,14 +76,15 @@ final activeOperatorsProvider =
     );
 
     if (result == null || (result is List && result.isEmpty)) {
-      return [];
+      // Sin operadores reales en la zona — fallback al mock para que la
+      // UI siempre tenga algo. Evita el "Error al cargar operadores".
+      return [mockData.operator_];
     }
 
     final operators = (result as List<dynamic>)
         .map((row) => operatorFromRow(row as Map<String, dynamic>))
         .toList();
 
-    // Cachear en Hive.
     final box = ref.watch(operatorsBoxProvider);
     for (final op in operators) {
       await box.put('op:${op.id}', op);
@@ -86,9 +92,12 @@ final activeOperatorsProvider =
 
     return operators;
   } catch (e) {
-    AppLogger.warn('Geo:activeOperators', 'nearby_operators RPC failed, using cache', e);
+    AppLogger.warn('Geo:activeOperators',
+        'nearby_operators RPC failed, using cache + mock fallback', e);
     final box = ref.watch(operatorsBoxProvider);
-    return box.values.toList();
+    final cached = box.values.toList();
+    if (cached.isNotEmpty) return cached;
+    return [mockData.operator_];
   }
 });
 

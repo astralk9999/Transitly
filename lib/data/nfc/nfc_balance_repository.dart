@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -11,39 +13,59 @@ import 'nfc_card_service.dart';
 class NfcBalanceRepository {
   NfcBalanceRepository(this._supabase, this._hive);
 
-  final SupabaseClient _supabase;
+  /// Constructor de tests sin cliente Supabase real.
+  NfcBalanceRepository.forTest(this._hive) : _supabase = null;
+
+  final SupabaseClient? _supabase;
   final Box<Map<dynamic, dynamic>> _hive;
 
   static const _logTag = 'NfcBalanceRepo';
   static const _maxHistory = 10;
+  static const _guestSlot = 'guest';
 
-  String _key(NfcCardResult scan) =>
-      '${scan.cardId}_${scan.scannedAt.millisecondsSinceEpoch}';
+  String _key(NfcCardResult scan, String slot) =>
+      '${slot}_${scan.cardId}_${scan.scannedAt.millisecondsSinceEpoch}';
 
-  Future<void> saveScan(NfcCardResult scan) async {
-    final key = _key(scan);
+  /// Atajo legacy: usa el usuario actual de Supabase o "guest" si no hay
+  /// sesión.
+  Future<void> saveScan(NfcCardResult scan) {
+    final userId = _supabase?.auth.currentUser?.id;
+    return saveScanForUser(scan, userId: userId);
+  }
+
+  /// Guarda un scan con scope explícito por usuario. Si [userId] es null,
+  /// va al slot "guest".
+  Future<void> saveScanForUser(
+    NfcCardResult scan, {
+    required String? userId,
+  }) async {
+    final slot = userId ?? _guestSlot;
+    final key = _key(scan, slot);
     final entry = <String, dynamic>{
       'cardId': scan.cardId,
       'balance': scan.balance,
       'scannedAt': scan.scannedAt.toIso8601String(),
+      'userId': userId,
       'synced': false,
     };
     await _hive.put(key, entry);
 
-    WidgetDataWriter.writeNfcBalance(
+    unawaited(WidgetDataWriter.writeNfcBalance(
       balance: scan.balance,
       scannedAt: scan.scannedAt,
-    );
+    ));
 
-    await _trySyncEntry(key, scan);
+    if (_supabase != null) {
+      await _trySyncEntry(key, scan);
+    }
   }
 
   Future<bool> _trySyncEntry(String key, NfcCardResult scan) async {
     try {
-      final userId = _supabase.auth.currentUser?.id;
+      final userId = _supabase?.auth.currentUser?.id;
       if (userId == null) return false;
 
-      await _supabase.from('nfc_scans').insert({
+      await _supabase!.from('nfc_scans').insert({
         'user_id': userId,
         'card_id': scan.cardId,
         'balance': scan.balance,
@@ -64,6 +86,7 @@ class NfcBalanceRepository {
   }
 
   Future<void> syncPending() async {
+    if (_supabase == null) return;
     final unsyncedKeys = <String>[];
     for (final key in _hive.keys) {
       if (key is! String) continue;
@@ -85,14 +108,23 @@ class NfcBalanceRepository {
     }
   }
 
-  List<NfcCardResult> getHistory() {
+  /// Devuelve el historial scoped al [userId] dado. Si es null, devuelve
+  /// el slot "guest" + entradas legacy sin campo `userId` (compatibilidad
+  /// hacia atrás con scans creados antes de este cambio).
+  List<NfcCardResult> getHistory({String? userId}) {
     final results = <NfcCardResult>[];
     for (final key in _hive.keys) {
       if (key is! String) continue;
       final entry = _hive.get(key);
-      if (entry is Map) {
-        results.add(_decodeEntry(key, entry));
-      }
+      if (entry is! Map) continue;
+
+      final entryUserId = entry['userId'] as String?;
+      final matches = userId == null
+          ? (entryUserId == null)
+          : (entryUserId == userId);
+      if (!matches) continue;
+
+      results.add(_decodeEntry(key, entry));
     }
     results.sort((a, b) => b.scannedAt.compareTo(a.scannedAt));
     return results.take(_maxHistory).toList();

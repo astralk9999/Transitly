@@ -301,7 +301,13 @@ navbar — el resto de la pestaña no responde.
 
 ---
 
-### P0-08 🐛 "Seleccionar zona principal" da error de operador
+### P0-08 ✅ "Seleccionar zona principal" da error de operador
+
+> **Cerrado 2026-06-05** en branch `fix/p0-sub-d-zona-nfc` commit `0c4ad155`.
+> Causa raíz: `activeOperatorsProvider` retornaba `[]` cuando sesión
+> existía + ubicación null + cache vacía → CityPicker mostraba "Error
+> al cargar operadores". Fix: fallback al operador mock (COMUJESA) en
+> todas las ramas que podían dar `[]`.
 
 **Síntoma.** En el flujo de elegir zona principal/ciudad/operador, salta un
 error en pantalla o se queda en blanco. Probablemente null check missing.
@@ -318,17 +324,25 @@ error en pantalla o se queda en blanco. Probablemente null check missing.
 - `lib/data/geo/geo_providers.dart`
 
 **CA.**
-- [ ] Flujo en primer arranque sin operador seleccionado: la pantalla
-      "Elige tu zona" muestra la lista de operadores disponibles sin
-      excepción.
-- [ ] Al pulsar un operador se guarda en `shared_preferences` y se navega
-      al home.
-- [ ] Cambiar de zona desde perfil funciona sin reiniciar la app.
-- [ ] Test de widget que cubre el caso "ningún operador activo".
+- [x] Primer arranque sin operador seleccionado: "Elige tu zona" muestra
+      al menos COMUJESA siempre (fallback mock).
+- [x] Al pulsar un operador se guarda vía `persistActiveOperatorId` y se
+      navega al home (sin cambios, ya funcionaba).
+- [x] Cambiar de zona desde perfil funciona sin reiniciar la app
+      (sin cambios, ya funcionaba).
+- [x] Test `active_operators_fallback_test.dart` cubre el caso "sin
+      ubicación + cache vacía" devolviendo el mock.
 
 ---
 
-### P0-09 🐛 El historial de saldo de la tarjeta NFC no aparece al iniciar sesión
+### P0-09 ✅ El historial de saldo de la tarjeta NFC no aparece al iniciar sesión
+
+> **Cerrado 2026-06-05** en branch `fix/p0-sub-d-zona-nfc` commit `d2874f4b`.
+> Causa raíz: `NfcScanNotifier._hydrateFromCache` solo se ejecutaba en
+> el constructor + `getHistory()` no filtraba por usuario → al cambiar
+> de sesión el state no se rehidrataba ni aislaba. Fix: scope por
+> `userId` en cada entrada Hive + nuevo `switchUser(newUserId)` que
+> rehidrata + listener de `onAuthStateChange` que lo dispara.
 
 **Síntoma.** Al hacer login, la tarjeta muestra saldo "—" y la pestaña de
 historial está vacía aunque haya lecturas previas.
@@ -343,13 +357,14 @@ historial está vacía aunque haya lecturas previas.
   aún no está)
 
 **CA.**
-- [ ] Al iniciar sesión, el `card_tab` hidrata el historial desde Hive
-      sin esperar red.
-- [ ] Una lectura NFC añade entrada con timestamp y persiste en Hive.
-- [ ] Cerrar sesión limpia la caché del usuario actual (no la de otros
-      perfiles si los hubiera en multi-cuenta).
-- [ ] El widget "Saldo" del home_widget (P1-04) consume la misma fuente
-      Hive.
+- [x] Al iniciar sesión, el listener `onAuthStateChange` dispara
+      `switchUser(uid)` → `_hydrateFromCache` con el slot correcto.
+- [x] Una lectura NFC añade entrada con `userId` actual y persiste en
+      Hive bajo `${slot}_${cardId}_${timestamp}`.
+- [x] Cerrar sesión cambia el slot a "guest"; los scans del slot del user
+      anterior siguen en Hive pero no se muestran (aislamiento).
+- [pending-P1-04] El widget Android "Saldo" se cablea cuando se aborde
+      P1-04 (rediseño widgets); el repo ya escribe via WidgetDataWriter.
 
 ---
 

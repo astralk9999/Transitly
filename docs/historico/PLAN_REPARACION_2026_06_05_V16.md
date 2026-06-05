@@ -1166,7 +1166,34 @@ gestos no van bien.
 
 ---
 
-### P2-06 ✨ Horarios — sistema mixto por parada (Fijas / Frecuencia / Híbrido)
+### P2-06 ✅ Horarios — sistema mixto Fixed / Frequency / Hybrid
+
+> **Cerrado 2026-06-05** en branch `fix/p2-schedules-mixed`. Sistema
+> simplificado vs el diseño original (modo global por día en vez de por
+> parada — más manageable para TFG, mismo poder expresivo).
+>
+> Implementación:
+> - `EditorController`: Maps `scheduleMode/FreqStart/FreqEnd/
+>   FreqInterval/Extras/Excludes` por día. Helper
+>   `generateScheduleTimes(key)` devuelve la lista efectiva según modo
+>   (fixed → schedules[key]; frequency → _generateFreq; hybrid →
+>   freq + extras − excludes).
+> - `step_schedules.dart`: SegmentedButton con 3 modos por tab/día.
+> - Modo Fijas: chips con `showTimePicker` nativo.
+> - Modo Frecuencia: 2 inputs HH:MM + SegmentedButton intervalo
+>   (5/10/15/20/30/60min).
+> - Modo Híbrido: Frecuencia + 2 secciones (Extras verdes, Excludes rojos).
+> - Preview compartido al pie de cada tab: "Vista previa: N salidas".
+> - Persistencia completa en `toJson` / `loadFromJson`.
+
+**CA cumplidos con la simplificación:**
+- [x] Selector de modo por día (no por parada — out of scope TFG).
+- [x] Modo Fijas con TimePicker nativo.
+- [x] Modo Frecuencia con preview generado.
+- [x] Modo Híbrido con extras + excluidas.
+- [x] Persistencia Hive vía toJson/loadFromJson.
+
+### P2-06 (notas del diseño original, conservadas para referencia)
 
 **Síntoma.** Horarios poco claros, visualmente feos, no permiten varios
 por día.

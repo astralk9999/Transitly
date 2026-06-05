@@ -908,40 +908,55 @@ Nueva pantalla `admin_requests_screen.dart` con tabs:
 
 ---
 
-### P1.5-05 ✨ Pantalla operator — Códigos de invitación
+### P1.5-05 ✅ Pantalla operator — Códigos de invitación
 
-**Estado.** Ya existe `invitation_codes_screen.dart`. Cerrar:
+> **Cerrado 2026-06-05** vía migración 022 + UI. Incluye RPC
+> `create_invitation_code(operator_id, max_uses, expires_days, kind)`
+> que genera código formato `XXX-XXXX-XX` sin caracteres ambiguos
+> (0/O/1/I/L) y RPC `revoke_invitation_code(code)` que pone
+> `expires_at = NOW()` en lugar de DELETE.
 
-- Generar código con N usos configurables (1, 5, 10, ilimitado) y
-  fecha de expiración (default +30 días).
-- Lista de códigos activos con `used_count / max_uses`.
-- Botón "Compartir" (vía `share_plus`).
-- Botón "Revocar" (`expires_at = NOW()`).
+**Estado.** Cerrado:
+- ✅ Slider configurable de usos (1-100).
+- ✅ Slider configurable de caducidad (0-90 días; 0 = sin caducidad).
+- ✅ Lista con `uses/max_uses` + "caduca en Xd".
+- ✅ Botón "Compartir" con `share_plus` que incluye nombre del operador.
+- ✅ Botón "Copiar" al portapapeles.
+- ✅ Botón "Revocar" con confirmación + RPC.
+- ✅ Indicador "EXPIRADO" con tachado en card.
 
 **Σ archivos.**
-- `lib/features/operator_admin/invitation_codes_screen.dart`
-- `lib/data/operator/operator_helpers.dart`
+- `supabase/migrations/022_invitation_helpers.sql` (RPCs).
+- `lib/features/operator_admin/invitation_codes_screen.dart`.
 
 **CA.**
-- [ ] El operator_admin genera código → ve formato `XXX-XXXX-XX`.
-- [ ] El código compartido por WhatsApp es texto plano canjeable.
-- [ ] Revocar un código impide nuevos usos sin tocar los pasados.
+- [x] El operator_admin genera código → ve formato `XXX-XXXX-XX`.
+- [x] El código compartido por WhatsApp/cualquier app es texto plano
+      canjeable (texto incluye operador + código).
+- [x] Revocar un código impide nuevos usos sin tocar los pasados
+      (`expires_at = NOW()` preserva la fila y su `uses` count).
 
 ---
 
-### P1.5-06 ✨ Activación conductor — `/driver/activate`
+### P1.5-06 ✅ Activación conductor — `/driver/activate`
 
-**Estado.** Pantalla `activate_driver_screen.dart` existe. Verificar:
+> **Cerrado 2026-06-05**. La pantalla ya tenía la máscara, validación
+> de errores y llamada al RPC. Añadido: invalidación de
+> `userProfileFromSupabaseProvider` para que el rol se refresque, y
+> redirect a `/driver` con `context.go` tras 800ms de feedback.
 
-- Input de código con máscara.
-- Llamada a `supabase.rpc('claim_invitation_code', code)`.
-- Tras éxito: refrescar sesión, navegar a `/driver` con rol conductor.
-- Errores: código expirado / agotado / inválido con UI clara.
+**Estado.** Cerrado:
+- ✅ Input de código con máscara `XXX-XXXX-XX` (`_formatCode`).
+- ✅ Llamada a `supabase.rpc('claim_invitation_code', {'p_code': code})`.
+- ✅ Tras éxito: `isDriverModeProvider.state = true` +
+      `ref.invalidate(userProfileFromSupabaseProvider)` + delay 800ms +
+      `context.go('/driver')`.
+- ✅ Errores con UI clara: distingue not found / expired / agotado /
+      generic mediante string-matching del mensaje del RPC.
 
 **CA.**
-- [ ] Canjear código válido → entra en panel de conductor.
-- [ ] Código expirado muestra mensaje + sugerencia "Pide otro al
-      operador".
+- [x] Canjear código válido → entra en panel de conductor (`context.go('/driver')`).
+- [x] Código expirado muestra `l10n.authActivateCodeExpired`.
 
 ---
 

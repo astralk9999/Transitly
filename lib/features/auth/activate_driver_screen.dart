@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
@@ -68,8 +69,15 @@ class _ActivateDriverScreenState extends ConsumerState<ActivateDriverScreen> {
       if (!mounted) return;
       if (result != null) {
         ref.read(isDriverModeProvider.notifier).state = true;
+        // Sub-D + P1.5-06: refresca el perfil de Supabase para recoger el
+        // nuevo rol antes de navegar.
+        ref.invalidate(userProfileFromSupabaseProvider);
         setState(() => _success = l10n.authActivateSuccess);
         AppLogger.info('ActivateDriver', 'code claimed successfully');
+        // Pequeño delay para que el usuario vea el mensaje de éxito.
+        await Future<void>.delayed(const Duration(milliseconds: 800));
+        if (!mounted) return;
+        context.go('/driver');
       }
     } catch (e) {
       AppLogger.warn('ActivateDriver', 'code claim error', e);

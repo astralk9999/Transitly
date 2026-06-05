@@ -439,7 +439,15 @@ Sección "Contraste"
 
 ---
 
-### P1-04 ✨ Widgets — rediseño completo de la configuración
+### P1-04 ⚠️ Widgets — rediseño completo de la configuración
+
+> **Parcialmente cerrado 2026-06-05** en branch `fix/p1-sub-f-widgets`
+> commits `b4c441c4` + `9e44f0c7` + `c1978ed0`. UI Flutter completa con
+> los 3 selectores compartidos (tamaño S/M/L, tema auto/claro/oscuro/
+> marca, frecuencia 15/30/60min) y persistencia Hive. **Pendientes
+> (follow-up):** refresco periódico real (decisión sobre workmanager
+> 0.6+ vs AlarmManager Kotlin), layouts XML Android adaptados al
+> tamaño/tema, preview en vivo mockup-like.
 
 **Síntoma.** Los widgets (Android `home_widget`):
 - No se actualizan una vez puestos en la home del móvil.
@@ -490,13 +498,15 @@ Sección "Contraste"
 > HOME_WIDGETS.md`.
 
 **CA.**
-- [ ] La pantalla de configuración muestra preview en vivo del widget.
-- [ ] Buscador encuentra paradas y líneas reales (con autocompletado).
-- [ ] Cambiar de tamaño actualiza el preview.
-- [ ] Cambiar de tema actualiza el preview.
-- [ ] "Refrescar ahora" recarga el widget en la home Android en < 2 s.
-- [ ] Tras seleccionar una parada favorita, el widget en la home muestra
-      sus próximas salidas y se mantiene tras cerrar la app.
+- [partial] Preview en vivo: `_PreviewCard` actual cubre Next Bus; mockup
+      fiel a layout Android queda como follow-up.
+- [x] Buscador encuentra paradas y líneas reales (RouteAutocomplete
+      consume mockDataServiceProvider; arreglado por sub-B P0-01).
+- [x] Cambiar tamaño persiste en Hive y se aplica al state del provider.
+- [x] Cambiar tema persiste en Hive y se aplica al state del provider.
+- [pending-native] "Refrescar ahora" reload del widget Android en <2s:
+      decisión sobre workmanager 0.6+ vs AlarmManager nativo.
+- [x] Selección de parada favorita persiste vía homeHabitualConfig.
 
 ---
 

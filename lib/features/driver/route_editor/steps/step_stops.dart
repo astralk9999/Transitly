@@ -10,8 +10,9 @@ import '../../../../shared/widgets/single_field_dialog.dart';
 import '../../../../shared/widgets/transit_button.dart';
 import '../../../../core/map/map_config.dart';
 import '../editor_controller.dart';
+import '../widgets/stop_picker_sheet.dart';
 
-class StepStops extends StatelessWidget {
+class StepStops extends StatefulWidget {
   const StepStops({
     super.key,
     required this.controller,
@@ -23,6 +24,17 @@ class StepStops extends StatelessWidget {
   final bool isDark;
   final VoidCallback onNext;
 
+  @override
+  State<StepStops> createState() => _StepStopsState();
+}
+
+class _StepStopsState extends State<StepStops> {
+  String _filter = '';
+
+  RouteEditorController get controller => widget.controller;
+  bool get isDark => widget.isDark;
+  VoidCallback get onNext => widget.onNext;
+
   Future<void> _addStop(BuildContext context, LatLng point) async {
     final name = await showSingleFieldDialog(
       context,
@@ -33,6 +45,17 @@ class StepStops extends StatelessWidget {
     if (name != null) {
       controller.addStop(EditorStop(name, point));
     }
+  }
+
+  /// Distancia haversine entre dos LatLng en metros.
+  double _distance(LatLng a, LatLng b) {
+    const dist = Distance();
+    return dist.as(LengthUnit.Meter, a, b);
+  }
+
+  String _formatDistance(double meters) {
+    if (meters < 1000) return '${meters.toStringAsFixed(0)} m';
+    return '${(meters / 1000).toStringAsFixed(1)} km';
   }
 
   @override
@@ -119,6 +142,50 @@ class StepStops extends StatelessWidget {
                             fontSize: 12, color: c.textMid),
                       ),
                     ),
+                    const SizedBox(width: 8),
+                    if (stops.length >= 2)
+                      IconButton(
+                        onPressed: controller.reverseStops,
+                        tooltip: 'Invertir orden',
+                        icon: Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: c.bgSurface,
+                            shape: BoxShape.circle,
+                            border:
+                                Border.all(color: c.border, width: 0.5),
+                          ),
+                          child: Icon(Icons.swap_vert,
+                              size: 16, color: c.textMid),
+                        ),
+                      ),
+                    IconButton(
+                      onPressed: () {
+                        showModalBottomSheet<void>(
+                          context: context,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (_) => StopPickerSheet(
+                            onPicked: (picked) {
+                              for (final s in picked) {
+                                controller.addStop(s);
+                              }
+                            },
+                          ),
+                        );
+                      },
+                      tooltip: 'Añadir desde catálogo',
+                      icon: Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: c.bgSurface,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: c.border, width: 0.5),
+                        ),
+                        child: Icon(Icons.search,
+                            size: 16, color: c.textMid),
+                      ),
+                    ),
                     const Spacer(),
                     TransitButton(
                       label: AppLocalizations.of(context).actionNext.toUpperCase(),
@@ -132,38 +199,111 @@ class StepStops extends StatelessWidget {
         ),
         if (stops.isNotEmpty)
           Container(
-            height: 120,
+            height: 180,
             decoration: BoxDecoration(
               color: c.bgSurface,
               border: Border(top: BorderSide(color: c.border, width: 0.5)),
             ),
-            child: ReorderableListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-              itemCount: stops.length,
-              onReorder: controller.reorderStops,
-              itemBuilder: (context, index) {
-                final stop = stops[index];
-                return ListTile(
-                  key: ValueKey(stop.id),
-                  dense: true,
-                  contentPadding: EdgeInsets.zero,
-                  leading: Text(
-                    '${index + 1}',
-                    style: GoogleFonts.ibmPlexMono(
-                        fontSize: 14, color: c.accent),
+            child: Column(
+              children: [
+                // P2-04: buscador local sobre las paradas ya añadidas.
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 6, 12, 4),
+                  child: TextField(
+                    onChanged: (v) => setState(() => _filter = v),
+                    style: TransitTypography.bodySecondary(c.textHi),
+                    decoration: InputDecoration(
+                      isDense: true,
+                      hintText: 'Filtrar paradas',
+                      hintStyle: TransitTypography.bodySmall(c.textLo),
+                      prefixIcon:
+                          Icon(Icons.search, size: 16, color: c.textLo),
+                      filled: true,
+                      fillColor: c.bgRaised,
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(color: c.border),
+                      ),
+                    ),
                   ),
-                  title: Text(stop.name,
-                      style: TransitTypography.bodySecondary(c.textHi)),
-                  trailing: IconButton(
-                    icon: Icon(Icons.close, size: 16, color: c.textLo),
-                    tooltip: 'Eliminar parada',
-                    onPressed: () => controller.removeStopAt(index),
-                  ),
-                );
-              },
+                ),
+                Expanded(
+                  child: _buildStopList(stops, c),
+                ),
+              ],
             ),
           ),
       ],
+    );
+  }
+
+  Widget _buildStopList(List<EditorStop> stops, TransitColorScheme c) {
+    final q = _filter.toLowerCase();
+    final indices = stops
+        .asMap()
+        .entries
+        .where((e) =>
+            q.isEmpty || e.value.name.toLowerCase().contains(q))
+        .map((e) => e.key)
+        .toList();
+
+    if (indices.isEmpty) {
+      return Center(
+        child: Text(
+          'Sin coincidencias',
+          style: TransitTypography.bodySecondary(c.textLo),
+        ),
+      );
+    }
+
+    // ReorderableListView solo opera correctamente si itera todos los items
+    // sin filtro (los keys son por index). Si hay filtro activo, usamos un
+    // ListView simple sin drag.
+    if (_filter.isNotEmpty) {
+      return ListView.builder(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        itemCount: indices.length,
+        itemBuilder: (_, i) => _buildStopTile(stops, indices[i], c),
+      );
+    }
+
+    return ReorderableListView.builder(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      itemCount: stops.length,
+      onReorder: controller.reorderStops,
+      itemBuilder: (_, index) => _buildStopTile(stops, index, c),
+    );
+  }
+
+  Widget _buildStopTile(
+      List<EditorStop> stops, int index, TransitColorScheme c) {
+    final stop = stops[index];
+    final prev = index > 0 ? stops[index - 1] : null;
+    final distance = prev != null ? _distance(prev.position, stop.position) : 0.0;
+
+    return ListTile(
+      key: ValueKey(stop.id),
+      dense: true,
+      contentPadding: EdgeInsets.zero,
+      leading: Text(
+        '${index + 1}',
+        style: GoogleFonts.ibmPlexMono(fontSize: 14, color: c.accent),
+      ),
+      title: Text(stop.name,
+          style: TransitTypography.bodySecondary(c.textHi)),
+      subtitle: prev == null
+          ? null
+          : Text(
+              '↑ ${_formatDistance(distance)}',
+              style: TransitTypography.bodySmall(c.textLo),
+            ),
+      trailing: IconButton(
+        icon: Icon(Icons.close, size: 16, color: c.textLo),
+        tooltip: 'Eliminar parada',
+        onPressed: () => controller.removeStopAt(index),
+      ),
     );
   }
 }

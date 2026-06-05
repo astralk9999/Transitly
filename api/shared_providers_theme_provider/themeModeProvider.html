@@ -54,17 +54,25 @@
 
         <section class="multi-line-signature">
           
-          <a href="https://pub.dev/documentation/riverpod/2.6.1/riverpod/StateProvider-class.html">StateProvider</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/material/ThemeMode.html">ThemeMode</a></span>&gt;</span>
+          <a href="https://pub.dev/documentation/riverpod/2.6.1/riverpod/Provider-class.html">Provider</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/material/ThemeMode.html">ThemeMode</a></span>&gt;</span>
           <span class="name ">themeModeProvider</span>
           <div class="features"><span class="feature">final</span></div>
 
         </section>
         
+<section class="desc markdown">
+  <p>Lee el themeMode del ThemeNotifier (que persiste en Hive).</p>
+<p>Para cambiarlo no uses <code>.notifier.state =</code> — usa
+<code>ref.read(themeNotifierProvider).themeMode = value</code>.</p>
+</section>
 
         
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">final themeModeProvider = StateProvider&lt;ThemeMode&gt;((ref) =&gt; ThemeMode.dark);</code></pre>
+  <pre class="language-dart"><code class="language-dart">final themeModeProvider = Provider&lt;ThemeMode&gt;((ref) {
+  final notifier = ref.watch(themeNotifierProvider);
+  return notifier.themeMode;
+});</code></pre>
 </section>
 
 

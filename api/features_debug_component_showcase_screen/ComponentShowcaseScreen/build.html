@@ -136,7 +136,7 @@ Widget build(BuildContext context, WidgetRef ref) {
               value: isDark,
               activeTrackColor: c.accent,
               onChanged: (v) {
-                ref.read(themeModeProvider.notifier).state =
+                ref.read(themeNotifierProvider).themeMode =
                     v ? ThemeMode.dark : ThemeMode.light;
               },
             ),

@@ -126,19 +126,7 @@ Widget build(BuildContext context, WidgetRef ref) {
       padding: const EdgeInsets.all(16),
       child: Row(
         children: [
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: c.accent.withValues(alpha: 0.12),
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: c.accent.withValues(alpha: 0.25),
-                width: 0.5,
-              ),
-            ),
-            child: Icon(Icons.person_outline, color: c.accent, size: 24),
-          ),
+          UserAvatar(name: &#39;&#39;, accent: c.accent),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -183,11 +171,15 @@ Widget build(BuildContext context, WidgetRef ref) {
     );
   }
 
-  final displayName = authUser.userMetadata?[&#39;display_name&#39;] as String? ??
+  final metadata = authUser.userMetadata ?? const &lt;String, dynamic&gt;{};
+  final displayName = (metadata[&#39;full_name&#39;] as String?) ??
+      (metadata[&#39;name&#39;] as String?) ??
+      (metadata[&#39;display_name&#39;] as String?) ??
       authUser.email?.split(&#39;@&#39;).first ??
       user.name;
   final displayEmail = authUser.email ?? user.email;
-  final initials = _initials(displayName);
+  final photoUrl = (metadata[&#39;avatar_url&#39;] as String?) ??
+      (metadata[&#39;picture&#39;] as String?);
 
   return GlassCard(
     blur: 20,
@@ -196,27 +188,10 @@ Widget build(BuildContext context, WidgetRef ref) {
     padding: const EdgeInsets.all(16),
     child: Row(
       children: [
-        Container(
-          width: 48,
-          height: 48,
-          decoration: BoxDecoration(
-            color: c.accent.withValues(alpha: 0.12),
-            shape: BoxShape.circle,
-            border: Border.all(
-              color: c.accent.withValues(alpha: 0.25),
-              width: 0.5,
-            ),
-          ),
-          child: Center(
-            child: Text(
-              initials,
-              style: GoogleFonts.ibmPlexMono(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: c.accent,
-              ),
-            ),
-          ),
+        UserAvatar(
+          name: displayName,
+          photoUrl: photoUrl,
+          accent: c.accent,
         ),
         const SizedBox(width: 12),
         Expanded(

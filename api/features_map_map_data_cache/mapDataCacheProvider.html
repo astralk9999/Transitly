@@ -74,9 +74,17 @@ geo data.</p>
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">final mapDataCacheProvider = Provider&lt;MapDataCache&gt;((ref) {
+  final routesBox = ref.watch(routesBoxProvider);
+  if (routesBox.isEmpty) {
+    &#47;&#47; Sesión nueva sin sync previo, o modo invitado. Servimos mock para
+    &#47;&#47; que el mapa pinte líneas desde el primer frame; el provider se
+    &#47;&#47; invalida cuando llega el primer batch de rutas a Hive y se
+    &#47;&#47; reconstruye con datos reales.
+    return _buildFromMockData(ref);
+  }
+
   final client = ref.watch(supabaseClientProvider);
   final session = client.auth.currentSession;
-
   if (session == null) {
     return _buildFromMockData(ref);
   }

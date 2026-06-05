@@ -145,7 +145,7 @@ Widget build(BuildContext context, WidgetRef ref) {
           selected: {mode},
           onSelectionChanged: (newMode) {
             if (newMode.isEmpty) return;
-            ref.read(themeModeProvider.notifier).state = newMode.first;
+            ref.read(themeNotifierProvider).themeMode = newMode.first;
           },
           style: ButtonStyle(
             backgroundColor: WidgetStateProperty.resolveWith((states) {

@@ -138,7 +138,8 @@ Widget build(BuildContext context, WidgetRef ref) {
           child: SmokeBackground(color: c.accent, isDark: isDark),
         ),
         SafeArea(
-          child: ListView(
+          child: ResponsivePageWrapper(
+            child: ListView(
             padding: const EdgeInsets.all(16),
             children: [
               _ThemeSection(
@@ -164,6 +165,7 @@ Widget build(BuildContext context, WidgetRef ref) {
                     ref.read(localeProvider.notifier).state = l,
               ),
             ],
+          ),
           ),
         ),
       ],

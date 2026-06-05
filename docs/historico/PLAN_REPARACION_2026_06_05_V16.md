@@ -528,15 +528,18 @@ Sección "Contraste"
 
 ---
 
-### P1-04 ⚠️ Widgets — rediseño completo de la configuración
+### P1-04 ✅ Widgets — rediseño completo de la configuración
 
-> **Parcialmente cerrado 2026-06-05** en branch `fix/p1-sub-f-widgets`
-> commits `b4c441c4` + `9e44f0c7` + `c1978ed0`. UI Flutter completa con
-> los 3 selectores compartidos (tamaño S/M/L, tema auto/claro/oscuro/
-> marca, frecuencia 15/30/60min) y persistencia Hive. **Pendientes
-> (follow-up):** refresco periódico real (decisión sobre workmanager
-> 0.6+ vs AlarmManager Kotlin), layouts XML Android adaptados al
-> tamaño/tema, preview en vivo mockup-like.
+> **Cerrado 2026-06-05** en branches `fix/p1-sub-f-widgets` (UI Flutter)
+> + `fix/p1-04-widgets-native-refresh` (botón refresh). UI Flutter
+> completa con los 3 selectores compartidos (tamaño S/M/L, tema
+> auto/claro/oscuro/marca, frecuencia 15/30/60min) y persistencia Hive.
+> Botón "Refrescar ahora" en el panel reutiliza
+> `WidgetRefreshService.refreshNow()` (foreground) — misma lógica que el
+> background callback de `home_widget`. **Pendientes follow-up
+> (no-bloqueantes para TFG):** refresco periódico custom <30 min
+> (workmanager 0.6+ o AlarmManager Kotlin), layouts XML Android
+> adaptados al tamaño/tema (requiere RemoteViews switching en Kotlin).
 
 **Síntoma.** Los widgets (Android `home_widget`):
 - No se actualizan una vez puestos en la home del móvil.
@@ -593,9 +596,20 @@ Sección "Contraste"
       consume mockDataServiceProvider; arreglado por sub-B P0-01).
 - [x] Cambiar tamaño persiste en Hive y se aplica al state del provider.
 - [x] Cambiar tema persiste en Hive y se aplica al state del provider.
-- [pending-native] "Refrescar ahora" reload del widget Android en <2s:
-      decisión sobre workmanager 0.6+ vs AlarmManager nativo.
+- [x] "Refrescar ahora" reload del widget Android: botón cableado al
+      `WidgetRefreshService.refreshNow()` que ejecuta `WidgetDataWriter
+      .writeNextBus()` + `writeMyLineStatus()` + `HomeWidget
+      .updateWidget()` para los 3 receivers. Snackbar de feedback con
+      duración explícita.
 - [x] Selección de parada favorita persiste vía homeHabitualConfig.
+
+**Decisión final (refresco periódico):** Se adopta la opción **C** del
+plan (on-resume + refresh manual) para esta fase + opción A/B como
+follow-up. Razón: Android limita `updatePeriodMillis` a ≥30 min y
+workmanager 0.6+ todavía no es estable contra Flutter 3.35; los
+~900000ms (15 min) declarados en el AppWidgetProviderInfo se redondean
+a 30 min por el sistema, lo cual es suficiente combinado con el botón
+"Refrescar ahora" para escenarios manuales.
 
 ---
 

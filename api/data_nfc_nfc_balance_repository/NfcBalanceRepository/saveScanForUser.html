@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
-  <meta name="description" content="API docs for the getHistory method from the NfcBalanceRepository class, for the Dart programming language.">
-  <title>getHistory method - NfcBalanceRepository class - nfc_balance_repository library - Dart API</title>
+  <meta name="description" content="API docs for the saveScanForUser method from the NfcBalanceRepository class, for the Dart programming language.">
+  <title>saveScanForUser method - NfcBalanceRepository class - nfc_balance_repository library - Dart API</title>
 
 
   
@@ -27,9 +27,9 @@
     <li><a href="../../index.html">transitly</a></li>
     <li><a href="../../data_nfc_nfc_balance_repository/">data&#47;nfc&#47;nfc_balance_repository.dart</a></li>
     <li><a href="../../data_nfc_nfc_balance_repository/NfcBalanceRepository-class.html">NfcBalanceRepository</a></li>
-    <li class="self-crumb">getHistory method</li>
+    <li class="self-crumb">saveScanForUser method</li>
   </ol>
-  <div class="self-name">getHistory</div>
+  <div class="self-name">saveScanForUser</div>
   <form class="search navbar-right" role="search">
     <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
@@ -49,13 +49,14 @@
     data-above-sidebar="data_nfc_nfc_balance_repository&#47;NfcBalanceRepository-class-sidebar.html"
     data-below-sidebar="">
     <div>
-<h1><span class="kind-method">getHistory</span> method 
+<h1><span class="kind-method">saveScanForUser</span> method 
 </h1></div>
 
     <section class="multi-line-signature">
       
-<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../data_nfc_nfc_card_service/NfcCardResult-class.html">NfcCardResult</a></span>&gt;</span></span>
-<span class="name ">getHistory</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="getHistory-param-userId"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">userId</span>, </span></li>
+<span class="returntype"><a href="https://api.flutter.dev/flutter/flutter_test/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>
+<span class="name ">saveScanForUser</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="saveScanForUser-param-scan"><span class="type-annotation"><a href="../../data_nfc_nfc_card_service/NfcCardResult-class.html">NfcCardResult</a></span> <span class="parameter-name">scan</span>, {</span></li>
+<li><span class="parameter" id="saveScanForUser-param-userId"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">userId</span>, </span></li>
 </ol>})
 
       
@@ -63,32 +64,37 @@
     </section>
     
 <section class="desc markdown">
-  <p>Devuelve el historial scoped al <code>userId</code> dado. Si es null, devuelve
-el slot "guest" + entradas legacy sin campo <code>userId</code> (compatibilidad
-hacia atrás con scans creados antes de este cambio).</p>
+  <p>Guarda un scan con scope explícito por usuario. Si <code>userId</code> es null,
+va al slot "guest".</p>
 </section>
 
 
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">List&lt;NfcCardResult&gt; getHistory({String? userId}) {
-  final results = &lt;NfcCardResult&gt;[];
-  for (final key in _hive.keys) {
-    if (key is! String) continue;
-    final entry = _hive.get(key);
-    if (entry is! Map) continue;
+  <pre class="language-dart"><code class="language-dart">Future&lt;void&gt; saveScanForUser(
+  NfcCardResult scan, {
+  required String? userId,
+}) async {
+  final slot = userId ?? _guestSlot;
+  final key = _key(scan, slot);
+  final entry = &lt;String, dynamic&gt;{
+    &#39;cardId&#39;: scan.cardId,
+    &#39;balance&#39;: scan.balance,
+    &#39;scannedAt&#39;: scan.scannedAt.toIso8601String(),
+    &#39;userId&#39;: userId,
+    &#39;synced&#39;: false,
+  };
+  await _hive.put(key, entry);
 
-    final entryUserId = entry[&#39;userId&#39;] as String?;
-    final matches = userId == null
-        ? (entryUserId == null)
-        : (entryUserId == userId);
-    if (!matches) continue;
+  unawaited(WidgetDataWriter.writeNfcBalance(
+    balance: scan.balance,
+    scannedAt: scan.scannedAt,
+  ));
 
-    results.add(_decodeEntry(key, entry));
+  if (_supabase != null) {
+    await _trySyncEntry(key, scan);
   }
-  results.sort((a, b) =&gt; b.scannedAt.compareTo(a.scannedAt));
-  return results.take(_maxHistory).toList();
 }</code></pre>
 </section>
 
@@ -105,7 +111,7 @@ hacia atrás con scans creados antes de este cambio).</p>
     <li><a href="../../index.html">transitly</a></li>
     <li><a href="../../data_nfc_nfc_balance_repository/">nfc_balance_repository</a></li>
     <li><a href="../../data_nfc_nfc_balance_repository/NfcBalanceRepository-class.html">NfcBalanceRepository</a></li>
-    <li class="self-crumb">getHistory method</li>
+    <li class="self-crumb">saveScanForUser method</li>
 </ol>
 
     <h5>NfcBalanceRepository class</h5>

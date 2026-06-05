@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
-  <meta name="description" content="API docs for the getHistory method from the NfcBalanceRepository class, for the Dart programming language.">
-  <title>getHistory method - NfcBalanceRepository class - nfc_balance_repository library - Dart API</title>
+  <meta name="description" content="API docs for the NfcBalanceRepository.forTest constructor from Class NfcBalanceRepository from the nfc_balance_repository library, for the Dart programming language.">
+  <title>NfcBalanceRepository.forTest constructor - NfcBalanceRepository - nfc_balance_repository library - Dart API</title>
 
 
   
@@ -27,9 +27,9 @@
     <li><a href="../../index.html">transitly</a></li>
     <li><a href="../../data_nfc_nfc_balance_repository/">data&#47;nfc&#47;nfc_balance_repository.dart</a></li>
     <li><a href="../../data_nfc_nfc_balance_repository/NfcBalanceRepository-class.html">NfcBalanceRepository</a></li>
-    <li class="self-crumb">getHistory method</li>
+    <li class="self-crumb">NfcBalanceRepository.forTest constructor</li>
   </ol>
-  <div class="self-name">getHistory</div>
+  <div class="self-name">NfcBalanceRepository.forTest</div>
   <form class="search navbar-right" role="search">
     <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
@@ -43,53 +43,30 @@
   </button>
 </header>
 <main>
-<div
-    id="dartdoc-main-content"
-    class="main-content"
-    data-above-sidebar="data_nfc_nfc_balance_repository&#47;NfcBalanceRepository-class-sidebar.html"
-    data-below-sidebar="">
-    <div>
-<h1><span class="kind-method">getHistory</span> method 
+  <div
+      id="dartdoc-main-content"
+      class="main-content"
+      data-above-sidebar="data_nfc_nfc_balance_repository&#47;NfcBalanceRepository-class-sidebar.html"
+      data-below-sidebar="">
+      <div>
+<h1><span class="kind-constructor">NfcBalanceRepository.forTest</span> constructor 
 </h1></div>
 
     <section class="multi-line-signature">
       
-<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../data_nfc_nfc_card_service/NfcCardResult-class.html">NfcCardResult</a></span>&gt;</span></span>
-<span class="name ">getHistory</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="getHistory-param-userId"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">userId</span>, </span></li>
-</ol>})
-
-      
-
+      <span class="name ">NfcBalanceRepository.forTest</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="forTest-param-_hive"><span class="type-annotation"><a href="https://pub.dev/documentation/hive/2.2.3/hive/Box-class.html">Box</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/Map-class.html">Map</a></span>&gt;</span></span> <span class="parameter-name">_hive</span></span></li>
+</ol>)
     </section>
     
 <section class="desc markdown">
-  <p>Devuelve el historial scoped al <code>userId</code> dado. Si es null, devuelve
-el slot "guest" + entradas legacy sin campo <code>userId</code> (compatibilidad
-hacia atrás con scans creados antes de este cambio).</p>
+  <p>Constructor de tests sin cliente Supabase real.</p>
 </section>
 
 
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">List&lt;NfcCardResult&gt; getHistory({String? userId}) {
-  final results = &lt;NfcCardResult&gt;[];
-  for (final key in _hive.keys) {
-    if (key is! String) continue;
-    final entry = _hive.get(key);
-    if (entry is! Map) continue;
-
-    final entryUserId = entry[&#39;userId&#39;] as String?;
-    final matches = userId == null
-        ? (entryUserId == null)
-        : (entryUserId == userId);
-    if (!matches) continue;
-
-    results.add(_decodeEntry(key, entry));
-  }
-  results.sort((a, b) =&gt; b.scannedAt.compareTo(a.scannedAt));
-  return results.take(_maxHistory).toList();
-}</code></pre>
+  <pre class="language-dart"><code class="language-dart">NfcBalanceRepository.forTest(this._hive) : _supabase = null;</code></pre>
 </section>
 
 
@@ -105,14 +82,14 @@ hacia atrás con scans creados antes de este cambio).</p>
     <li><a href="../../index.html">transitly</a></li>
     <li><a href="../../data_nfc_nfc_balance_repository/">nfc_balance_repository</a></li>
     <li><a href="../../data_nfc_nfc_balance_repository/NfcBalanceRepository-class.html">NfcBalanceRepository</a></li>
-    <li class="self-crumb">getHistory method</li>
+    <li class="self-crumb">NfcBalanceRepository.forTest constructor</li>
 </ol>
 
     <h5>NfcBalanceRepository class</h5>
     <div id="dartdoc-sidebar-left-content"></div>
-  </div><!--/.sidebar-offcanvas-->
+  </div><!--/.sidebar-offcanvas-left-->
   <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
-</div><!--/.sidebar-offcanvas-->
+  </div><!--/.sidebar-offcanvas-->
 </main>
 <footer>
   <span class="no-break">

@@ -72,21 +72,26 @@ poblará la tabla operators con datos reales.</p>
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">final activeOperatorsProvider =
     FutureProvider&lt;List&lt;OperatorModel&gt;&gt;((ref) async {
+  final mockData = ref.watch(mockDataServiceProvider);
+
+  final location = ref.watch(currentLocationProvider);
+  if (location == null) {
+    &#47;&#47; Sin ubicación aún — devolver operadores cacheados o, en su defecto,
+    &#47;&#47; el operador mock (COMUJESA) para que la UI siempre tenga algo
+    &#47;&#47; seleccionable. Antes devolvía [] cuando había sesión + sin
+    &#47;&#47; ubicación + cache vacía → CityPicker mostraba &quot;Error al cargar
+    &#47;&#47; operadores&quot;.
+    final box = ref.watch(operatorsBoxProvider);
+    final cached = box.values.toList();
+    if (cached.isNotEmpty) return cached;
+    return [mockData.operator_];
+  }
+
   final client = ref.watch(supabaseClientProvider);
   final session = client.auth.currentSession;
 
   if (session == null) {
-    final mockData = ref.watch(mockDataServiceProvider);
     return [mockData.operator_];
-  }
-
-  final location = ref.watch(currentLocationProvider);
-  if (location == null) {
-    &#47;&#47; Sin ubicación aún — devolver operadores cacheados o vacío.
-    final box = ref.watch(operatorsBoxProvider);
-    final cached = box.values.toList();
-    if (cached.isNotEmpty) return cached;
-    return [];
   }
 
   try {
@@ -100,14 +105,15 @@ poblará la tabla operators con datos reales.</p>
     );
 
     if (result == null || (result is List &amp;&amp; result.isEmpty)) {
-      return [];
+      &#47;&#47; Sin operadores reales en la zona — fallback al mock para que la
+      &#47;&#47; UI siempre tenga algo. Evita el &quot;Error al cargar operadores&quot;.
+      return [mockData.operator_];
     }
 
     final operators = (result as List&lt;dynamic&gt;)
         .map((row) =&gt; operatorFromRow(row as Map&lt;String, dynamic&gt;))
         .toList();
 
-    &#47;&#47; Cachear en Hive.
     final box = ref.watch(operatorsBoxProvider);
     for (final op in operators) {
       await box.put(&#39;op:${op.id}&#39;, op);
@@ -115,9 +121,12 @@ poblará la tabla operators con datos reales.</p>
 
     return operators;
   } catch (e) {
-    AppLogger.warn(&#39;Geo:activeOperators&#39;, &#39;nearby_operators RPC failed, using cache&#39;, e);
+    AppLogger.warn(&#39;Geo:activeOperators&#39;,
+        &#39;nearby_operators RPC failed, using cache + mock fallback&#39;, e);
     final box = ref.watch(operatorsBoxProvider);
-    return box.values.toList();
+    final cached = box.values.toList();
+    if (cached.isNotEmpty) return cached;
+    return [mockData.operator_];
   }
 });</code></pre>
 </section>

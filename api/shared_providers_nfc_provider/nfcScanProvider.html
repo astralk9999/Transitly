@@ -69,10 +69,17 @@
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">final nfcScanProvider =
     StateNotifierProvider&lt;NfcScanNotifier, NfcScanState&gt;((ref) {
-  final notifier = NfcScanNotifier(
-    ref.read(nfcCardServiceProvider),
-    ref.read(nfcBalanceRepositoryProvider),
-  );
+  final service = ref.read(nfcCardServiceProvider);
+  final repo = ref.read(nfcBalanceRepositoryProvider);
+  final client = ref.watch(supabaseClientProvider);
+  final initialUserId = client.auth.currentUser?.id;
+  final notifier = NfcScanNotifier(service, repo, userId: initialUserId);
+
+  &#47;&#47; Escucha cambios de sesión y rehidrata desde el slot del nuevo user.
+  final authSub = client.auth.onAuthStateChange.listen((data) {
+    notifier.switchUser(data.session?.user.id);
+  });
+  ref.onDispose(authSub.cancel);
 
   &#47;&#47; When coming back online, sync pending scans to Supabase.
   ref.listen&lt;bool&gt;(isOfflineProvider, (prev, current) {

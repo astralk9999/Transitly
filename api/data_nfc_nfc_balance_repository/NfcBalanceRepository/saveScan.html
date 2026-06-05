@@ -62,27 +62,18 @@
 
     </section>
     
+<section class="desc markdown">
+  <p>Atajo legacy: usa el usuario actual de Supabase o "guest" si no hay
+sesión.</p>
+</section>
 
 
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">Future&lt;void&gt; saveScan(NfcCardResult scan) async {
-  final key = _key(scan);
-  final entry = &lt;String, dynamic&gt;{
-    &#39;cardId&#39;: scan.cardId,
-    &#39;balance&#39;: scan.balance,
-    &#39;scannedAt&#39;: scan.scannedAt.toIso8601String(),
-    &#39;synced&#39;: false,
-  };
-  await _hive.put(key, entry);
-
-  WidgetDataWriter.writeNfcBalance(
-    balance: scan.balance,
-    scannedAt: scan.scannedAt,
-  );
-
-  await _trySyncEntry(key, scan);
+  <pre class="language-dart"><code class="language-dart">Future&lt;void&gt; saveScan(NfcCardResult scan) {
+  final userId = _supabase?.auth.currentUser?.id;
+  return saveScanForUser(scan, userId: userId);
 }</code></pre>
 </section>
 

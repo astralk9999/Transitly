@@ -70,7 +70,7 @@
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">void refreshHistory() {
-  final history = _repo.getHistory();
+  final history = _repo.getHistory(userId: _userId);
   state = state.copyWith(scanHistory: history);
 }</code></pre>
 </section>

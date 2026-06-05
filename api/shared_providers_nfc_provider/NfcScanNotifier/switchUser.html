@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
-  <meta name="description" content="API docs for the getHistory method from the NfcBalanceRepository class, for the Dart programming language.">
-  <title>getHistory method - NfcBalanceRepository class - nfc_balance_repository library - Dart API</title>
+  <meta name="description" content="API docs for the switchUser method from the NfcScanNotifier class, for the Dart programming language.">
+  <title>switchUser method - NfcScanNotifier class - nfc_provider library - Dart API</title>
 
 
   
@@ -25,11 +25,11 @@
   <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
   <ol class="breadcrumbs gt-separated dark hidden-xs">
     <li><a href="../../index.html">transitly</a></li>
-    <li><a href="../../data_nfc_nfc_balance_repository/">data&#47;nfc&#47;nfc_balance_repository.dart</a></li>
-    <li><a href="../../data_nfc_nfc_balance_repository/NfcBalanceRepository-class.html">NfcBalanceRepository</a></li>
-    <li class="self-crumb">getHistory method</li>
+    <li><a href="../../shared_providers_nfc_provider/">shared&#47;providers&#47;nfc_provider.dart</a></li>
+    <li><a href="../../shared_providers_nfc_provider/NfcScanNotifier-class.html">NfcScanNotifier</a></li>
+    <li class="self-crumb">switchUser method</li>
   </ol>
-  <div class="self-name">getHistory</div>
+  <div class="self-name">switchUser</div>
   <form class="search navbar-right" role="search">
     <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
@@ -46,49 +46,35 @@
 <div
     id="dartdoc-main-content"
     class="main-content"
-    data-above-sidebar="data_nfc_nfc_balance_repository&#47;NfcBalanceRepository-class-sidebar.html"
+    data-above-sidebar="shared_providers_nfc_provider&#47;NfcScanNotifier-class-sidebar.html"
     data-below-sidebar="">
     <div>
-<h1><span class="kind-method">getHistory</span> method 
+<h1><span class="kind-method">switchUser</span> method 
 </h1></div>
 
     <section class="multi-line-signature">
       
-<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../data_nfc_nfc_card_service/NfcCardResult-class.html">NfcCardResult</a></span>&gt;</span></span>
-<span class="name ">getHistory</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="getHistory-param-userId"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">userId</span>, </span></li>
-</ol>})
+<span class="returntype">void</span>
+<span class="name ">switchUser</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="switchUser-param-newUserId"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">newUserId</span></span></li>
+</ol>)
 
       
 
     </section>
     
 <section class="desc markdown">
-  <p>Devuelve el historial scoped al <code>userId</code> dado. Si es null, devuelve
-el slot "guest" + entradas legacy sin campo <code>userId</code> (compatibilidad
-hacia atrás con scans creados antes de este cambio).</p>
+  <p>Cambia el slot de usuario activo y rehidrata desde la caché.
+Invocado desde el provider cuando cambia el <code>currentUser?.id</code>.</p>
 </section>
 
 
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">List&lt;NfcCardResult&gt; getHistory({String? userId}) {
-  final results = &lt;NfcCardResult&gt;[];
-  for (final key in _hive.keys) {
-    if (key is! String) continue;
-    final entry = _hive.get(key);
-    if (entry is! Map) continue;
-
-    final entryUserId = entry[&#39;userId&#39;] as String?;
-    final matches = userId == null
-        ? (entryUserId == null)
-        : (entryUserId == userId);
-    if (!matches) continue;
-
-    results.add(_decodeEntry(key, entry));
-  }
-  results.sort((a, b) =&gt; b.scannedAt.compareTo(a.scannedAt));
-  return results.take(_maxHistory).toList();
+  <pre class="language-dart"><code class="language-dart">void switchUser(String? newUserId) {
+  if (_userId == newUserId) return;
+  _userId = newUserId;
+  _hydrateFromCache();
 }</code></pre>
 </section>
 
@@ -103,12 +89,12 @@ hacia atrás con scans creados antes de este cambio).</p>
 </header>
 <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
     <li><a href="../../index.html">transitly</a></li>
-    <li><a href="../../data_nfc_nfc_balance_repository/">nfc_balance_repository</a></li>
-    <li><a href="../../data_nfc_nfc_balance_repository/NfcBalanceRepository-class.html">NfcBalanceRepository</a></li>
-    <li class="self-crumb">getHistory method</li>
+    <li><a href="../../shared_providers_nfc_provider/">nfc_provider</a></li>
+    <li><a href="../../shared_providers_nfc_provider/NfcScanNotifier-class.html">NfcScanNotifier</a></li>
+    <li class="self-crumb">switchUser method</li>
 </ol>
 
-    <h5>NfcBalanceRepository class</h5>
+    <h5>NfcScanNotifier class</h5>
     <div id="dartdoc-sidebar-left-content"></div>
   </div><!--/.sidebar-offcanvas-->
   <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">

@@ -1,14 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../../shared/models/user_preferences.dart';
 import '../../../shared/providers/is_dark_provider.dart';
+import '../../../shared/providers/theme_notifier.dart';
 import '../../../shared/widgets/glass_card.dart';
 import '../../../shared/widgets/gradient_text.dart';
+
+/// Helper expuesto para test. Construye un resumen legible del estado de
+/// los ajustes de accesibilidad activos. Devuelve "Sin ajustes activos"
+/// cuando todo está en defaults.
+String buildAccessibilitySummary({
+  required ColorBlindMode colorBlindMode,
+  required bool dyslexiaEnabled,
+  required bool highContrast,
+}) {
+  final parts = <String>[];
+  if (colorBlindMode != ColorBlindMode.none) {
+    parts.add('Daltonismo: ${colorBlindMode.name}');
+  }
+  if (dyslexiaEnabled) {
+    parts.add('Dislexia activa');
+  }
+  if (highContrast) {
+    parts.add('Contraste alto');
+  }
+  if (parts.isEmpty) return 'Sin ajustes activos';
+  return parts.join(' · ');
+}
 
 class ProfileAccessibilitySection extends ConsumerWidget {
   const ProfileAccessibilitySection({super.key});
@@ -18,6 +42,19 @@ class ProfileAccessibilitySection extends ConsumerWidget {
     final isDark = isDarkMode(ref, context);
     final c = TransitColorScheme.of(isDark);
     final l10n = AppLocalizations.of(context);
+
+    final colorBlindMode = ref
+        .watch(themeNotifierProvider.select((n) => n.colorBlindMode));
+    final dyslexiaEnabled = ref
+        .watch(themeNotifierProvider.select((n) => n.dyslexiaFontEnabled));
+    final highContrast = ref
+        .watch(themeNotifierProvider.select((n) => n.highContrast));
+
+    final summary = buildAccessibilitySummary(
+      colorBlindMode: colorBlindMode,
+      dyslexiaEnabled: dyslexiaEnabled,
+      highContrast: highContrast,
+    );
 
     return GlassCard(
       blur: 16,
@@ -42,19 +79,17 @@ class ProfileAccessibilitySection extends ConsumerWidget {
             child: Row(
               children: [
                 Expanded(
-                  child: Text(l10n.profileColorBlindModeNone,
-                      style: TransitTypography.bodyPrimary(c.textHi)),
+                  child: Text(
+                    summary,
+                    style: TransitTypography.bodyPrimary(c.textHi),
+                  ),
                 ),
                 Icon(Icons.chevron_right, size: 20, color: c.textLo),
               ],
             ),
           ),
           const SizedBox(height: 12),
-          Divider(
-            height: 1,
-            thickness: 0.5,
-            color: c.border,
-          ),
+          Divider(height: 1, thickness: 0.5, color: c.border),
           const SizedBox(height: 12),
           GestureDetector(
             onTap: () => context.push('/profile/offline-regions'),
@@ -72,11 +107,7 @@ class ProfileAccessibilitySection extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 12),
-          Divider(
-            height: 1,
-            thickness: 0.5,
-            color: c.border,
-          ),
+          Divider(height: 1, thickness: 0.5, color: c.border),
           const SizedBox(height: 12),
           GestureDetector(
             onTap: () => context.push('/profile/widgets'),

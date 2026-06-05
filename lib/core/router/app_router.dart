@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 
 import 'error_builder.dart';
 import 'redirect_guards.dart';
-import 'redirect_guards.dart';
 import '../../features/auth/signin_screen.dart';
 import '../../features/auth/signup_screen.dart';
 import '../../features/auth/magic_link_screen.dart';
@@ -45,6 +44,7 @@ import '../../features/offline/offline_regions_screen.dart';
 import '../../features/profile/offline_data_screen.dart';
 import '../../features/profile/planned_trips_screen.dart';
 import '../../features/profile/reputation_screen.dart';
+import '../../features/admin/admin_requests_screen.dart';
 import '../../features/admin/admin_screen.dart';
 import '../../features/admin/admin_users_screen.dart';
 import '../../features/nearby_buses/nearby_buses_screen.dart';
@@ -333,6 +333,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/admin/routes',
         pageBuilder: (context, state) =>
             _slide(state, const RouteModerationScreen()),
+      ),
+      GoRoute(
+        path: '/admin/requests',
+        pageBuilder: (context, state) =>
+            _slide(state, const AdminRequestsScreen()),
       ),
 
       // ── Operator Admin ──

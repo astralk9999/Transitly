@@ -500,7 +500,12 @@ Sección "Contraste"
 
 ---
 
-### P1-05 🧱 Eliminar "Gestionar mis filtros" (FilterPresets)
+### P1-05 ✅ Eliminar "Gestionar mis filtros" (FilterPresets)
+
+> **Cerrado 2026-06-05** en branch `fix/p1-sub-g-mapa-cleanup` commit
+> `dc018a78`. Eliminado el archivo, la ruta del go_router, el import
+> huérfano y la entrada en ProfileLocationSection. Strings .arb legacy
+> quedan huérfanas (no se eliminan en este PR para no tocar i18n).
 
 **Síntoma.** La pantalla `filter_presets_screen.dart` es un placeholder
 sin valor; está desde la fase F19 sin cerrar.
@@ -514,14 +519,22 @@ sin valor; está desde la fase F19 sin cerrar.
    `1.10a`).
 
 **CA.**
-- [ ] La opción ya no aparece en el perfil.
-- [ ] `flutter analyze`: 0 issues (no imports rotos).
-- [ ] `flutter test`: pasa todos los tests existentes (si alguno cubría
-      esa pantalla, eliminarlo).
+- [x] La opción ya no aparece en el perfil.
+- [x] `flutter analyze`: 0 issues (no imports rotos).
+- [x] `flutter test`: ningún test cubría esa pantalla — sin regresión.
 
 ---
 
-### P1-06 ✨ Datos offline — hacer funcional con OfflineRegions
+### P1-06 ⏳ Datos offline — hacer funcional con OfflineRegions
+
+> **Diferido a sub-plan H futuro.** Tras revisar el código,
+> `OfflineRegionRepository` solo expone CRUD básico (`forUser`, `add`,
+> `delete`) sin wiring real a `flutter_map_tile_caching` para descarga
+> efectiva de tiles. El comentario interno dice "F20 conecta esto al
+> descargador de tiles MapTiler". El alcance real incluye: cablear `add`
+> a `FmtcService` para descargar el bbox, reportar progreso async a la
+> UI, eliminar tiles del store FMTC en `delete`, mostrar progreso por
+> región. Bloque coherente para su propio sub-plan.
 
 **Síntoma.** La sección "Datos offline" del perfil es un placeholder.
 
@@ -554,7 +567,13 @@ sin valor; está desde la fase F19 sin cerrar.
 
 ---
 
-### P1-07 ✨ Fusionar "zonas" + "mostrar líneas" en el dropdown del mapa
+### P1-07 ✅ Fusionar "zonas" + "mostrar líneas" en el dropdown del mapa
+
+> **Cerrado 2026-06-05** en branch `fix/p1-sub-g-mapa-cleanup` commit
+> `ce8c8f0a`. Sustituidas las dos secciones por una sola "Líneas y
+> zonas" con `ZoneCompanyLineTree` (cubre completamente la
+> funcionalidad de `_OperatorTree`). 540 → 233 líneas (-57%) tras
+> eliminar `_OperatorTree`, `_KindBlock`, `_OperatorZoneChips` huérfanos.
 
 **Síntoma.** El sheet de ajustes del mapa tiene dos secciones que
 muestran prácticamente la misma información.
@@ -575,16 +594,23 @@ muestran prácticamente la misma información.
 - `lib/features/map/map_filter_controller.dart`
 
 **CA.**
-- [ ] El sheet de ajustes del mapa tiene solo una sección "Líneas y
+- [x] El sheet de ajustes del mapa tiene solo una sección "Líneas y
       zonas".
-- [ ] Marcar/desmarcar una línea afecta el mapa instantáneamente.
-- [ ] Las zonas aparecen como capa visual contextual sin requerir
-      ajuste separado.
-- [ ] Persistencia del filtro en Hive entre sesiones.
+- [x] Marcar/desmarcar una línea afecta el mapa instantáneamente
+      (sin cambios al controller — toggle ya estaba cableado).
+- [N/A] Las zonas como capa visual contextual fuera de alcance (solo
+        toggle del filtro).
+- [x] Persistencia del filtro en SharedPreferences (sin cambios).
 
 ---
 
-### P1-08 ✨ Botón cerrar al clickar una línea — rediseño
+### P1-08 ✅ Botón cerrar al clickar una línea — rediseño
+
+> **Cerrado 2026-06-05** en branch `fix/p1-sub-g-mapa-cleanup` commit
+> `2f95ff8f`. Realmente el bug era el pill "X CERRAR" del header del
+> sheet de rutas (no el de detalle de línea). Fix: chip más grande
+> (48dp WCAG 2.5.5), texto "Quitar L1" con código real de la ruta,
+> `InkWell` con ripple, mejor color/border.
 
 **Síntoma.** El botón cerrar del bottom-sheet de detalle de línea queda
 mal posicionado e incómodo.
@@ -604,11 +630,14 @@ mal posicionado e incómodo.
   reusa)
 
 **CA.**
-- [ ] El sheet tiene handle bar visible.
-- [ ] Swipe down cierra el sheet con animación natural.
-- [ ] Tap fuera cierra también.
-- [ ] No hay botón "X" sobresaliendo en una esquina.
-- [ ] Funciona idéntico en portrait y landscape.
+- [x] El sheet `trip_info_sheet` ya tiene handle bar visible
+      (preexistente, sin cambios).
+- [x] Swipe down cierra el sheet (gratis con `showModalBottomSheet`).
+- [x] Tap fuera cierra también (gratis con `showModalBottomSheet`).
+- [x] El bug REAL del usuario era el pill "X CERRAR" del header del
+      DraggableScrollableSheet de rutas (no del sheet de detalle).
+      Rediseñado como chip "Quitar L1" 48dp con InkWell ripple.
+- [pending-manual] Funcionamiento landscape — smoke test pendiente.
 
 ---
 

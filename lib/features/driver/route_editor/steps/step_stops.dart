@@ -8,7 +8,7 @@ import '../../../../l10n/generated/app_localizations.dart';
 import '../../../../core/theme/transit_typography.dart';
 import '../../../../shared/widgets/single_field_dialog.dart';
 import '../../../../shared/widgets/transit_button.dart';
-import '../../../map/map_config.dart';
+import '../../../../core/map/map_config.dart';
 import '../editor_controller.dart';
 
 class StepStops extends StatelessWidget {

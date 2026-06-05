@@ -7,7 +7,7 @@ import 'package:latlong2/latlong.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../data/mock/mock_data_service.dart';
-import '../../features/map/map_config.dart';
+import '../../core/map/map_config.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../shared/models/models.dart';
 import '../../shared/providers/home_reference_stop_provider.dart';

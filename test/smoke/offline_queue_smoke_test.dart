@@ -70,7 +70,10 @@ void main() {
     expect(await queue.list(), isEmpty);
   });
 
-  test('smoke: actions stay in queue when executors not registered', () async {
+  test('smoke: actions without registered executor are discarded', () async {
+    // El comportamiento cambió: si no hay executor registrado para un kind,
+    // drainNow lo descarta para evitar bloquear el drenado de los siguientes
+    // (ver lib/data/sync/offline_sync_service.dart línea 63-69).
     final now = DateTime.now();
     await queue.enqueue(PendingAction(
       id: 'action-4',
@@ -82,7 +85,7 @@ void main() {
 
     await syncService.drainNow();
 
-    expect(await queue.list(), hasLength(1));
+    expect(await queue.list(), isEmpty);
   });
 
   test('smoke: failed action increases attempts counter', () async {

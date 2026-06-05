@@ -29,7 +29,7 @@ class EnvException implements Exception {
 /// Para desarrollo, pasar las variables en la línea de comandos:
 /// ```bash
 /// flutter run \
-///   --dart-define=SUPABASE_URL=https://xxx.supabase.co \
+///   --dart-define=SUPABASE_URL=https://<PROJECT_REF>.supabase.co \
 ///   --dart-define=SUPABASE_ANON_KEY=eyJ...
 /// ```
 /// O usar un fichero: `--dart-define-from-file=dart_defines.json`.

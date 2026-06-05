@@ -23,7 +23,7 @@ import '../../../shared/models/user_model.dart';
 import '../../../shared/providers/user_provider.dart';
 import '../../../shared/widgets/smoke_background.dart';
 import '../../../shared/widgets/transit_button.dart';
-import '../map/map_config.dart';
+import '../../core/map/map_config.dart';
 import 'widgets/driver_stats_card.dart';
 
 class DriverDashboardScreen extends ConsumerStatefulWidget {

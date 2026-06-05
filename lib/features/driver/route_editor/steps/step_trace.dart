@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/transit_colors.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../../../shared/widgets/transit_button.dart';
-import '../../../map/map_config.dart';
+import '../../../../core/map/map_config.dart';
 import '../editor_controller.dart';
 
 class StepTrace extends StatelessWidget {

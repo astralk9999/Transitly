@@ -1,28 +1,48 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hive/hive.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:transitly/core/router/app_router.dart';
 import 'package:transitly/core/theme/transit_colors.dart';
 import 'package:transitly/core/theme/transit_theme.dart';
 import 'package:transitly/data/mock/mock_data_service.dart';
 import 'package:transitly/data/mock/mock_realtime_service.dart';
+import 'package:transitly/data/supabase/supabase_client_provider.dart';
 import 'package:transitly/l10n/generated/app_localizations.dart';
 import 'package:transitly/shared/models/active_trip_model.dart';
 
 import '../helpers/pump_app.dart';
+
+class _MockSupabaseClient extends Mock implements SupabaseClient {}
+
+class _MockGoTrueClient extends Mock implements GoTrueClient {}
 
 Future<GoRouter> pumpRouter(
   WidgetTester tester,
   MockDataService mock, {
   String initialLocation = '/home/inicio',
 }) async {
+  // BackgroundWrapper y otros widgets del shell leen supabaseClientProvider;
+  // sin inicializar Supabase lanza assertion. Stubeamos con un fake mínimo
+  // que devuelve currentSession=null (modo invitado).
+  final supabase = _MockSupabaseClient();
+  final auth = _MockGoTrueClient();
+  when(() => supabase.auth).thenReturn(auth);
+  when(() => auth.currentSession).thenReturn(null);
+  when(() => auth.currentUser).thenReturn(null);
+
   late GoRouter router;
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
         mockDataOverride(mock),
         routerInitialLocationProvider.overrideWithValue(initialLocation),
+        supabaseClientProvider.overrideWithValue(supabase),
         // Stub realtime streams so MockRealtimeService (owns two periodic
         // Timers) never initializes under test.
         realtimeTripsProvider.overrideWith(
@@ -73,6 +93,10 @@ void main() {
 
   setUpAll(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
+    // Varios providers (homeHabitualConfig, userFavorites) llaman a
+    // Hive.openBox en su constructor; sin Hive.init lanzan HiveError.
+    final dir = await Directory.systemTemp.createTemp('hive_router_test_');
+    Hive.init(dir.path);
     mock = await loadMockData();
   });
 

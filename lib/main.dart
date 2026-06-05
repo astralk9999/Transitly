@@ -189,13 +189,18 @@ void main() async {
       });
     }
   } on EnvException catch (e, st) {
+    // print se usa intencionadamente: el AppLogger filtra por kDebugMode y
+    // este es un fallo crítico de arranque que necesitamos ver en release.
     // ignore: avoid_print
+    // nosemgrep: no-print-in-lib
     print('[Env] failed to load critical key: $e\n$st');
     AppLogger.error('Env', 'failed to load critical key', e, st);
     runApp(EnvErrorApp(exception: e));
     return;
   } catch (e, st) {
+    // Fallo de arranque pre-AppLogger; ver razón en bloque anterior.
     // ignore: avoid_print
+    // nosemgrep: no-print-in-lib
     print('[Startup] init failed (will show EnvErrorApp as malformed): $e\n$st');
     AppLogger.error('Supabase', 'initialize failed', e, st);
     runApp(EnvErrorApp(

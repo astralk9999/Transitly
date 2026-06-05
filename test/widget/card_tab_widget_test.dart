@@ -43,9 +43,8 @@ class _FakeNfcCardService implements NfcCardService {
 }
 
 Future<NfcBalanceRepository> _testRepo() async {
-  Hive.init('test/.hive_test_card_tab');
-  final box =
-      await Hive.openBox<Map<dynamic, dynamic>>('nfc_scans_test_card_tab');
+  final box = await Hive.openBox<Map<dynamic, dynamic>>(
+      'nfc_scans_test_${DateTime.now().microsecondsSinceEpoch}');
   await box.clear();
 
   final supabase = MockSupabaseClient();
@@ -57,53 +56,67 @@ Future<NfcBalanceRepository> _testRepo() async {
 }
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
+  setUpAll(() {
+    Hive.init('test/.hive_test_card_tab');
+  });
+
+  // En testWidgets el binding usa FakeAsync zone, lo que bloquea el Future
+  // real de Hive.openBox. Envolvemos la apertura con tester.runAsync() para
+  // que se ejecute fuera del FakeAsync. Después usamos pump() finito en
+  // lugar de pumpAndSettle() para no esperar a timers infinitos (connectivity
+  // plus mantiene streams periódicos que nunca quedan "settled").
   testWidgets('CardTab shows "NFC NO DISPONIBLE" when hardware is absent',
       (tester) async {
-    final repo = await _testRepo();
+    final repo = await tester.runAsync(() => _testRepo());
     await pumpApp(
       tester,
       child: const CardTab(),
       overrides: [
         nfcCardServiceProvider
             .overrideWithValue(_FakeNfcCardService(available: false)),
-        nfcBalanceRepositoryProvider.overrideWithValue(repo),
+        nfcBalanceRepositoryProvider.overrideWithValue(repo!),
       ],
     );
-    // Let the FutureProvider resolve.
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 200));
     expect(find.text('NFC NO DISPONIBLE'), findsOneWidget);
   });
 
   testWidgets('CardTab idle state prompts the user to scan', (tester) async {
-    final repo = await _testRepo();
+    final repo = await tester.runAsync(() => _testRepo());
     await pumpApp(
       tester,
       child: const CardTab(),
       overrides: [
         nfcCardServiceProvider.overrideWithValue(_FakeNfcCardService()),
-        nfcBalanceRepositoryProvider.overrideWithValue(repo),
+        nfcBalanceRepositoryProvider.overrideWithValue(repo!),
       ],
     );
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 200));
     expect(find.text('ACERCA TU TARJETA'), findsOneWidget);
     expect(find.text('ESCANEAR TARJETA'), findsOneWidget);
   });
 
   testWidgets('Tapping "ESCANEAR TARJETA" renders the balance on success',
       (tester) async {
-    final repo = await _testRepo();
+    final repo = await tester.runAsync(() => _testRepo());
     await pumpApp(
       tester,
       child: const CardTab(),
       overrides: [
         nfcCardServiceProvider.overrideWithValue(_FakeNfcCardService()),
-        nfcBalanceRepositoryProvider.overrideWithValue(repo),
+        nfcBalanceRepositoryProvider.overrideWithValue(repo!),
       ],
     );
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 200));
 
     await tester.tap(find.text('ESCANEAR TARJETA'));
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 200));
 
     expect(find.textContaining('7.50'), findsWidgets);
     expect(find.text('ABCD1234'), findsOneWidget);

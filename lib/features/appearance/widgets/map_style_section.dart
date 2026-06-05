@@ -5,7 +5,7 @@ import 'package:latlong2/latlong.dart';
 
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
-import '../../../features/map/map_config.dart';
+import '../../../core/map/map_config.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/providers/theme_notifier.dart';
 import '../../../shared/widgets/glass_card.dart';

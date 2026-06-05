@@ -133,6 +133,7 @@ abstract class HiveInit {
       // `print` se usa intencionadamente en lugar de AppLogger porque éste
       // filtra por kDebugMode y queremos diagnóstico también en release.
       // ignore: avoid_print
+      // nosemgrep: no-print-in-lib
       print('[HiveCache] open box "$name" failed: $e\n$st');
       AppLogger.error(_logTag, 'open box "$name" failed; deleting and retrying', e, st);
       if (Hive.isBoxOpen(name)) {

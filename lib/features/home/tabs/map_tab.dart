@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_spacing.dart';
@@ -43,7 +44,11 @@ class MapTab extends ConsumerStatefulWidget {
   ConsumerState<MapTab> createState() => _MapTabState();
 }
 
-class _MapTabState extends ConsumerState<MapTab> {
+class _MapTabState extends ConsumerState<MapTab>
+    with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
+  @override
+  bool get wantKeepAlive => true;
+
   MapController _mapController = MapController();
   final _sheetController = DraggableScrollableController();
   final _scrollController = ScrollController();
@@ -53,6 +58,7 @@ class _MapTabState extends ConsumerState<MapTab> {
   bool _loadingCenter = false;
   String? _lastMapKey;
   DateTime? _bypassFmtcUntil;
+  DateTime? _lastBackground;
 
   List<RouteModel> _filteredRoutes(List<RouteModel> all) {
     var filtered = all;
@@ -144,10 +150,42 @@ class _MapTabState extends ConsumerState<MapTab> {
 
   @override
   void dispose() {
+    Sentry.addBreadcrumb(Breadcrumb(
+      message: 'MapTab.dispose',
+      category: 'map.lifecycle',
+      level: SentryLevel.info,
+    ));
+    WidgetsBinding.instance.removeObserver(this);
     _mapController.dispose();
     _sheetController.dispose();
     _scrollController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      _lastBackground = DateTime.now();
+    } else if (state == AppLifecycleState.resumed) {
+      final bg = _lastBackground;
+      _lastBackground = null;
+      if (bg != null && DateTime.now().difference(bg).inMinutes >= 5) {
+        Sentry.addBreadcrumb(Breadcrumb(
+          message: 'MapTab.resumeAfterLongBackground',
+          category: 'map.lifecycle',
+          level: SentryLevel.info,
+          data: {
+            'background_minutes': DateTime.now().difference(bg).inMinutes,
+          },
+        ));
+        if (mounted) {
+          setState(() {
+            _bypassFmtcUntil =
+                DateTime.now().add(const Duration(seconds: 5));
+          });
+        }
+      }
+    }
   }
 
   void _onMapTap(TapPosition tapPosition, LatLng point) {
@@ -253,6 +291,12 @@ class _MapTabState extends ConsumerState<MapTab> {
   @override
   void initState() {
     super.initState();
+    Sentry.addBreadcrumb(Breadcrumb(
+      message: 'MapTab.initState',
+      category: 'map.lifecycle',
+      level: SentryLevel.info,
+    ));
+    WidgetsBinding.instance.addObserver(this);
     _requestLocationPermission().then((_) => _tryInitialCenter());
   }
 
@@ -395,6 +439,7 @@ class _MapTabState extends ConsumerState<MapTab> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final isDark = isDarkMode(ref, context);
     final c = TransitColorScheme.of(isDark);
 

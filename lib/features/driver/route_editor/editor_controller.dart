@@ -150,6 +150,40 @@ class RouteEditorController extends ChangeNotifier {
   final TextEditingController totalTimeCtrl =
       TextEditingController(text: '45');
 
+  // Sub P2-06: modo por día — 'fixed' | 'frequency' | 'hybrid'.
+  final Map<String, String> scheduleMode = {
+    'weekday': 'fixed',
+    'saturday': 'fixed',
+    'sunday': 'fixed',
+  };
+  // Sub P2-06: parámetros de Frecuencia por día.
+  final Map<String, String> scheduleFreqStart = {
+    'weekday': '07:00',
+    'saturday': '08:00',
+    'sunday': '09:00',
+  };
+  final Map<String, String> scheduleFreqEnd = {
+    'weekday': '22:00',
+    'saturday': '22:00',
+    'sunday': '22:00',
+  };
+  final Map<String, int> scheduleFreqInterval = {
+    'weekday': 15,
+    'saturday': 30,
+    'sunday': 30,
+  };
+  // Sub P2-06: horas extra y excluidas del modo Híbrido.
+  final Map<String, List<String>> scheduleExtras = {
+    'weekday': [],
+    'saturday': [],
+    'sunday': [],
+  };
+  final Map<String, List<String>> scheduleExcludes = {
+    'weekday': [],
+    'saturday': [],
+    'sunday': [],
+  };
+
   static final _hhmmRegExp = RegExp(r'^([01]\d|2[0-3]):[0-5]\d$');
 
   void addScheduleTime(String key, String hhmm) {
@@ -163,8 +197,123 @@ class RouteEditorController extends ChangeNotifier {
     notifyListeners();
   }
 
-  int get totalScheduleCount =>
-      schedules.values.fold<int>(0, (sum, l) => sum + l.length);
+  void removeScheduleTime(String key, int index) {
+    final list = schedules[key];
+    if (list == null || index < 0 || index >= list.length) return;
+    list.removeAt(index);
+    notifyListeners();
+  }
+
+  /// Sub P2-06: cambia el modo del día.
+  void setScheduleMode(String key, String mode) {
+    if (!scheduleMode.containsKey(key)) return;
+    if (scheduleMode[key] == mode) return;
+    scheduleMode[key] = mode;
+    notifyListeners();
+  }
+
+  /// Sub P2-06: actualiza parámetros de Frecuencia.
+  void setScheduleFreq(
+    String key, {
+    String? start,
+    String? end,
+    int? interval,
+  }) {
+    if (start != null && _hhmmRegExp.hasMatch(start)) {
+      scheduleFreqStart[key] = start;
+    }
+    if (end != null && _hhmmRegExp.hasMatch(end)) {
+      scheduleFreqEnd[key] = end;
+    }
+    if (interval != null && interval >= 5 && interval <= 120) {
+      scheduleFreqInterval[key] = interval;
+    }
+    notifyListeners();
+  }
+
+  void addScheduleExtra(String key, String hhmm) {
+    if (!_hhmmRegExp.hasMatch(hhmm)) return;
+    final list = scheduleExtras[key];
+    if (list == null || list.contains(hhmm)) return;
+    list
+      ..add(hhmm)
+      ..sort();
+    notifyListeners();
+  }
+
+  void removeScheduleExtraAt(String key, int index) {
+    final list = scheduleExtras[key];
+    if (list == null || index < 0 || index >= list.length) return;
+    list.removeAt(index);
+    notifyListeners();
+  }
+
+  void addScheduleExclude(String key, String hhmm) {
+    if (!_hhmmRegExp.hasMatch(hhmm)) return;
+    final list = scheduleExcludes[key];
+    if (list == null || list.contains(hhmm)) return;
+    list
+      ..add(hhmm)
+      ..sort();
+    notifyListeners();
+  }
+
+  void removeScheduleExcludeAt(String key, int index) {
+    final list = scheduleExcludes[key];
+    if (list == null || index < 0 || index >= list.length) return;
+    list.removeAt(index);
+    notifyListeners();
+  }
+
+  /// Sub P2-06: devuelve la lista efectiva de horas según el modo del día.
+  List<String> generateScheduleTimes(String key) {
+    final mode = scheduleMode[key] ?? 'fixed';
+    final start = scheduleFreqStart[key] ?? '07:00';
+    final end = scheduleFreqEnd[key] ?? '22:00';
+    final interval = scheduleFreqInterval[key] ?? 15;
+
+    switch (mode) {
+      case 'frequency':
+        return _generateFreq(start, end, interval);
+      case 'hybrid':
+        final base = _generateFreq(start, end, interval);
+        final extras = scheduleExtras[key] ?? const <String>[];
+        final excludes = scheduleExcludes[key] ?? const <String>[];
+        final combined = {...base, ...extras}.toList()
+          ..removeWhere(excludes.contains)
+          ..sort();
+        return combined;
+      default:
+        return List<String>.from(schedules[key] ?? const <String>[]);
+    }
+  }
+
+  List<String> _generateFreq(String start, String end, int intervalMin) {
+    if (!_hhmmRegExp.hasMatch(start) || !_hhmmRegExp.hasMatch(end)) return [];
+    final s = _parseHhMm(start);
+    final e = _parseHhMm(end);
+    if (e <= s || intervalMin <= 0) return [];
+    final result = <String>[];
+    for (var m = s; m <= e; m += intervalMin) {
+      final h = (m ~/ 60).toString().padLeft(2, '0');
+      final mm = (m % 60).toString().padLeft(2, '0');
+      result.add('$h:$mm');
+    }
+    return result;
+  }
+
+  int _parseHhMm(String s) {
+    final parts = s.split(':');
+    return int.parse(parts[0]) * 60 + int.parse(parts[1]);
+  }
+
+  int get totalScheduleCount {
+    int total = 0;
+    for (final key in scheduleMode.keys) {
+      total += generateScheduleTimes(key).length;
+    }
+    return total;
+  }
 
   // ── Serialization ──
 
@@ -179,6 +328,14 @@ class RouteEditorController extends ChangeNotifier {
         'returnChoice': returnChoice,
         'schedules': schedules.map(
             (k, v) => MapEntry(k, List<String>.from(v))),
+        'scheduleMode': Map<String, String>.from(scheduleMode),
+        'scheduleFreqStart': Map<String, String>.from(scheduleFreqStart),
+        'scheduleFreqEnd': Map<String, String>.from(scheduleFreqEnd),
+        'scheduleFreqInterval': Map<String, int>.from(scheduleFreqInterval),
+        'scheduleExtras': scheduleExtras
+            .map((k, v) => MapEntry(k, List<String>.from(v))),
+        'scheduleExcludes': scheduleExcludes
+            .map((k, v) => MapEntry(k, List<String>.from(v))),
         'totalTime': totalTimeCtrl.text,
       };
 
@@ -208,6 +365,36 @@ class RouteEditorController extends ChangeNotifier {
     final schedMap = json['schedules'] as Map<String, dynamic>? ?? {};
     for (final entry in schedMap.entries) {
       schedules[entry.key] =
+          (entry.value as List<dynamic>).cast<String>();
+    }
+    // Sub P2-06: restaurar modo + parámetros + extras/excluidos.
+    final modeMap = json['scheduleMode'] as Map<String, dynamic>? ?? {};
+    for (final entry in modeMap.entries) {
+      scheduleMode[entry.key] = entry.value as String? ?? 'fixed';
+    }
+    final freqStartMap =
+        json['scheduleFreqStart'] as Map<String, dynamic>? ?? {};
+    for (final entry in freqStartMap.entries) {
+      scheduleFreqStart[entry.key] = entry.value as String? ?? '07:00';
+    }
+    final freqEndMap = json['scheduleFreqEnd'] as Map<String, dynamic>? ?? {};
+    for (final entry in freqEndMap.entries) {
+      scheduleFreqEnd[entry.key] = entry.value as String? ?? '22:00';
+    }
+    final freqIntMap =
+        json['scheduleFreqInterval'] as Map<String, dynamic>? ?? {};
+    for (final entry in freqIntMap.entries) {
+      scheduleFreqInterval[entry.key] = (entry.value as num?)?.toInt() ?? 15;
+    }
+    final extrasMap = json['scheduleExtras'] as Map<String, dynamic>? ?? {};
+    for (final entry in extrasMap.entries) {
+      scheduleExtras[entry.key] =
+          (entry.value as List<dynamic>).cast<String>();
+    }
+    final excludesMap =
+        json['scheduleExcludes'] as Map<String, dynamic>? ?? {};
+    for (final entry in excludesMap.entries) {
+      scheduleExcludes[entry.key] =
           (entry.value as List<dynamic>).cast<String>();
     }
 

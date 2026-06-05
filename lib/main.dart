@@ -18,7 +18,7 @@ import 'core/utils/error_boundary.dart';
 import 'core/utils/sentry_setup.dart';
 import 'core/utils/transit_provider_observer.dart';
 import 'data/cache/hive_init.dart';
-import 'data/widgets_native/widget_data_writer.dart';
+import 'data/widgets_native/widget_refresh_service.dart';
 import 'data/fmtc/fmtc_service.dart';
 import 'data/fmtc/tile_prewarmer.dart';
 import 'data/mock/mock_data_service.dart';
@@ -33,7 +33,6 @@ import 'shared/providers/boot_canary_provider.dart';
 import 'shared/services/widget_deep_link_service.dart';
 import 'shared/providers/active_palette_provider.dart';
 import 'shared/providers/auth_provider.dart';
-import 'shared/providers/home_habitual_config_provider.dart';
 import 'shared/providers/theme_notifier.dart';
 import 'shared/providers/user_location_provider.dart';
 
@@ -376,37 +375,7 @@ void _widgetBackgroundCallback(Uri? uri) async {
 
   final container = ProviderContainer();
   try {
-    final mockData = container.read(mockDataServiceProvider);
-    final cfg = container.read(homeHabitualConfigProvider);
-    if (cfg.isConfigured) {
-      final route = mockData.getRouteById(cfg.routeId!);
-      if (route != null) {
-        final deps = mockData.getNextDepartures(cfg.routeId!, cfg.stopId!, 4);
-        if (deps.isNotEmpty) {
-          final first = deps.first;
-          final now = DateTime.now();
-          final parts = first.departureTime.split(':');
-          final depHour = int.tryParse(parts[0]) ?? 0;
-          final depMin = parts.length > 1 ? (int.tryParse(parts[1]) ?? 0) : 0;
-          final depMinutes = depHour * 60 + depMin;
-          final nowMinutes = now.hour * 60 + now.minute;
-          var eta = depMinutes - nowMinutes;
-          if (eta < 0) eta += 24 * 60;
-          final stop = mockData.getStopById(cfg.stopId!);
-          await WidgetDataWriter.writeNextBus(
-            stopName: stop?.name ?? cfg.stopId!,
-            routeCode: route.code,
-            etaMinutes: eta,
-            source: 'background',
-            updatedAt: now,
-          );
-          await WidgetDataWriter.writeMyLineStatus(
-            routeCode: route.code,
-            upcoming: deps.map((d) => {'time': d.departureTime}).toList(),
-          );
-        }
-      }
-    }
+    await WidgetRefreshService.refreshNow(container);
   } catch (_) {}
   container.dispose();
 }

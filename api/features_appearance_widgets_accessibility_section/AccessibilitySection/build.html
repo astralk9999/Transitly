@@ -110,8 +110,6 @@ and</li>
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">@override
 Widget build(BuildContext context, WidgetRef ref) {
-  final cbm =
-      ref.watch(themeNotifierProvider.select((n) =&gt; n.colorBlindMode));
   final reduceMotion =
       ref.watch(themeNotifierProvider.select((n) =&gt; n.reduceMotion));
   final highContrast =
@@ -135,47 +133,6 @@ Widget build(BuildContext context, WidgetRef ref) {
           children: [
             Expanded(
               child: Text(
-                l10n.appearanceColorBlindMode,
-                style: TransitTypography.bodyPrimary(c.textHi),
-              ),
-            ),
-            const SizedBox(width: 8),
-            GestureDetector(
-              onTap: () =&gt; _showCbmSheet(context, ref, c),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
-                  color: c.bgSurface.withValues(alpha: 0.6),
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: c.border),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      _cbmLabel(cbm),
-                      style: TransitTypography.bodySmall(c.textHi),
-                    ),
-                    const SizedBox(width: 4),
-                    Icon(
-                      Icons.unfold_more,
-                      size: 16,
-                      color: c.textMid,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            Expanded(
-              child: Text(
                 l10n.appearanceReduceMotion,
                 style: TransitTypography.bodyPrimary(c.textHi),
               ),
@@ -190,52 +147,69 @@ Widget build(BuildContext context, WidgetRef ref) {
           ],
         ),
         const SizedBox(height: 12),
-        Row(
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    l10n.appearanceHighContrast,
-                    style: TransitTypography.bodyPrimary(c.textHi),
-                  ),
-                  Text(
-                    l10n.appearanceHighContrastSubtitle,
-                    style: TransitTypography.bodySmall(c.textLo),
-                  ),
-                ],
-              ),
-            ),
-            Switch.adaptive(
-              value: highContrast,
-              activeTrackColor: c.accent,
-          onChanged: (v) {
-            ref.read(themeNotifierProvider).highContrast = v;
-          },
-        ),
-        if (highContrast)
-          Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: Row(
+            Row(
               children: [
                 Expanded(
-                  child: Text(
-                    l10n.appearanceHcPreserveAccent,
-                    style: TransitTypography.bodySecondary(c.textHi),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.appearanceHighContrast,
+                        style: TransitTypography.bodyPrimary(c.textHi),
+                      ),
+                      Text(
+                        l10n.appearanceHighContrastSubtitle,
+                        style: TransitTypography.bodySmall(c.textLo),
+                      ),
+                    ],
                   ),
                 ),
                 Switch.adaptive(
-                  value: ref.watch(themeNotifierProvider
-                      .select((n) =&gt; n.hcPreserveAccent)),
+                  value: highContrast,
                   activeTrackColor: c.accent,
                   onChanged: (v) {
-                    ref.read(themeNotifierProvider).hcPreserveAccent = v;
+                    ref.read(themeNotifierProvider).highContrast = v;
                   },
                 ),
               ],
             ),
-          ),
+            if (highContrast)
+              Padding(
+                padding: const EdgeInsets.only(top: 12, left: 4),
+                child: Row(
+                  children: [
+                    Icon(Icons.subdirectory_arrow_right,
+                        size: 16, color: c.textLo),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            l10n.appearanceHcPreserveAccent,
+                            style: TransitTypography.bodySecondary(c.textHi),
+                          ),
+                          Text(
+                            &#39;Si está OFF el alto contraste usa B&#47;N puro.&#39;,
+                            style: TransitTypography.bodySmall(c.textLo),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Switch.adaptive(
+                      value: ref.watch(themeNotifierProvider
+                          .select((n) =&gt; n.hcPreserveAccent)),
+                      activeTrackColor: c.accent,
+                      onChanged: (v) {
+                        ref.read(themeNotifierProvider).hcPreserveAccent = v;
+                      },
+                    ),
+                  ],
+                ),
+              ),
           ],
         ),
       ],

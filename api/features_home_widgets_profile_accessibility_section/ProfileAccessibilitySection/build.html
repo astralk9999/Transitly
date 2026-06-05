@@ -114,6 +114,19 @@ Widget build(BuildContext context, WidgetRef ref) {
   final c = TransitColorScheme.of(isDark);
   final l10n = AppLocalizations.of(context);
 
+  final colorBlindMode = ref
+      .watch(themeNotifierProvider.select((n) =&gt; n.colorBlindMode));
+  final dyslexiaEnabled = ref
+      .watch(themeNotifierProvider.select((n) =&gt; n.dyslexiaFontEnabled));
+  final highContrast = ref
+      .watch(themeNotifierProvider.select((n) =&gt; n.highContrast));
+
+  final summary = buildAccessibilitySummary(
+    colorBlindMode: colorBlindMode,
+    dyslexiaEnabled: dyslexiaEnabled,
+    highContrast: highContrast,
+  );
+
   return GlassCard(
     blur: 16,
     fillOpacity: 0.05,
@@ -137,19 +150,17 @@ Widget build(BuildContext context, WidgetRef ref) {
           child: Row(
             children: [
               Expanded(
-                child: Text(l10n.profileColorBlindModeNone,
-                    style: TransitTypography.bodyPrimary(c.textHi)),
+                child: Text(
+                  summary,
+                  style: TransitTypography.bodyPrimary(c.textHi),
+                ),
               ),
               Icon(Icons.chevron_right, size: 20, color: c.textLo),
             ],
           ),
         ),
         const SizedBox(height: 12),
-        Divider(
-          height: 1,
-          thickness: 0.5,
-          color: c.border,
-        ),
+        Divider(height: 1, thickness: 0.5, color: c.border),
         const SizedBox(height: 12),
         GestureDetector(
           onTap: () =&gt; context.push(&#39;&#47;profile&#47;offline-regions&#39;),
@@ -167,11 +178,7 @@ Widget build(BuildContext context, WidgetRef ref) {
           ),
         ),
         const SizedBox(height: 12),
-        Divider(
-          height: 1,
-          thickness: 0.5,
-          color: c.border,
-        ),
+        Divider(height: 1, thickness: 0.5, color: c.border),
         const SizedBox(height: 12),
         GestureDetector(
           onTap: () =&gt; context.push(&#39;&#47;profile&#47;widgets&#39;),

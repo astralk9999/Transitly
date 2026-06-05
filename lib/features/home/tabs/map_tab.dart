@@ -25,7 +25,6 @@ import '../../../shared/providers/connectivity_provider.dart';
 import '../../../shared/providers/is_dark_provider.dart';
 import '../../../shared/providers/user_favorites_provider.dart';
 import '../../../shared/providers/user_location_provider.dart';
-import '../../../shared/widgets/pressable.dart';
 import '../../../shared/widgets/route_card.dart';
 import '../../map/map_config.dart';
 import '../../map/map_data_cache.dart';
@@ -698,31 +697,43 @@ class _MapTabState extends ConsumerState<MapTab> {
               ),
               const Spacer(),
               if (_selectedRouteId != null)
-                Pressable(
-                  onTap: _clearSelection,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: c.accent.withValues(alpha: 0.10),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                          color: c.accent.withValues(alpha: 0.20),
-                          width: 0.5),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.clear, size: 14, color: c.accent),
-                        const SizedBox(width: 6),
-                        Text(
-                          l10n.actionClose.toUpperCase(),
-                          style: TransitTypography.bodySmall(c.accent),
+                Builder(builder: (context) {
+                  final mockData = ref.read(mockDataServiceProvider);
+                  final route = mockData.getRouteById(_selectedRouteId!);
+                  final routeLabel =
+                      route != null ? 'L${route.code}' : 'ruta';
+                  return Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(24),
+                      onTap: _clearSelection,
+                      child: Container(
+                        constraints: const BoxConstraints(
+                            minHeight: 48, minWidth: 48),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 10),
+                        decoration: BoxDecoration(
+                          color: c.accent.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(24),
+                          border: Border.all(
+                              color: c.accent.withValues(alpha: 0.40),
+                              width: 1),
                         ),
-                      ],
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.close, size: 18, color: c.accent),
+                            const SizedBox(width: 8),
+                            Text(
+                              'Quitar $routeLabel',
+                              style: TransitTypography.bodyPrimary(c.accent),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
-                ),
+                  );
+                }),
             ],
           ),
         ),

@@ -68,12 +68,6 @@ class ProfileLocationSection extends StatelessWidget {
           _FilterItem(label: l10n.profileZoneAccessible, color: c),
           const SizedBox(height: 6),
           _FilterItem(label: l10n.profileZoneFavLines, color: c),
-          const SizedBox(height: 8),
-          GestureDetector(
-            onTap: () => context.push('/profile/filters'),
-            child: Text(l10n.profileZoneManageArrow,
-                style: TransitTypography.bodySecondary(c.accent)),
-          ),
           Divider(
             height: 24,
             thickness: 0.5,

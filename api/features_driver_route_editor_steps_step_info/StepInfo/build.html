@@ -140,32 +140,28 @@ Widget build(BuildContext context) {
         Text(&#39;Tipo de servicio&#39;,
             style: TransitTypography.bodySecondary(c.textMid)),
         const SizedBox(height: 6),
-        Container(
-          height: 44,
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          decoration: BoxDecoration(
-            color: c.bgInput,
-            border: Border.all(color: c.border, width: 0.5),
-            borderRadius: BorderRadius.circular(6),
-          ),
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton&lt;String&gt;(
-              value: controller.serviceType,
-              isExpanded: true,
-              dropdownColor: c.bgSurface,
-              style: TransitTypography.bodyPrimary(c.textHi),
-              items: const [
-                DropdownMenuItem(value: &#39;urban&#39;, child: Text(&#39;Urbano&#39;)),
-                DropdownMenuItem(
-                    value: &#39;metropolitan&#39;, child: Text(&#39;Metropolitano&#39;)),
-                DropdownMenuItem(
-                    value: &#39;interurban&#39;, child: Text(&#39;Interurbano&#39;)),
-                DropdownMenuItem(value: &#39;special&#39;, child: Text(&#39;Especial&#39;)),
-              ],
-              onChanged: (v) {
-                if (v != null) controller.serviceTypeValue = v;
-              },
-            ),
+        &#47;&#47; P2-02: ChoiceChips horizontales scrollables.
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: const [
+              _ServiceTypeChip(value: &#39;urban&#39;, label: &#39;Urbano&#39;, icon: Icons.directions_bus),
+              _ServiceTypeChip(value: &#39;metropolitan&#39;, label: &#39;Metropolitano&#39;, icon: Icons.directions_transit),
+              _ServiceTypeChip(value: &#39;interurban&#39;, label: &#39;Interurbano&#39;, icon: Icons.route),
+              _ServiceTypeChip(value: &#39;special&#39;, label: &#39;Especial&#39;, icon: Icons.star_outline),
+            ]
+                .map((chip) =&gt; Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: _ServiceTypeChipBuilder(
+                        chip: chip,
+                        selected: controller.serviceType == chip.value,
+                        onSelected: () {
+                          controller.serviceTypeValue = chip.value;
+                        },
+                        c: c,
+                      ),
+                    ))
+                .toList(),
           ),
         ),
         const SizedBox(height: 16),

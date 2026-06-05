@@ -68,6 +68,8 @@
 <li><span class="parameter" id="param-website"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">website</span>, </span></li>
 <li><span class="parameter" id="param-contactEmail"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">contactEmail</span>, </span></li>
 <li><span class="parameter" id="param-phone"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">phone</span>, </span></li>
+<li><span class="parameter" id="param-color"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">color</span>, </span></li>
+<li><span class="parameter" id="param-isActive"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">isActive</span>, </span></li>
 </ol>)?, {</span></li>
 <li><span class="parameter" id="maybeWhen-param-orElse"><span>required</span> <span class="type-annotation">TResult</span> <span class="parameter-name">orElse</span>(), </span></li>
 </ol>})
@@ -92,10 +94,10 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">@optionalTypeArgs TResult maybeWhen&lt;TResult extends Object?&gt;(TResult Function( String id,  String name,  String shortName,  String slug,  String region,  String website,  String contactEmail,  String phone)?  $default,{required TResult orElse(),}) {final _that = this;
+  <pre class="language-dart"><code class="language-dart">@optionalTypeArgs TResult maybeWhen&lt;TResult extends Object?&gt;(TResult Function( String id,  String name,  String shortName,  String slug,  String region,  String website,  String contactEmail,  String phone,  String color,  bool isActive)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _OperatorModel() when $default != null:
-return $default(_that.id,_that.name,_that.shortName,_that.slug,_that.region,_that.website,_that.contactEmail,_that.phone);case _:
+return $default(_that.id,_that.name,_that.shortName,_that.slug,_that.region,_that.website,_that.contactEmail,_that.phone,_that.color,_that.isActive);case _:
   return orElse();
 
 }

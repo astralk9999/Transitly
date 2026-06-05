@@ -83,6 +83,8 @@ Future&lt;OperatorModel&gt; update(OperatorModel operator) async {
           &#39;region&#39;: operator.region,
           &#39;website&#39;: operator.website,
           &#39;contact_email&#39;: operator.contactEmail,
+          &#39;color&#39;: operator.color.isEmpty ? null : operator.color,
+          &#39;is_active&#39;: operator.isActive,
           &#39;updated_at&#39;: DateTime.now().toUtc().toIso8601String(),
         })
         .eq(&#39;id&#39;, operator.id)

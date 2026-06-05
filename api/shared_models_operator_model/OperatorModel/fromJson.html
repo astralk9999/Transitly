@@ -70,12 +70,14 @@
   <pre class="language-dart"><code class="language-dart">static OperatorModel fromJson(Map&lt;String, dynamic&gt; j) =&gt; OperatorModel(
       id: j[&#39;id&#39;] as String,
       name: j[&#39;name&#39;] as String,
-      shortName: j[&#39;shortName&#39;] as String,
+      shortName: j[&#39;shortName&#39;] as String? ?? (j[&#39;name&#39;] as String),
       slug: j[&#39;slug&#39;] as String? ?? &#39;&#39;,
-      region: j[&#39;region&#39;] as String,
+      region: j[&#39;region&#39;] as String? ?? &#39;&#39;,
       website: j[&#39;website&#39;] as String? ?? &#39;&#39;,
-      contactEmail: j[&#39;contactEmail&#39;] as String? ?? &#39;&#39;,
+      contactEmail: (j[&#39;contactEmail&#39;] ?? j[&#39;contact_email&#39;]) as String? ?? &#39;&#39;,
       phone: j[&#39;phone&#39;] as String? ?? &#39;&#39;,
+      color: j[&#39;color&#39;] as String? ?? &#39;&#39;,
+      isActive: (j[&#39;isActive&#39;] ?? j[&#39;is_active&#39;]) as bool? ?? true,
     );</code></pre>
 </section>
 

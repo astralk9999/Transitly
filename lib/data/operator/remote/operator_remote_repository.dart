@@ -77,6 +77,8 @@ class OperatorRemoteRepository implements OperatorRepository {
             'region': operator.region,
             'website': operator.website,
             'contact_email': operator.contactEmail,
+            if (operator.color.isNotEmpty) 'color': operator.color,
+            'is_active': operator.isActive,
           })
           .select()
           .single();
@@ -97,6 +99,8 @@ class OperatorRemoteRepository implements OperatorRepository {
             'region': operator.region,
             'website': operator.website,
             'contact_email': operator.contactEmail,
+            'color': operator.color.isEmpty ? null : operator.color,
+            'is_active': operator.isActive,
             'updated_at': DateTime.now().toUtc().toIso8601String(),
           })
           .eq('id', operator.id)

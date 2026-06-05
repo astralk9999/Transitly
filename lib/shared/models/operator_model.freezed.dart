@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$OperatorModel {
 
- String get id; String get name; String get shortName; String get slug; String get region; String get website; String get contactEmail; String get phone;
+ String get id; String get name; String get shortName; String get slug; String get region; String get website; String get contactEmail; String get phone; String get color; bool get isActive;
 /// Create a copy of OperatorModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $OperatorModelCopyWith<OperatorModel> get copyWith => _$OperatorModelCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OperatorModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.shortName, shortName) || other.shortName == shortName)&&(identical(other.slug, slug) || other.slug == slug)&&(identical(other.region, region) || other.region == region)&&(identical(other.website, website) || other.website == website)&&(identical(other.contactEmail, contactEmail) || other.contactEmail == contactEmail)&&(identical(other.phone, phone) || other.phone == phone));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OperatorModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.shortName, shortName) || other.shortName == shortName)&&(identical(other.slug, slug) || other.slug == slug)&&(identical(other.region, region) || other.region == region)&&(identical(other.website, website) || other.website == website)&&(identical(other.contactEmail, contactEmail) || other.contactEmail == contactEmail)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.color, color) || other.color == color)&&(identical(other.isActive, isActive) || other.isActive == isActive));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,name,shortName,slug,region,website,contactEmail,phone);
+int get hashCode => Object.hash(runtimeType,id,name,shortName,slug,region,website,contactEmail,phone,color,isActive);
 
 @override
 String toString() {
-  return 'OperatorModel(id: $id, name: $name, shortName: $shortName, slug: $slug, region: $region, website: $website, contactEmail: $contactEmail, phone: $phone)';
+  return 'OperatorModel(id: $id, name: $name, shortName: $shortName, slug: $slug, region: $region, website: $website, contactEmail: $contactEmail, phone: $phone, color: $color, isActive: $isActive)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $OperatorModelCopyWith<$Res>  {
   factory $OperatorModelCopyWith(OperatorModel value, $Res Function(OperatorModel) _then) = _$OperatorModelCopyWithImpl;
 @useResult
 $Res call({
- String id, String name, String shortName, String slug, String region, String website, String contactEmail, String phone
+ String id, String name, String shortName, String slug, String region, String website, String contactEmail, String phone, String color, bool isActive
 });
 
 
@@ -62,7 +62,7 @@ class _$OperatorModelCopyWithImpl<$Res>
 
 /// Create a copy of OperatorModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? shortName = null,Object? slug = null,Object? region = null,Object? website = null,Object? contactEmail = null,Object? phone = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? shortName = null,Object? slug = null,Object? region = null,Object? website = null,Object? contactEmail = null,Object? phone = null,Object? color = null,Object? isActive = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -72,7 +72,9 @@ as String,region: null == region ? _self.region : region // ignore: cast_nullabl
 as String,website: null == website ? _self.website : website // ignore: cast_nullable_to_non_nullable
 as String,contactEmail: null == contactEmail ? _self.contactEmail : contactEmail // ignore: cast_nullable_to_non_nullable
 as String,phone: null == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
-as String,
+as String,color: null == color ? _self.color : color // ignore: cast_nullable_to_non_nullable
+as String,isActive: null == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
@@ -157,10 +159,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  String shortName,  String slug,  String region,  String website,  String contactEmail,  String phone)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  String shortName,  String slug,  String region,  String website,  String contactEmail,  String phone,  String color,  bool isActive)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _OperatorModel() when $default != null:
-return $default(_that.id,_that.name,_that.shortName,_that.slug,_that.region,_that.website,_that.contactEmail,_that.phone);case _:
+return $default(_that.id,_that.name,_that.shortName,_that.slug,_that.region,_that.website,_that.contactEmail,_that.phone,_that.color,_that.isActive);case _:
   return orElse();
 
 }
@@ -178,10 +180,10 @@ return $default(_that.id,_that.name,_that.shortName,_that.slug,_that.region,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  String shortName,  String slug,  String region,  String website,  String contactEmail,  String phone)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  String shortName,  String slug,  String region,  String website,  String contactEmail,  String phone,  String color,  bool isActive)  $default,) {final _that = this;
 switch (_that) {
 case _OperatorModel():
-return $default(_that.id,_that.name,_that.shortName,_that.slug,_that.region,_that.website,_that.contactEmail,_that.phone);case _:
+return $default(_that.id,_that.name,_that.shortName,_that.slug,_that.region,_that.website,_that.contactEmail,_that.phone,_that.color,_that.isActive);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -198,10 +200,10 @@ return $default(_that.id,_that.name,_that.shortName,_that.slug,_that.region,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  String shortName,  String slug,  String region,  String website,  String contactEmail,  String phone)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  String shortName,  String slug,  String region,  String website,  String contactEmail,  String phone,  String color,  bool isActive)?  $default,) {final _that = this;
 switch (_that) {
 case _OperatorModel() when $default != null:
-return $default(_that.id,_that.name,_that.shortName,_that.slug,_that.region,_that.website,_that.contactEmail,_that.phone);case _:
+return $default(_that.id,_that.name,_that.shortName,_that.slug,_that.region,_that.website,_that.contactEmail,_that.phone,_that.color,_that.isActive);case _:
   return null;
 
 }
@@ -213,7 +215,7 @@ return $default(_that.id,_that.name,_that.shortName,_that.slug,_that.region,_tha
 
 
 class _OperatorModel extends OperatorModel {
-  const _OperatorModel({required this.id, required this.name, required this.shortName, required this.slug, required this.region, this.website = '', this.contactEmail = '', this.phone = ''}): super._();
+  const _OperatorModel({required this.id, required this.name, required this.shortName, required this.slug, required this.region, this.website = '', this.contactEmail = '', this.phone = '', this.color = '', this.isActive = true}): super._();
   
 
 @override final  String id;
@@ -224,6 +226,8 @@ class _OperatorModel extends OperatorModel {
 @override@JsonKey() final  String website;
 @override@JsonKey() final  String contactEmail;
 @override@JsonKey() final  String phone;
+@override@JsonKey() final  String color;
+@override@JsonKey() final  bool isActive;
 
 /// Create a copy of OperatorModel
 /// with the given fields replaced by the non-null parameter values.
@@ -235,16 +239,16 @@ _$OperatorModelCopyWith<_OperatorModel> get copyWith => __$OperatorModelCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OperatorModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.shortName, shortName) || other.shortName == shortName)&&(identical(other.slug, slug) || other.slug == slug)&&(identical(other.region, region) || other.region == region)&&(identical(other.website, website) || other.website == website)&&(identical(other.contactEmail, contactEmail) || other.contactEmail == contactEmail)&&(identical(other.phone, phone) || other.phone == phone));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OperatorModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.shortName, shortName) || other.shortName == shortName)&&(identical(other.slug, slug) || other.slug == slug)&&(identical(other.region, region) || other.region == region)&&(identical(other.website, website) || other.website == website)&&(identical(other.contactEmail, contactEmail) || other.contactEmail == contactEmail)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.color, color) || other.color == color)&&(identical(other.isActive, isActive) || other.isActive == isActive));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,name,shortName,slug,region,website,contactEmail,phone);
+int get hashCode => Object.hash(runtimeType,id,name,shortName,slug,region,website,contactEmail,phone,color,isActive);
 
 @override
 String toString() {
-  return 'OperatorModel(id: $id, name: $name, shortName: $shortName, slug: $slug, region: $region, website: $website, contactEmail: $contactEmail, phone: $phone)';
+  return 'OperatorModel(id: $id, name: $name, shortName: $shortName, slug: $slug, region: $region, website: $website, contactEmail: $contactEmail, phone: $phone, color: $color, isActive: $isActive)';
 }
 
 
@@ -255,7 +259,7 @@ abstract mixin class _$OperatorModelCopyWith<$Res> implements $OperatorModelCopy
   factory _$OperatorModelCopyWith(_OperatorModel value, $Res Function(_OperatorModel) _then) = __$OperatorModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String name, String shortName, String slug, String region, String website, String contactEmail, String phone
+ String id, String name, String shortName, String slug, String region, String website, String contactEmail, String phone, String color, bool isActive
 });
 
 
@@ -272,7 +276,7 @@ class __$OperatorModelCopyWithImpl<$Res>
 
 /// Create a copy of OperatorModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? shortName = null,Object? slug = null,Object? region = null,Object? website = null,Object? contactEmail = null,Object? phone = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? shortName = null,Object? slug = null,Object? region = null,Object? website = null,Object? contactEmail = null,Object? phone = null,Object? color = null,Object? isActive = null,}) {
   return _then(_OperatorModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -282,7 +286,9 @@ as String,region: null == region ? _self.region : region // ignore: cast_nullabl
 as String,website: null == website ? _self.website : website // ignore: cast_nullable_to_non_nullable
 as String,contactEmail: null == contactEmail ? _self.contactEmail : contactEmail // ignore: cast_nullable_to_non_nullable
 as String,phone: null == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
-as String,
+as String,color: null == color ? _self.color : color // ignore: cast_nullable_to_non_nullable
+as String,isActive: null == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

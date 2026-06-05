@@ -25,6 +25,8 @@ class _OperatorFormDialogState extends State<OperatorFormDialog> {
   late final TextEditingController _regionCtrl;
   late final TextEditingController _websiteCtrl;
   late final TextEditingController _emailCtrl;
+  late final TextEditingController _colorCtrl;
+  late bool _isActive;
   bool _saving = false;
 
   bool get _isEdit => widget.operator != null;
@@ -38,6 +40,8 @@ class _OperatorFormDialogState extends State<OperatorFormDialog> {
     _regionCtrl = TextEditingController(text: op?.region ?? '');
     _websiteCtrl = TextEditingController(text: op?.website ?? '');
     _emailCtrl = TextEditingController(text: op?.contactEmail ?? '');
+    _colorCtrl = TextEditingController(text: op?.color ?? '');
+    _isActive = op?.isActive ?? true;
   }
 
   @override
@@ -47,6 +51,7 @@ class _OperatorFormDialogState extends State<OperatorFormDialog> {
     _regionCtrl.dispose();
     _websiteCtrl.dispose();
     _emailCtrl.dispose();
+    _colorCtrl.dispose();
     super.dispose();
   }
 
@@ -62,7 +67,16 @@ class _OperatorFormDialogState extends State<OperatorFormDialog> {
       region: _regionCtrl.text.trim(),
       website: _websiteCtrl.text.trim(),
       contactEmail: _emailCtrl.text.trim(),
+      color: _colorCtrl.text.trim().replaceFirst('#', '').toUpperCase(),
+      isActive: _isActive,
     );
+  }
+
+  Color? get _colorPreview {
+    final hex = _colorCtrl.text.trim().replaceFirst('#', '');
+    if (hex.length != 6) return null;
+    final v = int.tryParse(hex, radix: 16);
+    return v == null ? null : Color(0xFF000000 | v);
   }
 
   @override
@@ -123,6 +137,51 @@ class _OperatorFormDialogState extends State<OperatorFormDialog> {
                   }
                   return null;
                 },
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: TransitInput(
+                      hint: 'Color (hex, ej. FF6F00)',
+                      controller: _colorCtrl,
+                      onChanged: (_) => setState(() {}),
+                      validator: (v) {
+                        final t = v?.trim().replaceFirst('#', '') ?? '';
+                        if (t.isEmpty) return null;
+                        if (!RegExp(r'^[0-9a-fA-F]{6}$').hasMatch(t)) {
+                          return '6 chars hex';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: _colorPreview ?? c.bgRaised,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: c.border, width: 1),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text('Activo',
+                    style: TransitTypography.bodyPrimary(c.textHi)),
+                subtitle: Text(
+                  _isActive
+                      ? 'Visible en mapa y listados'
+                      : 'Oculto pero preservado',
+                  style: TransitTypography.bodySmall(c.textLo),
+                ),
+                value: _isActive,
+                onChanged: (v) => setState(() => _isActive = v),
+                activeThumbColor: c.accent,
               ),
             ],
           ),

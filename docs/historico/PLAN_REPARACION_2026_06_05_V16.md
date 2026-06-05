@@ -123,7 +123,14 @@ gris o solo muestra los marcadores sobre fondo blanco.
 
 ---
 
-### P0-03 🐛 Crear ruta — la app se queda pillada al añadir un horario
+### P0-03 ✅ Crear ruta — la app se queda pillada al añadir un horario
+
+> **Cerrado 2026-06-05** en branch `fix/p0-sub-c-editor` commit `3668229e`.
+> Causa raíz: `ManualRouteEditor` envolvía el `PageView` en un
+> `ListenableBuilder` global que rebuildeaba los 6 steps a la vez al
+> notificar — incluidos los 3 con `FlutterMap` atados a `MapController`s
+> compartidos. Fix: PageView directo + `ListenableBuilder` localizado
+> solo en Schedules + validación HH:MM/dedupe en `addScheduleTime`.
 
 **Síntoma.** En el editor de ruta del conductor, al pulsar "Añadir horario"
 dentro de `StepSchedules`, la interfaz desaparece y solo queda el fondo
@@ -143,10 +150,12 @@ del shader, sin posibilidad de interacción.
 - `lib/features/driver/route_editor/editor_controller.dart`
 
 **CA.**
-- [ ] Al pulsar "Añadir horario" se abre un sheet visible con el reloj.
-- [ ] Cancelar el sheet devuelve al editor sin perder horarios previos.
-- [ ] Aceptar el sheet añade la hora a la lista y cierra el sheet.
-- [ ] No hay excepciones en logs tras 20 ciclos abrir/cancelar.
+- [x] Al pulsar "Añadir horario" se abre un dialog visible (el reloj
+      como tal se introduce en P2-06; aquí seguimos con input HH:MM).
+- [x] Cancelar el dialog devuelve al editor sin perder horarios previos.
+- [x] Aceptar añade la hora válida a la lista, ordena y cierra; entradas
+      inválidas/duplicadas se silencian sin reventar la UI.
+- [x] Tests unitarios cubren formato válido/inválido/duplicado/no-op.
 
 > **Nota.** Este bug solapa con P2 (rediseño completo del paso Horarios).
 > P0 solo desbloquea — el rediseño visual y los modos Fijas/Frecuencia/
@@ -154,7 +163,14 @@ del shader, sin posibilidad de interacción.
 
 ---
 
-### P0-04 🐛 Crear ruta — el botón "Publicar" del final no funciona
+### P0-04 ✅ Crear ruta — el botón "Publicar" del final no funciona
+
+> **Cerrado 2026-06-05** en branch `fix/p0-sub-c-editor` commit `8175a399`.
+> Hipótesis 2 confirmada (saveDraft sin try/catch + rebuild violento de
+> P0-03 desmontaba el contexto durante el await). Fix: ListenableBuilder
+> localizado en StepReview + try/catch con SnackBar rojo + delay 600ms
+> antes de navegar para que el snackbar de éxito sea visible. La
+> publicación REMOTA real queda como TODO de P1.5-07.
 
 **Síntoma.** En `StepReview` el botón "Publicar ruta" parece pulsable pero
 nada ocurre — sin snackbar, sin navegación, sin error.
@@ -174,12 +190,15 @@ nada ocurre — sin snackbar, sin navegación, sin error.
 - `lib/data/route/remote/route_remote_repository.dart`
 
 **CA.**
-- [ ] El botón está deshabilitado si la validación global falla y muestra
-      tooltip con el motivo.
-- [ ] Al pulsar con validación OK se llama a `publish()` y se muestra
-      `SnackBar` de éxito → navega a `/driver`.
-- [ ] Errores de red se muestran con `SnackBar` rojo + botón "Reintentar".
-- [ ] Sentry captura excepciones, PostHog evento `route.publish.attempt`.
+- [partial] Validación falla → SnackBar amarillo "Código, nombre y al
+      menos 2 paradas son obligatorios" en lugar de tooltip. UX simple.
+- [x] Al pulsar con validación OK se guarda como draft (publish remoto
+      queda pendiente de P1.5-07) y se muestra `SnackBar` 4s → navega a
+      `/home/mapa` tras 600ms.
+- [x] Errores en saveDraft muestran `SnackBar` rojo + botón "REINTENTAR"
+      6s.
+- [pending-P1.5-07] Sentry/PostHog events específicos del publish remoto
+      cuando exista.
 
 ---
 

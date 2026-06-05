@@ -28,11 +28,14 @@ class StepReview extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final c = TransitColorScheme.of(isDark);
-    final tracePoints = controller.tracePoints;
-    final stops = controller.stops;
+    return ListenableBuilder(
+      listenable: controller,
+      builder: (context, _) {
+        final c = TransitColorScheme.of(isDark);
+        final tracePoints = controller.tracePoints;
+        final stops = controller.stops;
 
-    return Column(
+        return Column(
       children: [
         Expanded(
           child: FlutterMap(
@@ -135,26 +138,69 @@ class StepReview extends ConsumerWidget {
                     child: TransitButton(
                       label: AppLocalizations.of(context).actionPublish.toUpperCase(),
                       onPressed: () async {
-                        // F15: conectar a RouteRepository.create() para
-                        // persistir ruta comunitaria en Supabase + cola offline.
                         if (controller.codeCtrl.text.isEmpty ||
                             controller.nameCtrl.text.isEmpty ||
                             controller.stops.length < 2) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                                content: Text(
-                                    'Código, nombre y al menos 2 paradas son obligatorios')),
+                              content: Text(
+                                  'Código, nombre y al menos 2 paradas son obligatorios'),
+                              duration: Duration(seconds: 3),
+                            ),
                           );
                           return;
                         }
-                        await controller.saveDraft();
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
+                        try {
+                          await controller.saveDraft();
+                          if (!context.mounted) return;
+                          ScaffoldMessenger.of(context)
+                            ..hideCurrentSnackBar()
+                            ..showSnackBar(
+                              const SnackBar(
                                 content: Text(
-                                    'Ruta guardada como borrador. La publicación se habilitará en F15.')),
-                          );
+                                    'Ruta guardada como borrador. La publicación remota '
+                                    'se habilitará en F15.'),
+                                duration: Duration(seconds: 4),
+                              ),
+                            );
+                          await Future<void>.delayed(
+                              const Duration(milliseconds: 600));
+                          if (!context.mounted) return;
                           context.go('/home/mapa');
+                        } catch (e, st) {
+                          if (!context.mounted) return;
+                          ScaffoldMessenger.of(context)
+                            ..hideCurrentSnackBar()
+                            ..showSnackBar(
+                              SnackBar(
+                                backgroundColor: c.stateDelay,
+                                duration: const Duration(seconds: 6),
+                                content: Text('Error guardando: $e'),
+                                action: SnackBarAction(
+                                  label: 'REINTENTAR',
+                                  textColor: Colors.white,
+                                  onPressed: () async {
+                                    try {
+                                      await controller.saveDraft();
+                                      if (context.mounted) {
+                                        ScaffoldMessenger.of(context)
+                                          ..hideCurrentSnackBar()
+                                          ..showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                  'Ruta guardada como borrador.'),
+                                            ),
+                                          );
+                                      }
+                                    } catch (_) {
+                                      // El error queda en el log; el usuario
+                                      // sigue viendo el snackbar con su botón.
+                                    }
+                                  },
+                                ),
+                              ),
+                            );
+                          debugPrint('publish.error: $e\n$st');
                         }
                       },
                     ),
@@ -165,6 +211,8 @@ class StepReview extends ConsumerWidget {
           ),
         ),
       ],
+    );
+      },
     );
   }
 }

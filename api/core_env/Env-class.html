@@ -63,7 +63,7 @@ el nombre DEBE ser un literal en la llamada — <code>String.fromEnvironment(var
 con un parámetro variable devuelve cadena vacía en release (no se const-foldea).</p>
 <p>Para desarrollo, pasar las variables en la línea de comandos:</p>
 <pre class="language-bash"><code class="language-bash">flutter run \
-  --dart-define=SUPABASE_URL=https://xxx.supabase.co \
+  --dart-define=SUPABASE_URL=https://&lt;PROJECT_REF&gt;.supabase.co \
   --dart-define=SUPABASE_ANON_KEY=eyJ...
 </code></pre>
 <p>O usar un fichero: <code>--dart-define-from-file=dart_defines.json</code>.</p>

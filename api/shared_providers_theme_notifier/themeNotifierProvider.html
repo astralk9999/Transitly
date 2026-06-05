@@ -66,11 +66,10 @@
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">final themeNotifierProvider = ChangeNotifierProvider&lt;ThemeNotifier&gt;((ref) {
   final repo = ref.watch(userPreferencesRepositoryProvider);
-  final notifier = ThemeNotifier(prefsRepo: repo);
-
-  ref.onDispose(notifier.dispose);
-
-  return notifier;
+  &#47;&#47; ChangeNotifierProvider llama a dispose() automáticamente al cerrarse
+  &#47;&#47; el scope; no añadimos ref.onDispose(notifier.dispose) porque eso
+  &#47;&#47; disparaba doble-dispose y rompía tests del router.
+  return ThemeNotifier(prefsRepo: repo);
 });</code></pre>
 </section>
 

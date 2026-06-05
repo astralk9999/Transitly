@@ -18,7 +18,7 @@
     "encryptedBoxes": 2
   },
   "tests": {
-    "passed": 619,
+    "passed": 679,
     "skipped": 6,
     "failed": 0
   },
@@ -35,12 +35,12 @@
     }
   },
   "release": {
-    "version": "1.11.0",
+    "version": "1.12.0",
     "apkSize": "88 MB",
     "androidMin": "Android 6.0+"
   },
   "scorecard": {
-    "testsPassRate": "619/619",
+    "testsPassRate": "679/679",
     "ciJobs": "6/6 verde",
     "wcagLevel": "AA"
   },

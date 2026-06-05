@@ -11,22 +11,12 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/models/user_model.dart';
 import '../../../shared/widgets/glass_card.dart';
 import '../../../shared/widgets/reputation_badge.dart';
+import '../../../shared/widgets/user_avatar.dart';
 
 class ProfileHeaderCard extends ConsumerWidget {
   const ProfileHeaderCard({super.key, required this.user});
 
   final UserModel user;
-
-  String _initials(String name) {
-    final parts = name.trim().split(RegExp(r'\s+'));
-    if (parts.length >= 2) {
-      return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
-    }
-    if (parts.isNotEmpty && parts[0].isNotEmpty) {
-      return parts[0][0].toUpperCase();
-    }
-    return '?';
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -46,19 +36,7 @@ class ProfileHeaderCard extends ConsumerWidget {
         padding: const EdgeInsets.all(16),
         child: Row(
           children: [
-            Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color: c.accent.withValues(alpha: 0.12),
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: c.accent.withValues(alpha: 0.25),
-                  width: 0.5,
-                ),
-              ),
-              child: Icon(Icons.person_outline, color: c.accent, size: 24),
-            ),
+            UserAvatar(name: '', accent: c.accent),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -103,11 +81,15 @@ class ProfileHeaderCard extends ConsumerWidget {
       );
     }
 
-    final displayName = authUser.userMetadata?['display_name'] as String? ??
+    final metadata = authUser.userMetadata ?? const <String, dynamic>{};
+    final displayName = (metadata['full_name'] as String?) ??
+        (metadata['name'] as String?) ??
+        (metadata['display_name'] as String?) ??
         authUser.email?.split('@').first ??
         user.name;
     final displayEmail = authUser.email ?? user.email;
-    final initials = _initials(displayName);
+    final photoUrl = (metadata['avatar_url'] as String?) ??
+        (metadata['picture'] as String?);
 
     return GlassCard(
       blur: 20,
@@ -116,27 +98,10 @@ class ProfileHeaderCard extends ConsumerWidget {
       padding: const EdgeInsets.all(16),
       child: Row(
         children: [
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: c.accent.withValues(alpha: 0.12),
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: c.accent.withValues(alpha: 0.25),
-                width: 0.5,
-              ),
-            ),
-            child: Center(
-              child: Text(
-                initials,
-                style: GoogleFonts.ibmPlexMono(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: c.accent,
-                ),
-              ),
-            ),
+          UserAvatar(
+            name: displayName,
+            photoUrl: photoUrl,
+            accent: c.accent,
           ),
           const SizedBox(width: 12),
           Expanded(

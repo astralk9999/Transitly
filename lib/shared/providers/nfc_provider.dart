@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/analytics/posthog_service.dart';
 import '../../data/nfc/nfc_balance_repository.dart';
 import '../../data/nfc/nfc_card_service.dart';
+import '../../data/supabase/supabase_client_provider.dart';
 import '../../data/widgets_native/widget_data_writer.dart';
 import 'connectivity_provider.dart';
 
@@ -60,19 +61,27 @@ class NfcScanState {
 
 /// Notifier managing the NFC scan lifecycle.
 class NfcScanNotifier extends StateNotifier<NfcScanState> {
-  NfcScanNotifier(this._service, this._repo) : super(const NfcScanState()) {
+  NfcScanNotifier(this._service, this._repo, {String? userId})
+      : _userId = userId,
+        super(const NfcScanState()) {
     _hydrateFromCache();
   }
 
   final NfcCardService _service;
   final NfcBalanceRepository _repo;
+  String? _userId;
 
-  /// Carga la historia persistente desde Hive al arrancar. Sin esto,
-  /// el saldo del último escaneo no se mostraba al reabrir la app
-  /// (especialmente como invitado, ya que Supabase no tiene su historial).
+  /// Carga la historia persistente desde Hive bajo el slot del usuario
+  /// actual. Sin esto, el saldo del último escaneo no se mostraba al
+  /// reabrir la app, ni al cambiar de cuenta.
   void _hydrateFromCache() {
-    final history = _repo.getHistory();
-    if (history.isEmpty) return;
+    final history = _repo.getHistory(userId: _userId);
+    if (history.isEmpty) {
+      // Garantiza que un cambio de usuario sin scans previos limpie el
+      // state visible (no se quede mostrando el saldo de otro usuario).
+      state = const NfcScanState();
+      return;
+    }
     final last = history.first;
     state = state.copyWith(
       status: NfcScanStatus.success,
@@ -85,6 +94,14 @@ class NfcScanNotifier extends StateNotifier<NfcScanState> {
     );
   }
 
+  /// Cambia el slot de usuario activo y rehidrata desde la caché.
+  /// Invocado desde el provider cuando cambia el `currentUser?.id`.
+  void switchUser(String? newUserId) {
+    if (_userId == newUserId) return;
+    _userId = newUserId;
+    _hydrateFromCache();
+  }
+
   /// Start scanning for an NFC card.
   Future<void> startScan() async {
     state = state.copyWith(status: NfcScanStatus.scanning, errorMessage: null);
@@ -92,8 +109,8 @@ class NfcScanNotifier extends StateNotifier<NfcScanState> {
     await _service.startScan(
       onResult: (result) {
         PostHogAnalyticsService.nfcReadSuccess('mifare_classic', result.balance);
-        _repo.saveScan(result);
-        final history = _repo.getHistory();
+        _repo.saveScanForUser(result, userId: _userId);
+        final history = _repo.getHistory(userId: _userId);
         state = NfcScanState(
           status: NfcScanStatus.success,
           result: result,
@@ -123,7 +140,7 @@ class NfcScanNotifier extends StateNotifier<NfcScanState> {
 
   /// Refresh scan history from the persistent repository.
   void refreshHistory() {
-    final history = _repo.getHistory();
+    final history = _repo.getHistory(userId: _userId);
     state = state.copyWith(scanHistory: history);
   }
 
@@ -137,10 +154,17 @@ class NfcScanNotifier extends StateNotifier<NfcScanState> {
 /// Main provider for NFC scan state.
 final nfcScanProvider =
     StateNotifierProvider<NfcScanNotifier, NfcScanState>((ref) {
-  final notifier = NfcScanNotifier(
-    ref.read(nfcCardServiceProvider),
-    ref.read(nfcBalanceRepositoryProvider),
-  );
+  final service = ref.read(nfcCardServiceProvider);
+  final repo = ref.read(nfcBalanceRepositoryProvider);
+  final client = ref.watch(supabaseClientProvider);
+  final initialUserId = client.auth.currentUser?.id;
+  final notifier = NfcScanNotifier(service, repo, userId: initialUserId);
+
+  // Escucha cambios de sesión y rehidrata desde el slot del nuevo user.
+  final authSub = client.auth.onAuthStateChange.listen((data) {
+    notifier.switchUser(data.session?.user.id);
+  });
+  ref.onDispose(authSub.cancel);
 
   // When coming back online, sync pending scans to Supabase.
   ref.listen<bool>(isOfflineProvider, (prev, current) {

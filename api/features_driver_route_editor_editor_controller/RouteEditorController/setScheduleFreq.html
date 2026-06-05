@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
-  <meta name="description" content="API docs for the loadFromJson method from the RouteEditorController class, for the Dart programming language.">
-  <title>loadFromJson method - RouteEditorController class - editor_controller library - Dart API</title>
+  <meta name="description" content="API docs for the setScheduleFreq method from the RouteEditorController class, for the Dart programming language.">
+  <title>setScheduleFreq method - RouteEditorController class - editor_controller library - Dart API</title>
 
 
   
@@ -27,9 +27,9 @@
     <li><a href="../../index.html">transitly</a></li>
     <li><a href="../../features_driver_route_editor_editor_controller/">features&#47;driver&#47;route_editor&#47;editor_controller.dart</a></li>
     <li><a href="../../features_driver_route_editor_editor_controller/RouteEditorController-class.html">RouteEditorController</a></li>
-    <li class="self-crumb">loadFromJson method</li>
+    <li class="self-crumb">setScheduleFreq method</li>
   </ol>
-  <div class="self-name">loadFromJson</div>
+  <div class="self-name">setScheduleFreq</div>
   <form class="search navbar-right" role="search">
     <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
@@ -49,84 +49,45 @@
     data-above-sidebar="features_driver_route_editor_editor_controller&#47;RouteEditorController-class-sidebar.html"
     data-below-sidebar="">
     <div>
-<h1><span class="kind-method">loadFromJson</span> method 
+<h1><span class="kind-method">setScheduleFreq</span> method 
 </h1></div>
 
     <section class="multi-line-signature">
       
 <span class="returntype">void</span>
-<span class="name ">loadFromJson</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="loadFromJson-param-json"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Map-class.html">Map</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>, <span class="type-parameter">dynamic</span>&gt;</span></span> <span class="parameter-name">json</span></span></li>
-</ol>)
+<span class="name ">setScheduleFreq</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="setScheduleFreq-param-key"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">key</span>, {</span></li>
+<li><span class="parameter" id="setScheduleFreq-param-start"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">start</span>, </span></li>
+<li><span class="parameter" id="setScheduleFreq-param-end"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">end</span>, </span></li>
+<li><span class="parameter" id="setScheduleFreq-param-interval"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a>?</span> <span class="parameter-name">interval</span>, </span></li>
+</ol>})
 
       
 
     </section>
     
+<section class="desc markdown">
+  <p>Sub P2-06: actualiza parámetros de Frecuencia.</p>
+</section>
 
 
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">void loadFromJson(Map&lt;String, dynamic&gt; json) {
-  codeCtrl.text = json[&#39;code&#39;] as String? ?? &#39;&#39;;
-  nameCtrl.text = json[&#39;name&#39;] as String? ?? &#39;&#39;;
-  serviceType = json[&#39;serviceType&#39;] as String? ?? &#39;urban&#39;;
-
-  final traceList = json[&#39;tracePoints&#39;] as List&lt;dynamic&gt;? ?? [];
-  tracePoints.clear();
-  for (final p in traceList) {
-    tracePoints.add(LatLng(
-      (p[&#39;lat&#39;] as num).toDouble(),
-      (p[&#39;lng&#39;] as num).toDouble(),
-    ));
+  <pre class="language-dart"><code class="language-dart">void setScheduleFreq(
+  String key, {
+  String? start,
+  String? end,
+  int? interval,
+}) {
+  if (start != null &amp;&amp; _hhmmRegExp.hasMatch(start)) {
+    scheduleFreqStart[key] = start;
   }
-
-  stops.clear();
-  final stopList = json[&#39;stops&#39;] as List&lt;dynamic&gt;? ?? [];
-  for (final s in stopList) {
-    stops.add(EditorStop.fromJson(s as Map&lt;String, dynamic&gt;));
+  if (end != null &amp;&amp; _hhmmRegExp.hasMatch(end)) {
+    scheduleFreqEnd[key] = end;
   }
-
-  returnChoice = json[&#39;returnChoice&#39;] as String? ?? &#39;&#39;;
-
-  schedules.clear();
-  final schedMap = json[&#39;schedules&#39;] as Map&lt;String, dynamic&gt;? ?? {};
-  for (final entry in schedMap.entries) {
-    schedules[entry.key] =
-        (entry.value as List&lt;dynamic&gt;).cast&lt;String&gt;();
+  if (interval != null &amp;&amp; interval &gt;= 5 &amp;&amp; interval &lt;= 120) {
+    scheduleFreqInterval[key] = interval;
   }
-  &#47;&#47; Sub P2-06: restaurar modo + parámetros + extras&#47;excluidos.
-  final modeMap = json[&#39;scheduleMode&#39;] as Map&lt;String, dynamic&gt;? ?? {};
-  for (final entry in modeMap.entries) {
-    scheduleMode[entry.key] = entry.value as String? ?? &#39;fixed&#39;;
-  }
-  final freqStartMap =
-      json[&#39;scheduleFreqStart&#39;] as Map&lt;String, dynamic&gt;? ?? {};
-  for (final entry in freqStartMap.entries) {
-    scheduleFreqStart[entry.key] = entry.value as String? ?? &#39;07:00&#39;;
-  }
-  final freqEndMap = json[&#39;scheduleFreqEnd&#39;] as Map&lt;String, dynamic&gt;? ?? {};
-  for (final entry in freqEndMap.entries) {
-    scheduleFreqEnd[entry.key] = entry.value as String? ?? &#39;22:00&#39;;
-  }
-  final freqIntMap =
-      json[&#39;scheduleFreqInterval&#39;] as Map&lt;String, dynamic&gt;? ?? {};
-  for (final entry in freqIntMap.entries) {
-    scheduleFreqInterval[entry.key] = (entry.value as num?)?.toInt() ?? 15;
-  }
-  final extrasMap = json[&#39;scheduleExtras&#39;] as Map&lt;String, dynamic&gt;? ?? {};
-  for (final entry in extrasMap.entries) {
-    scheduleExtras[entry.key] =
-        (entry.value as List&lt;dynamic&gt;).cast&lt;String&gt;();
-  }
-  final excludesMap =
-      json[&#39;scheduleExcludes&#39;] as Map&lt;String, dynamic&gt;? ?? {};
-  for (final entry in excludesMap.entries) {
-    scheduleExcludes[entry.key] =
-        (entry.value as List&lt;dynamic&gt;).cast&lt;String&gt;();
-  }
-
-  totalTimeCtrl.text = json[&#39;totalTime&#39;] as String? ?? &#39;45&#39;;
   notifyListeners();
 }</code></pre>
 </section>
@@ -144,7 +105,7 @@
     <li><a href="../../index.html">transitly</a></li>
     <li><a href="../../features_driver_route_editor_editor_controller/">editor_controller</a></li>
     <li><a href="../../features_driver_route_editor_editor_controller/RouteEditorController-class.html">RouteEditorController</a></li>
-    <li class="self-crumb">loadFromJson method</li>
+    <li class="self-crumb">setScheduleFreq method</li>
 </ol>
 
     <h5>RouteEditorController class</h5>

@@ -77,6 +77,14 @@
       &#39;returnChoice&#39;: returnChoice,
       &#39;schedules&#39;: schedules.map(
           (k, v) =&gt; MapEntry(k, List&lt;String&gt;.from(v))),
+      &#39;scheduleMode&#39;: Map&lt;String, String&gt;.from(scheduleMode),
+      &#39;scheduleFreqStart&#39;: Map&lt;String, String&gt;.from(scheduleFreqStart),
+      &#39;scheduleFreqEnd&#39;: Map&lt;String, String&gt;.from(scheduleFreqEnd),
+      &#39;scheduleFreqInterval&#39;: Map&lt;String, int&gt;.from(scheduleFreqInterval),
+      &#39;scheduleExtras&#39;: scheduleExtras
+          .map((k, v) =&gt; MapEntry(k, List&lt;String&gt;.from(v))),
+      &#39;scheduleExcludes&#39;: scheduleExcludes
+          .map((k, v) =&gt; MapEntry(k, List&lt;String&gt;.from(v))),
       &#39;totalTime&#39;: totalTimeCtrl.text,
     };</code></pre>
 </section>

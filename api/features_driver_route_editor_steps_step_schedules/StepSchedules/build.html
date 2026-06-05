@@ -115,70 +115,69 @@ Widget build(BuildContext context) {
   return ListenableBuilder(
     listenable: controller,
     builder: (context, _) =&gt; DefaultTabController(
-    length: 3,
-    child: Column(
-      children: [
-        TabBar(
-          indicatorColor: c.accent,
-          labelColor: c.accent,
-          unselectedLabelColor: c.textMid,
-          labelStyle: GoogleFonts.ibmPlexMono(
-              fontSize: 11, fontWeight: FontWeight.w600),
-          tabs: [
-            Tab(text: AppLocalizations.of(context).routeDayWeekday.toUpperCase()),
-            Tab(text: AppLocalizations.of(context).routeDaySaturday.toUpperCase()),
-            Tab(text: AppLocalizations.of(context).routeDayHoliday.toUpperCase()),
-          ],
-        ),
-        Expanded(
-          child: TabBarView(
-            children: [
-              _ScheduleTab(
-                controller: controller,
-                keyName: &#39;weekday&#39;,
-                onAddTime: () =&gt; _addTime(context, &#39;weekday&#39;),
-              ),
-              _ScheduleTab(
-                controller: controller,
-                keyName: &#39;saturday&#39;,
-                onAddTime: () =&gt; _addTime(context, &#39;saturday&#39;),
-              ),
-              _ScheduleTab(
-                controller: controller,
-                keyName: &#39;sunday&#39;,
-                onAddTime: () =&gt; _addTime(context, &#39;sunday&#39;),
-              ),
+      length: 3,
+      child: Column(
+        children: [
+          TabBar(
+            indicatorColor: c.accent,
+            labelColor: c.accent,
+            unselectedLabelColor: c.textMid,
+            labelStyle: GoogleFonts.ibmPlexMono(
+                fontSize: 11, fontWeight: FontWeight.w600),
+            tabs: [
+              Tab(
+                  text: AppLocalizations.of(context)
+                      .routeDayWeekday
+                      .toUpperCase()),
+              Tab(
+                  text: AppLocalizations.of(context)
+                      .routeDaySaturday
+                      .toUpperCase()),
+              Tab(
+                  text: AppLocalizations.of(context)
+                      .routeDayHoliday
+                      .toUpperCase()),
             ],
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(&#39;Tiempo total (min)&#39;,
-                  style: TransitTypography.bodySecondary(c.textMid)),
-              const SizedBox(height: 6),
-              SizedBox(
-                width: 120,
-                child: TransitInput(
-                  hint: &#39;45&#39;,
-                  controller: controller.totalTimeCtrl,
-                ),
-              ),
-              const SizedBox(height: 16),
-              SizedBox(
-                width: double.infinity,
-                child: TransitButton(
-                  label: AppLocalizations.of(context).actionNext.toUpperCase(),
-                  onPressed: onNext,
-                ),
-              ),
-            ],
+          Expanded(
+            child: TabBarView(
+              children: [
+                _ScheduleTab(controller: controller, keyName: &#39;weekday&#39;),
+                _ScheduleTab(controller: controller, keyName: &#39;saturday&#39;),
+                _ScheduleTab(controller: controller, keyName: &#39;sunday&#39;),
+              ],
+            ),
           ),
-        ),
-      ],
-    ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(&#39;Tiempo total (min)&#39;,
+                    style: TransitTypography.bodySecondary(c.textMid)),
+                const SizedBox(height: 6),
+                SizedBox(
+                  width: 120,
+                  child: TransitInput(
+                    hint: &#39;45&#39;,
+                    controller: controller.totalTimeCtrl,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  child: TransitButton(
+                    label: AppLocalizations.of(context)
+                        .actionNext
+                        .toUpperCase(),
+                    onPressed: onNext,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     ),
   );
 }</code></pre>

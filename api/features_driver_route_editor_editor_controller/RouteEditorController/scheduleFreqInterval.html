@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
-  <meta name="description" content="API docs for the totalScheduleCount property from the RouteEditorController class, for the Dart programming language.">
-  <title>totalScheduleCount property - RouteEditorController class - editor_controller library - Dart API</title>
+  <meta name="description" content="API docs for the scheduleFreqInterval property from the RouteEditorController class, for the Dart programming language.">
+  <title>scheduleFreqInterval property - RouteEditorController class - editor_controller library - Dart API</title>
 
 
   
@@ -27,9 +27,9 @@
     <li><a href="../../index.html">transitly</a></li>
     <li><a href="../../features_driver_route_editor_editor_controller/">features&#47;driver&#47;route_editor&#47;editor_controller.dart</a></li>
     <li><a href="../../features_driver_route_editor_editor_controller/RouteEditorController-class.html">RouteEditorController</a></li>
-    <li class="self-crumb">totalScheduleCount property</li>
+    <li class="self-crumb">scheduleFreqInterval property</li>
   </ol>
-  <div class="self-name">totalScheduleCount</div>
+  <div class="self-name">scheduleFreqInterval</div>
   <form class="search navbar-right" role="search">
     <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
@@ -49,39 +49,31 @@
     data-above-sidebar="features_driver_route_editor_editor_controller&#47;RouteEditorController-class-sidebar.html"
     data-below-sidebar="">
     <div>
-<h1><span class="kind-property">totalScheduleCount</span> property 
+<h1><span class="kind-property">scheduleFreqInterval</span> property 
 </h1></div>
 
     
-
-    
+      <section class="multi-line-signature">
         
-  <section id="getter">
-    <section class="multi-line-signature">
-      
-      <span class="returntype"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>
-      get
-      <span class="name ">totalScheduleCount</span>
+        <a href="https://api.flutter.dev/flutter/dart-core/Map-class.html">Map</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>, <span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>&gt;</span>
+        <span class="name ">scheduleFreqInterval</span>
+        <div class="features"><span class="feature">final</span></div>
+
+      </section>
       
 
-    </section>
-    
-
-    
+      
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">int get totalScheduleCount {
-  int total = 0;
-  for (final key in scheduleMode.keys) {
-    total += generateScheduleTimes(key).length;
-  }
-  return total;
-}</code></pre>
+  <pre class="language-dart"><code class="language-dart">final Map&lt;String, int&gt; scheduleFreqInterval = {
+  &#39;weekday&#39;: 15,
+  &#39;saturday&#39;: 30,
+  &#39;sunday&#39;: 30,
+};</code></pre>
 </section>
 
-  </section>
 
-
+    
 </div> <!-- /.main-content -->
 <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
   <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
@@ -94,7 +86,7 @@
     <li><a href="../../index.html">transitly</a></li>
     <li><a href="../../features_driver_route_editor_editor_controller/">editor_controller</a></li>
     <li><a href="../../features_driver_route_editor_editor_controller/RouteEditorController-class.html">RouteEditorController</a></li>
-    <li class="self-crumb">totalScheduleCount property</li>
+    <li class="self-crumb">scheduleFreqInterval property</li>
 </ol>
 
   <h5>RouteEditorController class</h5>

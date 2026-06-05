@@ -91,6 +91,16 @@ class RouteEditorController extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Sub P2-04: invierte el orden de las paradas. Útil si grabaste la vuelta.
+  void reverseStops() {
+    if (stops.length < 2) return;
+    final reversed = stops.reversed.toList();
+    stops
+      ..clear()
+      ..addAll(reversed);
+    notifyListeners();
+  }
+
   // ── Step 4: return ──
   String returnChoice = ''; // 'invert' | 'new' | 'oneway'
 

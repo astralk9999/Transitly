@@ -1118,10 +1118,14 @@ en que pasa el bus es difícil de definir.
 - `lib/features/driver/route_editor/widgets/stop_picker_sheet.dart` (nuevo)
 
 **CA.**
-- [ ] Buscador filtra en tiempo real.
-- [ ] Drag&drop reordena con feedback visual.
-- [ ] El orden se mantiene al guardar y se refleja en el mapa.
-- [ ] Botón "Invertir orden" funciona.
+- [x] Buscador filtra en tiempo real (local TextField con `onChanged
+      → setState`).
+- [x] Drag&drop reordena con feedback visual (ReorderableListView
+      cuando no hay filtro).
+- [x] El orden se mantiene al guardar y se refleja en el mapa (los
+      markers numerados usan `stops.asMap().entries.map` y la
+      `MarkerLayer` se re-construye al notify).
+- [x] Botón "Invertir orden" funciona via `controller.reverseStops()`.
 
 ---
 

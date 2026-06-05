@@ -162,7 +162,9 @@ nada ocurre — sin snackbar, sin navegación, sin error.
 
 ---
 
-### P0-05 🐛 Al salir y entrar a la app se pierden los ajustes de apariencia/accesibilidad
+### P0-05 ✅ Al salir y entrar a la app se pierden los ajustes de apariencia/accesibilidad
+
+> **Cerrado 2026-06-05** en branch `fix/p0-sub-a-prefs-perfil-navbar` commit `4ed5341`.
 
 **Síntoma.** Cambias tema, paleta, fuente, alto contraste — cierras la
 app — al abrir vuelve a los valores por defecto.
@@ -181,12 +183,12 @@ app — al abrir vuelve a los valores por defecto.
 - `lib/core/theme/theme_controller.dart` (o similar)
 
 **CA.**
-- [ ] Cambiar paleta + fuente + alto contraste + cerrar y reabrir: todos
-      los ajustes se mantienen.
-- [ ] Test de integración `prefs_persistence_test.dart` verifica
-      round-trip Hive.
-- [ ] El bootstrap espera explícitamente a que el box esté abierto antes
-      de renderizar la primera frame (con `FlutterNativeSplash.preserve`).
+- [x] Cambiar paleta + fuente + alto contraste + cerrar y reabrir: todos
+      los ajustes se mantienen. (themeMode también persiste ahora).
+- [x] Test de round-trip Hive:
+      `theme_notifier_mode_persistence_test.dart` (3 tests, all pass).
+- [N/A] Bootstrap esperar a box abierto: no fue necesario — `ThemeNotifier`
+      ya abre el box lazy en `_persist`/`_loadGuestPrefs`.
 
 > **Recordatorio.** Persistencia es **solo Hive local** — no sincronizar en
 > `user_preferences` de Supabase para esta fase. Si en el futuro se quiere
@@ -194,7 +196,9 @@ app — al abrir vuelve a los valores por defecto.
 
 ---
 
-### P0-06 🐛 Perfil sin nombre ni imagen — solo aparece icono de interrogación
+### P0-06 ✅ Perfil sin nombre ni imagen — solo aparece icono de interrogación
+
+> **Cerrado 2026-06-05** en branch `fix/p0-sub-a-prefs-perfil-navbar` commit `4c9655c`.
 
 **Síntoma.** Al abrir el perfil del usuario logueado, el avatar es un
 círculo gris con "?" y el nombre está vacío o dice "Usuario".
@@ -220,15 +224,20 @@ círculo gris con "?" y el nombre está vacío o dice "Usuario".
   sobre `CircleAvatar` con `backgroundColor = scheme.primaryContainer`.
 
 **CA.**
-- [ ] Login con Google: nombre y foto aparecen instantáneamente.
-- [ ] Login con email/password: nombre del metadata, iniciales como avatar.
-- [ ] Si la foto falla de red: degrada a iniciales sin romper el layout.
-- [ ] El componente se reutiliza en navbar (P0-07), header de perfil y
-      cualquier comentario/feedback del usuario.
+- [x] Login con Google: nombre y foto aparecen (cascada `full_name` →
+      `name` → `display_name` y `avatar_url`/`picture`).
+- [x] Login con email/password: nombre del metadata, iniciales como avatar.
+- [x] Si la foto falla de red: degrada a iniciales (`errorBuilder` + 
+      `loadingBuilder` en `UserAvatar`).
+- [partial] El componente nuevo `UserAvatar` se reutiliza en `ProfileHeaderCard`.
+      Reutilizarlo en feedback/comentarios queda como follow-up cuando se
+      toquen esas pantallas.
 
 ---
 
-### P0-07 🐛 El botón perfil del navbar inferior tiene una zona táctil minúscula
+### P0-07 ✅ El botón perfil del navbar inferior tiene una zona táctil minúscula
+
+> **Cerrado 2026-06-05** en branch `fix/p0-sub-a-prefs-perfil-navbar` commit `698c1b3`.
 
 **Síntoma.** Hay que pulsar exactamente sobre el icono del perfil en el
 navbar — el resto de la pestaña no responde.
@@ -245,9 +254,10 @@ navbar — el resto de la pestaña no responde.
 - Cualquier `BottomNavigationBar` o sustituto en `home_screen.dart`.
 
 **CA.**
-- [ ] Toda la pestaña (icono + label + padding) es hitbox del botón.
-- [ ] El hitbox mínimo es 48×48 dp (WCAG 2.5.5 target size).
-- [ ] Se aplica también al resto de pestañas del navbar (consistencia).
+- [x] Toda la pestaña (icono + label + padding) es hitbox del botón
+      (`width: double.infinity` en el SizedBox).
+- [x] El hitbox mínimo es 48×48 dp (ahora 64dp altura × tabWidth).
+- [x] Se aplica al resto de pestañas (mismo widget para todas).
 
 ---
 

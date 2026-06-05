@@ -9,6 +9,7 @@ import '../../shared/models/enums.dart';
 import '../../shared/models/route_model.dart';
 import '../../shared/models/stop_model.dart';
 import '../../shared/providers/is_dark_provider.dart';
+import '../../shared/providers/theme_notifier.dart';
 import '../../shared/providers/theme_provider.dart';
 import '../../shared/widgets/responsive_scaffold.dart';
 import '../../shared/widgets/capacity_indicator.dart';
@@ -55,7 +56,7 @@ class ComponentShowcaseScreen extends ConsumerWidget {
                 value: isDark,
                 activeTrackColor: c.accent,
                 onChanged: (v) {
-                  ref.read(themeModeProvider.notifier).state =
+                  ref.read(themeNotifierProvider).themeMode =
                       v ? ThemeMode.dark : ThemeMode.light;
                 },
               ),

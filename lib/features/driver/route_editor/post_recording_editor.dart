@@ -12,7 +12,7 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/smoke_background.dart';
 import '../../../shared/widgets/transit_button.dart';
 import '../../../shared/widgets/transit_input.dart';
-import '../../map/map_config.dart';
+import '../../../core/map/map_config.dart';
 import 'recorded_session.dart';
 
 class PostRecordingEditor extends StatefulWidget {

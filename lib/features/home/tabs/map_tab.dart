@@ -26,7 +26,7 @@ import '../../../shared/providers/is_dark_provider.dart';
 import '../../../shared/providers/user_favorites_provider.dart';
 import '../../../shared/providers/user_location_provider.dart';
 import '../../../shared/widgets/route_card.dart';
-import '../../map/map_config.dart';
+import '../../../core/map/map_config.dart';
 import '../../map/map_data_cache.dart';
 import '../../map/map_filter_controller.dart';
 import '../../map/widgets/map_filter_sheet.dart';

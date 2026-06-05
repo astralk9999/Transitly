@@ -665,9 +665,8 @@ class ThemeNotifier extends ChangeNotifier {
 
 final themeNotifierProvider = ChangeNotifierProvider<ThemeNotifier>((ref) {
   final repo = ref.watch(userPreferencesRepositoryProvider);
-  final notifier = ThemeNotifier(prefsRepo: repo);
-
-  ref.onDispose(notifier.dispose);
-
-  return notifier;
+  // ChangeNotifierProvider llama a dispose() automáticamente al cerrarse
+  // el scope; no añadimos ref.onDispose(notifier.dispose) porque eso
+  // disparaba doble-dispose y rompía tests del router.
+  return ThemeNotifier(prefsRepo: repo);
 });

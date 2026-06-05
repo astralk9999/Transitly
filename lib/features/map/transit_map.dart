@@ -12,7 +12,7 @@ import '../../shared/models/route_model.dart';
 import '../../shared/models/stop_model.dart';
 import 'layers/route_direction_arrows.dart';
 import 'layers/route_polylines.dart';
-import 'map_config.dart';
+import '../../core/map/map_config.dart';
 import 'markers/bus_marker.dart';
 import 'markers/stop_marker.dart';
 

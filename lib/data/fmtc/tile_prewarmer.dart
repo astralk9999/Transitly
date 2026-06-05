@@ -5,7 +5,7 @@ import 'package:flutter_map_tile_caching/flutter_map_tile_caching.dart';
 import 'package:latlong2/latlong.dart' show LatLng;
 
 import '../../core/utils/app_logger.dart';
-import '../../features/map/map_config.dart';
+import '../../core/map/map_config.dart';
 import 'fmtc_service.dart';
 
 class TilePrewarmer {

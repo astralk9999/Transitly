@@ -25,6 +25,15 @@ rules:
     paths:
       include:
         - "lib/**/*.dart"
+      exclude:
+        # main.dart usa print() intencionalmente en el bloque pre-AppLogger:
+        # los fallos de arranque críticos (Env, Supabase init) necesitan
+        # visibilidad antes de que AppLogger esté disponible. Justificación
+        # documentada con // ignore: avoid_print en cada caso.
+        - "lib/main.dart"
+        # hive_init.dart usa print() en el catch del open box porque el
+        # AppLogger filtra por kDebugMode y queremos diagnóstico en release.
+        - "lib/data/cache/hive_init.dart"
     languages:
       - generic
     severity: ERROR

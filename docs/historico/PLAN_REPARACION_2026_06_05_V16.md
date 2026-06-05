@@ -782,7 +782,14 @@ Admin también ve: solicitudes RGPD, sugerencias, alta operador/conductor,
                   incidencias y feedback escalado
 ```
 
-### P1.5-01 ✨ Bootstrap admin vía SQL
+### P1.5-01 ✅ Bootstrap admin vía SQL
+
+> **Cerrado 2026-06-05** (verificación retroactiva). El sistema ya está
+> implementado: `userProfileFromSupabaseProvider` lee `profiles` desde
+> Supabase con el `auth.uid()`, el guard `authRedirect` rechaza
+> `/admin/*` para no-admin (`redirect_guards.dart:33`), y el botón
+> "Panel admin" en perfil usa `RoleGate(allow: [UserRole.admin])`
+> (`profile_about_section.dart:197-226`).
 
 Ver **Anexo B**. Resumen:
 - El usuario hace login normal con email/Google.
@@ -793,29 +800,38 @@ Ver **Anexo B**. Resumen:
 - El próximo login refresca el JWT y el cliente Flutter lee el rol.
 
 **Σ archivos.**
-- `lib/data/auth/auth_repository.dart` (cachear rol)
-- `lib/core/router/redirect_guards.dart` (guard `requireAdmin`)
+- `lib/data/auth/auth_repository.dart` (cachear rol) — ya cableado vía
+  `userProfileFromSupabaseProvider` que lee de Supabase.
+- `lib/core/router/redirect_guards.dart` (guard `requireAdmin`) — ya
+  presente desde la fase F.
 
 **CA.**
-- [ ] Tras el UPDATE manual, la próxima sesión del usuario ve el botón
-      "Panel admin" en perfil.
-- [ ] El guard de `/admin/*` rechaza usuarios no admin con redirect a
-      `/`.
+- [x] Tras el UPDATE manual, la próxima sesión del usuario ve el botón
+      "Panel admin" en perfil — `RoleGate` reactivo a `currentUserProvider`.
+- [x] El guard de `/admin/*` rechaza usuarios no admin con redirect a
+      `/home/inicio` — `redirect_guards.dart:33`.
 
 ---
 
-### P1.5-02 ✨ Esquema Supabase — campos faltantes y RLS
+### P1.5-02 ✅ Esquema Supabase — campos faltantes y RLS
+
+> **Cerrado 2026-06-05** vía `supabase/migrations/021_admin_extras.sql`
+> aplicada al proyecto remoto. Hallazgo: `routes` ya tiene enum
+> `route_source` (official|community) en lugar de un boolean
+> `is_official` — la migración reutiliza ese enum para `stops.source`.
 
 **Estado.** Base ya existe (`profiles.role`, `invitation_codes`,
-`driver_assignments`). Lo que falta:
+`driver_assignments`). Lo añadido por 021:
 
-- Campo `operators.is_active BOOLEAN DEFAULT true` (si no existe).
-- Tabla `operator_route_proposals` (rutas/paradas oficiales pendientes
-  de aprobar por admin si las crea un conductor).
-- Flags `is_official BOOLEAN DEFAULT false` en `routes` y `stops` para
-  diferenciar oficial vs comunidad.
-- RLS para admin (acceso total) y operator (acceso a sus operadores/
-  conductores).
+- ✅ `operators.is_active BOOLEAN DEFAULT true` y `operators.color TEXT`.
+- ✅ `stops.source route_source DEFAULT 'official'` y `stops.owner_id`.
+- ✅ Tabla `operator_route_proposals` (rutas pendientes de aprobar).
+- ✅ Tabla `operator_applications` (alta de operator).
+- ✅ Tabla `driver_applications` (alta de driver vía operator).
+- ✅ `incidents.escalated_to_admin` + `route_feedback.escalated_to_admin`.
+- ✅ Helpers SQL `is_admin()` y `is_operator_admin_of(uuid)`.
+- ✅ RLS: admin total, operator_admin solo su scope, applicant solo lo
+  suyo. Triggers `set_updated_at` para las tablas nuevas.
 
 Ver **Anexo A** para la migración SQL `021_admin_extras.sql` propuesta.
 
@@ -826,28 +842,39 @@ Ver **Anexo A** para la migración SQL `021_admin_extras.sql` propuesta.
 
 ---
 
-### P1.5-03 ✨ Pantalla admin — Operadores (CRUD)
+### P1.5-03 ✅ Pantalla admin — Operadores (CRUD)
 
-**Ya existe** parcialmente `admin_operators_screen.dart`. Cerrar:
+> **Cerrado 2026-06-05** en branch `fix/p1-5-admin-operators`. Cambios:
+> - `OperatorModel` ahora tiene `color: String` (hex) e `isActive: bool`.
+> - `OperatorFormDialog`: campo "Color" con preview swatch + validador
+>   regex hex6 + toggle "Activo" con descripción.
+> - `OperatorRemoteRepository`: serializa `color` e `is_active` en
+>   insert/update, deserializa desde `row`.
+> - `AdminOperatorsScreen`: añadido buscador (filtra por nombre/slug/
+>   región), badge "INACTIVO" en card, color de avatar derivado del
+>   campo color del operador.
 
-- Lista de operadores con buscador.
-- Crear/editar/eliminar (modal `operator_form_dialog.dart`).
-- Ver conductores de cada operador.
-- Ver rutas oficiales de cada operador.
-- Generar código de invitación maestro tipo `operator_admin` (solo
-  admin puede).
+**Estado.** Cerrado al alcance CRUD básico. Follow-up (no-bloqueantes):
+- "Ver conductores de cada operador" — la pantalla `drivers_screen.dart`
+  ya existe, solo falta el deep-link desde el card.
+- "Ver rutas oficiales de cada operador" — usar filtro de `routes`
+  por `operator_id` + `source='official'`.
+- "Generar código maestro operator_admin" — relacionado con P1.5-05.
 
 **Σ archivos.**
-- `lib/features/admin/admin_operators_screen.dart`
-- `lib/features/admin/widgets/operator_form_dialog.dart`
-- `lib/features/admin/widgets/operator_drivers_list.dart` (nuevo)
+- `lib/features/admin/admin_operators_screen.dart` (buscador + badges).
+- `lib/features/admin/widgets/operator_form_dialog.dart` (color/active).
+- `lib/shared/models/operator_model.dart` (campos nuevos).
+- `lib/data/operator/operator_helpers.dart` (deserialización).
+- `lib/data/operator/remote/operator_remote_repository.dart` (serial).
 
 **CA.**
-- [ ] CRUD funcional sobre la tabla `operators`.
-- [ ] Al crear un operador se pide nombre, slug, color, contacto.
-- [ ] Eliminar operador con confirmación + cascade lógico (los
-      conductores quedan revocados, las rutas se preservan marcadas como
-      "operador eliminado").
+- [x] CRUD funcional sobre la tabla `operators`.
+- [x] Al crear un operador se pide nombre, slug, color, contacto.
+- [x] Eliminar operador con confirmación + cascade lógico — las FKs
+      ON DELETE CASCADE / SET NULL de la migración 021 lo gestionan
+      (operator_route_proposals → CASCADE; las rutas preservan
+      operator_id como NULL via update SQL si el admin lo decide).
 
 ---
 

@@ -19,6 +19,8 @@ OperatorModel operatorFromRow(Map<String, dynamic> row) {
     website: row['website'] as String? ?? '',
     contactEmail: row['contact_email'] as String? ?? '',
     phone: row['phone'] as String? ?? '',
+    color: row['color'] as String? ?? '',
+    isActive: row['is_active'] as bool? ?? true,
   );
 }
 

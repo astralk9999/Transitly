@@ -28,6 +28,7 @@ class AdminOperatorsScreen extends ConsumerStatefulWidget {
 
 class _AdminOperatorsScreenState extends ConsumerState<AdminOperatorsScreen> {
   List<OperatorModel> _operators = [];
+  String _filter = '';
   bool _loading = true;
   OperatorRepositoryError? _errorType;
 
@@ -35,6 +36,23 @@ class _AdminOperatorsScreenState extends ConsumerState<AdminOperatorsScreen> {
   void initState() {
     super.initState();
     _loadOperators();
+  }
+
+  Color? _hexToColor(String hex) {
+    final clean = hex.trim().replaceFirst('#', '');
+    if (clean.length != 6) return null;
+    final v = int.tryParse(clean, radix: 16);
+    return v == null ? null : Color(0xFF000000 | v);
+  }
+
+  List<OperatorModel> get _filteredOperators {
+    final q = _filter.trim().toLowerCase();
+    if (q.isEmpty) return _operators;
+    return _operators.where((o) {
+      return o.name.toLowerCase().contains(q) ||
+          o.slug.toLowerCase().contains(q) ||
+          o.region.toLowerCase().contains(q);
+    }).toList();
   }
 
   Future<void> _loadOperators() async {
@@ -225,32 +243,99 @@ class _AdminOperatorsScreenState extends ConsumerState<AdminOperatorsScreen> {
       );
     }
 
+    final filtered = _filteredOperators;
+
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+          child: TextField(
+            onChanged: (v) => setState(() => _filter = v),
+            style: TransitTypography.bodyPrimary(c.textHi),
+            decoration: InputDecoration(
+              hintText: 'Buscar por nombre, slug o región',
+              hintStyle: TransitTypography.bodySecondary(c.textLo),
+              prefixIcon: Icon(Icons.search, color: c.textLo, size: 20),
+              filled: true,
+              fillColor: c.bgRaised,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: c.border),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: c.border),
+              ),
+            ),
+          ),
+        ),
+        if (filtered.isEmpty)
+          Expanded(
+            child: EmptyState(
+              'Sin resultados',
+              'Ningún operador coincide con "$_filter"',
+              icon: Icons.search_off,
+            ),
+          )
+        else
+          Expanded(child: _buildOperatorList(filtered, c, l10n)),
+      ],
+    );
+  }
+
+  Widget _buildOperatorList(
+      List<OperatorModel> operators, TransitColorScheme c, AppLocalizations l10n) {
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      itemCount: _operators.length,
+      itemCount: operators.length,
       itemBuilder: (context, index) {
-        final op = _operators[index];
+        final op = operators[index];
+        final avatarColor = _hexToColor(op.color) ?? c.accent;
         return Padding(
-          padding: EdgeInsets.only(bottom: index < _operators.length - 1 ? 8 : 0),
+          padding: EdgeInsets.only(bottom: index < operators.length - 1 ? 8 : 0),
           child: GlassCard(
             blur: 12,
-            fillOpacity: 0.05,
+            fillOpacity: op.isActive ? 0.05 : 0.02,
             borderRadius: 12,
             padding: const EdgeInsets.all(12),
             child: ListTile(
               contentPadding: EdgeInsets.zero,
               leading: CircleAvatar(
-                backgroundColor: c.accent.withValues(alpha: 0.12),
+                backgroundColor: avatarColor.withValues(alpha: 0.12),
                 child: Text(
                   op.shortName.isNotEmpty
                       ? op.shortName[0].toUpperCase()
                       : '?',
-                  style: TransitTypography.bodyPrimary(c.accent),
+                  style: TransitTypography.bodyPrimary(avatarColor),
                 ),
               ),
-              title: Text(
-                op.name,
-                style: TransitTypography.bodyPrimary(c.textHi),
+              title: Row(
+                children: [
+                  Flexible(
+                    child: Text(
+                      op.name,
+                      style: TransitTypography.bodyPrimary(
+                        op.isActive ? c.textHi : c.textLo,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  if (!op.isActive) ...[
+                    const SizedBox(width: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: c.stateCancelled.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Text(
+                        'INACTIVO',
+                        style: TransitTypography.bodySmall(c.stateCancelled),
+                      ),
+                    ),
+                  ],
+                ],
               ),
               subtitle: Text(
                 op.region.isNotEmpty

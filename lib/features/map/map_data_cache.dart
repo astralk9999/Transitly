@@ -34,9 +34,17 @@ class MapDataCache {
 /// Hive. F7 (importador GTFS) will populate Supabase with equivalent
 /// geo data.
 final mapDataCacheProvider = Provider<MapDataCache>((ref) {
+  final routesBox = ref.watch(routesBoxProvider);
+  if (routesBox.isEmpty) {
+    // Sesión nueva sin sync previo, o modo invitado. Servimos mock para
+    // que el mapa pinte líneas desde el primer frame; el provider se
+    // invalida cuando llega el primer batch de rutas a Hive y se
+    // reconstruye con datos reales.
+    return _buildFromMockData(ref);
+  }
+
   final client = ref.watch(supabaseClientProvider);
   final session = client.auth.currentSession;
-
   if (session == null) {
     return _buildFromMockData(ref);
   }

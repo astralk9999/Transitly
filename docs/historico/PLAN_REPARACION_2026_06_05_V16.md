@@ -307,7 +307,13 @@ historial está vacía aunque haya lecturas previas.
 
 Pantallas/flujos que aparecen reales pero no hacen nada o están a medias.
 
-### P1-01 ✨ Privacidad — cablear todo a Supabase
+### P1-01 ✅ Privacidad — cablear todo a Supabase
+
+> **Cerrado 2026-06-05** en branch `fix/p1-sub-e-privacidad-accesibilidad`
+> commit `c7efa0f9`. El wiring Supabase ya estaba completo (consents,
+> exports, deletion + edge functions); lo que faltaba era UX:
+> `SmokeBackground` + spinner inline durante el await + snackbars con
+> duración explícita (4-6s) y color rojo en errores.
 
 **Síntoma.** La pantalla de privacidad no tiene fondo, los consentimientos
 no se persisten, "Mis datos" y "Solicitar borrado" son falsos, los
@@ -353,16 +359,23 @@ enlaces legales no funcionan.
    `url_launcher` o un visor in-app simple.
 
 **CA.**
-- [ ] Pantalla con fondo de paleta (no blanco/transparente).
-- [ ] Cambiar un consentimiento + recargar mantiene el cambio.
-- [ ] "Solicitar exportación" inserta fila visible en Supabase.
-- [ ] "Solicitar borrado" inserta fila con `scheduled_at = NOW() + 30d`.
-- [ ] El admin la ve en su bandeja (P1.5-04).
-- [ ] Los tres enlaces legales abren un PDF cada uno sin error.
+- [x] Pantalla con fondo de paleta (SmokeBackground).
+- [x] Cambiar un consentimiento + recargar mantiene el cambio
+      (wiring pre-existente).
+- [x] "Solicitar exportación" inserta fila + invoca edge function +
+      spinner + snackbar 4s.
+- [x] "Solicitar borrado" inserta fila con `scheduled_at = NOW() + 30d`
+      + spinner + snackbar 5s.
+- [pending-P1.5-04] El admin lo ve en su bandeja cuando se construya.
+- [partial] Legal abre `Env.tosUrl` y `Env.privacyUrl` con
+      `url_launcher` (no PDFs en assets — decisión simplificada).
 
 ---
 
-### P1-02 ✨ Accesibilidad — siempre sale "modo ninguno" + mover dislexia/daltonismo
+### P1-02 ✅ Accesibilidad — siempre sale "modo ninguno" + mover dislexia/daltonismo
+
+> **Cerrado 2026-06-05** en branch `fix/p1-sub-e-privacidad-accesibilidad`
+> commits `5d117df6` (label dinámico) + `f5e26c2a` (mover dislexia/daltonismo).
 
 **Síntoma.**
 - En la pestaña Accesibilidad del perfil aparece siempre "modo: ninguno"
@@ -390,15 +403,26 @@ enlaces legales no funcionan.
    shaders de fondo.
 
 **CA.**
-- [ ] La sección Accesibilidad muestra correctamente "Dislexia: activado",
-      "Daltonismo: deuteranopia", "Alto contraste: AA", "Tamaño texto: …".
-- [ ] Dislexia y daltonismo desaparecen de Apariencia.
-- [ ] Cambiar dislexia desde Accesibilidad cambia la fuente global.
-- [ ] Persistencia: misma sesión Hive que el resto de prefs (P0-05).
+- [x] La sección Accesibilidad muestra estado real vía
+      `buildAccessibilitySummary` ("Daltonismo: deuteranopia · Dislexia
+      activa · Contraste alto"); tests cubren los combos.
+- [x] Dislexia y daltonismo desaparecen de Apariencia (font_section,
+      appearance/accessibility_section).
+- [x] Cambiar dislexia desde Accesibilidad cambia la fuente global
+      (mismo setter ThemeNotifier que antes).
+- [x] Persistencia: misma sesión Hive guest_theme_prefs (sin cambios).
 
 ---
 
-### P1-03 ✨ Apariencia — bug "alto contraste" + "mantener color de paleta"
+### P1-03 ✅ Apariencia — bug "alto contraste" + "mantener color de paleta"
+
+> **Cerrado 2026-06-05** en branch `fix/p1-sub-e-privacidad-accesibilidad`
+> commit `f5e26c2a`. Causa raíz: el sub-Switch "Conservar acento" estaba
+> añadido como TERCER hijo del Row del Switch padre — el `if (highContrast)
+> Padding(...)` quedó dentro del Row mismo. Fix: Column wrapping con dos
+> Rows hermanas, sub-row indentada con icono y descripción extra. La
+> versión Off/AA/AAA del plan V16 queda como follow-up (requiere
+> convertir `bool` en enum + adaptar `HighContrastTheme.apply`).
 
 **Síntoma.** Hay dos toggles ("Alto contraste" + "Mantener color de la
 paleta") con relación rota — el segundo solo se activa si desactivas el

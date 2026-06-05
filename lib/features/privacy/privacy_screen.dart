@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/utils/app_logger.dart';
 import '../../core/utils/sentry_setup.dart';
+import '../../core/responsive/responsive_builder.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../shared/providers/auth_provider.dart';
@@ -219,7 +220,8 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen> {
             child: SmokeBackground(color: c.accent, isDark: isDark),
           ),
           SafeArea(
-            child: ListView(
+            child: ResponsivePageWrapper(
+              child: ListView(
         padding: const EdgeInsets.all(16),
         children: [
           // ── Consents Section ──
@@ -383,6 +385,7 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen> {
           ),
           const SizedBox(height: 40),
         ],
+            ),
             ),
           ),
         ],

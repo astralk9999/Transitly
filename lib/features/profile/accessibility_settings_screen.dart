@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../core/responsive/responsive_builder.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../l10n/generated/app_localizations.dart';
@@ -48,7 +49,8 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
             child: SmokeBackground(color: c.accent, isDark: isDark),
           ),
           SafeArea(
-            child: ListView(
+            child: ResponsivePageWrapper(
+              child: ListView(
               padding: const EdgeInsets.all(16),
               children: [
                 _ThemeSection(
@@ -74,6 +76,7 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
                       ref.read(localeProvider.notifier).state = l,
                 ),
               ],
+            ),
             ),
           ),
         ],

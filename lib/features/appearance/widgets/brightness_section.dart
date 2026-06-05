@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../../shared/providers/theme_notifier.dart';
 import '../../../shared/providers/theme_provider.dart';
 import '../../../shared/widgets/glass_card.dart';
 import '../../../shared/widgets/gradient_text.dart';
@@ -57,7 +58,7 @@ class BrightnessSection extends ConsumerWidget {
             selected: {mode},
             onSelectionChanged: (newMode) {
               if (newMode.isEmpty) return;
-              ref.read(themeModeProvider.notifier).state = newMode.first;
+              ref.read(themeNotifierProvider).themeMode = newMode.first;
             },
             style: ButtonStyle(
               backgroundColor: WidgetStateProperty.resolveWith((states) {

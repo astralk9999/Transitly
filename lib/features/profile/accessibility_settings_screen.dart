@@ -55,7 +55,7 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
                   c: c,
                   highContrast: highContrast,
                   onChanged: (m) =>
-                      ref.read(themeModeProvider.notifier).state = m,
+                      ref.read(themeNotifierProvider).themeMode = m,
                   onHighContrastChanged: (v) =>
                       ref.read(themeNotifierProvider).highContrast = v,
                 ),

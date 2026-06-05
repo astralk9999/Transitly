@@ -42,6 +42,7 @@ class ThemeNotifier extends ChangeNotifier {
   bool _highContrast = false;
   bool _hcPreserveAccent = false;
   String _mapStyle = 'streets';
+  ThemeMode _themeMode = ThemeMode.system;
   bool _notifIncidentResolved = true;
   bool _notifRoutePromoted = true;
   bool _notifBusApproaching = true;
@@ -74,6 +75,7 @@ class ThemeNotifier extends ChangeNotifier {
   bool get highContrast => _highContrast;
   bool get hcPreserveAccent => _hcPreserveAccent;
   String get mapStyle => _mapStyle;
+  ThemeMode get themeMode => _themeMode;
 
   bool get notifIncidentResolved => _notifIncidentResolved;
   bool get notifRoutePromoted => _notifRoutePromoted;
@@ -245,6 +247,13 @@ class ThemeNotifier extends ChangeNotifier {
   set mapStyle(String value) {
     if (_mapStyle == value) return;
     _mapStyle = value;
+    notifyListeners();
+    unawaited(_persist());
+  }
+
+  set themeMode(ThemeMode value) {
+    if (_themeMode == value) return;
+    _themeMode = value;
     notifyListeners();
     unawaited(_persist());
   }
@@ -506,6 +515,7 @@ class ThemeNotifier extends ChangeNotifier {
         _highContrast = _safeBool(data['highContrast'], false);
         _hcPreserveAccent = _safeBool(data['hcPreserveAccent'], false);
         _mapStyle = _safeString(data['mapStyle'], 'streets');
+        _themeMode = _parseThemeMode(data['themeMode'] as String?);
         _notifIncidentResolved = _safeBool(data['notifIncidentResolved'], true);
         _notifRoutePromoted = _safeBool(data['notifRoutePromoted'], true);
         _notifBusApproaching = _safeBool(data['notifBusApproaching'], true);
@@ -564,6 +574,7 @@ class ThemeNotifier extends ChangeNotifier {
         'highContrast': _highContrast,
         'hcPreserveAccent': _hcPreserveAccent,
         'mapStyle': _mapStyle,
+        'themeMode': _themeMode.name,
         'notifIncidentResolved': _notifIncidentResolved,
         'notifRoutePromoted': _notifRoutePromoted,
         'notifBusApproaching': _notifBusApproaching,
@@ -584,6 +595,14 @@ class ThemeNotifier extends ChangeNotifier {
     return ColorBlindMode.values.firstWhere(
       (e) => e.name == value,
       orElse: () => ColorBlindMode.none,
+    );
+  }
+
+  ThemeMode _parseThemeMode(String? value) {
+    if (value == null) return ThemeMode.system;
+    return ThemeMode.values.firstWhere(
+      (e) => e.name == value,
+      orElse: () => ThemeMode.system,
     );
   }
 
@@ -638,6 +657,7 @@ class ThemeNotifier extends ChangeNotifier {
     _hcPreserveAccent = false;
     _reduceMotion = false;
     _mapStyle = 'streets';
+    _themeMode = ThemeMode.system;
     _notifZoneAlerts = true;
   }
 

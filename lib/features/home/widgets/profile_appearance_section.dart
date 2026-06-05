@@ -7,6 +7,7 @@ import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/providers/is_dark_provider.dart';
+import '../../../shared/providers/theme_notifier.dart';
 import '../../../shared/providers/theme_provider.dart';
 import '../../../shared/widgets/glass_card.dart';
 import '../../../shared/widgets/gradient_text.dart';
@@ -56,7 +57,7 @@ class ProfileAppearanceSection extends ConsumerWidget {
                 value: isDark,
                 activeTrackColor: c.accent,
                 onChanged: (v) {
-                  ref.read(themeModeProvider.notifier).state =
+                  ref.read(themeNotifierProvider).themeMode =
                       v ? ThemeMode.dark : ThemeMode.light;
                 },
               ),

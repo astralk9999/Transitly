@@ -77,7 +77,7 @@ class ResetSection extends ConsumerWidget {
               tn.reduceMotion = false;
               tn.highContrast = false;
               tn.mapStyle = 'streets';
-              ref.read(themeModeProvider.notifier).state = ThemeMode.dark;
+              ref.read(themeNotifierProvider).themeMode = ThemeMode.system;
               Navigator.of(ctx).pop();
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(

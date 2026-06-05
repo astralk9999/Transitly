@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hive/hive.dart';
 import 'package:transitly/core/theme/palettes/prefab_palettes.dart';
 import 'package:transitly/core/theme/transit_colors.dart';
 import 'package:transitly/shared/models/user_preferences.dart';
@@ -8,7 +11,14 @@ import 'package:transitly/shared/providers/theme_notifier.dart';
 import '../../data/shared_test_repositories.dart';
 
 void main() {
-  setUpAll(TestWidgetsFlutterBinding.ensureInitialized);
+  setUpAll(() async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    // setters como `paletteId` y `brightness` llaman a _persist() que abre
+    // el guest_theme_prefs box. Sin Hive.init la apertura falla con
+    // HiveError("You need to initialize Hive").
+    final dir = await Directory.systemTemp.createTemp('hive_theme_test_');
+    Hive.init(dir.path);
+  });
 
   test('ThemeNotifier defaults to dark default palette', () {
     final notifier = ThemeNotifier(prefsRepo: mockUserPreferencesRepo());
@@ -82,15 +92,19 @@ void main() {
     expect(notifier.highContrast, true);
   });
 
-  test('prefabPalettes has 6 palettes', () {
-    expect(prefabPalettes.length, 7); // 6 dark + 1 light default
+  test('prefabPalettes catalogue is the expected 6 entries', () {
+    // El catálogo se redujo en commit 1ff4f158 (fix de paleta light fold)
+    // a una sola entrada por id; la variante light se deriva en runtime
+    // vía _DerivedLightScheme en active_palette_provider.
+    expect(prefabPalettes.length, 6);
     final ids = prefabPalettes.map((p) => p.id).toSet();
-    expect(ids, containsAll(['default', 'sunrise', 'forest', 'midnight', 'ocean', 'mono']));
+    expect(ids, containsAll(
+        ['default', 'sunrise', 'forest', 'midnight', 'ocean', 'mono']));
   });
 
-  test('default palettes include light variant', () {
+  test('default palette exists exactly once and is dark', () {
     final defaults = prefabPalettes.where((p) => p.id == 'default').toList();
-    expect(defaults.length, 2);
-    expect(defaults.map((p) => p.isDark).toSet(), {true, false});
+    expect(defaults.length, 1);
+    expect(defaults.first.isDark, true);
   });
 }

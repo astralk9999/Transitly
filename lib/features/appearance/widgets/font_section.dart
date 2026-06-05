@@ -18,8 +18,6 @@ class FontSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final fontScale =
         ref.watch(themeNotifierProvider.select((n) => n.fontScale));
-    final dyslexia =
-        ref.watch(themeNotifierProvider.select((n) => n.dyslexiaFontEnabled));
 
     return GlassCard(
       blur: 16,
@@ -74,24 +72,6 @@ class FontSection extends ConsumerWidget {
               l10n.appearanceTextPreview,
               style: TransitTypography.bodyPrimary(c.textHi).copyWith(fontSize: 13 * fontScale),
             ),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  l10n.appearanceDyslexiaFont,
-                  style: TransitTypography.bodyPrimary(c.textHi),
-                ),
-              ),
-              Switch.adaptive(
-                value: dyslexia,
-                activeTrackColor: c.accent,
-                onChanged: (v) {
-                  ref.read(themeNotifierProvider).dyslexiaFontEnabled = v;
-                },
-              ),
-            ],
           ),
         ],
       ),

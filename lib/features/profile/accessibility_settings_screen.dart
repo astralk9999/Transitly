@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../l10n/generated/app_localizations.dart';
+import '../../shared/models/user_preferences.dart';
 import '../../shared/providers/is_dark_provider.dart';
 import '../../shared/providers/locale_provider.dart';
 import '../../shared/providers/theme_notifier.dart';
@@ -61,6 +62,10 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 16),
                 _SystemPreferencesSection(mq: mq, c: c),
+                const SizedBox(height: 16),
+                _DyslexiaSection(c: c),
+                const SizedBox(height: 16),
+                _ColorBlindSection(c: c),
                 const SizedBox(height: 16),
                 _LanguageSection(
                   locale: locale,
@@ -305,6 +310,187 @@ class _PrefRow extends StatelessWidget {
               fontSize: 12,
               fontWeight: FontWeight.w500,
               color: c.textHi,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DyslexiaSection extends ConsumerWidget {
+  const _DyslexiaSection({required this.c});
+
+  final TransitColorScheme c;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final dyslexia = ref
+        .watch(themeNotifierProvider.select((n) => n.dyslexiaFontEnabled));
+
+    return GlassCard(
+      blur: 16,
+      fillOpacity: 0.05,
+      borderRadius: 14,
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          GradientText(
+            l10n.appearanceDyslexiaFont,
+            style: GoogleFonts.ibmPlexMono(
+              fontSize: 11,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 1.5,
+            ),
+            gradient: c.gradientAccent,
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Usa OpenDyslexic, una fuente diseñada para mejorar la '
+                  'legibilidad en personas con dislexia.',
+                  style: TransitTypography.bodySmall(c.textLo),
+                ),
+              ),
+              Switch.adaptive(
+                value: dyslexia,
+                activeTrackColor: c.accent,
+                onChanged: (v) {
+                  ref.read(themeNotifierProvider).dyslexiaFontEnabled = v;
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ColorBlindSection extends ConsumerWidget {
+  const _ColorBlindSection({required this.c});
+
+  final TransitColorScheme c;
+
+  String _label(AppLocalizations l10n, ColorBlindMode mode) {
+    return switch (mode) {
+      ColorBlindMode.none => l10n.appearanceColorBlindNone,
+      ColorBlindMode.protanopia => l10n.appearanceColorBlindProtanopia,
+      ColorBlindMode.deuteranopia => l10n.appearanceColorBlindDeuteranopia,
+      ColorBlindMode.tritanopia => l10n.appearanceColorBlindTritanopia,
+      ColorBlindMode.protanomaly => l10n.appearanceColorBlindProtanomaly,
+      ColorBlindMode.deuteranomaly => l10n.appearanceColorBlindDeuteranomaly,
+      ColorBlindMode.tritanomaly => l10n.appearanceColorBlindTritanomaly,
+      ColorBlindMode.achromatopsia => l10n.appearanceColorBlindAchromatopsia,
+      ColorBlindMode.achromatomaly => l10n.appearanceColorBlindAchromatomaly,
+    };
+  }
+
+  void _showSheet(
+      BuildContext context, WidgetRef ref, AppLocalizations l10n) {
+    final cbm = ref.read(themeNotifierProvider).colorBlindMode;
+    showModalBottomSheet<ColorBlindMode>(
+      context: context,
+      backgroundColor: c.bgRaised,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (sheetContext) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 12),
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: c.border,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    l10n.appearanceColorBlindSheetTitle,
+                    style: TransitTypography.sectionLabel(c.textHi),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Flexible(
+                child: ListView(
+                  shrinkWrap: true,
+                  children: ColorBlindMode.values.map((mode) {
+                    return RadioListTile<ColorBlindMode>(
+                      value: mode,
+                      groupValue: cbm,
+                      activeColor: c.accent,
+                      title: Text(
+                        _label(l10n, mode),
+                        style: TransitTypography.bodyPrimary(c.textHi),
+                      ),
+                      onChanged: (v) {
+                        if (v != null) {
+                          ref.read(themeNotifierProvider).colorBlindMode = v;
+                        }
+                        Navigator.pop(sheetContext, v);
+                      },
+                    );
+                  }).toList(),
+                ),
+              ),
+              const SizedBox(height: 12),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final cbm = ref
+        .watch(themeNotifierProvider.select((n) => n.colorBlindMode));
+
+    return GlassCard(
+      blur: 16,
+      fillOpacity: 0.05,
+      borderRadius: 14,
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          GradientText(
+            l10n.appearanceColorBlindMode,
+            style: GoogleFonts.ibmPlexMono(
+              fontSize: 11,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 1.5,
+            ),
+            gradient: c.gradientAccent,
+          ),
+          const SizedBox(height: 12),
+          GestureDetector(
+            onTap: () => _showSheet(context, ref, l10n),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    _label(l10n, cbm),
+                    style: TransitTypography.bodyPrimary(c.textHi),
+                  ),
+                ),
+                Icon(Icons.unfold_more, size: 18, color: c.textMid),
+              ],
             ),
           ),
         ],

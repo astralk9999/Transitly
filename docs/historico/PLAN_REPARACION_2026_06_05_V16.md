@@ -1155,11 +1155,14 @@ gestos no van bien.
 - `lib/features/driver/route_editor/widgets/polyline_editor.dart` (nuevo)
 
 **CA.**
-- [ ] El editor ocupa el alto del paso de paradas.
-- [ ] Tap añade vértice; el trazado se redibuja al instante.
-- [ ] Long-press + drag mueve un vértice existente.
-- [ ] Las paradas son visibles como referencia.
-- [ ] El total de km del trazado se calcula y muestra.
+- [x] El editor ocupa el alto del paso de paradas (era ya
+      full-screen Stack).
+- [x] Tap añade vértice; el trazado se redibuja al instante.
+- [follow-up] Long-press + drag mueve un vértice existente: no
+      implementado. Tap-near-vertex selecciona; borrar funciona.
+- [x] Las paradas son visibles como referencia (ghost markers grises).
+- [x] El total de km del trazado se calcula con haversine y se muestra
+      en el panel superior como "N puntos · X.XX km".
 
 ---
 

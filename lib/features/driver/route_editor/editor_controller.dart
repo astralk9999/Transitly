@@ -70,6 +70,37 @@ class RouteEditorController extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Sub P2-05: elimina un vértice por índice.
+  void removeTracePointAt(int index) {
+    if (index < 0 || index >= tracePoints.length) return;
+    tracePoints.removeAt(index);
+    notifyListeners();
+  }
+
+  /// Sub P2-05: cierra el polígono añadiendo el primer punto al final.
+  /// Útil para rutas circulares.
+  void closeTracePolygon() {
+    if (tracePoints.length < 3) return;
+    final first = tracePoints.first;
+    final last = tracePoints.last;
+    if (first.latitude == last.latitude && first.longitude == last.longitude) {
+      return; // ya cerrado
+    }
+    tracePoints.add(first);
+    notifyListeners();
+  }
+
+  /// Sub P2-05: calcula el total de km del trazado.
+  double get traceTotalKm {
+    if (tracePoints.length < 2) return 0;
+    const dist = Distance();
+    double total = 0;
+    for (var i = 1; i < tracePoints.length; i++) {
+      total += dist.as(LengthUnit.Meter, tracePoints[i - 1], tracePoints[i]);
+    }
+    return total / 1000;
+  }
+
   // ── Step 3: stops ──
   final List<EditorStop> stops = [];
   final MapController stopsMapCtrl = MapController();

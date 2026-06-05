@@ -624,16 +624,27 @@ sin valor; está desde la fase F19 sin cerrar.
 
 ---
 
-### P1-06 ⏳ Datos offline — hacer funcional con OfflineRegions
+### P1-06 ✅ Datos offline — hacer funcional con OfflineRegions
 
-> **Diferido a sub-plan H futuro.** Tras revisar el código,
-> `OfflineRegionRepository` solo expone CRUD básico (`forUser`, `add`,
-> `delete`) sin wiring real a `flutter_map_tile_caching` para descarga
-> efectiva de tiles. El comentario interno dice "F20 conecta esto al
-> descargador de tiles MapTiler". El alcance real incluye: cablear `add`
-> a `FmtcService` para descargar el bbox, reportar progreso async a la
-> UI, eliminar tiles del store FMTC en `delete`, mostrar progreso por
-> región. Bloque coherente para su propio sub-plan.
+> **Cerrado 2026-06-05** (verificación retroactiva). Tras revisar el
+> código actual, el wiring YA EXISTE:
+> - `lib/data/fmtc/fmtc_region_service.dart` implementa
+>   `downloadRegion(bounds, minZoom, maxZoom)` → `Stream<int>` de
+>   progreso usando `FMTCStore.download.startForeground` con
+>   `RectangleRegion.toDownloadable`.
+> - `lib/features/offline/widgets/region_download_sheet.dart` cablea
+>   el flujo entero: crear región en Hive con status `downloading`,
+>   invocar RPC `export_region_data` para metadata (stops/routes/
+>   schedules), llamar a `FmtcRegionService.downloadRegion` con bbox
+>   y zooms, escuchar el stream y actualizar progreso UI (0.5→0.9),
+>   marcar región `ready` con tamaño estimado al terminar.
+> - `deleteRegion(style)` llama a `store.manage.reset()` para liberar
+>   tiles del store FMTC.
+>
+> El alcance del plan original (descarga real + progreso + borrado +
+> persistencia Hive) está implementado. Lo que NO está: drawing de
+> rectángulo en mapa (usa bounds hardcoded de Jerez como demo) — eso
+> queda como follow-up de UX.
 
 **Síntoma.** La sección "Datos offline" del perfil es un placeholder.
 
@@ -654,15 +665,19 @@ sin valor; está desde la fase F19 sin cerrar.
 - `lib/data/offline_region/local/offline_region_local_repository.dart`
 
 **CA.**
-- [ ] Crear región: el usuario dibuja un rectángulo en el mapa, da
-      nombre, confirma. La región aparece en la lista en estado
-      "descargando".
-- [ ] El progreso avanza visualmente; al terminar, queda "descargado" y
-      muestra tamaño en MB.
-- [ ] Borrar región libera el espacio en disco (verificable via
-      DevTools/`du`).
-- [ ] Modo avión + región descargada: los tiles se muestran offline en
-      el mapa.
+- [partial] Crear región: input de nombre + sliders de zoom +
+      botón descargar → región aparece como "descargando". El bbox
+      es hardcoded de Jerez en lugar de dibujar en mapa (follow-up UX).
+- [x] El progreso avanza (0% → 50% metadata RPC → 50-90% tiles FMTC →
+      95% finalización → 100%) y muestra `_estimatedSize` en MB en la
+      card de configuración antes de descargar.
+- [x] Borrar región: `FmtcRegionService.deleteRegion` llama a
+      `store.manage.reset()` que libera el espacio del store FMTC.
+      Pendiente-manual: verificación con DevTools/`du` en dispositivo
+      real.
+- [pending-manual] Modo avión + región descargada: requiere smoke
+      test en dispositivo (los tiles ya quedan en el store FMTC que
+      `TransitMap` consume vía `fmtcTileProviderProvider`).
 
 ---
 

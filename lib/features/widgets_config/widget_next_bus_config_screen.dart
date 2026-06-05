@@ -13,6 +13,7 @@ import '../../shared/providers/home_habitual_config_provider.dart';
 import '../../shared/widgets/glass_card.dart';
 import '../../shared/widgets/transit_button.dart';
 import 'widgets/route_autocomplete.dart';
+import 'widgets/widget_appearance_panel.dart';
 
 class WidgetNextBusConfigScreen extends ConsumerStatefulWidget {
   const WidgetNextBusConfigScreen({super.key});
@@ -196,6 +197,8 @@ class _WidgetNextBusConfigScreenState
                 ),
               ],
             ),
+            const SizedBox(height: 24),
+            const WidgetAppearancePanel(),
           ],
         ),
       ),

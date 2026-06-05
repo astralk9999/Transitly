@@ -70,17 +70,19 @@ class _MapTabState extends ConsumerState<MapTab>
 
     final f = ref.watch(mapFilterControllerProvider);
 
+    // P1.5-07: usa RouteModel.source (no RouteStatus) que mapea al enum
+    // route_source de Supabase (official|community).
     if (!f.showOfficial && !f.showCommunity) {
-      // defensivo: si ambos off, no filtrar por status
+      // defensivo: si ambos off, no filtrar
     } else {
       if (!f.showOfficial) {
         filtered = filtered
-            .where((r) => r.status != RouteStatus.official)
+            .where((r) => r.source != RouteSource.official)
             .toList();
       }
       if (!f.showCommunity) {
         filtered = filtered
-            .where((r) => r.status == RouteStatus.official)
+            .where((r) => r.source == RouteSource.official)
             .toList();
       }
     }

@@ -20,7 +20,9 @@ abstract class RouteModel with _$RouteModel {
     @Default(true) bool hasReturn,
     @Default(false) bool isCircular,
     @Default(RouteStatus.official) RouteStatus status,
+    @Default(RouteSource.official) RouteSource source,
     @Default(true) bool active,
+    String? ownerDisplayName,
     DateTime? lastUpdatedAt,
   }) = _RouteModel;
 
@@ -37,6 +39,11 @@ abstract class RouteModel with _$RouteModel {
             (j['name'] as String).toLowerCase().contains('circular') ||
                 (j['name'] as String).toLowerCase().contains('circunvalación'),
         status: RouteStatus.official,
+        source: switch (j['source'] as String?) {
+          'community' => RouteSource.community,
+          _ => RouteSource.official,
+        },
+        ownerDisplayName: j['ownerDisplayName'] as String?,
         active: true,
       );
 
@@ -48,6 +55,8 @@ abstract class RouteModel with _$RouteModel {
         'hasReturn': hasReturn,
         'isCircular': isCircular,
         'status': status.name,
+        'source': source.name,
+        if (ownerDisplayName != null) 'ownerDisplayName': ownerDisplayName,
         'active': active,
       };
 

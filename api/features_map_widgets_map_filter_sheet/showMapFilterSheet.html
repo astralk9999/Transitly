@@ -74,7 +74,6 @@
 ) {
   final isDark = Theme.of(context).brightness == Brightness.dark;
   final c = TransitColorScheme.of(isDark);
-  final mockData = ref.read(mockDataServiceProvider);
 
   showModalBottomSheet(
     context: context,
@@ -118,13 +117,7 @@
                   ),
                   const SizedBox(height: 16),
 
-                  _SectionTitle(c: c, title: &#39;Mostrar líneas&#39;),
-                  _OperatorTree(
-                    c: c, f: f, ctrl: ctrl, mockData: mockData,
-                  ),
-                  const SizedBox(height: 16),
-
-                  _SectionTitle(c: c, title: &#39;Zonas&#39;),
+                  _SectionTitle(c: c, title: &#39;Líneas y zonas&#39;),
                   const ZoneCompanyLineTree(),
                   const SizedBox(height: 16),
 

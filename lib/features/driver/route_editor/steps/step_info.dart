@@ -50,32 +50,28 @@ class StepInfo extends StatelessWidget {
           Text('Tipo de servicio',
               style: TransitTypography.bodySecondary(c.textMid)),
           const SizedBox(height: 6),
-          Container(
-            height: 44,
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            decoration: BoxDecoration(
-              color: c.bgInput,
-              border: Border.all(color: c.border, width: 0.5),
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                value: controller.serviceType,
-                isExpanded: true,
-                dropdownColor: c.bgSurface,
-                style: TransitTypography.bodyPrimary(c.textHi),
-                items: const [
-                  DropdownMenuItem(value: 'urban', child: Text('Urbano')),
-                  DropdownMenuItem(
-                      value: 'metropolitan', child: Text('Metropolitano')),
-                  DropdownMenuItem(
-                      value: 'interurban', child: Text('Interurbano')),
-                  DropdownMenuItem(value: 'special', child: Text('Especial')),
-                ],
-                onChanged: (v) {
-                  if (v != null) controller.serviceTypeValue = v;
-                },
-              ),
+          // P2-02: ChoiceChips horizontales scrollables.
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: const [
+                _ServiceTypeChip(value: 'urban', label: 'Urbano', icon: Icons.directions_bus),
+                _ServiceTypeChip(value: 'metropolitan', label: 'Metropolitano', icon: Icons.directions_transit),
+                _ServiceTypeChip(value: 'interurban', label: 'Interurbano', icon: Icons.route),
+                _ServiceTypeChip(value: 'special', label: 'Especial', icon: Icons.star_outline),
+              ]
+                  .map((chip) => Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: _ServiceTypeChipBuilder(
+                          chip: chip,
+                          selected: controller.serviceType == chip.value,
+                          onSelected: () {
+                            controller.serviceTypeValue = chip.value;
+                          },
+                          c: c,
+                        ),
+                      ))
+                  .toList(),
             ),
           ),
           const SizedBox(height: 16),
@@ -102,6 +98,56 @@ class StepInfo extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _ServiceTypeChip {
+  const _ServiceTypeChip({
+    required this.value,
+    required this.label,
+    required this.icon,
+  });
+  final String value;
+  final String label;
+  final IconData icon;
+}
+
+class _ServiceTypeChipBuilder extends StatelessWidget {
+  const _ServiceTypeChipBuilder({
+    required this.chip,
+    required this.selected,
+    required this.onSelected,
+    required this.c,
+  });
+  final _ServiceTypeChip chip;
+  final bool selected;
+  final VoidCallback onSelected;
+  final TransitColorScheme c;
+
+  @override
+  Widget build(BuildContext context) {
+    return ChoiceChip(
+      selected: selected,
+      onSelected: (_) => onSelected(),
+      avatar: Icon(
+        chip.icon,
+        size: 18,
+        color: selected ? Colors.white : c.accent,
+      ),
+      label: Text(chip.label),
+      labelStyle: TransitTypography.bodyPrimary(
+        selected ? Colors.white : c.textHi,
+      ),
+      selectedColor: c.accent,
+      backgroundColor: c.bgRaised,
+      side: BorderSide(
+        color: selected ? c.accent : c.border,
+        width: 1,
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
       ),
     );
   }

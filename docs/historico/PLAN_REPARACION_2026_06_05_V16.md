@@ -1010,23 +1010,38 @@ Nueva pantalla `admin_requests_screen.dart` con tabs:
 Bloque coherente del editor del conductor. Toda la fase tras tener P0
 estable (porque P0-03 y P0-04 desbloquean el editor en general).
 
-### P2-01 🐛 Quitar selector de color duplicado en paso Info
+### P2-01 ✅ Quitar selector de color duplicado en paso Info
 
-**Síntoma.** En el paso Info aparecen dos pickers de color seguidos que
-hacen lo mismo.
-
-**Plan.** Borrar el segundo. Probablemente residuo de un refactor.
-
-**Σ archivos.**
-- `lib/features/driver/route_editor/steps/step_info.dart`
+> **Resuelto retroactivamente 2026-06-05.** Auditoría del archivo
+> actual `lib/features/driver/route_editor/steps/step_info.dart`
+> revela que no hay ningún selector de color (debió eliminarse en
+> una limpieza anterior). El editor "Crear ruta" alternativo
+> (`features/create_route/steps/step_basic_info.dart`) sí tiene un
+> picker pero es único (presets + botón `+` para custom — no
+> duplicado).
 
 **CA.**
-- [ ] Solo un selector de color en el paso Info.
-- [ ] El color elegido se propaga a `step_review` correctamente.
+- [x] Solo un selector de color en el paso Info (en realidad, ninguno
+      en step_info; uno solo en step_basic_info).
+- [x] El color elegido se propaga a `step_review` correctamente
+      (verificado por la suite de tests).
 
 ---
 
-### P2-02 ✨ Mejorar dropdown de tipos de servicio
+### P2-02 ✅ Mejorar dropdown de tipos de servicio
+
+> **Cerrado 2026-06-05** en branch `fix/p2-editor-quick-wins`.
+> Reemplazado `DropdownButton<String>` por `ChoiceChip` horizontales
+> scrollables (`SingleChildScrollView` + `Row`) en ambos editores:
+> - `step_basic_info.dart` (crear ruta): chips con icon + label + color
+>   `accent` en selected, `bgRaised` en unselected, borde 1px.
+> - `step_info.dart` (editor driver): mismo patrón vía `_ServiceTypeChip`
+>   + `_ServiceTypeChipBuilder` reusables.
+
+**CA.**
+- [x] Chips visibles con icono + label.
+- [x] Selección reflejada con `selected: bool` y `selectedColor`.
+- [x] Mobile portrait: `SingleChildScrollView` horizontal si no caben.
 
 **Síntoma.** El dropdown de tipo es incómodo (probablemente
 `DropdownButton` con texto plano).
@@ -1052,7 +1067,21 @@ Cada chip pintado con el color del tipo (definir paleta en
 
 ---
 
-### P2-03 🐛 Validación bloqueante del color en paso Siguiente
+### P2-03 ✅ Validación bloqueante del color en paso Siguiente
+
+> **Resuelto retroactivamente 2026-06-05.** El editor del driver actual
+> (`editor_controller.dart`) no tiene campo `color` que requiera un
+> listener especial; la validación de `canContinue` en step_info usa
+> solo `codeCtrl.text` y `nameCtrl.text` con `controller.refresh()`
+> (= `notifyListeners()`) cableado en `onChanged` de cada input. El bug
+> original del listener desapareció al simplificar el editor.
+
+**CA.**
+- [x] Rellenar todos los campos requeridos del paso → "Siguiente" se
+      habilita inmediatamente (no depende del color porque no hay).
+- [x] No requiere test unitario nuevo: la lógica trivial actual
+      (`code.isNotEmpty && name.isNotEmpty`) está cubierta por
+      `editor_controller_test.dart` indirectamente.
 
 **Síntoma.** A veces hay que cambiar el color para activar "Siguiente"
 aunque toda la info esté rellena. Bug del listener.

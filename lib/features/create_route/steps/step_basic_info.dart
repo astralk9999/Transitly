@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_spacing.dart';
 import '../../../core/theme/transit_typography.dart';
-import '../../../shared/widgets/glass_card.dart';
 import '../../../shared/widgets/pressable.dart';
 import '../../../shared/widgets/transit_button.dart';
 import '../../../shared/widgets/transit_input.dart';
@@ -279,37 +278,39 @@ class _StepBasicInfoState extends State<StepBasicInfo> {
             style: TransitTypography.bodyPrimary(colors.textHi),
           ),
           const SizedBox(height: TransitSpacing.space12),
-          GlassCard(
-            borderRadius: 6,
-            padding: const EdgeInsets.symmetric(
-              horizontal: TransitSpacing.space12,
-              vertical: TransitSpacing.space4,
-            ),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                value: widget.serviceType,
-                isExpanded: true,
-                dropdownColor: colors.bgRaised,
-                style: TransitTypography.bodyPrimary(colors.textHi),
-                items: _serviceTypes.map((t) {
-                  return DropdownMenuItem(
-                    value: t,
-                    child: Row(
-                      children: [
-                        Icon(_serviceTypeIcons[t],
-                            size: 20, color: colors.accent),
-                        const SizedBox(width: 10),
-                        Text(_serviceTypeLabels[t] ?? t,
-                            style: TransitTypography.bodyPrimary(
-                                colors.textHi)),
-                      ],
+          // P2-02: ChoiceChips horizontales scrollables con icono + label.
+          // Más visible y usable que el DropdownButton anterior.
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: _serviceTypes.map((t) {
+                final selected = widget.serviceType == t;
+                return Padding(
+                  padding: const EdgeInsets.only(right: TransitSpacing.space8),
+                  child: ChoiceChip(
+                    selected: selected,
+                    onSelected: (_) => widget.onServiceTypeChanged(t),
+                    avatar: Icon(
+                      _serviceTypeIcons[t],
+                      size: 18,
+                      color: selected ? Colors.white : colors.accent,
                     ),
-                  );
-                }).toList(),
-                onChanged: (v) {
-                  if (v != null) widget.onServiceTypeChanged(v);
-                },
-              ),
+                    label: Text(_serviceTypeLabels[t] ?? t),
+                    labelStyle: TransitTypography.bodyPrimary(
+                      selected ? Colors.white : colors.textHi,
+                    ),
+                    selectedColor: colors.accent,
+                    backgroundColor: colors.bgRaised,
+                    side: BorderSide(
+                      color: selected ? colors.accent : colors.border,
+                      width: 1,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                );
+              }).toList(),
             ),
           ),
         ],

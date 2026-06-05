@@ -7,6 +7,7 @@ import '../../../shared/models/active_trip_model.dart';
 import '../../../shared/models/enums.dart';
 import '../../../shared/models/route_model.dart';
 import '../../../shared/widgets/data_freshness_indicator.dart';
+import '../../../shared/widgets/route_source_badge.dart';
 import '../../../shared/widgets/status_badge.dart';
 
 class RouteDetailHeader extends StatelessWidget {
@@ -93,6 +94,13 @@ class RouteDetailHeader extends StatelessWidget {
                 _tripStatusColor(c, trip.status),
               ),
             StatusBadge(route.status.label, c.accent),
+            RouteSourceBadge(
+              source: route.source,
+              operatorName: route.source == RouteSource.official
+                  ? route.operatorId.toUpperCase()
+                  : null,
+              ownerName: route.ownerDisplayName,
+            ),
           ],
         ),
         const SizedBox(height: 8),

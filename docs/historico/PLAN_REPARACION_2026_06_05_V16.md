@@ -973,14 +973,20 @@ Nueva pantalla `admin_requests_screen.dart` con tabs:
 - Filtro en el mapa: "Mostrar comunitarias" (toggle, off por defecto).
 
 **Σ archivos.**
-- `lib/features/route_detail/widgets/route_detail_header.dart` (badge)
-- `lib/features/map/transit_map.dart` (filtro)
-- `lib/features/driver/route_editor/editor_controller.dart` (set flag)
+- `lib/shared/models/route_model.dart` (campos `source` + `ownerDisplayName`).
+- `lib/shared/widgets/route_source_badge.dart` (nuevo).
+- `lib/features/route_detail/widgets/route_detail_header.dart` (badge).
+- `lib/features/home/tabs/map_tab.dart` (filtro corregido a `source`).
 
 **CA.**
-- [ ] Una ruta creada por un conductor sale marcada oficial.
-- [ ] Una ruta creada por usuario común sale marcada comunidad.
-- [ ] El filtro del mapa oculta/muestra comunidad sin tocar oficiales.
+- [partial] Una ruta creada por un conductor sale marcada oficial —
+      el modelo lo soporta; el editor del conductor (editor_controller)
+      tendrá que poner `source: RouteSource.official` al persistir. Esto
+      se hará junto con P2 (rediseño editor).
+- [partial] Una ruta creada por usuario común sale marcada comunidad —
+      idéntico; pendiente del editor.
+- [x] El filtro del mapa oculta/muestra comunidad sin tocar oficiales —
+      `map_tab.dart` filtra por `r.source` correctamente.
 
 ---
 

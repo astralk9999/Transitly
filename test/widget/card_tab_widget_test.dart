@@ -5,6 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:transitly/data/nfc/nfc_balance_repository.dart';
 import 'package:transitly/data/nfc/nfc_card_service.dart';
+import 'package:transitly/data/supabase/supabase_client_provider.dart';
 import 'package:transitly/features/home/tabs/card_tab.dart';
 import 'package:transitly/shared/providers/nfc_provider.dart';
 
@@ -55,11 +56,22 @@ Future<NfcBalanceRepository> _testRepo() async {
   return NfcBalanceRepository(supabase, box);
 }
 
+// Stub global del cliente Supabase para sub-D nfcScanProvider, que escucha
+// onAuthStateChange en su construcción.
+late MockSupabaseClient _stubSupabase;
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   setUpAll(() {
     Hive.init('test/.hive_test_card_tab');
+    _stubSupabase = MockSupabaseClient();
+    final auth = MockGoTrueClient();
+    when(() => _stubSupabase.auth).thenReturn(auth);
+    when(() => auth.currentSession).thenReturn(null);
+    when(() => auth.currentUser).thenReturn(null);
+    when(() => auth.onAuthStateChange)
+        .thenAnswer((_) => const Stream<AuthState>.empty());
   });
 
   // En testWidgets el binding usa FakeAsync zone, lo que bloquea el Future
@@ -77,6 +89,7 @@ void main() {
         nfcCardServiceProvider
             .overrideWithValue(_FakeNfcCardService(available: false)),
         nfcBalanceRepositoryProvider.overrideWithValue(repo!),
+        supabaseClientProvider.overrideWithValue(_stubSupabase),
       ],
     );
     await tester.pump();
@@ -92,6 +105,7 @@ void main() {
       overrides: [
         nfcCardServiceProvider.overrideWithValue(_FakeNfcCardService()),
         nfcBalanceRepositoryProvider.overrideWithValue(repo!),
+        supabaseClientProvider.overrideWithValue(_stubSupabase),
       ],
     );
     await tester.pump();
@@ -109,6 +123,7 @@ void main() {
       overrides: [
         nfcCardServiceProvider.overrideWithValue(_FakeNfcCardService()),
         nfcBalanceRepositoryProvider.overrideWithValue(repo!),
+        supabaseClientProvider.overrideWithValue(_stubSupabase),
       ],
     );
     await tester.pump();

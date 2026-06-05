@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:transitly/data/nfc/nfc_balance_repository.dart';
 import 'package:transitly/data/nfc/nfc_card_service.dart';
+import 'package:transitly/data/supabase/supabase_client_provider.dart';
 import 'package:transitly/shared/providers/nfc_provider.dart';
 
 class MockSupabaseClient extends Mock implements SupabaseClient {}
@@ -57,6 +58,7 @@ void main() {
 
   late Box<Map<dynamic, dynamic>> box;
   late NfcBalanceRepository repo;
+  late MockSupabaseClient supabase;
 
   setUpAll(() {
     Hive.init('test/.hive_test_nfc_provider');
@@ -67,10 +69,15 @@ void main() {
         await Hive.openBox<Map<dynamic, dynamic>>('nfc_scans_test_provider');
     await box.clear();
 
-    final supabase = MockSupabaseClient();
+    supabase = MockSupabaseClient();
     final auth = MockGoTrueClient();
     when(() => supabase.auth).thenReturn(auth);
+    when(() => auth.currentSession).thenReturn(null);
     when(() => auth.currentUser).thenReturn(null);
+    // Sub-D nfcScanProvider escucha onAuthStateChange — devolvemos un
+    // stream vacío para que el listener no falle.
+    when(() => auth.onAuthStateChange)
+        .thenAnswer((_) => const Stream<AuthState>.empty());
 
     repo = NfcBalanceRepository(supabase, box);
   });
@@ -83,6 +90,10 @@ void main() {
     final container = ProviderContainer(overrides: [
       nfcCardServiceProvider.overrideWithValue(fake),
       nfcBalanceRepositoryProvider.overrideWithValue(repo),
+      // Sub-D: nfcScanProvider lee supabaseClientProvider para escuchar
+      // onAuthStateChange (switchUser). Sin override revienta con
+      // assertion '_instance._isInitialized'.
+      supabaseClientProvider.overrideWithValue(supabase),
     ]);
     addTearDown(container.dispose);
     return container;

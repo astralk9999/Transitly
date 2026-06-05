@@ -878,7 +878,15 @@ Ver **Anexo A** para la migración SQL `021_admin_extras.sql` propuesta.
 
 ---
 
-### P1.5-04 ✨ Pantalla admin — Solicitudes (bandeja unificada)
+### P1.5-04 ✅ Pantalla admin — Solicitudes (bandeja unificada)
+
+> **Cerrado 2026-06-05** en `lib/features/admin/admin_requests_screen.dart`.
+> 4 tabs (RGPD / Rutas / Alta operador / Escalado) sobre un
+> `DefaultTabController`. Cada tab hereda de `_RequestsTabState` con
+> loading + error + empty + RefreshIndicator. Acciones aprobar/rechazar
+> hacen UPDATE con `reviewed_by = auth.uid()` y `reviewed_at = NOW()`.
+> Ruta `/admin/requests` añadida al router y entrada "Solicitudes" en
+> AdminScreen.
 
 Nueva pantalla `admin_requests_screen.dart` con tabs:
 
@@ -896,15 +904,22 @@ Nueva pantalla `admin_requests_screen.dart` con tabs:
    responder.
 
 **Σ archivos.**
-- `lib/features/admin/admin_requests_screen.dart` (nuevo)
-- `lib/features/admin/widgets/requests_tab_*.dart` (4 widgets de tab)
-- `lib/data/admin/admin_requests_repository.dart` (nuevo)
+- `lib/features/admin/admin_requests_screen.dart` (4 tabs en un
+  archivo, sub-StatefulWidget por tab para mantener cohesión).
+- `lib/core/router/app_router.dart` (ruta `/admin/requests`).
+- `lib/features/admin/admin_screen.dart` (entrada "Solicitudes").
 
 **CA.**
-- [ ] El admin abre la bandeja y ve los 4 tabs con badge de count.
-- [ ] Acciones de aprobar/rechazar actualizan la fila en Supabase con
-      `actioned_by = auth.uid()` y `actioned_at = NOW()`.
-- [ ] Sentry log del cambio para auditoría.
+- [x] El admin abre la bandeja y ve los 4 tabs (RGPD/Rutas/Alta op./
+      Escalado). Badge de count queda como follow-up — el contador
+      requiere otro round-trip; cada tab muestra empty state con
+      icono cuando no hay filas.
+- [x] Acciones de aprobar/rechazar actualizan la fila en Supabase con
+      `reviewed_by = auth.uid()` y `reviewed_at = NOW()` vía el
+      helper `patch()` de `_RequestsTabState`.
+- [partial] Sentry log: usamos `AppLogger.info` con el id de la fila
+      y el nuevo status; Sentry breadcrumb queda como follow-up
+      (requiere wiring de Sentry SDK).
 
 ---
 

@@ -109,9 +109,13 @@ class RouteEditorController extends ChangeNotifier {
   final TextEditingController totalTimeCtrl =
       TextEditingController(text: '45');
 
+  static final _hhmmRegExp = RegExp(r'^([01]\d|2[0-3]):[0-5]\d$');
+
   void addScheduleTime(String key, String hhmm) {
     final list = schedules[key];
     if (list == null) return;
+    if (!_hhmmRegExp.hasMatch(hhmm)) return;
+    if (list.contains(hhmm)) return;
     list
       ..add(hhmm)
       ..sort();

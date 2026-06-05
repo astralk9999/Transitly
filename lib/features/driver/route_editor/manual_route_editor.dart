@@ -84,32 +84,29 @@ class _ManualRouteEditorState extends State<ManualRouteEditor> {
             children: [
               _StepIndicator(step: _step, c: c),
               Expanded(
-                child: ListenableBuilder(
-                  listenable: _controller,
-                  builder: (context, _) => PageView(
-                    controller: _pageController,
-                    physics: const NeverScrollableScrollPhysics(),
-                    children: [
-                      StepInfo(
-                          controller: _controller,
-                          onNext: () => _goToStep(1)),
-                      StepTrace(
-                          controller: _controller,
-                          isDark: isDark,
-                          onNext: () => _goToStep(2)),
-                      StepStops(
-                          controller: _controller,
-                          isDark: isDark,
-                          onNext: () => _goToStep(3)),
-                      StepReturn(
-                          controller: _controller,
-                          onNext: () => _goToStep(4)),
-                      StepSchedules(
-                          controller: _controller,
-                          onNext: () => _goToStep(5)),
-                      StepReview(controller: _controller, isDark: isDark),
-                    ],
-                  ),
+                child: PageView(
+                  controller: _pageController,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: [
+                    StepInfo(
+                        controller: _controller,
+                        onNext: () => _goToStep(1)),
+                    StepTrace(
+                        controller: _controller,
+                        isDark: isDark,
+                        onNext: () => _goToStep(2)),
+                    StepStops(
+                        controller: _controller,
+                        isDark: isDark,
+                        onNext: () => _goToStep(3)),
+                    StepReturn(
+                        controller: _controller,
+                        onNext: () => _goToStep(4)),
+                    StepSchedules(
+                        controller: _controller,
+                        onNext: () => _goToStep(5)),
+                    StepReview(controller: _controller, isDark: isDark),
+                  ],
                 ),
               ),
             ],

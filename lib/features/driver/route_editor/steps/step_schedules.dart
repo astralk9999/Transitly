@@ -34,7 +34,9 @@ class StepSchedules extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
 
-    return DefaultTabController(
+    return ListenableBuilder(
+      listenable: controller,
+      builder: (context, _) => DefaultTabController(
       length: 3,
       child: Column(
         children: [
@@ -98,6 +100,7 @@ class StepSchedules extends StatelessWidget {
             ),
           ),
         ],
+      ),
       ),
     );
   }

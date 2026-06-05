@@ -17,7 +17,8 @@ class HomeBottomNav extends StatelessWidget {
 
   /// Altura interna del nav bar (sin contar safe area inferior).
   /// La usan los sheets/dialogs para no quedar tapados.
-  static const double height = 56;
+  /// 64 dp cumple WCAG 2.5.5 (target size) con margen.
+  static const double height = 64;
 
   final int currentIndex;
   final ValueChanged<int> onTap;
@@ -43,7 +44,7 @@ class HomeBottomNav extends StatelessWidget {
         top: false,
         minimum: const EdgeInsets.symmetric(horizontal: 12),
         child: SizedBox(
-          height: 56,
+          height: 64,
           child: LayoutBuilder(
             builder: (context, constraints) {
               final tabWidth = constraints.maxWidth / tabs.length;
@@ -88,7 +89,8 @@ class HomeBottomNav extends StatelessWidget {
                                 behavior: HitTestBehavior.opaque,
                                 onTap: () => onTap(i),
                                 child: SizedBox(
-                                  height: 56,
+                                  width: double.infinity,
+                                  height: 64,
                                   child: Column(
                                     mainAxisAlignment:
                                         MainAxisAlignment.center,

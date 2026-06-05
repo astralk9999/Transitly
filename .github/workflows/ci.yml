@@ -251,8 +251,11 @@ jobs:
           fetch-depth: 0
 
       - uses: gitleaks/gitleaks-action@v2
-        with:
-          config-path: .gitleaks.toml
+        # v2 ya no acepta `config-path` (input retirado) y requiere
+        # GITHUB_TOKEN para escanear PRs. El action lee .gitleaks.toml de
+        # la raíz del repo por default, así que no hace falta declararlo.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   semgrep:
     name: Semgrep SAST

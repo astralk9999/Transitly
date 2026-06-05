@@ -18,6 +18,7 @@ import '../../shared/providers/privacy_consent_provider.dart';
 import '../../core/env.dart';
 import '../../shared/widgets/glass_card.dart';
 import '../../shared/widgets/gradient_text.dart';
+import '../../shared/widgets/smoke_background.dart';
 
 class PrivacyScreen extends ConsumerStatefulWidget {
   const PrivacyScreen({super.key});
@@ -31,6 +32,8 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen> {
   bool _crashReporting = true;
   bool _marketing = false;
   bool _loaded = false;
+  bool _exporting = false;
+  bool _deleting = false;
 
   @override
   void initState() {
@@ -77,6 +80,8 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen> {
     final authState = ref.read(authStateProvider).valueOrNull;
     if (authState is! AuthAuthenticated) return;
     final l10n = AppLocalizations.of(context);
+    if (!mounted) return;
+    setState(() => _exporting = true);
     try {
       final client = ref.read(supabaseClientProvider);
       await client.from('data_exports').insert({
@@ -89,15 +94,32 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen> {
           body: {'user_id': authState.user.id},
         );
       } catch (e) {
-        AppLogger.warn('Privacy', 'generate_data_export edge function invoke failed', e);
+        AppLogger.warn('Privacy',
+            'generate_data_export edge function invoke failed', e);
       }
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.privacyDataExportRequested)),
-        );
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(SnackBar(
+            content: Text(l10n.privacyDataExportRequested),
+            duration: const Duration(seconds: 4),
+          ));
       }
     } catch (e, st) {
       AppLogger.error('Privacy', 'data export request failed', e, st);
+      if (mounted) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        final c = TransitColorScheme.of(isDark);
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(SnackBar(
+            backgroundColor: c.stateDelay,
+            duration: const Duration(seconds: 6),
+            content: Text('Error solicitando exportación: $e'),
+          ));
+      }
+    } finally {
+      if (mounted) setState(() => _exporting = false);
     }
   }
 
@@ -131,6 +153,8 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen> {
     );
 
     if (confirmed != true) return;
+    if (!mounted) return;
+    setState(() => _deleting = true);
 
     try {
       final client = ref.read(supabaseClientProvider);
@@ -140,21 +164,38 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen> {
         'user_id': authState.user.id,
         'status': 'requested',
         'requested_at': DateTime.now().toUtc().toIso8601String(),
-        'scheduled_at':
-            DateTime.now().toUtc().add(const Duration(days: 30)).toIso8601String(),
+        'scheduled_at': DateTime.now()
+            .toUtc()
+            .add(const Duration(days: 30))
+            .toIso8601String(),
       });
       try {
         await client.functions.invoke('delete_user');
       } catch (e) {
-        AppLogger.warn('Privacy', 'delete_user edge function invoke failed', e);
+        AppLogger.warn(
+            'Privacy', 'delete_user edge function invoke failed', e);
       }
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.privacyDeletionRequested)),
-        );
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(SnackBar(
+            content: Text(l10n.privacyDeletionRequested),
+            duration: const Duration(seconds: 5),
+          ));
       }
     } catch (e, st) {
       AppLogger.error('Privacy', 'data deletion request failed', e, st);
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(SnackBar(
+            backgroundColor: c.stateDelay,
+            duration: const Duration(seconds: 6),
+            content: Text('Error solicitando borrado: $e'),
+          ));
+      }
+    } finally {
+      if (mounted) setState(() => _deleting = false);
     }
   }
 
@@ -172,7 +213,13 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen> {
         foregroundColor: c.textHi,
         elevation: 0,
       ),
-      body: ListView(
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: SmokeBackground(color: c.accent, isDark: isDark),
+          ),
+          SafeArea(
+            child: ListView(
         padding: const EdgeInsets.all(16),
         children: [
           // ── Consents Section ──
@@ -270,6 +317,7 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen> {
                   icon: Icons.download_outlined,
                   label: l10n.privacyDownloadData,
                   c: c,
+                  loading: _exporting,
                   onTap: _requestDataExport,
                 ),
                 const SizedBox(height: 12),
@@ -283,6 +331,7 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen> {
                   label: l10n.privacyRequestDeletion,
                   c: c,
                   color: c.stateCancelled,
+                  loading: _deleting,
                   onTap: _showDeletionRequestDialog,
                 ),
               ],
@@ -333,6 +382,9 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen> {
             ),
           ),
           const SizedBox(height: 40),
+        ],
+            ),
+          ),
         ],
       ),
     );
@@ -393,6 +445,7 @@ class _ActionTile extends StatelessWidget {
     required this.c,
     this.color,
     this.onTap,
+    this.loading = false,
   });
 
   final IconData icon;
@@ -400,13 +453,14 @@ class _ActionTile extends StatelessWidget {
   final TransitColorScheme c;
   final Color? color;
   final VoidCallback? onTap;
+  final bool loading;
 
   @override
   Widget build(BuildContext context) {
     final inkColor = color ?? c.accent;
     return InkWell(
       borderRadius: BorderRadius.circular(8),
-      onTap: onTap,
+      onTap: loading ? null : onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 4),
         child: Row(
@@ -417,7 +471,17 @@ class _ActionTile extends StatelessWidget {
               child: Text(label,
                   style: TransitTypography.bodyPrimary(inkColor)),
             ),
-            Icon(Icons.chevron_right, size: 20, color: inkColor),
+            if (loading)
+              SizedBox(
+                width: 18,
+                height: 18,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(inkColor),
+                ),
+              )
+            else
+              Icon(Icons.chevron_right, size: 20, color: inkColor),
           ],
         ),
       ),

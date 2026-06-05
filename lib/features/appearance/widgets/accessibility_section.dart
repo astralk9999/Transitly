@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../l10n/generated/app_localizations.dart';
-import '../../../shared/models/user_preferences.dart';
 import '../../../shared/providers/theme_notifier.dart';
 import '../../../shared/widgets/glass_card.dart';
 import '../../../shared/widgets/gradient_text.dart';
@@ -15,88 +14,8 @@ class AccessibilitySection extends ConsumerWidget {
   final TransitColorScheme c;
   final AppLocalizations l10n;
 
-  String _cbmLabel(ColorBlindMode mode) {
-    return switch (mode) {
-      ColorBlindMode.none => l10n.appearanceColorBlindNone,
-      ColorBlindMode.protanopia => l10n.appearanceColorBlindProtanopia,
-      ColorBlindMode.deuteranopia => l10n.appearanceColorBlindDeuteranopia,
-      ColorBlindMode.tritanopia => l10n.appearanceColorBlindTritanopia,
-      ColorBlindMode.protanomaly => l10n.appearanceColorBlindProtanomaly,
-      ColorBlindMode.deuteranomaly => l10n.appearanceColorBlindDeuteranomaly,
-      ColorBlindMode.tritanomaly => l10n.appearanceColorBlindTritanomaly,
-      ColorBlindMode.achromatopsia => l10n.appearanceColorBlindAchromatopsia,
-      ColorBlindMode.achromatomaly => l10n.appearanceColorBlindAchromatomaly,
-    };
-  }
-
-  void _showCbmSheet(BuildContext context, WidgetRef ref, TransitColorScheme c) {
-    final cbm = ref.read(themeNotifierProvider).colorBlindMode;
-    showModalBottomSheet<ColorBlindMode>(
-      context: context,
-      backgroundColor: c.bgRaised,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (sheetContext) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(height: 12),
-              Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: c.border,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    l10n.appearanceColorBlindSheetTitle,
-                    style: TransitTypography.sectionLabel(c.textHi),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 8),
-              Flexible(
-                child: ListView(
-                  shrinkWrap: true,
-                  children: ColorBlindMode.values.map((mode) {
-                    return RadioListTile<ColorBlindMode>(
-                      value: mode,
-                      groupValue: cbm,
-                      activeColor: c.accent,
-                      title: Text(
-                        _cbmLabel(mode),
-                        style: TransitTypography.bodyPrimary(c.textHi),
-                      ),
-                      onChanged: (v) {
-                        if (v != null) {
-                          ref.read(themeNotifierProvider).colorBlindMode = v;
-                        }
-                        Navigator.pop(sheetContext, v);
-                      },
-                    );
-                  }).toList(),
-                ),
-              ),
-              const SizedBox(height: 12),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final cbm =
-        ref.watch(themeNotifierProvider.select((n) => n.colorBlindMode));
     final reduceMotion =
         ref.watch(themeNotifierProvider.select((n) => n.reduceMotion));
     final highContrast =
@@ -120,47 +39,6 @@ class AccessibilitySection extends ConsumerWidget {
             children: [
               Expanded(
                 child: Text(
-                  l10n.appearanceColorBlindMode,
-                  style: TransitTypography.bodyPrimary(c.textHi),
-                ),
-              ),
-              const SizedBox(width: 8),
-              GestureDetector(
-                onTap: () => _showCbmSheet(context, ref, c),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    color: c.bgSurface.withValues(alpha: 0.6),
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: c.border),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        _cbmLabel(cbm),
-                        style: TransitTypography.bodySmall(c.textHi),
-                      ),
-                      const SizedBox(width: 4),
-                      Icon(
-                        Icons.unfold_more,
-                        size: 16,
-                        color: c.textMid,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: Text(
                   l10n.appearanceReduceMotion,
                   style: TransitTypography.bodyPrimary(c.textHi),
                 ),
@@ -175,52 +53,69 @@ class AccessibilitySection extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 12),
-          Row(
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      l10n.appearanceHighContrast,
-                      style: TransitTypography.bodyPrimary(c.textHi),
-                    ),
-                    Text(
-                      l10n.appearanceHighContrastSubtitle,
-                      style: TransitTypography.bodySmall(c.textLo),
-                    ),
-                  ],
-                ),
-              ),
-              Switch.adaptive(
-                value: highContrast,
-                activeTrackColor: c.accent,
-            onChanged: (v) {
-              ref.read(themeNotifierProvider).highContrast = v;
-            },
-          ),
-          if (highContrast)
-            Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: Row(
+              Row(
                 children: [
                   Expanded(
-                    child: Text(
-                      l10n.appearanceHcPreserveAccent,
-                      style: TransitTypography.bodySecondary(c.textHi),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          l10n.appearanceHighContrast,
+                          style: TransitTypography.bodyPrimary(c.textHi),
+                        ),
+                        Text(
+                          l10n.appearanceHighContrastSubtitle,
+                          style: TransitTypography.bodySmall(c.textLo),
+                        ),
+                      ],
                     ),
                   ),
                   Switch.adaptive(
-                    value: ref.watch(themeNotifierProvider
-                        .select((n) => n.hcPreserveAccent)),
+                    value: highContrast,
                     activeTrackColor: c.accent,
                     onChanged: (v) {
-                      ref.read(themeNotifierProvider).hcPreserveAccent = v;
+                      ref.read(themeNotifierProvider).highContrast = v;
                     },
                   ),
                 ],
               ),
-            ),
+              if (highContrast)
+                Padding(
+                  padding: const EdgeInsets.only(top: 12, left: 4),
+                  child: Row(
+                    children: [
+                      Icon(Icons.subdirectory_arrow_right,
+                          size: 16, color: c.textLo),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              l10n.appearanceHcPreserveAccent,
+                              style: TransitTypography.bodySecondary(c.textHi),
+                            ),
+                            Text(
+                              'Si está OFF el alto contraste usa B/N puro.',
+                              style: TransitTypography.bodySmall(c.textLo),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Switch.adaptive(
+                        value: ref.watch(themeNotifierProvider
+                            .select((n) => n.hcPreserveAccent)),
+                        activeTrackColor: c.accent,
+                        onChanged: (v) {
+                          ref.read(themeNotifierProvider).hcPreserveAccent = v;
+                        },
+                      ),
+                    ],
+                  ),
+                ),
             ],
           ),
         ],

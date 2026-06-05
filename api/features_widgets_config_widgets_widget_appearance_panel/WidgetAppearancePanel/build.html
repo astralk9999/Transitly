@@ -178,9 +178,35 @@ Widget build(BuildContext context, WidgetRef ref) {
         const SizedBox(height: 8),
         Text(
           &#39;La frecuencia se aplica al refresco periódico cuando esté &#39;
-          &#39;disponible; por ahora el widget se actualiza al abrir la app &#39;
-          &#39;y con el botón Refrescar &#47; TEST.&#39;,
+          &#39;disponible; usa &quot;Refrescar ahora&quot; para forzar la actualización.&#39;,
           style: TransitTypography.bodySmall(c.textLo),
+        ),
+        const SizedBox(height: 14),
+        SizedBox(
+          width: double.infinity,
+          height: 48,
+          child: FilledButton.icon(
+            onPressed: () async {
+              final messenger = ScaffoldMessenger.of(context);
+              final container = ProviderScope.containerOf(context);
+              final ok = await WidgetRefreshService.refreshNow(container);
+              if (!context.mounted) return;
+              messenger.showSnackBar(
+                SnackBar(
+                  content: Text(ok
+                      ? &#39;Widgets refrescados&#39;
+                      : &#39;No se pudo refrescar — configura tu línea habitual primero&#39;),
+                  duration: const Duration(seconds: 2),
+                ),
+              );
+            },
+            icon: const Icon(Icons.refresh, size: 20),
+            label: const Text(&#39;REFRESCAR AHORA&#39;),
+            style: FilledButton.styleFrom(
+              backgroundColor: c.accent,
+              foregroundColor: Colors.white,
+            ),
+          ),
         ),
       ],
     ),

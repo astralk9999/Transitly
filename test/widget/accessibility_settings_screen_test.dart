@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hive/hive.dart';
 import 'package:transitly/features/profile/accessibility_settings_screen.dart';
 import 'package:transitly/shared/providers/theme_notifier.dart';
 import 'package:transitly/shared/providers/theme_provider.dart';
@@ -11,6 +14,12 @@ import '../helpers/pump_app.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+
+  setUpAll(() async {
+    // ThemeNotifier ahora persiste themeMode en Hive (sub-A P0-05).
+    final dir = await Directory.systemTemp.createTemp('hive_a11y_screen_test_');
+    Hive.init(dir.path);
+  });
 
   ThemeNotifier testNotifier() =>
       ThemeNotifier(prefsRepo: mockUserPreferencesRepo());
@@ -70,7 +79,9 @@ void main() {
       );
       await tester.pump();
 
-      expect(container.read(themeModeProvider), ThemeMode.dark);
+      // Tras sub-A (P0-05), themeMode pasó de StateProvider dark-by-default
+      // a derivado del ThemeNotifier cuyo default es ThemeMode.system.
+      expect(container.read(themeModeProvider), ThemeMode.system);
 
       await tester.tap(find.text('Claro'));
       await tester.pump();

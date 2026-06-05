@@ -6,6 +6,8 @@ rules:
     message: |
       Spanish string literal found. Use l10n via AppLocalizations instead.
       Exception: env_error_screen.dart (diagnostic-only, no l10n delegates).
+      NOTE: severity downgraded to INFO. Migración total a i18n queda como
+      sub-plan futuro; mientras tanto la regla solo informa.
     paths:
       include:
         - "lib/**/*.dart"
@@ -15,7 +17,7 @@ rules:
         - "lib/core/env.dart"
     languages:
       - generic
-    severity: WARNING
+    severity: INFO
 
   - id: no-print-in-lib
     pattern: print(

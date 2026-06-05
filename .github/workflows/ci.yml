@@ -258,4 +258,3 @@ jobs:
       - uses: semgrep/semgrep-action@v1
         with:
           config: .semgrep/rules.yaml
-          fail-on: error

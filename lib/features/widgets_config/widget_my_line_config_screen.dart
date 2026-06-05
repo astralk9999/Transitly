@@ -12,6 +12,7 @@ import '../../shared/models/models.dart';
 import '../../shared/providers/user_favorites_provider.dart';
 import '../../shared/widgets/glass_card.dart';
 import '../../shared/widgets/transit_button.dart';
+import 'widgets/widget_appearance_panel.dart';
 
 class WidgetMyLineConfigScreen extends ConsumerWidget {
   const WidgetMyLineConfigScreen({super.key});
@@ -120,6 +121,8 @@ class WidgetMyLineConfigScreen extends ConsumerWidget {
                   ),
                 );
               }),
+            const SizedBox(height: 24),
+            const WidgetAppearancePanel(),
           ],
         ),
       ),

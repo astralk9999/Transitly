@@ -8,6 +8,7 @@ import '../../l10n/generated/app_localizations.dart';
 import '../../shared/providers/nfc_provider.dart';
 import '../../shared/widgets/glass_card.dart';
 import '../../shared/widgets/transit_button.dart';
+import 'widgets/widget_appearance_panel.dart';
 
 class WidgetNfcBalanceConfigScreen extends ConsumerWidget {
   const WidgetNfcBalanceConfigScreen({super.key});
@@ -72,6 +73,8 @@ class WidgetNfcBalanceConfigScreen extends ConsumerWidget {
                 onPressed: () => context.go('/home/tarjeta'),
               ),
             ),
+            const SizedBox(height: 24),
+            const WidgetAppearancePanel(),
           ],
         ),
       ),

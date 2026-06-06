@@ -29,8 +29,34 @@ class HomeShell extends ConsumerStatefulWidget {
   ConsumerState<HomeShell> createState() => _HomeShellState();
 }
 
-class _HomeShellState extends ConsumerState<HomeShell> {
+class _HomeShellState extends ConsumerState<HomeShell>
+    with WidgetsBindingObserver {
   DateTime? _lastBackPress;
+
+  @override
+  void initState() {
+    super.initState();
+    // Observer de cambios del sistema (rotación, density, etc).
+    // Sin esto, al rotar la PRIMERA vez la app, el navbar se quedaba
+    // renderizado con el size obsoleto durante un frame y se veía mal
+    // antes de corregirse en el siguiente rebuild.
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeMetrics() {
+    // Fuerza rebuild inmediato del shell al cambiar las métricas del
+    // sistema (rotación / cambio de density). Antes había un flash en
+    // el navbar al rotar la primera vez porque MediaQuery.sizeOf llegaba
+    // un frame tarde.
+    if (mounted) setState(() {});
+  }
 
   void _onTap(int index) {
     widget.navigationShell.goBranch(
@@ -73,9 +99,13 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     final unreadCount = ref.watch(unreadCountProvider);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
+    // Usamos el orientation del MediaQuery (no la inferencia
+    // size.width>size.height) porque el orientation se reporta
+    // sincronizado con el ciclo de pintura del sistema; con size hay un
+    // frame de desfase al rotar la primera vez tras lanzar la app.
+    final orientation = MediaQuery.orientationOf(context);
     final screen = ResponsiveScaffold.screenSizeOf(context);
-    final mq = MediaQuery.sizeOf(context);
-    final isLandscape = mq.width > mq.height;
+    final isLandscape = orientation == Orientation.landscape;
     // Side rail si: no es móvil compact, O el dispositivo está en
     // landscape (móvil rotado, tablet, web). Así el menú se adapta
     // automáticamente al girar el dispositivo.

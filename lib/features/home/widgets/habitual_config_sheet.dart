@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../data/mock/mock_data_service.dart';
+import '../../../data/widgets_native/widget_refresh_service.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/models/route_model.dart';
 import '../../../shared/models/stop_model.dart';
@@ -225,12 +228,23 @@ void showHabitualConfigSheet(BuildContext context, WidgetRef ref) {
                 TransitButton(
                   label: l10n.actionSave,
                   onPressed: canSave
-                      ? () {
-                          ref
+                      ? () async {
+                          // Capturamos container y nav antes del await
+                          // para no usar BuildContext tras async gap.
+                          final container =
+                              ProviderScope.containerOf(ctx);
+                          final nav = Navigator.of(ctx);
+                          await ref
                               .read(homeHabitualConfigProvider.notifier)
                               .save(selectedRoute.value!.id,
                                   selectedStop.value!.id);
-                          Navigator.of(ctx).pop();
+                          // Refresca los widgets nativos inmediatamente
+                          // tras guardar (antes el usuario tenía que
+                          // esperar 30 min al sistema Android para verlos
+                          // actualizados con la nueva línea habitual).
+                          unawaited(WidgetRefreshService.refreshNow(
+                              container));
+                          nav.pop();
                         }
                       : null,
                 ),

@@ -56,6 +56,12 @@ class _MapTabState extends ConsumerState<MapTab>
   final _sheetController = DraggableScrollableController();
   final _scrollController = ScrollController();
   String? _selectedRouteId;
+  // B1.4: id de la última selección de búsqueda procesada por el mapa.
+  // Necesario porque ref.listen no dispara cuando llegamos al MapTab
+  // por primera vez con un valor ya escrito en el provider (cambio de
+  // tab desde el buscador del home). Comparando en build sí lo
+  // detectamos.
+  String? _handledSearchSelectionId;
   ServiceType? _serviceTypeFilter;
   bool _didInitialCenter = false;
   bool _loadingCenter = false;
@@ -458,43 +464,52 @@ class _MapTabState extends ConsumerState<MapTab>
 
     final currentKey = '${isDark ? "d" : "l"}-$mapStyle';
 
-    // Sub B1.1/B1.3: cuando el buscador escribe una selección, centramos
-    // el mapa en ella con un zoom alto. El SearchPinLayer pinta el pin.
-    // Si la selección es de tipo línea (routeId != null), además marcamos
-    // _selectedRouteId para que la polilínea se resalte visualmente.
-    ref.listen(searchSelectionProvider, (prev, next) {
-      if (next != null && prev?.id != next.id) {
-        // Si es una línea, también la resaltamos visualmente igual que
-        // si la hubiesen pulsado en el mapa.
-        if (next.routeId != null && next.routeId != _selectedRouteId) {
-          setState(() => _selectedRouteId = next.routeId);
+    // B1.4: en lugar de ref.listen (que no dispara cuando el valor ya
+    // estaba escrito antes de que el MapTab se construya por primera
+    // vez), comparamos id procesado vs id actual del provider en cada
+    // build. Esto detecta TANTO la primera selección al cambiar de tab
+    // como las subsecuentes.
+    final currentSearchSel = ref.watch(searchSelectionProvider);
+    if (currentSearchSel?.id != _handledSearchSelectionId) {
+      _handledSearchSelectionId = currentSearchSel?.id;
+      if (currentSearchSel != null) {
+        // Si es una línea, además resaltamos la polilínea como cuando
+        // se pulsa en el mapa.
+        if (currentSearchSel.routeId != null &&
+            currentSearchSel.routeId != _selectedRouteId) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) {
+              setState(() => _selectedRouteId = currentSearchSel.routeId);
+            }
+          });
         }
-        // Delay 250ms para asegurar que el mapa está montado cuando se
-        // navega desde el buscador (cambio de tab). El primer intento
-        // sin delay fallaba silenciosamente porque el MapController no
-        // tenía camera inicializada todavía.
-        Future.delayed(const Duration(milliseconds: 250), () {
+        // Programamos el move tras varios postFrameCallbacks porque el
+        // MapController necesita estar montado y con camera disponible.
+        // Si falla, reintentamos con delays escalonados.
+        void tryMove([int attempt = 0]) {
           if (!mounted) return;
           try {
-            _mapController.move(next.position, 17);
+            _mapController.move(currentSearchSel.position, 17);
           } catch (_) {
-            // Si todavía falla, reintenta 500ms después.
-            Future.delayed(const Duration(milliseconds: 500), () {
-              if (!mounted) return;
-              try {
-                _mapController.move(next.position, 17);
-              } catch (_) {}
-            });
+            if (attempt < 4) {
+              Future.delayed(
+                Duration(milliseconds: 100 * (attempt + 1)),
+                () => tryMove(attempt + 1),
+              );
+            }
+          }
+        }
+        WidgetsBinding.instance.addPostFrameCallback((_) => tryMove());
+      } else {
+        // Selección limpiada → si había una línea seleccionada por
+        // búsqueda, también la deseleccionamos.
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted && _selectedRouteId != null) {
+            setState(() => _selectedRouteId = null);
           }
         });
-      } else if (next == null && prev?.routeId != null) {
-        // Al cerrar la selección, quitamos también el resaltado de
-        // línea si lo había.
-        if (_selectedRouteId == prev?.routeId) {
-          setState(() => _selectedRouteId = null);
-        }
       }
-    });
+    }
 
     ref.listen(centerOnStopIdProvider, (prev, next) {
       if (next != null) {

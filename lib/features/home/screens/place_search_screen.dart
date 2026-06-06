@@ -138,8 +138,33 @@ class _PlaceSearchScreenState extends ConsumerState<PlaceSearchScreen> {
                   onResultTap: (result) {
                     switch (result.type) {
                       case MapSearchResultType.route:
-                        context.pop();
-                        context.push('/route/${result.route!.id}');
+                        // B1.4: la línea NO abre el detalle directo.
+                        // En su lugar marca pin + resalta polilínea +
+                        // pushPath en la tarjeta para "Ver detalles".
+                        final routeId = result.route?.id;
+                        if (result.lat != null &&
+                            result.lng != null &&
+                            routeId != null) {
+                          ref
+                              .read(searchSelectionProvider.notifier)
+                              .state = SearchSelection(
+                            id: 'route-$routeId',
+                            position: LatLng(result.lat!, result.lng!),
+                            title: 'Línea ${result.route?.code ?? result.title}',
+                            subtitle:
+                                result.route?.name ?? result.subtitle,
+                            icon: Icons.directions_bus,
+                            color: result.route?.routeColor,
+                            pushPath: '/route/$routeId',
+                            routeId: routeId,
+                          );
+                          context.pop();
+                          context.go('/home/mapa');
+                        } else {
+                          // Fallback: si no hay posición, push directo.
+                          context.pop();
+                          context.push('/route/${result.route!.id}');
+                        }
                       case MapSearchResultType.stop:
                         // Guardamos la selección como marcador antes de
                         // navegar al mapa. El MapTab lo lee y centra +

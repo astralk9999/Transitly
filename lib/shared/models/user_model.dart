@@ -25,25 +25,42 @@ abstract class UserModel with _$UserModel {
   bool get isAdmin => role == UserRole.admin;
 
   static UserModel fromJson(Map<String, dynamic> j) {
+    // La tabla `profiles` (Postgres) usa snake_case. Algunos sitios
+    // legacy todavía mandan camelCase, así que aceptamos los dos.
     final roleStr = j['role'] as String? ?? 'passenger';
     final role = UserRole.values.firstWhere(
       (r) => r.name == roleStr,
       orElse: () => UserRole.passenger,
     );
 
+    final score =
+        (j['reputation_score'] ?? j['reputation'] ?? 0) as int;
+    // reputation_level en BD es INT (0..6). El enum dart solo tiene 4
+    // valores (new_/contributor/trusted/expert), así que derivamos
+    // desde el score para mantener el badge coherente.
+    final level = _levelFromScore(score);
+
     return UserModel(
       id: j['id'] as String,
-      name: j['displayName'] as String? ?? j['username'] as String? ?? '',
+      name: (j['display_name'] ?? j['displayName'] ?? j['username'] ?? '')
+          as String,
       email: j['email'] as String? ?? '',
       role: role,
-      driverOperatorIds: roleStr == 'driver' ? (j['operator'] != null
-          ? <String>[j['operator'] as String]
-          : const <String>[])
+      driverOperatorIds: roleStr == 'driver'
+          ? (j['operator'] != null
+              ? <String>[j['operator'] as String]
+              : const <String>[])
           : const <String>[],
-      reputationScore: j['reputation'] as int? ?? 0,
-      reputationLevel: ReputationLevel.fromString(
-          j['reputationLevel'] as String? ?? 'new'),
+      reputationScore: score,
+      reputationLevel: level,
     );
+  }
+
+  static ReputationLevel _levelFromScore(int score) {
+    if (score >= 500) return ReputationLevel.expert;
+    if (score >= 50) return ReputationLevel.trusted;
+    if (score >= 10) return ReputationLevel.contributor;
+    return ReputationLevel.new_;
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{

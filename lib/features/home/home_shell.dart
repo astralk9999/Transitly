@@ -92,6 +92,18 @@ class _HomeShellState extends ConsumerState<HomeShell>
 
   @override
   Widget build(BuildContext context) {
+    // OrientationBuilder fuerza un rebuild síncrono con el cambio de
+    // orientation reportado por el LayoutBuilder de Flutter. Antes el
+    // shell leía MediaQuery.sizeOf(context) y al rotar la primera vez
+    // tras lanzar la app había un frame con valores obsoletos que dejaba
+    // ver brevemente el BottomNav antiguo antes de transformarse al
+    // SideNav. Con OrientationBuilder la transición es 1 frame.
+    return OrientationBuilder(
+      builder: (context, orientation) => _buildContent(context, orientation),
+    );
+  }
+
+  Widget _buildContent(BuildContext context, Orientation orientation) {
     final isAuth =
         ref.watch(authStateProvider).valueOrNull is AuthAuthenticated;
     final isDriver =
@@ -99,11 +111,6 @@ class _HomeShellState extends ConsumerState<HomeShell>
     final unreadCount = ref.watch(unreadCountProvider);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
-    // Usamos el orientation del MediaQuery (no la inferencia
-    // size.width>size.height) porque el orientation se reporta
-    // sincronizado con el ciclo de pintura del sistema; con size hay un
-    // frame de desfase al rotar la primera vez tras lanzar la app.
-    final orientation = MediaQuery.orientationOf(context);
     final screen = ResponsiveScaffold.screenSizeOf(context);
     final isLandscape = orientation == Orientation.landscape;
     // Side rail si: no es móvil compact, O el dispositivo está en

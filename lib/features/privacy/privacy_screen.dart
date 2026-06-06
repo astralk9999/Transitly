@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/utils/app_logger.dart';
 import '../../core/utils/sentry_setup.dart';
@@ -16,7 +16,6 @@ import '../../data/auth/auth_repository.dart';
 import '../../data/supabase/supabase_client_provider.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../shared/providers/privacy_consent_provider.dart';
-import '../../core/env.dart';
 import '../../shared/widgets/glass_card.dart';
 import '../../shared/widgets/gradient_text.dart';
 import '../../shared/widgets/smoke_background.dart';
@@ -364,8 +363,9 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen> {
                   icon: Icons.description_outlined,
                   label: l10n.privacyTermsOfService,
                   c: c,
-                  onTap: () => launchUrl(Uri.parse(Env.tosUrl),
-                      mode: LaunchMode.externalApplication),
+                  // B9: legal in-app — el dominio público no existe
+                  // y abrir la URL externa mostraba página rota.
+                  onTap: () => context.push('/legal/terms'),
                 ),
                 const SizedBox(height: 12),
                 Divider(
@@ -377,8 +377,7 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen> {
                   icon: Icons.shield_outlined,
                   label: l10n.privacyPrivacyPolicy,
                   c: c,
-                  onTap: () => launchUrl(Uri.parse(Env.privacyUrl),
-                      mode: LaunchMode.externalApplication),
+                  onTap: () => context.push('/legal/privacy'),
                 ),
               ],
             ),

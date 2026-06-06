@@ -65,6 +65,7 @@ import '../../features/suggestions/suggestion_contribute_screen.dart';
 import '../../features/suggestions/suggestion_detail_screen.dart';
 import '../../features/notifications/notifications_screen.dart';
 import '../../features/route_planner/route_plan_results_screen.dart';
+import '../../features/legal/legal_screen.dart';
 import '../../features/privacy/privacy_screen.dart';
 import '../../features/widgets_config/widgets_config_screen.dart';
 import '../../features/widgets_config/widget_next_bus_config_screen.dart';
@@ -379,6 +380,16 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/profile/privacy',
         pageBuilder: (context, state) =>
             _slide(state, const PrivacyScreen()),
+      ),
+      GoRoute(
+        path: '/legal/terms',
+        pageBuilder: (context, state) =>
+            _slide(state, const LegalScreen(doc: LegalDoc.terms)),
+      ),
+      GoRoute(
+        path: '/legal/privacy',
+        pageBuilder: (context, state) =>
+            _slide(state, const LegalScreen(doc: LegalDoc.privacy)),
       ),
       GoRoute(
         path: '/profile/reputation',

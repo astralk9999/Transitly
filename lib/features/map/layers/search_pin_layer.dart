@@ -287,11 +287,20 @@ class _PinPainter extends CustomPainter {
       ..color = Colors.black.withValues(alpha: 0.25)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3);
 
+    // La punta del triángulo queda EXACTAMENTE en `size.height` (bottom
+    // del SizedBox del marker), que es donde el flutter_map ancla el
+    // LatLng al usar alignment: bottomCenter. Antes terminaba 2px
+    // arriba (`size.height - 2`) por dejar hueco para la sombra
+    // elíptica; eso hacía que el LatLng real quedase 2px por debajo de
+    // la punta visible y al alejar el zoom el pin parecía moverse.
+    final tipY = size.height;
+
+    // Sombra justo encima de la punta, dentro del SizedBox.
     canvas.drawOval(
       Rect.fromCenter(
-        center: Offset(size.width / 2, size.height - 2),
-        width: size.width * 0.7,
-        height: 6,
+        center: Offset(size.width / 2, tipY - 3),
+        width: size.width * 0.55,
+        height: 4,
       ),
       shadow,
     );
@@ -302,7 +311,7 @@ class _PinPainter extends CustomPainter {
     final cy = radius + 1;
     path.addOval(Rect.fromCircle(center: Offset(cx, cy), radius: radius));
     path.moveTo(cx - radius * 0.55, cy + radius * 0.85);
-    path.lineTo(cx, size.height - 2);
+    path.lineTo(cx, tipY);
     path.lineTo(cx + radius * 0.55, cy + radius * 0.85);
     path.close();
 

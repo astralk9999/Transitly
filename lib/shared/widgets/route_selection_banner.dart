@@ -19,6 +19,7 @@ class RouteSelectionBanner extends StatelessWidget {
     super.key,
     required this.route,
     this.onClose,
+    this.onTap,
   });
 
   /// `null` = banner oculto.
@@ -26,6 +27,10 @@ class RouteSelectionBanner extends StatelessWidget {
 
   /// Callback opcional para el botón de cerrar.
   final VoidCallback? onClose;
+
+  /// Callback opcional al tocar el cuerpo del banner (badge + nombre).
+  /// El botón de cerrar mantiene su propio handler independiente.
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -78,53 +83,72 @@ class RouteSelectionBanner extends StatelessWidget {
                   padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
                   child: Row(
                     children: [
-                      // Badge cuadrado con código + color de la línea.
-                      Container(
-                        constraints:
-                            const BoxConstraints(minWidth: 52, maxWidth: 72),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: route!.routeColor.withValues(alpha: 0.22),
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                            color: route!.routeColor.withValues(alpha: 0.65),
-                            width: 1.5,
-                          ),
-                        ),
-                        child: Center(
-                          child: FittedBox(
-                            fit: BoxFit.scaleDown,
-                            child: Text(
-                              route!.code,
-                              style: TransitTypography.routeCode(
-                                  route!.routeColor),
-                              maxLines: 1,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      // Nombre de la línea.
+                      // Badge + nombre = zona tapable que abre detalle.
+                      // El botón cerrar queda fuera para no canibalizar
+                      // su propio gesto.
                       Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              route!.name.toUpperCase(),
-                              style: TransitTypography.routeName(c.textHi),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            const SizedBox(height: 2),
-                            Text(
-                              'Línea seleccionada · toca para deseleccionar',
-                              style: TransitTypography.bodySmall(c.textLo),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ],
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: onTap,
+                          child: Row(
+                            children: [
+                              // Badge cuadrado con código + color.
+                              Container(
+                                constraints: const BoxConstraints(
+                                    minWidth: 52, maxWidth: 72),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 8),
+                                decoration: BoxDecoration(
+                                  color: route!.routeColor
+                                      .withValues(alpha: 0.22),
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color: route!.routeColor
+                                        .withValues(alpha: 0.65),
+                                    width: 1.5,
+                                  ),
+                                ),
+                                child: Center(
+                                  child: FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Text(
+                                      route!.code,
+                                      style: TransitTypography.routeCode(
+                                          route!.routeColor),
+                                      maxLines: 1,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              // Nombre de la línea.
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      route!.name.toUpperCase(),
+                                      style: TransitTypography.routeName(
+                                          c.textHi),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      onTap != null
+                                          ? 'Toca para ver detalles'
+                                          : 'Línea seleccionada',
+                                      style: TransitTypography.bodySmall(
+                                          c.textLo),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       // Botón cerrar.

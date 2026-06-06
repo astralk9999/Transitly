@@ -629,6 +629,9 @@ class _MapTabState extends ConsumerState<MapTab>
                         .read(mockDataServiceProvider)
                         .getRouteById(_selectedRouteId!),
                 onClose: _clearSelection,
+                onTap: _selectedRouteId == null
+                    ? null
+                    : () => context.push('/route/$_selectedRouteId'),
               ),
             ),
           ),

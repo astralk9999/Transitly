@@ -1,10 +1,10 @@
+import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_spacing.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../shared/widgets/pressable.dart';
-import '../../../shared/widgets/transit_button.dart';
 import '../../../shared/widgets/transit_input.dart';
 
 class StepBasicInfo extends StatefulWidget {
@@ -68,8 +68,6 @@ class _StepBasicInfoState extends State<StepBasicInfo> {
     'custom': 'Personalizado',
   };
 
-  final _hexCtrl = TextEditingController();
-
   @override
   void initState() {
     super.initState();
@@ -88,101 +86,53 @@ class _StepBasicInfoState extends State<StepBasicInfo> {
   void dispose() {
     widget.nameCtrl.removeListener(_onTextChanged);
     widget.descCtrl.removeListener(_onTextChanged);
-    _hexCtrl.dispose();
     super.dispose();
   }
 
   String _colorToHex(Color c) =>
       '#${c.toARGB32().toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}';
 
-  Color _parseHexColor(String text) {
+  Color _parseRouteColor(String text) {
     final clean = text.replaceFirst('#', '');
     if (clean.length == 6) {
       return Color(int.parse('FF$clean', radix: 16));
     }
-    return Colors.grey;
+    if (clean.length == 8) {
+      return Color(int.parse(clean, radix: 16));
+    }
+    return const Color(0xFF977DDF);
   }
 
-  void _showCustomColorPicker() {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final colors = TransitColorScheme.of(isDark);
-    _hexCtrl.text = widget.routeColor;
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: colors.bgRaised,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (ctx) {
-        return StatefulBuilder(builder: (ctx, setSheetState) {
-          return Padding(
-            padding: EdgeInsets.fromLTRB(20, 20, 20,
-                20 + MediaQuery.of(ctx).viewInsets.bottom),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Color personalizado',
-                    style: TransitTypography.heading(colors.textHi)),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: _hexCtrl,
-                  style: TransitTypography.bodyPrimary(colors.textHi),
-                  decoration: InputDecoration(
-                    hintText: '#RRGGBB',
-                    hintStyle: TransitTypography.bodySecondary(colors.textMid),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: colors.border),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: colors.accent),
-                    ),
-                    prefixIcon: Container(
-                      width: 32,
-                      height: 32,
-                      margin: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: _parseHexColor(_hexCtrl.text),
-                        borderRadius: BorderRadius.circular(6),
-                        border: Border.all(color: colors.border),
-                      ),
-                    ),
-                  ),
-                  onChanged: (_) => setSheetState(() {}),
-                ),
-                const SizedBox(height: 8),
-                Text('Ej. #FF5722, #4CAF50, #2196F3',
-                    style: TransitTypography.bodySmall(colors.textMid)),
-                const SizedBox(height: 16),
-                SizedBox(
-                  width: double.infinity,
-                  child: TransitButton(
-                    label: 'Aplicar',
-                    onPressed: () {
-                      final text = _hexCtrl.text.trim();
-                      if (RegExp(r'^#?[0-9a-fA-F]{6}$').hasMatch(text)) {
-                        final hex =
-                            text.startsWith('#') ? text : '#$text';
-                        widget.onColorChanged(hex.toUpperCase());
-                        Navigator.pop(ctx);
-                      } else {
-                        ScaffoldMessenger.of(ctx).showSnackBar(
-                          const SnackBar(
-                              content: Text(
-                                  'Formato inválido. Usa #RRGGBB')),
-                        );
-                      }
-                    },
-                  ),
-                ),
-              ],
-            ),
-          );
-        });
+  /// Mismo color wheel + paletas que la pantalla de "Apariencia →
+  /// Paleta personalizada" (flex_color_picker). Antes el sheet
+  /// solo tenía un campo de hex, lo cual era pobre comparado con
+  /// el resto de la app.
+  Future<void> _showCustomColorPicker() async {
+    final picked = await showColorPickerDialog(
+      context,
+      _parseRouteColor(widget.routeColor),
+      title: const Text('Color de la ruta'),
+      pickersEnabled: const {
+        ColorPickerType.wheel: true,
+        ColorPickerType.primary: true,
+        ColorPickerType.accent: true,
+        ColorPickerType.custom: true,
       },
+      showRecentColors: true,
+      showMaterialName: false,
+      showColorName: false,
+      showColorCode: true,
+      copyPasteBehavior: const ColorPickerCopyPasteBehavior(
+        copyFormat: ColorPickerCopyFormat.hexRRGGBB,
+      ),
+      enableOpacity: false,
+      width: 36,
+      height: 36,
+      spacing: 4,
+      runSpacing: 4,
     );
+    if (!mounted) return;
+    widget.onColorChanged(_colorToHex(picked));
   }
 
   @override

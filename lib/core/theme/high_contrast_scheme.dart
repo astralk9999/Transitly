@@ -40,10 +40,27 @@ class HighContrastSchemeWrapper implements TransitColorScheme {
       ? _base.accent.withValues(alpha: 0.30)
       : (_isDark ? const Color(0x44FFFF00) : const Color(0x440000FF));
 
-  @override Color get neonCyan => _isDark ? const Color(0xFF00FFFF) : const Color(0xFF0055AA);
-  @override Color get neonMagenta => _isDark ? const Color(0xFFFF00FF) : const Color(0xFFAA0055);
-  @override Color get neonPurple => _isDark ? const Color(0xFF8888FF) : const Color(0xFF5500FF);
-  @override Color get neonBlue => _isDark ? const Color(0xFF4488FF) : const Color(0xFF0033CC);
+  // Si preserveAccent está ON, los colores neon también se toman de la
+  // paleta del usuario en lugar de forzarlos a 100% saturación.
+  @override
+  Color get neonCyan => _preserveAccent
+      ? _base.neonCyan
+      : (_isDark ? const Color(0xFF00FFFF) : const Color(0xFF0055AA));
+
+  @override
+  Color get neonMagenta => _preserveAccent
+      ? _base.neonMagenta
+      : (_isDark ? const Color(0xFFFF00FF) : const Color(0xFFAA0055));
+
+  @override
+  Color get neonPurple => _preserveAccent
+      ? _base.neonPurple
+      : (_isDark ? const Color(0xFF8888FF) : const Color(0xFF5500FF));
+
+  @override
+  Color get neonBlue => _preserveAccent
+      ? _base.neonBlue
+      : (_isDark ? const Color(0xFF4488FF) : const Color(0xFF0033CC));
 
   @override LinearGradient get gradientAccent => _base.gradientAccent;
   @override LinearGradient get gradientNeon => LinearGradient(colors: [neonPurple, neonMagenta]);

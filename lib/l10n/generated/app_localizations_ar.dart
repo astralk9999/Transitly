@@ -2212,7 +2212,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get offlineRegionDemoLimitation =>
-      'نسخة تجريبية: يمكن تنزيل منطقة خيريز دي لا فرونتيرا فقط. اختيار المنطقة الحرة متاح في الإصدارات القادمة.';
+      'المنطقة المتاحة: شبكة COMUJESA في خيريز دي لا فرونتيرا. يغطي التنزيل بلاطات المشغل للاستخدام دون اتصال.';
 
   @override
   String get editorDraftSaved => 'تم حفظ المسودة بنجاح';

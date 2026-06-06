@@ -6,6 +6,7 @@ import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../shared/widgets/glass_card.dart';
+import 'widgets/widget_appearance_panel.dart';
 
 class WidgetsConfigScreen extends ConsumerWidget {
   const WidgetsConfigScreen({super.key});
@@ -30,6 +31,12 @@ class WidgetsConfigScreen extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          // Encabezado tipo "Selecciona widget".
+          Text(
+            'Tipo de widget',
+            style: TransitTypography.sectionTitle(c.textMid),
+          ),
+          const SizedBox(height: 8),
           _WidgetListItem(
             c: c,
             icon: Icons.directions_bus,
@@ -53,6 +60,13 @@ class WidgetsConfigScreen extends ConsumerWidget {
             subtitle: l10n.widgetsConfigNfcDesc,
             onTap: () => context.push('/widgets-config/nfc-balance'),
           ),
+          const SizedBox(height: 24),
+          // Panel de apariencia compartido por los 3 widgets. Antes solo
+          // aparecía dentro de cada pantalla específica, por lo que el
+          // usuario no veía los selectores S/M/L + tema + frecuencia +
+          // "Refrescar ahora" desde el menú principal de widgets.
+          const WidgetAppearancePanel(),
+          const SizedBox(height: 16),
         ],
       ),
     );

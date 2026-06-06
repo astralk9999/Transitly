@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
@@ -239,9 +241,52 @@ class StopDetailScreen extends ConsumerWidget {
                       'Mejorar',
                       onTap: () => showRouteFeedbackSheet(context, ref: ref, stop: stop),
                     ),
-                    _actionButton(context, c, Icons.share, 'Compartir'),
                     _actionButton(
-                        context, c, Icons.navigation, 'Cómo llegar'),
+                      context,
+                      c,
+                      Icons.share,
+                      'Compartir',
+                      onTap: () async {
+                        final code = stop.officialCode.isNotEmpty
+                            ? ' (${stop.officialCode})'
+                            : '';
+                        final coords =
+                            '${stop.lat.toStringAsFixed(5)},${stop.lng.toStringAsFixed(5)}';
+                        await Share.share(
+                          'Parada de bus$code: ${stop.name}\n'
+                          'Ubicación: https://www.google.com/maps/search/?api=1&query=$coords',
+                          subject: 'Parada ${stop.name}',
+                        );
+                      },
+                    ),
+                    _actionButton(
+                      context,
+                      c,
+                      Icons.navigation,
+                      'Cómo llegar',
+                      onTap: () async {
+                        // Abre la app de mapas del dispositivo con
+                        // direcciones a la parada. Google Maps URL
+                        // intent funciona en Android (Google Maps app)
+                        // y cae a la web en otros casos.
+                        final url = Uri.parse(
+                          'https://www.google.com/maps/dir/?api=1'
+                          '&destination=${stop.lat},${stop.lng}'
+                          '&travelmode=walking',
+                        );
+                        if (await canLaunchUrl(url)) {
+                          await launchUrl(url,
+                              mode: LaunchMode.externalApplication);
+                        } else if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('No se pudo abrir Maps'),
+                              behavior: SnackBarBehavior.floating,
+                            ),
+                          );
+                        }
+                      },
+                    ),
                   ],
                 ),
 

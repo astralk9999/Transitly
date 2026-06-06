@@ -14,6 +14,7 @@ import '../../shared/models/stop_model.dart';
 import '../../shared/providers/derived/schedule_providers.dart';
 import '../../shared/providers/route_lookup_providers.dart';
 import '../../shared/providers/user_favorites_provider.dart';
+import '../../shared/widgets/route_favorite_toast.dart';
 import '../../shared/widgets/responsive_scaffold.dart';
 import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_button.dart';
@@ -170,17 +171,13 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
                           await notifier.addLine(widget.routeId);
                         }
                         if (!context.mounted) return;
-                        // Floating + margen para evitar quedar tapado por
-                        // bottom nav, FAB o sheets parciales del shell.
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(isFavorite
-                                ? AppLocalizations.of(context).favoriteRemoved
-                                : AppLocalizations.of(context).favoriteAdded),
-                            behavior: SnackBarBehavior.floating,
-                            margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                            duration: const Duration(seconds: 2),
-                          ),
+                        // Toast personalizado arriba con badge de línea +
+                        // icono star. Reemplaza el SnackBar Material
+                        // genérico que aparecía abajo sin identidad.
+                        showRouteFavoriteToast(
+                          context,
+                          route: route,
+                          added: !isFavorite,
                         );
                       },
                     ),

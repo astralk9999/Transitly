@@ -2221,7 +2221,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get offlineRegionDemoLimitation =>
-      'Demo version: only the Jerez de la Frontera region can be downloaded. Free region selection available in upcoming versions.';
+      'Available area: COMUJESA network in Jerez de la Frontera. The download covers the operator tiles for offline use.';
 
   @override
   String get editorDraftSaved => 'Draft saved successfully';

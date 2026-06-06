@@ -138,37 +138,87 @@ void showHabitualConfigSheet(BuildContext context, WidgetRef ref) {
                   },
                 ),
                 const SizedBox(height: 16),
-                DropdownButtonFormField<StopModel>(
-                  value: selectedStop.value,
-                  isExpanded: true,
-                  decoration: _sheetInputDecoration(
-                    c,
-                    l10n.homeConfigureHabitualStop,
-                  ),
-                  dropdownColor: c.bgRaised,
-                  style: TransitTypography.bodyPrimary(c.textHi),
-                  hint: Text(
-                    selectedRoute.value == null
-                        ? l10n.homeConfigureHabitualSelectRouteFirst
-                        : l10n.homeConfigureHabitualStop,
-                    style: TransitTypography.bodySecondary(c.textMid),
-                  ),
-                  items: selectedRoute.value == null
-                      ? null
-                      : stopsForRoute.map((s) {
-                          return DropdownMenuItem<StopModel>(
-                            value: s,
-                            child: Text(
-                              s.name,
-                              style: TransitTypography.bodyPrimary(c.textHi),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          );
-                        }).toList(),
-                  onChanged: (v) {
+                // Sustituido el DropdownButtonFormField por un Autocomplete:
+                // con muchas paradas el dropdown se desbordaba en toda la
+                // pantalla y era imposible buscar. Ahora el usuario teclea
+                // parte del nombre y la lista se filtra en sitio.
+                Autocomplete<StopModel>(
+                  displayStringForOption: (s) => s.name,
+                  // Reset del input cuando cambia la ruta: el initialValue
+                  // se evalúa solo al construir. Usamos clave dinámica:
+                  key: ValueKey('stop-ac-${selectedRoute.value?.id}-'
+                      '${selectedStop.value?.id}'),
+                  optionsBuilder: (textEditingValue) {
+                    if (selectedRoute.value == null) {
+                      return const Iterable<StopModel>.empty();
+                    }
+                    final q = textEditingValue.text.trim().toLowerCase();
+                    if (q.isEmpty) return stopsForRoute;
+                    return stopsForRoute.where((s) =>
+                        s.name.toLowerCase().contains(q) ||
+                        s.officialCode.toLowerCase().contains(q));
+                  },
+                  initialValue: TextEditingValue(
+                      text: selectedStop.value?.name ?? ''),
+                  onSelected: (s) {
                     setSheetState(() {
-                      selectedStop.value = v;
+                      selectedStop.value = s;
                     });
+                  },
+                  fieldViewBuilder:
+                      (ctx, controller, focusNode, onSubmitted) {
+                    return TextField(
+                      controller: controller,
+                      focusNode: focusNode,
+                      enabled: selectedRoute.value != null,
+                      style: TransitTypography.bodyPrimary(c.textHi),
+                      decoration: _sheetInputDecoration(
+                        c,
+                        selectedRoute.value == null
+                            ? l10n.homeConfigureHabitualSelectRouteFirst
+                            : l10n.homeConfigureHabitualStop,
+                      ).copyWith(
+                        suffixIcon: Icon(Icons.search, color: c.textMid),
+                      ),
+                    );
+                  },
+                  optionsViewBuilder: (ctx, onSelected, options) {
+                    return Align(
+                      alignment: Alignment.topLeft,
+                      child: Material(
+                        color: c.bgRaised,
+                        elevation: 4,
+                        borderRadius: BorderRadius.circular(8),
+                        child: ConstrainedBox(
+                          constraints:
+                              const BoxConstraints(maxHeight: 240),
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            padding: EdgeInsets.zero,
+                            itemCount: options.length,
+                            itemBuilder: (_, i) {
+                              final s = options.elementAt(i);
+                              return ListTile(
+                                dense: true,
+                                title: Text(
+                                  s.name,
+                                  style: TransitTypography.bodyPrimary(
+                                      c.textHi),
+                                ),
+                                subtitle: s.officialCode.isEmpty
+                                    ? null
+                                    : Text(
+                                        s.officialCode,
+                                        style: TransitTypography.bodySmall(
+                                            c.textLo),
+                                      ),
+                                onTap: () => onSelected(s),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    );
                   },
                 ),
                 const SizedBox(height: 24),

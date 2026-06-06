@@ -154,6 +154,85 @@ Widget build(BuildContext context, WidgetRef ref) {
           value: notifier.notifBusApproaching,
           onChanged: (v) =&gt; notifier.notifBusApproaching = v,
         ),
+        &#47;&#47; Sub-config #54: solo aparece si &quot;bus llegando&quot; está ON.
+        if (notifier.notifBusApproaching) ...[
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.only(left: 28),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  &#39;Avisar cuando el bus esté a &#39;
+                  &#39;${notifier.busApproachingMinutesAhead} min de la parada&#39;,
+                  style: TransitTypography.bodySmall(c.textMid),
+                ),
+                const SizedBox(height: 4),
+                SegmentedButton&lt;int&gt;(
+                  segments: const [
+                    ButtonSegment(value: 3, label: Text(&#39;3&#39;)),
+                    ButtonSegment(value: 5, label: Text(&#39;5&#39;)),
+                    ButtonSegment(value: 10, label: Text(&#39;10&#39;)),
+                    ButtonSegment(value: 15, label: Text(&#39;15&#39;)),
+                    ButtonSegment(value: 20, label: Text(&#39;20&#39;)),
+                  ],
+                  selected: {notifier.busApproachingMinutesAhead},
+                  onSelectionChanged: (s) {
+                    if (s.isNotEmpty) {
+                      notifier.busApproachingMinutesAhead = s.first;
+                    }
+                  },
+                  style: ButtonStyle(
+                    backgroundColor:
+                        WidgetStateProperty.resolveWith((states) {
+                      if (states.contains(WidgetState.selected)) {
+                        return c.accent;
+                      }
+                      return c.bgRaised;
+                    }),
+                    foregroundColor:
+                        WidgetStateProperty.resolveWith((states) {
+                      if (states.contains(WidgetState.selected)) {
+                        return Colors.white;
+                      }
+                      return c.textMid;
+                    }),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  &#39;Solo durante estas horas&#39;,
+                  style: TransitTypography.bodySmall(c.textMid),
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _ActiveTimePicker(
+                        c: c,
+                        label: &#39;Desde&#39;,
+                        value: notifier.busApproachingActiveStart,
+                        onChanged: (v) =&gt;
+                            notifier.busApproachingActiveStart = v,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _ActiveTimePicker(
+                        c: c,
+                        label: &#39;Hasta&#39;,
+                        value: notifier.busApproachingActiveEnd,
+                        onChanged: (v) =&gt;
+                            notifier.busApproachingActiveEnd = v,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 8),
+        ],
         _NotifToggle(
           c: c,
           icon: Icons.lightbulb_outline,

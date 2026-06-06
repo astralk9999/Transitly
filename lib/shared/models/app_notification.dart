@@ -46,6 +46,31 @@ abstract class AppNotification with _$AppNotification {
     required DateTime createdAt,
   }) = _AppNotification;
 
-  factory AppNotification.fromJson(Map<String, dynamic> json) =>
-      _$AppNotificationFromJson(json);
+  /// Parser tolerante. Acepta:
+  ///   - El JSON canónico de Hive (camelCase, generado por
+  ///     [_$AppNotificationFromJson]).
+  ///   - Filas Supabase (snake_case en el campo `type`).
+  ///   - Tipos desconocidos: los degrada a [AppNotificationType.custom]
+  ///     en lugar de lanzar — antes una notif cacheada con un tipo que
+  ///     ya no existía rompía Hive.openBox en el siguiente arranque.
+  factory AppNotification.fromJson(Map<String, dynamic> json) {
+    final rawType = json['type'];
+    if (rawType is String) {
+      return AppNotification(
+        id: json['id'] as String,
+        userId: (json['userId'] ?? json['user_id']) as String,
+        type: AppNotificationType.fromDbName(rawType),
+        payload: json['payload'] is Map
+            ? Map<String, dynamic>.from(json['payload'] as Map)
+            : const <String, dynamic>{},
+        read: json['read'] as bool? ?? false,
+        createdAt: json['createdAt'] is String
+            ? DateTime.parse(json['createdAt'] as String)
+            : json['created_at'] is String
+                ? DateTime.parse(json['created_at'] as String)
+                : DateTime.now(),
+      );
+    }
+    return _$AppNotificationFromJson(json);
+  }
 }

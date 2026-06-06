@@ -123,7 +123,7 @@ abstract class HiveInit {
         try {
           await Hive.box(name).close();
         } catch (_) {
-          await Hive.deleteBoxFromDisk(name);
+          await _safeDeleteBox(name);
         }
       }
     }
@@ -141,8 +141,21 @@ abstract class HiveInit {
           await Hive.box(name).close();
         } catch (_) {}
       }
-      await Hive.deleteBoxFromDisk(name);
+      await _safeDeleteBox(name);
       return Hive.openBox<T>(name, encryptionCipher: cipher);
+    }
+  }
+
+  /// Wrapper tolerante alrededor de [Hive.deleteBoxFromDisk]. En
+  /// clean install (o si la box nunca llegó a crear su `.lock`) el
+  /// delete subyacente lanza `PathNotFoundException` que se propaga
+  /// hasta el try/catch raíz de main.dart y se presenta al usuario
+  /// como "Configuración incompleta" — un mensaje falso.
+  static Future<void> _safeDeleteBox(String name) async {
+    try {
+      await Hive.deleteBoxFromDisk(name);
+    } catch (e) {
+      AppLogger.warn(_logTag, 'deleteBoxFromDisk($name) ignorado', e);
     }
   }
 

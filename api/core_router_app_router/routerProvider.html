@@ -414,10 +414,14 @@
       ),
 
       &#47;&#47; ── Widgets config ──
+      &#47;&#47; &#47;profile&#47;widgets es la entrada desde Perfil. Antes apuntaba a
+      &#47;&#47; WidgetsSettingsScreen (TextFields simples sin preview ni
+      &#47;&#47; personalización). Ahora ambos paths apuntan a la pantalla
+      &#47;&#47; &quot;Centro de widgets&quot; rediseñada con mockup + selectores.
       GoRoute(
         path: &#39;&#47;profile&#47;widgets&#39;,
         pageBuilder: (context, state) =&gt;
-            _slide(state, const WidgetsSettingsScreen()),
+            _slide(state, const WidgetsConfigScreen()),
       ),
       GoRoute(
         path: &#39;&#47;widgets-config&#39;,

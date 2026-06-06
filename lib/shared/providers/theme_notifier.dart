@@ -161,6 +161,7 @@ class ThemeNotifier extends ChangeNotifier {
       _dyslexiaFontEnabled,
       _reduceMotion,
       _highContrast,
+      _hcPreserveAccent,
       _mapStyle,
       ...cpKeys,
       ...custom,
@@ -248,6 +249,7 @@ class ThemeNotifier extends ChangeNotifier {
 
   set hcPreserveAccent(bool value) {
     if (_hcPreserveAccent == value) return;
+    BootCanary.markPendingSensitive('hcPreserveAccent');
     _hcPreserveAccent = value;
     notifyListeners();
     unawaited(_persist());
@@ -430,7 +432,12 @@ class ThemeNotifier extends ChangeNotifier {
     );
     if (_highContrast) {
       try {
-        return HighContrastTheme.apply(base, scheme);
+        return HighContrastTheme.apply(
+          base,
+          scheme,
+          preserveAccent: _hcPreserveAccent,
+          originalAccent: scheme.accent,
+        );
       } catch (e, st) {
         AppLogger.error(_logTag, 'HighContrastTheme.apply failed, using base theme', e, st);
         return base;

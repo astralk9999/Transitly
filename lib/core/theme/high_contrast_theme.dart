@@ -5,11 +5,23 @@ import 'transit_spacing.dart';
 class HighContrastTheme {
   HighContrastTheme._();
 
-  static ThemeData apply(ThemeData base, dynamic scheme) {
+  /// [preserveAccent] = true mantiene el accent de la paleta original
+  /// (compromiso entre contraste extremo y branding). Si false, fuerza
+  /// amarillo (dark) o azul (light), que son los colores con mejor ratio
+  /// sobre fondo negro/blanco respectivamente.
+  /// [originalAccent] solo se usa cuando preserveAccent es true.
+  static ThemeData apply(
+    ThemeData base,
+    dynamic scheme, {
+    bool preserveAccent = false,
+    Color? originalAccent,
+  }) {
     final isDark = base.colorScheme.brightness == Brightness.dark;
     final hcText = isDark ? const Color(0xFFFFFFFF) : const Color(0xFF000000);
     final hcBg = isDark ? const Color(0xFF000000) : const Color(0xFFFFFFFF);
-    final hcAccent = isDark ? const Color(0xFFFFFF00) : const Color(0xFF0000FF);
+    final hcAccent = preserveAccent && originalAccent != null
+        ? originalAccent
+        : (isDark ? const Color(0xFFFFFF00) : const Color(0xFF0000FF));
     final hcBorder = isDark ? const Color(0xFFFFFFFF) : const Color(0xFF000000);
 
     return base.copyWith(

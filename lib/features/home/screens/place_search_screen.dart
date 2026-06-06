@@ -329,12 +329,14 @@ class _ResultCard extends StatelessWidget {
         iconBg = c.neonPurple;
     }
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: GlassCard(
+    // GestureDetector con HitTestBehavior.opaque garantiza que el tap
+    // llega aunque el GlassCard tenga BackdropFilter encima. Antes
+    // estaba envuelto en Material + InkWell pero los gestos no
+    // llegaban al onTap por el blur del GlassCard.
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: GlassCard(
           blur: 12,
           fillOpacity: 0.05,
           borderRadius: 12,
@@ -398,7 +400,6 @@ class _ResultCard extends StatelessWidget {
             ],
           ),
         ),
-      ),
     );
   }
 }

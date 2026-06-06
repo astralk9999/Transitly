@@ -153,6 +153,9 @@ class _PlaceSearchScreenState extends ConsumerState<PlaceSearchScreen> {
                               ? 'Parada'
                               : result.subtitle,
                           icon: Icons.location_on,
+                          pushPath: result.stop != null
+                              ? '/stop/${result.stop!.id}'
+                              : null,
                         );
                         context.pop();
                         context.go('/home/mapa');

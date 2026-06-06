@@ -15,81 +15,118 @@ class SearchPinLayer extends StatelessWidget {
     required this.selection,
     required this.isDark,
     required this.onClose,
+    required this.onOpenDetail,
   });
 
   final SearchSelection selection;
   final bool isDark;
   final VoidCallback onClose;
+  final VoidCallback onOpenDetail;
 
   @override
   Widget build(BuildContext context) {
     final c = TransitColorScheme.of(isDark);
     final color = selection.color ?? c.accent;
+    final hasDetail = selection.pushPath != null;
 
     return MarkerLayer(
       markers: [
-        // Pin físico en la posición.
         Marker(
           point: selection.position,
           width: 280,
-          height: 120,
+          height: 140,
           alignment: Alignment.bottomCenter,
-          child: GestureDetector(
-            onTap: onClose,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                // Tarjeta flotante con el título.
-                Container(
-                  constraints: const BoxConstraints(maxWidth: 240),
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 12, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: c.bgSurface,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: color, width: 1.5),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.25),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        selection.title,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: c.textHi,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      if (selection.subtitle != null) ...[
-                        const SizedBox(height: 2),
-                        Text(
-                          selection.subtitle!,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: c.textMid,
-                            fontSize: 10,
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              // Tarjeta flotante con título + subtitle + botones.
+              Container(
+                constraints: const BoxConstraints(maxWidth: 260),
+                padding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
+                decoration: BoxDecoration(
+                  color: c.bgSurface,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: color, width: 1.5),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.25),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 2),
-                // Pin estilo Google Maps con sombra.
-                _AnimatedPin(color: color, icon: selection.icon),
-              ],
-            ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: hasDetail ? onOpenDetail : null,
+                        behavior: HitTestBehavior.opaque,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              selection.title,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: c.textHi,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            if (selection.subtitle != null) ...[
+                              const SizedBox(height: 2),
+                              Text(
+                                selection.subtitle!,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: c.textMid,
+                                  fontSize: 10,
+                                ),
+                              ),
+                            ],
+                            if (hasDetail) ...[
+                              const SizedBox(height: 4),
+                              Row(
+                                children: [
+                                  Text(
+                                    'Ver detalles',
+                                    style: TextStyle(
+                                      color: color,
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 2),
+                                  Icon(Icons.arrow_forward,
+                                      color: color, size: 12),
+                                ],
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ),
+                    // Botón cerrar (X).
+                    InkWell(
+                      onTap: onClose,
+                      borderRadius: BorderRadius.circular(16),
+                      child: Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: Icon(Icons.close,
+                            size: 16, color: c.textMid),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 2),
+              // Pin estilo Google Maps con sombra.
+              _AnimatedPin(color: color, icon: selection.icon),
+            ],
           ),
         ),
       ],

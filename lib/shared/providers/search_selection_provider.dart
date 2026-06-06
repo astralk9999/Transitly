@@ -16,6 +16,7 @@ class SearchSelection {
     this.icon = Icons.location_on,
     this.color,
     required this.id,
+    this.pushPath,
   });
 
   final LatLng position;
@@ -27,6 +28,10 @@ class SearchSelection {
   /// Id único para detectar cambios aunque la misma posición se
   /// seleccione dos veces (por ejemplo: "stop-1234").
   final String id;
+
+  /// Ruta opcional a la que navegar si el usuario pulsa "Ver detalles"
+  /// en la tarjeta del pin. `null` = sin detalle (lugar genérico).
+  final String? pushPath;
 }
 
 /// `null` = sin selección activa.

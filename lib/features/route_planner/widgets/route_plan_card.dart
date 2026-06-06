@@ -64,7 +64,11 @@ class _LegRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Responsive: paradas en columna con flecha vertical para no
+    // truncar en pantallas estrechas. Antes era una línea
+    // "origen → destino" con TextOverflow.ellipsis y se cortaba.
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
           padding: const EdgeInsets.symmetric(
@@ -90,17 +94,73 @@ class _LegRow extends StatelessWidget {
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                '${leg.boardStop.name} \u2192 ${leg.alightStop.name}',
-                style: TransitTypography.routeName(c.textHi),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+              // Parada origen.
+              Row(
+                children: [
+                  Container(
+                    width: 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: c.accent.withValues(alpha: 0.3),
+                      shape: BoxShape.circle,
+                      border: Border.all(color: c.accent, width: 1.5),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      leg.boardStop.name,
+                      style: TransitTypography.routeName(c.textHi),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: TransitSpacing.space2),
-              Text(
-                '${leg.stopsBetween} paradas · ${leg.estimatedMinutes} min',
-                style: TransitTypography.bodySmall(c.textMid),
+              // Línea vertical + número de paradas.
+              Padding(
+                padding: const EdgeInsets.only(left: 3.5),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 1,
+                      height: 22,
+                      color: c.accent.withValues(alpha: 0.4),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        '${leg.stopsBetween} paradas · ${leg.estimatedMinutes} min',
+                        style: TransitTypography.bodySmall(c.textMid),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // Parada destino.
+              Row(
+                children: [
+                  Container(
+                    width: 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: c.accent,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      leg.alightStop.name,
+                      style: TransitTypography.routeName(c.textHi),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -123,9 +183,13 @@ class _TransferRow extends StatelessWidget {
         const SizedBox(width: TransitSpacing.space4),
         Icon(Icons.swap_horiz, size: 18, color: c.accent),
         const SizedBox(width: TransitSpacing.space8),
-        Text(
-          'Cambia en $transferStopName',
-          style: TransitTypography.bodySmall(c.accent),
+        Expanded(
+          child: Text(
+            'Cambia en $transferStopName',
+            style: TransitTypography.bodySmall(c.accent),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
       ],
     );

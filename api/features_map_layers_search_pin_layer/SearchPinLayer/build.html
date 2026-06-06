@@ -117,7 +117,13 @@ Widget build(BuildContext context) {
         point: selection.position,
         width: 38,
         height: 50,
-        alignment: Alignment.bottomCenter,
+        &#47;&#47; Alignment(0, 1.3) sube el pin ~7.5px respecto a
+        &#47;&#47; bottomCenter. Pinta la punta del triángulo ligeramente
+        &#47;&#47; por ENCIMA del LatLng en lugar de coincidir con él. Esto
+        &#47;&#47; compensa la percepción visual de que el &quot;punto que marca&quot;
+        &#47;&#47; es el centro del círculo del pin, no el extremo de la
+        &#47;&#47; cola.
+        alignment: const Alignment(0, 1.3),
         child: _AnimatedPin(color: color, icon: selection.icon),
       ),
     ],

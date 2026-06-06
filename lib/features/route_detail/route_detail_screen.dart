@@ -174,16 +174,16 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
                   bottom: 16,
                   child: Row(
                     children: [
-                      // B1.4: botón "Ver en el mapa" que centra la
-                      // cámara en la línea con polilínea destacada.
+                      // B1.5: botón "EN EL MAPA" (corto para no
+                      // truncar). Centra la cámara en la línea con
+                      // polilínea destacada y deja la tarjeta del pin
+                      // visible para abrir detalle de nuevo si quiere.
                       Expanded(
                         child: TransitButton(
-                          label: 'VER EN EL MAPA',
+                          label: 'EN EL MAPA',
                           icon: Icons.map_outlined,
                           isPrimary: false,
                           onPressed: () {
-                            // Tomamos la primera parada del recorrido
-                            // como punto representativo para centrar.
                             final stops = mockData.getStopsForRoute(
                                 widget.routeId);
                             if (stops.isEmpty) return;
@@ -200,18 +200,22 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
                               pushPath: '/route/${widget.routeId}',
                               routeId: widget.routeId,
                             );
+                            // Pop primero para limpiar el stack y luego
+                            // ir al mapa, así no queda /route/${id}
+                            // colgado debajo.
+                            Navigator.of(context).maybePop();
                             context.go('/home/mapa');
                           },
                         ),
                       ),
                       const SizedBox(width: 8),
+                      // Botón favorita con label corto.
                       Expanded(
                         child: TransitButton(
-                          label: isFavorite
-                              ? AppLocalizations.of(context)
-                                  .routeDetailRemoveFavorite
-                              : AppLocalizations.of(context)
-                                  .routeDetailAddFavorite,
+                          label: isFavorite ? 'QUITAR' : 'FAVORITA',
+                          icon: isFavorite
+                              ? Icons.star_outline
+                              : Icons.star,
                           isPrimary: !isFavorite,
                           onPressed: () async {
                             final notifier =

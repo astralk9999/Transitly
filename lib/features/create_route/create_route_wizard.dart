@@ -145,6 +145,11 @@ class _CreateRouteWizardState extends ConsumerState<CreateRouteWizard> {
   static const _stepCount = 6;
 
   void _goToStep(int step) {
+    // Antes de entrar al paso de "Trazado" (índice 2) garantizamos
+    // que los segmentos están al día con las paradas actuales. Sin
+    // esto, si añades paradas y saltas al trazado, la lista de
+    // segmentos puede quedar desfasada.
+    if (step == 2) _syncPathSegments();
     _pageController.animateToPage(
       step,
       duration: const Duration(milliseconds: 300),
@@ -171,7 +176,9 @@ class _CreateRouteWizardState extends ConsumerState<CreateRouteWizard> {
         return _nameCtrl.text.trim().length >= 3 &&
             _nameCtrl.text.trim().length <= 80;
       case 1:
-        return _stops.isNotEmpty;
+        // Mínimo 2 paradas (origen + destino). Sin esto los segmentos
+        // del paso "Trazado" no se pueden construir.
+        return _stops.length >= 2;
       case 2:
         return true;
       case 3:
@@ -180,9 +187,8 @@ class _CreateRouteWizardState extends ConsumerState<CreateRouteWizard> {
         return true;
       case 5:
         // Step Resumen: habilitamos "Publicar" si el nombre sigue
-        // válido y hay al menos una parada. Antes caía al default y
-        // dejaba el botón gris permanentemente.
-        return _nameCtrl.text.trim().length >= 3 && _stops.isNotEmpty;
+        // válido y hay al menos dos paradas.
+        return _nameCtrl.text.trim().length >= 3 && _stops.length >= 2;
       default:
         return false;
     }
@@ -386,7 +392,11 @@ class _CreateRouteWizardState extends ConsumerState<CreateRouteWizard> {
                 ),
                 StepStops(
                   stops: _stops,
-                  onChanged: () => setState(() {}),
+                  // Resync segmentos del trazado cada vez que se
+                  // añade/quita/reordena una parada — antes los
+                  // segmentos solo se creaban al editar el trazado y
+                  // el step "Trazado" parecía vacío.
+                  onChanged: () => _syncPathSegments(),
                 ),
                 StepRoutePath(
                   stops: _stops,

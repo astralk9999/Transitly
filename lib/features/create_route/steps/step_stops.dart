@@ -111,9 +111,35 @@ class _StepStopsState extends State<StepStops> {
               ),
               const SizedBox(height: TransitSpacing.space4),
               Text(
-                'Añade las paradas en el orden del recorrido.',
+                'Añade las paradas en el orden del recorrido. Mínimo 2: origen y destino.',
                 style: TransitTypography.bodySecondary(colors.textMid),
               ),
+              if (widget.stops.length == 1) ...[
+                const SizedBox(height: TransitSpacing.space8),
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: colors.stateDelay.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                        color: colors.stateDelay.withValues(alpha: 0.3),
+                        width: 1),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.info_outline,
+                          size: 16, color: colors.stateDelay),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'Necesitas al menos otra parada para continuar.',
+                          style: TransitTypography.bodySmall(colors.textMid),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
               const SizedBox(height: TransitSpacing.space16),
               TransitButton(
                 label: 'Añadir parada',
@@ -138,7 +164,7 @@ class _StepStopsState extends State<StepStops> {
                   ),
                   const SizedBox(height: TransitSpacing.space4),
                   Text(
-                    'Añade al menos una parada para continuar',
+                    'Añade al menos 2 paradas (origen y destino) para continuar',
                     style: TransitTypography.bodySmall(colors.textLo),
                   ),
                 ],

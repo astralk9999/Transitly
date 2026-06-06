@@ -84,12 +84,12 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> {
       }
 
       // profiles NO tiene columna `email` — el email vive en
-      // auth.users. Pedirlo provocaba 42703 y la pantalla quedaba en
-      // error. Si necesitamos el email, hay que crear una vista
-      // segura con join a auth.users (futura ampliación).
+      // auth.users. Pedirlo provocaba 42703. routes_created_count y
+      // created_at se incluyen para mostrar más info en el sheet.
       final rows = await client
           .from('profiles')
-          .select('id, display_name, role, reputation_score, reputation_level')
+          .select(
+              'id, display_name, role, reputation_score, reputation_level, routes_created_count, created_at')
           .order('display_name');
 
       setState(() {
@@ -277,9 +277,13 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> {
                         blur: 12,
                         fillOpacity: 0.05,
                         borderRadius: 12,
-                        padding: const EdgeInsets.all(12),
+                        padding: EdgeInsets.zero,
                         child: ListTile(
-                          contentPadding: EdgeInsets.zero,
+                          // Tap → sheet con acciones (cambiar rol,
+                          // sumar/restar XP, banear...).
+                          onTap: () => _showUserSheet(user, l10n, c),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 8),
                           leading: CircleAvatar(
                             backgroundColor: c.accent.withValues(alpha: 0.12),
                             child: Text(
@@ -316,5 +320,204 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> {
         ),
       ],
     );
+  }
+
+  void _showUserSheet(
+      Map<String, dynamic> user, AppLocalizations l10n, TransitColorScheme c) {
+    final userId = user['id'] as String;
+    final name = user['display_name'] as String? ?? '?';
+    final currentRole = user['role'] as String? ?? 'passenger';
+    final score = (user['reputation_score'] as num?)?.toInt() ?? 0;
+    final routesCreated =
+        (user['routes_created_count'] as num?)?.toInt() ?? 0;
+    final createdAt = user['created_at'] as String?;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: c.bgSurface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (ctx) {
+        return Padding(
+          padding: EdgeInsets.fromLTRB(20, 16, 20,
+              20 + MediaQuery.of(ctx).viewInsets.bottom),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 36,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: c.border,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(name, style: TransitTypography.heading(c.textHi)),
+              const SizedBox(height: 4),
+              Text(
+                'ID: ${userId.substring(0, 8)}...',
+                style: TransitTypography.bodySmall(c.textLo),
+              ),
+              const SizedBox(height: 12),
+              Wrap(
+                spacing: 12,
+                runSpacing: 8,
+                children: [
+                  _statChip(c, Icons.star_rounded, '$score XP'),
+                  _statChip(c, Icons.route_outlined,
+                      '$routesCreated rutas'),
+                  if (createdAt != null)
+                    _statChip(c, Icons.calendar_today,
+                        createdAt.substring(0, 10)),
+                ],
+              ),
+              const SizedBox(height: 20),
+              Text('Rol',
+                  style: TransitTypography.bodyPrimary(c.textHi)),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  for (final r in const [
+                    'passenger',
+                    'driver',
+                    'operatorAdmin',
+                    'moderator',
+                    'admin'
+                  ])
+                    ChoiceChip(
+                      label: Text(_roleLabel(l10n, r)),
+                      selected: currentRole == r,
+                      onSelected: (_) async {
+                        Navigator.pop(ctx);
+                        await _changeRole(userId, r);
+                      },
+                      selectedColor: c.accent.withValues(alpha: 0.3),
+                      backgroundColor: c.bgRaised,
+                    ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              Text('XP',
+                  style: TransitTypography.bodyPrimary(c.textHi)),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  OutlinedButton.icon(
+                    onPressed: () async {
+                      Navigator.pop(ctx);
+                      await _addXp(userId, 50);
+                    },
+                    icon: const Icon(Icons.add, size: 16),
+                    label: const Text('+50 XP'),
+                  ),
+                  OutlinedButton.icon(
+                    onPressed: () async {
+                      Navigator.pop(ctx);
+                      await _addXp(userId, 500);
+                    },
+                    icon: const Icon(Icons.add, size: 16),
+                    label: const Text('+500 XP'),
+                  ),
+                  OutlinedButton.icon(
+                    onPressed: () async {
+                      Navigator.pop(ctx);
+                      await _addXp(userId, -50);
+                    },
+                    icon: const Icon(Icons.remove, size: 16),
+                    label: const Text('-50 XP'),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: c.stateCancelled,
+                    ),
+                  ),
+                  OutlinedButton.icon(
+                    onPressed: () async {
+                      Navigator.pop(ctx);
+                      await _resetScore(userId);
+                    },
+                    icon: const Icon(Icons.refresh, size: 16),
+                    label: const Text('Reset 0'),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: c.stateCancelled,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _statChip(TransitColorScheme c, IconData icon, String label) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: c.bgRaised,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: c.border, width: 0.5),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14, color: c.textMid),
+          const SizedBox(width: 6),
+          Text(label, style: TransitTypography.bodySmall(c.textMid)),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _changeRole(String userId, String role) async {
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      final client = ref.read(supabaseClientProvider);
+      await client.from('profiles').update({'role': role}).eq('id', userId);
+      messenger.showSnackBar(SnackBar(content: Text('Rol → $role')));
+      await _loadUsers();
+    } catch (e) {
+      messenger.showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
+  }
+
+  Future<void> _addXp(String userId, int delta) async {
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      final client = ref.read(supabaseClientProvider);
+      // add_xp() es la SQL function que ya recalcula level y dispara
+      // notificaciones xp_earned / rank_up.
+      await client.rpc('add_xp',
+          params: {'p_user_id': userId, 'p_xp': delta});
+      messenger.showSnackBar(SnackBar(content: Text('${delta >= 0 ? '+' : ''}$delta XP')));
+      await _loadUsers();
+    } catch (e) {
+      messenger.showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
+  }
+
+  Future<void> _resetScore(String userId) async {
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      final client = ref.read(supabaseClientProvider);
+      await client.from('profiles').update({
+        'reputation_score': 0,
+        'reputation_level': 0,
+      }).eq('id', userId);
+      messenger.showSnackBar(const SnackBar(content: Text('XP reseteado')));
+      await _loadUsers();
+    } catch (e) {
+      messenger.showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
   }
 }

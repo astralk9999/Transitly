@@ -59,15 +59,13 @@ class _ReputationScreenState extends ConsumerState<ReputationScreen> {
     final progress = isMaxRank ? 1.0 : (score / nextMin).clamp(0.0, 1.0);
 
     return Scaffold(
-      backgroundColor: c.bgRoot,
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
-          Positioned.fill(
-            child: SmokeBackground(color: c.accent, isDark: isDark),
-          ),
           Column(
             children: [
-              TransitAppBar(title: l10n.reputationTitle),
+              TransitAppBar(
+                  title: l10n.reputationTitle, transparent: true),
               Expanded(
                 child: RefreshIndicator(
                   color: c.accent,

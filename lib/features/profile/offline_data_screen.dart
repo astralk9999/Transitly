@@ -45,7 +45,7 @@ class _OfflineDataScreenState extends ConsumerState<OfflineDataScreen> {
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      backgroundColor: c.bgRoot,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -58,12 +58,7 @@ class _OfflineDataScreenState extends ConsumerState<OfflineDataScreen> {
             style: TransitTypography.sectionTitle(c.textHi)),
         centerTitle: false,
       ),
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: SmokeBackground(color: c.accent, isDark: isDark),
-          ),
-          SafeArea(
+      body: SafeArea(
             child: ListView(
               padding: const EdgeInsets.all(16),
               children: [
@@ -85,8 +80,6 @@ class _OfflineDataScreenState extends ConsumerState<OfflineDataScreen> {
               ],
             ),
           ),
-        ],
-      ),
     );
   }
 }

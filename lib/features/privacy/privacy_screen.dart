@@ -206,19 +206,14 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen> {
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      backgroundColor: c.bgRoot,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text(l10n.privacyTitle),
         backgroundColor: Colors.transparent,
         foregroundColor: c.textHi,
         elevation: 0,
       ),
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: SmokeBackground(color: c.accent, isDark: isDark),
-          ),
-          SafeArea(
+      body: SafeArea(
             child: ResponsivePageWrapper(
               child: ListView(
         padding: const EdgeInsets.all(16),
@@ -387,8 +382,6 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen> {
             ),
             ),
           ),
-        ],
-      ),
     );
   }
 }

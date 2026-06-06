@@ -37,12 +37,9 @@ class _OfflineRegionsScreenState extends ConsumerState<OfflineRegionsScreen> {
     final userId = ref.watch(currentUserProvider.select((u) => u.id));
 
     return Scaffold(
-      backgroundColor: c.bgRoot,
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
-          Positioned.fill(
-            child: SmokeBackground(color: c.accent, isDark: isDark),
-          ),
           SafeArea(
             bottom: false,
             child: Column(

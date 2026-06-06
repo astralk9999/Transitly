@@ -9,7 +9,6 @@ import '../../shared/models/user_role.dart';
 import '../../shared/widgets/glass_card.dart';
 import '../../shared/widgets/pressable.dart';
 import '../../shared/widgets/role_gate.dart';
-import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_app_bar.dart';
 
 class AdminScreen extends ConsumerWidget {
@@ -21,15 +20,16 @@ class AdminScreen extends ConsumerWidget {
     final c = TransitColorScheme.of(isDark);
 
     return Scaffold(
-      backgroundColor: c.bgRoot,
+      // Transparente para dejar ver el BackgroundWrapper global
+      // (mismo fondo que home/apariencia/widgets, en lugar de un
+      // SmokeBackground propio que rompía la estética).
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
-          Positioned.fill(
-            child: SmokeBackground(color: c.accent, isDark: isDark),
-          ),
           Column(
             children: [
-              const TransitAppBar(title: 'Administración'),
+              const TransitAppBar(
+                  title: 'Administración', transparent: true),
               Expanded(
                 child: RoleGate(
                   allow: const [UserRole.admin],

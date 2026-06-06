@@ -121,12 +121,9 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
     final padding = ResponsiveScaffold.screenPadding(context);
 
     return Scaffold(
-      backgroundColor: c.bgRoot,
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
-          Positioned.fill(
-            child: SmokeBackground(color: c.accent, isDark: isDark),
-          ),
           ContentConstraints(
             child: Stack(
               children: [

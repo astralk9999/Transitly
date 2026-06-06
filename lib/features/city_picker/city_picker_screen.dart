@@ -20,12 +20,8 @@ class CityPickerScreen extends ConsumerWidget {
     final operatorsAsync = ref.watch(activeOperatorsProvider);
 
     return Scaffold(
-      backgroundColor: c.bgRoot,
-      body: Stack(
-        children: [
-          Positioned.fill(
-              child: SmokeBackground(color: c.accent, isDark: isDark)),
-          SafeArea(
+      backgroundColor: Colors.transparent,
+      body: SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -72,8 +68,6 @@ class CityPickerScreen extends ConsumerWidget {
               ],
             ),
           ),
-        ],
-      ),
     );
   }
 }

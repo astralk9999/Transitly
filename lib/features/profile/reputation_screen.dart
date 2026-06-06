@@ -4,9 +4,11 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
+import '../../data/auth/auth_repository.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../shared/models/reputation.dart';
 import '../../shared/models/user_model.dart';
+import '../../shared/providers/auth_provider.dart';
 import '../../shared/providers/is_dark_provider.dart';
 import '../../shared/providers/user_provider.dart';
 import '../../shared/widgets/glass_card.dart';
@@ -14,22 +16,12 @@ import '../../shared/widgets/gradient_text.dart';
 import '../../shared/widgets/reputation_badge.dart';
 import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_app_bar.dart';
+import '../../shared/widgets/user_avatar.dart';
 import 'widgets/reputation_history_list.dart';
 import 'widgets/reputation_level_card.dart';
 
 class ReputationScreen extends ConsumerWidget {
   const ReputationScreen({super.key});
-
-  String _initials(String name) {
-    final parts = name.trim().split(RegExp(r'\s+'));
-    if (parts.length >= 2) {
-      return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
-    }
-    if (parts.isNotEmpty && parts[0].isNotEmpty) {
-      return parts[0][0].toUpperCase();
-    }
-    return '?';
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -39,7 +31,6 @@ class ReputationScreen extends ConsumerWidget {
     final user = ref.watch(currentUserProvider);
     final score = user.reputationScore;
     final rank = ReputationRank.forScore(score);
-    final initials = _initials(user.name);
 
     final nextIdx = ReputationRank.values.indexOf(rank) + 1;
     final isMaxRank = nextIdx >= ReputationRank.values.length;
@@ -62,7 +53,7 @@ class ReputationScreen extends ConsumerWidget {
                 child: ListView(
                   padding: const EdgeInsets.all(16),
                   children: [
-                    _HeaderCard(user: user, c: c, initials: initials),
+                    _HeaderCard(fallbackUser: user, c: c),
                     const SizedBox(height: 12),
                     ReputationLevelCard(
                       c: c,
@@ -96,19 +87,27 @@ class ReputationScreen extends ConsumerWidget {
   }
 }
 
-class _HeaderCard extends StatelessWidget {
-  const _HeaderCard({
-    required this.user,
-    required this.c,
-    required this.initials,
-  });
+class _HeaderCard extends ConsumerWidget {
+  const _HeaderCard({required this.fallbackUser, required this.c});
 
-  final UserModel user;
+  /// Datos mock — fallback cuando no hay sesión auth.
+  final UserModel fallbackUser;
   final TransitColorScheme c;
-  final String initials;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authState = ref.watch(authStateProvider).valueOrNull;
+    final authUser = authState is AuthAuthenticated ? authState.user : null;
+    final metadata = authUser?.userMetadata ?? const <String, dynamic>{};
+    final displayName = (metadata['full_name'] as String?) ??
+        (metadata['name'] as String?) ??
+        (metadata['display_name'] as String?) ??
+        authUser?.email?.split('@').first ??
+        fallbackUser.name;
+    final displayEmail = authUser?.email ?? fallbackUser.email;
+    final photoUrl = (metadata['avatar_url'] as String?) ??
+        (metadata['picture'] as String?);
+
     return GlassCard(
       blur: 20,
       fillOpacity: 0.06,
@@ -116,43 +115,39 @@ class _HeaderCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: Row(
         children: [
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: c.accent.withValues(alpha: 0.12),
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: c.accent.withValues(alpha: 0.25),
-                width: 0.5,
-              ),
-            ),
-            child: Center(
-              child: Text(
-                initials,
-                style: GoogleFonts.ibmPlexMono(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: c.accent,
-                ),
-              ),
-            ),
+          UserAvatar(
+            name: displayName,
+            photoUrl: photoUrl,
+            accent: c.accent,
+            size: 56,
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  user.name,
-                  style: TextStyle(fontFamily: 'DM Sans', 
+                  displayName,
+                  style: GoogleFonts.dmSans(
                     fontSize: 18,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w600,
                     color: c.textHi,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 4),
-                ReputationBadge(user.reputationLevel, score: user.reputationScore),
+                const SizedBox(height: 2),
+                Text(
+                  displayEmail,
+                  style: TransitTypography.bodySecondary(c.textMid),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 8),
+                ReputationBadge(
+                  fallbackUser.reputationLevel,
+                  score: fallbackUser.reputationScore,
+                ),
               ],
             ),
           ),

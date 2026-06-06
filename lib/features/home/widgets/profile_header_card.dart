@@ -91,44 +91,55 @@ class ProfileHeaderCard extends ConsumerWidget {
     final photoUrl = (metadata['avatar_url'] as String?) ??
         (metadata['picture'] as String?);
 
-    return GlassCard(
-      blur: 20,
-      fillOpacity: 0.06,
-      borderRadius: 16,
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        children: [
-          UserAvatar(
-            name: displayName,
-            photoUrl: photoUrl,
-            accent: c.accent,
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  displayName,
-                  style: TextStyle(fontFamily: 'DM Sans', 
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                    color: c.textHi,
-                  ),
+    // Toda la card es tappable y abre la pantalla de reputación.
+    // Antes solo el badge de reputación a la derecha era tappable, lo
+    // cual hacía la entrada al perfil/reputación poco accesible.
+    return Semantics(
+      button: true,
+      label: 'Abrir perfil y reputación',
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => context.push('/profile/reputation'),
+        child: GlassCard(
+          blur: 20,
+          fillOpacity: 0.06,
+          borderRadius: 16,
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              UserAvatar(
+                name: displayName,
+                photoUrl: photoUrl,
+                accent: c.accent,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      displayName,
+                      style: TextStyle(
+                        fontFamily: 'DM Sans',
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                        color: c.textHi,
+                      ),
+                    ),
+                    Text(
+                      displayEmail,
+                      style: TransitTypography.bodySecondary(c.textMid),
+                    ),
+                  ],
                 ),
-                Text(
-                  displayEmail,
-                  style: TransitTypography.bodySecondary(c.textMid),
-                ),
-              ],
-            ),
+              ),
+              ReputationBadge(user.reputationLevel,
+                  score: user.reputationScore),
+              const SizedBox(width: 4),
+              Icon(Icons.chevron_right, color: c.textMid, size: 22),
+            ],
           ),
-          GestureDetector(
-            onTap: () => context.push('/profile/reputation'),
-            child: ReputationBadge(user.reputationLevel,
-                score: user.reputationScore),
-          ),
-        ],
+        ),
       ),
     );
   }

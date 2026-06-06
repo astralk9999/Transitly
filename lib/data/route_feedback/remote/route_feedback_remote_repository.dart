@@ -173,16 +173,28 @@ class RouteFeedbackRemoteRepository implements RouteFeedbackRepository {
     );
   }
 
+  static final _uuidRegExp = RegExp(
+    r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$',
+  );
+
   Map<String, dynamic> _toDbRow(RouteFeedbackModel m) {
+    // BD: route_id y stop_id son UUID. El mock usa códigos cortos
+    // ('1', 'L1', 'JER-001'...) — incluirlos provoca 22P02 y el
+    // INSERT falla silencioso (el caller solo ve "Enviado" pero el
+    // admin nunca recibe). Sólo enviamos esos campos si son UUID; si
+    // no, guardamos el código en proposed_change.legacy_route_code.
+    final routeIsUuid = m.routeId.isNotEmpty && _uuidRegExp.hasMatch(m.routeId);
+    final legacy = <String, dynamic>{};
+    if (m.routeId.isNotEmpty && !routeIsUuid) {
+      legacy['legacy_route_code'] = m.routeId;
+    }
     return <String, dynamic>{
       'id': m.id,
       'kind': _dbKindFor(m.feedbackType),
       'status': _dbStatusFor(m.status),
-      if (m.routeId.isNotEmpty) 'route_id': m.routeId,
-      // stop_id: igual que en IncidentReport — el modelo guarda el
-      // texto del mock ('JER-001'), no UUID. Lo omitimos hasta que
-      // el caller resuelva el id real via StopRepository.
+      if (routeIsUuid) 'route_id': m.routeId,
       'description': m.description,
+      if (legacy.isNotEmpty) 'proposed_change': legacy,
       if (m.photoUrls.isNotEmpty) 'attachments': m.photoUrls,
       'author_id': m.userId,
       'created_at': m.createdAt.toIso8601String(),

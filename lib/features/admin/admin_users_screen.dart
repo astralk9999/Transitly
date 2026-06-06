@@ -83,9 +83,13 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> {
         return;
       }
 
+      // profiles NO tiene columna `email` — el email vive en
+      // auth.users. Pedirlo provocaba 42703 y la pantalla quedaba en
+      // error. Si necesitamos el email, hay que crear una vista
+      // segura con join a auth.users (futura ampliación).
       final rows = await client
           .from('profiles')
-          .select('id, display_name, email, role, reputation_score, reputation_level')
+          .select('id, display_name, role, reputation_score, reputation_level')
           .order('display_name');
 
       setState(() {
@@ -252,10 +256,10 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> {
                   itemBuilder: (context, index) {
                     final user = _filteredUsers[index];
                     final name = user['display_name'] as String? ?? '?';
-                    final email = user['email'] as String? ?? '';
                     final role = user['role'] as String? ?? 'passenger';
                     final repLevel =
                         user['reputation_level'] as String? ?? 'new';
+                    final score = (user['reputation_score'] as num?)?.toInt() ?? 0;
 
                     return Padding(
                       padding: EdgeInsets.only(
@@ -283,7 +287,7 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> {
                             style: TransitTypography.bodyPrimary(c.textHi),
                           ),
                           subtitle: Text(
-                            email,
+                            '$score XP',
                             style: TransitTypography.bodySecondary(c.textMid),
                           ),
                           trailing: Row(

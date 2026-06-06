@@ -2026,6 +2026,30 @@ abstract class AppLocalizations {
   /// **'Aviso'**
   String get notificationTypeCustom;
 
+  /// Notification type: XP gained
+  ///
+  /// In es, this message translates to:
+  /// **'Puntos de reputación'**
+  String get notificationTypeXpEarned;
+
+  /// Notification type: rank up
+  ///
+  /// In es, this message translates to:
+  /// **'¡Subiste de rango!'**
+  String get notificationTypeRankUp;
+
+  /// Body: XP gained
+  ///
+  /// In es, this message translates to:
+  /// **'+{delta} XP · total {total}'**
+  String notificationXpEarnedBody(int delta, int total);
+
+  /// Body: rank up
+  ///
+  /// In es, this message translates to:
+  /// **'Ahora eres {rank}'**
+  String notificationRankUpBody(String rank);
+
   /// Relative time: just now
   ///
   /// In es, this message translates to:

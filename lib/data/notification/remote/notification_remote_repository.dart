@@ -76,10 +76,7 @@ class NotificationRemoteRepository implements NotificationRepository {
     return AppNotification(
       id: row['id'] as String,
       userId: row['user_id'] as String,
-      type: AppNotificationType.values.firstWhere(
-        (t) => t.name == row['type'],
-        orElse: () => AppNotificationType.custom,
-      ),
+      type: AppNotificationType.fromDbName(row['type'] as String?),
       payload: row['payload'] != null
           ? Map<String, dynamic>.from(row['payload'] as Map)
           : const <String, dynamic>{},

@@ -512,6 +512,23 @@
   "@notificationTypeBusApproaching": { "description": "Notification type: bus approaching" },
   "notificationTypeCustom": "Aviso",
   "@notificationTypeCustom": { "description": "Notification type: custom/fallback" },
+  "notificationTypeXpEarned": "Puntos de reputación",
+  "@notificationTypeXpEarned": { "description": "Notification type: XP gained" },
+  "notificationTypeRankUp": "¡Subiste de rango!",
+  "@notificationTypeRankUp": { "description": "Notification type: rank up" },
+  "notificationXpEarnedBody": "+{delta} XP · total {total}",
+  "@notificationXpEarnedBody": {
+    "description": "Body: XP gained",
+    "placeholders": {
+      "delta": { "type": "int", "example": "5" },
+      "total": { "type": "int", "example": "55" }
+    }
+  },
+  "notificationRankUpBody": "Ahora eres {rank}",
+  "@notificationRankUpBody": {
+    "description": "Body: rank up",
+    "placeholders": { "rank": { "type": "String", "example": "Colaborador" } }
+  },
   "notificationTimeNow": "Ahora",
   "@notificationTimeNow": { "description": "Relative time: just now" },
   "notificationTimeMinutes": "{n, plural, =1{Hace 1 min} other{Hace {n} min}}",

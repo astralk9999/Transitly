@@ -11,6 +11,7 @@ import '../../core/theme/transit_typography.dart';
 import '../../data/notification/notification_repository_provider.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../shared/models/app_notification.dart';
+import '../../shared/models/reputation.dart';
 import '../../shared/providers/notification_stream_provider.dart';
 import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/glass_card.dart';
@@ -204,10 +205,10 @@ class _NotificationTile extends StatelessWidget {
                           ),
                         ],
                       ),
-                      if (_bodyText(notification).isNotEmpty) ...[
+                      if (_bodyText(notification, l10n).isNotEmpty) ...[
                         const SizedBox(height: 4),
                         Text(
-                          _bodyText(notification),
+                          _bodyText(notification, l10n),
                           style: TransitTypography.bodySecondary(
                             unread ? c.textMid : c.textLo,
                           ),
@@ -238,11 +239,34 @@ class _NotificationTile extends StatelessWidget {
         l10n.notificationTypeFeatureRequestReplied,
       AppNotificationType.busApproachingFavorite =>
         l10n.notificationTypeBusApproaching,
+      AppNotificationType.xpEarned => l10n.notificationTypeXpEarned,
+      AppNotificationType.rankUp => l10n.notificationTypeRankUp,
       AppNotificationType.custom => l10n.notificationTypeCustom,
     };
   }
 
-  String _bodyText(AppNotification notif) {
+  String _bodyText(AppNotification notif, AppLocalizations l10n) {
+    // Casos generados por add_xp() — el payload trae delta/score/level
+    // en lugar de body/title como las demás notificaciones.
+    if (notif.type == AppNotificationType.xpEarned) {
+      final delta = (notif.payload['delta'] as num?)?.toInt() ?? 0;
+      final total = (notif.payload['new_score'] as num?)?.toInt() ?? 0;
+      return l10n.notificationXpEarnedBody(delta, total);
+    }
+    if (notif.type == AppNotificationType.rankUp) {
+      final score = (notif.payload['score'] as num?)?.toInt() ?? 0;
+      final rank = ReputationRank.forScore(score);
+      final label = switch (rank) {
+        ReputationRank.none => l10n.reputationRankNone,
+        ReputationRank.novice => l10n.reputationRankNovice,
+        ReputationRank.contributor => l10n.reputationRankContributor,
+        ReputationRank.advocate => l10n.reputationRankAdvocate,
+        ReputationRank.cartographer => l10n.reputationRankCartographer,
+        ReputationRank.guardian => l10n.reputationRankGuardian,
+        ReputationRank.legend => l10n.reputationRankLegend,
+      };
+      return l10n.notificationRankUpBody(label);
+    }
     final body = notif.payload['body'];
     if (body is String && body.isNotEmpty) return body;
     final title = notif.payload['title'];
@@ -291,6 +315,8 @@ class _NotificationIcon extends StatelessWidget {
       AppNotificationType.featureRequestReplied => Icons.forum_outlined,
       AppNotificationType.busApproachingFavorite =>
         Icons.directions_bus_outlined,
+      AppNotificationType.xpEarned => Icons.star_rounded,
+      AppNotificationType.rankUp => Icons.military_tech_outlined,
       AppNotificationType.custom => Icons.notifications_outlined,
     };
   }

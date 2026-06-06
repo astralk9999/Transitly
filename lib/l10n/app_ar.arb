@@ -559,6 +559,19 @@
       "unreadCount": { "type": "int", "example": "3" }
     }
   },
+  "notificationTypeXpEarned": "نقاط السمعة",
+  "notificationTypeRankUp": "ارتقيت في الرتبة!",
+  "notificationXpEarnedBody": "+{delta} XP · المجموع {total}",
+  "@notificationXpEarnedBody": {
+    "placeholders": {
+      "delta": { "type": "int", "example": "5" },
+      "total": { "type": "int", "example": "55" }
+    }
+  },
+  "notificationRankUpBody": "أنت الآن {rank}",
+  "@notificationRankUpBody": {
+    "placeholders": { "rank": { "type": "String", "example": "مساهم" } }
+  },
   "notificationTypeIncidentResolved": "تم حل البلاغ",
   "notificationTypeRoutePromoted": "تم ترقية المسار",
   "notificationTypeShareReceived": "تمت مشاركة مسار معك",

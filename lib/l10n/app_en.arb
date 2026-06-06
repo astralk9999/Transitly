@@ -354,6 +354,19 @@
       "unreadCount": { "type": "int", "example": "3" }
     }
   },
+  "notificationTypeXpEarned": "Reputation points",
+  "notificationTypeRankUp": "You ranked up!",
+  "notificationXpEarnedBody": "+{delta} XP · total {total}",
+  "@notificationXpEarnedBody": {
+    "placeholders": {
+      "delta": { "type": "int", "example": "5" },
+      "total": { "type": "int", "example": "55" }
+    }
+  },
+  "notificationRankUpBody": "You are now {rank}",
+  "@notificationRankUpBody": {
+    "placeholders": { "rank": { "type": "String", "example": "Contributor" } }
+  },
   "notificationTypeIncidentResolved": "Incident resolved",
   "notificationTypeRoutePromoted": "Route promoted",
   "notificationTypeShareReceived": "Route shared with you",

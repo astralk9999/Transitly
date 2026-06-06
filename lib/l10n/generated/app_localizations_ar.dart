@@ -1005,6 +1005,22 @@ class AppLocalizationsAr extends AppLocalizations {
   String get notificationTypeCustom => 'إشعار';
 
   @override
+  String get notificationTypeXpEarned => 'نقاط السمعة';
+
+  @override
+  String get notificationTypeRankUp => 'ارتقيت في الرتبة!';
+
+  @override
+  String notificationXpEarnedBody(int delta, int total) {
+    return '+$delta XP · المجموع $total';
+  }
+
+  @override
+  String notificationRankUpBody(String rank) {
+    return 'أنت الآن $rank';
+  }
+
+  @override
   String get notificationTimeNow => 'الآن';
 
   @override

@@ -1008,6 +1008,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notificationTypeCustom => 'Notice';
 
   @override
+  String get notificationTypeXpEarned => 'Reputation points';
+
+  @override
+  String get notificationTypeRankUp => 'You ranked up!';
+
+  @override
+  String notificationXpEarnedBody(int delta, int total) {
+    return '+$delta XP · total $total';
+  }
+
+  @override
+  String notificationRankUpBody(String rank) {
+    return 'You are now $rank';
+  }
+
+  @override
   String get notificationTimeNow => 'Now';
 
   @override

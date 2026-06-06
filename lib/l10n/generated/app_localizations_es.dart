@@ -1013,6 +1013,22 @@ class AppLocalizationsEs extends AppLocalizations {
   String get notificationTypeCustom => 'Aviso';
 
   @override
+  String get notificationTypeXpEarned => 'Puntos de reputación';
+
+  @override
+  String get notificationTypeRankUp => '¡Subiste de rango!';
+
+  @override
+  String notificationXpEarnedBody(int delta, int total) {
+    return '+$delta XP · total $total';
+  }
+
+  @override
+  String notificationRankUpBody(String rank) {
+    return 'Ahora eres $rank';
+  }
+
+  @override
   String get notificationTimeNow => 'Ahora';
 
   @override

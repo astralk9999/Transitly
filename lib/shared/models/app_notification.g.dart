@@ -33,5 +33,7 @@ const _$AppNotificationTypeEnumMap = {
   AppNotificationType.shareReceived: 'shareReceived',
   AppNotificationType.featureRequestReplied: 'featureRequestReplied',
   AppNotificationType.busApproachingFavorite: 'busApproachingFavorite',
+  AppNotificationType.xpEarned: 'xpEarned',
+  AppNotificationType.rankUp: 'rankUp',
   AppNotificationType.custom: 'custom',
 };

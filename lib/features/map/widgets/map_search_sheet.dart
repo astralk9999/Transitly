@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/providers/map_search_provider.dart';
+import '../../../shared/providers/search_selection_provider.dart';
 
 void showMapSearchSheet(
   BuildContext context,
@@ -158,17 +158,59 @@ class _SearchResults extends ConsumerWidget {
             result: r,
             c: c,
             onTap: () {
+              // B1.2: en lugar de abrir el detalle directamente,
+              // marcamos la selección con un pin destacado. El usuario
+              // puede pulsar "Ver detalles" en la tarjeta del pin si
+              // quiere abrir la pantalla completa.
               switch (r.type) {
                 case MapSearchResultType.route:
+                  // Para línea: centramos en la primera parada (o el
+                  // primer punto del trazado) y dejamos el pin con
+                  // pushPath a /route/${id}.
+                  final stop = r.route != null
+                      ? r.route!.id
+                      : null;
+                  if (r.lat != null && r.lng != null) {
+                    ref.read(searchSelectionProvider.notifier).state =
+                        SearchSelection(
+                      id: 'route-${r.route?.id ?? r.title}',
+                      position: LatLng(r.lat!, r.lng!),
+                      title: 'Línea ${r.route?.code ?? r.title}',
+                      subtitle: r.route?.name ?? r.subtitle,
+                      icon: Icons.directions_bus,
+                      color: r.route?.routeColor,
+                      pushPath: stop != null ? '/route/$stop' : null,
+                    );
+                  } else {
+                    // Sin posición → push directo como antes.
+                    onClose();
+                    return;
+                  }
                   onClose();
-                  context.push('/route/${r.route!.id}');
                 case MapSearchResultType.stop:
+                  ref.read(searchSelectionProvider.notifier).state =
+                      SearchSelection(
+                    id: 'stop-${r.stop?.id ?? r.title}',
+                    position: LatLng(r.lat!, r.lng!),
+                    title: r.title,
+                    subtitle:
+                        r.subtitle.isEmpty ? 'Parada' : r.subtitle,
+                    icon: Icons.location_on,
+                    pushPath:
+                        r.stop != null ? '/stop/${r.stop!.id}' : null,
+                  );
                   onClose();
-                  mapController.move(LatLng(r.lat!, r.lng!), 17);
-                  context.push('/stop/${r.stop!.id}');
                 case MapSearchResultType.place:
+                  ref.read(searchSelectionProvider.notifier).state =
+                      SearchSelection(
+                    id: 'place-${r.title}',
+                    position: LatLng(r.lat!, r.lng!),
+                    title: r.title,
+                    subtitle:
+                        r.subtitle.isEmpty ? 'Lugar' : r.subtitle,
+                    icon: Icons.place,
+                  );
                   onClose();
-                  mapController.move(LatLng(r.lat!, r.lng!), 16);
               }
             },
           ));

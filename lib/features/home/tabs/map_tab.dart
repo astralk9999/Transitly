@@ -524,7 +524,8 @@ class _MapTabState extends ConsumerState<MapTab>
                   isDark: isDark,
                 ),
               // B1.1: pin destacado tipo Google Maps cuando el usuario
-              // seleccionó algo desde el buscador.
+              // seleccionó algo desde el buscador. Si la selección tiene
+              // pushPath, la tarjeta del pin muestra "Ver detalles".
               if (ref.watch(searchSelectionProvider) != null)
                 SearchPinLayer(
                   selection: ref.watch(searchSelectionProvider)!,
@@ -532,6 +533,12 @@ class _MapTabState extends ConsumerState<MapTab>
                   onClose: () => ref
                       .read(searchSelectionProvider.notifier)
                       .state = null,
+                  onOpenDetail: () {
+                    final sel = ref.read(searchSelectionProvider);
+                    if (sel?.pushPath != null) {
+                      context.push(sel!.pushPath!);
+                    }
+                  },
                 ),
             ],
             routes: filteredRoutes,

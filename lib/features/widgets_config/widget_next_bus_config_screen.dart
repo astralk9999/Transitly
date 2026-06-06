@@ -11,6 +11,7 @@ import '../../data/widgets_native/widget_data_writer.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../shared/providers/home_habitual_config_provider.dart';
 import '../../shared/widgets/glass_card.dart';
+import '../../shared/widgets/transit_app_bar.dart';
 import '../../shared/widgets/transit_button.dart';
 import 'widgets/route_autocomplete.dart';
 import 'widgets/widget_appearance_panel.dart';
@@ -110,16 +111,9 @@ class _WidgetNextBusConfigScreenState
     final routes = mockData.routes;
 
     return Scaffold(
-      backgroundColor: c.bgRoot,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: c.textHi),
-          onPressed: () => context.pop(),
-        ),
-        title: Text(l10n.widgetsConfigNextBus, style: TransitTypography.heading(c.textHi)),
-      ),
+      backgroundColor: Colors.transparent,
+      appBar: TransitAppBar(
+          title: l10n.widgetsConfigNextBus, transparent: true),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(

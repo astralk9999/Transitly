@@ -12,6 +12,7 @@ import '../../shared/providers/user_favorites_provider.dart';
 import '../../shared/providers/widget_appearance_config_provider.dart';
 import '../../shared/widgets/background_wrapper.dart';
 import '../../shared/widgets/glass_card.dart';
+import '../../shared/widgets/transit_app_bar.dart';
 import 'widgets/widget_appearance_panel.dart';
 
 /// Sub #58 (re-rediseño): "Centro de widgets" con SegmentedButton para
@@ -42,16 +43,8 @@ class _WidgetsConfigScreenState extends ConsumerState<WidgetsConfigScreen> {
       // Transparente para que se vea el BackgroundWrapper externo
       // (fondo configurado en Apariencia: smoke, aurora, balatro, etc).
       backgroundColor: Colors.transparent,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: c.textHi),
-          onPressed: () => context.pop(),
-        ),
-        title: Text(l10n.widgetsConfigTitle,
-            style: TransitTypography.heading(c.textHi)),
-      ),
+      appBar: TransitAppBar(
+          title: l10n.widgetsConfigTitle, transparent: true),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(

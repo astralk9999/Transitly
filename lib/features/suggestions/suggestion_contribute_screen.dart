@@ -38,13 +38,9 @@ class SuggestionContributeScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: Stack(
-        children: [
-          Column(
-            children: [
-              TransitAppBar(title: l10n.suggestionContributeTitle, transparent: true),
-              Expanded(
-                child: open.isEmpty
+      appBar: TransitAppBar(
+          title: l10n.suggestionContributeTitle, transparent: true),
+      body: open.isEmpty
                     ? EmptyState(
                         l10n.suggestionContributeEmptyTitle,
                         l10n.suggestionContributeEmptySubtitle,
@@ -64,11 +60,6 @@ class SuggestionContributeScreen extends ConsumerWidget {
                       );
                     },
                   ),
-          ),
-        ],
-      ),
-      ],
-      ),
     );
   }
 }

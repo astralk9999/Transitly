@@ -12,6 +12,7 @@ import '../../shared/models/enums.dart';
 import '../../shared/models/route_suggestion_model.dart';
 import '../../shared/providers/user_provider.dart';
 import '../../shared/widgets/single_field_dialog.dart';
+import '../../shared/widgets/transit_app_bar.dart';
 import '../../shared/widgets/transit_button.dart';
 import '../../shared/widgets/transit_input.dart';
 
@@ -54,18 +55,8 @@ class _SuggestRouteScreenState extends ConsumerState<SuggestRouteScreen> {
     return Scaffold(
       backgroundColor: Colors.transparent,
       extendBody: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: c.textMid),
-          tooltip: l10n.actionBack,
-          onPressed: () => context.pop(),
-        ),
-        title: Text(l10n.suggestRouteScreenTitle,
-            style: TransitTypography.subheading(c.textHi)),
-        centerTitle: false,
-      ),
+      appBar: TransitAppBar(
+          title: l10n.suggestRouteScreenTitle, transparent: true),
       body: Stack(
         children: [
           SingleChildScrollView(

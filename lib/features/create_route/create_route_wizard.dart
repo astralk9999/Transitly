@@ -361,12 +361,10 @@ class _CreateRouteWizardState extends ConsumerState<CreateRouteWizard> {
     final colors = TransitColorScheme.of(isDark);
 
     return Scaffold(
-      backgroundColor: colors.bgRoot,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(56),
-        child: TransitAppBar(
-          title: _isEditing ? 'Editar ruta' : 'Crear ruta',
-        ),
+      backgroundColor: Colors.transparent,
+      appBar: TransitAppBar(
+        title: _isEditing ? 'Editar ruta' : 'Crear ruta',
+        transparent: true,
       ),
       body: Column(
         children: [

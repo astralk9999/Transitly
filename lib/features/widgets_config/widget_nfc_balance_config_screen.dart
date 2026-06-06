@@ -7,6 +7,7 @@ import '../../core/theme/transit_typography.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../shared/providers/nfc_provider.dart';
 import '../../shared/widgets/glass_card.dart';
+import '../../shared/widgets/transit_app_bar.dart';
 import '../../shared/widgets/transit_button.dart';
 import 'widgets/widget_appearance_panel.dart';
 
@@ -22,16 +23,9 @@ class WidgetNfcBalanceConfigScreen extends ConsumerWidget {
     final hasBalance = nfc.result != null;
 
     return Scaffold(
-      backgroundColor: c.bgRoot,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: c.textHi),
-          onPressed: () => context.pop(),
-        ),
-        title: Text(l10n.widgetsConfigNfc, style: TransitTypography.heading(c.textHi)),
-      ),
+      backgroundColor: Colors.transparent,
+      appBar: TransitAppBar(
+          title: l10n.widgetsConfigNfc, transparent: true),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(

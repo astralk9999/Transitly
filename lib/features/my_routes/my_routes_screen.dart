@@ -13,6 +13,7 @@ import '../../shared/widgets/pressable.dart';
 import '../../shared/widgets/shimmer_skeleton.dart';
 import '../../shared/widgets/status_badge.dart';
 import '../../shared/widgets/reputation_badge.dart';
+import '../../shared/widgets/transit_app_bar.dart';
 import '../../shared/models/enums.dart';
 
 // TODO(l10n):
@@ -161,7 +162,8 @@ class _MyRoutesScreenState extends ConsumerState<MyRoutesScreen> {
 
     if (session == null) {
       return Scaffold(
-        backgroundColor: c.bgRoot,
+        backgroundColor: Colors.transparent,
+        appBar: const TransitAppBar(title: 'Mis rutas', transparent: true),
         body: EmptyState(
           'Inicia sesión',
           // TODO: l10n
@@ -177,12 +179,12 @@ class _MyRoutesScreenState extends ConsumerState<MyRoutesScreen> {
     final reputation = rep.valueOrNull;
 
     return Scaffold(
-      backgroundColor: c.bgRoot,
-      body: SafeArea(
-        bottom: false,
-        child: Column(
+      backgroundColor: Colors.transparent,
+      appBar: const TransitAppBar(title: 'Mis rutas', transparent: true),
+      body: Column(
           children: [
-            // AppBar-like header
+            // Resumen de reputación (sin volver a poner título — ya
+            // está en el TransitAppBar).
             _buildHeader(c, reputation),
             Expanded(
               child: _loading
@@ -227,7 +229,6 @@ class _MyRoutesScreenState extends ConsumerState<MyRoutesScreen> {
             ),
           ],
         ),
-      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // TODO: navigate to route creator
@@ -244,21 +245,6 @@ class _MyRoutesScreenState extends ConsumerState<MyRoutesScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              IconButton(
-                icon: Icon(Icons.arrow_back, color: c.textHi),
-                onPressed: () => context.pop(),
-              ),
-              Expanded(
-                child: Text(
-                  'Mis rutas',
-                  // TODO: l10n
-                  style: TransitTypography.heading(c.textHi),
-                ),
-              ),
-            ],
-          ),
           if (reputation != null) ...[
             const SizedBox(height: 4),
             Padding(

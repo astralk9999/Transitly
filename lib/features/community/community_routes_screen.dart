@@ -13,6 +13,7 @@ import '../../shared/widgets/glass_card.dart';
 import '../../shared/widgets/pressable.dart';
 import '../../shared/widgets/shimmer_skeleton.dart';
 import '../../shared/widgets/status_badge.dart';
+import '../../shared/widgets/transit_app_bar.dart';
 
 const _serviceTypes = [
   ('all', 'Todas'),
@@ -212,7 +213,8 @@ class _CommunityRoutesScreenState extends ConsumerState<CommunityRoutesScreen> {
 
     if (session == null) {
       return Scaffold(
-        backgroundColor: c.bgRoot,
+        backgroundColor: Colors.transparent,
+        appBar: const TransitAppBar(title: 'Comunidad', transparent: true),
         body: EmptyState(
           'Inicia sesión para ver la comunidad',
           'Conéctate para descubrir rutas creadas por otros usuarios',
@@ -224,48 +226,46 @@ class _CommunityRoutesScreenState extends ConsumerState<CommunityRoutesScreen> {
     }
 
     return Scaffold(
-      backgroundColor: c.bgRoot,
-      body: SafeArea(
-        bottom: false,
-        child: Column(
-          children: [
-            _buildSearchBar(c),
-            _buildChipsRow(c),
-            _buildSortRow(c),
-            Expanded(
-              child: _routes.isEmpty && _loading
-                  ? ListView.builder(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      itemCount: 6,
-                      itemBuilder: (_, __) => Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: ShimmerSkeleton.routeCard(context),
+      backgroundColor: Colors.transparent,
+      appBar: const TransitAppBar(title: 'Comunidad', transparent: true),
+      body: Column(
+        children: [
+          _buildSearchBar(c),
+          _buildChipsRow(c),
+          _buildSortRow(c),
+          Expanded(
+            child: _routes.isEmpty && _loading
+                ? ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    itemCount: 6,
+                    itemBuilder: (_, __) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: ShimmerSkeleton.routeCard(context),
+                    ),
+                  )
+                : _routes.isEmpty
+                    ? const EmptyState(
+                        'Sin resultados',
+                        'No se encontraron rutas públicas',
+                        icon: Icons.route_outlined,
+                      )
+                    : ListView.builder(
+                        controller: _scrollController,
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        itemCount: _routes.length + (_loading ? 1 : 0),
+                        itemBuilder: (context, index) {
+                          if (index >= _routes.length) {
+                            return const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 16),
+                              child:
+                                  Center(child: CircularProgressIndicator()),
+                            );
+                          }
+                          return _buildRouteCard(c, _routes[index]);
+                        },
                       ),
-                    )
-                  : _routes.isEmpty
-                      ? const EmptyState(
-                          'Sin resultados',
-                          'No se encontraron rutas públicas',
-                          icon: Icons.route_outlined,
-                        )
-                      : ListView.builder(
-                          controller: _scrollController,
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          itemCount: _routes.length + (_loading ? 1 : 0),
-                          itemBuilder: (context, index) {
-                            if (index >= _routes.length) {
-                              return const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 16),
-                                child:
-                                    Center(child: CircularProgressIndicator()),
-                              );
-                            }
-                            return _buildRouteCard(c, _routes[index]);
-                          },
-                        ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -280,10 +280,6 @@ class _CommunityRoutesScreenState extends ConsumerState<CommunityRoutesScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
         child: Row(
           children: [
-            IconButton(
-              icon: Icon(Icons.arrow_back, color: c.textHi),
-              onPressed: () => context.pop(),
-            ),
             Expanded(
               child: TextField(
                 controller: _searchController,

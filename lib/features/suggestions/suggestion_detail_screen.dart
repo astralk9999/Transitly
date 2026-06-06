@@ -9,6 +9,7 @@ import '../../data/route_suggestion/route_suggestion_repository_provider.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../shared/models/route_suggestion_model.dart';
 import '../../shared/utils/require_auth.dart';
+import '../../shared/widgets/transit_app_bar.dart';
 import '../../shared/widgets/transit_button.dart';
 
 class SuggestionDetailScreen extends ConsumerStatefulWidget {
@@ -61,18 +62,8 @@ class _SuggestionDetailScreenState
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: c.textMid),
-          tooltip: AppLocalizations.of(context).actionBack,
-          onPressed: () => context.pop(),
-        ),
-        title: Text('DETALLE SUGERENCIA',
-            style: TransitTypography.subheading(c.textHi)),
-        centerTitle: false,
-      ),
+      appBar: const TransitAppBar(
+          title: 'Detalle sugerencia', transparent: true),
       body: Stack(
         children: [
           FutureBuilder<RouteSuggestionModel?>(

@@ -7,6 +7,7 @@ import '../../../data/geo/geo_providers.dart';
 import '../../../shared/models/operator_model.dart';
 import '../../../shared/utils/string_formatting.dart';
 import '../../../shared/widgets/glass_card.dart';
+import '../../../shared/widgets/transit_app_bar.dart';
 import '../../../l10n/generated/app_localizations.dart';
 
 class CityPickerScreen extends ConsumerWidget {
@@ -20,28 +21,11 @@ class CityPickerScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 8, 16, 8),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.close),
-                        color: c.textHi,
-                        tooltip: AppLocalizations.of(context).actionClose,
-                        onPressed: () => Navigator.of(context).pop(),
-                      ),
-                      const SizedBox(width: 8),
-                      Text(AppLocalizations.of(context).cityPickerSelectOperator,
-                          style: TransitTypography.heading(c.textHi)),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: operatorsAsync.when(
+      appBar: TransitAppBar(
+        title: AppLocalizations.of(context).cityPickerSelectOperator,
+        transparent: true,
+      ),
+      body: operatorsAsync.when(
                     data: (operators) {
                       if (operators.isEmpty) {
                         return Center(
@@ -63,10 +47,6 @@ class CityPickerScreen extends ConsumerWidget {
                           style: const TextStyle(color: Colors.redAccent)),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
     );
   }
 }

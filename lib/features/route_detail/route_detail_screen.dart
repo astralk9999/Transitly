@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:latlong2/latlong.dart';
 
 import '../../data/analytics/posthog_service.dart';
 import '../../l10n/generated/app_localizations.dart';
@@ -13,6 +14,7 @@ import '../../shared/models/route_stop_model.dart';
 import '../../shared/models/stop_model.dart';
 import '../../shared/providers/derived/schedule_providers.dart';
 import '../../shared/providers/route_lookup_providers.dart';
+import '../../shared/providers/search_selection_provider.dart';
 import '../../shared/providers/user_favorites_provider.dart';
 import '../../shared/widgets/route_favorite_toast.dart';
 import '../../shared/widgets/responsive_scaffold.dart';
@@ -170,31 +172,65 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
                   left: padding,
                   right: padding,
                   bottom: 16,
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: TransitButton(
-                      label: isFavorite
-                          ? AppLocalizations.of(context).routeDetailRemoveFavorite
-                          : AppLocalizations.of(context).routeDetailAddFavorite,
-                      isPrimary: !isFavorite,
-                      onPressed: () async {
-                        final notifier = ref.read(userFavoritesProvider.notifier);
-                        if (isFavorite) {
-                          await notifier.removeLine(widget.routeId);
-                        } else {
-                          await notifier.addLine(widget.routeId);
-                        }
-                        if (!context.mounted) return;
-                        // Toast personalizado arriba con badge de línea +
-                        // icono star. Reemplaza el SnackBar Material
-                        // genérico que aparecía abajo sin identidad.
-                        showRouteFavoriteToast(
-                          context,
-                          route: route,
-                          added: !isFavorite,
-                        );
-                      },
-                    ),
+                  child: Row(
+                    children: [
+                      // B1.4: botón "Ver en el mapa" que centra la
+                      // cámara en la línea con polilínea destacada.
+                      Expanded(
+                        child: TransitButton(
+                          label: 'VER EN EL MAPA',
+                          icon: Icons.map_outlined,
+                          isPrimary: false,
+                          onPressed: () {
+                            // Tomamos la primera parada del recorrido
+                            // como punto representativo para centrar.
+                            final stops = mockData.getStopsForRoute(
+                                widget.routeId);
+                            if (stops.isEmpty) return;
+                            final firstStop = stops.first;
+                            ref
+                                .read(searchSelectionProvider.notifier)
+                                .state = SearchSelection(
+                              id: 'route-${widget.routeId}',
+                              position: LatLng(firstStop.lat, firstStop.lng),
+                              title: 'Línea ${route.code}',
+                              subtitle: route.name,
+                              icon: Icons.directions_bus,
+                              color: route.routeColor,
+                              pushPath: '/route/${widget.routeId}',
+                              routeId: widget.routeId,
+                            );
+                            context.go('/home/mapa');
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: TransitButton(
+                          label: isFavorite
+                              ? AppLocalizations.of(context)
+                                  .routeDetailRemoveFavorite
+                              : AppLocalizations.of(context)
+                                  .routeDetailAddFavorite,
+                          isPrimary: !isFavorite,
+                          onPressed: () async {
+                            final notifier =
+                                ref.read(userFavoritesProvider.notifier);
+                            if (isFavorite) {
+                              await notifier.removeLine(widget.routeId);
+                            } else {
+                              await notifier.addLine(widget.routeId);
+                            }
+                            if (!context.mounted) return;
+                            showRouteFavoriteToast(
+                              context,
+                              route: route,
+                              added: !isFavorite,
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],

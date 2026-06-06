@@ -282,12 +282,23 @@
                 TransitButton(
                   label: l10n.actionSave,
                   onPressed: canSave
-                      ? () {
-                          ref
+                      ? () async {
+                          &#47;&#47; Capturamos container y nav antes del await
+                          &#47;&#47; para no usar BuildContext tras async gap.
+                          final container =
+                              ProviderScope.containerOf(ctx);
+                          final nav = Navigator.of(ctx);
+                          await ref
                               .read(homeHabitualConfigProvider.notifier)
                               .save(selectedRoute.value!.id,
                                   selectedStop.value!.id);
-                          Navigator.of(ctx).pop();
+                          &#47;&#47; Refresca los widgets nativos inmediatamente
+                          &#47;&#47; tras guardar (antes el usuario tenía que
+                          &#47;&#47; esperar 30 min al sistema Android para verlos
+                          &#47;&#47; actualizados con la nueva línea habitual).
+                          unawaited(WidgetRefreshService.refreshNow(
+                              container));
+                          nav.pop();
                         }
                       : null,
                 ),

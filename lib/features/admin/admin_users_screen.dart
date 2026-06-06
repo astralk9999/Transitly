@@ -257,9 +257,17 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> {
                     final user = _filteredUsers[index];
                     final name = user['display_name'] as String? ?? '?';
                     final role = user['role'] as String? ?? 'passenger';
-                    final repLevel =
-                        user['reputation_level'] as String? ?? 'new';
+                    // reputation_level en BD es INTEGER (0..6), no
+                    // string. Lo derivamos del score igual que
+                    // UserModel.fromJson.
                     final score = (user['reputation_score'] as num?)?.toInt() ?? 0;
+                    final repLevel = score >= 500
+                        ? 'expert'
+                        : score >= 50
+                            ? 'trusted'
+                            : score >= 10
+                                ? 'contributor'
+                                : 'new';
 
                     return Padding(
                       padding: EdgeInsets.only(

@@ -184,22 +184,16 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
                           icon: Icons.map_outlined,
                           isPrimary: false,
                           onPressed: () {
-                            // Posición representativa de la línea para
-                            // centrar el mapa: la primera parada del
-                            // recorrido si existe, o el centro de
-                            // Jerez como fallback. Antes si el routeId
-                            // no devolvía paradas el botón no hacía
-                            // nada (return temprano sin navigate).
+                            // Capturamos GoRouter ANTES de cualquier
+                            // operación (Riverpod, etc.) para evitar
+                            // que un rebuild invalide el context.
+                            final router = GoRouter.of(context);
                             final stops = mockData.getStopsForRoute(
                                 widget.routeId);
-                            final LatLng position;
-                            if (stops.isNotEmpty) {
-                              position = LatLng(
-                                  stops.first.lat, stops.first.lng);
-                            } else {
-                              // Fallback: centro de Jerez.
-                              position = const LatLng(36.6850, -6.1376);
-                            }
+                            final position = stops.isNotEmpty
+                                ? LatLng(
+                                    stops.first.lat, stops.first.lng)
+                                : const LatLng(36.6850, -6.1376);
                             ref
                                 .read(searchSelectionProvider.notifier)
                                 .state = SearchSelection(
@@ -212,11 +206,13 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
                               pushPath: '/route/${widget.routeId}',
                               routeId: widget.routeId,
                             );
-                            // context.go absoluto al shell del mapa.
-                            // Antes había un maybePop antes del go que
-                            // creaba race condition con go_router y a
-                            // veces no navegaba.
-                            context.go('/home/mapa');
+                            // Diferimos al siguiente frame para que
+                            // el state del provider se propague antes
+                            // de cambiar de pantalla.
+                            WidgetsBinding.instance
+                                .addPostFrameCallback((_) {
+                              router.go('/home/mapa');
+                            });
                           },
                         ),
                       ),

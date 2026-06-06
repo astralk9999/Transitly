@@ -93,6 +93,29 @@ class _StepRoutePathState extends State<StepRoutePath> {
       );
     }).toList();
 
+    // Puntos visibles del segmento en edición: sin esto el usuario
+    // toca el mapa y "no pasa nada" porque hace falta ≥2 puntos para
+    // dibujar la polyline amarilla. Con markers individuales cada tap
+    // queda confirmado al instante.
+    final editingMarkers = <Marker>[];
+    if (_editingSegmentIndex != null) {
+      for (var i = 0; i < _currentPoints.length; i++) {
+        final p = _currentPoints[i];
+        editingMarkers.add(Marker(
+          point: LatLng(p.lat, p.lng),
+          width: 16,
+          height: 16,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.amber,
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.white, width: 1.5),
+            ),
+          ),
+        ));
+      }
+    }
+
     return SizedBox(
       height: 300,
       child: ClipRRect(
@@ -109,7 +132,6 @@ class _StepRoutePathState extends State<StepRoutePath> {
               urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
               userAgentPackageName: 'com.transitly.transitly',
             ),
-            MarkerLayer(markers: stopMarkers),
             PolylineLayer(
               polylines: [
                 for (final seg in segments) ...[
@@ -120,7 +142,7 @@ class _StepRoutePathState extends State<StepRoutePath> {
                       strokeWidth: 3,
                     ),
                 ],
-                if (_editingSegmentIndex != null && _currentPoints.isNotEmpty)
+                if (_editingSegmentIndex != null && _currentPoints.length >= 2)
                   Polyline(
                     points: [for (final p in _currentPoints) LatLng(p.lat, p.lng)],
                     color: Colors.amber,
@@ -128,6 +150,9 @@ class _StepRoutePathState extends State<StepRoutePath> {
                   ),
               ],
             ),
+            MarkerLayer(markers: stopMarkers),
+            if (editingMarkers.isNotEmpty)
+              MarkerLayer(markers: editingMarkers),
           ],
         ),
       ),
@@ -151,18 +176,42 @@ class _StepRoutePathState extends State<StepRoutePath> {
               style: TransitTypography.bodySecondary(colors.textMid)),
           const SizedBox(height: 16),
           _buildMap(colors),
-          if (_editingSegmentIndex != null) ...[
-            const SizedBox(height: 12),
-            Text('Editando segmento ${_editingSegmentIndex! + 1}  (${_currentPoints.length} puntos)',
-                style: TransitTypography.bodyPrimary(colors.accent)),
+          const SizedBox(height: 8),
+          if (_editingSegmentIndex == null)
+            Text(
+              'Para trazar: pulsa "Añadir puntos" en un segmento de abajo y luego toca el mapa.',
+              style: TransitTypography.bodySmall(colors.textMid),
+            )
+          else ...[
+            const SizedBox(height: 4),
+            Text(
+              'Editando segmento ${_editingSegmentIndex! + 1} · ${_currentPoints.length} puntos',
+              style: TransitTypography.bodyPrimary(colors.accent),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              _currentPoints.isEmpty
+                  ? 'Toca el mapa para añadir el primer punto.'
+                  : 'Sigue tocando para añadir más puntos o pulsa "Deshacer".',
+              style: TransitTypography.bodySmall(colors.textMid),
+            ),
             const SizedBox(height: 8),
             Row(
               children: [
                 Expanded(
                   child: TransitButton(
                     label: 'Confirmar segmento',
-                    onPressed: _confirmSegment,
+                    onPressed:
+                        _currentPoints.isEmpty ? null : _confirmSegment,
                   ),
+                ),
+                const SizedBox(width: 8),
+                TransitButton(
+                  label: 'Deshacer',
+                  isPrimary: false,
+                  onPressed: _currentPoints.isEmpty
+                      ? null
+                      : () => setState(() => _currentPoints.removeLast()),
                 ),
                 const SizedBox(width: 8),
                 TransitButton(

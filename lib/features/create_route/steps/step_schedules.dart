@@ -117,7 +117,32 @@ class _StepSchedulesState extends State<StepSchedules> {
       ];
     }
     return [
-      Text('Minutos desde el origen para cada parada:',
+      // Aviso: hasta que el modelo soporte tiempos por parada, los
+      // minutos que se introduzcan abajo NO se guardarán. Antes el
+      // input no avisaba y los usuarios pensaban que se persistían.
+      Container(
+        padding: const EdgeInsets.all(12),
+        margin: const EdgeInsets.only(bottom: 12),
+        decoration: BoxDecoration(
+          color: colors.stateDelay.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+              color: colors.stateDelay.withValues(alpha: 0.3), width: 1),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.construction, size: 18, color: colors.stateDelay),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                'Modo "Por parada" en desarrollo — todavía no se guardan los minutos por parada. Usa "Horas fijas" o "Frecuencia".',
+                style: TransitTypography.bodySmall(colors.textMid),
+              ),
+            ),
+          ],
+        ),
+      ),
+      Text('Vista previa (sin persistencia):',
           style: TransitTypography.bodyPrimary(colors.textHi)),
       const SizedBox(height: 8),
       for (final stop in widget.stops)

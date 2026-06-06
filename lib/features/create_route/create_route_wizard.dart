@@ -64,10 +64,17 @@ class _CreateRouteWizardState extends ConsumerState<CreateRouteWizard> {
   @override
   void initState() {
     super.initState();
+    // Sin este listener, el botón "Siguiente"/"Publicar" no recalcula
+    // canProceed cuando el usuario escribe el nombre y queda en gris.
+    _nameCtrl.addListener(_onWizardFieldChanged);
     if (widget.routeId != null) {
       _isEditing = true;
       _loadExisting();
     }
+  }
+
+  void _onWizardFieldChanged() {
+    if (mounted) setState(() {});
   }
 
   Future<void> _loadExisting() async {
@@ -128,6 +135,7 @@ class _CreateRouteWizardState extends ConsumerState<CreateRouteWizard> {
 
   @override
   void dispose() {
+    _nameCtrl.removeListener(_onWizardFieldChanged);
     _nameCtrl.dispose();
     _descCtrl.dispose();
     _pageController.dispose();
@@ -170,6 +178,11 @@ class _CreateRouteWizardState extends ConsumerState<CreateRouteWizard> {
         return true;
       case 4:
         return true;
+      case 5:
+        // Step Resumen: habilitamos "Publicar" si el nombre sigue
+        // válido y hay al menos una parada. Antes caía al default y
+        // dejaba el botón gris permanentemente.
+        return _nameCtrl.text.trim().length >= 3 && _stops.isNotEmpty;
       default:
         return false;
     }

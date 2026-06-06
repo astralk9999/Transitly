@@ -71,7 +71,23 @@ class _StepBasicInfoState extends State<StepBasicInfo> {
   final _hexCtrl = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    // Sin estos listeners los contadores "x/80" y "x/500" no se
+    // refrescan al escribir — TextEditingController no notifica al
+    // StatefulWidget padre por sí solo.
+    widget.nameCtrl.addListener(_onTextChanged);
+    widget.descCtrl.addListener(_onTextChanged);
+  }
+
+  void _onTextChanged() {
+    if (mounted) setState(() {});
+  }
+
+  @override
   void dispose() {
+    widget.nameCtrl.removeListener(_onTextChanged);
+    widget.descCtrl.removeListener(_onTextChanged);
     _hexCtrl.dispose();
     super.dispose();
   }
@@ -248,6 +264,9 @@ class _StepBasicInfoState extends State<StepBasicInfo> {
             spacing: TransitSpacing.space8,
             runSpacing: TransitSpacing.space8,
             children: [
+              // Color "Acento" del esquema. Si coincide con uno de los
+              // presets (por defecto el acento ES 0xFF977DDF y el primer
+              // preset también), saltamos el preset duplicado más abajo.
               _ColorOption(
                 color: colors.accent,
                 label: 'Acento',
@@ -256,13 +275,15 @@ class _StepBasicInfoState extends State<StepBasicInfo> {
                     widget.onColorChanged(_colorToHex(colors.accent)),
               ),
               for (final hex in _presetColors)
-                _ColorOption(
-                  color: Color(int.parse(hex)),
-                  isSelected: '#${hex.substring(4)}' ==
-                      widget.routeColor.toUpperCase(),
-                  onTap: () =>
-                      widget.onColorChanged('#${hex.substring(4)}'),
-                ),
+                if ('#${hex.substring(4)}' !=
+                    _colorToHex(colors.accent).toUpperCase())
+                  _ColorOption(
+                    color: Color(int.parse(hex)),
+                    isSelected: '#${hex.substring(4)}' ==
+                        widget.routeColor.toUpperCase(),
+                    onTap: () =>
+                        widget.onColorChanged('#${hex.substring(4)}'),
+                  ),
               _ColorOption(
                 color: colors.bgRaised,
                 label: '+',

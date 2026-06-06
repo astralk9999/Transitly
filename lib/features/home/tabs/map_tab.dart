@@ -27,6 +27,7 @@ import '../../../shared/providers/is_dark_provider.dart';
 import '../../../shared/providers/user_favorites_provider.dart';
 import '../../../shared/providers/user_location_provider.dart';
 import '../../../shared/widgets/route_card.dart';
+import '../../../shared/widgets/route_selection_banner.dart';
 import '../../../core/map/map_config.dart';
 import '../../map/map_data_cache.dart';
 import '../../map/map_filter_controller.dart';
@@ -201,19 +202,12 @@ class _MapTabState extends ConsumerState<MapTab>
         _filteredRoutes(mockData.routes).map((r) => r.id).toSet();
     final closest = _findClosestRoute(point, cache, visibleIds);
     if (closest != null && closest != _selectedRouteId) {
+      // El banner flotante arriba reemplaza al SnackBar anterior y muestra
+      // el badge con el color/código de la línea (mucho más legible).
       setState(() => _selectedRouteId = closest);
       _sheetController.animateTo(0.35,
           duration: const Duration(milliseconds: 250), curve: Curves.easeInOut);
       _scrollToRoute(closest);
-      final route = mockData.getRouteById(closest);
-      if (route != null && context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Línea ${route.code} · ${route.name}'),
-          behavior: SnackBarBehavior.floating,
-          margin: EdgeInsets.fromLTRB(16, 0, 16, 100 + MediaQuery.of(context).padding.bottom),
-          duration: const Duration(seconds: 2),
-        ));
-      }
     } else if (closest == null && _selectedRouteId != null) {
       setState(() => _selectedRouteId = null);
       _sheetController.animateTo(0.22,
@@ -537,6 +531,25 @@ class _MapTabState extends ConsumerState<MapTab>
               mockData: mockData,
             ),
             overlayWidgets: const [],
+          ),
+          // Banner flotante "línea seleccionada" arriba del mapa.
+          // Sustituye al SnackBar feo que aparecía abajo tapando el
+          // desplegable de líneas.
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: IgnorePointer(
+              ignoring: _selectedRouteId == null,
+              child: RouteSelectionBanner(
+                route: _selectedRouteId == null
+                    ? null
+                    : ref
+                        .read(mockDataServiceProvider)
+                        .getRouteById(_selectedRouteId!),
+                onClose: _clearSelection,
+              ),
+            ),
           ),
           if (offline)
             Positioned(

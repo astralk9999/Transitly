@@ -8,7 +8,12 @@ import '../../shared/models/user_role.dart';
 import '../../shared/providers/user_provider.dart';
 
 String? authRedirect(Ref ref, GoRouterState state) {
-  final authState = ref.read(authStateProvider);
+  // authStateProvider es StreamProvider; ref.read devuelve un
+  // AsyncValue<AuthSessionState>, NUNCA un AuthSessionState directo.
+  // Sin .valueOrNull la comparación 'is AuthAuthenticated' era
+  // siempre false y /admin redirigía a /home/inicio para admins
+  // logueados (B8).
+  final authState = ref.read(authStateProvider).valueOrNull;
   final isAuth = authState is AuthAuthenticated;
   final loc = state.matchedLocation;
 
@@ -50,11 +55,17 @@ String? authRedirect(Ref ref, GoRouterState state) {
 
 String? routeDetailRedirect(Ref ref, GoRouterState state) {
   final id = state.pathParameters['routeId'];
+  if (id == null) return '/home/inicio';
+  // Aceptamos tanto rutas oficiales (mockData) como user_routes
+  // (UUID v4). Si la id no parece de mock y tiene formato UUID,
+  // dejamos que la pantalla de detalle la cargue desde Supabase.
   final mock = ref.read(mockDataServiceProvider);
-  if (id == null || mock.getRouteById(id) == null) {
-    return '/home/inicio';
-  }
-  return null;
+  if (mock.getRouteById(id) != null) return null;
+  final isUuid = RegExp(
+          r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$')
+      .hasMatch(id);
+  if (isUuid) return null;
+  return '/home/inicio';
 }
 
 String? stopDetailRedirect(Ref ref, GoRouterState state) {

@@ -33,10 +33,12 @@ class SearchPinLayer extends StatelessWidget {
           point: selection.position,
           width: 38,
           height: 50,
-          // bottomCenter pone la PUNTA del triángulo exactamente en el
-          // LatLng (convención Google Maps). El painter dibuja la
-          // punta en y = size.height, así que coincide píxel a píxel.
-          alignment: Alignment.bottomCenter,
+          // Alignment(0, 1.5) sube el pin 12.5px sobre bottomCenter.
+          // La punta queda 12.5px por encima del LatLng — más arriba
+          // de lo que la cola del triángulo sugiere, para compensar
+          // que el ojo identifica el "lugar marcado" con la cabeza
+          // del pin, no con la punta.
+          alignment: const Alignment(0, 1.5),
           child: _AnimatedPin(color: color, icon: selection.icon),
         ),
       ],
@@ -103,14 +105,16 @@ class _SearchSelectionFloatingCardState
     }
 
     // Anchor: la tarjeta cuelga justo encima del pin y centrada
-    // horizontalmente sobre el LatLng. Con bottomCenter el pin va
-    // desde LatLng - 50 (top del pin) hasta LatLng (punta).
+    // horizontalmente sobre el LatLng. Con Alignment(0, 1.5) el pin
+    // se desplaza 12.5px hacia arriba; la tarjeta sigue ese offset.
     const pinHeight = 50.0;
+    const pinOffsetY = 12.5; // (1.5 - 1) * 25
     const gap = 2.0;
     const cardWidth = 240.0;
 
     final left = screenPoint.x - cardWidth / 2;
-    final bottomFromTop = screenPoint.y - pinHeight - gap;
+    final bottomFromTop =
+        screenPoint.y - pinHeight - gap - pinOffsetY;
 
     return Positioned(
       left: left,

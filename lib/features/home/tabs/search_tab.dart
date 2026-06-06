@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/theme/transit_animations.dart';
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../data/mock/mock_data_service.dart';
@@ -11,7 +10,6 @@ import '../../../shared/models/stop_model.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/responsive_scaffold.dart';
 import '../../../shared/widgets/route_search_bar.dart';
-import '../../../shared/widgets/shimmer_skeleton.dart';
 
 class SearchTab extends ConsumerStatefulWidget {
   const SearchTab({super.key});
@@ -21,9 +19,6 @@ class SearchTab extends ConsumerStatefulWidget {
 }
 
 class _SearchTabState extends ConsumerState<SearchTab> {
-  bool _hasSearched = false;
-  final bool _searchLoading = false;
-
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -46,37 +41,22 @@ class _SearchTabState extends ConsumerState<SearchTab> {
                   onSearchWith: _handleSearch,
                 ),
               ),
+              // Empty state mientras no se busque. Al pulsar buscar
+              // navegamos a /route-plan; ese screen muestra el shimmer
+              // y los resultados reales. Antes había un EmptyState
+              // "Búsqueda en construcción" placeholder que ocultaba que
+              // el motor sí funciona.
               Expanded(
-                child: AnimatedSwitcher(
-                  duration: TransitAnimations.normal,
-                  child: _hasSearched
-                      ? (_searchLoading
-                          ? _buildSearchShimmer(context)
-                          : Column(
-                              children: [
-                                Expanded(
-                                  child: EmptyState(
-                                    l10n.searchUnderConstructionTitle,
-                                    l10n.searchUnderConstructionSubtitle,
-                                    actionLabel: l10n.searchReportRouteAction,
-                                    onAction: () =>
-                                        context.push('/suggestions/new'),
-                                  ),
-                                ),
-                                _buildSuggestLink(c),
-                              ],
-                            ))
-                      : Column(
-                          children: [
-                            Expanded(
-                              child: EmptyState(
-                                l10n.searchEmptyTitle,
-                                l10n.searchEmptySubtitle,
-                              ),
-                            ),
-                            _buildSuggestLink(c),
-                          ],
-                        ),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: EmptyState(
+                        l10n.searchEmptyTitle,
+                        l10n.searchEmptySubtitle,
+                      ),
+                    ),
+                    _buildSuggestLink(c),
+                  ],
                 ),
               ),
             ],
@@ -86,34 +66,14 @@ class _SearchTabState extends ConsumerState<SearchTab> {
     );
   }
 
-  void _handleSearch(StopModel? origin, StopModel? destination, bool useMyLocation) {
+  void _handleSearch(
+      StopModel? origin, StopModel? destination, bool useMyLocation) {
     if ((!useMyLocation && origin == null) || destination == null) return;
-    setState(() => _hasSearched = true);
     context.push('/route-plan', extra: {
       'fromStopId': origin?.id,
       'toStopId': destination.id,
       'useMyLocation': useMyLocation,
     });
-  }
-
-  Widget _buildSearchShimmer(BuildContext context) {
-    final padding = ResponsiveScaffold.screenPadding(context);
-    return Padding(
-      key: const ValueKey('search-shimmer'),
-      padding: EdgeInsets.symmetric(horizontal: padding),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ShimmerSkeleton.text(context, width: 180),
-          const SizedBox(height: 16),
-          ShimmerSkeleton.routeCard(context),
-          const SizedBox(height: 12),
-          ShimmerSkeleton.routeCard(context),
-          const SizedBox(height: 12),
-          ShimmerSkeleton.routeCard(context),
-        ],
-      ),
-    );
   }
 
   Widget _buildSuggestLink(TransitColorScheme c) {

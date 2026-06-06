@@ -18,7 +18,6 @@ import '../../shared/models/incident_model.dart';
 import '../../shared/models/route_feedback_model.dart';
 import '../../shared/models/route_suggestion_model.dart';
 import '../../shared/widgets/empty_state.dart';
-import '../../shared/widgets/smoke_background.dart';
 import 'widgets/feedback_list_item.dart';
 import 'widgets/inbox_action_sheets.dart';
 import 'widgets/resolved_feedback_item.dart';
@@ -179,7 +178,7 @@ class _ManagerInboxScreenState extends ConsumerState<ManagerInboxScreen> {
     final pendingCount = _feedbacks.length + _suggestions.length;
 
     return Scaffold(
-      backgroundColor: c.bgRoot,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -194,8 +193,6 @@ class _ManagerInboxScreenState extends ConsumerState<ManagerInboxScreen> {
       ),
       body: Stack(
         children: [
-          Positioned.fill(
-              child: SmokeBackground(color: c.accent, isDark: isDark)),
           if (_statusLoading)
             const Positioned(
               top: 0,

@@ -11,7 +11,6 @@ import '../../shared/providers/is_dark_provider.dart';
 import '../../shared/providers/user_provider.dart';
 import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/glass_card.dart';
-import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_app_bar.dart';
 import '../../shared/widgets/transit_button.dart';
 import 'widgets/region_download_sheet.dart';

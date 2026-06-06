@@ -14,7 +14,6 @@ import '../../shared/providers/user_provider.dart';
 import '../../shared/widgets/glass_card.dart';
 import '../../shared/widgets/gradient_text.dart';
 import '../../shared/widgets/reputation_badge.dart';
-import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_app_bar.dart';
 import '../../shared/widgets/user_avatar.dart';
 import 'widgets/reputation_history_list.dart';

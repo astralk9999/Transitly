@@ -50,7 +50,7 @@ class _RoutePlanResultsScreenState
         body: SafeArea(
           child: Column(
             children: [
-              const TransitAppBar(title: 'Ruta'),
+              const TransitAppBar(title: 'Ruta', transparent: true),
               ErrorCard('Parada destino no encontrada: ${widget.toStopId}'),
             ],
           ),
@@ -66,7 +66,7 @@ class _RoutePlanResultsScreenState
           body: const SafeArea(
             child: Column(
               children: [
-                TransitAppBar(title: 'Ruta'),
+                TransitAppBar(title: 'Ruta', transparent: true),
                 EmptyState(
                   'Activa la ubicación',
                   'Necesitamos tu ubicación para buscar rutas desde tu posición actual.',
@@ -85,7 +85,7 @@ class _RoutePlanResultsScreenState
           body: SafeArea(
             child: Column(
               children: [
-                const TransitAppBar(title: 'Ruta'),
+                const TransitAppBar(title: 'Ruta', transparent: true),
                 EmptyState(
                   l10n.searchEmptyTitle,
                   l10n.searchEmptySubtitle,
@@ -109,7 +109,7 @@ class _RoutePlanResultsScreenState
         body: const SafeArea(
           child: Column(
             children: [
-              TransitAppBar(title: 'Ruta'),
+              TransitAppBar(title: 'Ruta', transparent: true),
               ErrorCard('Falta la parada de origen'),
             ],
           ),
@@ -124,7 +124,7 @@ class _RoutePlanResultsScreenState
         body: SafeArea(
           child: Column(
             children: [
-              const TransitAppBar(title: 'Ruta'),
+              const TransitAppBar(title: 'Ruta', transparent: true),
               ErrorCard('Parada origen no encontrada: ${widget.fromStopId}'),
             ],
           ),

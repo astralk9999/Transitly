@@ -8,7 +8,6 @@ import '../../../shared/models/operator_model.dart';
 import '../../../shared/utils/string_formatting.dart';
 import '../../../shared/widgets/glass_card.dart';
 import '../../../l10n/generated/app_localizations.dart';
-import '../../../shared/widgets/smoke_background.dart';
 
 class CityPickerScreen extends ConsumerWidget {
   const CityPickerScreen({super.key});

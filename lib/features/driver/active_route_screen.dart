@@ -13,7 +13,6 @@ import '../../l10n/generated/app_localizations.dart';
 import '../../data/mock/mock_realtime_service.dart';
 import '../../shared/models/enums.dart';
 import '../../shared/providers/derived/active_trip_providers.dart';
-import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_button.dart';
 import '../incidents/report_incident_sheet.dart';
 
@@ -51,10 +50,9 @@ class _ActiveRouteScreenState extends ConsumerState<ActiveRouteScreen> {
 
     if (detail == null) {
       return Scaffold(
-        backgroundColor: c.bgRoot,
+        backgroundColor: Colors.transparent,
         body: Stack(
           children: [
-            Positioned.fill(child: SmokeBackground(color: c.accent, isDark: isDark)),
             Center(
                 child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -85,10 +83,9 @@ class _ActiveRouteScreenState extends ConsumerState<ActiveRouteScreen> {
         '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
 
     return Scaffold(
-      backgroundColor: c.bgRoot,
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
-          Positioned.fill(child: SmokeBackground(color: c.accent, isDark: isDark)),
           Column(
         children: [
           // Safe area top

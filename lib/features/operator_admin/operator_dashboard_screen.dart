@@ -6,7 +6,6 @@ import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/glass_card.dart';
-import '../../../shared/widgets/smoke_background.dart';
 
 class OperatorDashboardScreen extends ConsumerWidget {
   const OperatorDashboardScreen({super.key});
@@ -17,11 +16,9 @@ class OperatorDashboardScreen extends ConsumerWidget {
     final c = TransitColorScheme.of(isDark);
 
     return Scaffold(
-      backgroundColor: c.bgRoot,
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
-          Positioned.fill(
-              child: SmokeBackground(color: c.accent, isDark: isDark)),
           SafeArea(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),

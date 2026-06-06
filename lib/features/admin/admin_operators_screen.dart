@@ -14,7 +14,6 @@ import '../../shared/widgets/error_card.dart';
 import '../../shared/widgets/glass_card.dart';
 import '../../shared/widgets/role_gate.dart';
 import '../../shared/widgets/shimmer_skeleton.dart';
-import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_app_bar.dart';
 import 'widgets/operator_form_dialog.dart';
 
@@ -185,12 +184,9 @@ class _AdminOperatorsScreenState extends ConsumerState<AdminOperatorsScreen> {
     return RoleGate(
       allow: const [UserRole.admin],
       child: Scaffold(
-        backgroundColor: c.bgRoot,
+        backgroundColor: Colors.transparent,
         body: Stack(
           children: [
-            Positioned.fill(
-              child: SmokeBackground(color: c.accent, isDark: isDark),
-            ),
             Column(
               children: [
                 TransitAppBar(

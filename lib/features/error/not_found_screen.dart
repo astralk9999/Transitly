@@ -5,7 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_spacing.dart';
 import '../../core/theme/transit_typography.dart';
-import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_button.dart';
 
 class NotFoundScreen extends StatelessWidget {
@@ -17,10 +16,9 @@ class NotFoundScreen extends StatelessWidget {
     final c = TransitColorScheme.of(isDark);
 
     return Scaffold(
-      backgroundColor: c.bgRoot,
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
-          Positioned.fill(child: SmokeBackground(color: c.accent, isDark: isDark)),
           Center(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: TransitSpacing.space32),

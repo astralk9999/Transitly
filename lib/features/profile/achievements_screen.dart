@@ -14,7 +14,6 @@ import '../../l10n/generated/app_localizations.dart';
 import '../../shared/models/achievement_model.dart';
 import '../../shared/models/user_achievement_model.dart';
 import '../../shared/widgets/responsive_scaffold.dart';
-import '../../shared/widgets/smoke_background.dart';
 
 const String _logTag = 'AchievementsScreen';
 
@@ -67,7 +66,7 @@ class AchievementsScreen extends ConsumerWidget {
     final mockData = ref.watch(mockDataServiceProvider);
 
     return Scaffold(
-      backgroundColor: c.bgRoot,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -82,7 +81,6 @@ class AchievementsScreen extends ConsumerWidget {
       ),
       body: Stack(
         children: [
-          Positioned.fill(child: SmokeBackground(color: c.accent, isDark: isDark)),
           ContentConstraints(
         child: Builder(builder: (context) {
         final padding = ResponsiveScaffold.screenPadding(context);

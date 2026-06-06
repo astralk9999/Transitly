@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/theme/transit_colors.dart';
 import '../../../../l10n/generated/app_localizations.dart';
-import '../../../../shared/widgets/smoke_background.dart';
 import '../../../../core/map/map_config.dart';
 import '../live_recorder_controller.dart';
 
@@ -48,11 +47,9 @@ class RecorderLiveView extends StatelessWidget {
     final lastStopDist = controller.distanceFromLastMarkedKm();
 
     return Scaffold(
-      backgroundColor: c.bgRoot,
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
-          Positioned.fill(
-              child: SmokeBackground(color: c.accent, isDark: isDark)),
           Column(
             children: [
               SizedBox(height: MediaQuery.of(context).padding.top),

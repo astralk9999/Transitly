@@ -12,7 +12,6 @@ import '../../shared/models/enums.dart';
 import '../../shared/models/route_suggestion_model.dart';
 import '../../shared/providers/user_provider.dart';
 import '../../shared/widgets/single_field_dialog.dart';
-import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_button.dart';
 import '../../shared/widgets/transit_input.dart';
 
@@ -53,7 +52,7 @@ class _SuggestRouteScreenState extends ConsumerState<SuggestRouteScreen> {
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      backgroundColor: c.bgRoot,
+      backgroundColor: Colors.transparent,
       extendBody: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -69,7 +68,6 @@ class _SuggestRouteScreenState extends ConsumerState<SuggestRouteScreen> {
       ),
       body: Stack(
         children: [
-          Positioned.fill(child: SmokeBackground(color: c.accent, isDark: isDark)),
           SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(

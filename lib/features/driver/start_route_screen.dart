@@ -11,7 +11,6 @@ import '../../l10n/generated/app_localizations.dart';
 import '../../shared/models/enums.dart';
 import '../../shared/models/schedule_model.dart';
 import '../../shared/providers/derived/schedule_providers.dart';
-import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_button.dart';
 import 'widgets/route_list_section.dart';
 
@@ -85,7 +84,7 @@ class _StartRouteScreenState extends ConsumerState<StartRouteScreen> {
     final nowMinutes = now.hour * 60 + now.minute;
 
     return Scaffold(
-      backgroundColor: c.bgRoot,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -100,7 +99,6 @@ class _StartRouteScreenState extends ConsumerState<StartRouteScreen> {
       ),
       body: Stack(
         children: [
-          Positioned.fill(child: SmokeBackground(color: c.accent, isDark: isDark)),
           SingleChildScrollView(
         controller: _scrollController,
         padding: const EdgeInsets.all(16),

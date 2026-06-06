@@ -8,7 +8,6 @@ import '../../data/supabase/supabase_client_provider.dart';
 import '../../shared/models/user_role.dart';
 import '../../shared/widgets/glass_card.dart';
 import '../../shared/widgets/role_gate.dart';
-import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_app_bar.dart';
 
 /// Sub P1.5-04: bandeja unificada con 4 tabs de solicitudes que el admin
@@ -26,15 +25,12 @@ class AdminRequestsScreen extends ConsumerWidget {
       child: DefaultTabController(
         length: 4,
         child: Scaffold(
-          backgroundColor: c.bgRoot,
+          backgroundColor: Colors.transparent,
           body: Stack(
             children: [
-              Positioned.fill(
-                child: SmokeBackground(color: c.accent, isDark: isDark),
-              ),
               Column(
                 children: [
-                  const TransitAppBar(title: 'Solicitudes'),
+                  const TransitAppBar(title: 'Solicitudes', transparent: true),
                   Material(
                     color: Colors.transparent,
                     child: TabBar(

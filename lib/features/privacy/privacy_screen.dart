@@ -18,7 +18,6 @@ import '../../l10n/generated/app_localizations.dart';
 import '../../shared/providers/privacy_consent_provider.dart';
 import '../../shared/widgets/glass_card.dart';
 import '../../shared/widgets/gradient_text.dart';
-import '../../shared/widgets/smoke_background.dart';
 
 class PrivacyScreen extends ConsumerStatefulWidget {
   const PrivacyScreen({super.key});

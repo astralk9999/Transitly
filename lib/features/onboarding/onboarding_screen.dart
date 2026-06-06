@@ -88,9 +88,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     final isLast = _currentPage == pages.length - 1;
 
     return Scaffold(
-      body: SmokeBackground(
-        isDark: isDark,
-        child: SafeArea(
+      backgroundColor: Colors.transparent,
+      body: SafeArea(
           child: Stack(
             children: [
               Padding(
@@ -147,7 +146,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ],
           ),
         ),
-      ),
     );
   }
 

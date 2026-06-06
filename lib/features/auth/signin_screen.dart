@@ -9,7 +9,6 @@ import '../../core/utils/app_logger.dart';
 import '../../data/auth/auth_repository.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../data/analytics/posthog_service.dart';
-import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_button.dart';
 import '../../shared/providers/auth_provider.dart';
 import 'widgets/auth_field.dart';
@@ -86,11 +85,9 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     });
 
     return Scaffold(
-      backgroundColor: c.bgRoot,
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
-          Positioned.fill(
-              child: SmokeBackground(color: c.accent, isDark: isDark)),
           SafeArea(
             child: Center(
               child: SingleChildScrollView(

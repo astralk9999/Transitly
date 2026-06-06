@@ -12,7 +12,6 @@ import '../../l10n/generated/app_localizations.dart';
 import '../../shared/providers/is_dark_provider.dart';
 import '../../shared/widgets/glass_card.dart';
 import '../../shared/widgets/gradient_text.dart';
-import '../../shared/widgets/smoke_background.dart';
 
 class WidgetsSettingsScreen extends ConsumerStatefulWidget {
   const WidgetsSettingsScreen({super.key});
@@ -72,7 +71,7 @@ class _WidgetsSettingsScreenState
     final isAndroid = Platform.isAndroid;
 
     return Scaffold(
-      backgroundColor: c.bgRoot,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -89,9 +88,6 @@ class _WidgetsSettingsScreenState
       ),
       body: Stack(
               children: [
-                Positioned.fill(
-                  child: SmokeBackground(color: c.accent, isDark: isDark),
-                ),
                 SafeArea(
                   child: ListView(
                     padding: const EdgeInsets.all(16),

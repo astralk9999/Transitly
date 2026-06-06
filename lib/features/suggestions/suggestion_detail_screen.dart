@@ -9,7 +9,6 @@ import '../../data/route_suggestion/route_suggestion_repository_provider.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../shared/models/route_suggestion_model.dart';
 import '../../shared/utils/require_auth.dart';
-import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_button.dart';
 
 class SuggestionDetailScreen extends ConsumerStatefulWidget {
@@ -61,7 +60,7 @@ class _SuggestionDetailScreenState
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      backgroundColor: c.bgRoot,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -76,8 +75,6 @@ class _SuggestionDetailScreenState
       ),
       body: Stack(
         children: [
-          Positioned.fill(
-              child: SmokeBackground(color: c.accent, isDark: isDark)),
           FutureBuilder<RouteSuggestionModel?>(
             future: _loader,
             builder: (context, snap) {

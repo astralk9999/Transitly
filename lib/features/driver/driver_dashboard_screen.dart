@@ -21,7 +21,6 @@ import '../../../shared/models/operator_model.dart';
 import '../../../shared/models/route_model.dart';
 import '../../../shared/models/user_model.dart';
 import '../../../shared/providers/user_provider.dart';
-import '../../../shared/widgets/smoke_background.dart';
 import '../../../shared/widgets/transit_button.dart';
 import '../../core/map/map_config.dart';
 import 'widgets/driver_stats_card.dart';
@@ -251,7 +250,7 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen> {
     _selectedOperator ??= mockData.operator_;
 
     return Scaffold(
-      backgroundColor: c.bgRoot,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -265,8 +264,6 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen> {
       ),
       body: Stack(
         children: [
-          Positioned.fill(
-              child: SmokeBackground(color: c.accent, isDark: isDark)),
           SafeArea(
             child: _isTracking
                 ? _buildTrackingView(c)

@@ -15,7 +15,6 @@ import '../../shared/widgets/glass_card.dart';
 import '../../shared/widgets/pressable.dart';
 import '../../shared/widgets/role_gate.dart';
 import '../../shared/widgets/shimmer_skeleton.dart';
-import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/status_badge.dart';
 import '../../shared/widgets/transit_app_bar.dart';
 import '../../shared/widgets/transit_button.dart';
@@ -622,15 +621,12 @@ class _RouteModerationScreenState
     return RoleGate(
       allow: const [UserRole.admin],
       child: Scaffold(
-        backgroundColor: c.bgRoot,
+        backgroundColor: Colors.transparent,
         body: Stack(
           children: [
-            Positioned.fill(
-              child: SmokeBackground(color: c.accent, isDark: isDark),
-            ),
             Column(
               children: [
-                const TransitAppBar(title: 'Moderación de rutas'),
+                const TransitAppBar(title: 'Moderación de rutas', transparent: true),
                 Material(
                   color: Colors.transparent,
                   child: TabBar(

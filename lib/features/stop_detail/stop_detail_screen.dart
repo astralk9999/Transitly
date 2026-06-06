@@ -14,7 +14,6 @@ import '../feedback/route_feedback_sheet.dart';
 import '../incidents/report_incident_sheet.dart';
 import '../../shared/widgets/responsive_scaffold.dart';
 import '../../shared/widgets/capacity_indicator.dart';
-import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/stagger_list.dart';
 import '../../shared/widgets/transit_chip.dart';
 

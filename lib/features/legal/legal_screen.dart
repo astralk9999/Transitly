@@ -29,7 +29,7 @@ class LegalScreen extends StatelessWidget {
       backgroundColor: c.bgRoot,
       body: Column(
         children: [
-          TransitAppBar(title: title),
+          TransitAppBar(title: title, transparent: true),
           Expanded(
             child: SafeArea(
               top: false,

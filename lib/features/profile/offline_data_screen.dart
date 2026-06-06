@@ -10,7 +10,6 @@ import '../../l10n/generated/app_localizations.dart';
 import '../../shared/providers/is_dark_provider.dart';
 import '../../shared/widgets/glass_card.dart';
 import '../../shared/widgets/gradient_text.dart';
-import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_button.dart';
 
 class OfflineDataScreen extends ConsumerStatefulWidget {

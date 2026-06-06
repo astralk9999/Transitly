@@ -16,7 +16,6 @@ import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/error_card.dart';
 import '../../shared/widgets/glass_card.dart';
 import '../../shared/widgets/shimmer_skeleton.dart';
-import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_app_bar.dart';
 import '../../shared/widgets/transit_chip.dart';
 
@@ -138,15 +137,12 @@ class _NearbyBusesScreenState
     final c = TransitColorScheme.of(isDark);
 
     return Scaffold(
-      backgroundColor: c.bgRoot,
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
-          Positioned.fill(
-            child: SmokeBackground(color: c.accent, isDark: isDark),
-          ),
           Column(
             children: [
-              TransitAppBar(title: l10n.nearbyBusesTitle),
+              TransitAppBar(title: l10n.nearbyBusesTitle, transparent: true),
               Expanded(child: _buildContent(c, l10n)),
             ],
           ),

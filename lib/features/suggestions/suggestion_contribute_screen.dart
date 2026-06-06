@@ -10,7 +10,6 @@ import '../../l10n/generated/app_localizations.dart';
 import '../../shared/models/enums.dart';
 import '../../shared/models/route_suggestion_model.dart';
 import '../../shared/widgets/empty_state.dart';
-import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_app_bar.dart';
 
 /// Lista de sugerencias de ruta abiertas a contribución de la comunidad.
@@ -38,15 +37,12 @@ class SuggestionContributeScreen extends ConsumerWidget {
       ..sort((a, b) => b.voteCount.compareTo(a.voteCount));
 
     return Scaffold(
-      backgroundColor: c.bgRoot,
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
-          Positioned.fill(
-            child: SmokeBackground(color: c.accent, isDark: isDark),
-          ),
           Column(
             children: [
-              TransitAppBar(title: l10n.suggestionContributeTitle),
+              TransitAppBar(title: l10n.suggestionContributeTitle, transparent: true),
               Expanded(
                 child: open.isEmpty
                     ? EmptyState(

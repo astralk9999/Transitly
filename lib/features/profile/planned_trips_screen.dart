@@ -9,7 +9,6 @@ import '../../l10n/generated/app_localizations.dart';
 import '../../shared/models/route_model.dart';
 import '../../shared/models/user_favorite_model.dart';
 import '../../shared/widgets/empty_state.dart';
-import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_app_bar.dart';
 
 /// Viajes planificados / habituales del usuario, derivados de sus rutas
@@ -33,15 +32,12 @@ class PlannedTripsScreen extends ConsumerWidget {
     }
 
     return Scaffold(
-      backgroundColor: c.bgRoot,
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
-          Positioned.fill(
-            child: SmokeBackground(color: c.accent, isDark: isDark),
-          ),
           Column(
             children: [
-              TransitAppBar(title: l10n.plannedTripsTitle),
+              TransitAppBar(title: l10n.plannedTripsTitle, transparent: true),
               Expanded(
                 child: favs.isEmpty
                     ? EmptyState(

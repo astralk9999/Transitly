@@ -9,7 +9,6 @@ import '../../data/auth/auth_repository.dart';
 import '../../data/supabase/supabase_client_provider.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../shared/providers/user_provider.dart';
-import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_button.dart';
 import '../../shared/providers/auth_provider.dart';
 
@@ -107,11 +106,9 @@ class _ActivateDriverScreenState extends ConsumerState<ActivateDriverScreen> {
     final isAuth = authState is AuthAuthenticated;
 
     return Scaffold(
-      backgroundColor: c.bgRoot,
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
-          Positioned.fill(
-              child: SmokeBackground(color: c.accent, isDark: isDark)),
           SafeArea(
             child: Center(
               child: SingleChildScrollView(

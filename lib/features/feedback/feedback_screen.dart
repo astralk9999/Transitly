@@ -12,7 +12,6 @@ import '../../shared/models/enums.dart';
 import '../../shared/models/route_feedback_model.dart';
 import '../../shared/providers/local_feedback_provider.dart';
 import '../../shared/providers/user_provider.dart';
-import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_button.dart';
 import '../../shared/widgets/transit_input.dart';
 
@@ -108,7 +107,7 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
     final code = route?.code ?? widget.routeId;
 
     return Scaffold(
-      backgroundColor: c.bgRoot,
+      backgroundColor: Colors.transparent,
       extendBody: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -124,8 +123,6 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
       ),
       body: Stack(
         children: [
-          Positioned.fill(
-              child: SmokeBackground(color: c.accent, isDark: isDark)),
           SingleChildScrollView(
             padding: const EdgeInsets.all(16),
             child: Column(

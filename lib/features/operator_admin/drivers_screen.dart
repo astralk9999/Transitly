@@ -5,7 +5,6 @@ import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../data/supabase/supabase_client_provider.dart';
 import '../../../shared/widgets/glass_card.dart';
-import '../../../shared/widgets/smoke_background.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/transit_button.dart';
 
@@ -145,11 +144,9 @@ class _DriversScreenState extends ConsumerState<DriversScreen> {
     final c = TransitColorScheme.of(isDark);
 
     return Scaffold(
-      backgroundColor: c.bgRoot,
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
-          Positioned.fill(
-              child: SmokeBackground(color: c.accent, isDark: isDark)),
           SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

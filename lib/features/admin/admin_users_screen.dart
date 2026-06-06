@@ -17,7 +17,6 @@ import '../../shared/widgets/glass_card.dart';
 import '../../shared/widgets/reputation_badge.dart';
 import '../../shared/widgets/role_gate.dart';
 import '../../shared/widgets/shimmer_skeleton.dart';
-import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_app_bar.dart';
 import '../../shared/widgets/transit_chip.dart';
 import '../../shared/widgets/transit_input.dart';
@@ -159,15 +158,12 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> {
     return RoleGate(
       allow: const [UserRole.admin],
       child: Scaffold(
-        backgroundColor: c.bgRoot,
+        backgroundColor: Colors.transparent,
         body: Stack(
           children: [
-            Positioned.fill(
-              child: SmokeBackground(color: c.accent, isDark: isDark),
-            ),
             Column(
               children: [
-                TransitAppBar(title: l10n.adminUsersTitle),
+                TransitAppBar(title: l10n.adminUsersTitle, transparent: true),
                 Expanded(child: _buildContent(c, l10n)),
               ],
             ),

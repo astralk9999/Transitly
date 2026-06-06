@@ -18,7 +18,6 @@ import '../../shared/providers/user_provider.dart';
 import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/reputation_badge.dart';
 import '../../shared/widgets/responsive_scaffold.dart';
-import '../../shared/widgets/smoke_background.dart';
 import 'widgets/suggestions_tab_content.dart';
 
 class MyContributionsScreen extends ConsumerStatefulWidget {
@@ -79,7 +78,7 @@ class _MyContributionsScreenState
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      backgroundColor: c.bgRoot,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -101,8 +100,6 @@ class _MyContributionsScreenState
       ),
       body: Stack(
         children: [
-          Positioned.fill(
-              child: SmokeBackground(color: c.accent, isDark: isDark)),
           if (_loading)
             const Center(child: CircularProgressIndicator())
           else

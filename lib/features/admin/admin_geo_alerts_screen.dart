@@ -10,7 +10,6 @@ import '../../shared/models/geo_alert_model.dart';
 import '../../shared/models/user_role.dart';
 import '../../shared/widgets/glass_card.dart';
 import '../../shared/widgets/role_gate.dart';
-import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_app_bar.dart';
 import '../../shared/widgets/transit_button.dart';
 import '../../shared/widgets/transit_input.dart';
@@ -123,11 +122,9 @@ class _AdminGeoAlertsScreenState extends ConsumerState<AdminGeoAlertsScreen> {
     return RoleGate(
       allow: const [UserRole.admin],
       child: Scaffold(
-        backgroundColor: c.bgRoot,
+        backgroundColor: Colors.transparent,
         body: Stack(
           children: [
-            Positioned.fill(
-                child: SmokeBackground(color: c.accent, isDark: isDark)),
             Column(
               children: [
                 TransitAppBar(

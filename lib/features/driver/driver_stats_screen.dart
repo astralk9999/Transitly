@@ -7,7 +7,6 @@ import '../../core/theme/transit_typography.dart';
 import '../../data/mock/mock_data_service.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../shared/widgets/empty_state.dart';
-import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_app_bar.dart';
 
 /// Estadísticas agregadas del conductor, calculadas sobre el historial
@@ -25,15 +24,12 @@ class DriverStatsScreen extends ConsumerWidget {
 
     if (trips.isEmpty) {
       return Scaffold(
-        backgroundColor: c.bgRoot,
+        backgroundColor: Colors.transparent,
         body: Stack(
           children: [
-            Positioned.fill(
-              child: SmokeBackground(color: c.accent, isDark: isDark),
-            ),
             Column(
               children: [
-                TransitAppBar(title: l10n.driverStatsTitle),
+                TransitAppBar(title: l10n.driverStatsTitle, transparent: true),
                 const Expanded(
                   child: EmptyState(
                     'Sin datos aún',
@@ -65,15 +61,12 @@ class DriverStatsScreen extends ConsumerWidget {
     ];
 
     return Scaffold(
-      backgroundColor: c.bgRoot,
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
-          Positioned.fill(
-            child: SmokeBackground(color: c.accent, isDark: isDark),
-          ),
           Column(
             children: [
-              TransitAppBar(title: l10n.driverStatsTitle),
+              TransitAppBar(title: l10n.driverStatsTitle, transparent: true),
               Expanded(
                 child: GridView.count(
                   padding: const EdgeInsets.all(TransitSpacing.space16),

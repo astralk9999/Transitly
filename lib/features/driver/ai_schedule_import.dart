@@ -4,7 +4,6 @@ import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_spacing.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../l10n/generated/app_localizations.dart';
-import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_app_bar.dart';
 import '../../shared/widgets/transit_button.dart';
 
@@ -57,16 +56,13 @@ class _AiScheduleImportState extends State<AiScheduleImport> {
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      backgroundColor: c.bgRoot,
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
-          Positioned.fill(
-            child: SmokeBackground(color: c.accent, isDark: isDark),
-          ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TransitAppBar(title: l10n.aiScheduleImportTitle),
+              TransitAppBar(title: l10n.aiScheduleImportTitle, transparent: true),
               Container(
                 color: Colors.amber.withValues(alpha: 0.85),
                 padding: const EdgeInsets.symmetric(vertical: 6),

@@ -14,7 +14,6 @@ import '../../shared/providers/theme_notifier.dart';
 import '../../shared/providers/theme_provider.dart';
 import '../../shared/widgets/glass_card.dart';
 import '../../shared/widgets/gradient_text.dart';
-import '../../shared/widgets/smoke_background.dart';
 
 class AccessibilitySettingsScreen extends ConsumerWidget {
   const AccessibilitySettingsScreen({super.key});
@@ -30,7 +29,7 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
     final mq = MediaQuery.of(context);
 
     return Scaffold(
-      backgroundColor: c.bgRoot,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -45,9 +44,6 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
       ),
       body: Stack(
         children: [
-          Positioned.fill(
-            child: SmokeBackground(color: c.accent, isDark: isDark),
-          ),
           SafeArea(
             child: ResponsivePageWrapper(
               child: ListView(

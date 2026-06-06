@@ -10,7 +10,6 @@ import '../../l10n/generated/app_localizations.dart';
 import '../../shared/models/route_model.dart';
 import '../../shared/models/trip_history_model.dart';
 import '../../shared/widgets/empty_state.dart';
-import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_app_bar.dart';
 
 /// Historial de actividad del conductor: cada viaje registrado, con la
@@ -36,15 +35,12 @@ class DriverHistoryScreen extends ConsumerWidget {
     }
 
     return Scaffold(
-      backgroundColor: c.bgRoot,
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
-          Positioned.fill(
-            child: SmokeBackground(color: c.accent, isDark: isDark),
-          ),
           Column(
             children: [
-              TransitAppBar(title: l10n.driverHistoryTitle),
+              TransitAppBar(title: l10n.driverHistoryTitle, transparent: true),
               Expanded(
                 child: trips.isEmpty
                     ? EmptyState(

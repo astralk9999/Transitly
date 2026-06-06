@@ -18,7 +18,6 @@ import '../../shared/providers/search_selection_provider.dart';
 import '../../shared/providers/user_favorites_provider.dart';
 import '../../shared/widgets/route_favorite_toast.dart';
 import '../../shared/widgets/responsive_scaffold.dart';
-import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_button.dart';
 import 'widgets/route_detail_alerts_list.dart';
 import 'widgets/route_detail_changelog.dart';

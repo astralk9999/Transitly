@@ -5,7 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../l10n/generated/app_localizations.dart';
-import '../../../shared/widgets/smoke_background.dart';
 import 'editor_controller.dart';
 import 'steps/step_info.dart';
 import 'steps/step_return.dart';
@@ -57,7 +56,7 @@ class _ManualRouteEditorState extends State<ManualRouteEditor> {
     final c = TransitColorScheme.of(isDark);
 
     return Scaffold(
-      backgroundColor: c.bgRoot,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -78,8 +77,6 @@ class _ManualRouteEditorState extends State<ManualRouteEditor> {
       ),
       body: Stack(
         children: [
-          Positioned.fill(
-              child: SmokeBackground(color: c.accent, isDark: isDark)),
           Column(
             children: [
               _StepIndicator(step: _step, c: c),

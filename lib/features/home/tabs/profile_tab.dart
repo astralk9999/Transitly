@@ -9,7 +9,7 @@ import '../../../data/auth/auth_repository.dart';
 import '../../../shared/widgets/glass_card.dart';
 import '../../../shared/widgets/gradient_text.dart';
 import '../../../shared/providers/auth_provider.dart';
-import '../../../shared/providers/user_provider.dart';
+import '../../../shared/providers/user_provider.dart' show currentUserProvider, userProfileFromSupabaseProvider;
 import '../../../shared/widgets/responsive_scaffold.dart';
 import '../widgets/profile_about_section.dart';
 import '../widgets/profile_accessibility_section.dart';
@@ -19,11 +19,26 @@ import '../widgets/profile_header_card.dart';
 import '../widgets/profile_location_section.dart';
 import '../widgets/profile_notifications_section.dart';
 
-class ProfileTab extends ConsumerWidget {
+class ProfileTab extends ConsumerStatefulWidget {
   const ProfileTab({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ProfileTab> createState() => _ProfileTabState();
+}
+
+class _ProfileTabState extends ConsumerState<ProfileTab> {
+  @override
+  void initState() {
+    super.initState();
+    // Refresca el perfil al entrar para mostrar XP/level actualizados.
+    // El FutureProvider cachea para toda la sesión por defecto.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) ref.invalidate(userProfileFromSupabaseProvider);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final user = ref.watch(currentUserProvider);
     final padding = ResponsiveScaffold.screenPadding(context);
     final isAuthenticated =

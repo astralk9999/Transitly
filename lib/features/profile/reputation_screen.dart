@@ -20,11 +20,27 @@ import '../../shared/widgets/user_avatar.dart';
 import 'widgets/reputation_history_list.dart';
 import 'widgets/reputation_level_card.dart';
 
-class ReputationScreen extends ConsumerWidget {
+class ReputationScreen extends ConsumerStatefulWidget {
   const ReputationScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ReputationScreen> createState() => _ReputationScreenState();
+}
+
+class _ReputationScreenState extends ConsumerState<ReputationScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Refresca el perfil cada vez que entras a la pantalla — antes el
+    // FutureProvider cacheaba la primera lectura para toda la sesión,
+    // así que XP añadido en BD no se reflejaba aquí hasta reiniciar.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) ref.invalidate(userProfileFromSupabaseProvider);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final isDark = isDarkMode(ref, context);
     final c = TransitColorScheme.of(isDark);
     final l10n = AppLocalizations.of(context);
@@ -50,33 +66,42 @@ class ReputationScreen extends ConsumerWidget {
             children: [
               TransitAppBar(title: l10n.reputationTitle),
               Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.all(16),
-                  children: [
-                    _HeaderCard(fallbackUser: user, c: c),
-                    const SizedBox(height: 12),
-                    ReputationLevelCard(
-                      c: c,
-                      l10n: l10n,
-                      score: score,
-                      rank: rank,
-                      progress: progress,
-                      rangeStart: rangeStart,
-                      nextMin: nextMin,
-                      isMaxRank: isMaxRank,
-                    ),
-                    const SizedBox(height: 16),
-                    ReputationHistoryList(c: c, l10n: l10n),
-                    const SizedBox(height: 16),
-                    _SectionHeader(title: l10n.reputationRanks, c: c),
-                    const SizedBox(height: 8),
-                    ...ReputationRank.values.map(
-                      (r) => _RankCard(rank: r, currentRank: rank, c: c, l10n: l10n),
-                    ),
-                    const SizedBox(height: 20),
-                    _TooltipCard(c: c, l10n: l10n),
-                    const SizedBox(height: 40),
-                  ],
+                child: RefreshIndicator(
+                  color: c.accent,
+                  onRefresh: () async {
+                    ref.invalidate(userProfileFromSupabaseProvider);
+                    await ref.read(userProfileFromSupabaseProvider.future);
+                  },
+                  child: ListView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: const EdgeInsets.all(16),
+                    children: [
+                      _HeaderCard(fallbackUser: user, c: c),
+                      const SizedBox(height: 12),
+                      ReputationLevelCard(
+                        c: c,
+                        l10n: l10n,
+                        score: score,
+                        rank: rank,
+                        progress: progress,
+                        rangeStart: rangeStart,
+                        nextMin: nextMin,
+                        isMaxRank: isMaxRank,
+                      ),
+                      const SizedBox(height: 16),
+                      ReputationHistoryList(c: c, l10n: l10n),
+                      const SizedBox(height: 16),
+                      _SectionHeader(title: l10n.reputationRanks, c: c),
+                      const SizedBox(height: 8),
+                      ...ReputationRank.values.map(
+                        (r) => _RankCard(
+                            rank: r, currentRank: rank, c: c, l10n: l10n),
+                      ),
+                      const SizedBox(height: 20),
+                      _TooltipCard(c: c, l10n: l10n),
+                      const SizedBox(height: 40),
+                    ],
+                  ),
                 ),
               ),
             ],

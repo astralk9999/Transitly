@@ -458,16 +458,41 @@ class _MapTabState extends ConsumerState<MapTab>
 
     final currentKey = '${isDark ? "d" : "l"}-$mapStyle';
 
-    // Sub B1.1: cuando el buscador escribe una selección, centramos
+    // Sub B1.1/B1.3: cuando el buscador escribe una selección, centramos
     // el mapa en ella con un zoom alto. El SearchPinLayer pinta el pin.
+    // Si la selección es de tipo línea (routeId != null), además marcamos
+    // _selectedRouteId para que la polilínea se resalte visualmente.
     ref.listen(searchSelectionProvider, (prev, next) {
       if (next != null && prev?.id != next.id) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
+        // Si es una línea, también la resaltamos visualmente igual que
+        // si la hubiesen pulsado en el mapa.
+        if (next.routeId != null && next.routeId != _selectedRouteId) {
+          setState(() => _selectedRouteId = next.routeId);
+        }
+        // Delay 250ms para asegurar que el mapa está montado cuando se
+        // navega desde el buscador (cambio de tab). El primer intento
+        // sin delay fallaba silenciosamente porque el MapController no
+        // tenía camera inicializada todavía.
+        Future.delayed(const Duration(milliseconds: 250), () {
           if (!mounted) return;
           try {
             _mapController.move(next.position, 17);
-          } catch (_) {}
+          } catch (_) {
+            // Si todavía falla, reintenta 500ms después.
+            Future.delayed(const Duration(milliseconds: 500), () {
+              if (!mounted) return;
+              try {
+                _mapController.move(next.position, 17);
+              } catch (_) {}
+            });
+          }
         });
+      } else if (next == null && prev?.routeId != null) {
+        // Al cerrar la selección, quitamos también el resaltado de
+        // línea si lo había.
+        if (_selectedRouteId == prev?.routeId) {
+          setState(() => _selectedRouteId = null);
+        }
       }
     });
 

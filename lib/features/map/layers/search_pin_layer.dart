@@ -29,124 +29,152 @@ class SearchPinLayer extends StatelessWidget {
     final color = selection.color ?? c.accent;
     final hasDetail = selection.pushPath != null;
 
-    // Stack con Positioned absoluto: el pin queda anclado al bottom
-    // del marker (= LatLng) y la tarjeta a 52px exactos por encima.
-    // Antes era Column con MainAxisAlignment.end y el rendering tenía
-    // jitter durante zoom in/out (el contenido no llenaba el marker y
-    // flutter_map redondea las posiciones de forma inconsistente).
-    const pinHeight = 50.0;
-    const gap = 2.0;
+    // DOS markers separados (cada uno con su tamaño compacto) es la
+    // forma estable de evitar el jitter al hacer zoom: cuando un Marker
+    // es grande respecto al pin, flutter_map redondea su posición en
+    // pantalla de forma inconsistente entre zooms y arrastra el pin
+    // 1-2px en cada operación. Markers pequeños + alignment exacto =
+    // estable.
     return MarkerLayer(
       markers: [
+        // ── 1. Pin (38×50, bottomCenter) ──
+        // La punta del pin coincide EXACTAMENTE con el LatLng. Como el
+        // marker tiene el tamaño justo del pin, no hay drift.
         Marker(
           point: selection.position,
-          width: 280,
-          height: 180,
+          width: 38,
+          height: 50,
           alignment: Alignment.bottomCenter,
-          child: Stack(
-            alignment: Alignment.bottomCenter,
+          child: _AnimatedPin(color: color, icon: selection.icon),
+        ),
+        // ── 2. Tarjeta de info (con offset arriba) ──
+        // alignment.y = 2.3 con height 80 coloca el bottom del marker
+        // 52px por encima del LatLng (sobre el pin). Cálculo:
+        //   bottom_marker = LatLng - (2.3-1)*40 = LatLng - 52
+        Marker(
+          point: selection.position,
+          width: 260,
+          height: 80,
+          alignment: const Alignment(0, 2.3),
+          child: _InfoCard(
+            c: c,
+            color: color,
+            selection: selection,
+            hasDetail: hasDetail,
+            onClose: onClose,
+            onOpenDetail: onOpenDetail,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _InfoCard extends StatelessWidget {
+  const _InfoCard({
+    required this.c,
+    required this.color,
+    required this.selection,
+    required this.hasDetail,
+    required this.onClose,
+    required this.onOpenDetail,
+  });
+
+  final TransitColorScheme c;
+  final Color color;
+  final SearchSelection selection;
+  final bool hasDetail;
+  final VoidCallback onClose;
+  final VoidCallback onOpenDetail;
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
+        decoration: BoxDecoration(
+          color: c.bgSurface,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: color, width: 1.5),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.25),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: IntrinsicWidth(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Pin pegado al bottom: su punta coincide con el LatLng.
-              Positioned(
-                bottom: 0,
-                child: _AnimatedPin(
-                    color: color, icon: selection.icon),
-              ),
-              // Tarjeta a distancia fija (pinHeight + gap) sobre el LatLng.
-              Positioned(
-                bottom: pinHeight + gap,
-                child: Container(
-                  constraints: const BoxConstraints(maxWidth: 260),
-                  padding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
-                  decoration: BoxDecoration(
-                    color: c.bgSurface,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: color, width: 1.5),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.25),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: IntrinsicWidth(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Flexible(
-                          child: GestureDetector(
-                            onTap: hasDetail ? onOpenDetail : null,
-                            behavior: HitTestBehavior.opaque,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment:
-                                  CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  selection.title,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    color: c.textHi,
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                                if (selection.subtitle != null) ...[
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    selection.subtitle!,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      color: c.textMid,
-                                      fontSize: 10,
-                                    ),
-                                  ),
-                                ],
-                                if (hasDetail) ...[
-                                  const SizedBox(height: 4),
-                                  Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        'Ver detalles',
-                                        style: TextStyle(
-                                          color: color,
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 2),
-                                      Icon(Icons.arrow_forward,
-                                          color: color, size: 12),
-                                    ],
-                                  ),
-                                ],
-                              ],
-                            ),
-                          ),
+              Flexible(
+                child: GestureDetector(
+                  onTap: hasDetail ? onOpenDetail : null,
+                  behavior: HitTestBehavior.opaque,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        selection.title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: c.textHi,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
                         ),
-                        // Botón cerrar (X).
-                        InkWell(
-                          onTap: onClose,
-                          borderRadius: BorderRadius.circular(16),
-                          child: Padding(
-                            padding: const EdgeInsets.all(4),
-                            child: Icon(Icons.close,
-                                size: 16, color: c.textMid),
+                      ),
+                      if (selection.subtitle != null) ...[
+                        const SizedBox(height: 2),
+                        Text(
+                          selection.subtitle!,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: c.textMid,
+                            fontSize: 10,
                           ),
                         ),
                       ],
-                    ),
+                      if (hasDetail) ...[
+                        const SizedBox(height: 4),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              'Ver detalles',
+                              style: TextStyle(
+                                color: color,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            const SizedBox(width: 2),
+                            Icon(Icons.arrow_forward,
+                                color: color, size: 12),
+                          ],
+                        ),
+                      ],
+                    ],
                   ),
+                ),
+              ),
+              InkWell(
+                onTap: onClose,
+                borderRadius: BorderRadius.circular(16),
+                child: Padding(
+                  padding: const EdgeInsets.all(4),
+                  child: Icon(Icons.close, size: 16, color: c.textMid),
                 ),
               ),
             ],
           ),
         ),
-      ],
+      ),
     );
   }
 }

@@ -164,25 +164,25 @@ class _SearchResults extends ConsumerWidget {
               // quiere abrir la pantalla completa.
               switch (r.type) {
                 case MapSearchResultType.route:
-                  // Para línea: centramos en la primera parada (o el
-                  // primer punto del trazado) y dejamos el pin con
-                  // pushPath a /route/${id}.
-                  final stop = r.route != null
-                      ? r.route!.id
-                      : null;
-                  if (r.lat != null && r.lng != null) {
+                  final routeId = r.route?.id;
+                  if (r.lat != null &&
+                      r.lng != null &&
+                      routeId != null) {
                     ref.read(searchSelectionProvider.notifier).state =
                         SearchSelection(
-                      id: 'route-${r.route?.id ?? r.title}',
+                      id: 'route-$routeId',
                       position: LatLng(r.lat!, r.lng!),
                       title: 'Línea ${r.route?.code ?? r.title}',
                       subtitle: r.route?.name ?? r.subtitle,
                       icon: Icons.directions_bus,
                       color: r.route?.routeColor,
-                      pushPath: stop != null ? '/route/$stop' : null,
+                      pushPath: '/route/$routeId',
+                      // routeId hace que map_tab.dart resalte la
+                      // polilínea de la línea en el mapa
+                      // (_selectedRouteId).
+                      routeId: routeId,
                     );
                   } else {
-                    // Sin posición → push directo como antes.
                     onClose();
                     return;
                   }

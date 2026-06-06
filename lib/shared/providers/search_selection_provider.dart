@@ -17,6 +17,7 @@ class SearchSelection {
     this.color,
     required this.id,
     this.pushPath,
+    this.routeId,
   });
 
   final LatLng position;
@@ -32,6 +33,10 @@ class SearchSelection {
   /// Ruta opcional a la que navegar si el usuario pulsa "Ver detalles"
   /// en la tarjeta del pin. `null` = sin detalle (lugar genérico).
   final String? pushPath;
+
+  /// Si es una selección de línea, el id de la ruta para que el mapa
+  /// la resalte (polilínea destacada). `null` = no resaltar nada.
+  final String? routeId;
 }
 
 /// `null` = sin selección activa.

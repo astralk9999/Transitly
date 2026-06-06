@@ -280,10 +280,14 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> {
                         borderRadius: 12,
                         padding: EdgeInsets.zero,
                         child: ListTile(
-                          // Tap → pantalla detalle con tabs
-                          // (Resumen, Rutas, Feedback) y acciones.
-                          onTap: () =>
-                              context.push('/admin/users/${user['id']}'),
+                          // Tap → pantalla detalle. Al volver
+                          // (sea pop o gesto back) recargamos para
+                          // reflejar cualquier mutación (rol, XP,
+                          // rango) sin necesidad de salir/entrar.
+                          onTap: () async {
+                            await context.push('/admin/users/${user['id']}');
+                            if (mounted) await _loadUsers();
+                          },
                           contentPadding: const EdgeInsets.symmetric(
                               horizontal: 12, vertical: 8),
                           leading: CircleAvatar(

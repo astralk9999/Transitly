@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
@@ -12,10 +13,8 @@ import '../../shared/widgets/glass_card.dart';
 import '../../shared/widgets/role_gate.dart';
 import '../../shared/widgets/transit_app_bar.dart';
 
-/// Pantalla detalle de usuario (admin). 3 tabs:
-///   - Resumen: rol, XP, rangos, acciones rápidas
-///   - Rutas: user_routes creadas por el usuario
-///   - Feedback: route_feedback que ha enviado
+/// Pantalla detalle de usuario (admin). Tres tabs: Resumen / Rutas /
+/// Feedback. Cualquier mutación recarga la pantalla en sitio.
 class AdminUserDetailScreen extends ConsumerStatefulWidget {
   const AdminUserDetailScreen({super.key, required this.userId});
   final String userId;
@@ -40,10 +39,7 @@ class _AdminUserDetailScreenState
   }
 
   Future<void> _load() async {
-    setState(() {
-      _loading = true;
-      _error = null;
-    });
+    if (mounted) setState(() => _error = null);
     try {
       final client = ref.read(supabaseClientProvider);
       final results = await Future.wait([
@@ -55,12 +51,14 @@ class _AdminUserDetailScreenState
             .maybeSingle(),
         client
             .from('user_routes')
-            .select('id, name, status, visibility, vote_count, view_count, created_at, route_color')
+            .select(
+                'id, name, status, visibility, vote_count, view_count, created_at, route_color')
             .eq('author_id', widget.userId)
             .order('created_at', ascending: false),
         client
             .from('route_feedback')
-            .select('id, kind, description, status, created_at, route_id, proposed_change')
+            .select(
+                'id, kind, description, status, created_at, route_id, proposed_change')
             .eq('author_id', widget.userId)
             .order('created_at', ascending: false),
       ]);
@@ -105,15 +103,40 @@ class _AdminUserDetailScreenState
                     )
                   : Column(
                       children: [
-                        TabBar(
-                          indicatorColor: c.accent,
-                          labelColor: c.accent,
-                          unselectedLabelColor: c.textMid,
-                          tabs: [
-                            const Tab(text: 'Resumen'),
-                            Tab(text: 'Rutas (${_routes.length})'),
-                            Tab(text: 'Feedback (${_feedback.length})'),
-                          ],
+                        _UserHeader(
+                          profile: _profile!,
+                          feedbackCount: _feedback.length,
+                          c: c,
+                        ),
+                        Container(
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: c.bgRaised,
+                            borderRadius: BorderRadius.circular(12),
+                            border:
+                                Border.all(color: c.border, width: 0.5),
+                          ),
+                          child: TabBar(
+                            dividerColor: Colors.transparent,
+                            indicator: BoxDecoration(
+                              color: c.accent.withValues(alpha: 0.2),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            indicatorSize: TabBarIndicatorSize.tab,
+                            indicatorPadding: const EdgeInsets.all(4),
+                            labelColor: c.accent,
+                            unselectedLabelColor: c.textMid,
+                            labelStyle: GoogleFonts.ibmPlexMono(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 1.2),
+                            tabs: [
+                              const Tab(text: 'RESUMEN'),
+                              Tab(text: 'RUTAS · ${_routes.length}'),
+                              Tab(text: 'FEEDBACK · ${_feedback.length}'),
+                            ],
+                          ),
                         ),
                         Expanded(
                           child: TabBarView(
@@ -139,7 +162,197 @@ class _AdminUserDetailScreenState
 }
 
 // ─────────────────────────────────────────────────────────────────────
-// Tab 1 — Resumen
+// HEADER — avatar grande, nombre, rango, barra de progreso
+// ─────────────────────────────────────────────────────────────────────
+class _UserHeader extends StatelessWidget {
+  const _UserHeader({
+    required this.profile,
+    required this.feedbackCount,
+    required this.c,
+  });
+  final Map<String, dynamic> profile;
+  final int feedbackCount;
+  final TransitColorScheme c;
+
+  @override
+  Widget build(BuildContext context) {
+    final name = profile['display_name'] as String? ?? '?';
+    final role = profile['role'] as String? ?? 'passenger';
+    final score = (profile['reputation_score'] as num?)?.toInt() ?? 0;
+    final routesCount =
+        (profile['routes_created_count'] as num?)?.toInt() ?? 0;
+    final rank = ReputationRank.forScore(score);
+    final values = ReputationRank.values;
+    final nextIdx = values.indexOf(rank) + 1;
+    final isMax = nextIdx >= values.length;
+    final nextMin = isMax ? rank.minScore : values[nextIdx].minScore;
+    final progress = isMax ? 1.0 : (score / nextMin).clamp(0.0, 1.0);
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+      child: GlassCard(
+        blur: 16,
+        fillOpacity: 0.06,
+        borderRadius: 14,
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: 56,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: rank.color.withValues(alpha: 0.18),
+                    border: Border.all(color: rank.color, width: 2),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    name.isNotEmpty ? name[0].toUpperCase() : '?',
+                    style: GoogleFonts.ibmPlexMono(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w700,
+                      color: rank.color,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(name,
+                          style: TransitTypography.heading(c.textHi),
+                          overflow: TextOverflow.ellipsis),
+                      const SizedBox(height: 4),
+                      Wrap(
+                        spacing: 6,
+                        runSpacing: 4,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(rank.icon, size: 14, color: rank.color),
+                              const SizedBox(width: 4),
+                              Text(rank.name.toUpperCase(),
+                                  style: GoogleFonts.ibmPlexMono(
+                                    fontSize: 11,
+                                    color: rank.color,
+                                    fontWeight: FontWeight.w700,
+                                    letterSpacing: 1.2,
+                                  )),
+                            ],
+                          ),
+                          _rolePill(role),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 14),
+            Row(
+              children: [
+                Text('$score',
+                    style: GoogleFonts.ibmPlexMono(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w700,
+                      color: c.textHi,
+                    )),
+                Text(' XP',
+                    style: TransitTypography.bodySecondary(c.textMid)),
+                const Spacer(),
+                if (!isMax)
+                  Text('siguiente: $nextMin',
+                      style: TransitTypography.bodySmall(c.textLo))
+                else
+                  Text('rango máximo',
+                      style: TransitTypography.bodySmall(c.textLo)),
+              ],
+            ),
+            const SizedBox(height: 8),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: LinearProgressIndicator(
+                value: progress,
+                minHeight: 6,
+                backgroundColor: c.bgSurface,
+                valueColor: AlwaysStoppedAnimation(rank.color),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                _miniStat(c, Icons.route_outlined, '$routesCount', 'rutas'),
+                const SizedBox(width: 14),
+                _miniStat(c, Icons.feedback_outlined, '$feedbackCount',
+                    'feedback'),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _rolePill(String role) {
+    final label = switch (role) {
+      'admin' => 'ADMIN',
+      'moderator' => 'MOD',
+      'operatorAdmin' => 'OP. ADMIN',
+      'driver' => 'CONDUCTOR',
+      _ => 'PASAJERO',
+    };
+    final pillColor = switch (role) {
+      'admin' => const Color(0xFFE91E63),
+      'moderator' => const Color(0xFFFF9800),
+      'operatorAdmin' => const Color(0xFF9C27B0),
+      'driver' => const Color(0xFF2196F3),
+      _ => c.textMid,
+    };
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(
+        color: pillColor.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(
+            color: pillColor.withValues(alpha: 0.5), width: 0.5),
+      ),
+      child: Text(label,
+          style: GoogleFonts.ibmPlexMono(
+            fontSize: 10,
+            fontWeight: FontWeight.w700,
+            color: pillColor,
+            letterSpacing: 1,
+          )),
+    );
+  }
+
+  Widget _miniStat(
+      TransitColorScheme c, IconData icon, String value, String label) {
+    return Row(
+      children: [
+        Icon(icon, size: 14, color: c.textMid),
+        const SizedBox(width: 4),
+        Text(value,
+            style: GoogleFonts.ibmPlexMono(
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+              color: c.textHi,
+            )),
+        const SizedBox(width: 4),
+        Text(label, style: TransitTypography.bodySmall(c.textLo)),
+      ],
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────
+// TAB 1 — RESUMEN (acciones)
 // ─────────────────────────────────────────────────────────────────────
 class _SummaryTab extends StatelessWidget {
   const _SummaryTab({
@@ -156,7 +369,13 @@ class _SummaryTab extends StatelessWidget {
   final dynamic client;
   final String userId;
 
-  static const _roles = ['passenger', 'driver', 'operatorAdmin', 'moderator', 'admin'];
+  static const _roles = [
+    'passenger',
+    'driver',
+    'operatorAdmin',
+    'moderator',
+    'admin',
+  ];
   static const _roleLabels = {
     'passenger': 'Pasajero',
     'driver': 'Conductor',
@@ -164,133 +383,134 @@ class _SummaryTab extends StatelessWidget {
     'moderator': 'Moderador',
     'admin': 'Admin',
   };
+  static const _roleIcons = {
+    'passenger': Icons.person_outline,
+    'driver': Icons.directions_bus_outlined,
+    'operatorAdmin': Icons.apartment_outlined,
+    'moderator': Icons.gavel_outlined,
+    'admin': Icons.shield_outlined,
+  };
 
   @override
   Widget build(BuildContext context) {
     final role = profile['role'] as String? ?? 'passenger';
     final score = (profile['reputation_score'] as num?)?.toInt() ?? 0;
     final level = (profile['reputation_level'] as num?)?.toInt() ?? 0;
-    final routesCount = (profile['routes_created_count'] as num?)?.toInt() ?? 0;
-    final createdAt = profile['created_at'] as String?;
     final id = profile['id'] as String;
+    final createdAt = profile['created_at'] as String?;
     final rank = ReputationRank.forScore(score);
 
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
       children: [
+        _sectionHeader(c, Icons.badge_outlined, 'Identidad'),
+        const SizedBox(height: 8),
         GlassCard(
           blur: 12,
-          fillOpacity: 0.05,
+          fillOpacity: 0.04,
           borderRadius: 12,
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(14),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  Icon(rank.icon, color: rank.color, size: 28),
-                  const SizedBox(width: 8),
-                  Text('$score XP',
-                      style: TransitTypography.heading(c.textHi)),
-                ],
-              ),
-              const SizedBox(height: 6),
-              Text('Nivel BD: $level · Rango calc: ${rank.name}',
-                  style: TransitTypography.bodySmall(c.textLo)),
-              const SizedBox(height: 12),
               _kv(c, 'ID', '${id.substring(0, 8)}...'),
-              _kv(c, 'Rol actual', _roleLabels[role] ?? role),
-              _kv(c, 'Rutas creadas', '$routesCount'),
+              _kv(c, 'Rol', _roleLabels[role] ?? role),
+              _kv(c, 'Nivel BD', '$level'),
+              _kv(c, 'Rango calc', rank.name),
               if (createdAt != null)
                 _kv(c, 'Alta', createdAt.substring(0, 10)),
             ],
           ),
         ),
-        const SizedBox(height: 16),
-        _section(c, 'Cambiar rol'),
+        const SizedBox(height: 20),
+        _sectionHeader(c, Icons.swap_horiz, 'Cambiar rol'),
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,
           runSpacing: 8,
           children: [
             for (final r in _roles)
-              ChoiceChip(
-                label: Text(_roleLabels[r] ?? r),
+              _selectableChip(
+                icon: _roleIcons[r] ?? Icons.person_outline,
+                label: _roleLabels[r] ?? r,
                 selected: role == r,
-                onSelected: (_) => _changeRole(context, r),
-                selectedColor: c.accent.withValues(alpha: 0.3),
-                backgroundColor: c.bgRaised,
+                color: c.accent,
+                c: c,
+                onTap: () => _changeRole(context, r),
               ),
           ],
         ),
-        const SizedBox(height: 16),
-        _section(c, 'Setear rango'),
+        const SizedBox(height: 20),
+        _sectionHeader(c, Icons.military_tech_outlined, 'Setear rango'),
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,
           runSpacing: 8,
           children: [
             for (final r in ReputationRank.values)
-              ActionChip(
-                avatar: Icon(r.icon, size: 16, color: r.color),
-                label: Text('${r.name} (${r.minScore})'),
-                onPressed: () => _setRank(context, r),
-                backgroundColor: r == rank
-                    ? r.color.withValues(alpha: 0.18)
-                    : c.bgRaised,
+              _selectableChip(
+                icon: r.icon,
+                label: '${_capitalize(r.name)} · ${r.minScore}',
+                selected: r == rank,
+                color: r.color,
+                c: c,
+                onTap: () => _setRank(context, r),
               ),
           ],
         ),
-        const SizedBox(height: 16),
-        _section(c, 'XP rápido'),
+        const SizedBox(height: 20),
+        _sectionHeader(c, Icons.star_rounded, 'XP rápido'),
         const SizedBox(height: 8),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
+        Row(
           children: [
-            OutlinedButton.icon(
-              onPressed: () => _addXp(context, 50),
-              icon: const Icon(Icons.add, size: 16),
-              label: const Text('+50'),
-            ),
-            OutlinedButton.icon(
-              onPressed: () => _addXp(context, 500),
-              icon: const Icon(Icons.add, size: 16),
-              label: const Text('+500'),
-            ),
-            OutlinedButton.icon(
-              onPressed: () => _addXp(context, -50),
-              icon: const Icon(Icons.remove, size: 16),
-              label: const Text('-50'),
-              style: OutlinedButton.styleFrom(
-                  foregroundColor: c.stateCancelled),
-            ),
-            OutlinedButton.icon(
-              onPressed: () => _setScore(context, 0, 0),
-              icon: const Icon(Icons.refresh, size: 16),
-              label: const Text('Reset 0'),
-              style: OutlinedButton.styleFrom(
-                  foregroundColor: c.stateCancelled),
-            ),
+            Expanded(
+                child: _xpButton(c, '+50', Icons.add, c.stateOnTime,
+                    () => _addXp(context, 50))),
+            const SizedBox(width: 8),
+            Expanded(
+                child: _xpButton(c, '+500', Icons.add, c.stateOnTime,
+                    () => _addXp(context, 500))),
+            const SizedBox(width: 8),
+            Expanded(
+                child: _xpButton(c, '−50', Icons.remove, c.stateCancelled,
+                    () => _addXp(context, -50))),
           ],
         ),
-        const SizedBox(height: 40),
+        const SizedBox(height: 8),
+        _xpButton(
+          c,
+          'Reset a 0',
+          Icons.refresh,
+          c.stateCancelled,
+          () => _setScore(context, 0, 0),
+          fullWidth: true,
+        ),
       ],
     );
   }
 
-  Widget _section(TransitColorScheme c, String text) {
-    return Text(text,
-        style: TransitTypography.sectionTitle(c.accent));
+  Widget _sectionHeader(TransitColorScheme c, IconData icon, String text) {
+    return Row(
+      children: [
+        Icon(icon, size: 16, color: c.accent),
+        const SizedBox(width: 6),
+        Text(text.toUpperCase(),
+            style: GoogleFonts.ibmPlexMono(
+              fontSize: 11,
+              fontWeight: FontWeight.w700,
+              color: c.accent,
+              letterSpacing: 1.5,
+            )),
+      ],
+    );
   }
 
   Widget _kv(TransitColorScheme c, String k, String v) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 3),
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
           SizedBox(
-              width: 110,
+              width: 100,
               child: Text(k,
                   style: TransitTypography.bodySmall(c.textMid))),
           Expanded(
@@ -300,6 +520,85 @@ class _SummaryTab extends StatelessWidget {
       ),
     );
   }
+
+  Widget _selectableChip({
+    required IconData icon,
+    required String label,
+    required bool selected,
+    required Color color,
+    required TransitColorScheme c,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(10),
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        decoration: BoxDecoration(
+          color: selected ? color.withValues(alpha: 0.18) : c.bgRaised,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: selected ? color : c.border,
+            width: selected ? 1.5 : 0.5,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 14, color: selected ? color : c.textMid),
+            const SizedBox(width: 6),
+            Text(label,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight:
+                      selected ? FontWeight.w700 : FontWeight.w500,
+                  color: selected ? color : c.textHi,
+                )),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _xpButton(
+    TransitColorScheme c,
+    String label,
+    IconData icon,
+    Color color,
+    VoidCallback onTap, {
+    bool fullWidth = false,
+  }) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(10),
+      onTap: onTap,
+      child: Container(
+        width: fullWidth ? double.infinity : null,
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+              color: color.withValues(alpha: 0.4), width: 0.5),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 16, color: color),
+            const SizedBox(width: 6),
+            Text(label,
+                style: GoogleFonts.ibmPlexMono(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: color,
+                )),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _capitalize(String s) =>
+      s.isEmpty ? s : s[0].toUpperCase() + s.substring(1);
 
   Future<void> _changeRole(BuildContext context, String role) async {
     final messenger = ScaffoldMessenger.of(context);
@@ -315,24 +614,19 @@ class _SummaryTab extends StatelessWidget {
   Future<void> _addXp(BuildContext context, int delta) async {
     final messenger = ScaffoldMessenger.of(context);
     try {
-      await client.rpc('add_xp',
-          params: {'p_user_id': userId, 'p_xp': delta});
+      await client
+          .rpc('add_xp', params: {'p_user_id': userId, 'p_xp': delta});
       messenger.showSnackBar(SnackBar(
-          content: Text('${delta >= 0 ? '+' : ''}$delta XP')));
+          content: Text('${delta >= 0 ? '+' : ''}$delta XP aplicado')));
       onChanged();
     } catch (e) {
       messenger.showSnackBar(SnackBar(content: Text('Error: $e')));
     }
   }
 
-  /// Setea el rango directo: pone score al umbral mínimo + 1 (para
-  /// dejar margen visible) y delega en add_xp para recalcular nivel.
   Future<void> _setRank(BuildContext context, ReputationRank r) async {
     final messenger = ScaffoldMessenger.of(context);
     try {
-      // Resetear y luego dar el XP justo para entrar al rango: así
-      // dispara notificación rank_up y deja al usuario con la barra
-      // a 0% del nuevo rango.
       await client.from('profiles').update({
         'reputation_score': 0,
         'reputation_level': 0,
@@ -348,7 +642,8 @@ class _SummaryTab extends StatelessWidget {
     }
   }
 
-  Future<void> _setScore(BuildContext context, int score, int level) async {
+  Future<void> _setScore(
+      BuildContext context, int score, int level) async {
     final messenger = ScaffoldMessenger.of(context);
     try {
       await client.from('profiles').update({
@@ -364,7 +659,7 @@ class _SummaryTab extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────
-// Tab 2 — Rutas
+// TAB 2 — RUTAS
 // ─────────────────────────────────────────────────────────────────────
 class _RoutesTab extends StatelessWidget {
   const _RoutesTab({required this.routes, required this.c});
@@ -392,35 +687,111 @@ class _RoutesTab extends StatelessWidget {
         final votes = (r['vote_count'] as num?)?.toInt() ?? 0;
         final views = (r['view_count'] as num?)?.toInt() ?? 0;
         final colorHex = r['route_color'] as String? ?? '#977DDF';
+        final createdAt = r['created_at'] as String?;
 
         return Padding(
-          padding: const EdgeInsets.only(bottom: 8),
-          child: GlassCard(
-            blur: 12,
-            fillOpacity: 0.05,
-            borderRadius: 12,
-            padding: EdgeInsets.zero,
-            child: ListTile(
-              onTap: () => context.push('/route/$id'),
-              leading: Container(
-                width: 12,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: _parseHex(colorHex),
-                  borderRadius: BorderRadius.circular(4),
-                ),
+          padding: const EdgeInsets.only(bottom: 10),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(12),
+            onTap: () => context.push('/route/$id'),
+            child: GlassCard(
+              blur: 12,
+              fillOpacity: 0.05,
+              borderRadius: 12,
+              padding: const EdgeInsets.all(12),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 6,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: _parseHex(colorHex),
+                      borderRadius: BorderRadius.circular(3),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(name,
+                            style: TransitTypography.bodyPrimary(c.textHi),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis),
+                        const SizedBox(height: 4),
+                        Wrap(
+                          spacing: 6,
+                          runSpacing: 4,
+                          children: [
+                            _badge(status, _statusColor(c, status)),
+                            _badge(visibility, c.textMid),
+                            if (createdAt != null)
+                              _badge(createdAt.substring(0, 10), c.textLo),
+                          ],
+                        ),
+                        const SizedBox(height: 6),
+                        Row(
+                          children: [
+                            Icon(Icons.thumb_up_outlined,
+                                size: 12, color: c.textMid),
+                            const SizedBox(width: 4),
+                            Text('$votes',
+                                style: TransitTypography.bodySmall(
+                                    c.textMid)),
+                            const SizedBox(width: 12),
+                            Icon(Icons.visibility_outlined,
+                                size: 12, color: c.textMid),
+                            const SizedBox(width: 4),
+                            Text('$views',
+                                style: TransitTypography.bodySmall(
+                                    c.textMid)),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Icon(Icons.chevron_right, color: c.textLo),
+                ],
               ),
-              title: Text(name,
-                  style: TransitTypography.bodyPrimary(c.textHi)),
-              subtitle: Text(
-                '$status · $visibility · 👍 $votes · 👁 $views',
-                style: TransitTypography.bodySmall(c.textMid),
-              ),
-              trailing: Icon(Icons.chevron_right, color: c.textLo),
             ),
           ),
         );
       },
+    );
+  }
+
+  Color _statusColor(TransitColorScheme c, String status) {
+    switch (status) {
+      case 'published':
+      case 'community_approved':
+        return c.stateOnTime;
+      case 'review_pending':
+        return c.stateDelay;
+      case 'rejected':
+      case 'reported':
+        return c.stateCancelled;
+      default:
+        return c.textMid;
+    }
+  }
+
+  Widget _badge(String text, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(4),
+        border:
+            Border.all(color: color.withValues(alpha: 0.4), width: 0.5),
+      ),
+      child: Text(text,
+          style: GoogleFonts.ibmPlexMono(
+            fontSize: 10,
+            fontWeight: FontWeight.w700,
+            color: color,
+            letterSpacing: 0.5,
+          )),
     );
   }
 
@@ -434,7 +805,7 @@ class _RoutesTab extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────
-// Tab 3 — Feedback
+// TAB 3 — FEEDBACK
 // ─────────────────────────────────────────────────────────────────────
 class _FeedbackTab extends StatelessWidget {
   const _FeedbackTab({required this.feedback, required this.c});
@@ -460,22 +831,13 @@ class _FeedbackTab extends StatelessWidget {
         final status = f['status'] as String? ?? 'open';
         final createdAt = f['created_at'] as String?;
         final routeId = f['route_id'] as String?;
-        final legacy = (f['proposed_change'] as Map?)?['legacy_route_code'];
+        final legacy =
+            (f['proposed_change'] as Map?)?['legacy_route_code'];
 
-        Color statusColor;
-        switch (status) {
-          case 'applied':
-            statusColor = c.stateOnTime;
-          case 'rejected':
-            statusColor = c.stateCancelled;
-          case 'in_review':
-            statusColor = c.stateDelay;
-          default:
-            statusColor = c.textMid;
-        }
+        final statusColor = _statusColor(c, status);
 
         return Padding(
-          padding: const EdgeInsets.only(bottom: 8),
+          padding: const EdgeInsets.only(bottom: 10),
           child: GlassCard(
             blur: 12,
             fillOpacity: 0.05,
@@ -488,21 +850,24 @@ class _FeedbackTab extends StatelessWidget {
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 2),
+                          horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
                         color: statusColor.withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: BorderRadius.circular(6),
                         border: Border.all(
                             color: statusColor.withValues(alpha: 0.5),
                             width: 0.5),
                       ),
-                      child: Text(status,
-                          style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w600,
-                              color: statusColor)),
+                      child: Text(status.toUpperCase(),
+                          style: GoogleFonts.ibmPlexMono(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w700,
+                              color: statusColor,
+                              letterSpacing: 1)),
                     ),
                     const SizedBox(width: 8),
+                    Icon(_kindIcon(kind), size: 14, color: c.textMid),
+                    const SizedBox(width: 4),
                     Text(kind,
                         style: TransitTypography.bodySmall(c.textMid)),
                     const Spacer(),
@@ -511,14 +876,19 @@ class _FeedbackTab extends StatelessWidget {
                           style: TransitTypography.bodySmall(c.textLo)),
                   ],
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 10),
                 Text(desc,
                     style: TransitTypography.bodySecondary(c.textHi)),
                 if (routeId != null || legacy != null) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    'Ruta: ${routeId ?? legacy}',
-                    style: TransitTypography.bodySmall(c.textLo),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Icon(Icons.route_outlined,
+                          size: 12, color: c.textLo),
+                      const SizedBox(width: 4),
+                      Text('Ruta: ${routeId ?? legacy}',
+                          style: TransitTypography.bodySmall(c.textLo)),
+                    ],
                   ),
                 ],
               ],
@@ -527,5 +897,33 @@ class _FeedbackTab extends StatelessWidget {
         );
       },
     );
+  }
+
+  Color _statusColor(TransitColorScheme c, String status) {
+    switch (status) {
+      case 'applied':
+      case 'accepted':
+        return c.stateOnTime;
+      case 'in_review':
+        return c.stateDelay;
+      case 'rejected':
+      case 'duplicate':
+        return c.stateCancelled;
+      default:
+        return c.textMid;
+    }
+  }
+
+  IconData _kindIcon(String kind) {
+    switch (kind) {
+      case 'stop_change':
+        return Icons.location_on_outlined;
+      case 'schedule_error':
+        return Icons.schedule;
+      case 'info_correction':
+        return Icons.edit_outlined;
+      default:
+        return Icons.help_outline;
+    }
   }
 }

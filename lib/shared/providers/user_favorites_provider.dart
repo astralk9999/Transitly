@@ -4,6 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart'
     show PostgrestException, SupabaseClient, User;
 
 import '../../core/utils/app_logger.dart';
+import '../../data/auth/auth_repository.dart';
 import '../../data/supabase/supabase_client_provider.dart';
 import 'auth_provider.dart';
 
@@ -127,9 +128,17 @@ final userFavoritesProvider =
   );
   // Resync solo cuando cambia el id del usuario (login/logout),
   // no en cada tokenRefreshed.
+  // Listen a authStateProvider (reactivo vía StreamProvider), no a
+  // currentAuthUserProvider — éste es síncrono y nunca cambia su
+  // valor en runtime: si el provider de favoritos se crea ANTES del
+  // login, currentAuthUserProvider sigue devolviendo null y el sync
+  // jamás dispara. El bug era: tras borrar caché, abrir la app, hacer
+  // login → los favoritos remotos solo aparecían tras reiniciar.
   String? lastUserId;
-  ref.listen<User?>(currentAuthUserProvider, (_, next) {
-    final id = next?.id;
+  ref.listen<AsyncValue<AuthSessionState>>(authStateProvider, (_, next) {
+    final state = next.valueOrNull;
+    final user = state is AuthAuthenticated ? state.user : null;
+    final id = user?.id;
     if (id == lastUserId) return;
     lastUserId = id;
     if (id != null) notifier.syncWithRemote();
@@ -247,9 +256,17 @@ final userFavoriteStopsProvider =
     () => ref.read(supabaseClientProvider),
     () => ref.read(currentAuthUserProvider),
   );
+  // Listen a authStateProvider (reactivo vía StreamProvider), no a
+  // currentAuthUserProvider — éste es síncrono y nunca cambia su
+  // valor en runtime: si el provider de favoritos se crea ANTES del
+  // login, currentAuthUserProvider sigue devolviendo null y el sync
+  // jamás dispara. El bug era: tras borrar caché, abrir la app, hacer
+  // login → los favoritos remotos solo aparecían tras reiniciar.
   String? lastUserId;
-  ref.listen<User?>(currentAuthUserProvider, (_, next) {
-    final id = next?.id;
+  ref.listen<AsyncValue<AuthSessionState>>(authStateProvider, (_, next) {
+    final state = next.valueOrNull;
+    final user = state is AuthAuthenticated ? state.user : null;
+    final id = user?.id;
     if (id == lastUserId) return;
     lastUserId = id;
     if (id != null) notifier.syncWithRemote();

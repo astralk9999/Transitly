@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_spacing.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../shared/widgets/glass_card.dart';
+import '../../../shared/widgets/transit_button.dart';
 import '../../../shared/widgets/transit_checkbox.dart';
+import 'wizard_models.dart';
 
 class StepSummary extends StatelessWidget {
   const StepSummary({
@@ -17,6 +21,8 @@ class StepSummary extends StatelessWidget {
     required this.visibility,
     required this.proposeAsCommunity,
     required this.onProposeChanged,
+    required this.stops,
+    required this.path,
   });
 
   final String routeName;
@@ -27,6 +33,8 @@ class StepSummary extends StatelessWidget {
   final String visibility;
   final bool proposeAsCommunity;
   final ValueChanged<bool> onProposeChanged;
+  final List<WizardStop> stops;
+  final WizardRoutePath path;
 
   static const _serviceTypeLabels = {
     'urban': 'Urbano',
@@ -137,6 +145,28 @@ class StepSummary extends StatelessWidget {
             ),
           ),
 
+          const SizedBox(height: TransitSpacing.space16),
+          // Botón "Vista previa" — abre un mapa interactivo con las
+          // paradas + trazado para que el usuario revise antes de
+          // publicar. Antes solo se podían ver números (paradas, h)
+          // sin saber realmente cómo iba a quedar la ruta.
+          TransitButton(
+            label: 'Vista previa en el mapa',
+            icon: Icons.map_outlined,
+            isPrimary: false,
+            onPressed: stops.length >= 2
+                ? () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (_) => _PreviewMapScreen(
+                        stops: stops,
+                        path: path,
+                        color: parsedColor ?? colors.accent,
+                        routeName: routeName,
+                      ),
+                    ));
+                  }
+                : null,
+          ),
           const SizedBox(height: TransitSpacing.space24),
 
           GlassCard(
@@ -188,6 +218,118 @@ class StepSummary extends StatelessWidget {
       default:
         return Icons.visibility;
     }
+  }
+}
+
+class _PreviewMapScreen extends StatelessWidget {
+  const _PreviewMapScreen({
+    required this.stops,
+    required this.path,
+    required this.color,
+    required this.routeName,
+  });
+
+  final List<WizardStop> stops;
+  final WizardRoutePath path;
+  final Color color;
+  final String routeName;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colors = TransitColorScheme.of(isDark);
+    final mapController = MapController();
+
+    final bounds = LatLngBounds.fromPoints(
+      stops.map((s) => LatLng(s.lat, s.lng)).toList(),
+    );
+
+    final stopMarkers = <Marker>[];
+    for (var i = 0; i < stops.length; i++) {
+      final s = stops[i];
+      stopMarkers.add(Marker(
+        point: LatLng(s.lat, s.lng),
+        width: 36,
+        height: 36,
+        child: Container(
+          decoration: BoxDecoration(
+            color: i == 0
+                ? Colors.green
+                : i == stops.length - 1
+                    ? Colors.red
+                    : color,
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.white, width: 2),
+          ),
+          alignment: Alignment.center,
+          child: Text('${i + 1}',
+              style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold)),
+        ),
+      ));
+    }
+
+    // Polilínea: usar el trazado custom de cada segmento si existe;
+    // si no, línea recta entre las paradas consecutivas.
+    final polylines = <Polyline>[];
+    for (var i = 0; i < stops.length - 1; i++) {
+      final segs = path.segments.where(
+        (s) => s.fromStopId == stops[i].stopId && s.toStopId == stops[i + 1].stopId,
+      );
+      if (segs.isNotEmpty && segs.first.points.isNotEmpty) {
+        polylines.add(Polyline(
+          points: [
+            LatLng(stops[i].lat, stops[i].lng),
+            for (final p in segs.first.points) LatLng(p.lat, p.lng),
+            LatLng(stops[i + 1].lat, stops[i + 1].lng),
+          ],
+          color: color,
+          strokeWidth: 4,
+        ));
+      } else {
+        polylines.add(Polyline(
+          points: [
+            LatLng(stops[i].lat, stops[i].lng),
+            LatLng(stops[i + 1].lat, stops[i + 1].lng),
+          ],
+          color: color.withValues(alpha: 0.55),
+          strokeWidth: 3,
+        ));
+      }
+    }
+
+    return Scaffold(
+      backgroundColor: colors.bgRoot,
+      appBar: AppBar(
+        backgroundColor: colors.bgSurface,
+        foregroundColor: colors.textHi,
+        title: Text(
+          routeName.isNotEmpty ? routeName : 'Vista previa',
+          style: TransitTypography.heading(colors.textHi),
+        ),
+      ),
+      body: FlutterMap(
+        mapController: mapController,
+        options: MapOptions(
+          initialCameraFit: CameraFit.bounds(
+            bounds: bounds,
+            padding: const EdgeInsets.all(48),
+          ),
+          minZoom: 4,
+          maxZoom: 19,
+        ),
+        children: [
+          TileLayer(
+            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+            userAgentPackageName: 'com.transitly.transitly',
+          ),
+          PolylineLayer(polylines: polylines),
+          MarkerLayer(markers: stopMarkers),
+        ],
+      ),
+    );
   }
 }
 

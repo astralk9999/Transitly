@@ -422,6 +422,8 @@ class _CreateRouteWizardState extends ConsumerState<CreateRouteWizard> {
                   proposeAsCommunity: _proposeAsCommunity,
                   onProposeChanged: (v) =>
                       setState(() => _proposeAsCommunity = v),
+                  stops: _stops,
+                  path: _routePath,
                 ),
               ],
             ),

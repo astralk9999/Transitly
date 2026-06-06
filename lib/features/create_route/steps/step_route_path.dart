@@ -52,7 +52,24 @@ class _StepRoutePathState extends State<StepRoutePath> {
     });
   }
 
+  /// Si está activo el modo "mover parada", el primer tap en el mapa
+  /// re-ubica la parada seleccionada. Si no, y hay un segmento en
+  /// edición, añade un waypoint al trazado.
+  int? _movingStopIndex;
+
   void _addPoint(TapPosition tap, LatLng pos) {
+    if (_movingStopIndex != null) {
+      final i = _movingStopIndex!;
+      if (i >= 0 && i < widget.stops.length) {
+        widget.stops[i] = widget.stops[i].copyWith(
+          lat: pos.latitude,
+          lng: pos.longitude,
+        );
+        setState(() => _movingStopIndex = null);
+        widget.onChanged();
+      }
+      return;
+    }
     if (_editingSegmentIndex == null) return;
     setState(() {
       _currentPoints.add(WizardRoutePathPoint(lat: pos.latitude, lng: pos.longitude));
@@ -74,24 +91,52 @@ class _StepRoutePathState extends State<StepRoutePath> {
 
   Widget _buildMap(TransitColorScheme colors) {
     final segments = widget.path.segments;
-    final stopMarkers = widget.stops.map((s) {
-      final idx = widget.stops.indexOf(s);
-      return Marker(
+    final stopMarkers = <Marker>[];
+    for (var idx = 0; idx < widget.stops.length; idx++) {
+      final s = widget.stops[idx];
+      final isMoving = _movingStopIndex == idx;
+      final base = idx == 0
+          ? Colors.green
+          : idx == widget.stops.length - 1
+              ? Colors.red
+              : colors.accent;
+      stopMarkers.add(Marker(
         point: LatLng(s.lat, s.lng),
-        width: 28,
-        height: 28,
-        child: Container(
-          decoration: BoxDecoration(
-            color: idx == 0 ? Colors.green : idx == widget.stops.length - 1 ? Colors.red : colors.accent,
-            shape: BoxShape.circle,
-            border: Border.all(color: Colors.white, width: 2),
+        width: 36,
+        height: 36,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            setState(() {
+              // Tap sobre una parada → toggle modo "mover esta parada".
+              // El siguiente tap en zona libre del mapa la re-ubica.
+              _movingStopIndex = isMoving ? null : idx;
+              _editingSegmentIndex = null;
+              _currentPoints.clear();
+            });
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              color: base,
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: isMoving ? Colors.amber : Colors.white,
+                width: isMoving ? 3 : 2,
+              ),
+              boxShadow: isMoving
+                  ? [BoxShadow(color: Colors.amber.withValues(alpha: 0.5), blurRadius: 8)]
+                  : null,
+            ),
+            alignment: Alignment.center,
+            child: Text('${idx + 1}',
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold)),
           ),
-          alignment: Alignment.center,
-          child: Text('${idx + 1}',
-              style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold)),
         ),
-      );
-    }).toList();
+      ));
+    }
 
     // Puntos visibles del segmento en edición: sin esto el usuario
     // toca el mapa y "no pasa nada" porque hace falta ≥2 puntos para
@@ -177,13 +222,41 @@ class _StepRoutePathState extends State<StepRoutePath> {
           const SizedBox(height: 16),
           _buildMap(colors),
           const SizedBox(height: 8),
-          if (_editingSegmentIndex == null)
+          if (_movingStopIndex != null) ...[
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.amber.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                    color: Colors.amber.withValues(alpha: 0.6), width: 1),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.open_with, size: 16, color: Colors.amber),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Moviendo parada ${_movingStopIndex! + 1}. Toca el mapa donde quieras colocarla.',
+                      style: TransitTypography.bodySmall(colors.textHi),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close, size: 18),
+                    color: colors.textMid,
+                    onPressed: () =>
+                        setState(() => _movingStopIndex = null),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+          ] else if (_editingSegmentIndex == null) ...[
             Text(
-              'Para trazar: pulsa "Añadir puntos" en un segmento de abajo y luego toca el mapa.',
+              'Toca una parada para mover su posición. Para trazar el camino entre paradas, pulsa "Añadir puntos" en cualquier segmento de la lista de abajo.',
               style: TransitTypography.bodySmall(colors.textMid),
-            )
-          else ...[
-            const SizedBox(height: 4),
+            ),
+          ] else ...[
             Text(
               'Editando segmento ${_editingSegmentIndex! + 1} · ${_currentPoints.length} puntos',
               style: TransitTypography.bodyPrimary(colors.accent),
@@ -192,32 +265,46 @@ class _StepRoutePathState extends State<StepRoutePath> {
             Text(
               _currentPoints.isEmpty
                   ? 'Toca el mapa para añadir el primer punto.'
-                  : 'Sigue tocando para añadir más puntos o pulsa "Deshacer".',
+                  : 'Toca para añadir más puntos. Usa los botones de abajo para deshacer, confirmar o cancelar.',
               style: TransitTypography.bodySmall(colors.textMid),
             ),
             const SizedBox(height: 8),
-            Row(
+            // Botones en Wrap para que ningún label se corte y sea
+            // responsive en pantallas estrechas. Cancelar/Deshacer en
+            // modo icono+texto reducen ancho sin perder claridad.
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
               children: [
-                Expanded(
-                  child: TransitButton(
-                    label: 'Confirmar segmento',
-                    onPressed:
-                        _currentPoints.isEmpty ? null : _confirmSegment,
+                FilledButton.icon(
+                  onPressed:
+                      _currentPoints.isEmpty ? null : _confirmSegment,
+                  icon: const Icon(Icons.check, size: 18),
+                  label: const Text('Confirmar'),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: colors.accent,
                   ),
                 ),
-                const SizedBox(width: 8),
-                TransitButton(
-                  label: 'Deshacer',
-                  isPrimary: false,
+                OutlinedButton.icon(
                   onPressed: _currentPoints.isEmpty
                       ? null
-                      : () => setState(() => _currentPoints.removeLast()),
+                      : () =>
+                          setState(() => _currentPoints.removeLast()),
+                  icon: const Icon(Icons.undo, size: 18),
+                  label: const Text('Deshacer'),
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(color: colors.border),
+                    foregroundColor: colors.textHi,
+                  ),
                 ),
-                const SizedBox(width: 8),
-                TransitButton(
-                  label: 'Cancelar',
-                  isPrimary: false,
+                OutlinedButton.icon(
                   onPressed: _cancelEditing,
+                  icon: const Icon(Icons.close, size: 18),
+                  label: const Text('Cancelar'),
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(color: colors.border),
+                    foregroundColor: colors.textMid,
+                  ),
                 ),
               ],
             ),

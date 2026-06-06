@@ -117,41 +117,56 @@ class _StepSchedulesState extends State<StepSchedules> {
       ];
     }
     return [
-      // Aviso: hasta que el modelo soporte tiempos por parada, los
-      // minutos que se introduzcan abajo NO se guardarán. Antes el
-      // input no avisaba y los usuarios pensaban que se persistían.
-      Container(
-        padding: const EdgeInsets.all(12),
-        margin: const EdgeInsets.only(bottom: 12),
-        decoration: BoxDecoration(
-          color: colors.stateDelay.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-              color: colors.stateDelay.withValues(alpha: 0.3), width: 1),
-        ),
-        child: Row(
-          children: [
-            Icon(Icons.construction, size: 18, color: colors.stateDelay),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                'Modo "Por parada" en desarrollo — todavía no se guardan los minutos por parada. Usa "Horas fijas" o "Frecuencia".',
-                style: TransitTypography.bodySmall(colors.textMid),
-              ),
-            ),
-          ],
-        ),
+      Text(
+        'Define la hora a la que el bus pasa por cada parada. Pulsa "Guardar" para crear los horarios.',
+        style: TransitTypography.bodySecondary(colors.textMid),
       ),
-      Text('Vista previa (sin persistencia):',
-          style: TransitTypography.bodyPrimary(colors.textHi)),
-      const SizedBox(height: 8),
-      for (final stop in widget.stops)
-        _RelativeStopRow(
-          stop: stop,
-          colors: colors,
-          stops: widget.stops,
-        ),
+      const SizedBox(height: 12),
+      TransitButton(
+        label: 'Abrir editor',
+        icon: Icons.schedule,
+        isPrimary: false,
+        onPressed: _showPerStopSheet,
+      ),
     ];
+  }
+
+  void _showPerStopSheet() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colors = TransitColorScheme.of(isDark);
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: colors.bgSurface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (ctx) => _PerStopSheet(
+        stops: widget.stops,
+        onGenerated: (perStop, dayTypes) {
+          // Por cada (parada, día) creamos una entrada con
+          // origin_stop_id = stopId y la hora correspondiente. El
+          // modelo actual no tiene una tabla de "stop_times" así que
+          // reutilizamos schedules con origin para representar el
+          // paso por esa parada.
+          for (final day in dayTypes) {
+            for (final entry in perStop.entries) {
+              final stopId = entry.key;
+              final time = entry.value;
+              if (time.isEmpty) continue;
+              widget.schedules.add(WizardSchedule(
+                dayType: day,
+                departureTime: time,
+                originStopId: stopId,
+                notes: 'Paso por parada',
+              ));
+            }
+          }
+          widget.onChanged();
+          Navigator.pop(ctx);
+        },
+      ),
+    );
   }
 
   List<Widget> _buildOnDemandMode(TransitColorScheme colors) {
@@ -889,6 +904,214 @@ class _ModeChip extends StatelessWidget {
             style: TransitTypography.bodySmall(
                 selected ? colors.accent : colors.textMid)),
       ),
+    );
+  }
+}
+
+class _PerStopSheet extends StatefulWidget {
+  const _PerStopSheet({required this.stops, required this.onGenerated});
+  final List<WizardStop> stops;
+  final void Function(Map<String, String> perStop, Set<String> dayTypes)
+      onGenerated;
+
+  @override
+  State<_PerStopSheet> createState() => _PerStopSheetState();
+}
+
+class _PerStopSheetState extends State<_PerStopSheet> {
+  final Map<String, TextEditingController> _ctrls = {};
+  final Set<String> _selectedDays = {};
+
+  static const _dayOptions = [
+    'weekday',
+    'saturday',
+    'sunday',
+    'holiday',
+    'summer',
+    'winter',
+    'every_day',
+  ];
+
+  static const _dayLabels = {
+    'weekday': 'L-V',
+    'saturday': 'Sábado',
+    'sunday': 'Domingo',
+    'holiday': 'Festivo',
+    'summer': 'Verano',
+    'winter': 'Invierno',
+    'every_day': 'Todos los días',
+  };
+
+  @override
+  void initState() {
+    super.initState();
+    for (final s in widget.stops) {
+      _ctrls[s.stopId] = TextEditingController();
+    }
+  }
+
+  @override
+  void dispose() {
+    for (final c in _ctrls.values) {
+      c.dispose();
+    }
+    super.dispose();
+  }
+
+  bool _isValidTime(String t) {
+    final parts = t.split(':');
+    if (parts.length != 2) return false;
+    final h = int.tryParse(parts[0]);
+    final m = int.tryParse(parts[1]);
+    return h != null && m != null && h >= 0 && h <= 23 && m >= 0 && m <= 59;
+  }
+
+  void _save() {
+    final perStop = <String, String>{};
+    for (final s in widget.stops) {
+      final time = _ctrls[s.stopId]?.text.trim() ?? '';
+      if (time.isEmpty) continue;
+      if (!_isValidTime(time)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Hora inválida en "${s.name}"')),
+        );
+        return;
+      }
+      perStop[s.stopId] = time;
+    }
+    if (perStop.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Introduce al menos una hora')),
+      );
+      return;
+    }
+    if (_selectedDays.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Selecciona al menos un tipo de día')),
+      );
+      return;
+    }
+    widget.onGenerated(perStop, _selectedDays);
+  }
+
+  void _toggleDay(String day) {
+    setState(() {
+      if (_selectedDays.contains(day)) {
+        _selectedDays.remove(day);
+      } else {
+        _selectedDays.add(day);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colors = TransitColorScheme.of(isDark);
+
+    return DraggableScrollableSheet(
+      initialChildSize: 0.75,
+      minChildSize: 0.45,
+      maxChildSize: 0.95,
+      expand: false,
+      builder: (context, scrollController) {
+        return Padding(
+          padding: EdgeInsets.fromLTRB(16, 16, 16,
+              16 + MediaQuery.of(context).viewInsets.bottom),
+          child: ListView(
+            controller: scrollController,
+            children: [
+              Center(
+                child: Container(
+                  width: 32,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: colors.border,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text('Horarios por parada',
+                  style: TransitTypography.heading(colors.textHi)),
+              const SizedBox(height: 4),
+              Text(
+                'Hora a la que el bus pasa por cada parada. Deja en blanco las paradas sin servicio.',
+                style: TransitTypography.bodySecondary(colors.textMid),
+              ),
+              const SizedBox(height: 16),
+              Text('Tipo de día',
+                  style: TransitTypography.bodyPrimary(colors.textHi)),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: _dayOptions.map((day) {
+                  final selected = _selectedDays.contains(day);
+                  return _DayChip(
+                    label: _dayLabels[day] ?? day,
+                    selected: selected,
+                    onTap: () => _toggleDay(day),
+                    colors: colors,
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 20),
+              Text('Hora por parada',
+                  style: TransitTypography.bodyPrimary(colors.textHi)),
+              const SizedBox(height: 8),
+              for (var i = 0; i < widget.stops.length; i++)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 28,
+                        height: 28,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: i == 0
+                              ? Colors.green
+                              : i == widget.stops.length - 1
+                                  ? Colors.red
+                                  : colors.accent,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Text('${i + 1}',
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700)),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          widget.stops[i].name,
+                          style:
+                              TransitTypography.bodyPrimary(colors.textHi),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 90,
+                        child: TransitInput(
+                          hint: 'HH:mm',
+                          controller: _ctrls[widget.stops[i].stopId]!,
+                          maxLines: 1,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              const SizedBox(height: 16),
+              TransitButton(
+                label: 'Guardar',
+                onPressed: _save,
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

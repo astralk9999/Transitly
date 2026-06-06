@@ -326,9 +326,52 @@ Widget build(BuildContext context, WidgetRef ref) {
                     &#39;Mejorar&#39;,
                     onTap: () =&gt; showRouteFeedbackSheet(context, ref: ref, stop: stop),
                   ),
-                  _actionButton(context, c, Icons.share, &#39;Compartir&#39;),
                   _actionButton(
-                      context, c, Icons.navigation, &#39;Cómo llegar&#39;),
+                    context,
+                    c,
+                    Icons.share,
+                    &#39;Compartir&#39;,
+                    onTap: () async {
+                      final code = stop.officialCode.isNotEmpty
+                          ? &#39; (${stop.officialCode})&#39;
+                          : &#39;&#39;;
+                      final coords =
+                          &#39;${stop.lat.toStringAsFixed(5)},${stop.lng.toStringAsFixed(5)}&#39;;
+                      await Share.share(
+                        &#39;Parada de bus$code: ${stop.name}\n&#39;
+                        &#39;Ubicación: https:&#47;&#47;www.google.com&#47;maps&#47;search&#47;?api=1&amp;query=$coords&#39;,
+                        subject: &#39;Parada ${stop.name}&#39;,
+                      );
+                    },
+                  ),
+                  _actionButton(
+                    context,
+                    c,
+                    Icons.navigation,
+                    &#39;Cómo llegar&#39;,
+                    onTap: () async {
+                      &#47;&#47; Abre la app de mapas del dispositivo con
+                      &#47;&#47; direcciones a la parada. Google Maps URL
+                      &#47;&#47; intent funciona en Android (Google Maps app)
+                      &#47;&#47; y cae a la web en otros casos.
+                      final url = Uri.parse(
+                        &#39;https:&#47;&#47;www.google.com&#47;maps&#47;dir&#47;?api=1&#39;
+                        &#39;&amp;destination=${stop.lat},${stop.lng}&#39;
+                        &#39;&amp;travelmode=walking&#39;,
+                      );
+                      if (await canLaunchUrl(url)) {
+                        await launchUrl(url,
+                            mode: LaunchMode.externalApplication);
+                      } else if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(&#39;No se pudo abrir Maps&#39;),
+                            behavior: SnackBarBehavior.floating,
+                          ),
+                        );
+                      }
+                    },
+                  ),
                 ],
               ),
 

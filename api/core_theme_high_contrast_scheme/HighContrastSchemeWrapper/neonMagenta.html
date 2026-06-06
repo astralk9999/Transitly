@@ -75,7 +75,10 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">@override Color get neonMagenta =&gt; _isDark ? const Color(0xFFFF00FF) : const Color(0xFFAA0055);</code></pre>
+  <pre class="language-dart"><code class="language-dart">@override
+Color get neonMagenta =&gt; _preserveAccent
+    ? _base.neonMagenta
+    : (_isDark ? const Color(0xFFFF00FF) : const Color(0xFFAA0055));</code></pre>
 </section>
 
   </section>

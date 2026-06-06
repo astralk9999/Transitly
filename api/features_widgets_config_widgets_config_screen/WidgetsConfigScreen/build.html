@@ -128,6 +128,12 @@ Widget build(BuildContext context, WidgetRef ref) {
     body: ListView(
       padding: const EdgeInsets.all(16),
       children: [
+        &#47;&#47; Encabezado tipo &quot;Selecciona widget&quot;.
+        Text(
+          &#39;Tipo de widget&#39;,
+          style: TransitTypography.sectionTitle(c.textMid),
+        ),
+        const SizedBox(height: 8),
         _WidgetListItem(
           c: c,
           icon: Icons.directions_bus,
@@ -151,6 +157,13 @@ Widget build(BuildContext context, WidgetRef ref) {
           subtitle: l10n.widgetsConfigNfcDesc,
           onTap: () =&gt; context.push(&#39;&#47;widgets-config&#47;nfc-balance&#39;),
         ),
+        const SizedBox(height: 24),
+        &#47;&#47; Panel de apariencia compartido por los 3 widgets. Antes solo
+        &#47;&#47; aparecía dentro de cada pantalla específica, por lo que el
+        &#47;&#47; usuario no veía los selectores S&#47;M&#47;L + tema + frecuencia +
+        &#47;&#47; &quot;Refrescar ahora&quot; desde el menú principal de widgets.
+        const WidgetAppearancePanel(),
+        const SizedBox(height: 16),
       ],
     ),
   );

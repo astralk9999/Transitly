@@ -52,6 +52,11 @@ class ThemeNotifier extends ChangeNotifier {
   String? _quietHoursEnd;
   bool _notifZoneAlerts = true;
 
+  // Sub P2-#54: configuración de aviso "bus llegando".
+  int _busApproachingMinutesAhead = 10;
+  String _busApproachingActiveStart = '07:00';
+  String _busApproachingActiveEnd = '22:00';
+
   Map<String, Color> _customColors = <String, Color>{};
   static const _customPaletteId = 'custom';
 
@@ -85,6 +90,10 @@ class ThemeNotifier extends ChangeNotifier {
   String? get quietHoursStart => _quietHoursStart;
   String? get quietHoursEnd => _quietHoursEnd;
   bool get notifZoneAlerts => _notifZoneAlerts;
+
+  int get busApproachingMinutesAhead => _busApproachingMinutesAhead;
+  String get busApproachingActiveStart => _busApproachingActiveStart;
+  String get busApproachingActiveEnd => _busApproachingActiveEnd;
 
   Map<String, Color> get customColors => Map.unmodifiable(_customColors);
 
@@ -314,6 +323,28 @@ class ThemeNotifier extends ChangeNotifier {
     unawaited(_persist());
   }
 
+  set busApproachingMinutesAhead(int value) {
+    final v = value.clamp(1, 60);
+    if (_busApproachingMinutesAhead == v) return;
+    _busApproachingMinutesAhead = v;
+    notifyListeners();
+    unawaited(_persist());
+  }
+
+  set busApproachingActiveStart(String value) {
+    if (_busApproachingActiveStart == value) return;
+    _busApproachingActiveStart = value;
+    notifyListeners();
+    unawaited(_persist());
+  }
+
+  set busApproachingActiveEnd(String value) {
+    if (_busApproachingActiveEnd == value) return;
+    _busApproachingActiveEnd = value;
+    notifyListeners();
+    unawaited(_persist());
+  }
+
   void setCustomPalette(Map<String, Color> colors) {
     _customColors = Map.of(colors);
     _paletteId = _customPaletteId;
@@ -524,6 +555,12 @@ class ThemeNotifier extends ChangeNotifier {
         _quietHoursStart = data['quietHoursStart'] as String?;
         _quietHoursEnd = data['quietHoursEnd'] as String?;
         _notifZoneAlerts = _safeBool(data['notifZoneAlerts'], true);
+        _busApproachingMinutesAhead =
+            (data['busApproachingMinutesAhead'] as int?)?.clamp(1, 60) ?? 10;
+        _busApproachingActiveStart =
+            _safeString(data['busApproachingActiveStart'], '07:00');
+        _busApproachingActiveEnd =
+            _safeString(data['busApproachingActiveEnd'], '22:00');
         final rawCustom = data['customColors'] as Map<dynamic, dynamic>?;
         if (rawCustom != null) {
           _customColors = <String, Color>{};
@@ -583,6 +620,9 @@ class ThemeNotifier extends ChangeNotifier {
         'quietHoursStart': _quietHoursStart,
         'quietHoursEnd': _quietHoursEnd,
         'notifZoneAlerts': _notifZoneAlerts,
+        'busApproachingMinutesAhead': _busApproachingMinutesAhead,
+        'busApproachingActiveStart': _busApproachingActiveStart,
+        'busApproachingActiveEnd': _busApproachingActiveEnd,
         'customColors': _customColors.map((k, v) => MapEntry(k, _colorToHex(v))),
       });
     } catch (e) {

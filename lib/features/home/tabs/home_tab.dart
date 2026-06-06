@@ -6,7 +6,6 @@ import 'package:latlong2/latlong.dart';
 
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
-import '../../../data/geo/geo_providers.dart';
 import '../../../data/mock/mock_data_service.dart';
 import '../../../data/mock/mock_realtime_service.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -28,6 +27,7 @@ import '../../../shared/widgets/stagger_list.dart';
 import '../../../shared/widgets/route_card.dart';
 import '../../../shared/widgets/transit_button.dart';
 import '../../../shared/widgets/transit_chip.dart';
+import '../widgets/geo_alerts_banner.dart';
 import '../widgets/home_alert_item.dart';
 import '../widgets/habitual_config_sheet.dart';
 import '../widgets/reference_stop_picker_sheet.dart';
@@ -154,6 +154,10 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                 ),
               ),
               const SizedBox(height: 12),
+              // P2-#55: avisos geo relevantes según ubicación del user.
+              // Solo aparece si hay alguno dentro del radio configurado
+              // por el admin. Sin location o sin avisos → SizedBox.shrink.
+              const GeoAlertsBanner(),
               // Saludo contextual segun hora — solo si hay usuario auth,
               // si es invitado no se saluda con nombre.
               Builder(builder: (_) {

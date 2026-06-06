@@ -59,6 +59,85 @@ class ProfileNotificationsSection extends ConsumerWidget {
             value: notifier.notifBusApproaching,
             onChanged: (v) => notifier.notifBusApproaching = v,
           ),
+          // Sub-config #54: solo aparece si "bus llegando" está ON.
+          if (notifier.notifBusApproaching) ...[
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.only(left: 28),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Avisar cuando el bus esté a '
+                    '${notifier.busApproachingMinutesAhead} min de la parada',
+                    style: TransitTypography.bodySmall(c.textMid),
+                  ),
+                  const SizedBox(height: 4),
+                  SegmentedButton<int>(
+                    segments: const [
+                      ButtonSegment(value: 3, label: Text('3')),
+                      ButtonSegment(value: 5, label: Text('5')),
+                      ButtonSegment(value: 10, label: Text('10')),
+                      ButtonSegment(value: 15, label: Text('15')),
+                      ButtonSegment(value: 20, label: Text('20')),
+                    ],
+                    selected: {notifier.busApproachingMinutesAhead},
+                    onSelectionChanged: (s) {
+                      if (s.isNotEmpty) {
+                        notifier.busApproachingMinutesAhead = s.first;
+                      }
+                    },
+                    style: ButtonStyle(
+                      backgroundColor:
+                          WidgetStateProperty.resolveWith((states) {
+                        if (states.contains(WidgetState.selected)) {
+                          return c.accent;
+                        }
+                        return c.bgRaised;
+                      }),
+                      foregroundColor:
+                          WidgetStateProperty.resolveWith((states) {
+                        if (states.contains(WidgetState.selected)) {
+                          return Colors.white;
+                        }
+                        return c.textMid;
+                      }),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Solo durante estas horas',
+                    style: TransitTypography.bodySmall(c.textMid),
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _ActiveTimePicker(
+                          c: c,
+                          label: 'Desde',
+                          value: notifier.busApproachingActiveStart,
+                          onChanged: (v) =>
+                              notifier.busApproachingActiveStart = v,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _ActiveTimePicker(
+                          c: c,
+                          label: 'Hasta',
+                          value: notifier.busApproachingActiveEnd,
+                          onChanged: (v) =>
+                              notifier.busApproachingActiveEnd = v,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+          ],
           _NotifToggle(
             c: c,
             icon: Icons.lightbulb_outline,
@@ -156,6 +235,59 @@ class _NotifToggle extends StatelessWidget {
           onChanged: onChanged,
         ),
       ],
+    );
+  }
+}
+
+class _ActiveTimePicker extends StatelessWidget {
+  const _ActiveTimePicker({
+    required this.c,
+    required this.label,
+    required this.value,
+    required this.onChanged,
+  });
+  final TransitColorScheme c;
+  final String label;
+  final String value;
+  final ValueChanged<String> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () async {
+        final parts = value.split(':');
+        final initial = TimeOfDay(
+          hour: int.tryParse(parts.firstOrNull ?? '7') ?? 7,
+          minute: int.tryParse(parts.elementAtOrNull(1) ?? '0') ?? 0,
+        );
+        final picked = await showTimePicker(
+          context: context,
+          initialTime: initial,
+        );
+        if (picked != null) {
+          final hh = picked.hour.toString().padLeft(2, '0');
+          final mm = picked.minute.toString().padLeft(2, '0');
+          onChanged('$hh:$mm');
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        decoration: BoxDecoration(
+          color: c.bgInput,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: c.border),
+        ),
+        child: Row(
+          children: [
+            Text(label, style: TransitTypography.bodySmall(c.textLo)),
+            const Spacer(),
+            Text(
+              value,
+              style: TransitTypography.bodyPrimary(c.accent),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -184,15 +184,27 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
                           icon: Icons.map_outlined,
                           isPrimary: false,
                           onPressed: () {
+                            // Posición representativa de la línea para
+                            // centrar el mapa: la primera parada del
+                            // recorrido si existe, o el centro de
+                            // Jerez como fallback. Antes si el routeId
+                            // no devolvía paradas el botón no hacía
+                            // nada (return temprano sin navigate).
                             final stops = mockData.getStopsForRoute(
                                 widget.routeId);
-                            if (stops.isEmpty) return;
-                            final firstStop = stops.first;
+                            final LatLng position;
+                            if (stops.isNotEmpty) {
+                              position = LatLng(
+                                  stops.first.lat, stops.first.lng);
+                            } else {
+                              // Fallback: centro de Jerez.
+                              position = const LatLng(36.6850, -6.1376);
+                            }
                             ref
                                 .read(searchSelectionProvider.notifier)
                                 .state = SearchSelection(
                               id: 'route-${widget.routeId}',
-                              position: LatLng(firstStop.lat, firstStop.lng),
+                              position: position,
                               title: 'Línea ${route.code}',
                               subtitle: route.name,
                               icon: Icons.directions_bus,
@@ -200,10 +212,10 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
                               pushPath: '/route/${widget.routeId}',
                               routeId: widget.routeId,
                             );
-                            // Pop primero para limpiar el stack y luego
-                            // ir al mapa, así no queda /route/${id}
-                            // colgado debajo.
-                            Navigator.of(context).maybePop();
+                            // context.go absoluto al shell del mapa.
+                            // Antes había un maybePop antes del go que
+                            // creaba race condition con go_router y a
+                            // veces no navegaba.
                             context.go('/home/mapa');
                           },
                         ),

@@ -92,14 +92,19 @@ class _HomeShellState extends ConsumerState<HomeShell>
 
   @override
   Widget build(BuildContext context) {
-    // OrientationBuilder fuerza un rebuild síncrono con el cambio de
-    // orientation reportado por el LayoutBuilder de Flutter. Antes el
-    // shell leía MediaQuery.sizeOf(context) y al rotar la primera vez
-    // tras lanzar la app había un frame con valores obsoletos que dejaba
-    // ver brevemente el BottomNav antiguo antes de transformarse al
-    // SideNav. Con OrientationBuilder la transición es 1 frame.
-    return OrientationBuilder(
-      builder: (context, orientation) => _buildContent(context, orientation),
+    // LayoutBuilder reacciona a las constraints reales del frame actual.
+    // OrientationBuilder dependía de MediaQuery, que en la primera
+    // rotación tras lanzar la app llegaba con un frame de desfase y
+    // dejaba ver brevemente el BottomNav antes de transformarse al
+    // SideNav. Con LayoutBuilder, useRail se decide con `constraints`
+    // que SÍ están sincronizadas con el frame.
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final orientation = constraints.maxWidth > constraints.maxHeight
+            ? Orientation.landscape
+            : Orientation.portrait;
+        return _buildContent(context, orientation);
+      },
     );
   }
 

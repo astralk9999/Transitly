@@ -9,6 +9,7 @@ import '../../../core/theme/transit_spacing.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/providers/map_search_provider.dart';
+import '../../../shared/providers/search_selection_provider.dart';
 import '../../../shared/widgets/background_wrapper.dart';
 import '../../../shared/widgets/glass_card.dart';
 import '../../../shared/widgets/gradient_text.dart';
@@ -140,13 +141,34 @@ class _PlaceSearchScreenState extends ConsumerState<PlaceSearchScreen> {
                         context.pop();
                         context.push('/route/${result.route!.id}');
                       case MapSearchResultType.stop:
+                        // Guardamos la selección como marcador antes de
+                        // navegar al mapa. El MapTab lo lee y centra +
+                        // pinta un pin destacado tipo Google Maps.
+                        ref.read(searchSelectionProvider.notifier).state =
+                            SearchSelection(
+                          id: 'stop-${result.stop?.id ?? result.title}',
+                          position: LatLng(result.lat!, result.lng!),
+                          title: result.title,
+                          subtitle: result.subtitle.isEmpty
+                              ? 'Parada'
+                              : result.subtitle,
+                          icon: Icons.location_on,
+                        );
                         context.pop();
-                        context.go('/home/mapa',
-                            extra: LatLng(result.lat!, result.lng!));
+                        context.go('/home/mapa');
                       case MapSearchResultType.place:
+                        ref.read(searchSelectionProvider.notifier).state =
+                            SearchSelection(
+                          id: 'place-${result.title}',
+                          position: LatLng(result.lat!, result.lng!),
+                          title: result.title,
+                          subtitle: result.subtitle.isEmpty
+                              ? 'Lugar'
+                              : result.subtitle,
+                          icon: Icons.place,
+                        );
                         context.pop();
-                        context.go('/home/mapa',
-                            extra: LatLng(result.lat!, result.lng!));
+                        context.go('/home/mapa');
                     }
                   },
                 ),

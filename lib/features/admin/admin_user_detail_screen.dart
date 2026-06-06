@@ -38,15 +38,30 @@ class _AdminUserDetailScreenState
     _load();
   }
 
+  List<Map<String, dynamic>> _operators = [];
+
   Future<void> _load() async {
     if (mounted) setState(() => _error = null);
     try {
       final client = ref.read(supabaseClientProvider);
+      // Operadoras activas en paralelo (las usa el selector de rol).
+      // ignore: unawaited_futures
+      client
+          .from('operators')
+          .select('id, name')
+          .eq('is_active', true)
+          .order('name')
+          .then((rows) {
+        if (mounted) {
+          setState(() => _operators =
+              (rows as List).cast<Map<String, dynamic>>());
+        }
+      });
       final results = await Future.wait([
         client
             .from('profiles')
             .select(
-                'id, display_name, role, reputation_score, reputation_level, routes_created_count, created_at')
+                'id, display_name, role, reputation_score, reputation_level, routes_created_count, created_at, is_banned, banned_at, ban_reason, operator_id')
             .eq('id', widget.userId)
             .maybeSingle(),
         client
@@ -143,8 +158,12 @@ class _AdminUserDetailScreenState
                             children: [
                               _SummaryTab(
                                 profile: _profile!,
+                                operators: _operators,
                                 c: c,
                                 onChanged: _load,
+                                onDeleted: () {
+                                  if (context.mounted) context.pop();
+                                },
                                 client: ref.read(supabaseClientProvider),
                                 userId: widget.userId,
                               ),
@@ -173,6 +192,8 @@ class _UserHeader extends StatelessWidget {
   final Map<String, dynamic> profile;
   final int feedbackCount;
   final TransitColorScheme c;
+
+  bool get _isBanned => profile['is_banned'] == true;
 
   @override
   Widget build(BuildContext context) {
@@ -247,6 +268,35 @@ class _UserHeader extends StatelessWidget {
                             ],
                           ),
                           _rolePill(role),
+                          if (_isBanned)
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFB71C1C)
+                                    .withValues(alpha: 0.2),
+                                borderRadius: BorderRadius.circular(4),
+                                border: Border.all(
+                                    color: const Color(0xFFB71C1C),
+                                    width: 1),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(Icons.block,
+                                      size: 12,
+                                      color: Color(0xFFB71C1C)),
+                                  const SizedBox(width: 4),
+                                  Text('BANEADO',
+                                      style: GoogleFonts.ibmPlexMono(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w700,
+                                        color: const Color(0xFFB71C1C),
+                                        letterSpacing: 1,
+                                      )),
+                                ],
+                              ),
+                            ),
                         ],
                       ),
                     ],
@@ -357,15 +407,19 @@ class _UserHeader extends StatelessWidget {
 class _SummaryTab extends StatelessWidget {
   const _SummaryTab({
     required this.profile,
+    required this.operators,
     required this.c,
     required this.onChanged,
+    required this.onDeleted,
     required this.client,
     required this.userId,
   });
 
   final Map<String, dynamic> profile;
+  final List<Map<String, dynamic>> operators;
   final TransitColorScheme c;
   final VoidCallback onChanged;
+  final VoidCallback onDeleted;
   final dynamic client;
   final String userId;
 
@@ -399,6 +453,18 @@ class _SummaryTab extends StatelessWidget {
     final id = profile['id'] as String;
     final createdAt = profile['created_at'] as String?;
     final rank = ReputationRank.forScore(score);
+    final isBanned = profile['is_banned'] == true;
+    final banReason = profile['ban_reason'] as String?;
+    final bannedAt = profile['banned_at'] as String?;
+    final operatorId = profile['operator_id'] as String?;
+    final operatorName = operatorId == null
+        ? null
+        : operators
+            .firstWhere(
+              (o) => o['id'] == operatorId,
+              orElse: () => <String, dynamic>{'name': '—'},
+            )['name']
+            ?.toString();
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
@@ -414,10 +480,54 @@ class _SummaryTab extends StatelessWidget {
             children: [
               _kv(c, 'ID', '${id.substring(0, 8)}...'),
               _kv(c, 'Rol', _roleLabels[role] ?? role),
+              if (operatorName != null) _kv(c, 'Operadora', operatorName),
               _kv(c, 'Nivel BD', '$level'),
               _kv(c, 'Rango calc', rank.name),
               if (createdAt != null)
                 _kv(c, 'Alta', createdAt.substring(0, 10)),
+              if (isBanned) ...[
+                const SizedBox(height: 6),
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFB71C1C).withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                        color: const Color(0xFFB71C1C)
+                            .withValues(alpha: 0.5)),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(Icons.block,
+                              size: 14, color: Color(0xFFB71C1C)),
+                          const SizedBox(width: 6),
+                          Text('USUARIO BANEADO',
+                              style: GoogleFonts.ibmPlexMono(
+                                fontSize: 11,
+                                color: const Color(0xFFB71C1C),
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 1,
+                              )),
+                        ],
+                      ),
+                      if (bannedAt != null) ...[
+                        const SizedBox(height: 4),
+                        Text('Desde: ${bannedAt.substring(0, 10)}',
+                            style: TransitTypography.bodySmall(c.textMid)),
+                      ],
+                      if (banReason != null && banReason.isNotEmpty) ...[
+                        const SizedBox(height: 2),
+                        Text('Motivo: $banReason',
+                            style:
+                                TransitTypography.bodySmall(c.textHi)),
+                      ],
+                    ],
+                  ),
+                ),
+              ],
             ],
           ),
         ),
@@ -483,6 +593,32 @@ class _SummaryTab extends StatelessWidget {
           c.stateCancelled,
           () => _setScore(context, 0, 0),
           fullWidth: true,
+        ),
+        const SizedBox(height: 20),
+        _sectionHeader(c, Icons.gpp_bad_outlined, 'Estado de cuenta'),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            Expanded(
+              child: _xpButton(
+                c,
+                isBanned ? 'Desbanear' : 'Banear',
+                isBanned ? Icons.lock_open_outlined : Icons.block,
+                isBanned ? c.stateOnTime : const Color(0xFFB71C1C),
+                () => _toggleBan(context, !isBanned),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: _xpButton(
+                c,
+                'Eliminar',
+                Icons.delete_forever,
+                const Color(0xFFB71C1C),
+                () => _confirmDelete(context),
+              ),
+            ),
+          ],
         ),
       ],
     );
@@ -602,10 +738,180 @@ class _SummaryTab extends StatelessWidget {
 
   Future<void> _changeRole(BuildContext context, String role) async {
     final messenger = ScaffoldMessenger.of(context);
+    // driver y operatorAdmin requieren operadora.
+    String? newOperatorId = profile['operator_id'] as String?;
+    if (role == 'driver' || role == 'operatorAdmin') {
+      newOperatorId = await _pickOperator(context, current: newOperatorId);
+      if (newOperatorId == null) return; // canceló
+    } else {
+      // Otros roles → desvinculan la operadora si la tenían.
+      newOperatorId = null;
+    }
     try {
-      await client.from('profiles').update({'role': role}).eq('id', userId);
+      await client.from('profiles').update({
+        'role': role,
+        'operator_id': newOperatorId,
+      }).eq('id', userId);
       messenger.showSnackBar(SnackBar(content: Text('Rol → $role')));
       onChanged();
+    } catch (e) {
+      messenger.showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
+  }
+
+  Future<String?> _pickOperator(BuildContext context,
+      {String? current}) async {
+    if (operators.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('No hay operadoras activas registradas')),
+      );
+      return null;
+    }
+    return showModalBottomSheet<String>(
+      context: context,
+      backgroundColor: c.bgSurface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 32,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: c.border,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text('Selecciona operadora',
+                    style: TransitTypography.heading(c.textHi)),
+                const SizedBox(height: 4),
+                Text(
+                  'Este rol requiere asociar al usuario a una operadora.',
+                  style: TransitTypography.bodySecondary(c.textMid),
+                ),
+                const SizedBox(height: 12),
+                for (final op in operators)
+                  ListTile(
+                    leading: Icon(Icons.apartment,
+                        color: op['id'] == current ? c.accent : c.textMid),
+                    title: Text(op['name'] as String,
+                        style:
+                            TransitTypography.bodyPrimary(c.textHi)),
+                    trailing: op['id'] == current
+                        ? Icon(Icons.check, color: c.accent)
+                        : null,
+                    onTap: () =>
+                        Navigator.of(ctx).pop(op['id'] as String),
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _toggleBan(BuildContext context, bool ban) async {
+    final messenger = ScaffoldMessenger.of(context);
+    String? reason;
+    if (ban) {
+      reason = await showDialog<String>(
+        context: context,
+        builder: (ctx) {
+          final ctrl = TextEditingController();
+          return AlertDialog(
+            title: const Text('Banear usuario'),
+            content: TextField(
+              controller: ctrl,
+              autofocus: true,
+              decoration: const InputDecoration(
+                hintText: 'Motivo (opcional)',
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(null),
+                child: const Text('Cancelar'),
+              ),
+              FilledButton(
+                onPressed: () =>
+                    Navigator.of(ctx).pop(ctrl.text.trim()),
+                style: FilledButton.styleFrom(
+                    backgroundColor: const Color(0xFFB71C1C)),
+                child: const Text('Banear'),
+              ),
+            ],
+          );
+        },
+      );
+      if (reason == null) return;
+    }
+    try {
+      await client.rpc('admin_set_ban', params: {
+        'p_user_id': userId,
+        'p_banned': ban,
+        'p_reason': reason ?? '',
+      });
+      messenger.showSnackBar(SnackBar(
+          content: Text(ban ? 'Usuario baneado' : 'Usuario desbaneado')));
+      onChanged();
+    } catch (e) {
+      messenger.showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
+  }
+
+  Future<void> _confirmDelete(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Eliminar usuario'),
+        content: const Text(
+            'Esta acción no se puede deshacer. Se borrará el perfil, sus rutas, su feedback y demás datos asociados. ¿Continuar?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('Cancelar'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            style: FilledButton.styleFrom(
+                backgroundColor: const Color(0xFFB71C1C)),
+            child: const Text('Eliminar'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      // Encolar borrado de cuenta. La edge function `delete_user` se
+      // encarga del cleanup en auth.users + cascada en public.
+      await client.from('data_deletion_requests').insert({
+        'user_id': userId,
+        'status': 'requested',
+        'requested_at': DateTime.now().toUtc().toIso8601String(),
+      });
+      try {
+        await client.functions.invoke('delete_user',
+            body: {'user_id': userId});
+      } catch (_) {
+        // Si la edge function no está desplegada, la solicitud queda
+        // encolada en data_deletion_requests para procesarse offline.
+      }
+      messenger.showSnackBar(
+          const SnackBar(content: Text('Eliminación solicitada')));
+      onDeleted();
     } catch (e) {
       messenger.showSnackBar(SnackBar(content: Text('Error: $e')));
     }

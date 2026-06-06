@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../models/route_model.dart';
-import 'glass_card.dart';
 
 /// Banner flotante que aparece arriba del mapa cuando el usuario
 /// selecciona una línea (tap sobre una polyline).
@@ -52,11 +51,30 @@ class RouteSelectionBanner extends StatelessWidget {
             ? const SizedBox.shrink(key: ValueKey('hidden'))
             : Padding(
                 key: ValueKey('banner-${route!.id}'),
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-                child: GlassCard(
-                  blur: 16,
-                  fillOpacity: 0.08,
-                  borderRadius: 14,
+                // Padding top 76 deja libre la fila de FABs (search/
+                // filter) que viven en top: 16, height 48. Padding
+                // horizontal 80 evita que las esquinas pisen los FABs
+                // si la pantalla es estrecha (FAB izq + 16 margen).
+                padding: const EdgeInsets.fromLTRB(80, 16, 80, 0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    // bgSurface opaco para legibilidad clara en tema
+                    // light (el GlassCard translúcido sobre mapa claro
+                    // perdía contraste).
+                    color: c.bgSurface,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(
+                      color: route!.routeColor.withValues(alpha: 0.55),
+                      width: 1.5,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.22),
+                        blurRadius: 10,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
                   padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
                   child: Row(
                     children: [
@@ -133,3 +151,4 @@ class RouteSelectionBanner extends StatelessWidget {
     );
   }
 }
+

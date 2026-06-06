@@ -118,8 +118,11 @@ class StopDetailScreen extends ConsumerWidget {
                       final route = mockData.getRouteById(routeId);
                       if (route == null) return const SizedBox.shrink();
 
+                      // Cargamos 5 próximas salidas por línea para que
+                      // el usuario vea no solo la inmediata sino también
+                      // las siguientes. Antes era 1 sola → poca info.
                       final nextDeps =
-                          mockData.getNextDepartures(routeId, stopId, 1);
+                          mockData.getNextDepartures(routeId, stopId, 5);
                       final activeTrip =
                           mockData.getActiveTripForRoute(routeId);
 
@@ -147,6 +150,12 @@ class StopDetailScreen extends ConsumerWidget {
                         }
                       }
 
+                      // Siguientes salidas tras la primera (chips).
+                      final followingTimes = nextDeps
+                          .skip(1)
+                          .map((d) => d.departureTime)
+                          .toList();
+
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 8),
                         child: GestureDetector(
@@ -156,40 +165,63 @@ class StopDetailScreen extends ConsumerWidget {
                                 horizontal: 12, vertical: 10),
                             decoration: BoxDecoration(
                               color: c.bgSurface,
-                              border: Border.all(color: c.border, width: 0.5),
+                              border:
+                                  Border.all(color: c.border, width: 0.5),
                               borderRadius: BorderRadius.circular(6),
                             ),
-                            child: Row(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                TransitChip(route.code,
-                                    color: route.routeColor),
-                                const SizedBox(width: 12),
-                                Text(
-                                  timeStr,
-                                  style: GoogleFonts.ibmPlexMono(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                    color: c.textHi,
-                                  ),
+                                Row(
+                                  children: [
+                                    TransitChip(route.code,
+                                        color: route.routeColor),
+                                    const SizedBox(width: 12),
+                                    Text(
+                                      timeStr,
+                                      style: GoogleFonts.ibmPlexMono(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                        color: c.textHi,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: Text(
+                                        countdownStr,
+                                        style: GoogleFonts.ibmPlexMono(
+                                          fontSize: 14,
+                                          color: isNext
+                                              ? c.accent
+                                              : c.textMid,
+                                        ),
+                                      ),
+                                    ),
+                                    if (activeTrip != null)
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 8),
+                                        child: CapacityIndicator(
+                                            activeTrip.capacity),
+                                      ),
+                                    Icon(Icons.notifications_none,
+                                        size: 20, color: c.textMid),
+                                  ],
                                 ),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Text(
-                                    countdownStr,
-                                    style: GoogleFonts.ibmPlexMono(
-                                      fontSize: 14,
-                                      color: isNext ? c.accent : c.textMid,
+                                if (followingTimes.isNotEmpty) ...[
+                                  const SizedBox(height: 6),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.only(left: 44),
+                                    child: Text(
+                                      'Siguientes: ${followingTimes.join(' · ')}',
+                                      style: GoogleFonts.ibmPlexMono(
+                                        fontSize: 11,
+                                        color: c.textLo,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                if (activeTrip != null)
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 8),
-                                    child: CapacityIndicator(
-                                        activeTrip.capacity),
-                                  ),
-                                Icon(Icons.notifications_none,
-                                    size: 20, color: c.textMid),
+                                ],
                               ],
                             ),
                           ),

@@ -100,6 +100,20 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
         : null;
     final estimatedMinutes = lastTimeMinutes ?? (stopsForRoute.length * 3);
 
+    // Si los routeStops vienen sin `timeFromStartMinutes` (mock o GTFS
+    // sin tiempos), distribuimos el tiempo total proporcionalmente
+    // entre paradas. Antes el timeline mostraba "--:--" en blanco.
+    final stopsCount = sortedRouteStops.length;
+    final perStopMin = stopsCount > 1
+        ? estimatedMinutes / (stopsCount - 1)
+        : estimatedMinutes.toDouble();
+    final routeStopsWithTimes = sortedRouteStops.asMap().entries.map((e) {
+      final rs = e.value;
+      if (rs.timeFromStartMinutes != null) return rs;
+      return rs.copyWith(
+          timeFromStartMinutes: (perStopMin * e.key).round());
+    }).toList();
+
     final frequency = ref.watch(routeFrequencyProvider(widget.routeId));
 
     final padding = ResponsiveScaffold.screenPadding(context);
@@ -134,7 +148,7 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
                             const SizedBox(height: 16),
                           ],
                           RouteDetailTimeline(
-                            sortedRouteStops: sortedRouteStops,
+                            sortedRouteStops: routeStopsWithTimes,
                             stopsMap: stopsMap,
                             transfers: transfers,
                             activeTrip: activeTrip,

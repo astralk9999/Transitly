@@ -441,7 +441,7 @@ class _UserRouteDetailScreenState extends ConsumerState<UserRouteDetailScreen> {
           const SizedBox(width: 8),
           Text(
             title,
-            style: TransitTypography.sectionTitle(c.textHi),
+            style: TransitTypography.subheading(c.textHi),
           ),
         ],
       ),

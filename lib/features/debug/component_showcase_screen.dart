@@ -44,7 +44,7 @@ class ComponentShowcaseScreen extends ConsumerWidget {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text('COMPONENT SHOWCASE',
-            style: TransitTypography.sectionTitle(c.textHi)),
+            style: TransitTypography.subheading(c.textHi)),
         centerTitle: false,
         actions: [
           Row(

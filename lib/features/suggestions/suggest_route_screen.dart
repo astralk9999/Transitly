@@ -63,7 +63,7 @@ class _SuggestRouteScreenState extends ConsumerState<SuggestRouteScreen> {
           onPressed: () => context.pop(),
         ),
         title: Text(l10n.suggestRouteScreenTitle,
-            style: TransitTypography.sectionTitle(c.textHi)),
+            style: TransitTypography.subheading(c.textHi)),
         centerTitle: false,
       ),
       body: Stack(

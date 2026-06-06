@@ -82,7 +82,7 @@ class _WidgetsSettingsScreenState
         ),
         title: Text(
           l10n.widgetsTitle,
-          style: TransitTypography.sectionTitle(c.textHi),
+          style: TransitTypography.subheading(c.textHi),
         ),
         centerTitle: false,
       ),
@@ -309,7 +309,7 @@ class _HowToAddSection extends StatelessWidget {
         return AlertDialog(
           backgroundColor: c.bgSurface,
           title: Text(l10n.widgetsHowToAdd,
-              style: TransitTypography.sectionTitle(c.textHi)),
+              style: TransitTypography.subheading(c.textHi)),
           content: Text(
             isAndroid
                 ? l10n.widgetsInstructionsAndroid

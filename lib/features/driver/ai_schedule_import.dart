@@ -127,7 +127,7 @@ class _AiScheduleImportState extends State<AiScheduleImport> {
                           _times.isEmpty
                               ? l10n.aiScheduleImportNoTimes
                               : l10n.aiScheduleImportDetected(_times.length),
-                          style: TransitTypography.sectionTitle(c.textHi),
+                          style: TransitTypography.subheading(c.textHi),
                         ),
                         const SizedBox(height: TransitSpacing.space12),
                         Wrap(

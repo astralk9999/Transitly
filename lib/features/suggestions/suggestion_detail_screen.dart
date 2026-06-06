@@ -70,7 +70,7 @@ class _SuggestionDetailScreenState
           onPressed: () => context.pop(),
         ),
         title: Text('DETALLE SUGERENCIA',
-            style: TransitTypography.sectionTitle(c.textHi)),
+            style: TransitTypography.subheading(c.textHi)),
         centerTitle: false,
       ),
       body: Stack(
@@ -119,7 +119,7 @@ class _SuggestionDetailScreenState
               Expanded(
                 child: Text(
                   '${s.originText} → ${s.destinationText}',
-                  style: TransitTypography.sectionTitle(c.textHi),
+                  style: TransitTypography.subheading(c.textHi),
                 ),
               ),
             ],

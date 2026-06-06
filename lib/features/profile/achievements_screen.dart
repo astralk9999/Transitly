@@ -76,7 +76,7 @@ class AchievementsScreen extends ConsumerWidget {
           onPressed: () => context.pop(),
         ),
         title: Text(l10n.achievementsTitle,
-            style: TransitTypography.sectionTitle(c.textHi)),
+            style: TransitTypography.subheading(c.textHi)),
         centerTitle: false,
       ),
       body: Stack(

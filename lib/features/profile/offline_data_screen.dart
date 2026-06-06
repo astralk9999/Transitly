@@ -53,8 +53,7 @@ class _OfflineDataScreenState extends ConsumerState<OfflineDataScreen> {
           tooltip: l10n.actionBack,
           onPressed: () => context.pop(),
         ),
-        title: Text(l10n.offlineDataTitle.toUpperCase(),
-            style: TransitTypography.sectionTitle(c.textHi)),
+        title: Text(l10n.offlineDataTitle, style: TransitTypography.subheading(c.textHi)),
         centerTitle: false,
       ),
       body: SafeArea(

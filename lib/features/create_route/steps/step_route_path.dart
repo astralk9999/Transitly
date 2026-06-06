@@ -311,7 +311,7 @@ class _StepRoutePathState extends State<StepRoutePath> {
           ],
           const SizedBox(height: 16),
           if (widget.stops.length >= 2) ...[
-            Text('Segmentos', style: TransitTypography.sectionTitle(colors.textHi)),
+            Text('Segmentos', style: TransitTypography.subheading(colors.textHi)),
             const SizedBox(height: 8),
             for (var i = 0; i < segments.length; i++) ...[
               _SegmentCard(

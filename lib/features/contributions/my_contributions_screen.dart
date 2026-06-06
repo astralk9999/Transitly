@@ -87,8 +87,7 @@ class _MyContributionsScreenState
           tooltip: l10n.actionBack,
           onPressed: () => context.pop(),
         ),
-        title: Text(l10n.myContributionsTitle.toUpperCase(),
-            style: TransitTypography.sectionTitle(c.textHi)),
+        title: Text(l10n.myContributionsTitle, style: TransitTypography.subheading(c.textHi)),
         centerTitle: false,
         actions: [
           IconButton(

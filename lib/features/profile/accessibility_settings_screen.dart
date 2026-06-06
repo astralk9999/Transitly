@@ -39,7 +39,7 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
           onPressed: () => context.pop(),
         ),
         title: Text(AppLocalizations.of(context).accessibilityTitle,
-            style: TransitTypography.sectionTitle(c.textHi)),
+            style: TransitTypography.subheading(c.textHi)),
         centerTitle: false,
       ),
       body: Stack(

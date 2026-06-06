@@ -75,7 +75,7 @@ class _AppearanceScreenState extends ConsumerState<AppearanceScreen>
           onPressed: () => context.pop(),
         ),
         title: Text(l10n.appearanceTitle,
-            style: TransitTypography.sectionTitle(c.textHi)),
+            style: TransitTypography.subheading(c.textHi)),
         centerTitle: false,
       ),
       body: FadeTransition(

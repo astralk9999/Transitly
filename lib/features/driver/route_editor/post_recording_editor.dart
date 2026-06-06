@@ -87,7 +87,7 @@ class _PostRecordingEditorState extends State<PostRecordingEditor> {
           onPressed: () => context.pop(),
         ),
         title: Text('EDITAR GRABACIÓN',
-            style: TransitTypography.sectionTitle(c.textHi)),
+            style: TransitTypography.subheading(c.textHi)),
         centerTitle: false,
       ),
       body: Stack(

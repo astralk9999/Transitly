@@ -72,7 +72,7 @@ class _ManualRouteEditorState extends State<ManualRouteEditor> {
           },
         ),
         title: Text(_titles(context)[_step],
-            style: TransitTypography.sectionTitle(c.textHi)),
+            style: TransitTypography.subheading(c.textHi)),
         centerTitle: false,
       ),
       body: Stack(

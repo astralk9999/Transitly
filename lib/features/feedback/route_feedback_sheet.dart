@@ -97,7 +97,7 @@ class _RouteFeedbackContentState extends ConsumerState<_RouteFeedbackContent> {
                 Expanded(
                   child: Text(
                     AppLocalizations.of(context).routeFeedbackImproveInfo,
-                    style: TransitTypography.sectionTitle(c.textHi),
+                    style: TransitTypography.subheading(c.textHi),
                   ),
                 ),
                 GestureDetector(

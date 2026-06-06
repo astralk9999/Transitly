@@ -124,7 +124,7 @@ class PalettesSection extends ConsumerWidget {
       builder: (ctx) => AlertDialog(
         backgroundColor: c.bgSurface,
         title: Text(l10n.appearanceDeletePaletteConfirm,
-            style: TransitTypography.sectionTitle(c.textHi)),
+            style: TransitTypography.subheading(c.textHi)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),

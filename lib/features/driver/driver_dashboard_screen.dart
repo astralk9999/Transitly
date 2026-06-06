@@ -260,7 +260,7 @@ class _DriverDashboardScreenState extends ConsumerState<DriverDashboardScreen> {
           onPressed: () => context.pop(),
         ),
         title: Text(AppLocalizations.of(context).driverModeLabel,
-            style: TransitTypography.sectionTitle(c.textHi)),
+            style: TransitTypography.subheading(c.textHi)),
       ),
       body: Stack(
         children: [

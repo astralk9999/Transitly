@@ -118,7 +118,7 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
           onPressed: () => context.pop(),
         ),
         title: Text(l10n.feedbackScreenTitleFmt(code),
-            style: TransitTypography.sectionTitle(c.textHi)),
+            style: TransitTypography.subheading(c.textHi)),
         centerTitle: false,
       ),
       body: Stack(

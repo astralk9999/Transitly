@@ -40,7 +40,7 @@ class RecorderPreForm extends StatelessWidget {
           onPressed: () => context.pop(),
         ),
         title: Text('GRABAR RUTA',
-            style: TransitTypography.sectionTitle(c.textHi)),
+            style: TransitTypography.subheading(c.textHi)),
         centerTitle: false,
       ),
       body: Stack(

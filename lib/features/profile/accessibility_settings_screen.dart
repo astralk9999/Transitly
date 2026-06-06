@@ -85,7 +85,7 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
   }
 }
 
-class _ThemeSection extends StatelessWidget {
+class _ThemeSection extends ConsumerWidget {
   const _ThemeSection({
     required this.mode,
     required this.c,
@@ -101,7 +101,9 @@ class _ThemeSection extends StatelessWidget {
   final ValueChanged<bool> onHighContrastChanged;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final preserveAccent = ref.watch(
+        themeNotifierProvider.select((n) => n.hcPreserveAccent));
     return GlassCard(
       blur: 16,
       fillOpacity: 0.05,
@@ -166,6 +168,43 @@ class _ThemeSection extends StatelessWidget {
               ],
             ),
           ),
+          // Sub-toggle "Mantener color de paleta": solo aparece si high
+          // contrast está ON. Si está OFF aquí, el alto contraste usa
+          // amarillo/azul puros. Si está ON, mantiene el accent de tu
+          // paleta personalizada (arregla bug "todo queda amarillo").
+          if (highContrast)
+            Padding(
+              padding: const EdgeInsets.only(top: 12, left: 4),
+              child: Row(
+                children: [
+                  Icon(Icons.subdirectory_arrow_right,
+                      size: 16, color: c.textLo),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          AppLocalizations.of(context).appearanceHcPreserveAccent,
+                          style: TransitTypography.bodySecondary(c.textHi),
+                        ),
+                        Text(
+                          'Si está OFF el alto contraste usa B/N puro.',
+                          style: TransitTypography.bodySmall(c.textLo),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Switch.adaptive(
+                    value: preserveAccent,
+                    activeTrackColor: c.accent,
+                    onChanged: (v) {
+                      ref.read(themeNotifierProvider).hcPreserveAccent = v;
+                    },
+                  ),
+                ],
+              ),
+            ),
         ],
       ),
     );

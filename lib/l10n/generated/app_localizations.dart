@@ -4161,10 +4161,10 @@ abstract class AppLocalizations {
   /// **'No se pudo cargar la lista de usuarios. Inténtalo de nuevo.'**
   String get adminUsersLoadError;
 
-  /// Banner indicating offline region is limited to Jerez in demo version
+  /// Banner indicating offline region coverage
   ///
   /// In es, this message translates to:
-  /// **'Versión demo: solo se puede descargar la región de Jerez de la Frontera. Selección libre de región disponible en próximas versiones.'**
+  /// **'Área disponible: red de COMUJESA en Jerez de la Frontera. La descarga cubre los tiles del operador para uso offline.'**
   String get offlineRegionDemoLimitation;
 
   /// SnackBar message when a route editor draft is saved locally

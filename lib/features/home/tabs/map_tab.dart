@@ -27,8 +27,10 @@ import '../../../shared/providers/is_dark_provider.dart';
 import '../../../shared/providers/user_favorites_provider.dart';
 import '../../../shared/providers/user_location_provider.dart';
 import '../../../shared/widgets/route_card.dart';
+import '../../../shared/providers/search_selection_provider.dart';
 import '../../../shared/widgets/route_selection_banner.dart';
 import '../../../core/map/map_config.dart';
+import '../../map/layers/search_pin_layer.dart';
 import '../../map/map_data_cache.dart';
 import '../../map/map_filter_controller.dart';
 import '../../map/widgets/map_filter_sheet.dart';
@@ -456,6 +458,19 @@ class _MapTabState extends ConsumerState<MapTab>
 
     final currentKey = '${isDark ? "d" : "l"}-$mapStyle';
 
+    // Sub B1.1: cuando el buscador escribe una selección, centramos
+    // el mapa en ella con un zoom alto. El SearchPinLayer pinta el pin.
+    ref.listen(searchSelectionProvider, (prev, next) {
+      if (next != null && prev?.id != next.id) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) return;
+          try {
+            _mapController.move(next.position, 17);
+          } catch (_) {}
+        });
+      }
+    });
+
     ref.listen(centerOnStopIdProvider, (prev, next) {
       if (next != null) {
         final stop = mockData.getStopById(next);
@@ -507,6 +522,16 @@ class _MapTabState extends ConsumerState<MapTab>
                 UserLocationLayer(
                   fix: userLocationFix,
                   isDark: isDark,
+                ),
+              // B1.1: pin destacado tipo Google Maps cuando el usuario
+              // seleccionó algo desde el buscador.
+              if (ref.watch(searchSelectionProvider) != null)
+                SearchPinLayer(
+                  selection: ref.watch(searchSelectionProvider)!,
+                  isDark: isDark,
+                  onClose: () => ref
+                      .read(searchSelectionProvider.notifier)
+                      .state = null,
                 ),
             ],
             routes: filteredRoutes,

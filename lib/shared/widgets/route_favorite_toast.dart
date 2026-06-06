@@ -5,42 +5,87 @@ import 'package:flutter/material.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../models/route_model.dart';
-import 'glass_card.dart';
+import '../models/stop_model.dart';
 
-/// Toast flotante arriba de la pantalla cuando se añade/quita una línea
-/// de favoritos. Reemplaza el SnackBar simple que aparecía abajo y no
-/// reflejaba qué línea era.
+/// Toast flotante arriba de la pantalla cuando se añade/quita una
+/// línea o parada de favoritos. Mismo widget para ambas — solo cambia
+/// el "leading" (badge de línea vs icono de parada).
 ///
-/// Diseño igual que RouteSelectionBanner: glass-card con badge de
-/// color/código + nombre. Anima slide desde arriba + fade, auto-dismiss
-/// a los 2.2 s.
+/// Mantiene la estética de la app (bgSurface opaco + borde de color
+/// + sombra), idéntica al RouteSelectionBanner para coherencia.
+/// Anima slide desde arriba + fade, auto-dismiss a los 2.2 s.
 void showRouteFavoriteToast(
   BuildContext context, {
   required RouteModel route,
   required bool added,
 }) {
+  _show(
+    context,
+    title: route.name.toUpperCase(),
+    added: added,
+    accentColor: route.routeColor,
+    leading: _RouteBadge(route: route),
+  );
+}
+
+void showStopFavoriteToast(
+  BuildContext context, {
+  required StopModel stop,
+  required bool added,
+}) {
+  final isDark = Theme.of(context).brightness == Brightness.dark;
+  final c = TransitColorScheme.of(isDark);
+  _show(
+    context,
+    title: stop.name.toUpperCase(),
+    added: added,
+    accentColor: c.accent,
+    leading: _StopBadge(color: c.accent),
+  );
+}
+
+void _show(
+  BuildContext context, {
+  required String title,
+  required bool added,
+  required Color accentColor,
+  required Widget leading,
+}) {
   final overlay = Overlay.maybeOf(context, rootOverlay: true);
   if (overlay == null) return;
 
-  final entry = _RouteFavoriteToastEntry(route: route, added: added);
+  final entry = _FavoriteToastEntry(
+    title: title,
+    added: added,
+    accentColor: accentColor,
+    leading: leading,
+  );
   overlay.insert(entry.overlayEntry);
-
   Timer(const Duration(milliseconds: 2200), entry.dismiss);
 }
 
-class _RouteFavoriteToastEntry {
-  _RouteFavoriteToastEntry({required this.route, required this.added}) {
+class _FavoriteToastEntry {
+  _FavoriteToastEntry({
+    required this.title,
+    required this.added,
+    required this.accentColor,
+    required this.leading,
+  }) {
     overlayEntry = OverlayEntry(
-      builder: (_) => _RouteFavoriteToast(
-        route: route,
+      builder: (_) => _FavoriteToast(
+        title: title,
         added: added,
+        accentColor: accentColor,
+        leading: leading,
         onDismiss: dismiss,
       ),
     );
   }
 
-  final RouteModel route;
+  final String title;
   final bool added;
+  final Color accentColor;
+  final Widget leading;
   late final OverlayEntry overlayEntry;
   bool _dismissed = false;
 
@@ -51,21 +96,25 @@ class _RouteFavoriteToastEntry {
   }
 }
 
-class _RouteFavoriteToast extends StatefulWidget {
-  const _RouteFavoriteToast({
-    required this.route,
+class _FavoriteToast extends StatefulWidget {
+  const _FavoriteToast({
+    required this.title,
     required this.added,
+    required this.accentColor,
+    required this.leading,
     required this.onDismiss,
   });
-  final RouteModel route;
+  final String title;
   final bool added;
+  final Color accentColor;
+  final Widget leading;
   final VoidCallback onDismiss;
 
   @override
-  State<_RouteFavoriteToast> createState() => _RouteFavoriteToastState();
+  State<_FavoriteToast> createState() => _FavoriteToastState();
 }
 
-class _RouteFavoriteToastState extends State<_RouteFavoriteToast>
+class _FavoriteToastState extends State<_FavoriteToast>
     with SingleTickerProviderStateMixin {
   late final AnimationController _ctrl;
   late final Animation<double> _opacity;
@@ -112,46 +161,34 @@ class _RouteFavoriteToastState extends State<_RouteFavoriteToast>
           child: FadeTransition(
             opacity: _opacity,
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+              // Idéntico al banner de línea seleccionada (B3) para que
+              // ambos elementos compartan posición y no choquen con los
+              // FABs de búsqueda/filtro.
+              padding: const EdgeInsets.fromLTRB(80, 16, 80, 0),
               child: Material(
                 color: Colors.transparent,
                 child: GestureDetector(
                   onTap: widget.onDismiss,
-                  child: GlassCard(
-                    blur: 16,
-                    fillOpacity: 0.08,
-                    borderRadius: 14,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: c.bgSurface,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                        color: widget.accentColor.withValues(alpha: 0.55),
+                        width: 1.5,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.22),
+                          blurRadius: 10,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                    ),
                     padding: const EdgeInsets.fromLTRB(10, 8, 14, 8),
                     child: Row(
                       children: [
-                        // Badge cuadrado con código + color de línea.
-                        Container(
-                          constraints: const BoxConstraints(
-                              minWidth: 52, maxWidth: 72),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 8),
-                          decoration: BoxDecoration(
-                            color: widget.route.routeColor
-                                .withValues(alpha: 0.22),
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              color: widget.route.routeColor
-                                  .withValues(alpha: 0.65),
-                              width: 1.5,
-                            ),
-                          ),
-                          child: Center(
-                            child: FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: Text(
-                                widget.route.code,
-                                style: TransitTypography.routeCode(
-                                    widget.route.routeColor),
-                                maxLines: 1,
-                              ),
-                            ),
-                          ),
-                        ),
+                        widget.leading,
                         const SizedBox(width: 12),
                         Expanded(
                           child: Column(
@@ -159,7 +196,7 @@ class _RouteFavoriteToastState extends State<_RouteFavoriteToast>
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                widget.route.name.toUpperCase(),
+                                widget.title,
                                 style: TransitTypography.routeName(c.textHi),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -198,6 +235,59 @@ class _RouteFavoriteToastState extends State<_RouteFavoriteToast>
           ),
         ),
       ),
+    );
+  }
+}
+
+class _RouteBadge extends StatelessWidget {
+  const _RouteBadge({required this.route});
+  final RouteModel route;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      constraints: const BoxConstraints(minWidth: 52, maxWidth: 72),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      decoration: BoxDecoration(
+        color: route.routeColor.withValues(alpha: 0.22),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: route.routeColor.withValues(alpha: 0.65),
+          width: 1.5,
+        ),
+      ),
+      child: Center(
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
+            route.code,
+            style: TransitTypography.routeCode(route.routeColor),
+            maxLines: 1,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _StopBadge extends StatelessWidget {
+  const _StopBadge({required this.color});
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 44,
+      height: 44,
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.18),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: color.withValues(alpha: 0.65),
+          width: 1.5,
+        ),
+      ),
+      child: Icon(Icons.location_on, color: color, size: 22),
     );
   }
 }

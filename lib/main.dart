@@ -233,7 +233,17 @@ void main() async {
   }
   AppLogger.info('Startup',
       'post-init session userId=${session?.user.id.substring(0, 8) ?? "guest"}');
-  if (session?.user == null) {
+  // Hidratar ThemeNotifier ANTES de runApp para evitar el flash de
+  // tema por defecto cuando hay sesión activa. Antes solo el caso
+  // guest cargaba prefs; con sesión, _initialized quedaba false y la
+  // paleta/fondo se reseteaban a default hasta que el usuario tocara
+  // algo en Apariencia (lo cual disparaba _persist → loadGuestPrefs
+  // como side-effect).
+  if (session?.user != null) {
+    await container
+        .read(themeNotifierProvider)
+        .init(userId: session!.user.id);
+  } else {
     await container.read(themeNotifierProvider).loadGuest();
   }
 

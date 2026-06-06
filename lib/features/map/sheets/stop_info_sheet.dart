@@ -9,6 +9,7 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../../../core/theme/transit_spacing.dart';
 import '../../../shared/models/stop_model.dart';
 import '../../../shared/providers/user_favorites_provider.dart';
+import '../../../shared/widgets/route_favorite_toast.dart';
 
 void showStopInfoSheet(
   BuildContext context, {
@@ -87,17 +88,13 @@ void showStopInfoSheet(
                     container
                         .read(userFavoriteStopsProvider.notifier)
                         .toggleStop(stop.id);
-                    ScaffoldMessenger.of(ctx).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          isFav
-                              ? l10n.stopRemovedFromFavorites
-                              : l10n.stopAddedToFavorites,
-                        ),
-                        duration: const Duration(seconds: 1),
-                      ),
-                    );
                     Navigator.of(ctx).pop();
+                    // Toast unificado — mismo estilo que el de líneas.
+                    showStopFavoriteToast(
+                      context,
+                      stop: stop,
+                      added: !isFav,
+                    );
                   },
                 ),
               ],

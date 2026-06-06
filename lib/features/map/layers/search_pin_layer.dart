@@ -33,12 +33,12 @@ class SearchPinLayer extends StatelessWidget {
           point: selection.position,
           width: 38,
           height: 50,
-          // Alignment(0, 1.5) sube el pin 12.5px sobre bottomCenter.
-          // La punta queda 12.5px por encima del LatLng — más arriba
-          // de lo que la cola del triángulo sugiere, para compensar
-          // que el ojo identifica el "lugar marcado" con la cabeza
-          // del pin, no con la punta.
-          alignment: const Alignment(0, 1.5),
+          // Alignment(0, 0.5) ancla el centro del marker en el LatLng,
+          // de modo que la cabeza del pin queda 25px por encima del
+          // LatLng y la punta 25px por debajo. Es lo que el usuario ha
+          // pedido tras varias iteraciones: el pin se ve "más abajo"
+          // que la posición real, dejando libre el punto exacto.
+          alignment: const Alignment(0, 0.5),
           child: _AnimatedPin(color: color, icon: selection.icon),
         ),
       ],
@@ -104,17 +104,16 @@ class _SearchSelectionFloatingCardState
       return const SizedBox.shrink();
     }
 
-    // Anchor: la tarjeta cuelga justo encima del pin y centrada
-    // horizontalmente sobre el LatLng. Con Alignment(0, 1.5) el pin
-    // se desplaza 12.5px hacia arriba; la tarjeta sigue ese offset.
+    // Tarjeta cuelga del top del pin. Con alignment(0, 0.5) el top del
+    // pin queda en screenY - 0.5*pinHeight = screenY - 25.
     const pinHeight = 50.0;
-    const pinOffsetY = 12.5; // (1.5 - 1) * 25
+    const pinAlignmentY = 0.5;
     const gap = 2.0;
     const cardWidth = 240.0;
 
     final left = screenPoint.x - cardWidth / 2;
     final bottomFromTop =
-        screenPoint.y - pinHeight - gap - pinOffsetY;
+        screenPoint.y - pinAlignmentY * pinHeight - gap;
 
     return Positioned(
       left: left,

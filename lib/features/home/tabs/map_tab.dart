@@ -483,23 +483,22 @@ class _MapTabState extends ConsumerState<MapTab>
             }
           });
         }
-        // Programamos el move tras varios postFrameCallbacks porque el
-        // MapController necesita estar montado y con camera disponible.
-        // Si falla, reintentamos con delays escalonados.
-        void tryMove([int attempt = 0]) {
+        // Doble disparo idempotente:
+        //   1) postFrameCallback — para selecciones cuando el mapa YA
+        //      está montado (caso normal: cambias de tab y vuelves).
+        //   2) delay 500ms — para la PRIMERA selección al abrir la app
+        //      (el mapa puede no haber completado su primer layout aún;
+        //      flutter_map.move() devuelve false silenciosamente si la
+        //      cámara no existe todavía, sin lanzar excepción).
+        // Si la selección cambió entretanto, el id check aborta.
+        final selId = currentSearchSel.id;
+        void doMove() {
           if (!mounted) return;
-          try {
-            _mapController.move(currentSearchSel.position, 17);
-          } catch (_) {
-            if (attempt < 4) {
-              Future.delayed(
-                Duration(milliseconds: 100 * (attempt + 1)),
-                () => tryMove(attempt + 1),
-              );
-            }
-          }
+          if (_handledSearchSelectionId != selId) return;
+          _mapController.move(currentSearchSel.position, 17);
         }
-        WidgetsBinding.instance.addPostFrameCallback((_) => tryMove());
+        WidgetsBinding.instance.addPostFrameCallback((_) => doMove());
+        Future.delayed(const Duration(milliseconds: 500), doMove);
       } else {
         // Selección limpiada → si había una línea seleccionada por
         // búsqueda, también la deseleccionamos.

@@ -7,6 +7,7 @@ import '../../core/theme/transit_typography.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../shared/providers/is_dark_provider.dart';
 import '../../shared/providers/theme_provider.dart';
+import '../../shared/widgets/transit_app_bar.dart';
 import 'widgets/accessibility_section.dart';
 import 'widgets/background_selector.dart';
 import 'widgets/brightness_section.dart';
@@ -63,26 +64,16 @@ class _AppearanceScreenState extends ConsumerState<AppearanceScreen>
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      // Transparente: deja ver el BackgroundWrapper de app.dart (que
-      // renderiza el fondo seleccionado en Apariencia → fondo).
       backgroundColor: Colors.transparent,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: c.textMid),
-          tooltip: 'Volver',
-          onPressed: () => context.pop(),
-        ),
-        title: Text(l10n.appearanceTitle,
-            style: TransitTypography.subheading(c.textHi)),
-        centerTitle: false,
-      ),
-      body: FadeTransition(
+      body: Column(
+        children: [
+          TransitAppBar(title: l10n.appearanceTitle, transparent: true),
+          Expanded(child: FadeTransition(
         opacity: _enterFade,
         child: SlideTransition(
           position: _enterSlide,
           child: SafeArea(
+            top: false,
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -109,6 +100,8 @@ class _AppearanceScreenState extends ConsumerState<AppearanceScreen>
             ),
           ),
         ),
+      )),
+        ],
       ),
     );
   }

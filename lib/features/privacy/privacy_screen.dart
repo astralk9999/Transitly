@@ -18,6 +18,7 @@ import '../../l10n/generated/app_localizations.dart';
 import '../../shared/providers/privacy_consent_provider.dart';
 import '../../shared/widgets/glass_card.dart';
 import '../../shared/widgets/gradient_text.dart';
+import '../../shared/widgets/transit_app_bar.dart';
 
 class PrivacyScreen extends ConsumerStatefulWidget {
   const PrivacyScreen({super.key});
@@ -206,14 +207,13 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen> {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      appBar: AppBar(
-        title: Text(l10n.privacyTitle),
-        backgroundColor: Colors.transparent,
-        foregroundColor: c.textHi,
-        elevation: 0,
-      ),
-      body: SafeArea(
-            child: ResponsivePageWrapper(
+      body: Column(
+        children: [
+          TransitAppBar(title: l10n.privacyTitle, transparent: true),
+          Expanded(
+            child: SafeArea(
+              top: false,
+              child: ResponsivePageWrapper(
               child: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -380,7 +380,10 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen> {
         ],
             ),
             ),
+            ),
           ),
+        ],
+      ),
     );
   }
 }

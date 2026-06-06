@@ -10,6 +10,7 @@ import '../../l10n/generated/app_localizations.dart';
 import '../../shared/providers/is_dark_provider.dart';
 import '../../shared/widgets/glass_card.dart';
 import '../../shared/widgets/gradient_text.dart';
+import '../../shared/widgets/transit_app_bar.dart';
 import '../../shared/widgets/transit_button.dart';
 
 class OfflineDataScreen extends ConsumerStatefulWidget {
@@ -45,19 +46,13 @@ class _OfflineDataScreenState extends ConsumerState<OfflineDataScreen> {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: c.textMid),
-          tooltip: l10n.actionBack,
-          onPressed: () => context.pop(),
-        ),
-        title: Text(l10n.offlineDataTitle, style: TransitTypography.subheading(c.textHi)),
-        centerTitle: false,
-      ),
-      body: SafeArea(
-            child: ListView(
+      body: Column(
+        children: [
+          TransitAppBar(title: l10n.offlineDataTitle, transparent: true),
+          Expanded(
+            child: SafeArea(
+              top: false,
+              child: ListView(
               padding: const EdgeInsets.all(16),
               children: [
                 _StatsCard(data: data, c: c),
@@ -77,7 +72,10 @@ class _OfflineDataScreenState extends ConsumerState<OfflineDataScreen> {
                 ),
               ],
             ),
-          ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

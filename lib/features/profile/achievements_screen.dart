@@ -14,6 +14,7 @@ import '../../l10n/generated/app_localizations.dart';
 import '../../shared/models/achievement_model.dart';
 import '../../shared/models/user_achievement_model.dart';
 import '../../shared/widgets/responsive_scaffold.dart';
+import '../../shared/widgets/transit_app_bar.dart';
 
 const String _logTag = 'AchievementsScreen';
 
@@ -67,19 +68,10 @@ class AchievementsScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: c.textMid),
-          tooltip: l10n.actionBack,
-          onPressed: () => context.pop(),
-        ),
-        title: Text(l10n.achievementsTitle,
-            style: TransitTypography.subheading(c.textHi)),
-        centerTitle: false,
-      ),
-      body: Stack(
+      body: Column(
+        children: [
+          TransitAppBar(title: l10n.achievementsTitle, transparent: true),
+          Expanded(child: Stack(
         children: [
           ContentConstraints(
         child: Builder(builder: (context) {
@@ -182,6 +174,8 @@ class AchievementsScreen extends ConsumerWidget {
       );
         }),
       ),
+        ],
+      )),
         ],
       ),
     );

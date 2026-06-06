@@ -14,6 +14,7 @@ import '../../shared/providers/theme_notifier.dart';
 import '../../shared/providers/theme_provider.dart';
 import '../../shared/widgets/glass_card.dart';
 import '../../shared/widgets/gradient_text.dart';
+import '../../shared/widgets/transit_app_bar.dart';
 
 class AccessibilitySettingsScreen extends ConsumerWidget {
   const AccessibilitySettingsScreen({super.key});
@@ -30,23 +31,16 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: c.textMid),
-          tooltip: AppLocalizations.of(context).actionBack,
-          onPressed: () => context.pop(),
-        ),
-        title: Text(AppLocalizations.of(context).accessibilityTitle,
-            style: TransitTypography.subheading(c.textHi)),
-        centerTitle: false,
-      ),
-      body: Stack(
+      body: Column(
         children: [
-          SafeArea(
-            child: ResponsivePageWrapper(
-              child: ListView(
+          TransitAppBar(
+              title: AppLocalizations.of(context).accessibilityTitle,
+              transparent: true),
+          Expanded(
+            child: SafeArea(
+              top: false,
+              child: ResponsivePageWrapper(
+                child: ListView(
               padding: const EdgeInsets.all(16),
               children: [
                 _ThemeSection(
@@ -72,7 +66,8 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
                       ref.read(localeProvider.notifier).state = l,
                 ),
               ],
-            ),
+                ),
+              ),
             ),
           ),
         ],

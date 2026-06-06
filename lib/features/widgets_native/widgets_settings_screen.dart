@@ -12,6 +12,7 @@ import '../../l10n/generated/app_localizations.dart';
 import '../../shared/providers/is_dark_provider.dart';
 import '../../shared/widgets/glass_card.dart';
 import '../../shared/widgets/gradient_text.dart';
+import '../../shared/widgets/transit_app_bar.dart';
 
 class WidgetsSettingsScreen extends ConsumerStatefulWidget {
   const WidgetsSettingsScreen({super.key});
@@ -72,24 +73,13 @@ class _WidgetsSettingsScreenState
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: c.textMid),
-          tooltip: 'Volver',
-          onPressed: () => context.pop(),
-        ),
-        title: Text(
-          l10n.widgetsTitle,
-          style: TransitTypography.subheading(c.textHi),
-        ),
-        centerTitle: false,
-      ),
-      body: Stack(
-              children: [
-                SafeArea(
-                  child: ListView(
+      body: Column(
+        children: [
+          TransitAppBar(title: l10n.widgetsTitle, transparent: true),
+          Expanded(
+            child: SafeArea(
+              top: false,
+              child: ListView(
                     padding: const EdgeInsets.all(16),
                     children: [
                       _InstructionsSection(
@@ -113,9 +103,10 @@ class _WidgetsSettingsScreenState
                       ),
                     ],
                   ),
-                ),
-              ],
             ),
+          ),
+        ],
+      ),
     );
   }
 }

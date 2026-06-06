@@ -18,6 +18,7 @@ import '../../shared/providers/user_provider.dart';
 import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/reputation_badge.dart';
 import '../../shared/widgets/responsive_scaffold.dart';
+import '../../shared/widgets/transit_app_bar.dart';
 import 'widgets/suggestions_tab_content.dart';
 
 class MyContributionsScreen extends ConsumerStatefulWidget {
@@ -79,27 +80,22 @@ class _MyContributionsScreenState
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: c.textMid),
-          tooltip: l10n.actionBack,
-          onPressed: () => context.pop(),
-        ),
-        title: Text(l10n.myContributionsTitle, style: TransitTypography.subheading(c.textHi)),
-        centerTitle: false,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.refresh, color: c.textMid, size: 20),
-            onPressed: _load,
-            tooltip: l10n.myContributionsReload,
-          ),
-        ],
-      ),
-      body: Stack(
+      body: Column(
         children: [
-          if (_loading)
+          TransitAppBar(
+            title: l10n.myContributionsTitle,
+            transparent: true,
+            actions: [
+              IconButton(
+                icon: Icon(Icons.refresh, color: c.textMid, size: 20),
+                onPressed: _load,
+                tooltip: l10n.myContributionsReload,
+              ),
+            ],
+          ),
+          Expanded(child: Stack(
+            children: [
+              if (_loading)
             const Center(child: CircularProgressIndicator())
           else
             ContentConstraints(
@@ -195,6 +191,8 @@ class _MyContributionsScreenState
                 );
               }),
             ),
+            ],
+          )),
         ],
       ),
     );

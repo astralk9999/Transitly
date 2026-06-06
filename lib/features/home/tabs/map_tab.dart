@@ -28,6 +28,7 @@ import '../../../shared/providers/user_favorites_provider.dart';
 import '../../../shared/providers/user_location_provider.dart';
 import '../../../shared/widgets/route_card.dart';
 import '../../../shared/providers/search_selection_provider.dart';
+import '../../../shared/providers/user_routes_for_map_provider.dart';
 import '../../../shared/widgets/route_selection_banner.dart';
 import '../../../core/map/map_config.dart';
 import '../../map/layers/search_pin_layer.dart';
@@ -452,7 +453,14 @@ class _MapTabState extends ConsumerState<MapTab>
     final mockData = ref.watch(mockDataServiceProvider);
     final realtimeTrips = ref.watch(realtimeTripsProvider);
     final liveTrips = realtimeTrips.valueOrNull ?? mockData.activeTrips;
-    final routes = mockData.routes;
+    // Mezcla: oficiales (mockData) + comunitarias publicadas (Supabase).
+    // Sin esto, las rutas creadas por el usuario nunca aparecían en el
+    // mapa principal aunque se publicasen como "public".
+    final userRoutesAsync = ref.watch(userRoutesForMapProvider);
+    final routes = [
+      ...mockData.routes,
+      ...?userRoutesAsync.valueOrNull,
+    ];
     final filteredRoutes = _filteredRoutes(routes);
     final stops = mockData.stops;
     final cache = ref.watch(mapDataCacheProvider);

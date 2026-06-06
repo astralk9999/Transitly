@@ -44,6 +44,7 @@ import '../../features/offline/offline_regions_screen.dart';
 import '../../features/profile/offline_data_screen.dart';
 import '../../features/profile/planned_trips_screen.dart';
 import '../../features/profile/reputation_screen.dart';
+import '../../features/admin/admin_geo_alerts_screen.dart';
 import '../../features/admin/admin_requests_screen.dart';
 import '../../features/admin/admin_screen.dart';
 import '../../features/admin/admin_users_screen.dart';
@@ -338,6 +339,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/admin/requests',
         pageBuilder: (context, state) =>
             _slide(state, const AdminRequestsScreen()),
+      ),
+      GoRoute(
+        path: '/admin/geo-alerts',
+        pageBuilder: (context, state) =>
+            _slide(state, const AdminGeoAlertsScreen()),
       ),
 
       // ── Operator Admin ──

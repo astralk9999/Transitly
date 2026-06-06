@@ -27,6 +27,7 @@ import '../../../shared/widgets/stagger_list.dart';
 import '../../../shared/widgets/route_card.dart';
 import '../../../shared/widgets/transit_button.dart';
 import '../../../shared/widgets/transit_chip.dart';
+import '../../../shared/widgets/user_avatar.dart';
 import '../widgets/geo_alerts_banner.dart';
 import '../widgets/home_alert_item.dart';
 import '../widgets/habitual_config_sheet.dart';
@@ -140,18 +141,29 @@ class _HomeTabState extends ConsumerState<HomeTab> {
           sliver: SliverList(
             delegate: SliverChildListDelegate([
               // ── Header ──
-              Semantics(
-                header: true,
-                label: l10n.appTitle,
-                child: Text(
-                  l10n.appTitle.toUpperCase(),
-                  style: GoogleFonts.ibmPlexMono(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 2,
-                    color: c.textHi,
+              Row(
+                children: [
+                  Expanded(
+                    child: Semantics(
+                      header: true,
+                      label: l10n.appTitle,
+                      child: Text(
+                        l10n.appTitle.toUpperCase(),
+                        style: GoogleFonts.ibmPlexMono(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 2,
+                          color: c.textHi,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                  // B6: acceso directo al perfil. Antes el usuario solo
+                  // podía llegar al perfil vía el badge "nuevo" de los
+                  // ajustes — ahora un avatar/persona en el header lo
+                  // lleva a /home/perfil sin depender del badge.
+                  _HomeProfileShortcut(c: c),
+                ],
               ),
               const SizedBox(height: 12),
               // P2-#55: avisos geo relevantes según ubicación del user.
@@ -753,5 +765,57 @@ class _HomeTabState extends ConsumerState<HomeTab> {
     final now = DateTime.now();
     final mins = (h * 60 + m) - (now.hour * 60 + now.minute);
     return mins > 0 ? mins : null;
+  }
+}
+
+/// Avatar tappable en el header del home que navega a la pestaña
+/// perfil. Si hay sesión muestra iniciales/foto del usuario; si no,
+/// un icono de persona genérico que actúa como CTA de "Iniciar sesión".
+class _HomeProfileShortcut extends ConsumerWidget {
+  const _HomeProfileShortcut({required this.c});
+  final TransitColorScheme c;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authSt = ref.watch(authStateProvider).valueOrNull;
+    final user = authSt is AuthAuthenticated ? authSt.user : null;
+    final metadata = user?.userMetadata ?? const <String, dynamic>{};
+    final displayName = (metadata['full_name'] as String?) ??
+        (metadata['name'] as String?) ??
+        (metadata['display_name'] as String?) ??
+        user?.email?.split('@').first ??
+        '';
+    final photoUrl = (metadata['avatar_url'] as String?) ??
+        (metadata['picture'] as String?);
+
+    return Semantics(
+      button: true,
+      label: user == null ? 'Iniciar sesión' : 'Abrir perfil',
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => context.go('/home/perfil'),
+        child: user == null
+            ? Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: c.accent.withValues(alpha: 0.12),
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: c.accent.withValues(alpha: 0.4),
+                    width: 0.5,
+                  ),
+                ),
+                child: Icon(Icons.person_outline,
+                    color: c.accent, size: 22),
+              )
+            : UserAvatar(
+                name: displayName,
+                photoUrl: photoUrl,
+                accent: c.accent,
+                size: 40,
+              ),
+      ),
+    );
   }
 }

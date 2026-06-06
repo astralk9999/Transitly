@@ -59,14 +59,9 @@ class _ReputationScreenState extends ConsumerState<ReputationScreen> {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: Stack(
-        children: [
-          Column(
-            children: [
-              TransitAppBar(
-                  title: l10n.reputationTitle, transparent: true),
-              Expanded(
-                child: RefreshIndicator(
+      appBar: TransitAppBar(
+          title: l10n.reputationTitle, transparent: true),
+      body: RefreshIndicator(
                   color: c.accent,
                   onRefresh: () async {
                     ref.invalidate(userProfileFromSupabaseProvider);
@@ -103,11 +98,6 @@ class _ReputationScreenState extends ConsumerState<ReputationScreen> {
                     ],
                   ),
                 ),
-              ),
-            ],
-          ),
-        ],
-      ),
     );
   }
 }

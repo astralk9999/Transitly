@@ -68,10 +68,8 @@ class AchievementsScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: Column(
-        children: [
-          TransitAppBar(title: l10n.achievementsTitle, transparent: true),
-          Expanded(child: Stack(
+      appBar: TransitAppBar(title: l10n.achievementsTitle, transparent: true),
+      body: Stack(
         children: [
           ContentConstraints(
         child: Builder(builder: (context) {
@@ -174,8 +172,6 @@ class AchievementsScreen extends ConsumerWidget {
       );
         }),
       ),
-        ],
-      )),
         ],
       ),
     );

@@ -4,7 +4,7 @@ import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_spacing.dart';
 import '../../core/theme/transit_typography.dart';
 
-class TransitAppBar extends StatelessWidget {
+class TransitAppBar extends StatelessWidget implements PreferredSizeWidget {
   const TransitAppBar({
     super.key,
     this.title,
@@ -21,6 +21,15 @@ class TransitAppBar extends StatelessWidget {
   final bool transparent;
   final List<({String label, VoidCallback onTap})>? breadcrumbs;
   final ({String title, String message})? contextualHelp;
+
+  // PreferredSizeWidget: permite usar el TransitAppBar directamente
+  // en Scaffold.appBar para que Material aplique el padding del
+  // status bar exactamente igual en TODAS las pantallas. Antes había
+  // disparidad porque cada pantalla envolvía el TransitAppBar de
+  // forma distinta (con/sin SafeArea explícito).
+  @override
+  Size get preferredSize =>
+      const Size.fromHeight(TransitSpacing.heightNavBar);
 
   @override
   Widget build(BuildContext context) {

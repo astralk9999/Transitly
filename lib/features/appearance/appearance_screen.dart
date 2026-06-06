@@ -65,10 +65,8 @@ class _AppearanceScreenState extends ConsumerState<AppearanceScreen>
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: Column(
-        children: [
-          TransitAppBar(title: l10n.appearanceTitle, transparent: true),
-          Expanded(child: FadeTransition(
+      appBar: TransitAppBar(title: l10n.appearanceTitle, transparent: true),
+      body: FadeTransition(
         opacity: _enterFade,
         child: SlideTransition(
           position: _enterSlide,
@@ -100,8 +98,6 @@ class _AppearanceScreenState extends ConsumerState<AppearanceScreen>
             ),
           ),
         ),
-      )),
-        ],
       ),
     );
   }

@@ -31,15 +31,10 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: Column(
-        children: [
-          TransitAppBar(
-              title: AppLocalizations.of(context).accessibilityTitle,
-              transparent: true),
-          Expanded(
-            child: SafeArea(
-              top: false,
-              child: ResponsivePageWrapper(
+      appBar: TransitAppBar(
+          title: AppLocalizations.of(context).accessibilityTitle,
+          transparent: true),
+      body: ResponsivePageWrapper(
                 child: ListView(
               padding: const EdgeInsets.all(16),
               children: [
@@ -68,10 +63,6 @@ class AccessibilitySettingsScreen extends ConsumerWidget {
               ],
                 ),
               ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

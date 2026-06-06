@@ -37,18 +37,16 @@ class _OfflineRegionsScreenState extends ConsumerState<OfflineRegionsScreen> {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
+      appBar: TransitAppBar(
+        title: l10n.offlineRegionsTitle,
+        showBack: true,
+        transparent: true,
+      ),
       body: Stack(
         children: [
-          SafeArea(
-            bottom: false,
-            child: Column(
-              children: [
-                TransitAppBar(
-                  title: l10n.offlineRegionsTitle,
-                  showBack: true,
-                  transparent: true,
-                ),
-                Expanded(
+          Column(
+            children: [
+              Expanded(
                   key: ValueKey(_refreshCounter),
                   child: _RegionList(
                     repo: repo,
@@ -62,7 +60,6 @@ class _OfflineRegionsScreenState extends ConsumerState<OfflineRegionsScreen> {
                 ),
               ],
             ),
-          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(

@@ -46,13 +46,8 @@ class _OfflineDataScreenState extends ConsumerState<OfflineDataScreen> {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: Column(
-        children: [
-          TransitAppBar(title: l10n.offlineDataTitle, transparent: true),
-          Expanded(
-            child: SafeArea(
-              top: false,
-              child: ListView(
+      appBar: TransitAppBar(title: l10n.offlineDataTitle, transparent: true),
+      body: ListView(
               padding: const EdgeInsets.all(16),
               children: [
                 _StatsCard(data: data, c: c),
@@ -72,10 +67,6 @@ class _OfflineDataScreenState extends ConsumerState<OfflineDataScreen> {
                 ),
               ],
             ),
-              ),
-            ),
-        ],
-      ),
     );
   }
 }

@@ -20,18 +20,14 @@ class AdminScreen extends ConsumerWidget {
     final c = TransitColorScheme.of(isDark);
 
     return Scaffold(
-      // Transparente para dejar ver el BackgroundWrapper global
-      // (mismo fondo que home/apariencia/widgets, en lugar de un
-      // SmokeBackground propio que rompía la estética).
       backgroundColor: Colors.transparent,
-      body: Stack(
-        children: [
-          Column(
-            children: [
-              const TransitAppBar(
-                  title: 'Administración', transparent: true),
-              Expanded(
-                child: RoleGate(
+      // appBar: deja a Material gestionar el padding del status bar
+      // (consistente con todas las pantallas que también usan este
+      // patrón). Antes el TransitAppBar iba en el body con SafeAreas
+      // distintos por pantalla, lo que daba alturas dispares.
+      appBar: const TransitAppBar(
+          title: 'Administración', transparent: true),
+      body: RoleGate(
                   allow: const [UserRole.admin],
                   fallback: Center(
                     child: Padding(
@@ -102,11 +98,6 @@ class AdminScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ],
-      ),
     );
   }
 }

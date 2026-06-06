@@ -138,16 +138,8 @@ class _NearbyBusesScreenState
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: Stack(
-        children: [
-          Column(
-            children: [
-              TransitAppBar(title: l10n.nearbyBusesTitle, transparent: true),
-              Expanded(child: _buildContent(c, l10n)),
-            ],
-          ),
-        ],
-      ),
+      appBar: TransitAppBar(title: l10n.nearbyBusesTitle, transparent: true),
+      body: _buildContent(c, l10n),
     );
   }
 

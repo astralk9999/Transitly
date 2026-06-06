@@ -80,22 +80,20 @@ class _MyContributionsScreenState
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: Column(
-        children: [
-          TransitAppBar(
-            title: l10n.myContributionsTitle,
-            transparent: true,
-            actions: [
-              IconButton(
-                icon: Icon(Icons.refresh, color: c.textMid, size: 20),
-                onPressed: _load,
-                tooltip: l10n.myContributionsReload,
-              ),
-            ],
+      appBar: TransitAppBar(
+        title: l10n.myContributionsTitle,
+        transparent: true,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.refresh, color: c.textMid, size: 20),
+            onPressed: _load,
+            tooltip: l10n.myContributionsReload,
           ),
-          Expanded(child: Stack(
-            children: [
-              if (_loading)
+        ],
+      ),
+      body: Stack(
+        children: [
+          if (_loading)
             const Center(child: CircularProgressIndicator())
           else
             ContentConstraints(
@@ -191,8 +189,6 @@ class _MyContributionsScreenState
                 );
               }),
             ),
-            ],
-          )),
         ],
       ),
     );

@@ -207,13 +207,8 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen> {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: Column(
-        children: [
-          TransitAppBar(title: l10n.privacyTitle, transparent: true),
-          Expanded(
-            child: SafeArea(
-              top: false,
-              child: ResponsivePageWrapper(
+      appBar: TransitAppBar(title: l10n.privacyTitle, transparent: true),
+      body: ResponsivePageWrapper(
               child: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -380,10 +375,6 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen> {
         ],
             ),
             ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

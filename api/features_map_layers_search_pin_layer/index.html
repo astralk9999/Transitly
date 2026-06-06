@@ -69,9 +69,21 @@
 
 </dt>
 <dd>
-  Sub B1.1: marcador "Google Maps style" para la selección activa del
-buscador. Pin grande con sombra, animado, opcionalmente con tarjeta
-flotante con el título encima.
+  Sub B1.5: SOLO el pin (38×50) como Marker pequeño con bottomCenter.
+Marker pequeño = sin drift al hacer zoom porque la proyección del
+LatLng en píxeles es estable cuando el área del marker es compacta.
+La tarjeta de info se renderiza por separado vía
+<a href="../features_map_layers_search_pin_layer/SearchSelectionFloatingCard-class.html">SearchSelectionFloatingCard</a> como overlay del Stack del MapTab.
+</dd>
+
+          <dt id="SearchSelectionFloatingCard">
+  <span class="name "><a href="../features_map_layers_search_pin_layer/SearchSelectionFloatingCard-class.html">SearchSelectionFloatingCard</a></span> 
+
+</dt>
+<dd>
+  Tarjeta flotante posicionada con <code>latLngToScreenPoint</code> para que sea
+pixel-perfect y estable durante zoom/move. Se reconstruye cada vez
+que el mapa emite un evento (zoom in/out, pan, rotate).
 </dd>
 
       </dl>

@@ -111,43 +111,14 @@ and</li>
 Widget build(BuildContext context) {
   final c = TransitColorScheme.of(isDark);
   final color = selection.color ?? c.accent;
-  final hasDetail = selection.pushPath != null;
-
-  &#47;&#47; DOS markers separados (cada uno con su tamaño compacto) es la
-  &#47;&#47; forma estable de evitar el jitter al hacer zoom: cuando un Marker
-  &#47;&#47; es grande respecto al pin, flutter_map redondea su posición en
-  &#47;&#47; pantalla de forma inconsistente entre zooms y arrastra el pin
-  &#47;&#47; 1-2px en cada operación. Markers pequeños + alignment exacto =
-  &#47;&#47; estable.
   return MarkerLayer(
     markers: [
-      &#47;&#47; ── 1. Pin (38×50, bottomCenter) ──
-      &#47;&#47; La punta del pin coincide EXACTAMENTE con el LatLng. Como el
-      &#47;&#47; marker tiene el tamaño justo del pin, no hay drift.
       Marker(
         point: selection.position,
         width: 38,
         height: 50,
         alignment: Alignment.bottomCenter,
         child: _AnimatedPin(color: color, icon: selection.icon),
-      ),
-      &#47;&#47; ── 2. Tarjeta de info (con offset arriba) ──
-      &#47;&#47; alignment.y = 2.3 con height 80 coloca el bottom del marker
-      &#47;&#47; 52px por encima del LatLng (sobre el pin). Cálculo:
-      &#47;&#47;   bottom_marker = LatLng - (2.3-1)*40 = LatLng - 52
-      Marker(
-        point: selection.position,
-        width: 260,
-        height: 80,
-        alignment: const Alignment(0, 2.3),
-        child: _InfoCard(
-          c: c,
-          color: color,
-          selection: selection,
-          hasDetail: hasDetail,
-          onClose: onClose,
-          onOpenDetail: onOpenDetail,
-        ),
       ),
     ],
   );

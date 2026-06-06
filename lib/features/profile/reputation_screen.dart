@@ -52,8 +52,11 @@ class _ReputationScreenState extends ConsumerState<ReputationScreen> {
     final isMaxRank = nextIdx >= ReputationRank.values.length;
     final nextMin = isMaxRank ? rank.minScore : ReputationRank.values[nextIdx].minScore;
     final rangeStart = rank.minScore;
-    final rangeSize = nextMin - rangeStart;
-    final progress = rangeSize > 0 ? (score - rangeStart) / rangeSize : 1.0;
+    // Progreso absoluto sobre el siguiente umbral (50/200 = 25%).
+    // Antes era relativo al rango actual (50-50)/(200-50) = 0%, lo cual
+    // dejaba la barra vacía justo al entrar al rango y se interpretaba
+    // como "no he avanzado nada".
+    final progress = isMaxRank ? 1.0 : (score / nextMin).clamp(0.0, 1.0);
 
     return Scaffold(
       backgroundColor: c.bgRoot,

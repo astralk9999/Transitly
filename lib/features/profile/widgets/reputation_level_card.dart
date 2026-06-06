@@ -65,18 +65,10 @@ class ReputationLevelCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          // Mínimo 3% visible cuando ya estás dentro del rango: en el
-          // límite exacto (score == rangeStart) progress era 0 y la
-          // barra quedaba completamente vacía, dando la impresión de
-          // no haber avanzado nada.
           ClipRRect(
             borderRadius: BorderRadius.circular(4),
             child: LinearProgressIndicator(
-              value: isMaxRank
-                  ? 1.0
-                  : progress.clamp(0.0, 1.0) < 0.03
-                      ? 0.03
-                      : progress.clamp(0.0, 1.0),
+              value: progress.clamp(0.0, 1.0),
               minHeight: 6,
               backgroundColor: c.bgSurface,
               valueColor: AlwaysStoppedAnimation(rank.color),

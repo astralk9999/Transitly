@@ -134,12 +134,16 @@ class ProfileHeaderCard extends ConsumerWidget {
                 ),
               ),
               // Badge compacto (icono + número, sin label del rango)
-              // para no comerle ancho al email/nombre.
+              // para no comerle ancho al email/nombre. SizedBox a su
+              // izquierda separa el badge del bloque de texto y a su
+              // derecha 8 lo despega del borde de la tarjeta.
+              const SizedBox(width: 8),
               ReputationBadge(
                 user.reputationLevel,
                 score: user.reputationScore,
                 compact: true,
               ),
+              const SizedBox(width: 8),
             ],
           ),
         ),

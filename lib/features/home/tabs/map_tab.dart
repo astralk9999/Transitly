@@ -563,22 +563,14 @@ class _MapTabState extends ConsumerState<MapTab>
                   fix: userLocationFix,
                   isDark: isDark,
                 ),
-              // B1.1: pin destacado tipo Google Maps cuando el usuario
-              // seleccionó algo desde el buscador. Si la selección tiene
-              // pushPath, la tarjeta del pin muestra "Ver detalles".
+              // B1.5: pin destacado como Marker pequeño 38x50, estable
+              // durante zoom. La tarjeta de info se renderiza como
+              // overlay externo (SearchSelectionFloatingCard) en el
+              // Stack del body para evitar el drift de markers grandes.
               if (ref.watch(searchSelectionProvider) != null)
                 SearchPinLayer(
                   selection: ref.watch(searchSelectionProvider)!,
                   isDark: isDark,
-                  onClose: () => ref
-                      .read(searchSelectionProvider.notifier)
-                      .state = null,
-                  onOpenDetail: () {
-                    final sel = ref.read(searchSelectionProvider);
-                    if (sel?.pushPath != null) {
-                      context.push(sel!.pushPath!);
-                    }
-                  },
                 ),
             ],
             routes: filteredRoutes,
@@ -604,6 +596,24 @@ class _MapTabState extends ConsumerState<MapTab>
             ),
             overlayWidgets: const [],
           ),
+          // B1.5: tarjeta flotante de la selección de búsqueda. Se
+          // posiciona con latLngToScreenPoint y reacciona al
+          // mapEventStream para seguir al pin durante zoom/pan.
+          if (currentSearchSel != null)
+            SearchSelectionFloatingCard(
+              selection: currentSearchSel,
+              mapController: _mapController,
+              isDark: isDark,
+              onClose: () => ref
+                  .read(searchSelectionProvider.notifier)
+                  .state = null,
+              onOpenDetail: () {
+                final sel = ref.read(searchSelectionProvider);
+                if (sel?.pushPath != null) {
+                  context.push(sel!.pushPath!);
+                }
+              },
+            ),
           // Banner flotante "línea seleccionada" arriba del mapa.
           // Sustituye al SnackBar feo que aparecía abajo tapando el
           // desplegable de líneas.

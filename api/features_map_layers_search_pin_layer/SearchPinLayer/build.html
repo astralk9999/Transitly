@@ -117,10 +117,12 @@ Widget build(BuildContext context) {
         point: selection.position,
         width: 38,
         height: 50,
-        &#47;&#47; bottomCenter pone la PUNTA del triángulo exactamente en el
-        &#47;&#47; LatLng (convención Google Maps). El painter dibuja la
-        &#47;&#47; punta en y = size.height, así que coincide píxel a píxel.
-        alignment: Alignment.bottomCenter,
+        &#47;&#47; Alignment(0, 1.5) sube el pin 12.5px sobre bottomCenter.
+        &#47;&#47; La punta queda 12.5px por encima del LatLng — más arriba
+        &#47;&#47; de lo que la cola del triángulo sugiere, para compensar
+        &#47;&#47; que el ojo identifica el &quot;lugar marcado&quot; con la cabeza
+        &#47;&#47; del pin, no con la punta.
+        alignment: const Alignment(0, 1.5),
         child: _AnimatedPin(color: color, icon: selection.icon),
       ),
     ],

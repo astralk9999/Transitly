@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/utils/app_logger.dart';
@@ -279,9 +280,10 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> {
                         borderRadius: 12,
                         padding: EdgeInsets.zero,
                         child: ListTile(
-                          // Tap → sheet con acciones (cambiar rol,
-                          // sumar/restar XP, banear...).
-                          onTap: () => _showUserSheet(user, l10n, c),
+                          // Tap → pantalla detalle con tabs
+                          // (Resumen, Rutas, Feedback) y acciones.
+                          onTap: () =>
+                              context.push('/admin/users/${user['id']}'),
                           contentPadding: const EdgeInsets.symmetric(
                               horizontal: 12, vertical: 8),
                           leading: CircleAvatar(

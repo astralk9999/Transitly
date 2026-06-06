@@ -47,6 +47,7 @@ import '../../features/profile/reputation_screen.dart';
 import '../../features/admin/admin_geo_alerts_screen.dart';
 import '../../features/admin/admin_requests_screen.dart';
 import '../../features/admin/admin_screen.dart';
+import '../../features/admin/admin_user_detail_screen.dart';
 import '../../features/admin/admin_users_screen.dart';
 import '../../features/nearby_buses/nearby_buses_screen.dart';
 import '../../features/admin/admin_operators_screen.dart';
@@ -324,6 +325,13 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/admin/users',
         pageBuilder: (context, state) =>
             _slide(state, const AdminUsersScreen()),
+      ),
+      GoRoute(
+        path: '/admin/users/:userId',
+        pageBuilder: (context, state) => _slide(
+          state,
+          AdminUserDetailScreen(userId: state.pathParameters['userId']!),
+        ),
       ),
       GoRoute(
         path: '/admin/operators',

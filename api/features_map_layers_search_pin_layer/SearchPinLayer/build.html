@@ -117,11 +117,10 @@ Widget build(BuildContext context) {
         point: selection.position,
         width: 38,
         height: 50,
-        &#47;&#47; Alignment(0, 1.8) sube el pin ~20px respecto a
-        &#47;&#47; bottomCenter. La punta del triángulo queda 20px ENCIMA del
-        &#47;&#47; LatLng. Compensa la percepción visual de que el &quot;punto que
-        &#47;&#47; marca&quot; es el centro del círculo, no el extremo de la cola.
-        alignment: const Alignment(0, 1.8),
+        &#47;&#47; bottomCenter pone la PUNTA del triángulo exactamente en el
+        &#47;&#47; LatLng (convención Google Maps). El painter dibuja la
+        &#47;&#47; punta en y = size.height, así que coincide píxel a píxel.
+        alignment: Alignment.bottomCenter,
         child: _AnimatedPin(color: color, icon: selection.icon),
       ),
     ],

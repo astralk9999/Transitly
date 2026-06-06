@@ -9,6 +9,8 @@ import '../../data/mock/mock_data_service.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../shared/providers/home_habitual_config_provider.dart';
 import '../../shared/providers/user_favorites_provider.dart';
+import '../../shared/providers/widget_appearance_config_provider.dart';
+import '../../shared/widgets/background_wrapper.dart';
 import '../../shared/widgets/glass_card.dart';
 import 'widgets/widget_appearance_panel.dart';
 
@@ -35,8 +37,11 @@ class _WidgetsConfigScreenState extends ConsumerState<WidgetsConfigScreen> {
     final c = TransitColorScheme.of(isDark);
     final l10n = AppLocalizations.of(context);
 
-    return Scaffold(
-      backgroundColor: c.bgRoot,
+    return BackgroundWrapper(
+      child: Scaffold(
+      // Transparente para que se vea el BackgroundWrapper externo
+      // (fondo configurado en Apariencia: smoke, aurora, balatro, etc).
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -148,6 +153,7 @@ class _WidgetsConfigScreenState extends ConsumerState<WidgetsConfigScreen> {
           ],
         ),
       ),
+      ),
     );
   }
 }
@@ -156,6 +162,99 @@ class _WidgetsConfigScreenState extends ConsumerState<WidgetsConfigScreen> {
 // Mockups visuales de cada widget (estilo widget Android real).
 // ---------------------------------------------------------------------------
 
+/// Resolver de paleta del MOCKUP según la opción del usuario en el panel.
+/// Cuando cambia el `WidgetTheme`, el preview cambia de fondo/texto.
+class _MockupPalette {
+  const _MockupPalette({
+    required this.bg,
+    required this.textHi,
+    required this.textMid,
+    required this.textLo,
+  });
+  final Color bg;
+  final Color textHi;
+  final Color textMid;
+  final Color textLo;
+
+  static _MockupPalette resolve(
+      WidgetTheme theme, bool systemIsDark, Color accent) {
+    bool dark;
+    switch (theme) {
+      case WidgetTheme.light:
+        dark = false;
+      case WidgetTheme.dark:
+        dark = true;
+      case WidgetTheme.auto:
+        dark = systemIsDark;
+      case WidgetTheme.brand:
+        return _MockupPalette(
+          bg: accent,
+          textHi: Colors.white,
+          textMid: Colors.white.withValues(alpha: 0.85),
+          textLo: Colors.white.withValues(alpha: 0.7),
+        );
+    }
+    return dark
+        ? const _MockupPalette(
+            bg: Color(0xFF14142A),
+            textHi: Color(0xFFF0F0FA),
+            textMid: Color(0xFFAAAAB8),
+            textLo: Color(0xFF8888A0),
+          )
+        : const _MockupPalette(
+            bg: Color(0xFFFAFAFA),
+            textHi: Color(0xFF14142A),
+            textMid: Color(0xFF555575),
+            textLo: Color(0xFF8888A0),
+          );
+  }
+}
+
+/// Dimensiones del mockup según la opción de tamaño.
+class _MockupDimens {
+  const _MockupDimens({
+    required this.padding,
+    required this.height,
+    required this.badgeSize,
+    required this.fontEta,
+    required this.maxTimes,
+  });
+  final double padding;
+  final double? height;
+  final double badgeSize;
+  final double fontEta;
+  final int maxTimes;
+
+  static _MockupDimens of(WidgetSize size) {
+    switch (size) {
+      case WidgetSize.small:
+        return const _MockupDimens(
+          padding: 10,
+          height: 80,
+          badgeSize: 40,
+          fontEta: 18,
+          maxTimes: 1,
+        );
+      case WidgetSize.medium:
+        return const _MockupDimens(
+          padding: 14,
+          height: null,
+          badgeSize: 56,
+          fontEta: 26,
+          maxTimes: 3,
+        );
+      case WidgetSize.large:
+        return const _MockupDimens(
+          padding: 18,
+          height: null,
+          badgeSize: 64,
+          fontEta: 32,
+          maxTimes: 5,
+        );
+    }
+  }
+}
+
 class _WidgetMockup extends ConsumerWidget {
   const _WidgetMockup({required this.type, required this.c});
   final _WidgetType type;
@@ -163,6 +262,13 @@ class _WidgetMockup extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // El preview reacciona en directo al panel de apariencia.
+    final cfg = ref.watch(widgetAppearanceConfigProvider);
+    final systemIsDark = Theme.of(context).brightness == Brightness.dark;
+    final palette =
+        _MockupPalette.resolve(cfg.theme, systemIsDark, c.accent);
+    final dimens = _MockupDimens.of(cfg.size);
+
     // Marco "fondo de home" simulado para enmarcar el mockup.
     return Container(
       padding: const EdgeInsets.all(16),
@@ -178,20 +284,96 @@ class _WidgetMockup extends ConsumerWidget {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: c.border, width: 1),
       ),
-      child: Center(
-        child: switch (type) {
-          _WidgetType.nextBus => _NextBusMockup(c: c),
-          _WidgetType.myLine => _MyLineMockup(c: c),
-          _WidgetType.nfcBalance => _NfcBalanceMockup(c: c),
-        },
+      child: Column(
+        children: [
+          Center(
+            child: switch (type) {
+              _WidgetType.nextBus => _NextBusMockup(
+                  c: c, palette: palette, dimens: dimens),
+              _WidgetType.myLine => _MyLineMockup(
+                  c: c, palette: palette, dimens: dimens),
+              _WidgetType.nfcBalance => _NfcBalanceMockup(
+                  palette: palette, dimens: dimens, accent: c.accent),
+            },
+          ),
+          const SizedBox(height: 10),
+          // Etiqueta con la config activa para que el usuario sepa qué
+          // tamaño / tema está viendo en el preview.
+          Wrap(
+            spacing: 8,
+            runSpacing: 6,
+            alignment: WrapAlignment.center,
+            children: [
+              _ConfigBadge(
+                  c: c,
+                  icon: Icons.aspect_ratio,
+                  text: switch (cfg.size) {
+                    WidgetSize.small => 'Tamaño S',
+                    WidgetSize.medium => 'Tamaño M',
+                    WidgetSize.large => 'Tamaño L',
+                  }),
+              _ConfigBadge(
+                  c: c,
+                  icon: Icons.palette_outlined,
+                  text: switch (cfg.theme) {
+                    WidgetTheme.auto => 'Tema auto',
+                    WidgetTheme.light => 'Tema claro',
+                    WidgetTheme.dark => 'Tema oscuro',
+                    WidgetTheme.brand => 'Tema marca',
+                  }),
+              _ConfigBadge(
+                  c: c,
+                  icon: Icons.update,
+                  text: 'Refresco ${cfg.refreshMinutes} min'),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ConfigBadge extends StatelessWidget {
+  const _ConfigBadge({required this.c, required this.icon, required this.text});
+  final TransitColorScheme c;
+  final IconData icon;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: c.accent.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: c.accent.withValues(alpha: 0.3), width: 0.5),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 12, color: c.accent),
+          const SizedBox(width: 4),
+          Text(
+            text,
+            style: TransitTypography.bodySmall(c.accent).copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
       ),
     );
   }
 }
 
 class _NextBusMockup extends ConsumerWidget {
-  const _NextBusMockup({required this.c});
+  const _NextBusMockup({
+    required this.c,
+    required this.palette,
+    required this.dimens,
+  });
   final TransitColorScheme c;
+  final _MockupPalette palette;
+  final _MockupDimens dimens;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -202,13 +384,13 @@ class _NextBusMockup extends ConsumerWidget {
     Color routeColor = c.accent;
     String etaText = '5 min';
     String stopName = 'Plaza del Caballo';
-    String summary = 'Luego en 12, 21 min';
+    List<String> followingTimes = ['12 min', '21 min'];
 
     if (habitual.isConfigured) {
       final route = mockData.getRouteById(habitual.routeId!);
       final stop = mockData.getStopById(habitual.stopId!);
       final deps = mockData.getNextDepartures(
-          habitual.routeId!, habitual.stopId!, 3);
+          habitual.routeId!, habitual.stopId!, 5);
       if (route != null) {
         routeCode = route.code;
         routeColor = route.routeColor;
@@ -223,24 +405,24 @@ class _NextBusMockup extends ConsumerWidget {
         var eta = depMin - nowMin;
         if (eta < 0) eta += 24 * 60;
         etaText = eta < 1 ? 'Ahora' : '$eta min';
-        if (deps.length > 1) {
-          summary = 'Luego ${deps.skip(1).map((d) => d.departureTime).join(', ')}';
-        }
+        followingTimes =
+            deps.skip(1).map((d) => d.departureTime).toList();
       }
     }
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(14),
+      height: dimens.height,
+      padding: EdgeInsets.all(dimens.padding),
       decoration: BoxDecoration(
-        color: const Color(0xFF14142A),
+        color: palette.bg,
         borderRadius: BorderRadius.circular(14),
       ),
       child: Row(
         children: [
           Container(
-            width: 56,
-            height: 56,
+            width: dimens.badgeSize,
+            height: dimens.badgeSize,
             decoration: BoxDecoration(
               color: routeColor,
               borderRadius: BorderRadius.circular(12),
@@ -250,25 +432,27 @@ class _NextBusMockup extends ConsumerWidget {
               fit: BoxFit.scaleDown,
               child: Text(
                 routeCode,
-                style: const TextStyle(
+                style: TextStyle(
                   color: Colors.white,
-                  fontSize: 22,
+                  fontSize: dimens.badgeSize * 0.4,
                   fontWeight: FontWeight.w800,
                 ),
               ),
             ),
           ),
-          const SizedBox(width: 14),
+          SizedBox(width: dimens.padding),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   etaText,
                   style: GoogleFonts.ibmPlexMono(
-                    fontSize: 26,
+                    fontSize: dimens.fontEta,
                     fontWeight: FontWeight.w800,
-                    color: const Color(0xFFF0F0FA),
+                    color: palette.textHi,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -276,22 +460,26 @@ class _NextBusMockup extends ConsumerWidget {
                   stopName.toUpperCase(),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 11,
-                    color: Color(0xFFAAAAB8),
+                    color: palette.textMid,
                     letterSpacing: 1,
                   ),
                 ),
-                const SizedBox(height: 2),
-                Text(
-                  summary,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 11,
-                    color: Color(0xFF8888A0),
+                // Solo el size M y L muestran las siguientes salidas.
+                // El size S es compacto y solo ETA + parada.
+                if (dimens.maxTimes >= 2 && followingTimes.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    'Luego ${followingTimes.take(dimens.maxTimes - 1).join(', ')}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: palette.textLo,
+                    ),
                   ),
-                ),
+                ],
               ],
             ),
           ),
@@ -302,8 +490,14 @@ class _NextBusMockup extends ConsumerWidget {
 }
 
 class _MyLineMockup extends ConsumerWidget {
-  const _MyLineMockup({required this.c});
+  const _MyLineMockup({
+    required this.c,
+    required this.palette,
+    required this.dimens,
+  });
   final TransitColorScheme c;
+  final _MockupPalette palette;
+  final _MockupDimens dimens;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -313,7 +507,7 @@ class _MyLineMockup extends ConsumerWidget {
     String routeCode = '12';
     Color routeColor = c.accent;
     String routeName = 'Línea favorita';
-    List<String> times = ['08:15', '08:30', '08:45'];
+    List<String> times = ['08:15', '08:30', '08:45', '09:00', '09:15'];
 
     if (favs.isNotEmpty) {
       final r = mockData.getRouteById(favs.first);
@@ -323,7 +517,7 @@ class _MyLineMockup extends ConsumerWidget {
         routeName = r.name;
         final stops = mockData.getStopsForRoute(r.id);
         if (stops.isNotEmpty) {
-          final deps = mockData.getNextDepartures(r.id, stops.first.id, 3);
+          final deps = mockData.getNextDepartures(r.id, stops.first.id, 5);
           if (deps.isNotEmpty) {
             times = deps.map((d) => d.departureTime).toList();
           }
@@ -333,19 +527,21 @@ class _MyLineMockup extends ConsumerWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(14),
+      height: dimens.height,
+      padding: EdgeInsets.all(dimens.padding),
       decoration: BoxDecoration(
-        color: const Color(0xFF14142A),
+        color: palette.bg,
         borderRadius: BorderRadius.circular(14),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             children: [
               Container(
-                width: 44,
-                height: 44,
+                width: dimens.badgeSize * 0.75,
+                height: dimens.badgeSize * 0.75,
                 decoration: BoxDecoration(
                   color: routeColor,
                   borderRadius: BorderRadius.circular(10),
@@ -355,9 +551,9 @@ class _MyLineMockup extends ConsumerWidget {
                   fit: BoxFit.scaleDown,
                   child: Text(
                     routeCode,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.white,
-                      fontSize: 18,
+                      fontSize: dimens.badgeSize * 0.32,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -369,8 +565,8 @@ class _MyLineMockup extends ConsumerWidget {
                   routeName.toUpperCase(),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Color(0xFFF0F0FA),
+                  style: TextStyle(
+                    color: palette.textHi,
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
                   ),
@@ -378,8 +574,8 @@ class _MyLineMockup extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: 12),
-          ...times.take(3).map(
+          const SizedBox(height: 8),
+          ...times.take(dimens.maxTimes).map(
                 (t) => Padding(
                   padding: const EdgeInsets.only(bottom: 4),
                   child: Row(
@@ -398,7 +594,7 @@ class _MyLineMockup extends ConsumerWidget {
                         style: GoogleFonts.ibmPlexMono(
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
-                          color: const Color(0xFFCFCFE4),
+                          color: palette.textMid,
                         ),
                       ),
                     ],
@@ -412,29 +608,38 @@ class _MyLineMockup extends ConsumerWidget {
 }
 
 class _NfcBalanceMockup extends StatelessWidget {
-  const _NfcBalanceMockup({required this.c});
-  final TransitColorScheme c;
+  const _NfcBalanceMockup({
+    required this.palette,
+    required this.dimens,
+    required this.accent,
+  });
+  final _MockupPalette palette;
+  final _MockupDimens dimens;
+  final Color accent;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(14),
+      height: dimens.height,
+      padding: EdgeInsets.all(dimens.padding),
       decoration: BoxDecoration(
-        color: const Color(0xFF14142A),
+        color: palette.bg,
         borderRadius: BorderRadius.circular(14),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Row(
             children: [
-              Icon(Icons.credit_card, color: c.accent, size: 22),
+              Icon(Icons.credit_card, color: accent, size: 22),
               const SizedBox(width: 8),
-              const Text(
+              Text(
                 'TARJETA',
                 style: TextStyle(
-                  color: Color(0xFFAAAAB8),
+                  color: palette.textMid,
                   fontSize: 10,
                   letterSpacing: 1.5,
                   fontWeight: FontWeight.w700,
@@ -442,23 +647,26 @@ class _NfcBalanceMockup extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: dimens.padding * 0.6),
           Text(
             '€ 7,50',
             style: GoogleFonts.ibmPlexMono(
-              fontSize: 28,
+              fontSize: dimens.fontEta,
               fontWeight: FontWeight.w800,
-              color: c.accent,
+              color: accent,
             ),
           ),
-          const SizedBox(height: 2),
-          const Text(
-            'Última recarga: hoy 14:32',
-            style: TextStyle(
-              color: Color(0xFF8888A0),
-              fontSize: 11,
+          // Solo M y L muestran la última recarga.
+          if (dimens.maxTimes >= 2) ...[
+            const SizedBox(height: 2),
+            Text(
+              'Última recarga: hoy 14:32',
+              style: TextStyle(
+                color: palette.textLo,
+                fontSize: 11,
+              ),
             ),
-          ),
+          ],
         ],
       ),
     );

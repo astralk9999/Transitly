@@ -8,10 +8,20 @@ import '../models/enums.dart';
 import '../models/reputation.dart';
 
 class ReputationBadge extends StatelessWidget {
-  const ReputationBadge(this.level, {super.key, this.score = 0});
+  const ReputationBadge(
+    this.level, {
+    super.key,
+    this.score = 0,
+    this.compact = false,
+  });
 
   final ReputationLevel level;
   final int score;
+
+  /// `true` = solo icono + número (sin texto del rango). Pensado para
+  /// embeber en cabeceras con poco espacio horizontal — el texto del
+  /// rango pisaba al email/nombre del usuario.
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
@@ -42,11 +52,13 @@ class ReputationBadge extends StatelessWidget {
           children: [
             Icon(rank.icon, size: 14, color: rank.color),
             const SizedBox(width: TransitSpacing.space4),
-            Text(
-              label,
-              style: TransitTypography.statusBadge(rank.color),
-            ),
-            const SizedBox(width: TransitSpacing.space4),
+            if (!compact) ...[
+              Text(
+                label,
+                style: TransitTypography.statusBadge(rank.color),
+              ),
+              const SizedBox(width: TransitSpacing.space4),
+            ],
             Text(
               '$score',
               style: TransitTypography.badgeNumber(c.textMid),

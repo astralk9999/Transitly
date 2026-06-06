@@ -133,10 +133,13 @@ class ProfileHeaderCard extends ConsumerWidget {
                   ],
                 ),
               ),
-              ReputationBadge(user.reputationLevel,
-                  score: user.reputationScore),
-              const SizedBox(width: 4),
-              Icon(Icons.chevron_right, color: c.textMid, size: 22),
+              // Badge compacto (icono + número, sin label del rango)
+              // para no comerle ancho al email/nombre.
+              ReputationBadge(
+                user.reputationLevel,
+                score: user.reputationScore,
+                compact: true,
+              ),
             ],
           ),
         ),

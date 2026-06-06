@@ -6,6 +6,7 @@ import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../data/mock/mock_data_service.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../../core/theme/transit_spacing.dart';
 import '../../../shared/models/stop_model.dart';
 import '../../../shared/providers/user_favorites_provider.dart';
 
@@ -33,6 +34,12 @@ void showStopInfoSheet(
   showModalBottomSheet(
     context: context,
     backgroundColor: c.bgSurface,
+    // useSafeArea para que el sheet no quede pisado por la status bar,
+    // y bottom padding manual para esquivar la navbar inferior custom
+    // (la navbar de Transitly no es BottomNavigationBar nativa, así
+    // que MediaQuery.viewPadding.bottom no la cubre).
+    useSafeArea: true,
+    isScrollControlled: true,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
     ),
@@ -40,9 +47,11 @@ void showStopInfoSheet(
       final isFav = container
           .read(userFavoriteStopsProvider)
           .contains(stop.id);
+      final bottomInset =
+          MediaQuery.of(ctx).viewPadding.bottom + TransitSpacing.heightNavBar;
 
       return Padding(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+        padding: EdgeInsets.fromLTRB(16, 8, 16, 16 + bottomInset),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,

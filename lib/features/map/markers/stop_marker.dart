@@ -39,12 +39,15 @@ List<Marker> buildStopMarkers({
       }
     }
 
-    final dotSize = isHub ? 10.0 : (currentZoom < 15 ? 6.0 : 8.0);
+    // Tamaños subidos respecto al original (10/6-8) — los iconos
+    // anteriores eran demasiado pequeños y costaba tocarlos.
+    final dotSize = isHub ? 16.0 : (currentZoom < 15 ? 10.0 : 12.0);
 
     markers.add(Marker(
       point: LatLng(stop.lat, stop.lng),
-      width: 20,
-      height: 20,
+      // Área de tap más generosa (antes 20×20).
+      width: 32,
+      height: 32,
       child: Semantics(
         label: 'Parada ${stop.name}',
         button: onTap != null,

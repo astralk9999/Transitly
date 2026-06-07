@@ -14,6 +14,24 @@
 
 ---
 
+## Estado de ejecución (2026-06-07) — PILOTO L1 + L8 CARGADO ✅
+
+Implementado como **`tools/ocr/extract_line.py`** (monolito que cubre Tasks 1-5: descarga→render→OCR→rejilla→casado→SQL) + **`tools/ocr/fetch_route.mjs`** (vuelca route+paradas desde Supabase). Aplicado con `tools/apply_sql.mjs`. Commit `1314ede6`.
+
+- **OCR**: rapidocr-onnxruntime (pip). **Tiling por franjas verticales** para líneas grandes (rapidocr perdía texto al redimensionar imágenes anchas; L8 pasó de 941 a 2408 horas detectadas). **Clustering por inicio de grupo** (no por último valor) para no encadenar filas densas en una sola.
+- **Detección de bloques** por hueco vertical (sábados apilan 2 tablas mañana/tarde).
+- **Casado de paradas por nombre** (difflib, normalizado), no por posición (el orden del seed no coincide con el PDF). Asociación nombre↔fila con `tol` estrecho (±11px) para no mezclar filas vecinas.
+- **Modelo**: 1 fila `schedules` por expedición; `arrival_offsets` = array `[{"s":stop_id,"t":"HH:MM"}]` en orden (soporta paradas revisitadas por viaje).
+- **Cargado y verificado:**
+  - L1 LAB (23 exp.) + SAB (36 exp., 2 bloques), 0 saltos hacia atrás. "Bajada San Telmo" laborables = 35 pasos.
+  - L8 LAB (42 exp., 37/39 paradas) + SAB (27 exp., 40/45), 0 saltos hacia atrás.
+  - **Multi-línea por parada verificado**: Bajada San Telmo laborables → L1 (35 pasos) + L8 (40 pasos).
+- **Limitaciones conocidas (pendiente):**
+  - L8 (circular) tiene en el seed 83 paradas (del JSON) pero el PDF oficial lista ~39; faltan en el seed paradas reales (Ikea, Decathlon, Alcampo, Tablao…) → **reconciliar el listado de paradas de L8 desde el PDF** (las casadas tienen horas exactas; las no casadas quedan sin hora exacta).
+  - Falta: escalar a las 20 líneas (Task 6), UI de parada (Task 7) y snapshot (Task 8).
+
+---
+
 ## Hallazgos validados (prototipo sobre L1 LAB verano)
 
 - PDFs de verano: `https://www.jerez.es/fileadmin/Documentos/Autobuses_Urbanos/horario_verano/LINEA_<N>_<TIPO>.pdf`.

@@ -230,6 +230,20 @@ def main():
     outdir = sys.argv[3] if len(sys.argv) > 3 else 'tools/ocr/out'
     route = json.load(open(os.path.join(outdir, f'route_{code}.json'), encoding='utf-8'))
     stops = route['stops']
+    # Universo de casado: las paradas de la ruta + (si existe) TODAS las del
+    # operador. El recorrido real del PDF puede incluir paradas que el seed
+    # asignó a otras líneas (p.ej. Luz Shopping, Alcampo en L9); casar contra
+    # todas recupera esas. El filtro de monotonía descarta casados erróneos.
+    universe = stops
+    allp = os.path.join(outdir, 'all_stops.json')
+    if os.path.exists(allp):
+        extra = json.load(open(allp, encoding='utf-8'))
+        seen = {s['stop_id'] for s in stops}
+        merged = list(stops)
+        for e in extra:
+            if e['id'] not in seen:
+                merged.append({'stop_id': e['id'], 'name': e['name']})
+        universe = merged
     boxes = get_boxes(code, day, outdir)
     toks = parse_times(boxes)
     if not toks:
@@ -264,11 +278,18 @@ def main():
         nm = names.get(ri)
         if not nm:
             unmatched.append((ri, '(sin nombre OCR)')); continue
+        # Primero contra las paradas de la propia ruta (umbral permisivo);
+        # si no casa, contra todo el operador (umbral más estricto para no
+        # casar con una parada homónima de otra zona).
         s, sc = match_stop(nm, stops)
         if s and sc >= 0.5:
             row_stop[ri] = s['stop_id']
         else:
-            unmatched.append((ri, f'{nm!r} (mejor {sc:.2f})'))
+            s2, sc2 = match_stop(nm, universe)
+            if s2 and sc2 >= 0.62:
+                row_stop[ri] = s2['stop_id']
+            else:
+                unmatched.append((ri, f'{nm!r} (mejor {max(sc, sc2):.2f})'))
 
     # Expediciones: por bloque, clustering de columnas LOCAL al bloque.
     trips = []

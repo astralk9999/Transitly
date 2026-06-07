@@ -92,6 +92,16 @@ class AdminScreen extends ConsumerWidget {
                             subtitle: 'Anunciar en zona con radio',
                             onTap: () => context.push('/admin/geo-alerts'),
                           ),
+                          const SizedBox(height: 12),
+                          _OptionCard(
+                            c: c,
+                            icon: Icons.alt_route,
+                            title: 'Gestión de líneas',
+                            subtitle:
+                                'Editar rutas, paradas y horarios de cualquier operador',
+                            onTap: () =>
+                                context.push('/management/routes'),
+                          ),
                           const SizedBox(height: 32),
                         ],
                       ),

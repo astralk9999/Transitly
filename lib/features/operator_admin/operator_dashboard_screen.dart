@@ -49,6 +49,16 @@ class OperatorDashboardScreen extends ConsumerWidget {
                     subtitle: 'Lista de conductores asignados',
                     onTap: () => context.push('/operator-admin/drivers'),
                   ),
+                  const SizedBox(height: 12),
+
+                  _OptionCard(
+                    c: c,
+                    icon: Icons.alt_route,
+                    title: 'Gestión de líneas',
+                    subtitle:
+                        'Editar rutas, paradas y horarios de tu operadora',
+                    onTap: () => context.push('/management/routes'),
+                  ),
                   const SizedBox(height: 32),
                 ],
               ),

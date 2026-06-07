@@ -33,6 +33,10 @@ import '../../features/home/tabs/map_tab.dart';
 import '../../features/home/tabs/profile_tab.dart';
 import '../../features/home/tabs/search_tab.dart';
 import '../../features/management/manager_inbox_screen.dart';
+import '../../features/management/route_editor_screen.dart';
+import '../../features/management/route_schedules_editor_screen.dart';
+import '../../features/management/route_stops_editor_screen.dart';
+import '../../features/management/routes_management_screen.dart';
 import '../../features/operator_admin/operator_dashboard_screen.dart';
 import '../../features/operator_admin/invitation_codes_screen.dart';
 import '../../features/operator_admin/drivers_screen.dart';
@@ -313,6 +317,41 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/management/inbox',
         pageBuilder: (context, state) =>
             _slide(state, const ManagerInboxScreen()),
+      ),
+      GoRoute(
+        path: '/management/routes',
+        pageBuilder: (context, state) =>
+            _slide(state, const RoutesManagementScreen()),
+      ),
+      GoRoute(
+        path: '/management/routes/new',
+        pageBuilder: (context, state) => _slide(
+          state,
+          RouteEditorScreen(
+            initialOperatorId: state.uri.queryParameters['operator'],
+          ),
+        ),
+      ),
+      GoRoute(
+        path: '/management/routes/:id',
+        pageBuilder: (context, state) => _slide(
+          state,
+          RouteEditorScreen(routeId: state.pathParameters['id']),
+        ),
+      ),
+      GoRoute(
+        path: '/management/routes/:id/stops',
+        pageBuilder: (context, state) => _slide(
+          state,
+          RouteStopsEditorScreen(routeId: state.pathParameters['id']!),
+        ),
+      ),
+      GoRoute(
+        path: '/management/routes/:id/schedules',
+        pageBuilder: (context, state) => _slide(
+          state,
+          RouteSchedulesEditorScreen(routeId: state.pathParameters['id']!),
+        ),
       ),
 
       // ── Admin ──

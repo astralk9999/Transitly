@@ -8,11 +8,15 @@ import 'package:latlong2/latlong.dart';
 
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
+import '../../data/admin/admin_routes_repository.dart';
+import '../../data/operator/operator_repository_provider.dart';
 import '../../data/user_routes/user_route_schedules_repository.dart';
 import '../../data/user_routes/user_routes_repository.dart';
 import '../../data/user_stops/user_stops_repository.dart';
+import '../../shared/models/operator_model.dart';
 import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/glass_card.dart';
+import '../../shared/widgets/pressable.dart';
 import '../../shared/widgets/transit_button.dart';
 import 'user_route_report_modal.dart';
 import 'user_route_share_modal.dart';
@@ -34,12 +38,21 @@ class _UserRouteDetailScreenState extends ConsumerState<UserRouteDetailScreen> {
   List<UserRouteScheduleModel> _schedules = [];
   bool _loading = true;
   bool _hasVoted = false;
+  bool _isAdmin = false;
   String? _error;
 
   @override
   void initState() {
     super.initState();
     _load();
+    _loadScope();
+  }
+
+  Future<void> _loadScope() async {
+    try {
+      final scope = await ref.read(manageScopeProvider.future);
+      if (mounted) setState(() => _isAdmin = scope.isAdmin);
+    } catch (_) {}
   }
 
   Future<void> _load() async {
@@ -146,6 +159,78 @@ class _UserRouteDetailScreenState extends ConsumerState<UserRouteDetailScreen> {
       }
     } finally {
       if (mounted) setState(() => _importing = false);
+    }
+  }
+
+  // ── Acciones de admin ──────────────────────────────────────
+  Future<void> _adminDelete() async {
+    if (_route == null) return;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) {
+        final c = TransitColorScheme.of(
+            Theme.of(ctx).brightness == Brightness.dark);
+        return AlertDialog(
+          backgroundColor: c.bgElevated,
+          title: const Text('Eliminar ruta'),
+          content: Text(
+              'Se eliminará "${_route!.name}" con sus paradas y horarios. '
+              'Esta acción no se puede deshacer.'),
+          actions: [
+            TextButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: const Text('Cancelar')),
+            TextButton(
+                onPressed: () => Navigator.pop(ctx, true),
+                child: Text('Eliminar',
+                    style: TextStyle(color: c.stateCancelled))),
+          ],
+        );
+      },
+    );
+    if (confirmed != true) return;
+    try {
+      await ref.read(userRoutesRepositoryProvider)!.adminDelete(_route!.id);
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('Ruta eliminada')));
+        context.pop();
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Error: $e')));
+      }
+    }
+  }
+
+  Future<void> _openOfficialize() async {
+    if (_route == null) return;
+    final result = await showModalBottomSheet<Map<String, String?>>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _OfficializeSheet(route: _route!),
+    );
+    if (result == null) return;
+    try {
+      await ref.read(userRoutesRepositoryProvider)!.officialize(
+            routeId: _route!.id,
+            operatorId: result['operatorId']!,
+            zoneId: result['zoneId'],
+            code: result['code'],
+            color: _route!.routeColor,
+          );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Ruta oficializada y publicada')));
+        context.pop();
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Error al oficializar: $e')));
+      }
     }
   }
 
@@ -357,49 +442,102 @@ class _UserRouteDetailScreenState extends ConsumerState<UserRouteDetailScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: Column(
         children: [
-          // Importar a "Mis rutas": copia la ruta + paradas + horarios.
+          // Acciones primarias según rol.
+          if (_isAdmin) ...[
+            Row(
+              children: [
+                Expanded(
+                  child: TransitButton(
+                    label: 'Oficializar',
+                    icon: Icons.verified_outlined,
+                    isPrimary: true,
+                    onPressed: _openOfficialize,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: TransitButton(
+                    label: 'Eliminar',
+                    icon: Icons.delete_outline,
+                    isDanger: true,
+                    onPressed: _adminDelete,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+          ],
           SizedBox(
             width: double.infinity,
             child: TransitButton(
               label: _importing ? 'Importando…' : 'Importar a mis rutas',
               icon: Icons.download_outlined,
-              isPrimary: true,
+              isPrimary: !_isAdmin,
               isLoading: _importing,
               onPressed: _import,
             ),
           ),
           const SizedBox(height: 8),
+          // Acciones secundarias compactas (icono + etiqueta pequeña), en una
+          // fila de iguales que nunca desborda.
           Row(
             children: [
               Expanded(
-                child: TransitButton(
-                  label: _hasVoted ? 'Quitar voto' : 'Votar',
+                child: _miniAction(
+                  c,
                   icon: _hasVoted ? Icons.favorite : Icons.favorite_border,
-                  isPrimary: false,
-                  onPressed: _toggleVote,
+                  label: _hasVoted ? 'Quitar voto' : 'Votar',
+                  active: _hasVoted,
+                  onTap: _toggleVote,
                 ),
               ),
               const SizedBox(width: 8),
               Expanded(
-                child: TransitButton(
-                  label: 'Compartir',
-                  icon: Icons.share,
-                  isPrimary: false,
-                  onPressed: _openShare,
-                ),
+                child: _miniAction(c,
+                    icon: Icons.share, label: 'Compartir', onTap: _openShare),
               ),
               const SizedBox(width: 8),
               Expanded(
-                child: TransitButton(
-                  label: 'Reportar',
-                  icon: Icons.flag_outlined,
-                  isPrimary: false,
-                  onPressed: _openReport,
-                ),
+                child: _miniAction(c,
+                    icon: Icons.flag_outlined,
+                    label: 'Reportar',
+                    onTap: _openReport),
               ),
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _miniAction(TransitColorScheme c,
+      {required IconData icon,
+      required String label,
+      bool active = false,
+      required VoidCallback onTap}) {
+    return Pressable(
+      onTap: onTap,
+      child: Container(
+        height: 56,
+        decoration: BoxDecoration(
+          color: active ? c.accent.withValues(alpha: 0.15) : c.bgRaised,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+              color: active ? c.accent : c.border,
+              width: active ? 1.2 : 0.5),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 18, color: active ? c.accent : c.textMid),
+            const SizedBox(height: 3),
+            Text(label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TransitTypography.bodySmall(
+                    active ? c.accent : c.textMid)),
+          ],
+        ),
       ),
     );
   }
@@ -429,41 +567,52 @@ class _UserRouteDetailScreenState extends ConsumerState<UserRouteDetailScreen> {
               children: [
                 TileLayer(
                   urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  userAgentPackageName: 'com.transitly.app',
+                  userAgentPackageName: 'com.transitly.transitly',
+                ),
+                // Línea de la ruta uniendo las paradas en orden.
+                PolylineLayer(
+                  polylines: [
+                    Polyline(
+                      points: stops
+                          .where((s) => s.stop != null)
+                          .map((s) => LatLng(s.stop!.lat, s.stop!.lng))
+                          .toList(),
+                      strokeWidth: 4,
+                      color: color.withValues(alpha: 0.8),
+                    ),
+                  ],
                 ),
                 MarkerLayer(
-                  markers: stops.asMap().entries.map((entry) {
-                    final stop = entry.value;
-                    if (stop.stop == null) return const Marker(point: LatLng(0, 0), child: SizedBox());
-                    final isFirst = entry.key == 0;
-                    final isLast = entry.key == stops.length - 1;
-                    return Marker(
-                      point: LatLng(stop.stop!.lat, stop.stop!.lng),
-                      width: isFirst || isLast ? 32 : 24,
-                      height: isFirst || isLast ? 32 : 24,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: isFirst
-                              ? c.stateOnTime
-                              : isLast
-                                  ? c.stateCancelled
-                                  : color,
-                          shape: BoxShape.circle,
-                          border: Border.all(color: c.bgRoot, width: 2),
-                        ),
-                        child: Center(
-                          child: Text(
-                            '${entry.key + 1}',
-                            style: TextStyle(
-                              color: c.bgRoot,
-                              fontSize: 10,
-                              fontWeight: FontWeight.w700,
+                  markers: [
+                    for (final entry in stops.asMap().entries)
+                      if (entry.value.stop != null)
+                        Marker(
+                          point: LatLng(entry.value.stop!.lat,
+                              entry.value.stop!.lng),
+                          width: 26,
+                          height: 26,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: entry.key == 0
+                                  ? c.stateOnTime
+                                  : entry.key == stops.length - 1
+                                      ? c.stateCancelled
+                                      : color,
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Colors.white, width: 2),
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              '${entry.key + 1}',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    );
-                  }).toList(),
+                  ],
                 ),
               ],
             ),
@@ -579,6 +728,213 @@ class _UserRouteDetailScreenState extends ConsumerState<UserRouteDetailScreen> {
               }).toList(),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Formulario para oficializar una ruta de comunidad. Operador es
+/// obligatorio (una ruta oficial debe pertenecer a una operadora); zona y
+/// código son opcionales. Devuelve {operatorId, zoneId, code}.
+class _OfficializeSheet extends ConsumerStatefulWidget {
+  const _OfficializeSheet({required this.route});
+  final UserRouteModel route;
+
+  @override
+  ConsumerState<_OfficializeSheet> createState() => _OfficializeSheetState();
+}
+
+class _OfficializeSheetState extends ConsumerState<_OfficializeSheet> {
+  List<OperatorModel> _operators = const [];
+  List<ZoneRow> _zones = const [];
+  String? _operatorId;
+  String? _zoneId;
+  late final TextEditingController _code;
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _code = TextEditingController(text: widget.route.code ?? '');
+    _load();
+  }
+
+  @override
+  void dispose() {
+    _code.dispose();
+    super.dispose();
+  }
+
+  Future<void> _load() async {
+    try {
+      final ops = await ref.read(operatorRepositoryProvider).list();
+      final zones = await ref.read(adminRoutesRepositoryProvider).listZones();
+      if (!mounted) return;
+      setState(() {
+        _operators = ops;
+        _zones = zones;
+        _operatorId = ops.isNotEmpty ? ops.first.id : null;
+        _zoneId = zones.isNotEmpty ? zones.first.id : null;
+        _loading = false;
+      });
+    } catch (_) {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final c = TransitColorScheme.of(isDark);
+    return Padding(
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      child: Container(
+        decoration: BoxDecoration(
+          color: c.bgElevated,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+          border: Border.all(color: c.border, width: 0.5),
+        ),
+        child: SafeArea(
+          top: false,
+          child: _loading
+              ? const Padding(
+                  padding: EdgeInsets.all(40),
+                  child: Center(child: CircularProgressIndicator()),
+                )
+              : SingleChildScrollView(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(Icons.verified_outlined, color: c.accent),
+                          const SizedBox(width: 8),
+                          Text('Oficializar ruta',
+                              style: TransitTypography.heading(c.textHi)),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                          'Se creará la línea oficial con sus paradas y horarios, '
+                          'y se retirará la versión comunitaria.',
+                          style: TransitTypography.bodySmall(c.textMid)),
+                      const SizedBox(height: 16),
+                      _label(c, 'Operador (obligatorio)'),
+                      const SizedBox(height: 6),
+                      _dropdown<String>(
+                        c,
+                        value: _operatorId,
+                        hint: 'Selecciona operador',
+                        items: _operators
+                            .map((o) => DropdownMenuItem(
+                                value: o.id, child: Text(o.shortName)))
+                            .toList(),
+                        onChanged: (v) => setState(() => _operatorId = v),
+                      ),
+                      const SizedBox(height: 14),
+                      _label(c, 'Zona (opcional)'),
+                      const SizedBox(height: 6),
+                      _dropdown<String>(
+                        c,
+                        value: _zoneId,
+                        hint: 'Sin zona',
+                        items: [
+                          const DropdownMenuItem(
+                              value: null, child: Text('Sin zona')),
+                          ..._zones.map((z) => DropdownMenuItem(
+                              value: z.id, child: Text(z.name))),
+                        ],
+                        onChanged: (v) => setState(() => _zoneId = v),
+                      ),
+                      const SizedBox(height: 14),
+                      _label(c, 'Código de línea (opcional)'),
+                      const SizedBox(height: 6),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: c.bgRaised,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: c.border, width: 0.5),
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 14),
+                        child: TextField(
+                          controller: _code,
+                          style: TransitTypography.bodyPrimary(c.textHi),
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            isDense: true,
+                            contentPadding:
+                                const EdgeInsets.symmetric(vertical: 14),
+                            hintText: 'p.ej. L1',
+                            hintStyle: TransitTypography.bodySmall(c.textLo),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 18),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text('Cancelar'),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: FilledButton(
+                              style: FilledButton.styleFrom(
+                                  backgroundColor: c.accent),
+                              onPressed: _operatorId == null
+                                  ? null
+                                  : () => Navigator.pop(context, {
+                                        'operatorId': _operatorId,
+                                        'zoneId': _zoneId,
+                                        'code': _code.text.trim().isEmpty
+                                            ? null
+                                            : _code.text.trim(),
+                                      }),
+                              child: const Text('Oficializar'),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+        ),
+      ),
+    );
+  }
+
+  Widget _label(TransitColorScheme c, String t) =>
+      Text(t, style: TransitTypography.bodyPrimary(c.textHi));
+
+  Widget _dropdown<T>(
+    TransitColorScheme c, {
+    required T? value,
+    required String hint,
+    required List<DropdownMenuItem<T>> items,
+    required ValueChanged<T?> onChanged,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: c.bgRaised,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: c.border, width: 0.5),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 14),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<T>(
+          value: value,
+          isExpanded: true,
+          dropdownColor: c.bgElevated,
+          icon: Icon(Icons.expand_more, color: c.textMid),
+          style: TransitTypography.bodyPrimary(c.textHi),
+          hint: Text(hint, style: TransitTypography.bodySecondary(c.textLo)),
+          items: items,
+          onChanged: onChanged,
         ),
       ),
     );

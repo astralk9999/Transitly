@@ -286,6 +286,25 @@ class UserRoutesRepository {
     await _client.rpc('admin_delete_user_route', params: {'p_route_id': id});
   }
 
+  /// Oficializa una ruta comunitaria: crea la ruta oficial (con paradas y
+  /// horarios) y borra la comunitaria. Devuelve el id de la oficial.
+  Future<String> officialize({
+    required String routeId,
+    required String operatorId,
+    String? zoneId,
+    String? code,
+    String? color,
+  }) async {
+    final res = await _client.rpc('officialize_user_route', params: {
+      'p_route_id': routeId,
+      'p_operator_id': operatorId,
+      'p_zone_id': zoneId,
+      'p_code': code,
+      'p_color': color,
+    });
+    return res as String;
+  }
+
   Future<void> vote(String routeId) async {
     final uid = _client.auth.currentUser?.id;
     if (uid == null) return;

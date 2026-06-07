@@ -151,10 +151,12 @@ class AuthRepositorySupabase implements AuthRepository {
     // configurado en su panel; al terminar, redirige al deep link y el SDK
     // completa la sesión, disparando onAuthStateChange → AuthAuthenticated.
     try {
+      // inAppBrowserView = Chrome Custom Tab: se CIERRA sola al volver por el
+      // deep link (con externalApplication, Chrome quedaba abierto "cargando").
       final launched = await _client.auth.signInWithOAuth(
         OAuthProvider.google,
         redirectTo: 'transitly://login-callback',
-        authScreenLaunchMode: LaunchMode.externalApplication,
+        authScreenLaunchMode: LaunchMode.inAppBrowserView,
       );
       AppLogger.info(_logTag, 'Google OAuth (web) launched=$launched');
       // No emitimos estado aquí: signInWithOAuth solo abre el navegador. La

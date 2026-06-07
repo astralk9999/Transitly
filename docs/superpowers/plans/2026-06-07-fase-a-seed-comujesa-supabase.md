@@ -27,10 +27,11 @@
 
 - **Identidad idempotente (UUID v5, namespace fijo `6ba7b810-9dad-11d1-80b4-00c04fd430c8`):**
   - route.id = `uuidv5("comujesa:route:" + code)`, `gtfs_route_id = code`.
-  - stop.id = `uuidv5("comujesa:stop:" + key)` donde `key = officialCode` (si vacío: `slug(name)+":"+lat.toFixed(5)+","+lng.toFixed(5)`), `gtfs_stop_id = key`.
+  - **stop.id = `uuidv5("comujesa:stop:" + coordKey)`** donde `coordKey = "<lat>,<lng>"` (coordenada exacta del JSON), `gtfs_stop_id = coordKey`, `code = officialCode` de la primera ocurrencia.
+    - **Dedup por coordenada exacta:** verificado en los datos — las 598 ocurrencias de parada colapsan en **306 paradas físicas** (134 coords compartidas entre líneas), y **ningún nombre apunta a >1 coordenada**, así que es seguro. El `officialCode` del JSON (`JER-001`…`JER-598`) es **sintético por ocurrencia**, NO por parada física, por eso NO se usa como clave. Deduplicar por coordenada hace que varias líneas compartan la misma fila de parada → arregla en origen que "en una parada solo se vea la línea seleccionada" y los marcadores solapados en el mapa.
   - schedule.id = `uuidv5("comujesa:sched:" + code + ":" + dayType + ":0:" + departure)`.
 - **routes:** `source='official'`, `status='official'`, `owner_id=NULL`, `color = line.color` (con `#`), `geom = ST_GeomFromText('LINESTRING(...)',4326)` con los puntos de `polyline.coordinates.lod4` (pares `[lng,lat]`); si no hay lod4 usar el LOD más alto disponible; si no hay polyline, `geom=NULL`. `metadata = {"active": true, "serviceType": line.serviceType, "polyline_lod": {lod0..lod3}}` (lod4 se reconstruye desde geom; se guardan solo lod0-3 para no duplicar).
-- **stops (dedup por key):** `geom = ST_SetSRID(ST_MakePoint(lng,lat),4326)`, `accessibility = {"wheelchair": isAccessible, "shelter": hasShelter, "bench": hasBench}`, `code = officialCode`, `metadata = {"municipality": municipality}`, `source='official'`, `owner_id=NULL`.
+- **stops (dedup por coordenada exacta → 306 paradas físicas):** `geom = ST_SetSRID(ST_MakePoint(lng,lat),4326)`, `accessibility = {"wheelchair": isAccessible, "shelter": hasShelter, "bench": hasBench}`, `code = officialCode` (primera ocurrencia), `gtfs_stop_id = coordKey`, `metadata = {"municipality": municipality}`, `source='official'`, `owner_id=NULL`.
 - **route_stops:** por línea, `direction=0`, `sequence = order-1` (0-based, según `stop.order` del JSON). Idempotencia: `DELETE FROM route_stops WHERE route_id = <id>` y reinsertar.
 - **schedules:** cabecera; una fila por hora de cada `day_type`, `direction=0`, `departure_time = "HH:MM"`, `arrival_offsets = NULL` (se rellena en Fase E).
 
@@ -119,7 +120,7 @@ export { uuidv5, stopKey, slug, OPERATOR_ID, NS };
 - [ ] **Step 2: Ejecutar conteos y verificar contra el JSON**
 
 Run: `node tools/seed_comujesa.mjs --counts`
-Expected (exacto, ya verificado del JSON): `routes` = 20, `route_stops` = 598, `schedules` = suma de todas las salidas; `stops` = nº de paradas únicas (> 0). Anota los valores para usarlos como asserts en Task 6.
+Expected (exacto, ya verificado del JSON): `{"routes":20,"stops":306,"route_stops":598,"schedules":889}`. Úsalos como asserts en Task 6.
 
 - [ ] **Step 3: Commit**
 
@@ -208,9 +209,9 @@ git commit -m "feat(seed): emitir upsert de routes con geom y metadata LOD"
 **Files:**
 - Modify: `tools/seed_comujesa.mjs`
 
-- [ ] **Step 1: Emitir stops (dedup por key) antes del bloque de routes**
+- [ ] **Step 1: Emitir stops (dedup por coordenada exacta) antes del bloque de routes**
 
-Las paradas deben insertarse **antes** que `route_stops` (FK). Insertar el bloque de stops **justo después de `out.push('BEGIN;')` y antes del bucle de routes** (orden: stops → routes → route_stops → schedules). Añadir:
+Las paradas deben insertarse **antes** que `route_stops` (FK). `stopsByKey` está keyeado por `coordKey="<lat>,<lng>"` → 306 paradas físicas. Insertar el bloque de stops **justo después de `out.push('BEGIN;')` y antes del bucle de routes** (orden: stops → routes → route_stops → schedules). Añadir:
 
 ```js
 for (const [key, st] of stopsByKey) {
@@ -355,7 +356,7 @@ select
   (select count(*) from schedules) as schedules,
   (select count(*) from routes where geom is not null) as routes_with_geom;
 ```
-Expected: `routes=20`, `stops`/`route_stops`/`schedules` = los conteos de Task 1, `routes_with_geom` ≥ 19 (LEI u otras sin trazado pueden quedar NULL — anótalo).
+Expected: `routes=20`, `stops=306`, `route_stops=598`, `schedules=889`, `routes_with_geom` ≥ 19 (LEI u otras sin trazado pueden quedar NULL — anótalo).
 
 - [ ] **Step 4: Verificar el check de oficiales y FKs**
 

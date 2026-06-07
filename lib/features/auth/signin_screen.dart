@@ -196,19 +196,16 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                         label: l10n.authGoogleButton,
                         onPressed: () async {
                           try {
+                            // Flujo OAuth web: abre el navegador y vuelve por
+                            // deep link. NO navegamos aquí (el await retorna al
+                            // lanzar el navegador, antes del login); la
+                            // navegación la hace `ref.listen(authStateProvider)`
+                            // cuando llega AuthAuthenticated.
                             await ref
                                 .read(authRepositoryProvider)
                                 .signInWithGoogle();
-                            // Navegación DIRECTA tras success.
-                            // El listener `ref.listen(authStateProvider)`
-                            // a veces no recibe el AuthAuthenticated por
-                            // race conditions en StreamController.broadcast
-                            // — esta navegación es la primaria.
-                            if (context.mounted) {
-                              AppLogger.info(_logTag,
-                                  'Google sign in await returned, navigating to /home/inicio');
-                              context.go('/home/inicio');
-                            }
+                            AppLogger.info(_logTag,
+                                'Google OAuth launched, waiting for deep-link callback');
                           } on AuthRepoException catch (e) {
                             if (mounted) {
                               final msg = e.error == AuthError.rateLimited && e.secondsLeft != null

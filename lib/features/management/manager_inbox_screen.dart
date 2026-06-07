@@ -434,6 +434,37 @@ Widget _searchBar(BuildContext context, TransitColorScheme c,
   );
 }
 
+/// Fila de chips de filtro: se centra si cabe, hace scroll horizontal
+/// si no. Soluciona el "padding extra a la izquierda" y el desborde
+/// cuando hay 4+ chips anchos.
+Widget _filterRow(BuildContext context, List<Widget> chips) {
+  return SizedBox(
+    height: 36,
+    child: LayoutBuilder(
+      builder: (ctx, constraints) {
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+                minWidth: constraints.maxWidth - 32),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                for (var i = 0; i < chips.length; i++) ...[
+                  chips[i],
+                  if (i < chips.length - 1) const SizedBox(width: 6),
+                ],
+              ],
+            ),
+          ),
+        );
+      },
+    ),
+  );
+}
+
 Widget _filterChip(TransitColorScheme c,
     {required IconData icon,
     required String label,
@@ -719,35 +750,26 @@ class _FeedbackTabState extends State<_FeedbackTab> {
       children: [
         _searchBar(context, c, _ctrl, _search,
             (v) => setState(() => _search = v)),
-        SizedBox(
-          height: 36,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            children: [
-              _filterChip(c,
-                  icon: Icons.list,
-                  label: 'Todos',
-                  selected: _status == 'all',
-                  color: c.accent,
-                  onTap: () => setState(() => _status = 'all')),
-              const SizedBox(width: 6),
-              _filterChip(c,
-                  icon: Icons.inbox_outlined,
-                  label: 'Nuevos',
-                  selected: _status == 'submitted',
-                  color: const Color(0xFFFF9800),
-                  onTap: () => setState(() => _status = 'submitted')),
-              const SizedBox(width: 6),
-              _filterChip(c,
-                  icon: Icons.visibility_outlined,
-                  label: 'En revisión',
-                  selected: _status == 'inReview',
-                  color: const Color(0xFF2196F3),
-                  onTap: () => setState(() => _status = 'inReview')),
-            ],
-          ),
-        ),
+        _filterRow(context, [
+          _filterChip(c,
+              icon: Icons.list,
+              label: 'Todos',
+              selected: _status == 'all',
+              color: c.accent,
+              onTap: () => setState(() => _status = 'all')),
+          _filterChip(c,
+              icon: Icons.inbox_outlined,
+              label: 'Nuevos',
+              selected: _status == 'submitted',
+              color: const Color(0xFFFF9800),
+              onTap: () => setState(() => _status = 'submitted')),
+          _filterChip(c,
+              icon: Icons.visibility_outlined,
+              label: 'En revisión',
+              selected: _status == 'inReview',
+              color: const Color(0xFF2196F3),
+              onTap: () => setState(() => _status = 'inReview')),
+        ]),
         const SizedBox(height: 4),
         Expanded(
           child: filtered.isEmpty
@@ -902,42 +924,32 @@ class _SuggestionsTabState extends State<_SuggestionsTab> {
       children: [
         _searchBar(context, c, _ctrl, _search,
             (v) => setState(() => _search = v)),
-        SizedBox(
-          height: 36,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            children: [
-              _filterChip(c,
-                  icon: Icons.pending_outlined,
-                  label: 'Pendientes',
-                  selected: _status == 'pending',
-                  color: const Color(0xFFFF9800),
-                  onTap: () => setState(() => _status = 'pending')),
-              const SizedBox(width: 6),
-              _filterChip(c,
-                  icon: Icons.check_circle_outline,
-                  label: 'Aceptadas',
-                  selected: _status == 'accepted',
-                  color: const Color(0xFF4CAF50),
-                  onTap: () => setState(() => _status = 'accepted')),
-              const SizedBox(width: 6),
-              _filterChip(c,
-                  icon: Icons.close,
-                  label: 'Rechazadas',
-                  selected: _status == 'rejected',
-                  color: const Color(0xFFB71C1C),
-                  onTap: () => setState(() => _status = 'rejected')),
-              const SizedBox(width: 6),
-              _filterChip(c,
-                  icon: Icons.list,
-                  label: 'Todas',
-                  selected: _status == 'all',
-                  color: c.accent,
-                  onTap: () => setState(() => _status = 'all')),
-            ],
-          ),
-        ),
+        _filterRow(context, [
+          _filterChip(c,
+              icon: Icons.pending_outlined,
+              label: 'Pendientes',
+              selected: _status == 'pending',
+              color: const Color(0xFFFF9800),
+              onTap: () => setState(() => _status = 'pending')),
+          _filterChip(c,
+              icon: Icons.check_circle_outline,
+              label: 'Aceptadas',
+              selected: _status == 'accepted',
+              color: const Color(0xFF4CAF50),
+              onTap: () => setState(() => _status = 'accepted')),
+          _filterChip(c,
+              icon: Icons.close,
+              label: 'Rechazadas',
+              selected: _status == 'rejected',
+              color: const Color(0xFFB71C1C),
+              onTap: () => setState(() => _status = 'rejected')),
+          _filterChip(c,
+              icon: Icons.list,
+              label: 'Todas',
+              selected: _status == 'all',
+              color: c.accent,
+              onTap: () => setState(() => _status = 'all')),
+        ]),
         const SizedBox(height: 4),
         Expanded(
           child: filtered.isEmpty
@@ -1103,35 +1115,26 @@ class _ResolvedTabState extends State<_ResolvedTab> {
       children: [
         _searchBar(context, c, _ctrl, _search,
             (v) => setState(() => _search = v)),
-        SizedBox(
-          height: 36,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            children: [
-              _filterChip(c,
-                  icon: Icons.list,
-                  label: 'Todos',
-                  selected: _kind == 'all',
-                  color: c.accent,
-                  onTap: () => setState(() => _kind = 'all')),
-              const SizedBox(width: 6),
-              _filterChip(c,
-                  icon: Icons.feedback_outlined,
-                  label: 'Feedback',
-                  selected: _kind == 'feedback',
-                  color: const Color(0xFF2196F3),
-                  onTap: () => setState(() => _kind = 'feedback')),
-              const SizedBox(width: 6),
-              _filterChip(c,
-                  icon: Icons.warning_amber,
-                  label: 'Incidencias',
-                  selected: _kind == 'incident',
-                  color: const Color(0xFFFF9800),
-                  onTap: () => setState(() => _kind = 'incident')),
-            ],
-          ),
-        ),
+        _filterRow(context, [
+          _filterChip(c,
+              icon: Icons.list,
+              label: 'Todos',
+              selected: _kind == 'all',
+              color: c.accent,
+              onTap: () => setState(() => _kind = 'all')),
+          _filterChip(c,
+              icon: Icons.feedback_outlined,
+              label: 'Feedback',
+              selected: _kind == 'feedback',
+              color: const Color(0xFF2196F3),
+              onTap: () => setState(() => _kind = 'feedback')),
+          _filterChip(c,
+              icon: Icons.warning_amber,
+              label: 'Incidencias',
+              selected: _kind == 'incident',
+              color: const Color(0xFFFF9800),
+              onTap: () => setState(() => _kind = 'incident')),
+        ]),
         const SizedBox(height: 4),
         Expanded(
           child: items.isEmpty

@@ -22,6 +22,8 @@ class AdminRouteRow {
     required this.source,
     required this.active,
     this.updatedAt,
+    this.stopCount = 0,
+    this.scheduleCount = 0,
   });
 
   final String id;
@@ -34,6 +36,22 @@ class AdminRouteRow {
   final RouteSource source;
   final bool active;
   final DateTime? updatedAt;
+
+  /// Nº de paradas y de horarios vinculados (para el resumen de la lista).
+  final int stopCount;
+  final int scheduleCount;
+
+  /// Lee un `count` de una relación embebida de Supabase. El cliente lo
+  /// devuelve como `[{count: N}]` con `select('rel(count)')`.
+  static int _embeddedCount(dynamic rel) {
+    if (rel is List && rel.isNotEmpty) {
+      final first = rel.first;
+      if (first is Map && first['count'] is num) {
+        return (first['count'] as num).toInt();
+      }
+    }
+    return 0;
+  }
 
   factory AdminRouteRow.fromRow(Map<String, dynamic> j) {
     final meta = (j['metadata'] as Map<String, dynamic>?) ?? const {};
@@ -53,6 +71,8 @@ class AdminRouteRow {
       updatedAt: j['updated_at'] == null
           ? null
           : DateTime.tryParse(j['updated_at'] as String),
+      stopCount: _embeddedCount(j['route_stops']),
+      scheduleCount: _embeddedCount(j['schedules']),
     );
   }
 }
@@ -148,8 +168,10 @@ class AdminRoutesRepository {
 
   // ── Rutas ───────────────────────────────────────────────────
   Future<List<AdminRouteRow>> listRoutes({String? operatorId}) async {
+    // `route_stops(count)` y `schedules(count)` traen los contadores en la
+    // misma consulta sin N+1.
     var q = _client.from('routes').select(
-        'id, operator_id, code, name, description, color, status, source, metadata, updated_at');
+        'id, operator_id, code, name, description, color, status, source, metadata, updated_at, route_stops(count), schedules(count)');
     if (operatorId != null) q = q.eq('operator_id', operatorId);
     final rows = await q.order('code');
     return (rows as List).map((e) => AdminRouteRow.fromRow(e as Map<String, dynamic>)).toList();

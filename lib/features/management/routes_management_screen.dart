@@ -25,10 +25,15 @@ class RoutesManagementScreen extends ConsumerStatefulWidget {
   ConsumerState<RoutesManagementScreen> createState() => _State();
 }
 
+enum _SortBy { code, status, updated, stops }
+
 class _State extends ConsumerState<RoutesManagementScreen> {
   String _query = '';
   String? _filterOperatorId;
   RouteStatus? _filterStatus;
+  _SortBy _sortBy = _SortBy.code;
+  bool _groupByOperator = false;
+  final Set<String> _collapsedOps = {};
   List<AdminRouteRow> _all = const [];
   List<OperatorModel> _operators = const [];
   bool _loading = true;
@@ -73,7 +78,7 @@ class _State extends ConsumerState<RoutesManagementScreen> {
 
   List<AdminRouteRow> get _filtered {
     final q = _query.trim().toLowerCase();
-    return _all.where((r) {
+    final list = _all.where((r) {
       if (_filterOperatorId != null && r.operatorId != _filterOperatorId) {
         return false;
       }
@@ -82,6 +87,34 @@ class _State extends ConsumerState<RoutesManagementScreen> {
       return r.code.toLowerCase().contains(q) ||
           r.name.toLowerCase().contains(q);
     }).toList();
+    list.sort(_compare);
+    return list;
+  }
+
+  /// Orden estable según [_sortBy]. El código se ordena de forma natural
+  /// (L2 antes que L10) extrayendo el número.
+  int _compare(AdminRouteRow a, AdminRouteRow b) {
+    switch (_sortBy) {
+      case _SortBy.code:
+        return _codeKey(a.code).compareTo(_codeKey(b.code));
+      case _SortBy.status:
+        final s = a.status.index.compareTo(b.status.index);
+        return s != 0 ? s : _codeKey(a.code).compareTo(_codeKey(b.code));
+      case _SortBy.updated:
+        final da = a.updatedAt ?? DateTime(1970);
+        final db = b.updatedAt ?? DateTime(1970);
+        return db.compareTo(da); // más reciente primero
+      case _SortBy.stops:
+        final s = b.stopCount.compareTo(a.stopCount);
+        return s != 0 ? s : _codeKey(a.code).compareTo(_codeKey(b.code));
+    }
+  }
+
+  /// Clave de orden natural: "L10" -> (0010, "L10"), "LEI" -> (9999, "LEI").
+  String _codeKey(String code) {
+    final m = RegExp(r'(\d+)').firstMatch(code);
+    final n = m != null ? int.parse(m.group(1)!) : 9999;
+    return '${n.toString().padLeft(4, '0')}_$code';
   }
 
   String _operatorName(String id) =>
@@ -92,7 +125,7 @@ class _State extends ConsumerState<RoutesManagementScreen> {
   Future<void> _createRoute() async {
     final scope = await ref.read(manageScopeProvider.future);
     if (!mounted) return;
-    String? operatorId = scope.isAdmin
+    final String? operatorId = scope.isAdmin
         ? (_operators.isNotEmpty ? _operators.first.id : null)
         : scope.operatorId;
     if (operatorId == null) {
@@ -134,13 +167,17 @@ class _State extends ConsumerState<RoutesManagementScreen> {
                         _searchBar(c),
                         const SizedBox(height: 12),
                         _filters(c),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 8),
+                        _summaryBar(c),
+                        const SizedBox(height: 12),
                         if (_filtered.isEmpty)
                           const EmptyState(
                             'Sin líneas',
                             'Crea la primera con el botón de abajo.',
                             icon: Icons.alt_route,
                           )
+                        else if (_groupByOperator && _operators.length > 1)
+                          ..._buildGrouped(c)
                         else
                           ..._filtered.map((r) => Padding(
                                 padding: const EdgeInsets.only(bottom: 10),
@@ -197,6 +234,21 @@ class _State extends ConsumerState<RoutesManagementScreen> {
             icon: Icons.flag_outlined,
             onTap: _pickStatusFilter,
           ),
+          _chip(
+            c,
+            label: _sortLabel(_sortBy),
+            icon: Icons.sort,
+            onTap: _pickSort,
+          ),
+          if (_operators.length > 1)
+            _chip(
+              c,
+              label: _groupByOperator ? 'Agrupado' : 'Sin agrupar',
+              icon: Icons.layers_outlined,
+              selected: _groupByOperator,
+              onTap: () =>
+                  setState(() => _groupByOperator = !_groupByOperator),
+            ),
           if (_filterOperatorId != null || _filterStatus != null)
             _chip(
               c,
@@ -210,25 +262,143 @@ class _State extends ConsumerState<RoutesManagementScreen> {
         ],
       );
 
+  String _sortLabel(_SortBy s) => switch (s) {
+        _SortBy.code => 'Código',
+        _SortBy.status => 'Estado',
+        _SortBy.updated => 'Recientes',
+        _SortBy.stops => 'Más paradas',
+      };
+
+  Future<void> _pickSort() async {
+    final picked = await showModalBottomSheet<_SortBy>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        final isDark = Theme.of(ctx).brightness == Brightness.dark;
+        final c = TransitColorScheme.of(isDark);
+        return SafeArea(
+          child: GlassCard(
+            blur: 24,
+            fillOpacity: 0.10,
+            borderRadius: 18,
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: _SortBy.values
+                  .map((s) => ListTile(
+                        leading: Icon(Icons.sort, color: c.textMid),
+                        title: Text('Ordenar por: ${_sortLabel(s)}'),
+                        trailing: _sortBy == s
+                            ? Icon(Icons.check, color: c.accent)
+                            : null,
+                        onTap: () => Navigator.pop(ctx, s),
+                      ))
+                  .toList(),
+            ),
+          ),
+        );
+      },
+    );
+    if (picked != null && mounted) setState(() => _sortBy = picked);
+  }
+
+  /// Barra de resumen: nº de líneas mostradas y totales de paradas/horarios.
+  Widget _summaryBar(TransitColorScheme c) {
+    final list = _filtered;
+    final stops = list.fold<int>(0, (s, r) => s + r.stopCount);
+    final scheds = list.fold<int>(0, (s, r) => s + r.scheduleCount);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      child: Row(
+        children: [
+          Icon(Icons.alt_route, size: 13, color: c.textLo),
+          const SizedBox(width: 4),
+          Text('${list.length} líneas',
+              style: TransitTypography.bodySmall(c.textMid)),
+          const SizedBox(width: 12),
+          Icon(Icons.place_outlined, size: 13, color: c.textLo),
+          const SizedBox(width: 4),
+          Text('$stops paradas',
+              style: TransitTypography.bodySmall(c.textLo)),
+          const SizedBox(width: 12),
+          Icon(Icons.schedule, size: 13, color: c.textLo),
+          const SizedBox(width: 4),
+          Text('$scheds horarios',
+              style: TransitTypography.bodySmall(c.textLo)),
+        ],
+      ),
+    );
+  }
+
+  /// Lista agrupada por operador con cabeceras plegables.
+  List<Widget> _buildGrouped(TransitColorScheme c) {
+    final byOp = <String, List<AdminRouteRow>>{};
+    for (final r in _filtered) {
+      byOp.putIfAbsent(r.operatorId, () => []).add(r);
+    }
+    final opIds = byOp.keys.toList()
+      ..sort((a, b) => _operatorName(a).compareTo(_operatorName(b)));
+    final widgets = <Widget>[];
+    for (final opId in opIds) {
+      final routes = byOp[opId]!;
+      final collapsed = _collapsedOps.contains(opId);
+      widgets.add(Padding(
+        padding: const EdgeInsets.only(bottom: 8, top: 4),
+        child: Pressable(
+          onTap: () => setState(() {
+            collapsed ? _collapsedOps.remove(opId) : _collapsedOps.add(opId);
+          }),
+          child: Row(
+            children: [
+              Icon(collapsed ? Icons.chevron_right : Icons.expand_more,
+                  color: c.textMid, size: 20),
+              const SizedBox(width: 4),
+              Icon(Icons.business, size: 14, color: c.accent),
+              const SizedBox(width: 6),
+              Text(_operatorName(opId),
+                  style: TransitTypography.bodyPrimary(c.textHi)
+                      .copyWith(fontWeight: FontWeight.w700)),
+              const SizedBox(width: 8),
+              Text('${routes.length}',
+                  style: TransitTypography.bodySmall(c.textLo)),
+            ],
+          ),
+        ),
+      ));
+      if (!collapsed) {
+        widgets.addAll(routes.map((r) => Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: _routeCard(c, r),
+            )));
+      }
+    }
+    return widgets;
+  }
+
   Widget _chip(TransitColorScheme c,
           {required String label,
           required IconData icon,
-          required VoidCallback onTap}) =>
+          required VoidCallback onTap,
+          bool selected = false}) =>
       Pressable(
         onTap: onTap,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
           decoration: BoxDecoration(
-            color: c.bgRaised.withValues(alpha: 0.6),
+            color: selected
+                ? c.accent.withValues(alpha: 0.18)
+                : c.bgRaised.withValues(alpha: 0.6),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: c.border),
+            border: Border.all(color: selected ? c.accent : c.border),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, size: 14, color: c.textMid),
+              Icon(icon, size: 14, color: selected ? c.accent : c.textMid),
               const SizedBox(width: 6),
-              Text(label, style: TransitTypography.bodySmall(c.textMid)),
+              Text(label,
+                  style: TransitTypography.bodySmall(
+                      selected ? c.accent : c.textMid)),
             ],
           ),
         ),
@@ -373,6 +543,20 @@ class _State extends ConsumerState<RoutesManagementScreen> {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis),
                       ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Icon(Icons.place_outlined, size: 12, color: c.textLo),
+                      const SizedBox(width: 4),
+                      Text('${r.stopCount} paradas',
+                          style: TransitTypography.bodySmall(c.textLo)),
+                      const SizedBox(width: 12),
+                      Icon(Icons.schedule, size: 12, color: c.textLo),
+                      const SizedBox(width: 4),
+                      Text('${r.scheduleCount} horarios',
+                          style: TransitTypography.bodySmall(c.textLo)),
                     ],
                   ),
                 ],

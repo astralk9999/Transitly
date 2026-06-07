@@ -121,6 +121,34 @@ class _UserRouteDetailScreenState extends ConsumerState<UserRouteDetailScreen> {
     UserRouteReportModal.show(context, _route!.id);
   }
 
+  bool _importing = false;
+
+  Future<void> _import() async {
+    if (_route == null || _importing) return;
+    final repo = ref.read(userRoutesRepositoryProvider);
+    if (repo == null) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Inicia sesión para importar rutas')));
+      return;
+    }
+    setState(() => _importing = true);
+    try {
+      await repo.importRoute(_route!.id);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text(
+                'Ruta importada a "Mis rutas" con sus paradas y horarios')));
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Error al importar: $e')));
+      }
+    } finally {
+      if (mounted) setState(() => _importing = false);
+    }
+  }
+
   Color _hexToColor(String hex) {
     try {
       final h = hex.replaceFirst('#', '');
@@ -327,36 +355,49 @@ class _UserRouteDetailScreenState extends ConsumerState<UserRouteDetailScreen> {
   Widget _buildActionButtons(TransitColorScheme c) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      child: Row(
+      child: Column(
         children: [
-          Expanded(
+          // Importar a "Mis rutas": copia la ruta + paradas + horarios.
+          SizedBox(
+            width: double.infinity,
             child: TransitButton(
-              label: _hasVoted ? 'Quitar voto' : 'Votar',
-              // TODO: l10n
-              icon: _hasVoted ? Icons.favorite : Icons.favorite_border,
-              isPrimary: _hasVoted,
-              onPressed: _toggleVote,
+              label: _importing ? 'Importando…' : 'Importar a mis rutas',
+              icon: Icons.download_outlined,
+              isPrimary: true,
+              isLoading: _importing,
+              onPressed: _import,
             ),
           ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: TransitButton(
-              label: 'Compartir',
-              // TODO: l10n
-              icon: Icons.share,
-              isPrimary: false,
-              onPressed: _openShare,
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: TransitButton(
-              label: 'Reportar',
-              // TODO: l10n
-              icon: Icons.flag_outlined,
-              isPrimary: false,
-              onPressed: _openReport,
-            ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Expanded(
+                child: TransitButton(
+                  label: _hasVoted ? 'Quitar voto' : 'Votar',
+                  icon: _hasVoted ? Icons.favorite : Icons.favorite_border,
+                  isPrimary: false,
+                  onPressed: _toggleVote,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: TransitButton(
+                  label: 'Compartir',
+                  icon: Icons.share,
+                  isPrimary: false,
+                  onPressed: _openShare,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: TransitButton(
+                  label: 'Reportar',
+                  icon: Icons.flag_outlined,
+                  isPrimary: false,
+                  onPressed: _openReport,
+                ),
+              ),
+            ],
           ),
         ],
       ),

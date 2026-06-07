@@ -138,13 +138,13 @@ class _BadgeCount extends StatelessWidget {
     final badgeText = unreadCount > 99 ? '99+' : '$unreadCount';
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
       alignment: Alignment.center,
-      height: 10,
-      constraints: const BoxConstraints(minWidth: 16),
+      constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
       decoration: BoxDecoration(
         color: c.accent,
-        borderRadius: BorderRadius.circular(5),
+        borderRadius: BorderRadius.circular(9),
+        border: Border.all(color: c.bgRaised, width: 1.5),
         boxShadow: [
           BoxShadow(
             blurRadius: 8,
@@ -155,7 +155,8 @@ class _BadgeCount extends StatelessWidget {
       child: Text(
         badgeText,
         style: TransitTypography.bodySmall(c.textHi).copyWith(
-          fontSize: 8,
+          fontSize: 11,
+          fontWeight: FontWeight.w800,
           height: 1.0,
         ),
         textAlign: TextAlign.center,

@@ -319,6 +319,14 @@ class UserRoutesRepository {
     }
   }
 
+  /// Importa una ruta de comunidad (con sus paradas y horarios) a las
+  /// rutas del usuario actual. Devuelve el id de la copia creada.
+  Future<String> importRoute(String routeId) async {
+    final res = await _client
+        .rpc('import_community_route', params: {'p_route_id': routeId});
+    return res as String;
+  }
+
   Future<void> report(String routeId, String reason, {String? description}) async {
     final uid = _client.auth.currentUser?.id;
     if (uid == null) return;

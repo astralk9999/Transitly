@@ -57,6 +57,15 @@ class NotificationRemoteRepository implements NotificationRepository {
   }
 
   @override
+  Future<void> markAllRead() async {
+    try {
+      await _client.rpc('mark_all_notifications_read');
+    } catch (e, st) {
+      throw _mapError(e, st, 'markAllRead');
+    }
+  }
+
+  @override
   Future<int> unreadCount(String userId) async {
     try {
       final result = await _client

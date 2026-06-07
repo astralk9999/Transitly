@@ -150,9 +150,10 @@ class _State extends ConsumerState<RoutesManagementScreen> {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      appBar: const TransitAppBar(title: 'Gestión de líneas', transparent: true),
-      body: SafeArea(
-        top: false,
+      body: Column(
+        children: [
+          const TransitAppBar(title: 'Gestión de líneas'),
+          Expanded(
         child: _loading
             ? const Center(child: CircularProgressIndicator())
             : _error != null
@@ -192,6 +193,8 @@ class _State extends ConsumerState<RoutesManagementScreen> {
                       ],
                     ),
                   ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: c.accent,

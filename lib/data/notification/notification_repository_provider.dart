@@ -62,6 +62,16 @@ class NotificationRepositorySwr implements NotificationRepository {
   }
 
   @override
+  Future<void> markAllRead() async {
+    await local.markAllRead();
+    try {
+      await remote.markAllRead();
+    } on NotificationRepositoryException catch (e) {
+      AppLogger.warn(_logTag, 'background push markAllRead', e);
+    }
+  }
+
+  @override
   Future<int> unreadCount(String userId) async {
     try {
       return await remote.unreadCount(userId);

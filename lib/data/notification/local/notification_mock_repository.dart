@@ -20,6 +20,15 @@ class NotificationMockRepository implements NotificationRepository {
   }
 
   @override
+  Future<void> markAllRead() async {
+    for (var i = 0; i < _ephemeral.length; i++) {
+      if (!_ephemeral[i].read) {
+        _ephemeral[i] = _ephemeral[i].copyWith(read: true);
+      }
+    }
+  }
+
+  @override
   Future<int> unreadCount(String userId) async =>
       _ephemeral.where((n) => !n.read).length;
 }

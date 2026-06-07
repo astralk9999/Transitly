@@ -175,10 +175,10 @@ class _State extends ConsumerState<StopsManagementScreen> {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      appBar:
-          const TransitAppBar(title: 'Gestión de paradas', transparent: true),
-      body: SafeArea(
-        top: false,
+      body: Column(
+        children: [
+          const TransitAppBar(title: 'Gestión de paradas'),
+          Expanded(
         child: _loading
             ? const Center(child: CircularProgressIndicator())
             : _error != null
@@ -223,6 +223,8 @@ class _State extends ConsumerState<StopsManagementScreen> {
                       ),
                     ],
                   ),
+          ),
+        ],
       ),
       floatingActionButton: _loading || _operatorId == null
           ? null

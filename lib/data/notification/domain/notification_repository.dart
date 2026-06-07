@@ -39,5 +39,8 @@ abstract class NotificationRepository {
 
   Future<void> markRead(String notificationId);
 
+  /// Marca como leídas TODAS las del usuario en una sola operación.
+  Future<void> markAllRead();
+
   Future<int> unreadCount(String userId);
 }

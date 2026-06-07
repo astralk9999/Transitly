@@ -33,6 +33,7 @@ const _filters = [
   _Filter('incident', 'Incidencias', Icons.warning_amber, Color(0xFFFF9800)),
   _Filter('suggestion', 'Sugerencias', Icons.route_outlined, Color(0xFF4CAF50)),
   _Filter('feature', 'Solicitudes', Icons.lightbulb_outline, Color(0xFF9C27B0)),
+  _Filter('route_report', 'Reportes', Icons.flag_outlined, Color(0xFFE53935)),
   _Filter('zone', 'Zonas', Icons.map_outlined, Color(0xFF00BCD4)),
   _Filter('operator_app', 'Operadores', Icons.business_outlined,
       Color(0xFF7E57C2)),
@@ -146,6 +147,7 @@ class _State extends ConsumerState<UnifiedInboxScreen> {
         'feature' => 'Aceptar',
         'zone' => 'Aprobar',
         'operator_app' => 'Aprobar',
+        'route_report' => 'Eliminar ruta',
         'rgpd' => 'Borrar',
         _ => 'Aplicar',
       };
@@ -157,6 +159,7 @@ class _State extends ConsumerState<UnifiedInboxScreen> {
         'feature' => 'Aceptar solicitud',
         'zone' => 'Aprobar zona',
         'operator_app' => 'Aprobar operador',
+        'route_report' => 'Eliminar ruta reportada',
         'rgpd' => 'Confirmar borrado',
         _ => 'Aplicar',
       };
@@ -297,11 +300,20 @@ class _State extends ConsumerState<UnifiedInboxScreen> {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      appBar: const TransitAppBar(title: 'Bandeja', transparent: true),
       body: SafeArea(
-        top: false,
+        bottom: false,
         child: Column(
           children: [
+            TransitAppBar(
+              title: 'Bandeja',
+              actions: [
+                IconButton(
+                  icon: Icon(Icons.refresh, color: c.accent),
+                  tooltip: 'Refrescar',
+                  onPressed: _load,
+                ),
+              ],
+            ),
             _searchBar(c),
             _filtersBar(c),
             _openToggle(c),

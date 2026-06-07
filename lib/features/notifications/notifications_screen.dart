@@ -43,7 +43,9 @@ class NotificationsScreen extends ConsumerWidget {
                     child: TransitButton(
                       label: l10n.notificationsMarkAllRead,
                       isPrimary: false,
-                      onPressed: () => _markAllRead(ref, l10n, context),
+                      onPressed: () {
+                        unawaited(_markAllRead(ref, l10n, context));
+                      },
                     ),
                   ),
               ],
@@ -93,12 +95,13 @@ class NotificationsScreen extends ConsumerWidget {
     );
   }
 
-  void _markAllRead(WidgetRef ref, AppLocalizations l10n, BuildContext context) {
+  Future<void> _markAllRead(
+      WidgetRef ref, AppLocalizations l10n, BuildContext context) async {
     final repo = ref.read(notificationRepositoryProvider);
-    final notifs = ref.read(notificationStreamProvider).valueOrNull ?? [];
-    for (final n in notifs.where((n) => !n.read)) {
-      unawaited(repo.markRead(n.id));
-    }
+    await repo.markAllRead();
+    // Fuerza re-suscripción + refetch para que el inbox y el badge se
+    // actualicen al instante (sin esperar al evento Realtime).
+    ref.invalidate(notificationStreamProvider);
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

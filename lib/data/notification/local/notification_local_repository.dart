@@ -39,6 +39,16 @@ class NotificationLocalRepository implements NotificationRepository {
   }
 
   @override
+  Future<void> markAllRead() async {
+    final map = _box.toMap();
+    for (final entry in map.entries) {
+      if (!entry.value.read) {
+        await _box.put(entry.key, entry.value.copyWith(read: true));
+      }
+    }
+  }
+
+  @override
   Future<int> unreadCount(String userId) async {
     final prefix = 'notif:$userId:';
     final map = _box.toMap();

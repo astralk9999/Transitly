@@ -73,10 +73,21 @@ final notificationStreamProvider =
 /// nativa del sistema vía [LocalPushService]. No produce valor.
 final pushBridgeProvider = Provider<void>((ref) {
   final seen = <String>{};
+  // La primera emisión es el fetch inicial (notificaciones previas a abrir
+  // la app). No disparamos push por ellas; solo poblamos `seen` para que
+  // las que lleguen DESPUÉS por Realtime sí salten.
+  var primed = false;
   ref.listen<AsyncValue<List<AppNotification>>>(notificationStreamProvider,
       (prev, next) {
     final list = next.valueOrNull;
     if (list == null) return;
+    if (!primed) {
+      primed = true;
+      for (final n in list) {
+        seen.add(n.id);
+      }
+      return;
+    }
     // Solo notificar las NO leídas para no spamear al re-suscribir.
     final fresh = list.where((n) => !n.read && !seen.contains(n.id)).toList();
     for (final n in fresh) {

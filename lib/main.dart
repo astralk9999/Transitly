@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:home_widget/home_widget.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -222,6 +224,20 @@ void main() async {
   }
 
   final mockData = await MockDataService.init();
+
+  // Si hay un snapshot offline guardado (sincronizado desde Supabase), lo
+  // cargamos encima del asset para tener las líneas al día sin red.
+  try {
+    final dir = await getApplicationDocumentsDirectory();
+    final snap = File('${dir.path}/comujesa_snapshot.json');
+    if (await snap.exists()) {
+      final raw = await snap.readAsString();
+      await mockData.loadFromSnapshotString(raw, label: 'snapshot');
+      AppLogger.info('Snapshot', 'loaded local snapshot at boot');
+    }
+  } catch (e) {
+    AppLogger.warn('Snapshot', 'boot snapshot load failed', e);
+  }
 
   final container = ProviderContainer(
     observers: const [TransitProviderObserver()],

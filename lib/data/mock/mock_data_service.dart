@@ -68,6 +68,22 @@ class MockDataService {
     return svc;
   }
 
+  /// Origen de los últimos datos cargados: 'asset' o 'snapshot'.
+  String dataSource = 'asset';
+
+  /// Carga datos desde un JSON crudo (snapshot offline generado desde
+  /// Supabase). Si el parseo falla, hace fallback al asset empaquetado para no
+  /// dejar la app sin datos.
+  Future<void> loadFromSnapshotString(String raw, {required String label}) async {
+    try {
+      _processRaw(raw);
+      dataSource = label;
+    } catch (e) {
+      AppLogger.warn(_logTag, 'snapshot parse failed, fallback to asset', e);
+      await _loadFromAsset();
+    }
+  }
+
   /// Vuelve a leer el JSON desde assets y re-parsea en la misma instancia.
   /// Permite a la UI "recargar" los datos sin reiniciar la app.
   Future<void> reload() => _loadFromAsset();
@@ -94,6 +110,13 @@ class MockDataService {
       );
     }
 
+    _processRaw(raw);
+    dataSource = 'asset';
+  }
+
+  /// Decodifica y parsea el JSON crudo en la instancia. Compartido por la
+  /// carga desde asset y desde snapshot offline.
+  void _processRaw(String raw) {
     Map<String, dynamic> data;
     try {
       final decoded = json.decode(raw);

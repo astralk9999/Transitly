@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../data/mock/mock_data_service.dart';
 import '../../shared/providers/route_lookup_providers.dart';
+import '../../shared/providers/search_selection_provider.dart';
 import '../feedback/route_feedback_sheet.dart';
 import '../incidents/report_incident_sheet.dart';
 import '../../shared/widgets/responsive_scaffold.dart';
 import '../../shared/widgets/transit_chip.dart';
 import 'widgets/stop_timetable_section.dart';
+import 'widgets/stop_full_timetable_sheet.dart';
 
 class StopDetailScreen extends ConsumerWidget {
   const StopDetailScreen({super.key, required this.stopId});
@@ -129,6 +131,17 @@ class StopDetailScreen extends ConsumerWidget {
                     _actionButton(
                       context,
                       c,
+                      Icons.schedule,
+                      'Horario',
+                      onTap: () => showStopFullTimetableSheet(
+                        context,
+                        stopId: stopId,
+                        stopName: stop.name,
+                      ),
+                    ),
+                    _actionButton(
+                      context,
+                      c,
                       Icons.warning_amber,
                       'Reportar',
                       onTap: () => showReportIncidentSheet(context, ref: ref, stop: stop),
@@ -163,27 +176,22 @@ class StopDetailScreen extends ConsumerWidget {
                       c,
                       Icons.navigation,
                       'Cómo llegar',
-                      onTap: () async {
-                        // Abre la app de mapas del dispositivo con
-                        // direcciones a la parada. Google Maps URL
-                        // intent funciona en Android (Google Maps app)
-                        // y cae a la web en otros casos.
-                        final url = Uri.parse(
-                          'https://www.google.com/maps/dir/?api=1'
-                          '&destination=${stop.lat},${stop.lng}'
-                          '&travelmode=walking',
+                      onTap: () {
+                        // Marca la parada en el mapa de la PROPIA app (mismo
+                        // patrón que el buscador: pin destacado + centrado),
+                        // en lugar de abrir Google Maps externo.
+                        ref.read(searchSelectionProvider.notifier).state =
+                            SearchSelection(
+                          id: 'stop-$stopId',
+                          position: LatLng(stop.lat, stop.lng),
+                          title: stop.name,
+                          subtitle: stop.officialCode.isNotEmpty
+                              ? 'Parada ${stop.officialCode}'
+                              : 'Parada',
+                          icon: Icons.location_on,
+                          pushPath: '/stop/$stopId',
                         );
-                        if (await canLaunchUrl(url)) {
-                          await launchUrl(url,
-                              mode: LaunchMode.externalApplication);
-                        } else if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('No se pudo abrir Maps'),
-                              behavior: SnackBarBehavior.floating,
-                            ),
-                          );
-                        }
+                        context.go('/home/mapa');
                       },
                     ),
                   ],

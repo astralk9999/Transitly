@@ -72,17 +72,11 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     final c = TransitColorScheme.of(isDark);
     final l10n = AppLocalizations.of(context);
 
-    // GoRouter no tiene refreshListenable; cuando Supabase autentica
-    // (Google o email) el authStateProvider emite AuthAuthenticated pero
-    // el redirect_guard no se ejecuta hasta que cambia la ruta. Esto
-    // navega manualmente al home en cuanto detectamos el cambio.
-    ref.listen<AsyncValue<AuthSessionState>>(authStateProvider, (prev, next) {
-      final state = next.valueOrNull;
-      if (state is AuthAuthenticated && mounted) {
-        AppLogger.info(_logTag, 'auth detected → navigating /home/inicio');
-        context.go('/home/inicio');
-      }
-    });
+    // La navegación tras login la hace go_router vía `refreshListenable`
+    // (re-evalúa el redirect al cambiar el auth). NO navegamos a mano aquí:
+    // con OAuth, el deep link ya dispara el redirect y una segunda navegación
+    // manual montaba HomeShell dos veces → "Duplicate GlobalKey" / pantalla de
+    // error. Una sola fuente de navegación evita el crash.
 
     return Scaffold(
       backgroundColor: Colors.transparent,

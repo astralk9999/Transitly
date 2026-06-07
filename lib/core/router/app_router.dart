@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import 'error_builder.dart';
 import 'redirect_guards.dart';
+import '../../shared/providers/auth_provider.dart';
 import '../../features/auth/signin_screen.dart';
 import '../../features/auth/auth_callback_screen.dart';
 import '../../features/auth/signup_screen.dart';
@@ -97,8 +98,18 @@ void setWidgetLaunchPath(String? path) {
 }
 
 final routerProvider = Provider<GoRouter>((ref) {
+  // refreshListenable: cuando cambia el estado de auth (p.ej. al volver del
+  // login OAuth por deep link), go_router re-evalúa el `redirect` y navega
+  // SOLO una vez. Sin esto, las pantallas navegaban a mano y, con OAuth, el
+  // deep link + esa navegación coincidían → "Duplicate GlobalKey" (HomeShell
+  // montado dos veces) y la pantalla de error.
+  final authRefresh = ValueNotifier<int>(0);
+  ref.listen(authStateProvider, (_, __) => authRefresh.value++);
+  ref.onDispose(authRefresh.dispose);
+
   return GoRouter(
     initialLocation: ref.watch(routerInitialLocationProvider),
+    refreshListenable: authRefresh,
     errorBuilder: notFoundErrorBuilder,
     redirect: (context, state) => authRedirect(ref, state),
     routes: [

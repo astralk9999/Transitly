@@ -60,8 +60,10 @@ void main() async {
     if (canary.pendingChange != null) {
       await _revertSensitiveSetting(canary.pendingChange!);
     }
-    if (canary.crashStreak >= 1) {
-      // 2+ crashes consecutivos → recovery mode
+    if (canary.crashStreak >= 3) {
+      // 3+ crashes consecutivos → recovery mode. Antes el umbral era 1
+      // (excesivo: un solo crash inocuo dejaba al usuario atrapado en
+      // la pantalla de recovery sin poder volver atrás).
       runApp(ProviderScope(
         overrides: [
           bootCanaryStateProvider.overrideWith((ref) => canary),

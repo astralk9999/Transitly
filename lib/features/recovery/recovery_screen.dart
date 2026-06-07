@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 
@@ -81,33 +82,32 @@ class RecoveryScreen extends ConsumerWidget {
     try {
       final box = await Hive.openBox<Map<dynamic, dynamic>>(_guestBoxName);
       await box.delete('prefs');
-      await BootCanary.markStable();
     } catch (_) {}
-    if (context.mounted) {
-      _launchApp(context);
-    }
+    await BootCanary.markStable();
+    await _exitToRelaunch(context);
   }
 
   Future<void> _continueAnyway(BuildContext context) async {
     await BootCanary.markPendingSensitive('');
     await BootCanary.markStable();
-    if (context.mounted) {
-      _launchApp(context);
-    }
+    await _exitToRelaunch(context);
   }
 
-  void _launchApp(BuildContext context) {
-    final navigator = Navigator.of(context, rootNavigator: true);
-    // Relanzamos la app del mismo proceso sin restart; cerramos esta activity y
-    // abrimos la normal. En la práctica, al no haber otra pantalla, hacemos pop.
-    // Como MaterialApp.router no tiene Navigator padre, flujo: quitamos esta pantalla
-    // y dejamos que el main.dart original monte TransitlyApp.
-    if (navigator.canPop()) {
-      navigator.pop();
+  /// El árbol Flutter actual está dentro de un MaterialApp ya en vivo, por
+  /// lo que no podemos "volver a llamar main()" para cargar TransitlyApp.
+  /// Lo más fiable y portable es cerrar la app limpiamente; al reabrirla
+  /// el canary ya está STABLE y arranca por el camino normal.
+  Future<void> _exitToRelaunch(BuildContext context) async {
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+              'Configuración restaurada. Vuelve a abrir Transitly para continuar.'),
+          duration: Duration(seconds: 3),
+        ),
+      );
     }
-    // Forzamos la salida del recovery: matamos y relanzamos para que main.dart
-    // tome el nuevo estado del canary (STABLE).
-    // Estrategia simple: salimos. El usuario reabre la app manualmente.
-    // Si está en debug, flutter run se reconectará.
+    await Future<void>.delayed(const Duration(milliseconds: 600));
+    await SystemNavigator.pop();
   }
 }

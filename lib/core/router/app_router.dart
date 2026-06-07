@@ -34,6 +34,7 @@ import '../../features/home/tabs/profile_tab.dart';
 import '../../features/home/tabs/search_tab.dart';
 import '../../features/management/manager_inbox_screen.dart';
 import '../../features/management/route_editor_screen.dart';
+import '../../features/management/admin_route_wizard.dart';
 import '../../features/management/route_schedules_editor_screen.dart';
 import '../../features/management/route_stops_editor_screen.dart';
 import '../../features/management/routes_management_screen.dart';
@@ -325,6 +326,16 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/management/routes/new',
+        pageBuilder: (context, state) => _slide(
+          state,
+          AdminRouteWizard(
+            initialOperatorId: state.uri.queryParameters['operator'],
+          ),
+        ),
+      ),
+      // Editor simple (formulario) para edición rápida de campos básicos.
+      GoRoute(
+        path: '/management/routes/new-simple',
         pageBuilder: (context, state) => _slide(
           state,
           RouteEditorScreen(

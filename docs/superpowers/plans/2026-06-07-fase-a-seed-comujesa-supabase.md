@@ -12,6 +12,20 @@
 
 ---
 
+## Estado de ejecución (2026-06-07) — SEED APLICADO ✅
+
+- Tasks 1-5 (generador) ✅ commiteadas (`75d5bfcf`). Mejora: dedup de paradas por coordenada exacta (598→**306 paradas físicas**) — arregla en origen el multi-línea por parada.
+- **Tasks 6-7 (aplicar + idempotencia) ✅ HECHAS** con una desviación respecto al método original:
+  - El SQL completo (812 KB, trazado a máxima resolución) no cabía vía MCP sin saturar el contexto del agente, y no hay psql/service-role local (solo anon key).
+  - Solución: modo `node tools/seed_comujesa.mjs --compact` (sin UUIDs, `ON CONFLICT (operator_id, gtfs_*)`, `route_stops`/`schedules` por `JOIN` de código, geom decimado a **lod1**) → `compact_a_stops_routes.sql` (90 KB) + `compact_b_routestops_schedules.sql` (46 KB).
+  - Aplicado con `node tools/apply_sql.mjs <archivo>` (Supabase **Management API** `/database/query`, lee el PAT de `.mcp.json`, no vuelca el SQL al contexto). Commit `748f76d5`.
+  - **Verificado:** 20 rutas, 306 paradas, 598 route_stops, 889 horarios; 20/20 con trazado; 0 oficiales inválidas; idempotente (re-aplicar B no duplica); L1 = 19 paradas en orden + 21/15/11 horarios.
+  - **Nota:** el trazado en `routes.geom` es lod1 (suficiente para el mapa); el detalle lod4 completo permanece en el asset JSON y se podrá subir en Fase B (snapshot) si se quiere máxima fidelidad en la BD.
+- **Task 8 (fix `migrate_comujesa.dart`)**: SUPERSEDED por el pipeline `seed_comujesa.mjs --compact` + `apply_sql.mjs` (vía canónica re-ejecutable). Opcional; pendiente solo si se quiere la vía dart con service key.
+- **Task 9 (verificación funcional en la app)**: PENDIENTE — el usuario inicia sesión como admin y confirma que ve las 20 líneas en Gestión y los trazados en el mapa.
+
+---
+
 ## Hechos de la BD (verificados)
 
 - `routes(id uuid PK, operator_id uuid, source route_source, status route_status, code text, name text NOT NULL, description text, color text, owner_id uuid, gtfs_route_id text, geom geometry, metadata jsonb NOT NULL, ...)`.

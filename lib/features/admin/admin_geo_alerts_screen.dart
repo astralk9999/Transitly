@@ -10,6 +10,7 @@ import '../../core/utils/app_logger.dart';
 import '../../core/utils/uuid.dart';
 import '../../data/geo_alerts/geo_alerts_repository.dart';
 import '../../data/mock/mock_data_service.dart';
+import '../../data/supabase/supabase_client_provider.dart';
 import '../../shared/models/enums.dart';
 import '../../shared/models/geo_alert_model.dart';
 import '../../shared/models/route_model.dart';
@@ -76,40 +77,64 @@ class _AdminGeoAlertsScreenState extends ConsumerState<AdminGeoAlertsScreen> {
   }
 
   Future<void> _onCreate() async {
-    final result = await Navigator.of(context).push<GeoAlertModel>(
+    final result = await Navigator.of(context).push<List<dynamic>>(
       MaterialPageRoute(
         builder: (_) => const _GeoAlertEditorScreen(),
         fullscreenDialog: true,
       ),
     );
     if (result == null || !mounted) return;
+    final model = result[0] as GeoAlertModel;
+    final broadcast = result[1] as bool;
     final messenger = ScaffoldMessenger.of(context);
     try {
-      await ref.read(geoAlertsRepositoryProvider).create(result);
+      final saved = await ref
+          .read(geoAlertsRepositoryProvider)
+          .create(model);
+      if (broadcast) await _broadcast(saved.id);
       await _load();
       ref.invalidate(activeGeoAlertsProvider);
-      messenger.showSnackBar(const SnackBar(content: Text('Aviso creado')));
+      messenger.showSnackBar(SnackBar(
+          content: Text(broadcast
+              ? 'Aviso creado y difundido'
+              : 'Aviso creado')));
     } catch (e) {
       messenger.showSnackBar(SnackBar(content: Text('Error: $e')));
     }
   }
 
   Future<void> _onEdit(GeoAlertModel a) async {
-    final result = await Navigator.of(context).push<GeoAlertModel>(
+    final result = await Navigator.of(context).push<List<dynamic>>(
       MaterialPageRoute(
         builder: (_) => _GeoAlertEditorScreen(initial: a),
         fullscreenDialog: true,
       ),
     );
     if (result == null || !mounted) return;
+    final model = result[0] as GeoAlertModel;
+    final broadcast = result[1] as bool;
     final messenger = ScaffoldMessenger.of(context);
     try {
-      await ref.read(geoAlertsRepositoryProvider).update(result);
+      await ref.read(geoAlertsRepositoryProvider).update(model);
+      if (broadcast) await _broadcast(model.id);
       await _load();
       ref.invalidate(activeGeoAlertsProvider);
-      messenger.showSnackBar(const SnackBar(content: Text('Aviso actualizado')));
+      messenger.showSnackBar(SnackBar(
+          content: Text(broadcast
+              ? 'Aviso actualizado y difundido'
+              : 'Aviso actualizado')));
     } catch (e) {
       messenger.showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
+  }
+
+  Future<void> _broadcast(String alertId) async {
+    try {
+      await ref
+          .read(supabaseClientProvider)
+          .rpc('admin_broadcast_alert', params: {'p_alert_id': alertId});
+    } catch (e) {
+      AppLogger.warn('AdminGeoAlerts', 'broadcast failed', e);
     }
   }
 
@@ -486,15 +511,27 @@ class _AdminGeoAlertsScreenState extends ConsumerState<AdminGeoAlertsScreen> {
                 spacing: 6,
                 runSpacing: 4,
                 children: [
-                  _miniBadge(c,
-                      icon: Icons.place_outlined,
-                      label:
-                          '${a.centerLat.toStringAsFixed(4)}, ${a.centerLng.toStringAsFixed(4)}',
-                      color: c.accent),
-                  _miniBadge(c,
-                      icon: Icons.radio_button_unchecked,
-                      label: '${a.radiusM} m',
-                      color: const Color(0xFF2196F3)),
+                  if (a.isGlobal)
+                    _miniBadge(c,
+                        icon: Icons.public,
+                        label: 'GLOBAL',
+                        color: const Color(0xFF9C27B0))
+                  else ...[
+                    _miniBadge(c,
+                        icon: Icons.place_outlined,
+                        label:
+                            '${(a.centerLat ?? 0).toStringAsFixed(4)}, ${(a.centerLng ?? 0).toStringAsFixed(4)}',
+                        color: c.accent),
+                    _miniBadge(c,
+                        icon: Icons.radio_button_unchecked,
+                        label: '${a.radiusM ?? 0} m',
+                        color: const Color(0xFF2196F3)),
+                  ],
+                  if (a.targetRole != null)
+                    _miniBadge(c,
+                        icon: Icons.person_outline,
+                        label: a.targetRole!,
+                        color: c.textMid),
                   if (routes.isEmpty)
                     _miniBadge(c,
                         icon: Icons.public,
@@ -637,6 +674,11 @@ class _GeoAlertEditorScreenState
   ServiceType? _routeTypeFilter;
   bool _showAllRoutes = false;
   static const _routesPageSize = 12;
+  bool _isGlobal = false;
+  String? _targetRole; // null = todos
+  DateTime? _expiresAt;
+  DateTime? _scheduledAt;
+  final _actionUrlCtrl = TextEditingController();
 
   @override
   void initState() {
@@ -645,10 +687,16 @@ class _GeoAlertEditorScreenState
     if (i != null) {
       _titleCtrl.text = i.title;
       _bodyCtrl.text = i.body;
-      _center = LatLng(i.centerLat, i.centerLng);
-      _radius = i.radiusM.toDouble();
+      _center = LatLng(
+          i.centerLat ?? 36.6850, i.centerLng ?? -6.1376);
+      _radius = (i.radiusM ?? 500).toDouble();
       _severity = i.severity;
       _selectedRoutes.addAll(i.affectedRouteIds);
+      _isGlobal = i.isGlobal;
+      _targetRole = i.targetRole;
+      _expiresAt = i.expiresAt;
+      _scheduledAt = i.scheduledAt;
+      _actionUrlCtrl.text = i.actionUrl ?? '';
     } else {
       _center = const LatLng(36.6850, -6.1376); // Jerez
       _radius = 500;
@@ -661,6 +709,7 @@ class _GeoAlertEditorScreenState
     _titleCtrl.dispose();
     _bodyCtrl.dispose();
     _routeSearchCtrl.dispose();
+    _actionUrlCtrl.dispose();
     super.dispose();
   }
 
@@ -668,24 +717,51 @@ class _GeoAlertEditorScreenState
     setState(() => _center = pos);
   }
 
-  void _submit() {
+  void _submit({bool broadcast = false}) {
     if (!_formKey.currentState!.validate()) return;
     final base = widget.initial;
+    final url = _actionUrlCtrl.text.trim();
     final out = GeoAlertModel(
       id: base?.id ?? generateUuidV4(),
       title: _titleCtrl.text.trim(),
       body: _bodyCtrl.text.trim(),
       severity: _severity,
-      centerLat: _center.latitude,
-      centerLng: _center.longitude,
-      radiusM: _radius.round(),
+      centerLat: _isGlobal ? null : _center.latitude,
+      centerLng: _isGlobal ? null : _center.longitude,
+      radiusM: _isGlobal ? null : _radius.round(),
       active: base?.active ?? true,
       createdBy: base?.createdBy,
       createdAt: base?.createdAt,
-      expiresAt: base?.expiresAt,
+      expiresAt: _expiresAt,
       affectedRouteIds: _selectedRoutes.toList(),
+      isGlobal: _isGlobal,
+      targetRole: _targetRole,
+      scheduledAt: _scheduledAt,
+      actionUrl: url.isEmpty ? null : url,
     );
-    Navigator.of(context).pop(out);
+    Navigator.of(context).pop(<dynamic>[out, broadcast]);
+  }
+
+  Future<void> _pickDate(BuildContext ctx,
+      {required DateTime? current,
+      required ValueChanged<DateTime?> onPicked}) async {
+    final now = DateTime.now();
+    final initial = current ?? now.add(const Duration(hours: 1));
+    final date = await showDatePicker(
+      context: ctx,
+      initialDate: initial,
+      firstDate: now.subtract(const Duration(days: 1)),
+      lastDate: now.add(const Duration(days: 365)),
+    );
+    if (date == null) return;
+    if (!ctx.mounted) return;
+    final time = await showTimePicker(
+      context: ctx,
+      initialTime: TimeOfDay.fromDateTime(initial),
+    );
+    if (time == null) return;
+    onPicked(DateTime(
+        date.year, date.month, date.day, time.hour, time.minute));
   }
 
   @override
@@ -742,10 +818,75 @@ class _GeoAlertEditorScreenState
                 ],
               ),
               const SizedBox(height: 20),
-              _section(c, Icons.place_outlined,
-                  'Ubicación y radio (toca el mapa para colocar)'),
+              _section(c, Icons.tune, 'Tipo y destinatarios'),
               const SizedBox(height: 8),
-              Container(
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  _typeToggleChip(c, false, 'Geo',
+                      Icons.location_on_outlined, c.accent),
+                  _typeToggleChip(c, true, 'Global',
+                      Icons.public, const Color(0xFF9C27B0)),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Text(
+                  _isGlobal
+                      ? 'El aviso se envía a TODOS los usuarios (filtrable por rol).'
+                      : 'El aviso solo aparece a quienes estén dentro del radio.',
+                  style: TransitTypography.bodySmall(c.textMid)),
+              const SizedBox(height: 12),
+              Text('Rol destinatario',
+                  style: TransitTypography.bodySmall(c.textMid)),
+              const SizedBox(height: 6),
+              Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: [
+                  _roleChip(c, null, 'Todos'),
+                  _roleChip(c, 'passenger', 'Pasajeros'),
+                  _roleChip(c, 'driver', 'Conductores'),
+                  _roleChip(c, 'operatorAdmin', 'Op. Admin'),
+                  _roleChip(c, 'moderator', 'Moderadores'),
+                  _roleChip(c, 'admin', 'Admins'),
+                ],
+              ),
+              const SizedBox(height: 20),
+              _section(c, Icons.schedule, 'Programación y expiración'),
+              const SizedBox(height: 8),
+              _dateRow(c,
+                  label: 'Programar para',
+                  value: _scheduledAt,
+                  icon: Icons.event,
+                  onPick: () => _pickDate(context,
+                      current: _scheduledAt,
+                      onPicked: (d) =>
+                          setState(() => _scheduledAt = d)),
+                  onClear: () => setState(() => _scheduledAt = null)),
+              const SizedBox(height: 6),
+              _dateRow(c,
+                  label: 'Expira el',
+                  value: _expiresAt,
+                  icon: Icons.timer_off_outlined,
+                  onPick: () => _pickDate(context,
+                      current: _expiresAt,
+                      onPicked: (d) =>
+                          setState(() => _expiresAt = d)),
+                  onClear: () => setState(() => _expiresAt = null)),
+              const SizedBox(height: 20),
+              _section(c, Icons.link, 'URL de acción (opcional)'),
+              const SizedBox(height: 8),
+              TransitInput(
+                hint: 'https://… o transitly://route/L1',
+                controller: _actionUrlCtrl,
+              ),
+              if (!_isGlobal) ...[
+                const SizedBox(height: 20),
+                _section(c, Icons.place_outlined,
+                    'Ubicación y radio (toca el mapa para colocar)'),
+                const SizedBox(height: 8),
+                Container(
                 height: 280,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
@@ -844,6 +985,7 @@ class _GeoAlertEditorScreenState
                 label: '${_radius.round()} m',
                 onChanged: (v) => setState(() => _radius = v),
               ),
+              ], // cierra el if (!_isGlobal) ...[
               const SizedBox(height: 20),
               _section(c, Icons.route_outlined,
                   'Rutas afectadas (vacío = todas)'),
@@ -863,7 +1005,20 @@ class _GeoAlertEditorScreenState
               const SizedBox(height: 32),
               TransitButton(
                 label: isEditing ? 'GUARDAR' : 'CREAR',
-                onPressed: _submit,
+                onPressed: () => _submit(),
+              ),
+              const SizedBox(height: 8),
+              OutlinedButton.icon(
+                onPressed: () => _submit(broadcast: true),
+                icon: const Icon(Icons.send),
+                label: Text(isEditing
+                    ? 'GUARDAR Y DIFUNDIR AHORA'
+                    : 'CREAR Y DIFUNDIR AHORA'),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: c.accent,
+                  minimumSize: const Size.fromHeight(48),
+                  side: BorderSide(color: c.accent),
+                ),
               ),
               const SizedBox(height: 12),
               TextButton(
@@ -893,6 +1048,116 @@ class _GeoAlertEditorScreenState
               )),
         ),
       ],
+    );
+  }
+
+  Widget _typeToggleChip(TransitColorScheme c, bool isGlobalValue,
+      String label, IconData icon, Color color) {
+    final selected = _isGlobal == isGlobalValue;
+    return InkWell(
+      borderRadius: BorderRadius.circular(10),
+      onTap: () => setState(() => _isGlobal = isGlobalValue),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        decoration: BoxDecoration(
+          color: selected ? color.withValues(alpha: 0.18) : c.bgRaised,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+              color: selected ? color : c.border,
+              width: selected ? 1.5 : 0.5),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 16, color: selected ? color : c.textMid),
+            const SizedBox(width: 6),
+            Text(label,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight:
+                      selected ? FontWeight.w700 : FontWeight.w500,
+                  color: selected ? color : c.textHi,
+                )),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _roleChip(TransitColorScheme c, String? role, String label) {
+    final selected = _targetRole == role;
+    return InkWell(
+      borderRadius: BorderRadius.circular(16),
+      onTap: () => setState(() => _targetRole = role),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: selected ? c.accent.withValues(alpha: 0.18) : c.bgRaised,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+              color: selected ? c.accent : c.border,
+              width: selected ? 1 : 0.5),
+        ),
+        child: Text(label,
+            style: TextStyle(
+              fontSize: 11,
+              color: selected ? c.accent : c.textHi,
+              fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+            )),
+      ),
+    );
+  }
+
+  Widget _dateRow(TransitColorScheme c,
+      {required String label,
+      required DateTime? value,
+      required IconData icon,
+      required VoidCallback onPick,
+      required VoidCallback onClear}) {
+    String fmt(DateTime d) {
+      String pad(int n) => n.toString().padLeft(2, '0');
+      return '${d.year}-${pad(d.month)}-${pad(d.day)} ${pad(d.hour)}:${pad(d.minute)}';
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      decoration: BoxDecoration(
+        color: c.bgRaised,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: c.border, width: 0.5),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, size: 14, color: c.textMid),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              value == null ? '$label: —' : '$label: ${fmt(value)}',
+              style: TransitTypography.bodySmall(
+                  value == null ? c.textLo : c.textHi),
+            ),
+          ),
+          if (value != null)
+            IconButton(
+              icon: Icon(Icons.close, size: 14, color: c.textMid),
+              onPressed: onClear,
+              constraints: const BoxConstraints(),
+              padding: EdgeInsets.zero,
+              tooltip: 'Quitar',
+            ),
+          TextButton.icon(
+            onPressed: onPick,
+            icon: const Icon(Icons.calendar_month, size: 14),
+            label: Text(value == null ? 'Elegir' : 'Cambiar'),
+            style: TextButton.styleFrom(
+              foregroundColor: c.accent,
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              minimumSize: Size.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+          ),
+        ],
+      ),
     );
   }
 

@@ -14,14 +14,18 @@ abstract class GeoAlertModel with _$GeoAlertModel {
     required String title,
     required String body,
     @Default(GeoAlertSeverity.info) GeoAlertSeverity severity,
-    required double centerLat,
-    required double centerLng,
-    required int radiusM,
+    double? centerLat,
+    double? centerLng,
+    int? radiusM,
     @Default(true) bool active,
     String? createdBy,
     DateTime? createdAt,
     DateTime? expiresAt,
     @Default(<String>[]) List<String> affectedRouteIds,
+    @Default(false) bool isGlobal,
+    String? targetRole,
+    DateTime? scheduledAt,
+    String? actionUrl,
   }) = _GeoAlertModel;
 
   static GeoAlertModel fromJson(Map<String, dynamic> j) => GeoAlertModel(
@@ -33,9 +37,9 @@ abstract class GeoAlertModel with _$GeoAlertModel {
           'critical' => GeoAlertSeverity.critical,
           _ => GeoAlertSeverity.info,
         },
-        centerLat: (j['center_lat'] as num).toDouble(),
-        centerLng: (j['center_lng'] as num).toDouble(),
-        radiusM: (j['radius_m'] as num).toInt(),
+        centerLat: (j['center_lat'] as num?)?.toDouble(),
+        centerLng: (j['center_lng'] as num?)?.toDouble(),
+        radiusM: (j['radius_m'] as num?)?.toInt(),
         active: j['active'] as bool? ?? true,
         createdBy: j['created_by'] as String?,
         createdAt: j['created_at'] != null
@@ -48,6 +52,12 @@ abstract class GeoAlertModel with _$GeoAlertModel {
                 ?.map((e) => e.toString())
                 .toList() ??
             const <String>[],
+        isGlobal: j['is_global'] as bool? ?? false,
+        targetRole: j['target_role'] as String?,
+        scheduledAt: j['scheduled_at'] != null
+            ? DateTime.tryParse(j['scheduled_at'] as String)
+            : null,
+        actionUrl: j['action_url'] as String?,
       );
 
   Map<String, dynamic> toInsertJson(String createdByUserId) => {
@@ -60,6 +70,11 @@ abstract class GeoAlertModel with _$GeoAlertModel {
         'active': active,
         'created_by': createdByUserId,
         'affected_route_ids': affectedRouteIds,
+        'is_global': isGlobal,
+        if (targetRole != null) 'target_role': targetRole,
+        if (scheduledAt != null)
+          'scheduled_at': scheduledAt!.toIso8601String(),
+        if (actionUrl != null) 'action_url': actionUrl,
         if (expiresAt != null) 'expires_at': expiresAt!.toIso8601String(),
       };
 }

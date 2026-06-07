@@ -27,10 +27,13 @@ bool _alertAppliesToUser(
 }
 
 bool _userInRadius(LatLng userPos, GeoAlertModel a) {
+  // Globales aplican siempre, sin ubicación necesaria.
+  if (a.isGlobal) return true;
+  if (a.centerLat == null || a.centerLng == null) return false;
   const dist = Distance();
   final d = dist.as(LengthUnit.Meter, userPos,
-      LatLng(a.centerLat, a.centerLng));
-  return d <= a.radiusM;
+      LatLng(a.centerLat!, a.centerLng!));
+  return d <= (a.radiusM ?? 0);
 }
 
 /// Lista de avisos activos cuyo radio contiene la posición del usuario

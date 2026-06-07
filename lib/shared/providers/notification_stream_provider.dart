@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../core/utils/app_logger.dart';
+import '../../data/notification/local_push_service.dart';
 import '../../data/notification/notification_repository_provider.dart';
 import '../../data/supabase/supabase_client_provider.dart';
 import '../models/app_notification.dart';
@@ -66,6 +67,66 @@ final notificationStreamProvider =
 
   return controller.stream;
 });
+
+/// Activable provider que escucha el stream de notificaciones y, cuando
+/// aparece una nueva (id no visto antes), dispara una notificación
+/// nativa del sistema vía [LocalPushService]. No produce valor.
+final pushBridgeProvider = Provider<void>((ref) {
+  final seen = <String>{};
+  ref.listen<AsyncValue<List<AppNotification>>>(notificationStreamProvider,
+      (prev, next) {
+    final list = next.valueOrNull;
+    if (list == null) return;
+    // Solo notificar las NO leídas para no spamear al re-suscribir.
+    final fresh = list.where((n) => !n.read && !seen.contains(n.id)).toList();
+    for (final n in fresh) {
+      seen.add(n.id);
+      final title = (n.payload['title'] as String?) ?? _defaultTitle(n);
+      final body = (n.payload['body'] as String?) ?? '';
+      final severity = n.payload['severity'] as String?;
+      // Hash estable a int para el ID nativo (signed 32 bit).
+      final id = n.id.hashCode & 0x7fffffff;
+      _LocalPushSink.show(id: id, title: title, body: body, severity: severity);
+    }
+    // Limpia ids viejos para no crecer indefinidamente.
+    if (seen.length > 200) {
+      seen.removeWhere((id) => !list.any((n) => n.id == id));
+    }
+  }, fireImmediately: true);
+});
+
+String _defaultTitle(AppNotification n) {
+  switch (n.type) {
+    case AppNotificationType.xpEarned:
+      return '+XP ganado';
+    case AppNotificationType.rankUp:
+      return 'Subiste de rango';
+    case AppNotificationType.incidentResolved:
+      return 'Incidencia resuelta';
+    case AppNotificationType.routePromoted:
+      return 'Ruta promocionada';
+    case AppNotificationType.shareReceived:
+      return 'Compartido contigo';
+    case AppNotificationType.featureRequestReplied:
+      return 'Respuesta a tu sugerencia';
+    case AppNotificationType.busApproachingFavorite:
+      return 'Bus acercándose';
+    case AppNotificationType.custom:
+      return 'Aviso';
+  }
+}
+
+class _LocalPushSink {
+  static Future<void> show({
+    required int id,
+    required String title,
+    required String body,
+    String? severity,
+  }) async {
+    await LocalPushService.instance.show(
+        id: id, title: title, body: body, severity: severity);
+  }
+}
 
 /// Derived count of unread notifications from the stream.
 final unreadCountProvider = Provider.autoDispose<int>((ref) {

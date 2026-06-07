@@ -24,6 +24,7 @@ import 'data/fmtc/tile_prewarmer.dart';
 import 'data/mock/mock_data_service.dart';
 import 'data/mock/mock_realtime_service.dart';
 import 'data/privacy_consent/privacy_consent_repository.dart';
+import 'data/notification/local_push_service.dart';
 import 'data/push/firebase_setup.dart';
 import 'data/push/push_service.dart';
 import 'features/error/env_error_screen.dart';
@@ -128,6 +129,12 @@ void main() async {
       }
     } catch (e) {
       AppLogger.warn('Firebase', 'init failed — push unavailable', e);
+    }
+    // Push local (canal nativo Android) — funciona sin Firebase.
+    try {
+      await LocalPushService.instance.init();
+    } catch (e) {
+      AppLogger.warn('LocalPush', 'init failed', e);
     }
     try {
       final postHogKey = Env.postHogApiKey;

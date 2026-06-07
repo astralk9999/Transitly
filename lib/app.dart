@@ -7,6 +7,7 @@ import 'l10n/generated/app_localizations.dart';
 import 'shared/models/user_preferences.dart';
 import 'shared/providers/geo_alerts_in_radius_provider.dart';
 import 'shared/providers/locale_provider.dart';
+import 'shared/providers/notification_stream_provider.dart';
 import 'shared/providers/theme_notifier.dart';
 import 'shared/providers/theme_provider.dart';
 import 'shared/services/widget_sync_service.dart';
@@ -25,6 +26,8 @@ class TransitlyApp extends ConsumerWidget {
     // Detector de avisos geo en radio → inserta notificaciones cuando
     // el usuario entra en zona de un aviso nuevo.
     ref.watch(geoAlertsAutoNotifyProvider);
+    // Puente notificación BD → push local del sistema Android.
+    ref.watch(pushBridgeProvider);
 
     return MaterialApp.router(
       title: 'Transitly',

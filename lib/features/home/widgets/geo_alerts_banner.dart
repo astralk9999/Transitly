@@ -28,12 +28,17 @@ class GeoAlertsBanner extends ConsumerWidget {
         final relevant = userPos == null
             ? const <GeoAlertModel>[]
             : alerts.where((a) {
+                // Globales aplican siempre.
+                if (a.isGlobal) return true;
+                if (a.centerLat == null || a.centerLng == null) {
+                  return false;
+                }
                 const dist = Distance();
                 final d = dist.as(
                     LengthUnit.Meter,
                     userPos,
-                    LatLng(a.centerLat, a.centerLng));
-                return d <= a.radiusM;
+                    LatLng(a.centerLat!, a.centerLng!));
+                return d <= (a.radiusM ?? 0);
               }).toList();
         if (relevant.isEmpty) return const SizedBox.shrink();
 

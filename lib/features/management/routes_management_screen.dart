@@ -511,10 +511,18 @@ class _State extends ConsumerState<RoutesManagementScreen> {
                 borderRadius: BorderRadius.circular(10),
               ),
               alignment: Alignment.center,
-              child: Text(
-                r.code.isEmpty ? '?' : r.code,
-                style: TransitTypography.bodyPrimary(routeColor)
-                    .copyWith(fontWeight: FontWeight.w800),
+              padding: const EdgeInsets.symmetric(horizontal: 3),
+              // FittedBox: códigos largos (p.ej. "L15-EP") se reducen para
+              // caber en el cuadro de 44px en vez de desbordarlo.
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  r.code.isEmpty ? '?' : r.code,
+                  maxLines: 1,
+                  softWrap: false,
+                  style: TransitTypography.bodyPrimary(routeColor)
+                      .copyWith(fontWeight: FontWeight.w800),
+                ),
               ),
             ),
             const SizedBox(width: 12),

@@ -20,18 +20,28 @@ class TransitChip extends StatelessWidget {
 
     final chip = Container(
       padding: TransitSpacing.paddingChip,
-      constraints: const BoxConstraints(minHeight: TransitSpacing.minTapTarget),
+      constraints: const BoxConstraints(
+        minHeight: TransitSpacing.minTapTarget,
+        // Tope de ancho para que códigos largos (p.ej. "L15-EP") no empujen
+        // ni desborden la fila donde vive el chip.
+        maxWidth: 96,
+      ),
       decoration: BoxDecoration(
         color: c.bgRaised,
         border: Border.all(color: c.border, width: TransitSpacing.strokeThin),
         borderRadius: BorderRadius.circular(TransitSpacing.radiusSm),
       ),
       alignment: Alignment.center,
-      child: Text(
-        code,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        style: TransitTypography.routeCodeSmall(fg),
+      // FittedBox reduce el texto si no cabe, en vez de truncarlo con "…"
+      // (un código truncado sería inútil).
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Text(
+          code,
+          maxLines: 1,
+          softWrap: false,
+          style: TransitTypography.routeCodeSmall(fg),
+        ),
       ),
     );
 

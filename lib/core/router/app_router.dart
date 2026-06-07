@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'error_builder.dart';
 import 'redirect_guards.dart';
 import '../../features/auth/signin_screen.dart';
+import '../../features/auth/auth_callback_screen.dart';
 import '../../features/auth/signup_screen.dart';
 import '../../features/auth/magic_link_screen.dart';
 import '../../features/auth/recover_password_screen.dart';
@@ -111,6 +112,13 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
 
       // ── Auth routes ──
+      // Retorno del login OAuth (deep link transitly://login-callback). Sin
+      // esta ruta go_router daba 404 al volver del navegador de Google.
+      GoRoute(
+        path: '/login-callback',
+        pageBuilder: (context, state) =>
+            _fadeSlow(state, const AuthCallbackScreen()),
+      ),
       GoRoute(
         path: '/sign-in',
         pageBuilder: (context, state) => _slide(state, const SignInScreen()),

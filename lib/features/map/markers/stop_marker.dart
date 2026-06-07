@@ -39,9 +39,10 @@ List<Marker> buildStopMarkers({
       }
     }
 
-    // Tamaños subidos respecto al original (10/6-8) — los iconos
-    // anteriores eran demasiado pequeños y costaba tocarlos.
-    final dotSize = isHub ? 16.0 : (currentZoom < 15 ? 10.0 : 12.0);
+    // Tamaño UNIFORME para todas las paradas (antes los "hub" salían más
+    // grandes que sus vecinas y se veía inconsistente). Solo escala con el
+    // zoom, igual para todas las paradas visibles.
+    final dotSize = currentZoom < 15 ? 11.0 : 13.0;
 
     markers.add(Marker(
       point: LatLng(stop.lat, stop.lng),

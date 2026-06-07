@@ -13,7 +13,6 @@ import '../../shared/models/enums.dart';
 import '../../shared/models/route_stop_model.dart';
 import '../../shared/models/stop_model.dart';
 import '../../shared/providers/derived/schedule_providers.dart';
-import '../../shared/providers/route_lookup_providers.dart';
 import '../../shared/providers/search_selection_provider.dart';
 import '../../shared/providers/user_favorites_provider.dart';
 import '../../shared/widgets/route_favorite_toast.dart';
@@ -23,7 +22,6 @@ import 'widgets/route_detail_alerts_list.dart';
 import 'widgets/route_detail_changelog.dart';
 import 'widgets/route_detail_feedback_section.dart';
 import 'widgets/route_detail_header_section.dart';
-import 'widgets/route_detail_schedule_section.dart';
 import 'widgets/route_detail_timeline.dart';
 
 class RouteDetailScreen extends ConsumerStatefulWidget {
@@ -85,17 +83,6 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
     final favorites = ref.watch(userFavoritesProvider);
     final isFavorite = favorites.contains(widget.routeId);
 
-    final stopToRoutes = ref.watch(stopToRouteCodesProvider);
-    final transfers = <String, List<String>>{};
-    for (final rs in sortedRouteStops) {
-      final others = stopToRoutes[rs.stopId]
-          ?.where((code) => code != route.code)
-          .toList();
-      if (others != null && others.isNotEmpty) {
-        transfers[rs.stopId] = others;
-      }
-    }
-
     final lastTimeMinutes = sortedRouteStops.isNotEmpty
         ? sortedRouteStops.last.timeFromStartMinutes
         : null;
@@ -148,12 +135,13 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
                           RouteDetailTimeline(
                             sortedRouteStops: routeStopsWithTimes,
                             stopsMap: stopsMap,
-                            transfers: transfers,
+                            // En el detalle de UNA línea no mostramos las otras
+                            // líneas que pasan por cada parada (saturaba y se
+                            // salía de pantalla). El horario por parada ya vive
+                            // en la pantalla de parada.
+                            transfers: const {},
                             activeTrip: activeTrip,
                           ),
-                          const SizedBox(height: 24),
-                          RouteDetailScheduleSection(
-                              mockData: mockData, routeId: widget.routeId),
                           const SizedBox(height: 24),
                           RouteDetailChangelog(routeId: widget.routeId),
                           const SizedBox(height: 24),

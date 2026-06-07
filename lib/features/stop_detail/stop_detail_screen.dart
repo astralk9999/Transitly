@@ -15,7 +15,6 @@ import '../incidents/report_incident_sheet.dart';
 import '../../shared/widgets/responsive_scaffold.dart';
 import '../../shared/widgets/transit_chip.dart';
 import 'widgets/stop_timetable_section.dart';
-import 'widgets/stop_full_timetable_sheet.dart';
 
 class StopDetailScreen extends ConsumerWidget {
   const StopDetailScreen({super.key, required this.stopId});
@@ -131,17 +130,6 @@ class StopDetailScreen extends ConsumerWidget {
                     _actionButton(
                       context,
                       c,
-                      Icons.schedule,
-                      'Horario',
-                      onTap: () => showStopFullTimetableSheet(
-                        context,
-                        stopId: stopId,
-                        stopName: stop.name,
-                      ),
-                    ),
-                    _actionButton(
-                      context,
-                      c,
                       Icons.warning_amber,
                       'Reportar',
                       onTap: () => showReportIncidentSheet(context, ref: ref, stop: stop),
@@ -174,12 +162,11 @@ class StopDetailScreen extends ConsumerWidget {
                     _actionButton(
                       context,
                       c,
-                      Icons.navigation,
-                      'Cómo llegar',
+                      Icons.map_outlined,
+                      'Ver en mapa',
                       onTap: () {
                         // Marca la parada en el mapa de la PROPIA app (mismo
-                        // patrón que el buscador: pin destacado + centrado),
-                        // en lugar de abrir Google Maps externo.
+                        // patrón que el buscador: pin destacado + centrado).
                         ref.read(searchSelectionProvider.notifier).state =
                             SearchSelection(
                           id: 'stop-$stopId',

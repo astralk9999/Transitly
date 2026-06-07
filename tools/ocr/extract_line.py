@@ -265,7 +265,7 @@ def main():
         if not nm:
             unmatched.append((ri, '(sin nombre OCR)')); continue
         s, sc = match_stop(nm, stops)
-        if s and sc >= 0.6:
+        if s and sc >= 0.5:
             row_stop[ri] = s['stop_id']
         else:
             unmatched.append((ri, f'{nm!r} (mejor {sc:.2f})'))

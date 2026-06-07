@@ -12,6 +12,15 @@ from statistics import mean
 import fitz  # PyMuPDF
 from rapidocr_onnxruntime import RapidOCR
 
+# La consola de Windows (cp1252) rompe al imprimir nombres OCR con caracteres
+# fuera de su tabla (basura CJK ocasional). Forzamos UTF-8 con reemplazo para
+# que un nombre raro no aborte la escritura del SQL.
+try:
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+except Exception:
+    pass
+
 ROOT = "https://www.jerez.es/fileadmin/Documentos/Autobuses_Urbanos"
 # Verano (LAB/SAB) por elección del proyecto; domingos/festivos (FES) no se
 # publican en verano, así que se toman del horario de invierno (única fuente
@@ -95,11 +104,31 @@ def get_boxes(code, day, outdir):
     if os.path.exists(cache):
         return json.load(open(cache, encoding='utf-8'))
     num = pdf_number(code)
-    season = SEASON[day]
-    # Sufijo en disco distinto por temporada para no mezclar cachés.
-    pdf = os.path.join(outdir, f'LINEA_{num}_{day}_{season[-7:]}.pdf')
-    if not os.path.exists(pdf):
-        urllib.request.urlretrieve(f'{ROOT}/{season}/LINEA_{num}_{day}.pdf', pdf)
+    # Orden de temporadas a intentar: la preferida del día primero, la otra
+    # como fallback (algunas líneas publican un tipo de día solo en una
+    # temporada — p.ej. sábados de L17 solo en invierno).
+    preferred = SEASON[day]
+    seasons = [preferred] + [s for s in ('horario_verano', 'horario_invierno') if s != preferred]
+    pdf = None
+    for season in seasons:
+        cand = os.path.join(outdir, f'LINEA_{num}_{day}_{season[-7:]}.pdf')
+        if os.path.exists(cand) and os.path.getsize(cand) > 1000:
+            pdf = cand
+            break
+        try:
+            import urllib.error
+            req = urllib.request.Request(f'{ROOT}/{season}/LINEA_{num}_{day}.pdf',
+                                         headers={'User-Agent': 'Mozilla/5.0'})
+            data = urllib.request.urlopen(req, timeout=30).read()
+            if len(data) > 1000 and data[:4] == b'%PDF':
+                with open(cand, 'wb') as f:
+                    f.write(data)
+                pdf = cand
+                break
+        except Exception:
+            continue
+    if pdf is None:
+        return []  # sin PDF en ninguna temporada
     doc = fitz.open(pdf)
     all_boxes = []
     y_off = 0
@@ -157,6 +186,35 @@ def row_names(boxes, row_centers, first_time_cx, tol=11):
         frag = sorted((c for c in cands if abs(c[0] - base_cy) <= 4), key=lambda z: z[1])
         names[ri] = ' '.join(t for _, _, t in frag)
     return names
+
+def longest_non_decreasing(values):
+    """Índices que forman la subsecuencia no-decreciente más larga (LIS).
+    Se usa para quedarnos solo con las horas coherentes de una expedición y
+    descartar las celdas con OCR/casado erróneo (las que rompen la monotonía),
+    en vez de mostrar una hora incorrecta."""
+    n = len(values)
+    if n == 0:
+        return set()
+    piles, pile_idx, prev = [], [], [-1] * n
+    for i, v in enumerate(values):
+        lo, hi = 0, len(piles)
+        while lo < hi:
+            mid = (lo + hi) // 2
+            if piles[mid] <= v:
+                lo = mid + 1
+            else:
+                hi = mid
+        if lo > 0:
+            prev[i] = pile_idx[lo - 1]
+        if lo == len(piles):
+            piles.append(v); pile_idx.append(i)
+        else:
+            piles[lo] = v; pile_idx[lo] = i
+    k = pile_idx[-1]
+    keep = set()
+    while k != -1:
+        keep.add(k); k = prev[k]
+    return keep
 
 def match_stop(name, stops):
     n = norm(name)
@@ -236,8 +294,17 @@ def main():
                 sid = row_stop.get(r)
                 if cell and sid:
                     seq.append({'s': sid, 't': cell['t']})
+            # Filtro de monotonía: nos quedamos con la subsecuencia de horas
+            # coherente más larga y descartamos las celdas que rompen el orden
+            # (OCR/casado erróneo). Si tras filtrar se pierde >40% de paradas,
+            # la expedición es poco fiable y se descarta entera.
             if len(seq) >= 2:
-                trips.append(seq)
+                def _m(e):
+                    return int(e['t'][:2]) * 60 + int(e['t'][3:5])
+                keep = longest_non_decreasing([_m(e) for e in seq])
+                clean = [e for i, e in enumerate(seq) if i in keep]
+                if len(clean) >= 2 and len(clean) >= 0.6 * len(seq):
+                    trips.append(clean)
 
     # Resumen de validación
     matched = len(row_stop)

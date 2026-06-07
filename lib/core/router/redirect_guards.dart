@@ -17,6 +17,17 @@ String? authRedirect(Ref ref, GoRouterState state) {
   final isAuth = authState is AuthAuthenticated;
   final loc = state.matchedLocation;
 
+  // Retorno del login OAuth por deep link `transitly://login-callback`. Según
+  // el dispositivo, go_router lo recibe con el HOST 'login-callback' y path
+  // vacío, por lo que no casaba con la ruta '/login-callback' y mostraba un
+  // 404 (sacando la pantalla que escuchaba el authState). Lo interceptamos
+  // aquí, antes del errorBuilder: si ya hay sesión vamos a inicio; si aún se
+  // está procesando, a la pantalla de "completando…" que espera la sesión.
+  final full = state.uri.toString();
+  if (state.uri.host == 'login-callback' || full.contains('login-callback')) {
+    return isAuth ? '/home/inicio' : '/login-callback';
+  }
+
   final isAuthRoute = loc.startsWith('/sign-in') ||
       loc.startsWith('/sign-up') ||
       loc.startsWith('/magic-link') ||

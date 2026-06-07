@@ -12,8 +12,12 @@ from statistics import mean
 import fitz  # PyMuPDF
 from rapidocr_onnxruntime import RapidOCR
 
-BASE = "https://www.jerez.es/fileadmin/Documentos/Autobuses_Urbanos/horario_verano"
-DAY_TYPE = {"LAB": "weekday", "SAB": "saturday"}
+ROOT = "https://www.jerez.es/fileadmin/Documentos/Autobuses_Urbanos"
+# Verano (LAB/SAB) por elección del proyecto; domingos/festivos (FES) no se
+# publican en verano, así que se toman del horario de invierno (única fuente
+# oficial de domingos). Hybrid documentado en el plan.
+SEASON = {"LAB": "horario_verano", "SAB": "horario_verano", "FES": "horario_invierno"}
+DAY_TYPE = {"LAB": "weekday", "SAB": "saturday", "FES": "sunday_holiday"}
 OPERATOR = "00000000-0000-0000-0000-000000000001"
 TIME = re.compile(r'^([0-2]?\d)[:.;]([0-5]\d)([a-zA-Z])?$')
 
@@ -91,9 +95,11 @@ def get_boxes(code, day, outdir):
     if os.path.exists(cache):
         return json.load(open(cache, encoding='utf-8'))
     num = pdf_number(code)
-    pdf = os.path.join(outdir, f'LINEA_{num}_{day}.pdf')
+    season = SEASON[day]
+    # Sufijo en disco distinto por temporada para no mezclar cachés.
+    pdf = os.path.join(outdir, f'LINEA_{num}_{day}_{season[-7:]}.pdf')
     if not os.path.exists(pdf):
-        urllib.request.urlretrieve(f'{BASE}/LINEA_{num}_{day}.pdf', pdf)
+        urllib.request.urlretrieve(f'{ROOT}/{season}/LINEA_{num}_{day}.pdf', pdf)
     doc = fitz.open(pdf)
     all_boxes = []
     y_off = 0
@@ -106,7 +112,11 @@ def get_boxes(code, day, outdir):
             all_boxes.append(it)
         y_off += pix.height
     all_boxes = _dedup(all_boxes)
-    json.dump(all_boxes, open(cache, 'w'), ensure_ascii=False)
+    # Escritura atómica: evita cachés corruptas si el proceso se corta a mitad.
+    tmp = cache + '.tmp'
+    with open(tmp, 'w', encoding='utf-8') as f:
+        json.dump(all_boxes, f, ensure_ascii=False)
+    os.replace(tmp, cache)
     return all_boxes
 
 def parse_times(boxes):

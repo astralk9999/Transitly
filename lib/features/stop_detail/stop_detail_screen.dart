@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -13,8 +12,6 @@ import '../../shared/providers/route_lookup_providers.dart';
 import '../feedback/route_feedback_sheet.dart';
 import '../incidents/report_incident_sheet.dart';
 import '../../shared/widgets/responsive_scaffold.dart';
-import '../../shared/widgets/capacity_indicator.dart';
-import '../../shared/widgets/stagger_list.dart';
 import '../../shared/widgets/transit_chip.dart';
 import 'widgets/stop_timetable_section.dart';
 
@@ -98,141 +95,9 @@ class StopDetailScreen extends ConsumerWidget {
 
                 Divider(height: 32, thickness: 0.5, color: c.border),
 
-                // ── HORARIOS EXACTOS POR LÍNEA (datos oficiales de PDFs) ──
-                // Solo aparece para paradas con horario exacto cargado; si no,
-                // queda "Próximas llegadas" como estimación.
-                StopTimetableSection(stopName: stop.name),
-
-                // ── 2. PRÓXIMAS LLEGADAS ──
-                Semantics(
-                  header: true,
-                  child: Text(AppLocalizations.of(context).sectionUpcomingArrivals,
-                      style: TransitTypography.sectionTitle(c.textMid)),
-                ),
-                const SizedBox(height: 12),
-
-                if (routesAtStop.isEmpty)
-                  Text(AppLocalizations.of(context).stopNoLinesRegistered,
-                      style: TransitTypography.bodySecondary(c.textMid))
-                else
-                  StaggerList(
-                    children: routesAtStop.map((routeId) {
-                      final route = mockData.getRouteById(routeId);
-                      if (route == null) return const SizedBox.shrink();
-
-                      // Cargamos 5 próximas salidas por línea para que
-                      // el usuario vea no solo la inmediata sino también
-                      // las siguientes. Antes era 1 sola → poca info.
-                      final nextDeps =
-                          mockData.getNextDepartures(routeId, stopId, 5);
-                      final activeTrip =
-                          mockData.getActiveTripForRoute(routeId);
-
-                      final now = DateTime.now();
-                      final nowMinutes = now.hour * 60 + now.minute;
-
-                      String timeStr = '--:--';
-                      String countdownStr = '';
-                      bool isNext = false;
-
-                      final nextDep = nextDeps.firstOrNull;
-                      if (nextDep != null) {
-                        timeStr = nextDep.departureTime;
-                        final parts = timeStr.split(':');
-                        final h = parts.length >= 2 ? int.tryParse(parts[0]) : null;
-                        final m = parts.length >= 2 ? int.tryParse(parts[1]) : null;
-                        if (h == null || m == null) {
-                          countdownStr = '';
-                          isNext = false;
-                        } else {
-                          final depMinutes = h * 60 + m;
-                          final diff = depMinutes - nowMinutes;
-                          countdownStr = 'en $diff min';
-                          isNext = diff <= 10;
-                        }
-                      }
-
-                      // Siguientes salidas tras la primera (chips).
-                      final followingTimes = nextDeps
-                          .skip(1)
-                          .map((d) => d.departureTime)
-                          .toList();
-
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: GestureDetector(
-                          onTap: () => context.push('/route/$routeId'),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 10),
-                            decoration: BoxDecoration(
-                              color: c.bgSurface,
-                              border:
-                                  Border.all(color: c.border, width: 0.5),
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    TransitChip(route.code,
-                                        color: route.routeColor),
-                                    const SizedBox(width: 12),
-                                    Text(
-                                      timeStr,
-                                      style: GoogleFonts.ibmPlexMono(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                        color: c.textHi,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Expanded(
-                                      child: Text(
-                                        countdownStr,
-                                        style: GoogleFonts.ibmPlexMono(
-                                          fontSize: 14,
-                                          color: isNext
-                                              ? c.accent
-                                              : c.textMid,
-                                        ),
-                                      ),
-                                    ),
-                                    if (activeTrip != null)
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 8),
-                                        child: CapacityIndicator(
-                                            activeTrip.capacity),
-                                      ),
-                                    Icon(Icons.notifications_none,
-                                        size: 20, color: c.textMid),
-                                  ],
-                                ),
-                                if (followingTimes.isNotEmpty) ...[
-                                  const SizedBox(height: 6),
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.only(left: 44),
-                                    child: Text(
-                                      'Siguientes: ${followingTimes.join(' · ')}',
-                                      style: GoogleFonts.ibmPlexMono(
-                                        fontSize: 11,
-                                        color: c.textLo,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-
-                const SizedBox(height: 24),
+                // ── HORARIOS (fuente única: próxima llegada + horario completo
+                // por línea desde datos oficiales; estimación para el resto) ──
+                StopTimetableSection(stopId: stopId, stopName: stop.name),
 
                 // ── 3. LÍNEAS QUE PASAN ──
                 Semantics(

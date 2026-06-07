@@ -152,6 +152,13 @@ class MockDataService {
     final lines = data['lines'] as List<dynamic>;
     final routeList = <RouteModel>[];
     final stopMap = <String, StopModel>{};
+    // Dedup de paradas FÍSICAS por coordenada exacta. El JSON asigna un
+    // officialCode sintético distinto a cada ocurrencia de parada por línea
+    // (JER-001…JER-598), así que la misma parada física aparece duplicada en
+    // cada línea. Sin esto, al clicar una parada solo se ve "su" línea. Como
+    // ninguna parada comparte coordenada con otra distinta, deduplicar por
+    // coordenada es seguro y hace que varias líneas compartan la misma parada.
+    final coordToCanonicalId = <String, String>{};
     final rStops = <String, List<RouteStopModel>>{};
     final sched = <String, List<ScheduleModel>>{};
     final polysLod = <String, Map<int, List<List<double>>>>{};
@@ -162,13 +169,18 @@ class MockDataService {
       final route = RouteModel.fromJson(lj, operatorId: operator_.id);
       routeList.add(route);
 
-      // Stops
+      // Stops (deduplicadas por coordenada → id canónico de la 1ª ocurrencia)
       final lineStops = <RouteStopModel>[];
       for (final sj in lj['stops'] as List<dynamic>) {
         final sm = sj as Map<String, dynamic>;
         final stop = StopModel.fromJson(sm);
-        stopMap[stop.id] = stop;
-        lineStops.add(RouteStopModel.fromJson(sm, routeId: route.id));
+        final coordKey = '${stop.lat},${stop.lng}';
+        final canonicalId = coordToCanonicalId.putIfAbsent(coordKey, () {
+          stopMap[stop.id] = stop;
+          return stop.id;
+        });
+        lineStops.add(RouteStopModel.fromJson(sm, routeId: route.id)
+            .copyWith(stopId: canonicalId));
       }
       rStops[route.id] = lineStops;
 

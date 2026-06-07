@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../core/utils/app_logger.dart';
+import '../../data/admin/admin_routes_repository.dart';
 import '../../data/operator/domain/operator_repository.dart';
 import '../../data/operator/operator_repository_provider.dart';
 import '../../l10n/generated/app_localizations.dart';
@@ -133,15 +135,63 @@ class _AdminOperatorsScreenState extends ConsumerState<AdminOperatorsScreen> {
 
     try {
       final repo = ref.read(operatorRepositoryProvider);
-      await repo.create(result);
+      final created = await repo.create(result);
       _showSnack(l10n.adminOperatorsCreated);
       await _loadOperators();
+      // Genera un código de un uso para que alguien se registre como
+      // admin de esta operadora y luego pueda generar conductores.
+      if (mounted) await _offerAdminCode(created.id, created.name);
     } catch (e) {
       AppLogger.warn('AdminOperators', 'create failed', e);
       if (mounted) {
         _showSnack('${l10n.adminOperatorsError}: $e');
       }
     }
+  }
+
+  Future<void> _offerAdminCode(String operatorId, String name) async {
+    String? code;
+    try {
+      code = await ref
+          .read(adminRoutesRepositoryProvider)
+          .createInvitationCode(
+              operatorId: operatorId, kind: 'operator_admin');
+    } catch (e) {
+      AppLogger.warn('AdminOperators', 'operator_admin code failed', e);
+      return;
+    }
+    if (!mounted || code == null) return;
+    final c = TransitColorScheme.of(
+        Theme.of(context).brightness == Brightness.dark);
+    await showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: c.bgElevated,
+        title: const Text('Código de admin de operadora'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Comparte este código de un solo uso. Quien lo introduzca '
+                'en "Activar" se convertirá en admin de $name y podrá generar '
+                'conductores y más admins.'),
+            const SizedBox(height: 12),
+            SelectableText(code!,
+                style: TransitTypography.heading(c.accent)
+                    .copyWith(letterSpacing: 3, fontFamily: 'monospace')),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Clipboard.setData(ClipboardData(text: code!));
+              Navigator.pop(ctx);
+            },
+            child: const Text('Copiar y cerrar'),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _onEdit(OperatorModel op) async {

@@ -72,17 +72,10 @@ class AdminScreen extends ConsumerWidget {
                           _OptionCard(
                             c: c,
                             icon: Icons.inbox,
-                            title: 'Bandeja de moderación',
-                            subtitle: 'Revisar reportes y contenido',
+                            title: 'Bandeja',
+                            subtitle:
+                                'Mejoras, incidencias, sugerencias, zonas, operadores y RGPD en un solo sitio',
                             onTap: () => context.push('/management/inbox'),
-                          ),
-                          const SizedBox(height: 12),
-                          _OptionCard(
-                            c: c,
-                            icon: Icons.assignment_outlined,
-                            title: 'Solicitudes',
-                            subtitle: 'RGPD, rutas, alta operador y escalado',
-                            onTap: () => context.push('/admin/requests'),
                           ),
                           const SizedBox(height: 12),
                           _OptionCard(
@@ -101,6 +94,15 @@ class AdminScreen extends ConsumerWidget {
                                 'Editar rutas, paradas y horarios de cualquier operador',
                             onTap: () =>
                                 context.push('/management/routes'),
+                          ),
+                          const SizedBox(height: 12),
+                          _OptionCard(
+                            c: c,
+                            icon: Icons.place_outlined,
+                            title: 'Gestión de paradas',
+                            subtitle:
+                                'Ver, crear y editar paradas de cualquier operador',
+                            onTap: () => context.push('/management/stops'),
                           ),
                           const SizedBox(height: 32),
                         ],

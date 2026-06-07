@@ -30,12 +30,14 @@ enum _SortBy { code, status, updated, stops }
 class _State extends ConsumerState<RoutesManagementScreen> {
   String _query = '';
   String? _filterOperatorId;
+  String? _filterZoneId;
   RouteStatus? _filterStatus;
   _SortBy _sortBy = _SortBy.code;
   bool _groupByOperator = false;
   final Set<String> _collapsedOps = {};
   List<AdminRouteRow> _all = const [];
   List<OperatorModel> _operators = const [];
+  List<ZoneRow> _zones = const [];
   bool _loading = true;
   String? _error;
 
@@ -61,10 +63,12 @@ class _State extends ConsumerState<RoutesManagementScreen> {
           : (opId == null
               ? const <OperatorModel>[]
               : [await opRepo.byId(opId)].whereType<OperatorModel>().toList());
+      final zones = await repo.listZones(includePending: false);
       if (!mounted) return;
       setState(() {
         _all = routes;
         _operators = ops;
+        _zones = zones;
         _loading = false;
       });
     } catch (e) {
@@ -82,6 +86,7 @@ class _State extends ConsumerState<RoutesManagementScreen> {
       if (_filterOperatorId != null && r.operatorId != _filterOperatorId) {
         return false;
       }
+      if (_filterZoneId != null && r.zoneId != _filterZoneId) return false;
       if (_filterStatus != null && r.status != _filterStatus) return false;
       if (q.isEmpty) return true;
       return r.code.toLowerCase().contains(q) ||
@@ -198,17 +203,21 @@ class _State extends ConsumerState<RoutesManagementScreen> {
     );
   }
 
-  Widget _searchBar(TransitColorScheme c) => GlassCard(
-        blur: 14,
-        fillOpacity: 0.06,
-        borderRadius: 14,
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+  Widget _searchBar(TransitColorScheme c) => Container(
+        decoration: BoxDecoration(
+          color: c.bgRaised,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: c.border, width: 0.5),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 12),
         child: TextField(
           decoration: InputDecoration(
             border: InputBorder.none,
             icon: Icon(Icons.search, color: c.textMid, size: 20),
             hintText: 'Buscar por código o nombre',
             hintStyle: TransitTypography.bodySecondary(c.textLo),
+            isDense: true,
+            contentPadding: const EdgeInsets.symmetric(vertical: 14),
           ),
           style: TransitTypography.bodyPrimary(c.textHi),
           onChanged: (v) => setState(() => _query = v),
@@ -228,10 +237,21 @@ class _State extends ConsumerState<RoutesManagementScreen> {
               icon: Icons.business,
               onTap: _pickOperatorFilter,
             ),
+          if (_zones.length > 1)
+            _chip(
+              c,
+              label: _filterZoneId == null
+                  ? 'Todas las zonas'
+                  : _zoneName(_filterZoneId!),
+              icon: Icons.map_outlined,
+              selected: _filterZoneId != null,
+              onTap: _pickZoneFilter,
+            ),
           _chip(
             c,
             label: _filterStatus?.label ?? 'Cualquier estado',
             icon: Icons.flag_outlined,
+            selected: _filterStatus != null,
             onTap: _pickStatusFilter,
           ),
           _chip(
@@ -249,7 +269,9 @@ class _State extends ConsumerState<RoutesManagementScreen> {
               onTap: () =>
                   setState(() => _groupByOperator = !_groupByOperator),
             ),
-          if (_filterOperatorId != null || _filterStatus != null)
+          if (_filterOperatorId != null ||
+              _filterStatus != null ||
+              _filterZoneId != null)
             _chip(
               c,
               label: 'Limpiar',
@@ -257,6 +279,7 @@ class _State extends ConsumerState<RoutesManagementScreen> {
               onTap: () => setState(() {
                 _filterOperatorId = null;
                 _filterStatus = null;
+                _filterZoneId = null;
               }),
             ),
         ],
@@ -383,13 +406,13 @@ class _State extends ConsumerState<RoutesManagementScreen> {
       Pressable(
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
-            color: selected
-                ? c.accent.withValues(alpha: 0.18)
-                : c.bgRaised.withValues(alpha: 0.6),
+            color: selected ? c.accent.withValues(alpha: 0.18) : c.bgRaised,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: selected ? c.accent : c.border),
+            border: Border.all(
+                color: selected ? c.accent : c.border,
+                width: selected ? 1.2 : 0.5),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -441,6 +464,48 @@ class _State extends ConsumerState<RoutesManagementScreen> {
     if (mounted) {
       setState(() => _filterOperatorId = picked);
     }
+  }
+
+  String _zoneName(String id) {
+    final m = _zones.where((z) => z.id == id).toList();
+    return m.isEmpty ? 'Zona' : m.first.name;
+  }
+
+  Future<void> _pickZoneFilter() async {
+    final picked = await showModalBottomSheet<String?>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        final isDark = Theme.of(ctx).brightness == Brightness.dark;
+        final c = TransitColorScheme.of(isDark);
+        return SafeArea(
+          child: Container(
+            decoration: BoxDecoration(
+              color: c.bgElevated,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(18)),
+            ),
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  leading: Icon(Icons.all_inclusive, color: c.accent),
+                  title: const Text('Todas las zonas'),
+                  onTap: () => Navigator.pop(ctx, null),
+                ),
+                const Divider(height: 1),
+                ..._zones.map((z) => ListTile(
+                      leading: Icon(Icons.map_outlined, color: c.textMid),
+                      title: Text(z.name),
+                      onTap: () => Navigator.pop(ctx, z.id),
+                    )),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+    if (mounted) setState(() => _filterZoneId = picked);
   }
 
   Future<void> _pickStatusFilter() async {

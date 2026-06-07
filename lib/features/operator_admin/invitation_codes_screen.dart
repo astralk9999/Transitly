@@ -88,6 +88,7 @@ class _InvitationCodesScreenState extends ConsumerState<InvitationCodesScreen> {
         'p_operator_id': operatorId,
         'p_max_uses': params.maxUses,
         'p_expires_days': params.expiresDays,
+        'p_kind': params.kind,
       });
 
       await _loadCodes();
@@ -116,6 +117,7 @@ class _InvitationCodesScreenState extends ConsumerState<InvitationCodesScreen> {
   Future<_GenerateParams?> _showGenerateDialog() async {
     int uses = 1;
     int expiresDays = 30;
+    String kind = 'driver';
 
     return showDialog<_GenerateParams>(
       context: context,
@@ -135,6 +137,25 @@ class _InvitationCodesScreenState extends ConsumerState<InvitationCodesScreen> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text('Tipo de código',
+                      style: TransitTypography.bodyPrimary(c.textHi)),
+                  const SizedBox(height: 6),
+                  SegmentedButton<String>(
+                    segments: const [
+                      ButtonSegment(
+                          value: 'driver',
+                          label: Text('Conductor'),
+                          icon: Icon(Icons.directions_bus, size: 16)),
+                      ButtonSegment(
+                          value: 'operator_admin',
+                          label: Text('Admin op.'),
+                          icon: Icon(Icons.admin_panel_settings, size: 16)),
+                    ],
+                    selected: {kind},
+                    onSelectionChanged: (s) =>
+                        setDialogState(() => kind = s.first),
+                  ),
+                  const SizedBox(height: 14),
                   Text('Número de usos: $uses',
                       style: TransitTypography.bodyPrimary(c.textHi)),
                   const SizedBox(height: 4),
@@ -178,7 +199,8 @@ class _InvitationCodesScreenState extends ConsumerState<InvitationCodesScreen> {
                   label: AppLocalizations.of(ctx).actionGenerate.toUpperCase(),
                   isSmall: true,
                   onPressed: () => Navigator.of(ctx).pop(
-                    _GenerateParams(maxUses: uses, expiresDays: expiresDays),
+                    _GenerateParams(
+                        maxUses: uses, expiresDays: expiresDays, kind: kind),
                   ),
                 ),
               ],
@@ -426,7 +448,8 @@ class _InvitationCodesScreenState extends ConsumerState<InvitationCodesScreen> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Usos: ${code['uses'] ?? 0}/${code['max_uses'] ?? 1}'
+                  '${(code['kind'] as String?) == 'operator_admin' ? 'Admin de operadora' : 'Conductor'}'
+                  ' · Usos: ${code['uses'] ?? 0}/${code['max_uses'] ?? 1}'
                   '${expiresAt != null ? ' · ${_formatExpires(expiresAt)}' : ''}',
                   style: TransitTypography.bodySmall(c.textMid),
                 ),
@@ -480,7 +503,9 @@ class _InvitationCodesScreenState extends ConsumerState<InvitationCodesScreen> {
 }
 
 class _GenerateParams {
-  const _GenerateParams({required this.maxUses, required this.expiresDays});
+  const _GenerateParams(
+      {required this.maxUses, required this.expiresDays, required this.kind});
   final int maxUses;
   final int expiresDays;
+  final String kind; // 'driver' | 'operator_admin'
 }

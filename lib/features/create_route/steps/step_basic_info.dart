@@ -16,6 +16,11 @@ class StepBasicInfo extends StatefulWidget {
     required this.serviceType,
     required this.onColorChanged,
     required this.onServiceTypeChanged,
+    this.codeCtrl,
+    this.zoneNames = const [],
+    this.selectedZone,
+    this.onZoneChanged,
+    this.onRecommendZone,
   });
 
   final TextEditingController nameCtrl;
@@ -24,6 +29,11 @@ class StepBasicInfo extends StatefulWidget {
   final String serviceType;
   final ValueChanged<String> onColorChanged;
   final ValueChanged<String> onServiceTypeChanged;
+  final TextEditingController? codeCtrl;
+  final List<String> zoneNames;
+  final String? selectedZone;
+  final ValueChanged<String?>? onZoneChanged;
+  final ValueChanged<String>? onRecommendZone;
 
   @override
   State<StepBasicInfo> createState() => _StepBasicInfoState();
@@ -181,6 +191,31 @@ class _StepBasicInfoState extends State<StepBasicInfo> {
           ),
           const SizedBox(height: TransitSpacing.space20),
 
+          if (widget.codeCtrl != null) ...[
+            Text('Código de línea (opcional)',
+                style: TransitTypography.bodyPrimary(colors.textHi)),
+            const SizedBox(height: TransitSpacing.space8),
+            TransitInput(
+              hint: 'Ej. L1, C2, M-340',
+              controller: widget.codeCtrl!,
+              maxLines: 1,
+            ),
+            const SizedBox(height: TransitSpacing.space20),
+          ],
+
+          if (widget.onZoneChanged != null) ...[
+            Text('Zona', style: TransitTypography.bodyPrimary(colors.textHi)),
+            const SizedBox(height: TransitSpacing.space8),
+            _ZoneField(
+              colors: colors,
+              zoneNames: widget.zoneNames,
+              selected: widget.selectedZone,
+              onChanged: widget.onZoneChanged!,
+              onRecommend: widget.onRecommendZone,
+            ),
+            const SizedBox(height: TransitSpacing.space20),
+          ],
+
           Text(
             'Descripción',
             style: TransitTypography.bodyPrimary(colors.textHi),
@@ -284,6 +319,86 @@ class _StepBasicInfoState extends State<StepBasicInfo> {
               }).toList(),
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ZoneField extends StatelessWidget {
+  const _ZoneField({
+    required this.colors,
+    required this.zoneNames,
+    required this.selected,
+    required this.onChanged,
+    this.onRecommend,
+  });
+
+  final TransitColorScheme colors;
+  final List<String> zoneNames;
+  final String? selected;
+  final ValueChanged<String?> onChanged;
+  final ValueChanged<String>? onRecommend;
+
+  @override
+  Widget build(BuildContext context) {
+    final value = zoneNames.contains(selected) ? selected : null;
+    return Container(
+      decoration: BoxDecoration(
+        color: colors.bgRaised,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: colors.border, width: 0.5),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Row(
+        children: [
+          Expanded(
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                value: value,
+                isExpanded: true,
+                dropdownColor: colors.bgElevated,
+                hint: Text('Selecciona zona',
+                    style: TransitTypography.bodySecondary(colors.textLo)),
+                icon: Icon(Icons.expand_more, color: colors.textMid),
+                style: TransitTypography.bodyPrimary(colors.textHi),
+                items: zoneNames
+                    .map((z) => DropdownMenuItem(value: z, child: Text(z)))
+                    .toList(),
+                onChanged: onChanged,
+              ),
+            ),
+          ),
+          if (onRecommend != null)
+            IconButton(
+              tooltip: 'Proponer zona nueva',
+              icon: Icon(Icons.add_location_alt_outlined, color: colors.accent),
+              onPressed: () async {
+                final ctrl = TextEditingController();
+                final name = await showDialog<String>(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                    title: const Text('Proponer zona'),
+                    content: TextField(
+                      controller: ctrl,
+                      autofocus: true,
+                      decoration: const InputDecoration(
+                          labelText: 'Nombre de la zona'),
+                    ),
+                    actions: [
+                      TextButton(
+                          onPressed: () => Navigator.pop(ctx),
+                          child: const Text('Cancelar')),
+                      TextButton(
+                          onPressed: () =>
+                              Navigator.pop(ctx, ctrl.text.trim()),
+                          child: const Text('Proponer')),
+                    ],
+                  ),
+                );
+                if (name != null && name.isNotEmpty) onRecommend!(name);
+              },
+            ),
         ],
       ),
     );

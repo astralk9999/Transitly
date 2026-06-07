@@ -1,3 +1,4 @@
+import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -35,6 +36,7 @@ class _State extends ConsumerState<RouteEditorScreen> {
   late final TextEditingController _colorHex;
 
   String? _operatorId;
+  String? _zoneId;
   RouteStatus _status = RouteStatus.draft;
   RouteSource _source = RouteSource.official;
   bool _active = true;
@@ -44,6 +46,7 @@ class _State extends ConsumerState<RouteEditorScreen> {
   bool _isAdmin = false;
   String? _error;
   List<OperatorModel> _operators = const [];
+  List<ZoneRow> _zones = const [];
 
   @override
   void initState() {
@@ -68,6 +71,7 @@ class _State extends ConsumerState<RouteEditorScreen> {
     try {
       final scope = await ref.read(manageScopeProvider.future);
       _isAdmin = scope.isAdmin;
+      final repo = ref.read(adminRoutesRepositoryProvider);
       _operators = scope.isAdmin
           ? await ref.read(operatorRepositoryProvider).list()
           : (scope.operatorId == null
@@ -77,8 +81,8 @@ class _State extends ConsumerState<RouteEditorScreen> {
                       .read(operatorRepositoryProvider)
                       .byId(scope.operatorId!)
                 ].whereType<OperatorModel>().toList());
+      _zones = await repo.listZones(includePending: false);
       if (!widget.isNew) {
-        final repo = ref.read(adminRoutesRepositoryProvider);
         final r = await repo.getRoute(widget.routeId!);
         if (r != null) {
           _code.text = r.code;
@@ -89,8 +93,10 @@ class _State extends ConsumerState<RouteEditorScreen> {
           _source = r.source;
           _active = r.active;
           _operatorId = r.operatorId;
+          _zoneId = r.zoneId;
         }
       } else {
+        _zoneId = _zones.isNotEmpty ? _zones.first.id : null;
         _operatorId = widget.initialOperatorId ??
             (scope.operatorId ??
                 (_operators.isNotEmpty ? _operators.first.id : null));
@@ -128,6 +134,7 @@ class _State extends ConsumerState<RouteEditorScreen> {
         status: _status,
         source: _source,
         active: _active,
+        zoneId: _zoneId,
       );
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -227,19 +234,16 @@ class _State extends ConsumerState<RouteEditorScreen> {
                         const SizedBox(height: 8),
                         _operatorDropdown(c),
                         const SizedBox(height: 16),
+                        _section(c, 'Zona'),
+                        const SizedBox(height: 8),
+                        _zoneSelector(c),
+                        const SizedBox(height: 16),
                         _section(c, 'Estado'),
                         const SizedBox(height: 8),
-                        Wrap(
-                          spacing: 8,
-                          runSpacing: 8,
-                          children: RouteStatus.values
-                              .map((s) => _pill(c,
-                                  label: s.label,
-                                  selected: _status == s,
-                                  onTap: () => setState(() => _status = s)))
-                              .toList(),
-                        ),
+                        ...RouteStatus.values.map((s) => _statusTile(c, s)),
                         const SizedBox(height: 12),
+                        _section(c, 'Fuente'),
+                        const SizedBox(height: 8),
                         Wrap(
                           spacing: 8,
                           children: RouteSource.values
@@ -342,84 +346,210 @@ class _State extends ConsumerState<RouteEditorScreen> {
 
   Widget _colorRow(TransitColorScheme c) {
     final color = _parseHex(_colorHex.text) ?? c.accent;
+    return Pressable(
+      onTap: _pickColor,
+      child: GlassCard(
+        blur: 14,
+        fillOpacity: 0.06,
+        borderRadius: 12,
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        child: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: color,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.white24, width: 2),
+              ),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Color de la línea',
+                      style: TransitTypography.bodyPrimary(c.textHi)),
+                  Text(_colorHex.text.toUpperCase(),
+                      style: TransitTypography.bodySmall(c.textMid)),
+                ],
+              ),
+            ),
+            Icon(Icons.palette_outlined, color: c.accent),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Misma rueda + paletas que "Apariencia → Paleta personalizada"
+  /// (flex_color_picker), idéntico al wizard de crear ruta de comunidad.
+  Future<void> _pickColor() async {
+    final picked = await showColorPickerDialog(
+      context,
+      _parseHex(_colorHex.text) ?? const Color(0xFF977DDF),
+      title: const Text('Color de la línea'),
+      pickersEnabled: const {
+        ColorPickerType.wheel: true,
+        ColorPickerType.primary: true,
+        ColorPickerType.accent: true,
+        ColorPickerType.custom: true,
+      },
+      showRecentColors: true,
+      showMaterialName: false,
+      showColorName: false,
+      showColorCode: true,
+      copyPasteBehavior: const ColorPickerCopyPasteBehavior(
+        copyFormat: ColorPickerCopyFormat.hexRRGGBB,
+      ),
+      enableOpacity: false,
+      width: 36,
+      height: 36,
+      spacing: 4,
+      runSpacing: 4,
+    );
+    if (!mounted) return;
+    setState(() => _colorHex.text = _colorToHex(picked));
+  }
+
+  String _colorToHex(Color c) =>
+      '#${c.toARGB32().toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}';
+
+  String _statusDesc(RouteStatus s) => switch (s) {
+        RouteStatus.draft => 'No visible para usuarios; en preparación.',
+        RouteStatus.official => 'Línea operativa y publicada.',
+        RouteStatus.suspended => 'Temporalmente sin servicio.',
+        RouteStatus.verified => 'Validada por el equipo (comunidad).',
+        RouteStatus.pendingVerification =>
+          'A la espera de validación (comunidad).',
+      };
+
+  Widget _statusTile(TransitColorScheme c, RouteStatus s) {
+    final selected = _status == s;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Pressable(
+        onTap: () => setState(() => _status = s),
+        child: GlassCard(
+          blur: 12,
+          fillOpacity: selected ? 0.10 : 0.04,
+          borderRadius: 12,
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          child: Row(
+            children: [
+              Icon(
+                  selected
+                      ? Icons.radio_button_checked
+                      : Icons.radio_button_off,
+                  color: selected ? c.accent : c.textLo,
+                  size: 20),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(s.label,
+                        style: TransitTypography.bodyPrimary(
+                            selected ? c.accent : c.textHi)),
+                    Text(_statusDesc(s),
+                        style: TransitTypography.bodySmall(c.textMid)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _zoneSelector(TransitColorScheme c) {
+    final matches = _zones.where((z) => z.id == _zoneId).toList();
+    final current = matches.isEmpty ? null : matches.first;
     return GlassCard(
       blur: 14,
       fillOpacity: 0.06,
       borderRadius: 12,
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       child: Row(
         children: [
-          GestureDetector(
-            onTap: _pickColor,
-            child: Container(
-              width: 36,
-              height: 36,
-              decoration: BoxDecoration(
-                color: color,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: c.border),
+          Expanded(
+            child: DropdownButtonHideUnderline(
+              child: DropdownButtonFormField<String>(
+                value: current?.id,
+                isExpanded: true,
+                dropdownColor: c.bgElevated,
+                style: TransitTypography.bodyPrimary(c.textHi),
+                icon: Icon(Icons.expand_more, color: c.textMid),
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                  labelText: 'Zona',
+                  labelStyle: TransitTypography.bodySmall(c.textMid),
+                ),
+                items: _zones
+                    .map((z) => DropdownMenuItem(
+                        value: z.id, child: Text(z.name)))
+                    .toList(),
+                onChanged: (v) => setState(() => _zoneId = v),
               ),
             ),
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: TextFormField(
-              controller: _colorHex,
-              style: TransitTypography.bodyPrimary(c.textHi),
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                labelText: 'Color (hex)',
-                labelStyle: TransitTypography.bodySmall(c.textMid),
-                hintText: '#977DDF',
-              ),
-              onChanged: (_) => setState(() {}),
-            ),
+          IconButton(
+            tooltip: _isAdmin ? 'Crear zona' : 'Recomendar zona',
+            icon: Icon(Icons.add_location_alt_outlined, color: c.accent),
+            onPressed: _addZone,
           ),
         ],
       ),
     );
   }
 
-  Future<void> _pickColor() async {
-    const presets = [
-      '#977DDF', '#00D4FF', '#FF006E', '#FF8C00', '#B0FF00',
-      '#3B82F6', '#00A0FF', '#9333EA', '#10B981', '#F43F5E',
-      '#FACC15', '#94A3B8',
-    ];
-    final picked = await showModalBottomSheet<String>(
+  Future<void> _addZone() async {
+    final ctrl = TextEditingController();
+    final isAdmin = _isAdmin;
+    final name = await showDialog<String>(
       context: context,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: GlassCard(
-            blur: 24,
-            fillOpacity: 0.10,
-            borderRadius: 18,
-            padding: const EdgeInsets.all(16),
-            child: Wrap(
-              spacing: 12,
-              runSpacing: 12,
-              children: presets
-                  .map((h) => GestureDetector(
-                        onTap: () => Navigator.pop(ctx, h),
-                        child: Container(
-                          width: 56,
-                          height: 56,
-                          decoration: BoxDecoration(
-                            color: _parseHex(h),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                      ))
-                  .toList(),
-            ),
-          ),
+      builder: (ctx) => AlertDialog(
+        title: Text(isAdmin ? 'Nueva zona' : 'Recomendar zona'),
+        content: TextField(
+          controller: ctrl,
+          autofocus: true,
+          decoration: const InputDecoration(
+              labelText: 'Nombre', hintText: 'p.ej. El Puerto de Santa María'),
         ),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Cancelar')),
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, ctrl.text.trim()),
+              child: Text(isAdmin ? 'Crear' : 'Enviar')),
+        ],
       ),
     );
-    if (picked != null) {
-      setState(() => _colorHex.text = picked);
+    if (name == null || name.isEmpty) return;
+    final repo = ref.read(adminRoutesRepositoryProvider);
+    try {
+      if (isAdmin) {
+        final id = await repo.zoneUpsert(name: name, operatorId: _operatorId);
+        _zones = await repo.listZones();
+        if (mounted) setState(() => _zoneId = id);
+      } else {
+        await repo.zoneRecommend(name);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text(
+                  'Zona propuesta. El equipo la revisará antes de activarla.')));
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Error: $e')));
+      }
     }
   }
 

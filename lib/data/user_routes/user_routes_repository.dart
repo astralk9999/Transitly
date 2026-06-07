@@ -11,6 +11,7 @@ class UserRouteModel {
     required this.id,
     required this.authorId,
     required this.name,
+    this.code,
     this.description,
     this.routeColor = '#977DDF',
     this.serviceType = 'urban',
@@ -33,6 +34,7 @@ class UserRouteModel {
   final String id;
   final String authorId;
   final String name;
+  final String? code;
   final String? description;
   final String routeColor;
   final String serviceType;
@@ -56,6 +58,7 @@ class UserRouteModel {
       id: json['id'] as String,
       authorId: json['author_id'] as String,
       name: json['name'] as String,
+      code: json['code'] as String?,
       description: json['description'] as String?,
       routeColor: (json['route_color'] as String?) ?? '#977DDF',
       serviceType: (json['service_type'] as String?) ?? 'urban',
@@ -80,6 +83,8 @@ class UserRouteModel {
     if (id != '') 'id': id,
     'author_id': authorId,
     'name': name,
+    if (code != null && code!.isNotEmpty) 'code': code,
+    if (region != null && region!.isNotEmpty) 'region': region,
     if (description != null) 'description': description,
     'route_color': routeColor,
     'service_type': serviceType,

@@ -71,12 +71,23 @@ class _ActivateDriverScreenState extends ConsumerState<ActivateDriverScreen> {
         // Sub-D + P1.5-06: refresca el perfil de Supabase para recoger el
         // nuevo rol antes de navegar.
         ref.invalidate(userProfileFromSupabaseProvider);
+        // Detecta si el código promocionó a admin de operadora para llevar
+        // al panel correcto (el mismo código sirve para ambos roles).
+        String role = 'driver';
+        try {
+          final row = await client
+              .from('profiles')
+              .select('role')
+              .eq('id', session.user.id)
+              .maybeSingle();
+          role = (row?['role'] as String?) ?? 'driver';
+        } catch (_) {}
         setState(() => _success = l10n.authActivateSuccess);
-        AppLogger.info('ActivateDriver', 'code claimed successfully');
+        AppLogger.info('ActivateDriver', 'code claimed successfully role=$role');
         // Pequeño delay para que el usuario vea el mensaje de éxito.
         await Future<void>.delayed(const Duration(milliseconds: 800));
         if (!mounted) return;
-        context.go('/driver');
+        context.go(role == 'operator_admin' ? '/operator-admin' : '/driver');
       }
     } catch (e) {
       AppLogger.warn('ActivateDriver', 'code claim error', e);

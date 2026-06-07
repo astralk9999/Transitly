@@ -8,6 +8,7 @@ import '../../core/theme/transit_spacing.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../core/utils/app_logger.dart';
 import '../../core/utils/uuid.dart';
+import '../../data/admin/admin_routes_repository.dart';
 import '../../data/supabase/supabase_client_provider.dart';
 import '../../data/user_routes/user_route_schedules_repository.dart';
 import '../../data/user_routes/user_routes_repository.dart';
@@ -39,9 +40,12 @@ class _CreateRouteWizardState extends ConsumerState<CreateRouteWizard> {
 
   // Step 1 — Basic info
   final _nameCtrl = TextEditingController();
+  final _codeCtrl = TextEditingController();
   final _descCtrl = TextEditingController();
   String _routeColor = '#977DDF';
   String _serviceType = 'urban';
+  List<ZoneRow> _zones = const [];
+  String? _zoneName;
 
   // Step 2 — Stops
   final List<WizardStop> _stops = [];
@@ -67,9 +71,34 @@ class _CreateRouteWizardState extends ConsumerState<CreateRouteWizard> {
     // Sin este listener, el botón "Siguiente"/"Publicar" no recalcula
     // canProceed cuando el usuario escribe el nombre y queda en gris.
     _nameCtrl.addListener(_onWizardFieldChanged);
+    _loadZones();
     if (widget.routeId != null) {
       _isEditing = true;
       _loadExisting();
+    }
+  }
+
+  Future<void> _loadZones() async {
+    try {
+      final zones = await ref.read(adminRoutesRepositoryProvider).listZones();
+      if (mounted) setState(() => _zones = zones);
+    } catch (_) {}
+  }
+
+  Future<void> _recommendZone(String name) async {
+    try {
+      await ref.read(adminRoutesRepositoryProvider).zoneRecommend(name);
+      if (mounted) {
+        setState(() => _zoneName = name);
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text(
+                'Zona propuesta. El equipo la revisará antes de activarla.')));
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Error: $e')));
+      }
     }
   }
 
@@ -85,10 +114,12 @@ class _CreateRouteWizardState extends ConsumerState<CreateRouteWizard> {
       if (route == null || !mounted) return;
       setState(() {
         _nameCtrl.text = route.name;
+        _codeCtrl.text = route.code ?? '';
         _descCtrl.text = route.description ?? '';
         _routeColor = route.routeColor;
         _serviceType = route.serviceType;
         _visibility = route.visibility;
+        _zoneName = route.region;
       });
       final stopsRepo = ref.read(userStopsRepositoryProvider);
       if (stopsRepo != null) {
@@ -137,6 +168,7 @@ class _CreateRouteWizardState extends ConsumerState<CreateRouteWizard> {
   void dispose() {
     _nameCtrl.removeListener(_onWizardFieldChanged);
     _nameCtrl.dispose();
+    _codeCtrl.dispose();
     _descCtrl.dispose();
     _pageController.dispose();
     super.dispose();
@@ -235,6 +267,8 @@ class _CreateRouteWizardState extends ConsumerState<CreateRouteWizard> {
         id: widget.routeId ?? generateUuidV4(),
         authorId: uid,
         name: _nameCtrl.text.trim(),
+        code: _codeCtrl.text.trim().isEmpty ? null : _codeCtrl.text.trim(),
+        region: _zoneName,
         description:
             _descCtrl.text.trim().isEmpty ? null : _descCtrl.text.trim(),
         routeColor: color,
@@ -381,9 +415,14 @@ class _CreateRouteWizardState extends ConsumerState<CreateRouteWizard> {
               children: [
                 StepBasicInfo(
                   nameCtrl: _nameCtrl,
+                  codeCtrl: _codeCtrl,
                   descCtrl: _descCtrl,
                   routeColor: _routeColor,
                   serviceType: _serviceType,
+                  zoneNames: _zones.map((z) => z.name).toList(),
+                  selectedZone: _zoneName,
+                  onZoneChanged: (v) => setState(() => _zoneName = v),
+                  onRecommendZone: _recommendZone,
                   onColorChanged: (c) => setState(() => _routeColor = c),
                   onServiceTypeChanged: (t) =>
                       setState(() => _serviceType = t),

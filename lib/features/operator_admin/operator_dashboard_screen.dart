@@ -59,6 +59,25 @@ class OperatorDashboardScreen extends ConsumerWidget {
                         'Editar rutas, paradas y horarios de tu operadora',
                     onTap: () => context.push('/management/routes'),
                   ),
+                  const SizedBox(height: 12),
+
+                  _OptionCard(
+                    c: c,
+                    icon: Icons.place_outlined,
+                    title: 'Gestión de paradas',
+                    subtitle: 'Ver, crear y editar paradas de tu operadora',
+                    onTap: () => context.push('/management/stops'),
+                  ),
+                  const SizedBox(height: 12),
+
+                  _OptionCard(
+                    c: c,
+                    icon: Icons.inbox,
+                    title: 'Bandeja',
+                    subtitle:
+                        'Mejoras, incidencias y sugerencias de tus líneas',
+                    onTap: () => context.push('/management/inbox'),
+                  ),
                   const SizedBox(height: 32),
                 ],
               ),

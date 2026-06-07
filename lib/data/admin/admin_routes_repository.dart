@@ -21,6 +21,7 @@ class AdminRouteRow {
     required this.status,
     required this.source,
     required this.active,
+    this.zoneId,
     this.updatedAt,
     this.stopCount = 0,
     this.scheduleCount = 0,
@@ -35,6 +36,7 @@ class AdminRouteRow {
   final RouteStatus status;
   final RouteSource source;
   final bool active;
+  final String? zoneId;
   final DateTime? updatedAt;
 
   /// Nº de paradas y de horarios vinculados (para el resumen de la lista).
@@ -68,6 +70,7 @@ class AdminRouteRow {
         _ => RouteSource.official,
       },
       active: (meta['active'] as bool?) ?? true,
+      zoneId: j['zone_id'] as String?,
       updatedAt: j['updated_at'] == null
           ? null
           : DateTime.tryParse(j['updated_at'] as String),
@@ -162,16 +165,192 @@ class AdminScheduleRow {
       );
 }
 
+/// Zona (municipio/distrito). status: active | pending.
+class ZoneRow {
+  ZoneRow({
+    required this.id,
+    required this.name,
+    required this.zoneType,
+    required this.status,
+    this.operatorId,
+  });
+  final String id;
+  final String name;
+  final String zoneType;
+  final String status;
+  final String? operatorId;
+  bool get isPending => status == 'pending';
+
+  factory ZoneRow.fromRow(Map<String, dynamic> j) => ZoneRow(
+        id: j['id'] as String,
+        name: j['name'] as String,
+        zoneType: j['zone_type'] as String? ?? 'municipality',
+        status: j['status'] as String? ?? 'active',
+        operatorId: j['operator_id'] as String?,
+      );
+}
+
+/// Expedición de horario con hora de paso por cada parada.
+/// stopTimes: [{stop_id, time:'HH:MM'}, ...].
+class AdminTripRow {
+  AdminTripRow({
+    required this.id,
+    required this.dayType,
+    required this.direction,
+    required this.departureTime,
+    required this.stopTimes,
+  });
+  final String id;
+  final DayType dayType;
+  final int direction;
+  final String departureTime;
+  final List<({String stopId, String time})> stopTimes;
+
+  String? timeForStop(String stopId) {
+    for (final st in stopTimes) {
+      if (st.stopId == stopId) return st.time;
+    }
+    return null;
+  }
+
+  factory AdminTripRow.fromRow(Map<String, dynamic> j) {
+    final raw = (j['arrival_offsets'] as List?) ?? const [];
+    final times = raw
+        .whereType<Map>()
+        .map((m) => (
+              stopId: m['stop_id'] as String? ?? '',
+              time: (m['time'] as String? ?? '').padLeft(5, '0'),
+            ))
+        .where((e) => e.stopId.isNotEmpty)
+        .toList();
+    return AdminTripRow(
+      id: j['id'] as String,
+      dayType: DayType.fromString(j['day_type'] as String? ?? 'weekday'),
+      direction: (j['direction'] as num?)?.toInt() ?? 0,
+      departureTime: (j['departure_time'] as String? ?? '').padLeft(5, '0'),
+      stopTimes: times,
+    );
+  }
+}
+
+class RouteChangeRow {
+  RouteChangeRow({
+    required this.changeType,
+    required this.description,
+    required this.createdAt,
+  });
+  final String changeType;
+  final String description;
+  final DateTime createdAt;
+
+  factory RouteChangeRow.fromRow(Map<String, dynamic> j) => RouteChangeRow(
+        changeType: j['change_type'] as String? ?? 'infoUpdated',
+        description: j['description'] as String? ?? '',
+        createdAt: DateTime.tryParse(j['created_at'] as String? ?? '') ??
+            DateTime.now(),
+      );
+}
+
 class AdminRoutesRepository {
   AdminRoutesRepository(this._client);
   final SupabaseClient _client;
+
+  // ── Zonas ───────────────────────────────────────────────────
+  Future<List<ZoneRow>> listZones({bool includePending = false}) async {
+    final rows = await _client
+        .rpc('list_zones', params: {'p_include_pending': includePending});
+    return (rows as List)
+        .map((e) => ZoneRow.fromRow(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<String> zoneUpsert({
+    String? id,
+    required String name,
+    String type = 'municipality',
+    String? parentId,
+    String? operatorId,
+  }) async {
+    final res = await _client.rpc('zone_upsert', params: {
+      'p_id': id,
+      'p_name': name,
+      'p_type': type,
+      'p_parent': parentId,
+      'p_operator_id': operatorId,
+    });
+    return res as String;
+  }
+
+  Future<String> zoneRecommend(String name, {String type = 'municipality'}) async {
+    final res = await _client
+        .rpc('zone_recommend', params: {'p_name': name, 'p_type': type});
+    return res as String;
+  }
+
+  // ── Trips (horarios por parada) ─────────────────────────────
+  Future<List<AdminTripRow>> listTrips(String routeId) async {
+    final rows =
+        await _client.rpc('admin_list_trips', params: {'p_route_id': routeId});
+    return (rows as List)
+        .map((e) => AdminTripRow.fromRow(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<String> tripUpsert({
+    String? id,
+    required String routeId,
+    required DayType dayType,
+    required int direction,
+    required List<({String stopId, String time})> stopTimes,
+  }) async {
+    final payload = stopTimes
+        .where((e) => e.time.isNotEmpty)
+        .map((e) => {'stop_id': e.stopId, 'time': e.time})
+        .toList();
+    final res = await _client.rpc('admin_trip_upsert', params: {
+      'p_id': id,
+      'p_route_id': routeId,
+      'p_day_type': dayType.name,
+      'p_direction': direction,
+      'p_stop_times': payload,
+    });
+    return res as String;
+  }
+
+  Future<void> tripDelete(String id) =>
+      _client.rpc('admin_trip_delete', params: {'p_id': id});
+
+  // ── Changelog ───────────────────────────────────────────────
+  Future<List<RouteChangeRow>> listChangelog(String routeId) async {
+    final rows = await _client
+        .rpc('list_route_changelog', params: {'p_route_id': routeId});
+    return (rows as List)
+        .map((e) => RouteChangeRow.fromRow(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  // ── Códigos de invitación ───────────────────────────────────
+  Future<String> createInvitationCode({
+    required String operatorId,
+    String kind = 'driver',
+    int maxUses = 1,
+    int expiresDays = 30,
+  }) async {
+    final res = await _client.rpc('create_invitation_code', params: {
+      'p_operator_id': operatorId,
+      'p_max_uses': maxUses,
+      'p_expires_days': expiresDays,
+      'p_kind': kind,
+    });
+    return res as String;
+  }
 
   // ── Rutas ───────────────────────────────────────────────────
   Future<List<AdminRouteRow>> listRoutes({String? operatorId}) async {
     // `route_stops(count)` y `schedules(count)` traen los contadores en la
     // misma consulta sin N+1.
     var q = _client.from('routes').select(
-        'id, operator_id, code, name, description, color, status, source, metadata, updated_at, route_stops(count), schedules(count)');
+        'id, operator_id, code, name, description, color, status, source, metadata, zone_id, updated_at, route_stops(count), schedules(count)');
     if (operatorId != null) q = q.eq('operator_id', operatorId);
     final rows = await q.order('code');
     return (rows as List).map((e) => AdminRouteRow.fromRow(e as Map<String, dynamic>)).toList();
@@ -181,7 +360,7 @@ class AdminRoutesRepository {
     final row = await _client
         .from('routes')
         .select(
-            'id, operator_id, code, name, description, color, status, source, metadata, updated_at')
+            'id, operator_id, code, name, description, color, status, source, metadata, zone_id, updated_at')
         .eq('id', id)
         .maybeSingle();
     return row == null ? null : AdminRouteRow.fromRow(row);
@@ -197,6 +376,7 @@ class AdminRoutesRepository {
     RouteStatus status = RouteStatus.draft,
     RouteSource source = RouteSource.official,
     bool active = true,
+    String? zoneId,
   }) async {
     final res = await _client.rpc('admin_route_upsert', params: {
       'p_id': id,
@@ -208,6 +388,7 @@ class AdminRoutesRepository {
       'p_status': status.name,
       'p_source': source.name,
       'p_active': active,
+      'p_zone_id': zoneId,
     });
     return res as String;
   }
@@ -269,6 +450,7 @@ class AdminRoutesRepository {
     bool accessible = false,
     bool hasShelter = false,
     bool hasBench = false,
+    String? zoneId,
   }) async {
     final res = await _client.rpc('admin_stop_upsert', params: {
       'p_id': id,
@@ -280,6 +462,7 @@ class AdminRoutesRepository {
       'p_accessible': accessible,
       'p_has_shelter': hasShelter,
       'p_has_bench': hasBench,
+      'p_zone_id': zoneId,
     });
     return res as String;
   }

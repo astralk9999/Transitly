@@ -40,6 +40,8 @@ import '../../features/management/admin_route_wizard.dart';
 import '../../features/management/route_schedules_editor_screen.dart';
 import '../../features/management/route_stops_editor_screen.dart';
 import '../../features/management/routes_management_screen.dart';
+import '../../features/management/stops_management_screen.dart';
+import '../../features/management/unified_inbox_screen.dart';
 import '../../features/operator_admin/operator_dashboard_screen.dart';
 import '../../features/operator_admin/invitation_codes_screen.dart';
 import '../../features/operator_admin/drivers_screen.dart';
@@ -336,12 +338,22 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/management/inbox',
         pageBuilder: (context, state) =>
+            _slide(state, const UnifiedInboxScreen()),
+      ),
+      GoRoute(
+        path: '/management/inbox-legacy',
+        pageBuilder: (context, state) =>
             _slide(state, const ManagerInboxScreen()),
       ),
       GoRoute(
         path: '/management/routes',
         pageBuilder: (context, state) =>
             _slide(state, const RoutesManagementScreen()),
+      ),
+      GoRoute(
+        path: '/management/stops',
+        pageBuilder: (context, state) =>
+            _slide(state, const StopsManagementScreen()),
       ),
       GoRoute(
         path: '/management/routes/new',

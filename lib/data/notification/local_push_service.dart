@@ -23,8 +23,11 @@ class LocalPushService {
   Future<void> init() async {
     if (_ready) return;
     try {
+      // Icono pequeño = silueta monocroma (la barra de estado solo admite
+      // iconos de un color; un mipmap a color se vería como un cuadro
+      // blanco). El logo a color va como largeIcon en cada notificación.
       const settings = InitializationSettings(
-        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+        android: AndroidInitializationSettings('ic_notification'),
       );
       await _plugin.initialize(settings: settings);
       await _plugin
@@ -57,6 +60,11 @@ class LocalPushService {
   }) async {
     if (!_ready) await init();
     final isCritical = severity == 'critical';
+    final accent = severity == 'critical'
+        ? const Color(0xFFB71C1C)
+        : severity == 'warning'
+            ? const Color(0xFFFF9800)
+            : const Color(0xFF6C4FD8);
     try {
       await _plugin.show(
         id: id,
@@ -70,11 +78,24 @@ class LocalPushService {
             importance: isCritical ? Importance.max : Importance.high,
             priority: isCritical ? Priority.max : Priority.high,
             category: AndroidNotificationCategory.message,
-            color: severity == 'critical'
-                ? const Color(0xFFB71C1C)
-                : severity == 'warning'
-                    ? const Color(0xFFFF9800)
-                    : const Color(0xFF2196F3),
+            // Icono pequeño monocromo (la barra de estado lo tinta con
+            // `color`).
+            icon: 'ic_notification',
+            // Logo a color a la derecha. Usamos un PNG real en
+            // drawable-nodpi (no el @mipmap/ic_launcher, que en API 26+ es
+            // adaptativo/XML y reventaba al decodificarse como bitmap).
+            largeIcon: const DrawableResourceAndroidBitmap(
+                '@drawable/ic_notification_large'),
+            // Texto expandible (varias líneas) con título en negrita.
+            styleInformation: BigTextStyleInformation(
+              body,
+              contentTitle: '<b>$title</b>',
+              htmlFormatContentTitle: true,
+              summaryText: 'Transitly',
+              htmlFormatSummaryText: true,
+            ),
+            color: accent,
+            ticker: title,
           ),
         ),
       );

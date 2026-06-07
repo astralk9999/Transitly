@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../data/supabase/supabase_client_provider.dart';
+import '../../data/user_routes/user_routes_repository.dart';
 import '../../shared/models/reputation.dart';
 import '../../shared/models/user_role.dart';
 import '../../shared/widgets/empty_state.dart';
@@ -39,6 +40,49 @@ class _AdminUserDetailScreenState
   }
 
   List<Map<String, dynamic>> _operators = [];
+
+  Future<void> _adminDeleteRoute(Map<String, dynamic> route) async {
+    final id = route['id'] as String?;
+    if (id == null) return;
+    final name = route['name'] as String? ?? 'esta ruta';
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) {
+        final c = TransitColorScheme.of(
+            Theme.of(ctx).brightness == Brightness.dark);
+        return AlertDialog(
+          backgroundColor: c.bgElevated,
+          title: const Text('Eliminar ruta'),
+          content: Text(
+              'Se eliminará "$name" del usuario, con sus paradas y horarios. '
+              'Esta acción no se puede deshacer.'),
+          actions: [
+            TextButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: const Text('Cancelar')),
+            TextButton(
+                onPressed: () => Navigator.pop(ctx, true),
+                child: Text('Eliminar',
+                    style: TextStyle(color: c.stateCancelled))),
+          ],
+        );
+      },
+    );
+    if (confirmed != true) return;
+    try {
+      await ref.read(userRoutesRepositoryProvider)!.adminDelete(id);
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('Ruta eliminada')));
+      }
+      await _load();
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Error: $e')));
+      }
+    }
+  }
 
   Future<void> _load() async {
     if (mounted) setState(() => _error = null);
@@ -167,7 +211,11 @@ class _AdminUserDetailScreenState
                                 client: ref.read(supabaseClientProvider),
                                 userId: widget.userId,
                               ),
-                              _RoutesTab(routes: _routes, c: c),
+                              _RoutesTab(
+                                routes: _routes,
+                                c: c,
+                                onDelete: _adminDeleteRoute,
+                              ),
                               _FeedbackTab(feedback: _feedback, c: c),
                             ],
                           ),
@@ -968,9 +1016,11 @@ class _SummaryTab extends StatelessWidget {
 // TAB 2 — RUTAS
 // ─────────────────────────────────────────────────────────────────────
 class _RoutesTab extends StatelessWidget {
-  const _RoutesTab({required this.routes, required this.c});
+  const _RoutesTab(
+      {required this.routes, required this.c, this.onDelete});
   final List<Map<String, dynamic>> routes;
   final TransitColorScheme c;
+  final Future<void> Function(Map<String, dynamic> route)? onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -1058,6 +1108,12 @@ class _RoutesTab extends StatelessWidget {
                       ],
                     ),
                   ),
+                  if (onDelete != null)
+                    IconButton(
+                      icon: Icon(Icons.delete_outline, color: c.stateCancelled),
+                      tooltip: 'Eliminar ruta',
+                      onPressed: () => onDelete!(r),
+                    ),
                   Icon(Icons.chevron_right, color: c.textLo),
                 ],
               ),

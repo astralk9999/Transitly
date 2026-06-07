@@ -280,6 +280,12 @@ class UserRoutesRepository {
     }
   }
 
+  /// Borrado por admin de la ruta de cualquier usuario (vía RPC con
+  /// SECURITY DEFINER; la RLS normal solo deja borrar al dueño).
+  Future<void> adminDelete(String id) async {
+    await _client.rpc('admin_delete_user_route', params: {'p_route_id': id});
+  }
+
   Future<void> vote(String routeId) async {
     final uid = _client.auth.currentUser?.id;
     if (uid == null) return;

@@ -6,6 +6,7 @@ import '../../core/theme/transit_typography.dart';
 import '../../data/admin/admin_routes_repository.dart';
 import '../../data/operator/operator_repository_provider.dart';
 import '../../shared/models/operator_model.dart';
+import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/transit_app_bar.dart';
 import 'stop_edit_sheet.dart';
 
@@ -175,66 +176,115 @@ class _State extends ConsumerState<StopsManagementScreen> {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: Column(
-        children: [
-          const TransitAppBar(title: 'Gestión de paradas'),
-          Expanded(
-        child: _loading
-            ? const Center(child: CircularProgressIndicator())
-            : _error != null
-                ? Center(child: Text(_error!))
-                : Column(
-                    children: [
+      appBar: TransitAppBar(
+        title: 'Gestión de paradas',
+        transparent: true,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add_location_alt, color: c.accent),
+            tooltip: 'Nueva parada',
+            onPressed: _operatorId == null ? null : _create,
+          ),
+        ],
+      ),
+      body: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : _error != null
+              ? Center(child: Text(_error!))
+              : Column(
+                  children: [
+                    _statsHeader(c),
+                    if (_isAdmin && _operators.length > 1)
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 12, 16, 6),
-                        child: Column(
-                          children: [
-                            if (_isAdmin && _operators.length > 1)
-                              _operatorSelector(c),
-                            if (_isAdmin && _operators.length > 1)
-                              const SizedBox(height: 8),
-                            _searchBar(c),
-                          ],
-                        ),
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                        child: _operatorSelector(c),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Row(
-                          children: [
-                            Text('${_filtered.length} paradas',
-                                style:
-                                    TransitTypography.bodySmall(c.textMid)),
-                          ],
-                        ),
-                      ),
-                      Expanded(
+                    _searchBar(c),
+                    const SizedBox(height: 6),
+                    Expanded(
+                      child: RefreshIndicator(
+                        onRefresh: _load,
+                        color: c.accent,
                         child: _filtered.isEmpty
-                            ? Center(
-                                child: Text('Sin paradas',
-                                    style: TransitTypography.bodySecondary(
-                                        c.textMid)))
+                            ? ListView(children: const [
+                                SizedBox(height: 60),
+                                EmptyState(
+                                  'Sin paradas',
+                                  'Crea la primera con el botón +.',
+                                  icon: Icons.place_outlined,
+                                ),
+                              ])
                             : ListView.builder(
-                                padding:
-                                    const EdgeInsets.fromLTRB(16, 8, 16, 90),
+                                padding: const EdgeInsets.fromLTRB(
+                                    16, 4, 16, 16),
                                 itemCount: _filtered.length,
                                 itemBuilder: (_, i) =>
                                     _stopTile(c, _filtered[i]),
                               ),
                       ),
-                    ],
-                  ),
-          ),
+                    ),
+                  ],
+                ),
+    );
+  }
+
+  Widget _statsHeader(TransitColorScheme c) {
+    final total = _filtered.length;
+    final accesibles = _filtered.where((s) => s.accessible).length;
+    final marquesina = _filtered.where((s) => s.hasShelter).length;
+    final banco = _filtered.where((s) => s.hasBench).length;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      child: Row(
+        children: [
+          Expanded(
+              child: _statPill(
+                  c, Icons.place_outlined, '$total', 'Paradas', c.accent)),
+          const SizedBox(width: 8),
+          Expanded(
+              child: _statPill(c, Icons.accessible, '$accesibles',
+                  'Accesibles', const Color(0xFF4CAF50))),
+          const SizedBox(width: 8),
+          Expanded(
+              child: _statPill(c, Icons.umbrella, '$marquesina',
+                  'Marquesina', const Color(0xFF2196F3))),
+          const SizedBox(width: 8),
+          Expanded(
+              child: _statPill(c, Icons.chair_outlined, '$banco', 'Banco',
+                  c.textMid)),
         ],
       ),
-      floatingActionButton: _loading || _operatorId == null
-          ? null
-          : FloatingActionButton.extended(
-              backgroundColor: c.accent,
-              foregroundColor: Colors.white,
-              onPressed: _create,
-              icon: const Icon(Icons.add_location_alt),
-              label: const Text('Nueva parada'),
-            ),
+    );
+  }
+
+  Widget _statPill(TransitColorScheme c, IconData icon, String value,
+      String label, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 0.5),
+      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 14, color: color),
+              const SizedBox(width: 4),
+              Text(value,
+                  style: TransitTypography.bodyPrimary(c.textHi)
+                      .copyWith(fontWeight: FontWeight.w700)),
+            ],
+          ),
+          const SizedBox(height: 2),
+          Text(label,
+              style: TransitTypography.bodySmall(c.textLo),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis),
+        ],
+      ),
     );
   }
 
@@ -264,7 +314,9 @@ class _State extends ConsumerState<StopsManagementScreen> {
         ),
       );
 
-  Widget _searchBar(TransitColorScheme c) => Container(
+  Widget _searchBar(TransitColorScheme c) => Padding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+        child: Container(
         decoration: BoxDecoration(
           color: c.bgRaised,
           borderRadius: BorderRadius.circular(12),
@@ -282,6 +334,7 @@ class _State extends ConsumerState<StopsManagementScreen> {
             hintText: 'Buscar por nombre o código',
             hintStyle: TransitTypography.bodySecondary(c.textLo),
           ),
+        ),
         ),
       );
 

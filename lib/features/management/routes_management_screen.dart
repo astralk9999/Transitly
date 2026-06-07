@@ -150,84 +150,157 @@ class _State extends ConsumerState<RoutesManagementScreen> {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: Column(
-        children: [
-          const TransitAppBar(title: 'Gestión de líneas'),
-          Expanded(
-        child: _loading
-            ? const Center(child: CircularProgressIndicator())
-            : _error != null
-                ? Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(24),
-                      child: Text(_error!,
-                          textAlign: TextAlign.center,
-                          style: TransitTypography.bodySecondary(c.textMid)),
-                    ),
-                  )
-                : RefreshIndicator(
-                    onRefresh: _load,
-                    child: ListView(
-                      padding: const EdgeInsets.all(16),
-                      children: [
-                        _searchBar(c),
-                        const SizedBox(height: 12),
-                        _filters(c),
-                        const SizedBox(height: 8),
-                        _summaryBar(c),
-                        const SizedBox(height: 12),
-                        if (_filtered.isEmpty)
-                          const EmptyState(
-                            'Sin líneas',
-                            'Crea la primera con el botón de abajo.',
-                            icon: Icons.alt_route,
-                          )
-                        else if (_groupByOperator && _operators.length > 1)
-                          ..._buildGrouped(c)
-                        else
-                          ..._filtered.map((r) => Padding(
-                                padding: const EdgeInsets.only(bottom: 10),
-                                child: _routeCard(c, r),
-                              )),
-                        const SizedBox(height: 80),
-                      ],
-                    ),
-                  ),
+      appBar: TransitAppBar(
+        title: 'Gestión de líneas',
+        transparent: true,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add, color: c.accent),
+            tooltip: 'Nueva línea',
+            onPressed: _createRoute,
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: c.accent,
-        foregroundColor: Colors.white,
-        onPressed: _createRoute,
-        icon: const Icon(Icons.add),
-        label: const Text('Nueva línea'),
+      body: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : _error != null
+              ? Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Text(_error!,
+                        textAlign: TextAlign.center,
+                        style: TransitTypography.bodySecondary(c.textMid)),
+                  ),
+                )
+              : Column(
+                  children: [
+                    _statsHeader(c),
+                    _searchBar(c),
+                    _filters(c),
+                    const SizedBox(height: 6),
+                    Expanded(
+                      child: RefreshIndicator(
+                        onRefresh: _load,
+                        color: c.accent,
+                        child: _filtered.isEmpty
+                            ? ListView(children: const [
+                                SizedBox(height: 60),
+                                EmptyState(
+                                  'Sin líneas',
+                                  'Crea la primera con el botón +.',
+                                  icon: Icons.alt_route,
+                                ),
+                              ])
+                            : ListView(
+                                padding:
+                                    const EdgeInsets.fromLTRB(16, 4, 16, 16),
+                                children: [
+                                  if (_groupByOperator &&
+                                      _operators.length > 1)
+                                    ..._buildGrouped(c)
+                                  else
+                                    ..._filtered.map((r) => Padding(
+                                          padding: const EdgeInsets.only(
+                                              bottom: 10),
+                                          child: _routeCard(c, r),
+                                        )),
+                                ],
+                              ),
+                      ),
+                    ),
+                  ],
+                ),
+    );
+  }
+
+  Widget _statsHeader(TransitColorScheme c) {
+    final total = _filtered.length;
+    final oficiales =
+        _filtered.where((r) => r.status == RouteStatus.official).length;
+    final activas = _filtered.where((r) => r.active).length;
+    final paradas = _filtered.fold<int>(0, (s, r) => s + r.stopCount);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      child: Row(
+        children: [
+          Expanded(
+              child: _statPill(
+                  c, Icons.alt_route, '$total', 'Líneas', c.accent)),
+          const SizedBox(width: 8),
+          Expanded(
+              child: _statPill(c, Icons.verified, '$oficiales', 'Oficiales',
+                  const Color(0xFF2196F3))),
+          const SizedBox(width: 8),
+          Expanded(
+              child: _statPill(c, Icons.bolt, '$activas', 'Activas',
+                  const Color(0xFF4CAF50))),
+          const SizedBox(width: 8),
+          Expanded(
+              child: _statPill(c, Icons.place_outlined, '$paradas',
+                  'Paradas', c.textMid)),
+        ],
       ),
     );
   }
 
-  Widget _searchBar(TransitColorScheme c) => Container(
-        decoration: BoxDecoration(
-          color: c.bgRaised,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: c.border, width: 0.5),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        child: TextField(
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            icon: Icon(Icons.search, color: c.textMid, size: 20),
-            hintText: 'Buscar por código o nombre',
-            hintStyle: TransitTypography.bodySecondary(c.textLo),
-            isDense: true,
-            contentPadding: const EdgeInsets.symmetric(vertical: 14),
+  Widget _statPill(TransitColorScheme c, IconData icon, String value,
+      String label, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 0.5),
+      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 14, color: color),
+              const SizedBox(width: 4),
+              Text(value,
+                  style: TransitTypography.bodyPrimary(c.textHi)
+                      .copyWith(fontWeight: FontWeight.w700)),
+            ],
           ),
-          style: TransitTypography.bodyPrimary(c.textHi),
-          onChanged: (v) => setState(() => _query = v),
+          const SizedBox(height: 2),
+          Text(label,
+              style: TransitTypography.bodySmall(c.textLo),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis),
+        ],
+      ),
+    );
+  }
+
+  Widget _searchBar(TransitColorScheme c) => Padding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+        child: Container(
+          decoration: BoxDecoration(
+            color: c.bgRaised,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: c.border, width: 0.5),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: TextField(
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              icon: Icon(Icons.search, color: c.textMid, size: 20),
+              hintText: 'Buscar por código o nombre',
+              hintStyle: TransitTypography.bodySecondary(c.textLo),
+              isDense: true,
+              contentPadding: const EdgeInsets.symmetric(vertical: 14),
+            ),
+            style: TransitTypography.bodyPrimary(c.textHi),
+            onChanged: (v) => setState(() => _query = v),
+          ),
         ),
       );
 
-  Widget _filters(TransitColorScheme c) => Wrap(
+  Widget _filters(TransitColorScheme c) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Wrap(
         spacing: 8,
         runSpacing: 8,
         children: [
@@ -286,6 +359,7 @@ class _State extends ConsumerState<RoutesManagementScreen> {
               }),
             ),
         ],
+      ),
       );
 
   String _sortLabel(_SortBy s) => switch (s) {
@@ -329,33 +403,6 @@ class _State extends ConsumerState<RoutesManagementScreen> {
   }
 
   /// Barra de resumen: nº de líneas mostradas y totales de paradas/horarios.
-  Widget _summaryBar(TransitColorScheme c) {
-    final list = _filtered;
-    final stops = list.fold<int>(0, (s, r) => s + r.stopCount);
-    final scheds = list.fold<int>(0, (s, r) => s + r.scheduleCount);
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-      child: Row(
-        children: [
-          Icon(Icons.alt_route, size: 13, color: c.textLo),
-          const SizedBox(width: 4),
-          Text('${list.length} líneas',
-              style: TransitTypography.bodySmall(c.textMid)),
-          const SizedBox(width: 12),
-          Icon(Icons.place_outlined, size: 13, color: c.textLo),
-          const SizedBox(width: 4),
-          Text('$stops paradas',
-              style: TransitTypography.bodySmall(c.textLo)),
-          const SizedBox(width: 12),
-          Icon(Icons.schedule, size: 13, color: c.textLo),
-          const SizedBox(width: 4),
-          Text('$scheds horarios',
-              style: TransitTypography.bodySmall(c.textLo)),
-        ],
-      ),
-    );
-  }
-
   /// Lista agrupada por operador con cabeceras plegables.
   List<Widget> _buildGrouped(TransitColorScheme c) {
     final byOp = <String, List<AdminRouteRow>>{};

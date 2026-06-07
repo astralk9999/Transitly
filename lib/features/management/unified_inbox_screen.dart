@@ -300,32 +300,33 @@ class _State extends ConsumerState<UnifiedInboxScreen> {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: SafeArea(
-        bottom: false,
-        child: Column(
-          children: [
-            TransitAppBar(
-              title: 'Bandeja',
-              actions: [
-                IconButton(
-                  icon: Icon(Icons.refresh, color: c.accent),
-                  tooltip: 'Refrescar',
-                  onPressed: _load,
-                ),
-              ],
-            ),
-            _searchBar(c),
-            _filtersBar(c),
-            _openToggle(c),
-            Expanded(
-              child: _loading
-                  ? const Center(child: CircularProgressIndicator())
-                  : _error != null
-                      ? _errorView(c)
-                      : _filtered.isEmpty
+      appBar: TransitAppBar(
+        title: 'Bandeja',
+        transparent: true,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.refresh, color: c.accent),
+            tooltip: 'Refrescar',
+            onPressed: _load,
+          ),
+        ],
+      ),
+      body: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : _error != null
+              ? _errorView(c)
+              : Column(
+                  children: [
+                    _statsHeader(c),
+                    _searchBar(c),
+                    _filtersBar(c),
+                    _openToggle(c),
+                    Expanded(
+                      child: _filtered.isEmpty
                           ? _emptyView(c)
                           : RefreshIndicator(
                               onRefresh: _load,
+                              color: c.accent,
                               child: ListView.builder(
                                 padding:
                                     const EdgeInsets.fromLTRB(16, 4, 16, 16),
@@ -333,9 +334,70 @@ class _State extends ConsumerState<UnifiedInboxScreen> {
                                 itemBuilder: (_, i) => _card(c, _filtered[i]),
                               ),
                             ),
-            ),
-          ],
-        ),
+                    ),
+                  ],
+                ),
+    );
+  }
+
+  Widget _statsHeader(TransitColorScheme c) {
+    final counts = _countsBySource;
+    final pendientes = _items.where((i) => i.isOpen).length;
+    final mejoras = (counts['feedback'] ?? 0) + (counts['incident'] ?? 0);
+    final sugerencias =
+        (counts['suggestion'] ?? 0) + (counts['feature'] ?? 0);
+    final reportes = counts['route_report'] ?? 0;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      child: Row(
+        children: [
+          Expanded(
+              child: _statPill(c, Icons.inbox, '$pendientes', 'Pendientes',
+                  c.accent)),
+          const SizedBox(width: 8),
+          Expanded(
+              child: _statPill(c, Icons.tips_and_updates_outlined, '$mejoras',
+                  'Mejoras', const Color(0xFF2196F3))),
+          const SizedBox(width: 8),
+          Expanded(
+              child: _statPill(c, Icons.lightbulb_outline, '$sugerencias',
+                  'Sugerencias', const Color(0xFF9C27B0))),
+          const SizedBox(width: 8),
+          Expanded(
+              child: _statPill(c, Icons.flag_outlined, '$reportes',
+                  'Reportes', const Color(0xFFE53935))),
+        ],
+      ),
+    );
+  }
+
+  Widget _statPill(TransitColorScheme c, IconData icon, String value,
+      String label, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 0.5),
+      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 14, color: color),
+              const SizedBox(width: 4),
+              Text(value,
+                  style: TransitTypography.bodyPrimary(c.textHi)
+                      .copyWith(fontWeight: FontWeight.w700)),
+            ],
+          ),
+          const SizedBox(height: 2),
+          Text(label,
+              style: TransitTypography.bodySmall(c.textLo),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis),
+        ],
       ),
     );
   }

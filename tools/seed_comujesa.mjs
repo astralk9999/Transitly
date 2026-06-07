@@ -102,6 +102,93 @@ if (process.argv.includes('--counts')) {
   process.exit(0);
 }
 
+// ── Modo compacto ────────────────────────────────────────────────────────
+// Emite SQL sin enviar UUIDs (usa gen_random_uuid() por default + ON CONFLICT
+// sobre las claves naturales gtfs_route_id/gtfs_stop_id) y resuelve route_stops
+// y schedules con JOIN por código. geom decimado a lod1. Pensado para aplicar
+// vía MCP (límite de contexto). El detalle completo del trazado permanece en el
+// asset JSON. Genera dos archivos para aplicar en dos pasos atómicos:
+//   A = stops + routes ; B = route_stops + schedules
+if (process.argv.includes('--compact')) {
+  const OP = `'${OPERATOR_ID}'`;
+  const A = ['BEGIN;'];
+
+  const stopTuples = [];
+  for (const [key, st] of stopsByKey) {
+    const acc = { wheelchair: !!st.isAccessible, shelter: !!st.hasShelter, bench: !!st.hasBench };
+    stopTuples.push(
+      `(${OP}, ${sqlEsc(st.officialCode || null)}, ${sqlEsc(st.name)}, ` +
+        `ST_SetSRID(ST_MakePoint(${Number(st.lng)},${Number(st.lat)}),4326), ${jsonLit(acc)}, ${sqlEsc(key)}, 'official')`,
+    );
+  }
+  A.push(
+    `INSERT INTO stops (operator_id, code, name, geom, accessibility, gtfs_stop_id, source) VALUES\n` +
+      stopTuples.join(',\n') +
+      `\nON CONFLICT (operator_id, gtfs_stop_id) DO UPDATE SET name=EXCLUDED.name, geom=EXCLUDED.geom, accessibility=EXCLUDED.accessibility, code=EXCLUDED.code;`,
+  );
+
+  const routeTuples = [];
+  for (const line of lines) {
+    const lod = lodCoords(line);
+    const coords = (lod && (lod.rest.lod1 || lod.lod4)) || null; // lod1 por compacidad
+    const geom = lineStringSQL(coords);
+    const meta = { active: true, serviceType: line.serviceType || null };
+    const color = line.color ? (line.color.startsWith('#') ? line.color : `#${line.color}`) : null;
+    routeTuples.push(
+      `(${OP}, 'official', 'official', ${sqlEsc(line.code)}, ${sqlEsc(line.name)}, ${sqlEsc(color)}, ${sqlEsc(line.code)}, ${geom}, ${jsonLit(meta)})`,
+    );
+  }
+  A.push(
+    `INSERT INTO routes (operator_id, source, status, code, name, color, gtfs_route_id, geom, metadata) VALUES\n` +
+      routeTuples.join(',\n') +
+      `\nON CONFLICT (operator_id, gtfs_route_id) DO UPDATE SET name=EXCLUDED.name, color=EXCLUDED.color, geom=EXCLUDED.geom, metadata=EXCLUDED.metadata, status=EXCLUDED.status;`,
+  );
+  A.push('COMMIT;');
+
+  const B = ['BEGIN;'];
+  B.push(`DELETE FROM route_stops WHERE route_id IN (SELECT id FROM routes WHERE operator_id=${OP} AND source='official');`);
+  const rsRows = [];
+  for (const line of lines) {
+    const seen = new Set();
+    (line.stops || []).forEach((st, i) => {
+      const seq = Number.isInteger(st.order) ? st.order - 1 : i;
+      const k = `${line.code}|${stopKey(st)}|${seq}`;
+      if (seen.has(k)) return;
+      seen.add(k);
+      rsRows.push(`(${sqlEsc(line.code)}, ${sqlEsc(stopKey(st))}, ${seq})`);
+    });
+  }
+  B.push(
+    `INSERT INTO route_stops (route_id, stop_id, sequence, direction)\n` +
+      `SELECT r.id, s.id, v.seq, 0 FROM (VALUES\n${rsRows.join(',\n')}\n) AS v(rc, sk, seq)\n` +
+      `JOIN routes r ON r.operator_id=${OP} AND r.gtfs_route_id=v.rc\n` +
+      `JOIN stops s ON s.operator_id=${OP} AND s.gtfs_stop_id=v.sk\n` +
+      `ON CONFLICT DO NOTHING;`,
+  );
+  B.push(`DELETE FROM schedules WHERE route_id IN (SELECT id FROM routes WHERE operator_id=${OP} AND source='official');`);
+  const schRows = [];
+  for (const line of lines) {
+    const sch = line.schedules || {};
+    for (const day of Object.keys(sch)) {
+      const dt = DAY_MAP[day];
+      if (!dt) continue;
+      for (const t of sch[day] || []) schRows.push(`(${sqlEsc(line.code)}, '${dt}', '${t}')`);
+    }
+  }
+  B.push(
+    `INSERT INTO schedules (route_id, day_type, direction, departure_time)\n` +
+      `SELECT r.id, v.dt::day_type, 0, v.tm::time FROM (VALUES\n${schRows.join(',\n')}\n) AS v(rc, dt, tm)\n` +
+      `JOIN routes r ON r.operator_id=${OP} AND r.gtfs_route_id=v.rc;`,
+  );
+  B.push('COMMIT;');
+
+  mkdirSync('tools/seed_out', { recursive: true });
+  writeFileSync('tools/seed_out/compact_a_stops_routes.sql', A.join('\n') + '\n', 'utf8');
+  writeFileSync('tools/seed_out/compact_b_routestops_schedules.sql', B.join('\n') + '\n', 'utf8');
+  console.log(`compact A: ${A.join('\n').length} bytes | compact B: ${B.join('\n').length} bytes`);
+  process.exit(0);
+}
+
 const out = [];
 out.push('-- COMUJESA seed (idempotente). Generado por tools/seed_comujesa.mjs');
 out.push('BEGIN;');

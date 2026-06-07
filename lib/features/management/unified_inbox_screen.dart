@@ -42,9 +42,17 @@ const _filters = [
 class _State extends ConsumerState<UnifiedInboxScreen> {
   List<ModerationItem> _items = const [];
   String _filter = 'all';
+  String _query = '';
   bool _onlyOpen = true;
   bool _loading = true;
   String? _error;
+  final _searchCtrl = TextEditingController();
+
+  @override
+  void dispose() {
+    _searchCtrl.dispose();
+    super.dispose();
+  }
 
   AdminModerationRepository get _repo =>
       ref.read(adminModerationRepositoryProvider);
@@ -76,8 +84,16 @@ class _State extends ConsumerState<UnifiedInboxScreen> {
     }
   }
 
-  List<ModerationItem> get _filtered =>
-      _filter == 'all' ? _items : _items.where((i) => i.source == _filter).toList();
+  List<ModerationItem> get _filtered {
+    final q = _query.trim().toLowerCase();
+    return _items.where((i) {
+      if (_filter != 'all' && i.source != _filter) return false;
+      if (q.isEmpty) return true;
+      return i.title.toLowerCase().contains(q) ||
+          (i.description ?? '').toLowerCase().contains(q) ||
+          i.typeLabel.toLowerCase().contains(q);
+    }).toList();
+  }
 
   Map<String, int> get _countsBySource {
     final m = <String, int>{};
@@ -123,52 +139,133 @@ class _State extends ConsumerState<UnifiedInboxScreen> {
     }
   }
 
-  /// Dialog para aceptar/aplicar: puntos + nota.
+  String _acceptLabel(String source) => switch (source) {
+        'incident' => 'Resolver',
+        'feedback' => 'Aplicar',
+        'suggestion' => 'Aceptar',
+        'feature' => 'Aceptar',
+        'zone' => 'Aprobar',
+        'operator_app' => 'Aprobar',
+        'rgpd' => 'Borrar',
+        _ => 'Aplicar',
+      };
+
+  String _acceptTitle(ModerationItem it) => switch (it.source) {
+        'incident' => 'Resolver incidencia',
+        'feedback' => 'Aplicar mejora',
+        'suggestion' => 'Aceptar sugerencia',
+        'feature' => 'Aceptar solicitud',
+        'zone' => 'Aprobar zona',
+        'operator_app' => 'Aprobar operador',
+        'rgpd' => 'Confirmar borrado',
+        _ => 'Aplicar',
+      };
+
+  /// Dialog para aceptar/aplicar: resumen + puntos rápidos + nota.
   Future<(int, String?)?> _askResolve(ModerationItem it) async {
-    final pointsCtrl = TextEditingController(text: it.rewardable ? '10' : '0');
+    int points = it.rewardable ? 10 : 0;
     final noteCtrl = TextEditingController();
     return showDialog<(int, String?)>(
       context: context,
       builder: (ctx) {
         final c = TransitColorScheme.of(
             Theme.of(ctx).brightness == Brightness.dark);
-        return AlertDialog(
-          backgroundColor: c.bgElevated,
-          title: const Text('Aplicar aportación'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (it.rewardable)
-                TextField(
-                  controller: pointsCtrl,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    labelText: 'Puntos al autor (0 = ninguno)',
-                    suffixText: 'XP',
+        return StatefulBuilder(builder: (ctx, setS) {
+          return AlertDialog(
+            backgroundColor: c.bgElevated,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16)),
+            title: Text(_acceptTitle(it),
+                style: TransitTypography.heading(c.textHi)),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Resumen de lo que se aplica.
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: c.bgRaised,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: c.border, width: 0.5),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(it.typeLabel,
+                          style: TransitTypography.bodySmall(c.textMid)),
+                      if ((it.description ?? it.title).isNotEmpty) ...[
+                        const SizedBox(height: 2),
+                        Text(
+                            (it.description ?? '').isNotEmpty
+                                ? it.description!
+                                : it.title,
+                            style: TransitTypography.bodySecondary(c.textHi),
+                            maxLines: 3,
+                            overflow: TextOverflow.ellipsis),
+                      ],
+                    ],
                   ),
                 ),
-              const SizedBox(height: 8),
-              TextField(
-                controller: noteCtrl,
-                decoration: const InputDecoration(
-                    labelText: 'Nota para el autor (opcional)'),
+                if (it.rewardable) ...[
+                  const SizedBox(height: 14),
+                  Text('Puntos al autor',
+                      style: TransitTypography.bodyPrimary(c.textHi)),
+                  const SizedBox(height: 6),
+                  Wrap(
+                    spacing: 8,
+                    children: [0, 5, 10, 25, 50].map((p) {
+                      final sel = points == p;
+                      return ChoiceChip(
+                        label: Text(p == 0 ? 'Sin puntos' : '+$p'),
+                        selected: sel,
+                        showCheckmark: false,
+                        selectedColor: c.accent.withValues(alpha: 0.25),
+                        backgroundColor: c.bgRaised,
+                        labelStyle: TransitTypography.bodySmall(
+                            sel ? c.accent : c.textMid),
+                        side: BorderSide(color: sel ? c.accent : c.border),
+                        onSelected: (_) => setS(() => points = p),
+                      );
+                    }).toList(),
+                  ),
+                ],
+                const SizedBox(height: 12),
+                TextField(
+                  controller: noteCtrl,
+                  style: TransitTypography.bodyPrimary(c.textHi),
+                  decoration: InputDecoration(
+                    labelText: 'Nota para el autor (opcional)',
+                    labelStyle: TransitTypography.bodySmall(c.textMid),
+                    filled: true,
+                    fillColor: c.bgRaised,
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: c.border)),
+                    enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: c.border)),
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                  onPressed: () => Navigator.pop(ctx),
+                  child: const Text('Cancelar')),
+              FilledButton.icon(
+                style: FilledButton.styleFrom(backgroundColor: c.accent),
+                onPressed: () => Navigator.pop(ctx, (
+                  points,
+                  noteCtrl.text.trim().isEmpty ? null : noteCtrl.text.trim(),
+                )),
+                icon: const Icon(Icons.check, size: 16),
+                label: Text(_acceptLabel(it.source)),
               ),
             ],
-          ),
-          actions: [
-            TextButton(
-                onPressed: () => Navigator.pop(ctx),
-                child: const Text('Cancelar')),
-            FilledButton(
-              style: FilledButton.styleFrom(backgroundColor: c.accent),
-              onPressed: () => Navigator.pop(ctx, (
-                int.tryParse(pointsCtrl.text) ?? 0,
-                noteCtrl.text.trim().isEmpty ? null : noteCtrl.text.trim(),
-              )),
-              child: const Text('Aplicar'),
-            ),
-          ],
-        );
+          );
+        });
       },
     );
   }
@@ -205,6 +302,7 @@ class _State extends ConsumerState<UnifiedInboxScreen> {
         top: false,
         child: Column(
           children: [
+            _searchBar(c),
             _filtersBar(c),
             _openToggle(c),
             Expanded(
@@ -229,6 +327,48 @@ class _State extends ConsumerState<UnifiedInboxScreen> {
       ),
     );
   }
+
+  Widget _searchBar(TransitColorScheme c) => Padding(
+        padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+        child: Container(
+          decoration: BoxDecoration(
+            color: c.bgRaised,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: c.border, width: 0.5),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Row(
+            children: [
+              Icon(Icons.search, size: 18, color: c.textMid),
+              const SizedBox(width: 8),
+              Expanded(
+                child: TextField(
+                  controller: _searchCtrl,
+                  onChanged: (v) => setState(() => _query = v),
+                  style: TransitTypography.bodyPrimary(c.textHi),
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    isDense: true,
+                    contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                    hintText: 'Buscar en mensajes…',
+                    hintStyle: TransitTypography.bodySecondary(c.textMid),
+                  ),
+                ),
+              ),
+              if (_query.isNotEmpty)
+                IconButton(
+                  icon: Icon(Icons.close, size: 16, color: c.textMid),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  onPressed: () {
+                    _searchCtrl.clear();
+                    setState(() => _query = '');
+                  },
+                ),
+            ],
+          ),
+        ),
+      );
 
   Widget _filtersBar(TransitColorScheme c) {
     final counts = _countsBySource;
@@ -376,54 +516,51 @@ class _State extends ConsumerState<UnifiedInboxScreen> {
               _statusBadge(c, it.status),
               const Spacer(),
               if (it.authorId != null)
-                InkWell(
-                  onTap: () => context.push('/admin/users/${it.authorId}'),
-                  child: Row(
-                    children: [
-                      Icon(Icons.person_outline, size: 13, color: c.accent),
-                      const SizedBox(width: 4),
-                      Text('Autor', style: TransitTypography.bodySmall(c.accent)),
-                    ],
+                OutlinedButton.icon(
+                  onPressed: () =>
+                      context.push('/admin/users/${it.authorId}'),
+                  icon: const Icon(Icons.person_outline, size: 14),
+                  label: const Text('Ver autor'),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: c.accent,
+                    side: BorderSide(color: c.accent.withValues(alpha: 0.5)),
+                    visualDensity: VisualDensity.compact,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 0),
+                    textStyle: const TextStyle(
+                        fontSize: 12, fontWeight: FontWeight.w600),
                   ),
                 ),
             ],
           ),
           if (it.isOpen) ...[
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
             Row(
               children: [
                 if (it.status == 'open' || it.status == 'requested')
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: () => _resolve(it, 'review'),
-                      icon: const Icon(Icons.visibility_outlined, size: 15),
-                      label: const Text('Revisar'),
-                      style: OutlinedButton.styleFrom(
-                          foregroundColor: c.textMid,
-                          side: BorderSide(color: c.border)),
-                    ),
+                  TextButton(
+                    onPressed: () => _resolve(it, 'review'),
+                    style: TextButton.styleFrom(
+                        foregroundColor: c.textMid,
+                        visualDensity: VisualDensity.compact),
+                    child: const Text('Revisar'),
                   ),
-                if (it.status == 'open' || it.status == 'requested')
-                  const SizedBox(width: 8),
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: () => _resolve(it, 'reject'),
-                    icon: const Icon(Icons.close, size: 15),
-                    label: const Text('Rechazar'),
-                    style: OutlinedButton.styleFrom(
-                        foregroundColor: c.stateCancelled,
-                        side: BorderSide(
-                            color: c.stateCancelled.withValues(alpha: 0.5))),
-                  ),
+                const Spacer(),
+                TextButton(
+                  onPressed: () => _resolve(it, 'reject'),
+                  style: TextButton.styleFrom(
+                      foregroundColor: c.stateCancelled,
+                      visualDensity: VisualDensity.compact),
+                  child: const Text('Rechazar'),
                 ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: FilledButton.icon(
-                    onPressed: () => _resolve(it, 'accept'),
-                    icon: const Icon(Icons.check, size: 15),
-                    label: Text(it.source == 'rgpd' ? 'Borrar' : 'Aplicar'),
-                    style: FilledButton.styleFrom(backgroundColor: c.accent),
-                  ),
+                const SizedBox(width: 6),
+                FilledButton(
+                  onPressed: () => _resolve(it, 'accept'),
+                  style: FilledButton.styleFrom(
+                      backgroundColor: c.accent,
+                      visualDensity: VisualDensity.compact,
+                      padding: const EdgeInsets.symmetric(horizontal: 16)),
+                  child: Text(_acceptLabel(it.source)),
                 ),
               ],
             ),

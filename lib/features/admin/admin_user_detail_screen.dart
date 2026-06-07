@@ -999,7 +999,7 @@ class _RoutesTab extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: 10),
           child: InkWell(
             borderRadius: BorderRadius.circular(12),
-            onTap: () => context.push('/route/$id'),
+            onTap: () => context.push('/community/route/$id'),
             child: GlassCard(
               blur: 12,
               fillOpacity: 0.05,
@@ -1030,8 +1030,9 @@ class _RoutesTab extends StatelessWidget {
                           spacing: 6,
                           runSpacing: 4,
                           children: [
-                            _badge(status, _statusColor(c, status)),
-                            _badge(visibility, c.textMid),
+                            _badge(_routeStatusLabel(status),
+                                _statusColor(c, status)),
+                            _badge(_visibilityLabel(visibility), c.textMid),
                             if (createdAt != null)
                               _badge(createdAt.substring(0, 10), c.textLo),
                           ],
@@ -1081,6 +1082,24 @@ class _RoutesTab extends StatelessWidget {
         return c.textMid;
     }
   }
+
+  String _routeStatusLabel(String s) => switch (s) {
+        'draft' => 'Borrador',
+        'published' => 'Publicada',
+        'review_pending' => 'En revisión',
+        'community_approved' => 'Aprobada',
+        'rejected' => 'Rechazada',
+        'reported' => 'Reportada',
+        _ => s,
+      };
+
+  String _visibilityLabel(String s) => switch (s) {
+        'private' => 'Privada',
+        'public' => 'Pública',
+        'unlisted' => 'No listada',
+        'shared' => 'Compartida',
+        _ => s,
+      };
 
   Widget _badge(String text, Color color) {
     return Container(
@@ -1164,7 +1183,7 @@ class _FeedbackTab extends StatelessWidget {
                             color: statusColor.withValues(alpha: 0.5),
                             width: 0.5),
                       ),
-                      child: Text(status.toUpperCase(),
+                      child: Text(_feedbackStatusLabel(status).toUpperCase(),
                           style: GoogleFonts.ibmPlexMono(
                               fontSize: 10,
                               fontWeight: FontWeight.w700,
@@ -1174,7 +1193,7 @@ class _FeedbackTab extends StatelessWidget {
                     const SizedBox(width: 8),
                     Icon(_kindIcon(kind), size: 14, color: c.textMid),
                     const SizedBox(width: 4),
-                    Text(kind,
+                    Text(_feedbackKindLabel(kind),
                         style: TransitTypography.bodySmall(c.textMid)),
                     const Spacer(),
                     if (createdAt != null)
@@ -1232,4 +1251,22 @@ class _FeedbackTab extends StatelessWidget {
         return Icons.help_outline;
     }
   }
+
+  String _feedbackStatusLabel(String s) => switch (s) {
+        'open' => 'Pendiente',
+        'in_review' => 'En revisión',
+        'applied' => 'Aplicado',
+        'accepted' => 'Aceptado',
+        'rejected' => 'Rechazado',
+        'duplicate' => 'Duplicado',
+        _ => s,
+      };
+
+  String _feedbackKindLabel(String k) => switch (k) {
+        'stop_change' => 'Mejora de parada',
+        'schedule_error' => 'Error de horario',
+        'info_correction' => 'Corrección de info',
+        'other' => 'Otro',
+        _ => k,
+      };
 }

@@ -10,6 +10,7 @@ import '../../core/utils/app_logger.dart';
 import '../../core/utils/uuid.dart';
 import '../../data/geo_alerts/geo_alerts_repository.dart';
 import '../../data/mock/mock_data_service.dart';
+import '../../shared/models/enums.dart';
 import '../../shared/models/geo_alert_model.dart';
 import '../../shared/models/route_model.dart';
 import '../../shared/models/user_role.dart';
@@ -631,6 +632,11 @@ class _GeoAlertEditorScreenState
   late GeoAlertSeverity _severity;
   final Set<String> _selectedRoutes = {};
   final _mapController = MapController();
+  final _routeSearchCtrl = TextEditingController();
+  String _routeSearch = '';
+  ServiceType? _routeTypeFilter;
+  bool _showAllRoutes = false;
+  static const _routesPageSize = 12;
 
   @override
   void initState() {
@@ -654,6 +660,7 @@ class _GeoAlertEditorScreenState
   void dispose() {
     _titleCtrl.dispose();
     _bodyCtrl.dispose();
+    _routeSearchCtrl.dispose();
     super.dispose();
   }
 
@@ -852,13 +859,7 @@ class _GeoAlertEditorScreenState
                 Text('No hay rutas cargadas',
                     style: TransitTypography.bodySmall(c.textLo))
               else
-                Wrap(
-                  spacing: 6,
-                  runSpacing: 6,
-                  children: [
-                    for (final r in routes) _routeChip(c, r),
-                  ],
-                ),
+                _routesSelector(c, routes),
               const SizedBox(height: 32),
               TransitButton(
                 label: isEditing ? 'GUARDAR' : 'CREAR',
@@ -923,6 +924,197 @@ class _GeoAlertEditorScreenState
                 )),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _routesSelector(TransitColorScheme c, List<RouteModel> all) {
+    var filtered = all.where((r) {
+      if (_routeTypeFilter != null && r.serviceType != _routeTypeFilter) {
+        return false;
+      }
+      if (_routeSearch.isEmpty) return true;
+      final q = _routeSearch.toLowerCase();
+      return r.code.toLowerCase().contains(q) ||
+          r.name.toLowerCase().contains(q);
+    }).toList();
+    final hasMore = filtered.length > _routesPageSize;
+    final visible = _showAllRoutes || !hasMore
+        ? filtered
+        : filtered.take(_routesPageSize).toList();
+    final allFilteredSelected = filtered.isNotEmpty &&
+        filtered.every((r) => _selectedRoutes.contains(r.id));
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Buscador
+        Container(
+          decoration: BoxDecoration(
+            color: c.bgRaised,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: c.border, width: 0.5),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Row(
+            children: [
+              Icon(Icons.search, size: 16, color: c.textMid),
+              const SizedBox(width: 6),
+              Expanded(
+                child: TextField(
+                  controller: _routeSearchCtrl,
+                  onChanged: (v) => setState(() {
+                    _routeSearch = v;
+                    _showAllRoutes = false;
+                  }),
+                  style: TransitTypography.bodyPrimary(c.textHi),
+                  decoration: InputDecoration(
+                    hintText: 'Buscar por código o nombre',
+                    hintStyle:
+                        TransitTypography.bodySecondary(c.textMid),
+                    border: InputBorder.none,
+                    isDense: true,
+                    contentPadding:
+                        const EdgeInsets.symmetric(vertical: 10),
+                  ),
+                ),
+              ),
+              if (_routeSearch.isNotEmpty)
+                IconButton(
+                  icon: Icon(Icons.close, size: 14, color: c.textMid),
+                  onPressed: () {
+                    _routeSearchCtrl.clear();
+                    setState(() => _routeSearch = '');
+                  },
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 8),
+        SizedBox(
+          height: 32,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            children: [
+              _typeChip(c, null, 'Todos'),
+              for (final t in ServiceType.values) ...[
+                const SizedBox(width: 6),
+                _typeChip(c, t, t.label),
+              ],
+            ],
+          ),
+        ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            Text(
+              '${visible.length} de ${filtered.length} '
+              '${filtered.length == 1 ? "ruta" : "rutas"}'
+              '${_selectedRoutes.isEmpty ? "" : " · ${_selectedRoutes.length} sel."}',
+              style: TransitTypography.bodySmall(c.textMid),
+            ),
+            const Spacer(),
+            if (filtered.isNotEmpty)
+              TextButton.icon(
+                onPressed: () => setState(() {
+                  if (allFilteredSelected) {
+                    for (final r in filtered) {
+                      _selectedRoutes.remove(r.id);
+                    }
+                  } else {
+                    for (final r in filtered) {
+                      _selectedRoutes.add(r.id);
+                    }
+                  }
+                }),
+                icon: Icon(
+                    allFilteredSelected
+                        ? Icons.deselect
+                        : Icons.select_all,
+                    size: 14),
+                label: Text(allFilteredSelected
+                    ? 'Quitar visibles'
+                    : 'Seleccionar visibles'),
+                style: TextButton.styleFrom(
+                  foregroundColor: c.accent,
+                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+              ),
+            if (_selectedRoutes.isNotEmpty)
+              TextButton.icon(
+                onPressed: () => setState(_selectedRoutes.clear),
+                icon: const Icon(Icons.clear_all, size: 14),
+                label: const Text('Limpiar'),
+                style: TextButton.styleFrom(
+                  foregroundColor: c.stateCancelled,
+                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+              ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        if (filtered.isEmpty)
+          Text('Sin coincidencias',
+              style: TransitTypography.bodySmall(c.textLo))
+        else
+          Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            children: [for (final r in visible) _routeChip(c, r)],
+          ),
+        if (hasMore) ...[
+          const SizedBox(height: 8),
+          Align(
+            alignment: Alignment.center,
+            child: TextButton.icon(
+              onPressed: () =>
+                  setState(() => _showAllRoutes = !_showAllRoutes),
+              icon: Icon(
+                  _showAllRoutes
+                      ? Icons.expand_less
+                      : Icons.expand_more,
+                  size: 16),
+              label: Text(_showAllRoutes
+                  ? 'Ver menos'
+                  : 'Ver todas (${filtered.length - _routesPageSize} más)'),
+              style: TextButton.styleFrom(foregroundColor: c.accent),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _typeChip(TransitColorScheme c, ServiceType? t, String label) {
+    final selected = _routeTypeFilter == t;
+    return InkWell(
+      borderRadius: BorderRadius.circular(16),
+      onTap: () => setState(() {
+        _routeTypeFilter = t;
+        _showAllRoutes = false;
+      }),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color:
+              selected ? c.accent.withValues(alpha: 0.18) : c.bgRaised,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+              color: selected ? c.accent : c.border,
+              width: selected ? 1 : 0.5),
+        ),
+        child: Text(label,
+            style: TextStyle(
+              fontSize: 11,
+              color: selected ? c.accent : c.textHi,
+              fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+            )),
       ),
     );
   }

@@ -27,6 +27,8 @@ import '../../../shared/widgets/stagger_list.dart';
 import '../../../shared/widgets/route_card.dart';
 import '../../../shared/widgets/transit_button.dart';
 import '../../../shared/widgets/transit_chip.dart';
+import '../../../shared/models/geo_alert_model.dart';
+import '../../../shared/providers/geo_alerts_in_radius_provider.dart';
 import '../widgets/geo_alerts_banner.dart';
 import '../widgets/home_alert_item.dart';
 import '../widgets/habitual_config_sheet.dart';
@@ -348,6 +350,45 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                       .toList(),
                 ),
               ],
+
+              // ── 5.5) AVISOS GEO EN ZONA ──
+              Builder(builder: (_) {
+                final geoAlerts =
+                    ref.watch(geoAlertsInRadiusProvider);
+                if (geoAlerts.isEmpty) return const SizedBox.shrink();
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 28),
+                    Row(
+                      children: [
+                        _sectionTitle(c, 'En tu zona'),
+                        const SizedBox(width: 6),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 6, vertical: 1),
+                          decoration: BoxDecoration(
+                            color: c.stateDelay.withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Text(
+                            '${geoAlerts.length}',
+                            style: GoogleFonts.ibmPlexMono(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w700,
+                                color: c.stateDelay),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    for (final a in geoAlerts) ...[
+                      _GeoAlertHomeCard(alert: a, c: c),
+                      const SizedBox(height: 8),
+                    ],
+                  ],
+                );
+              }),
 
               // ── 6) BUSES CERCANOS LINK ──
               const SizedBox(height: 28),
@@ -753,6 +794,101 @@ class _HomeTabState extends ConsumerState<HomeTab> {
     final now = DateTime.now();
     final mins = (h * 60 + m) - (now.hour * 60 + now.minute);
     return mins > 0 ? mins : null;
+  }
+}
+
+/// Card de aviso geo que aparece en Inicio cuando el usuario está
+/// dentro del radio. Reusa el patrón de las cards de paradas/buses
+/// (icono coloreado por severidad + título + cuerpo).
+class _GeoAlertHomeCard extends StatelessWidget {
+  const _GeoAlertHomeCard({required this.alert, required this.c});
+  final GeoAlertModel alert;
+  final TransitColorScheme c;
+
+  @override
+  Widget build(BuildContext context) {
+    final (sevColor, sevIcon, sevLabel) = switch (alert.severity) {
+      GeoAlertSeverity.info => (
+          const Color(0xFF2196F3),
+          Icons.info_outline,
+          'INFO',
+        ),
+      GeoAlertSeverity.warning => (
+          const Color(0xFFFF9800),
+          Icons.warning_amber,
+          'AVISO',
+        ),
+      GeoAlertSeverity.critical => (
+          const Color(0xFFB71C1C),
+          Icons.priority_high,
+          'CRÍTICO',
+        ),
+    };
+    return GlassCard(
+      blur: 12,
+      fillOpacity: 0.06,
+      borderRadius: 12,
+      padding: const EdgeInsets.all(12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              color: sevColor.withValues(alpha: 0.18),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                  color: sevColor.withValues(alpha: 0.5), width: 0.5),
+            ),
+            child: Icon(sevIcon, color: sevColor, size: 20),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 6, vertical: 1),
+                      decoration: BoxDecoration(
+                        color: sevColor.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(4),
+                        border: Border.all(
+                            color: sevColor.withValues(alpha: 0.5),
+                            width: 0.5),
+                      ),
+                      child: Text(sevLabel,
+                          style: GoogleFonts.ibmPlexMono(
+                            fontSize: 9,
+                            fontWeight: FontWeight.w700,
+                            color: sevColor,
+                            letterSpacing: 1,
+                          )),
+                    ),
+                    const SizedBox(width: 6),
+                    Flexible(
+                      child: Text(alert.title,
+                          style:
+                              TransitTypography.bodyPrimary(c.textHi),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text(alert.body,
+                    style: TransitTypography.bodySecondary(c.textMid),
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 

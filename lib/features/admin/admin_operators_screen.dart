@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
@@ -17,6 +18,9 @@ import '../../shared/widgets/shimmer_skeleton.dart';
 import '../../shared/widgets/transit_app_bar.dart';
 import 'widgets/operator_form_dialog.dart';
 
+enum _OpSortMode { nameAsc, nameDesc, regionAsc, statusActiveFirst }
+enum _OpStatusFilter { all, active, inactive }
+
 class AdminOperatorsScreen extends ConsumerStatefulWidget {
   const AdminOperatorsScreen({super.key});
 
@@ -30,6 +34,15 @@ class _AdminOperatorsScreenState extends ConsumerState<AdminOperatorsScreen> {
   String _filter = '';
   bool _loading = true;
   OperatorRepositoryError? _errorType;
+  _OpStatusFilter _statusFilter = _OpStatusFilter.all;
+  _OpSortMode _sort = _OpSortMode.statusActiveFirst;
+  final _searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -46,12 +59,36 @@ class _AdminOperatorsScreenState extends ConsumerState<AdminOperatorsScreen> {
 
   List<OperatorModel> get _filteredOperators {
     final q = _filter.trim().toLowerCase();
-    if (q.isEmpty) return _operators;
-    return _operators.where((o) {
-      return o.name.toLowerCase().contains(q) ||
-          o.slug.toLowerCase().contains(q) ||
-          o.region.toLowerCase().contains(q);
+    var list = _operators.where((o) {
+      if (q.isNotEmpty &&
+          !o.name.toLowerCase().contains(q) &&
+          !o.slug.toLowerCase().contains(q) &&
+          !o.region.toLowerCase().contains(q)) {
+        return false;
+      }
+      return switch (_statusFilter) {
+        _OpStatusFilter.active => o.isActive,
+        _OpStatusFilter.inactive => !o.isActive,
+        _OpStatusFilter.all => true,
+      };
     }).toList();
+    switch (_sort) {
+      case _OpSortMode.nameAsc:
+        list.sort((a, b) => a.name.compareTo(b.name));
+      case _OpSortMode.nameDesc:
+        list.sort((a, b) => b.name.compareTo(a.name));
+      case _OpSortMode.regionAsc:
+        list.sort((a, b) {
+          final cmp = a.region.compareTo(b.region);
+          return cmp != 0 ? cmp : a.name.compareTo(b.name);
+        });
+      case _OpSortMode.statusActiveFirst:
+        list.sort((a, b) {
+          if (a.isActive == b.isActive) return a.name.compareTo(b.name);
+          return a.isActive ? -1 : 1;
+        });
+    }
+    return list;
   }
 
   Future<void> _loadOperators() async {
@@ -243,115 +280,396 @@ class _AdminOperatorsScreenState extends ConsumerState<AdminOperatorsScreen> {
 
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-          child: TextField(
-            onChanged: (v) => setState(() => _filter = v),
-            style: TransitTypography.bodyPrimary(c.textHi),
-            decoration: InputDecoration(
-              hintText: 'Buscar por nombre, slug o región',
-              hintStyle: TransitTypography.bodySecondary(c.textLo),
-              prefixIcon: Icon(Icons.search, color: c.textLo, size: 20),
-              filled: true,
-              fillColor: c.bgRaised,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: c.border),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: c.border),
-              ),
-            ),
-          ),
-        ),
+        _statsHeader(c),
+        _searchBar(c, l10n),
+        _filtersBar(c, l10n),
+        const SizedBox(height: 8),
         if (filtered.isEmpty)
           Expanded(
             child: EmptyState(
               'Sin resultados',
-              'Ningún operador coincide con "$_filter"',
+              _filter.isEmpty
+                  ? 'Ningún operador coincide con los filtros'
+                  : 'Ningún operador coincide con "$_filter"',
               icon: Icons.search_off,
             ),
           )
         else
-          Expanded(child: _buildOperatorList(filtered, c, l10n)),
+          Expanded(
+            child: RefreshIndicator(
+              color: c.accent,
+              onRefresh: _loadOperators,
+              child: _buildOperatorList(filtered, c, l10n),
+            ),
+          ),
       ],
     );
+  }
+
+  // ── Stats header ────────────────────────────────────────────
+  Widget _statsHeader(TransitColorScheme c) {
+    final total = _operators.length;
+    final active = _operators.where((o) => o.isActive).length;
+    final inactive = total - active;
+    final regions = _operators.map((o) => o.region).toSet().length;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      child: Row(
+        children: [
+          Expanded(
+              child: _statPill(c, Icons.business, '$total', 'Total', c.accent)),
+          const SizedBox(width: 8),
+          Expanded(
+              child: _statPill(c, Icons.check_circle_outline, '$active',
+                  'Activos', const Color(0xFF4CAF50))),
+          const SizedBox(width: 8),
+          Expanded(
+              child: _statPill(c, Icons.pause_circle_outline, '$inactive',
+                  'Inactivos', c.textMid)),
+          const SizedBox(width: 8),
+          Expanded(
+              child: _statPill(c, Icons.public, '$regions', 'Regiones',
+                  const Color(0xFF2196F3))),
+        ],
+      ),
+    );
+  }
+
+  Widget _statPill(TransitColorScheme c, IconData icon, String value,
+      String label, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 0.5),
+      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 14, color: color),
+              const SizedBox(width: 4),
+              Text(value,
+                  style: GoogleFonts.ibmPlexMono(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: c.textHi,
+                  )),
+            ],
+          ),
+          const SizedBox(height: 2),
+          Text(label,
+              style: TransitTypography.bodySmall(c.textLo),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis),
+        ],
+      ),
+    );
+  }
+
+  // ── Search bar ──────────────────────────────────────────────
+  Widget _searchBar(TransitColorScheme c, AppLocalizations l10n) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+      child: Container(
+        decoration: BoxDecoration(
+          color: c.bgRaised,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: c.border, width: 0.5),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        child: Row(
+          children: [
+            Icon(Icons.search, size: 18, color: c.textMid),
+            const SizedBox(width: 8),
+            Expanded(
+              child: TextField(
+                controller: _searchController,
+                onChanged: (v) => setState(() => _filter = v),
+                style: TransitTypography.bodyPrimary(c.textHi),
+                decoration: InputDecoration(
+                  hintText: 'Nombre, slug o región',
+                  hintStyle: TransitTypography.bodySecondary(c.textMid),
+                  border: InputBorder.none,
+                  isDense: true,
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 12),
+                ),
+              ),
+            ),
+            if (_filter.isNotEmpty)
+              IconButton(
+                icon: Icon(Icons.close, size: 16, color: c.textMid),
+                onPressed: () {
+                  _searchController.clear();
+                  setState(() => _filter = '');
+                },
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ── Filters bar (status + sort) ─────────────────────────────
+  Widget _filtersBar(TransitColorScheme c, AppLocalizations l10n) {
+    return SizedBox(
+      height: 36,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        children: [
+          _filterChip(
+            c,
+            icon: Icons.list,
+            label: 'Todos',
+            selected: _statusFilter == _OpStatusFilter.all,
+            color: c.accent,
+            onTap: () =>
+                setState(() => _statusFilter = _OpStatusFilter.all),
+          ),
+          const SizedBox(width: 6),
+          _filterChip(
+            c,
+            icon: Icons.check_circle_outline,
+            label: 'Activos',
+            selected: _statusFilter == _OpStatusFilter.active,
+            color: const Color(0xFF4CAF50),
+            onTap: () =>
+                setState(() => _statusFilter = _OpStatusFilter.active),
+          ),
+          const SizedBox(width: 6),
+          _filterChip(
+            c,
+            icon: Icons.pause_circle_outline,
+            label: 'Inactivos',
+            selected: _statusFilter == _OpStatusFilter.inactive,
+            color: c.textMid,
+            onTap: () =>
+                setState(() => _statusFilter = _OpStatusFilter.inactive),
+          ),
+          const SizedBox(width: 6),
+          PopupMenuButton<_OpSortMode>(
+            initialValue: _sort,
+            position: PopupMenuPosition.under,
+            onSelected: (v) => setState(() => _sort = v),
+            itemBuilder: (_) => const [
+              PopupMenuItem(
+                  value: _OpSortMode.statusActiveFirst,
+                  child: Text('Activos primero')),
+              PopupMenuItem(
+                  value: _OpSortMode.nameAsc, child: Text('Nombre A-Z')),
+              PopupMenuItem(
+                  value: _OpSortMode.nameDesc,
+                  child: Text('Nombre Z-A')),
+              PopupMenuItem(
+                  value: _OpSortMode.regionAsc,
+                  child: Text('Por región')),
+            ],
+            child: Container(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: c.bgRaised,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: c.border, width: 0.5),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.sort, size: 14, color: c.textMid),
+                  const SizedBox(width: 4),
+                  Text(_sortLabel(_sort),
+                      style: TransitTypography.bodySmall(c.textHi)),
+                  const SizedBox(width: 2),
+                  Icon(Icons.arrow_drop_down, size: 16, color: c.textMid),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _filterChip(
+    TransitColorScheme c, {
+    required IconData icon,
+    required String label,
+    required bool selected,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(20),
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: selected ? color.withValues(alpha: 0.18) : c.bgRaised,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+              color: selected ? color : c.border,
+              width: selected ? 1.2 : 0.5),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 14, color: selected ? color : c.textMid),
+            const SizedBox(width: 4),
+            Text(label,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: selected ? color : c.textHi,
+                  fontWeight:
+                      selected ? FontWeight.w700 : FontWeight.w500,
+                )),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _sortLabel(_OpSortMode s) {
+    return switch (s) {
+      _OpSortMode.statusActiveFirst => 'Activos↑',
+      _OpSortMode.nameAsc => 'A-Z',
+      _OpSortMode.nameDesc => 'Z-A',
+      _OpSortMode.regionAsc => 'Región',
+    };
   }
 
   Widget _buildOperatorList(
       List<OperatorModel> operators, TransitColorScheme c, AppLocalizations l10n) {
     return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
       itemCount: operators.length,
       itemBuilder: (context, index) {
         final op = operators[index];
-        final avatarColor = _hexToColor(op.color) ?? c.accent;
+        final brand = _hexToColor(op.color) ?? c.accent;
         return Padding(
-          padding: EdgeInsets.only(bottom: index < operators.length - 1 ? 8 : 0),
-          child: GlassCard(
-            blur: 12,
-            fillOpacity: op.isActive ? 0.05 : 0.02,
-            borderRadius: 12,
-            padding: const EdgeInsets.all(12),
-            child: ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: CircleAvatar(
-                backgroundColor: avatarColor.withValues(alpha: 0.12),
-                child: Text(
-                  op.shortName.isNotEmpty
-                      ? op.shortName[0].toUpperCase()
-                      : '?',
-                  style: TransitTypography.bodyPrimary(avatarColor),
-                ),
-              ),
-              title: Row(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(12),
+            onTap: () => _onEdit(op),
+            child: GlassCard(
+              blur: 12,
+              fillOpacity: op.isActive ? 0.05 : 0.02,
+              borderRadius: 12,
+              padding: const EdgeInsets.all(12),
+              child: Row(
                 children: [
-                  Flexible(
+                  // Avatar circular con borde del color de marca
+                  Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: brand.withValues(
+                          alpha: op.isActive ? 0.18 : 0.08),
+                      border: Border.all(
+                          color: op.isActive
+                              ? brand
+                              : brand.withValues(alpha: 0.4),
+                          width: 1.5),
+                    ),
+                    alignment: Alignment.center,
                     child: Text(
-                      op.name,
-                      style: TransitTypography.bodyPrimary(
-                        op.isActive ? c.textHi : c.textLo,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  if (!op.isActive) ...[
-                    const SizedBox(width: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 6, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: c.stateCancelled.withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Text(
-                        'INACTIVO',
-                        style: TransitTypography.bodySmall(c.stateCancelled),
+                      op.shortName.isNotEmpty
+                          ? op.shortName[0].toUpperCase()
+                          : '?',
+                      style: GoogleFonts.ibmPlexMono(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: brand,
                       ),
                     ),
-                  ],
-                ],
-              ),
-              subtitle: Text(
-                op.region.isNotEmpty
-                    ? '${op.slug} · ${op.region}'
-                    : op.slug,
-                style: TransitTypography.bodySecondary(c.textMid),
-              ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.edit, color: c.accent, size: 20),
-                    tooltip: l10n.adminOperatorsEdit,
-                    onPressed: () => _onEdit(op),
                   ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Flexible(
+                              child: Text(
+                                op.name,
+                                style: TransitTypography.bodyPrimary(
+                                  op.isActive ? c.textHi : c.textLo,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 6, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: (op.isActive
+                                        ? const Color(0xFF4CAF50)
+                                        : c.textMid)
+                                    .withValues(alpha: 0.15),
+                                borderRadius: BorderRadius.circular(4),
+                                border: Border.all(
+                                  color: (op.isActive
+                                          ? const Color(0xFF4CAF50)
+                                          : c.textMid)
+                                      .withValues(alpha: 0.5),
+                                  width: 0.5,
+                                ),
+                              ),
+                              child: Text(
+                                op.isActive ? 'ACTIVO' : 'INACTIVO',
+                                style: GoogleFonts.ibmPlexMono(
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: 1,
+                                  color: op.isActive
+                                      ? const Color(0xFF4CAF50)
+                                      : c.textMid,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        Wrap(
+                          spacing: 6,
+                          runSpacing: 4,
+                          children: [
+                            _miniBadge(c,
+                                icon: Icons.tag,
+                                label: op.slug,
+                                color: c.textMid),
+                            if (op.region.isNotEmpty)
+                              _miniBadge(c,
+                                  icon: Icons.public,
+                                  label: op.region,
+                                  color: const Color(0xFF2196F3)),
+                            _miniBadge(c,
+                                icon: Icons.palette_outlined,
+                                label: op.color.isEmpty
+                                    ? '—'
+                                    : op.color.toUpperCase(),
+                                color: brand),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 4),
                   IconButton(
                     icon: Icon(Icons.delete_outline,
                         color: c.stateCancelled, size: 20),
                     tooltip: l10n.adminOperatorsDelete,
                     onPressed: () => _onDelete(op),
+                    visualDensity: VisualDensity.compact,
                   ),
                 ],
               ),
@@ -359,6 +677,33 @@ class _AdminOperatorsScreenState extends ConsumerState<AdminOperatorsScreen> {
           ),
         );
       },
+    );
+  }
+
+  Widget _miniBadge(TransitColorScheme c,
+      {required IconData icon,
+      required String label,
+      required Color color}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(color: color.withValues(alpha: 0.4), width: 0.5),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 10, color: color),
+          const SizedBox(width: 3),
+          Text(label,
+              style: TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.w600,
+                color: color,
+              )),
+        ],
+      ),
     );
   }
 }

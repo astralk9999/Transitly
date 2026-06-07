@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$GeoAlertModel {
 
- String get id; String get title; String get body; GeoAlertSeverity get severity; double get centerLat; double get centerLng; int get radiusM; bool get active; String? get createdBy; DateTime? get createdAt; DateTime? get expiresAt;
+ String get id; String get title; String get body; GeoAlertSeverity get severity; double get centerLat; double get centerLng; int get radiusM; bool get active; String? get createdBy; DateTime? get createdAt; DateTime? get expiresAt; List<String> get affectedRouteIds;
 /// Create a copy of GeoAlertModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $GeoAlertModelCopyWith<GeoAlertModel> get copyWith => _$GeoAlertModelCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GeoAlertModel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.body, body) || other.body == body)&&(identical(other.severity, severity) || other.severity == severity)&&(identical(other.centerLat, centerLat) || other.centerLat == centerLat)&&(identical(other.centerLng, centerLng) || other.centerLng == centerLng)&&(identical(other.radiusM, radiusM) || other.radiusM == radiusM)&&(identical(other.active, active) || other.active == active)&&(identical(other.createdBy, createdBy) || other.createdBy == createdBy)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.expiresAt, expiresAt) || other.expiresAt == expiresAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GeoAlertModel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.body, body) || other.body == body)&&(identical(other.severity, severity) || other.severity == severity)&&(identical(other.centerLat, centerLat) || other.centerLat == centerLat)&&(identical(other.centerLng, centerLng) || other.centerLng == centerLng)&&(identical(other.radiusM, radiusM) || other.radiusM == radiusM)&&(identical(other.active, active) || other.active == active)&&(identical(other.createdBy, createdBy) || other.createdBy == createdBy)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.expiresAt, expiresAt) || other.expiresAt == expiresAt)&&const DeepCollectionEquality().equals(other.affectedRouteIds, affectedRouteIds));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,title,body,severity,centerLat,centerLng,radiusM,active,createdBy,createdAt,expiresAt);
+int get hashCode => Object.hash(runtimeType,id,title,body,severity,centerLat,centerLng,radiusM,active,createdBy,createdAt,expiresAt,const DeepCollectionEquality().hash(affectedRouteIds));
 
 @override
 String toString() {
-  return 'GeoAlertModel(id: $id, title: $title, body: $body, severity: $severity, centerLat: $centerLat, centerLng: $centerLng, radiusM: $radiusM, active: $active, createdBy: $createdBy, createdAt: $createdAt, expiresAt: $expiresAt)';
+  return 'GeoAlertModel(id: $id, title: $title, body: $body, severity: $severity, centerLat: $centerLat, centerLng: $centerLng, radiusM: $radiusM, active: $active, createdBy: $createdBy, createdAt: $createdAt, expiresAt: $expiresAt, affectedRouteIds: $affectedRouteIds)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $GeoAlertModelCopyWith<$Res>  {
   factory $GeoAlertModelCopyWith(GeoAlertModel value, $Res Function(GeoAlertModel) _then) = _$GeoAlertModelCopyWithImpl;
 @useResult
 $Res call({
- String id, String title, String body, GeoAlertSeverity severity, double centerLat, double centerLng, int radiusM, bool active, String? createdBy, DateTime? createdAt, DateTime? expiresAt
+ String id, String title, String body, GeoAlertSeverity severity, double centerLat, double centerLng, int radiusM, bool active, String? createdBy, DateTime? createdAt, DateTime? expiresAt, List<String> affectedRouteIds
 });
 
 
@@ -62,7 +62,7 @@ class _$GeoAlertModelCopyWithImpl<$Res>
 
 /// Create a copy of GeoAlertModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? body = null,Object? severity = null,Object? centerLat = null,Object? centerLng = null,Object? radiusM = null,Object? active = null,Object? createdBy = freezed,Object? createdAt = freezed,Object? expiresAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? body = null,Object? severity = null,Object? centerLat = null,Object? centerLng = null,Object? radiusM = null,Object? active = null,Object? createdBy = freezed,Object? createdAt = freezed,Object? expiresAt = freezed,Object? affectedRouteIds = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -75,7 +75,8 @@ as int,active: null == active ? _self.active : active // ignore: cast_nullable_t
 as bool,createdBy: freezed == createdBy ? _self.createdBy : createdBy // ignore: cast_nullable_to_non_nullable
 as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,expiresAt: freezed == expiresAt ? _self.expiresAt : expiresAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as DateTime?,affectedRouteIds: null == affectedRouteIds ? _self.affectedRouteIds : affectedRouteIds // ignore: cast_nullable_to_non_nullable
+as List<String>,
   ));
 }
 
@@ -160,10 +161,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  String body,  GeoAlertSeverity severity,  double centerLat,  double centerLng,  int radiusM,  bool active,  String? createdBy,  DateTime? createdAt,  DateTime? expiresAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  String body,  GeoAlertSeverity severity,  double centerLat,  double centerLng,  int radiusM,  bool active,  String? createdBy,  DateTime? createdAt,  DateTime? expiresAt,  List<String> affectedRouteIds)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _GeoAlertModel() when $default != null:
-return $default(_that.id,_that.title,_that.body,_that.severity,_that.centerLat,_that.centerLng,_that.radiusM,_that.active,_that.createdBy,_that.createdAt,_that.expiresAt);case _:
+return $default(_that.id,_that.title,_that.body,_that.severity,_that.centerLat,_that.centerLng,_that.radiusM,_that.active,_that.createdBy,_that.createdAt,_that.expiresAt,_that.affectedRouteIds);case _:
   return orElse();
 
 }
@@ -181,10 +182,10 @@ return $default(_that.id,_that.title,_that.body,_that.severity,_that.centerLat,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title,  String body,  GeoAlertSeverity severity,  double centerLat,  double centerLng,  int radiusM,  bool active,  String? createdBy,  DateTime? createdAt,  DateTime? expiresAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title,  String body,  GeoAlertSeverity severity,  double centerLat,  double centerLng,  int radiusM,  bool active,  String? createdBy,  DateTime? createdAt,  DateTime? expiresAt,  List<String> affectedRouteIds)  $default,) {final _that = this;
 switch (_that) {
 case _GeoAlertModel():
-return $default(_that.id,_that.title,_that.body,_that.severity,_that.centerLat,_that.centerLng,_that.radiusM,_that.active,_that.createdBy,_that.createdAt,_that.expiresAt);case _:
+return $default(_that.id,_that.title,_that.body,_that.severity,_that.centerLat,_that.centerLng,_that.radiusM,_that.active,_that.createdBy,_that.createdAt,_that.expiresAt,_that.affectedRouteIds);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -201,10 +202,10 @@ return $default(_that.id,_that.title,_that.body,_that.severity,_that.centerLat,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  String body,  GeoAlertSeverity severity,  double centerLat,  double centerLng,  int radiusM,  bool active,  String? createdBy,  DateTime? createdAt,  DateTime? expiresAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  String body,  GeoAlertSeverity severity,  double centerLat,  double centerLng,  int radiusM,  bool active,  String? createdBy,  DateTime? createdAt,  DateTime? expiresAt,  List<String> affectedRouteIds)?  $default,) {final _that = this;
 switch (_that) {
 case _GeoAlertModel() when $default != null:
-return $default(_that.id,_that.title,_that.body,_that.severity,_that.centerLat,_that.centerLng,_that.radiusM,_that.active,_that.createdBy,_that.createdAt,_that.expiresAt);case _:
+return $default(_that.id,_that.title,_that.body,_that.severity,_that.centerLat,_that.centerLng,_that.radiusM,_that.active,_that.createdBy,_that.createdAt,_that.expiresAt,_that.affectedRouteIds);case _:
   return null;
 
 }
@@ -216,7 +217,7 @@ return $default(_that.id,_that.title,_that.body,_that.severity,_that.centerLat,_
 
 
 class _GeoAlertModel extends GeoAlertModel {
-  const _GeoAlertModel({required this.id, required this.title, required this.body, this.severity = GeoAlertSeverity.info, required this.centerLat, required this.centerLng, required this.radiusM, this.active = true, this.createdBy, this.createdAt, this.expiresAt}): super._();
+  const _GeoAlertModel({required this.id, required this.title, required this.body, this.severity = GeoAlertSeverity.info, required this.centerLat, required this.centerLng, required this.radiusM, this.active = true, this.createdBy, this.createdAt, this.expiresAt, final  List<String> affectedRouteIds = const <String>[]}): _affectedRouteIds = affectedRouteIds,super._();
   
 
 @override final  String id;
@@ -230,6 +231,13 @@ class _GeoAlertModel extends GeoAlertModel {
 @override final  String? createdBy;
 @override final  DateTime? createdAt;
 @override final  DateTime? expiresAt;
+ final  List<String> _affectedRouteIds;
+@override@JsonKey() List<String> get affectedRouteIds {
+  if (_affectedRouteIds is EqualUnmodifiableListView) return _affectedRouteIds;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_affectedRouteIds);
+}
+
 
 /// Create a copy of GeoAlertModel
 /// with the given fields replaced by the non-null parameter values.
@@ -241,16 +249,16 @@ _$GeoAlertModelCopyWith<_GeoAlertModel> get copyWith => __$GeoAlertModelCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GeoAlertModel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.body, body) || other.body == body)&&(identical(other.severity, severity) || other.severity == severity)&&(identical(other.centerLat, centerLat) || other.centerLat == centerLat)&&(identical(other.centerLng, centerLng) || other.centerLng == centerLng)&&(identical(other.radiusM, radiusM) || other.radiusM == radiusM)&&(identical(other.active, active) || other.active == active)&&(identical(other.createdBy, createdBy) || other.createdBy == createdBy)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.expiresAt, expiresAt) || other.expiresAt == expiresAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GeoAlertModel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.body, body) || other.body == body)&&(identical(other.severity, severity) || other.severity == severity)&&(identical(other.centerLat, centerLat) || other.centerLat == centerLat)&&(identical(other.centerLng, centerLng) || other.centerLng == centerLng)&&(identical(other.radiusM, radiusM) || other.radiusM == radiusM)&&(identical(other.active, active) || other.active == active)&&(identical(other.createdBy, createdBy) || other.createdBy == createdBy)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.expiresAt, expiresAt) || other.expiresAt == expiresAt)&&const DeepCollectionEquality().equals(other._affectedRouteIds, _affectedRouteIds));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,title,body,severity,centerLat,centerLng,radiusM,active,createdBy,createdAt,expiresAt);
+int get hashCode => Object.hash(runtimeType,id,title,body,severity,centerLat,centerLng,radiusM,active,createdBy,createdAt,expiresAt,const DeepCollectionEquality().hash(_affectedRouteIds));
 
 @override
 String toString() {
-  return 'GeoAlertModel(id: $id, title: $title, body: $body, severity: $severity, centerLat: $centerLat, centerLng: $centerLng, radiusM: $radiusM, active: $active, createdBy: $createdBy, createdAt: $createdAt, expiresAt: $expiresAt)';
+  return 'GeoAlertModel(id: $id, title: $title, body: $body, severity: $severity, centerLat: $centerLat, centerLng: $centerLng, radiusM: $radiusM, active: $active, createdBy: $createdBy, createdAt: $createdAt, expiresAt: $expiresAt, affectedRouteIds: $affectedRouteIds)';
 }
 
 
@@ -261,7 +269,7 @@ abstract mixin class _$GeoAlertModelCopyWith<$Res> implements $GeoAlertModelCopy
   factory _$GeoAlertModelCopyWith(_GeoAlertModel value, $Res Function(_GeoAlertModel) _then) = __$GeoAlertModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String title, String body, GeoAlertSeverity severity, double centerLat, double centerLng, int radiusM, bool active, String? createdBy, DateTime? createdAt, DateTime? expiresAt
+ String id, String title, String body, GeoAlertSeverity severity, double centerLat, double centerLng, int radiusM, bool active, String? createdBy, DateTime? createdAt, DateTime? expiresAt, List<String> affectedRouteIds
 });
 
 
@@ -278,7 +286,7 @@ class __$GeoAlertModelCopyWithImpl<$Res>
 
 /// Create a copy of GeoAlertModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? body = null,Object? severity = null,Object? centerLat = null,Object? centerLng = null,Object? radiusM = null,Object? active = null,Object? createdBy = freezed,Object? createdAt = freezed,Object? expiresAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? body = null,Object? severity = null,Object? centerLat = null,Object? centerLng = null,Object? radiusM = null,Object? active = null,Object? createdBy = freezed,Object? createdAt = freezed,Object? expiresAt = freezed,Object? affectedRouteIds = null,}) {
   return _then(_GeoAlertModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -291,7 +299,8 @@ as int,active: null == active ? _self.active : active // ignore: cast_nullable_t
 as bool,createdBy: freezed == createdBy ? _self.createdBy : createdBy // ignore: cast_nullable_to_non_nullable
 as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,expiresAt: freezed == expiresAt ? _self.expiresAt : expiresAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as DateTime?,affectedRouteIds: null == affectedRouteIds ? _self._affectedRouteIds : affectedRouteIds // ignore: cast_nullable_to_non_nullable
+as List<String>,
   ));
 }
 

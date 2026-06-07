@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:latlong2/latlong.dart';
 
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../core/utils/app_logger.dart';
 import '../../core/utils/uuid.dart';
 import '../../data/geo_alerts/geo_alerts_repository.dart';
+import '../../data/mock/mock_data_service.dart';
 import '../../shared/models/geo_alert_model.dart';
+import '../../shared/models/route_model.dart';
 import '../../shared/models/user_role.dart';
 import '../../shared/widgets/glass_card.dart';
 import '../../shared/widgets/role_gate.dart';
@@ -14,7 +19,8 @@ import '../../shared/widgets/transit_app_bar.dart';
 import '../../shared/widgets/transit_button.dart';
 import '../../shared/widgets/transit_input.dart';
 
-/// Sub P2-#55: CRUD de avisos geolocalizados (admin only).
+/// Avisos geo (admin). Lista con stats + filtros + búsqueda;
+/// editor con mapa interactivo y selector de rutas afectadas.
 class AdminGeoAlertsScreen extends ConsumerStatefulWidget {
   const AdminGeoAlertsScreen({super.key});
 
@@ -23,15 +29,26 @@ class AdminGeoAlertsScreen extends ConsumerStatefulWidget {
       _AdminGeoAlertsScreenState();
 }
 
+enum _Filter { all, active, inactive, critical }
+
 class _AdminGeoAlertsScreenState extends ConsumerState<AdminGeoAlertsScreen> {
   List<GeoAlertModel> _alerts = [];
   bool _loading = true;
   String? _error;
+  String _search = '';
+  _Filter _filter = _Filter.all;
+  final _searchCtrl = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _load();
+  }
+
+  @override
+  void dispose() {
+    _searchCtrl.dispose();
+    super.dispose();
   }
 
   Future<void> _load() async {
@@ -58,26 +75,40 @@ class _AdminGeoAlertsScreenState extends ConsumerState<AdminGeoAlertsScreen> {
   }
 
   Future<void> _onCreate() async {
-    final messenger = ScaffoldMessenger.of(context);
-    final result = await showDialog<GeoAlertModel>(
-      context: context,
-      builder: (_) => const _GeoAlertFormDialog(),
+    final result = await Navigator.of(context).push<GeoAlertModel>(
+      MaterialPageRoute(
+        builder: (_) => const _GeoAlertEditorScreen(),
+        fullscreenDialog: true,
+      ),
     );
-    if (result == null) return;
+    if (result == null || !mounted) return;
+    final messenger = ScaffoldMessenger.of(context);
     try {
-      final repo = ref.read(geoAlertsRepositoryProvider);
-      await repo.create(result);
+      await ref.read(geoAlertsRepositoryProvider).create(result);
       await _load();
       ref.invalidate(activeGeoAlertsProvider);
-      messenger.showSnackBar(const SnackBar(
-        content: Text('Aviso creado'),
-        duration: Duration(seconds: 2),
-      ));
+      messenger.showSnackBar(const SnackBar(content: Text('Aviso creado')));
     } catch (e) {
-      messenger.showSnackBar(SnackBar(
-        content: Text('Error: $e'),
-        duration: const Duration(seconds: 3),
-      ));
+      messenger.showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
+  }
+
+  Future<void> _onEdit(GeoAlertModel a) async {
+    final result = await Navigator.of(context).push<GeoAlertModel>(
+      MaterialPageRoute(
+        builder: (_) => _GeoAlertEditorScreen(initial: a),
+        fullscreenDialog: true,
+      ),
+    );
+    if (result == null || !mounted) return;
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      await ref.read(geoAlertsRepositoryProvider).update(result);
+      await _load();
+      ref.invalidate(activeGeoAlertsProvider);
+      messenger.showSnackBar(const SnackBar(content: Text('Aviso actualizado')));
+    } catch (e) {
+      messenger.showSnackBar(SnackBar(content: Text('Error: $e')));
     }
   }
 
@@ -101,10 +132,11 @@ class _AdminGeoAlertsScreenState extends ConsumerState<AdminGeoAlertsScreen> {
           TextButton(
               onPressed: () => Navigator.of(ctx).pop(false),
               child: const Text('Cancelar')),
-          TextButton(
-              onPressed: () => Navigator.of(ctx).pop(true),
-              child: Text('Eliminar',
-                  style: TextStyle(color: Theme.of(ctx).colorScheme.error))),
+          FilledButton(
+            style: FilledButton.styleFrom(backgroundColor: const Color(0xFFB71C1C)),
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: const Text('Eliminar'),
+          ),
         ],
       ),
     );
@@ -112,6 +144,25 @@ class _AdminGeoAlertsScreenState extends ConsumerState<AdminGeoAlertsScreen> {
     await ref.read(geoAlertsRepositoryProvider).delete(a.id);
     await _load();
     ref.invalidate(activeGeoAlertsProvider);
+  }
+
+  List<GeoAlertModel> get _filteredAlerts {
+    final q = _search.trim().toLowerCase();
+    return _alerts.where((a) {
+      if (q.isNotEmpty &&
+          !a.title.toLowerCase().contains(q) &&
+          !a.body.toLowerCase().contains(q)) return false;
+      switch (_filter) {
+        case _Filter.active:
+          return a.active;
+        case _Filter.inactive:
+          return !a.active;
+        case _Filter.critical:
+          return a.severity == GeoAlertSeverity.critical;
+        case _Filter.all:
+          return true;
+      }
+    }).toList();
   }
 
   @override
@@ -123,185 +174,537 @@ class _AdminGeoAlertsScreenState extends ConsumerState<AdminGeoAlertsScreen> {
       allow: const [UserRole.admin],
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        body: Stack(
-          children: [
-            Column(
-              children: [
-                TransitAppBar(
-                  title: 'Avisos geo',
-                  actions: [
-                    IconButton(
-                      icon: Icon(Icons.add, color: c.accent),
-                      tooltip: 'Crear aviso',
-                      onPressed: _onCreate,
-                    ),
-                  ],
-                ),
-                Expanded(child: _buildContent(c)),
-              ],
+        appBar: TransitAppBar(
+          title: 'Avisos geo',
+          transparent: true,
+          actions: [
+            IconButton(
+              icon: Icon(Icons.add, color: c.accent),
+              tooltip: 'Crear aviso',
+              onPressed: _onCreate,
             ),
+          ],
+        ),
+        body: _loading
+            ? const Center(child: CircularProgressIndicator())
+            : _error != null
+                ? _errorView(c)
+                : Column(
+                    children: [
+                      _statsHeader(c),
+                      _searchBar(c),
+                      _filtersBar(c),
+                      const SizedBox(height: 4),
+                      Expanded(child: _list(c)),
+                    ],
+                  ),
+      ),
+    );
+  }
+
+  // ── Helpers ────────────────────────────────────────────────
+  Widget _statsHeader(TransitColorScheme c) {
+    final total = _alerts.length;
+    final active = _alerts.where((a) => a.active).length;
+    final crit = _alerts
+        .where((a) =>
+            a.active && a.severity == GeoAlertSeverity.critical)
+        .length;
+    final inactive = total - active;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      child: Row(
+        children: [
+          Expanded(
+              child: _statPill(c, Icons.campaign_outlined, '$total',
+                  'Total', c.accent)),
+          const SizedBox(width: 8),
+          Expanded(
+              child: _statPill(c, Icons.bolt, '$active', 'Activos',
+                  const Color(0xFF4CAF50))),
+          const SizedBox(width: 8),
+          Expanded(
+              child: _statPill(c, Icons.priority_high, '$crit',
+                  'Críticos', const Color(0xFFB71C1C))),
+          const SizedBox(width: 8),
+          Expanded(
+              child: _statPill(c, Icons.pause_circle_outline, '$inactive',
+                  'Inactivos', c.textMid)),
+        ],
+      ),
+    );
+  }
+
+  Widget _statPill(TransitColorScheme c, IconData icon, String value,
+      String label, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 0.5),
+      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 14, color: color),
+              const SizedBox(width: 4),
+              Text(value,
+                  style: GoogleFonts.ibmPlexMono(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: c.textHi,
+                  )),
+            ],
+          ),
+          const SizedBox(height: 2),
+          Text(label,
+              style: TransitTypography.bodySmall(c.textLo),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis),
+        ],
+      ),
+    );
+  }
+
+  Widget _searchBar(TransitColorScheme c) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+      child: Container(
+        decoration: BoxDecoration(
+          color: c.bgRaised,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: c.border, width: 0.5),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        child: Row(
+          children: [
+            Icon(Icons.search, size: 18, color: c.textMid),
+            const SizedBox(width: 8),
+            Expanded(
+              child: TextField(
+                controller: _searchCtrl,
+                onChanged: (v) => setState(() => _search = v),
+                style: TransitTypography.bodyPrimary(c.textHi),
+                decoration: InputDecoration(
+                  hintText: 'Título o descripción',
+                  hintStyle: TransitTypography.bodySecondary(c.textMid),
+                  border: InputBorder.none,
+                  isDense: true,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                ),
+              ),
+            ),
+            if (_search.isNotEmpty)
+              IconButton(
+                icon: Icon(Icons.close, size: 16, color: c.textMid),
+                onPressed: () {
+                  _searchCtrl.clear();
+                  setState(() => _search = '');
+                },
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+              ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildContent(TransitColorScheme c) {
-    if (_loading) {
-      return const Center(child: CircularProgressIndicator());
-    }
-    if (_error != null) {
-      return Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(_error!,
-                style: TransitTypography.bodyPrimary(c.stateCancelled)),
-            const SizedBox(height: 12),
-            TextButton(onPressed: _load, child: const Text('Reintentar')),
-          ],
-        ),
-      );
-    }
-    if (_alerts.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.notifications_off_outlined,
-                size: 64, color: c.textLo),
-            const SizedBox(height: 12),
-            Text('No hay avisos creados',
-                style: TransitTypography.bodyPrimary(c.textMid)),
-          ],
-        ),
-      );
-    }
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      itemCount: _alerts.length,
-      itemBuilder: (_, i) {
-        final a = _alerts[i];
-        final sevColor = switch (a.severity) {
-          GeoAlertSeverity.info => c.accent,
-          GeoAlertSeverity.warning => c.stateDelay,
-          GeoAlertSeverity.critical => c.stateCancelled,
-        };
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 8),
-          child: GlassCard(
-            blur: 12,
-            fillOpacity: a.active ? 0.05 : 0.02,
-            borderRadius: 12,
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _filtersBar(TransitColorScheme c) {
+    final chips = [
+      _filterChip(c,
+          icon: Icons.list,
+          label: 'Todos',
+          selected: _filter == _Filter.all,
+          color: c.accent,
+          onTap: () => setState(() => _filter = _Filter.all)),
+      _filterChip(c,
+          icon: Icons.bolt,
+          label: 'Activos',
+          selected: _filter == _Filter.active,
+          color: const Color(0xFF4CAF50),
+          onTap: () => setState(() => _filter = _Filter.active)),
+      _filterChip(c,
+          icon: Icons.priority_high,
+          label: 'Críticos',
+          selected: _filter == _Filter.critical,
+          color: const Color(0xFFB71C1C),
+          onTap: () => setState(() => _filter = _Filter.critical)),
+      _filterChip(c,
+          icon: Icons.pause_circle_outline,
+          label: 'Inactivos',
+          selected: _filter == _Filter.inactive,
+          color: c.textMid,
+          onTap: () => setState(() => _filter = _Filter.inactive)),
+    ];
+    return SizedBox(
+      height: 36,
+      child: LayoutBuilder(builder: (ctx, constraints) {
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: ConstrainedBox(
+            constraints:
+                BoxConstraints(minWidth: constraints.maxWidth - 32),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 6, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: sevColor.withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Text(
-                        a.severity.name.toUpperCase(),
-                        style: TransitTypography.bodySmall(sevColor),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        a.title,
-                        style: TransitTypography.bodyPrimary(
-                            a.active ? c.textHi : c.textLo),
-                      ),
-                    ),
-                    if (!a.active)
-                      Text('INACTIVO',
-                          style:
-                              TransitTypography.bodySmall(c.stateCancelled)),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Text(a.body,
-                    style: TransitTypography.bodySecondary(c.textMid)),
-                const SizedBox(height: 4),
-                Text(
-                  'Centro: ${a.centerLat.toStringAsFixed(4)}, '
-                  '${a.centerLng.toStringAsFixed(4)} · Radio: ${a.radiusM}m',
-                  style: TransitTypography.bodySmall(c.textLo),
-                ),
-                Row(
-                  children: [
-                    const Spacer(),
-                    IconButton(
-                      icon: Icon(
-                        a.active ? Icons.visibility : Icons.visibility_off,
-                        color: c.accent,
-                        size: 20,
-                      ),
-                      tooltip:
-                          a.active ? 'Desactivar' : 'Activar',
-                      onPressed: () => _toggleActive(a),
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.delete_outline,
-                          color: c.stateCancelled, size: 20),
-                      tooltip: 'Eliminar',
-                      onPressed: () => _onDelete(a),
-                    ),
-                  ],
-                ),
+                for (var i = 0; i < chips.length; i++) ...[
+                  chips[i],
+                  if (i < chips.length - 1) const SizedBox(width: 6),
+                ],
               ],
             ),
           ),
         );
-      },
+      }),
+    );
+  }
+
+  Widget _filterChip(TransitColorScheme c,
+      {required IconData icon,
+      required String label,
+      required bool selected,
+      required Color color,
+      required VoidCallback onTap}) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(20),
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: selected ? color.withValues(alpha: 0.18) : c.bgRaised,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+              color: selected ? color : c.border,
+              width: selected ? 1.2 : 0.5),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 14, color: selected ? color : c.textMid),
+            const SizedBox(width: 4),
+            Text(label,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: selected ? color : c.textHi,
+                  fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                )),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _list(TransitColorScheme c) {
+    final list = _filteredAlerts;
+    if (list.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.notifications_off_outlined,
+                  size: 64, color: c.textLo),
+              const SizedBox(height: 12),
+              Text(
+                  _search.isNotEmpty || _filter != _Filter.all
+                      ? 'Sin resultados con los filtros'
+                      : 'No hay avisos creados',
+                  style: TransitTypography.bodyPrimary(c.textMid)),
+              const SizedBox(height: 8),
+              TextButton.icon(
+                onPressed: _load,
+                icon: const Icon(Icons.refresh, size: 16),
+                label: const Text('Refrescar'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+    return RefreshIndicator(
+      color: c.accent,
+      onRefresh: _load,
+      child: ListView.builder(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        itemCount: list.length,
+        itemBuilder: (_, i) => _alertCard(c, list[i]),
+      ),
+    );
+  }
+
+  Widget _alertCard(TransitColorScheme c, GeoAlertModel a) {
+    final (sevLabel, sevColor) = switch (a.severity) {
+      GeoAlertSeverity.info => ('Info', const Color(0xFF2196F3)),
+      GeoAlertSeverity.warning => ('Aviso', const Color(0xFFFF9800)),
+      GeoAlertSeverity.critical => ('Crítico', const Color(0xFFB71C1C)),
+    };
+    final routes = a.affectedRouteIds;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: () => _onEdit(a),
+        child: GlassCard(
+          blur: 12,
+          fillOpacity: a.active ? 0.05 : 0.02,
+          borderRadius: 12,
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  _pill(sevLabel, sevColor),
+                  const SizedBox(width: 6),
+                  _pill(a.active ? 'ACTIVO' : 'INACTIVO',
+                      a.active ? const Color(0xFF4CAF50) : c.textMid),
+                  const Spacer(),
+                  if (a.createdAt != null)
+                    Text(
+                        '${a.createdAt!.year}-${a.createdAt!.month.toString().padLeft(2, '0')}-${a.createdAt!.day.toString().padLeft(2, '0')}',
+                        style: TransitTypography.bodySmall(c.textLo)),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text(a.title,
+                  style: TransitTypography.bodyPrimary(
+                      a.active ? c.textHi : c.textLo)),
+              const SizedBox(height: 4),
+              Text(a.body,
+                  style: TransitTypography.bodySecondary(c.textMid),
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 6,
+                runSpacing: 4,
+                children: [
+                  _miniBadge(c,
+                      icon: Icons.place_outlined,
+                      label:
+                          '${a.centerLat.toStringAsFixed(4)}, ${a.centerLng.toStringAsFixed(4)}',
+                      color: c.accent),
+                  _miniBadge(c,
+                      icon: Icons.radio_button_unchecked,
+                      label: '${a.radiusM} m',
+                      color: const Color(0xFF2196F3)),
+                  if (routes.isEmpty)
+                    _miniBadge(c,
+                        icon: Icons.public,
+                        label: 'Todas las rutas',
+                        color: c.textMid)
+                  else
+                    _miniBadge(c,
+                        icon: Icons.route_outlined,
+                        label: '${routes.length} rutas',
+                        color: const Color(0xFF9C27B0)),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Row(
+                children: [
+                  const Spacer(),
+                  IconButton(
+                    icon: Icon(
+                      a.active ? Icons.visibility : Icons.visibility_off,
+                      color: c.accent,
+                      size: 20,
+                    ),
+                    tooltip: a.active ? 'Desactivar' : 'Activar',
+                    onPressed: () => _toggleActive(a),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.edit_outlined,
+                        color: c.accent, size: 20),
+                    tooltip: 'Editar',
+                    onPressed: () => _onEdit(a),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.delete_outline,
+                        color: c.stateCancelled, size: 20),
+                    tooltip: 'Eliminar',
+                    onPressed: () => _onDelete(a),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _pill(String label, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(
+            color: color.withValues(alpha: 0.5), width: 0.5),
+      ),
+      child: Text(label.toUpperCase(),
+          style: GoogleFonts.ibmPlexMono(
+              fontSize: 10,
+              fontWeight: FontWeight.w700,
+              color: color,
+              letterSpacing: 1)),
+    );
+  }
+
+  Widget _miniBadge(TransitColorScheme c,
+      {required IconData icon,
+      required String label,
+      required Color color}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(color: color.withValues(alpha: 0.4), width: 0.5),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 10, color: color),
+          const SizedBox(width: 3),
+          Text(label,
+              style: TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.w600,
+                color: color,
+              )),
+        ],
+      ),
+    );
+  }
+
+  Widget _errorView(TransitColorScheme c) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.error_outline, size: 48, color: c.stateCancelled),
+            const SizedBox(height: 12),
+            Text(_error!,
+                style: TransitTypography.bodyPrimary(c.textHi)),
+            const SizedBox(height: 12),
+            FilledButton.icon(
+              onPressed: _load,
+              icon: const Icon(Icons.refresh, size: 16),
+              label: const Text('Reintentar'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
 
-class _GeoAlertFormDialog extends StatefulWidget {
-  const _GeoAlertFormDialog();
+// ─────────────────────────────────────────────────────────────────────
+// EDITOR — mapa interactivo + selector de rutas
+// ─────────────────────────────────────────────────────────────────────
+class _GeoAlertEditorScreen extends ConsumerStatefulWidget {
+  const _GeoAlertEditorScreen({this.initial});
+  final GeoAlertModel? initial;
+
   @override
-  State<_GeoAlertFormDialog> createState() => _GeoAlertFormDialogState();
+  ConsumerState<_GeoAlertEditorScreen> createState() =>
+      _GeoAlertEditorScreenState();
 }
 
-class _GeoAlertFormDialogState extends State<_GeoAlertFormDialog> {
+class _GeoAlertEditorScreenState
+    extends ConsumerState<_GeoAlertEditorScreen> {
   final _formKey = GlobalKey<FormState>();
   final _titleCtrl = TextEditingController();
   final _bodyCtrl = TextEditingController();
-  final _latCtrl = TextEditingController(text: '36.6850');
-  final _lngCtrl = TextEditingController(text: '-6.1376');
-  int _radius = 500;
-  GeoAlertSeverity _severity = GeoAlertSeverity.info;
+  late LatLng _center;
+  late double _radius;
+  late GeoAlertSeverity _severity;
+  final Set<String> _selectedRoutes = {};
+  final _mapController = MapController();
+
+  @override
+  void initState() {
+    super.initState();
+    final i = widget.initial;
+    if (i != null) {
+      _titleCtrl.text = i.title;
+      _bodyCtrl.text = i.body;
+      _center = LatLng(i.centerLat, i.centerLng);
+      _radius = i.radiusM.toDouble();
+      _severity = i.severity;
+      _selectedRoutes.addAll(i.affectedRouteIds);
+    } else {
+      _center = const LatLng(36.6850, -6.1376); // Jerez
+      _radius = 500;
+      _severity = GeoAlertSeverity.info;
+    }
+  }
 
   @override
   void dispose() {
     _titleCtrl.dispose();
     _bodyCtrl.dispose();
-    _latCtrl.dispose();
-    _lngCtrl.dispose();
     super.dispose();
+  }
+
+  void _onMapTap(TapPosition tap, LatLng pos) {
+    setState(() => _center = pos);
+  }
+
+  void _submit() {
+    if (!_formKey.currentState!.validate()) return;
+    final base = widget.initial;
+    final out = GeoAlertModel(
+      id: base?.id ?? generateUuidV4(),
+      title: _titleCtrl.text.trim(),
+      body: _bodyCtrl.text.trim(),
+      severity: _severity,
+      centerLat: _center.latitude,
+      centerLng: _center.longitude,
+      radiusM: _radius.round(),
+      active: base?.active ?? true,
+      createdBy: base?.createdBy,
+      createdAt: base?.createdAt,
+      expiresAt: base?.expiresAt,
+      affectedRouteIds: _selectedRoutes.toList(),
+    );
+    Navigator.of(context).pop(out);
   }
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
-    return AlertDialog(
-      title: Text('Crear aviso geo',
-          style: TransitTypography.subheading(c.textHi)),
-      content: Form(
-        key: _formKey,
-        autovalidateMode: AutovalidateMode.onUserInteraction,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+    final mockData = ref.watch(mockDataServiceProvider);
+    final routes = mockData.routes;
+    final isEditing = widget.initial != null;
+
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      appBar: TransitAppBar(
+        title: isEditing ? 'Editar aviso' : 'Nuevo aviso',
+        transparent: true,
+      ),
+      body: SafeArea(
+        top: false,
+        child: Form(
+          key: _formKey,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          child: ListView(
+            padding: const EdgeInsets.all(16),
             children: [
+              _section(c, Icons.title_outlined, 'Datos'),
+              const SizedBox(height: 8),
               TransitInput(
                 hint: 'Título',
                 controller: _titleCtrl,
@@ -316,96 +719,267 @@ class _GeoAlertFormDialogState extends State<_GeoAlertFormDialog> {
                 validator: (v) =>
                     v == null || v.trim().isEmpty ? 'Requerido' : null,
               ),
-              const SizedBox(height: 12),
-              Text('Severidad',
-                  style: TransitTypography.bodySmall(c.textMid)),
-              const SizedBox(height: 4),
-              SegmentedButton<GeoAlertSeverity>(
-                segments: const [
-                  ButtonSegment(
-                      value: GeoAlertSeverity.info, label: Text('Info')),
-                  ButtonSegment(
-                      value: GeoAlertSeverity.warning,
-                      label: Text('Aviso')),
-                  ButtonSegment(
-                      value: GeoAlertSeverity.critical,
-                      label: Text('Crítico')),
+              const SizedBox(height: 20),
+              _section(c, Icons.warning_amber, 'Severidad'),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  _severityChip(c, GeoAlertSeverity.info, 'Info',
+                      Icons.info_outline, const Color(0xFF2196F3)),
+                  _severityChip(c, GeoAlertSeverity.warning, 'Aviso',
+                      Icons.warning_amber, const Color(0xFFFF9800)),
+                  _severityChip(c, GeoAlertSeverity.critical, 'Crítico',
+                      Icons.priority_high, const Color(0xFFB71C1C)),
                 ],
-                selected: {_severity},
-                onSelectionChanged: (s) {
-                  if (s.isNotEmpty) setState(() => _severity = s.first);
-                },
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 20),
+              _section(c, Icons.place_outlined,
+                  'Ubicación y radio (toca el mapa para colocar)'),
+              const SizedBox(height: 8),
+              Container(
+                height: 280,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: c.border, width: 0.5),
+                ),
+                clipBehavior: Clip.antiAlias,
+                child: FlutterMap(
+                  mapController: _mapController,
+                  options: MapOptions(
+                    initialCenter: _center,
+                    initialZoom: 14,
+                    onTap: _onMapTap,
+                    interactionOptions: const InteractionOptions(
+                      flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
+                    ),
+                  ),
+                  children: [
+                    TileLayer(
+                      urlTemplate:
+                          'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                      userAgentPackageName: 'com.transitly.transitly',
+                    ),
+                    CircleLayer(
+                      circles: [
+                        CircleMarker(
+                          point: _center,
+                          radius: _radius,
+                          useRadiusInMeter: true,
+                          color: c.accent.withValues(alpha: 0.18),
+                          borderColor: c.accent,
+                          borderStrokeWidth: 2,
+                        ),
+                      ],
+                    ),
+                    MarkerLayer(
+                      markers: [
+                        Marker(
+                          point: _center,
+                          width: 32,
+                          height: 32,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: c.accent,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                  color: Colors.white, width: 2),
+                            ),
+                            child: const Icon(Icons.campaign,
+                                size: 16, color: Colors.white),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 8),
               Row(
                 children: [
+                  Icon(Icons.my_location, size: 14, color: c.textMid),
+                  const SizedBox(width: 4),
                   Expanded(
-                    child: TransitInput(
-                      hint: 'Lat',
-                      controller: _latCtrl,
-                      validator: (v) {
-                        if (v == null) return 'req';
-                        return double.tryParse(v.trim()) == null
-                            ? 'numérico'
-                            : null;
-                      },
+                    child: Text(
+                      '${_center.latitude.toStringAsFixed(5)}, ${_center.longitude.toStringAsFixed(5)}',
+                      style: TransitTypography.bodySmall(c.textMid),
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: TransitInput(
-                      hint: 'Lng',
-                      controller: _lngCtrl,
-                      validator: (v) {
-                        if (v == null) return 'req';
-                        return double.tryParse(v.trim()) == null
-                            ? 'numérico'
-                            : null;
-                      },
-                    ),
+                  TextButton.icon(
+                    onPressed: () =>
+                        _mapController.move(_center, 15),
+                    icon: const Icon(Icons.center_focus_strong, size: 14),
+                    label: const Text('Centrar'),
+                    style: TextButton.styleFrom(
+                        foregroundColor: c.accent,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4)),
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
-              Text('Radio: ${_radius}m',
-                  style: TransitTypography.bodySmall(c.textMid)),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Icon(Icons.radio_button_unchecked,
+                      size: 14, color: c.textMid),
+                  const SizedBox(width: 4),
+                  Text('Radio: ${_radius.round()} m',
+                      style: TransitTypography.bodyPrimary(c.textHi)),
+                ],
+              ),
               Slider(
-                value: _radius.toDouble(),
+                value: _radius,
                 min: 50,
                 max: 5000,
                 divisions: 99,
                 activeColor: c.accent,
-                label: '${_radius}m',
-                onChanged: (v) => setState(() => _radius = v.round()),
+                label: '${_radius.round()} m',
+                onChanged: (v) => setState(() => _radius = v),
+              ),
+              const SizedBox(height: 20),
+              _section(c, Icons.route_outlined,
+                  'Rutas afectadas (vacío = todas)'),
+              const SizedBox(height: 4),
+              Text(
+                _selectedRoutes.isEmpty
+                    ? 'El aviso se aplica a TODAS las rutas'
+                    : 'Aplica a ${_selectedRoutes.length} ruta(s)',
+                style: TransitTypography.bodySmall(c.textMid),
+              ),
+              const SizedBox(height: 8),
+              if (routes.isEmpty)
+                Text('No hay rutas cargadas',
+                    style: TransitTypography.bodySmall(c.textLo))
+              else
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: [
+                    for (final r in routes) _routeChip(c, r),
+                  ],
+                ),
+              const SizedBox(height: 32),
+              TransitButton(
+                label: isEditing ? 'GUARDAR' : 'CREAR',
+                onPressed: _submit,
+              ),
+              const SizedBox(height: 12),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('Cancelar',
+                    style: TransitTypography.bodyPrimary(c.textMid)),
               ),
             ],
           ),
         ),
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancelar'),
-        ),
-        TransitButton(
-          label: 'CREAR',
-          isSmall: true,
-          onPressed: () {
-            if (!_formKey.currentState!.validate()) return;
-            final lat = double.parse(_latCtrl.text.trim());
-            final lng = double.parse(_lngCtrl.text.trim());
-            Navigator.of(context).pop(GeoAlertModel(
-              id: generateUuidV4(),
-              title: _titleCtrl.text.trim(),
-              body: _bodyCtrl.text.trim(),
-              severity: _severity,
-              centerLat: lat,
-              centerLng: lng,
-              radiusM: _radius,
-            ));
-          },
+    );
+  }
+
+  Widget _section(TransitColorScheme c, IconData icon, String text) {
+    return Row(
+      children: [
+        Icon(icon, size: 16, color: c.accent),
+        const SizedBox(width: 6),
+        Expanded(
+          child: Text(text.toUpperCase(),
+              style: GoogleFonts.ibmPlexMono(
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+                color: c.accent,
+                letterSpacing: 1.5,
+              )),
         ),
       ],
+    );
+  }
+
+  Widget _severityChip(TransitColorScheme c, GeoAlertSeverity sev,
+      String label, IconData icon, Color color) {
+    final selected = _severity == sev;
+    return InkWell(
+      borderRadius: BorderRadius.circular(10),
+      onTap: () => setState(() => _severity = sev),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        decoration: BoxDecoration(
+          color: selected ? color.withValues(alpha: 0.18) : c.bgRaised,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+              color: selected ? color : c.border,
+              width: selected ? 1.5 : 0.5),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 14, color: selected ? color : c.textMid),
+            const SizedBox(width: 6),
+            Text(label,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: selected ? color : c.textHi,
+                  fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                )),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _routeChip(TransitColorScheme c, RouteModel r) {
+    final selected = _selectedRoutes.contains(r.id);
+    return InkWell(
+      borderRadius: BorderRadius.circular(8),
+      onTap: () => setState(() {
+        if (selected) {
+          _selectedRoutes.remove(r.id);
+        } else {
+          _selectedRoutes.add(r.id);
+        }
+      }),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+        decoration: BoxDecoration(
+          color: selected
+              ? r.routeColor.withValues(alpha: 0.22)
+              : c.bgRaised,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+              color: selected ? r.routeColor : c.border,
+              width: selected ? 1.2 : 0.5),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(
+                color: r.routeColor,
+                shape: BoxShape.circle,
+              ),
+            ),
+            const SizedBox(width: 6),
+            Text(r.code,
+                style: GoogleFonts.ibmPlexMono(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  color: selected ? r.routeColor : c.textHi,
+                )),
+            const SizedBox(width: 4),
+            Text(r.name,
+                style: TextStyle(
+                  fontSize: 11,
+                  color: selected ? r.routeColor : c.textMid,
+                )),
+            if (selected) ...[
+              const SizedBox(width: 4),
+              Icon(Icons.check, size: 12, color: r.routeColor),
+            ],
+          ],
+        ),
+      ),
     );
   }
 }

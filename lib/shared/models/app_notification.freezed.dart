@@ -11,7 +11,6 @@ part of 'app_notification.dart';
 
 // dart format off
 T _$identity<T>(T value) => value;
-
 /// @nodoc
 mixin _$AppNotification {
 
@@ -22,8 +21,6 @@ mixin _$AppNotification {
 @pragma('vm:prefer-inline')
 $AppNotificationCopyWith<AppNotification> get copyWith => _$AppNotificationCopyWithImpl<AppNotification>(this as AppNotification, _$identity);
 
-  /// Serializes this AppNotification to a JSON map.
-  Map<String, dynamic> toJson();
 
 
 @override
@@ -31,7 +28,7 @@ bool operator ==(Object other) {
   return identical(this, other) || (other.runtimeType == runtimeType&&other is AppNotification&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.type, type) || other.type == type)&&const DeepCollectionEquality().equals(other.payload, payload)&&(identical(other.read, read) || other.read == read)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
 }
 
-@JsonKey(includeFromJson: false, includeToJson: false)
+
 @override
 int get hashCode => Object.hash(runtimeType,id,userId,type,const DeepCollectionEquality().hash(payload),read,createdAt);
 
@@ -211,11 +208,11 @@ return $default(_that.id,_that.userId,_that.type,_that.payload,_that.read,_that.
 }
 
 /// @nodoc
-@JsonSerializable()
 
-class _AppNotification implements AppNotification {
-  const _AppNotification({required this.id, required this.userId, required this.type, final  Map<String, dynamic> payload = const <String, dynamic>{}, this.read = false, required this.createdAt}): _payload = payload;
-  factory _AppNotification.fromJson(Map<String, dynamic> json) => _$AppNotificationFromJson(json);
+
+class _AppNotification extends AppNotification {
+  const _AppNotification({required this.id, required this.userId, required this.type, final  Map<String, dynamic> payload = const <String, dynamic>{}, this.read = false, required this.createdAt}): _payload = payload,super._();
+  
 
 @override final  String id;
 @override final  String userId;
@@ -236,17 +233,14 @@ class _AppNotification implements AppNotification {
 @pragma('vm:prefer-inline')
 _$AppNotificationCopyWith<_AppNotification> get copyWith => __$AppNotificationCopyWithImpl<_AppNotification>(this, _$identity);
 
-@override
-Map<String, dynamic> toJson() {
-  return _$AppNotificationToJson(this, );
-}
+
 
 @override
 bool operator ==(Object other) {
   return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppNotification&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.type, type) || other.type == type)&&const DeepCollectionEquality().equals(other._payload, _payload)&&(identical(other.read, read) || other.read == read)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
 }
 
-@JsonKey(includeFromJson: false, includeToJson: false)
+
 @override
 int get hashCode => Object.hash(runtimeType,id,userId,type,const DeepCollectionEquality().hash(_payload),read,createdAt);
 

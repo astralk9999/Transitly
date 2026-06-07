@@ -37,6 +37,8 @@ enum AppNotificationType {
 /// para entrega push y con un inbox dentro de la app.
 @freezed
 abstract class AppNotification with _$AppNotification {
+  const AppNotification._();
+
   const factory AppNotification({
     required String id,
     required String userId,
@@ -45,6 +47,15 @@ abstract class AppNotification with _$AppNotification {
     @Default(false) bool read,
     required DateTime createdAt,
   }) = _AppNotification;
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'id': id,
+        'userId': userId,
+        'type': type.name,
+        'payload': payload,
+        'read': read,
+        'createdAt': createdAt.toIso8601String(),
+      };
 
   /// Parser tolerante. Acepta:
   ///   - El JSON canónico de Hive (camelCase, generado por

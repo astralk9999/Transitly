@@ -54,6 +54,18 @@ class GeoAlertsRepository {
     await _client.from('geo_alerts').update({'active': active}).eq('id', id);
   }
 
+  Future<GeoAlertModel> update(GeoAlertModel alert) async {
+    final uid = _client.auth.currentUser?.id;
+    if (uid == null) throw StateError('Not authenticated');
+    final row = await _client
+        .from('geo_alerts')
+        .update(alert.toInsertJson(uid))
+        .eq('id', alert.id)
+        .select()
+        .single();
+    return GeoAlertModel.fromJson(row);
+  }
+
   Future<void> delete(String id) async {
     await _client.from('geo_alerts').delete().eq('id', id);
   }

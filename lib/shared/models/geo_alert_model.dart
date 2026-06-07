@@ -21,6 +21,7 @@ abstract class GeoAlertModel with _$GeoAlertModel {
     String? createdBy,
     DateTime? createdAt,
     DateTime? expiresAt,
+    @Default(<String>[]) List<String> affectedRouteIds,
   }) = _GeoAlertModel;
 
   static GeoAlertModel fromJson(Map<String, dynamic> j) => GeoAlertModel(
@@ -43,6 +44,10 @@ abstract class GeoAlertModel with _$GeoAlertModel {
         expiresAt: j['expires_at'] != null
             ? DateTime.tryParse(j['expires_at'] as String)
             : null,
+        affectedRouteIds: (j['affected_route_ids'] as List?)
+                ?.map((e) => e.toString())
+                .toList() ??
+            const <String>[],
       );
 
   Map<String, dynamic> toInsertJson(String createdByUserId) => {
@@ -54,6 +59,7 @@ abstract class GeoAlertModel with _$GeoAlertModel {
         'radius_m': radiusM,
         'active': active,
         'created_by': createdByUserId,
+        'affected_route_ids': affectedRouteIds,
         if (expiresAt != null) 'expires_at': expiresAt!.toIso8601String(),
       };
 }

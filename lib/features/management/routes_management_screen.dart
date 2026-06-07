@@ -369,36 +369,51 @@ class _State extends ConsumerState<RoutesManagementScreen> {
         _SortBy.stops => 'Más paradas',
       };
 
-  Future<void> _pickSort() async {
-    final picked = await showModalBottomSheet<_SortBy>(
+  /// Hoja inferior sólida (no transparente) para los selectores de filtro.
+  Future<T?> _solidSheet<T>(
+      Widget Function(BuildContext, TransitColorScheme) body) {
+    return showModalBottomSheet<T>(
       context: context,
       backgroundColor: Colors.transparent,
       builder: (ctx) {
-        final isDark = Theme.of(ctx).brightness == Brightness.dark;
-        final c = TransitColorScheme.of(isDark);
+        final c = TransitColorScheme.of(
+            Theme.of(ctx).brightness == Brightness.dark);
         return SafeArea(
-          child: GlassCard(
-            blur: 24,
-            fillOpacity: 0.10,
-            borderRadius: 18,
-            padding: const EdgeInsets.all(8),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: _SortBy.values
-                  .map((s) => ListTile(
-                        leading: Icon(Icons.sort, color: c.textMid),
-                        title: Text('Ordenar por: ${_sortLabel(s)}'),
-                        trailing: _sortBy == s
-                            ? Icon(Icons.check, color: c.accent)
-                            : null,
-                        onTap: () => Navigator.pop(ctx, s),
-                      ))
-                  .toList(),
+          child: Container(
+            margin: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: c.bgElevated,
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: c.border, width: 0.5),
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.3),
+                    blurRadius: 24),
+              ],
             ),
+            clipBehavior: Clip.antiAlias,
+            child: body(ctx, c),
           ),
         );
       },
     );
+  }
+
+  Future<void> _pickSort() async {
+    final picked = await _solidSheet<_SortBy>((ctx, c) => Column(
+          mainAxisSize: MainAxisSize.min,
+          children: _SortBy.values
+              .map((s) => ListTile(
+                    leading: Icon(Icons.sort, color: c.textMid),
+                    title: Text('Ordenar por: ${_sortLabel(s)}',
+                        style: TransitTypography.bodyPrimary(c.textHi)),
+                    trailing: _sortBy == s
+                        ? Icon(Icons.check, color: c.accent)
+                        : null,
+                    onTap: () => Navigator.pop(ctx, s),
+                  ))
+              .toList(),
+        ));
     if (picked != null && mounted) setState(() => _sortBy = picked);
   }
 
@@ -478,41 +493,30 @@ class _State extends ConsumerState<RoutesManagementScreen> {
       );
 
   Future<void> _pickOperatorFilter() async {
-    final picked = await showModalBottomSheet<String?>(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) {
-        final isDark = Theme.of(ctx).brightness == Brightness.dark;
-        final c = TransitColorScheme.of(isDark);
-        return SafeArea(
-          child: GlassCard(
-            blur: 24,
-            fillOpacity: 0.10,
-            borderRadius: 18,
-            padding: const EdgeInsets.all(8),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ListTile(
-                  leading: Icon(Icons.all_inclusive, color: c.accent),
-                  title: const Text('Todos los operadores'),
-                  onTap: () => Navigator.pop(ctx, null),
-                ),
-                const Divider(height: 1),
-                ..._operators.map((o) => ListTile(
-                      leading: Icon(Icons.business, color: c.textMid),
-                      title: Text(o.shortName),
-                      subtitle: o.region.isEmpty ? null : Text(o.region),
-                      onTap: () => Navigator.pop(ctx, o.id),
-                    )),
-              ],
+    final picked = await _solidSheet<String?>((ctx, c) => Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: Icon(Icons.all_inclusive, color: c.accent),
+              title: Text('Todos los operadores',
+                  style: TransitTypography.bodyPrimary(c.textHi)),
+              onTap: () => Navigator.pop(ctx, '__all__'),
             ),
-          ),
-        );
-      },
-    );
-    if (mounted) {
-      setState(() => _filterOperatorId = picked);
+            Divider(height: 1, color: c.border),
+            ..._operators.map((o) => ListTile(
+                  leading: Icon(Icons.business, color: c.textMid),
+                  title: Text(o.shortName,
+                      style: TransitTypography.bodyPrimary(c.textHi)),
+                  subtitle: o.region.isEmpty
+                      ? null
+                      : Text(o.region,
+                          style: TransitTypography.bodySmall(c.textMid)),
+                  onTap: () => Navigator.pop(ctx, o.id),
+                )),
+          ],
+        ));
+    if (mounted && picked != null) {
+      setState(() => _filterOperatorId = picked == '__all__' ? null : picked);
     }
   }
 
@@ -522,77 +526,51 @@ class _State extends ConsumerState<RoutesManagementScreen> {
   }
 
   Future<void> _pickZoneFilter() async {
-    final picked = await showModalBottomSheet<String?>(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) {
-        final isDark = Theme.of(ctx).brightness == Brightness.dark;
-        final c = TransitColorScheme.of(isDark);
-        return SafeArea(
-          child: Container(
-            decoration: BoxDecoration(
-              color: c.bgElevated,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(18)),
+    final picked = await _solidSheet<String?>((ctx, c) => Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: Icon(Icons.all_inclusive, color: c.accent),
+              title: Text('Todas las zonas',
+                  style: TransitTypography.bodyPrimary(c.textHi)),
+              onTap: () => Navigator.pop(ctx, '__all__'),
             ),
-            padding: const EdgeInsets.all(8),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ListTile(
-                  leading: Icon(Icons.all_inclusive, color: c.accent),
-                  title: const Text('Todas las zonas'),
-                  onTap: () => Navigator.pop(ctx, null),
-                ),
-                const Divider(height: 1),
-                ..._zones.map((z) => ListTile(
-                      leading: Icon(Icons.map_outlined, color: c.textMid),
-                      title: Text(z.name),
-                      onTap: () => Navigator.pop(ctx, z.id),
-                    )),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-    if (mounted) setState(() => _filterZoneId = picked);
+            Divider(height: 1, color: c.border),
+            ..._zones.map((z) => ListTile(
+                  leading: Icon(Icons.map_outlined, color: c.textMid),
+                  title: Text(z.name,
+                      style: TransitTypography.bodyPrimary(c.textHi)),
+                  onTap: () => Navigator.pop(ctx, z.id),
+                )),
+          ],
+        ));
+    if (mounted && picked != null) {
+      setState(() => _filterZoneId = picked == '__all__' ? null : picked);
+    }
   }
 
   Future<void> _pickStatusFilter() async {
-    final picked = await showModalBottomSheet<RouteStatus?>(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) {
-        final isDark = Theme.of(ctx).brightness == Brightness.dark;
-        final c = TransitColorScheme.of(isDark);
-        return SafeArea(
-          child: GlassCard(
-            blur: 24,
-            fillOpacity: 0.10,
-            borderRadius: 18,
-            padding: const EdgeInsets.all(8),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ListTile(
-                  leading: Icon(Icons.flag_outlined, color: c.accent),
-                  title: const Text('Cualquier estado'),
-                  onTap: () => Navigator.pop(ctx, null),
-                ),
-                const Divider(height: 1),
-                ...RouteStatus.values.map((s) => ListTile(
-                      leading: Icon(Icons.circle, color: _statusColor(s, c)),
-                      title: Text(s.label),
-                      onTap: () => Navigator.pop(ctx, s),
-                    )),
-              ],
+    final picked = await _solidSheet<Object?>((ctx, c) => Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: Icon(Icons.flag_outlined, color: c.accent),
+              title: Text('Cualquier estado',
+                  style: TransitTypography.bodyPrimary(c.textHi)),
+              onTap: () => Navigator.pop(ctx, '__all__'),
             ),
-          ),
-        );
-      },
-    );
-    if (mounted) {
-      setState(() => _filterStatus = picked);
+            Divider(height: 1, color: c.border),
+            ...RouteStatus.values.map((s) => ListTile(
+                  leading: Icon(Icons.circle, color: _statusColor(s, c)),
+                  title: Text(s.label,
+                      style: TransitTypography.bodyPrimary(c.textHi)),
+                  onTap: () => Navigator.pop(ctx, s),
+                )),
+          ],
+        ));
+    if (mounted && picked != null) {
+      setState(() =>
+          _filterStatus = picked == '__all__' ? null : picked as RouteStatus);
     }
   }
 

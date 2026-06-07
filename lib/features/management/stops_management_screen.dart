@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:latlong2/latlong.dart';
 
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
@@ -27,7 +29,10 @@ class _State extends ConsumerState<StopsManagementScreen> {
   List<AdminStopRow> _stops = const [];
   String _query = '';
   bool _loading = true;
+  bool _mapMode = false;
   String? _error;
+  String? _pendingMoveStopId;
+  final _mapController = MapController();
 
   AdminRoutesRepository get _repo => ref.read(adminRoutesRepositoryProvider);
 
@@ -84,6 +89,15 @@ class _State extends ConsumerState<StopsManagementScreen> {
   }
 
   Future<void> _create() async {
+    // En modo lista usa el centro del mapa (o Jerez); en modo mapa el
+    // usuario coloca tocando el mapa (ver _createAt).
+    final center = _stops.isNotEmpty
+        ? LatLng(_stops.first.lat, _stops.first.lng)
+        : const LatLng(36.6837, -6.1366);
+    await _createAt(center);
+  }
+
+  Future<void> _createAt(LatLng pos) async {
     if (_operatorId == null) return;
     final result = await showStopEditSheet(
       context: context,
@@ -92,8 +106,8 @@ class _State extends ConsumerState<StopsManagementScreen> {
         operatorId: _operatorId!,
         code: '',
         name: '',
-        lat: 36.6837, // centro de Jerez por defecto; reubicar en la línea
-        lng: -6.1366,
+        lat: pos.latitude,
+        lng: pos.longitude,
         accessible: false,
         hasShelter: false,
         hasBench: false,
@@ -181,6 +195,12 @@ class _State extends ConsumerState<StopsManagementScreen> {
         transparent: true,
         actions: [
           IconButton(
+            icon: Icon(_mapMode ? Icons.view_list : Icons.map_outlined,
+                color: c.accent),
+            tooltip: _mapMode ? 'Ver lista' : 'Ver mapa',
+            onPressed: () => setState(() => _mapMode = !_mapMode),
+          ),
+          IconButton(
             icon: Icon(Icons.add_location_alt, color: c.accent),
             tooltip: 'Nueva parada',
             onPressed: _operatorId == null ? null : _create,
@@ -199,33 +219,213 @@ class _State extends ConsumerState<StopsManagementScreen> {
                         padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
                         child: _operatorSelector(c),
                       ),
-                    _searchBar(c),
+                    if (!_mapMode) _searchBar(c),
                     const SizedBox(height: 6),
                     Expanded(
-                      child: RefreshIndicator(
-                        onRefresh: _load,
-                        color: c.accent,
-                        child: _filtered.isEmpty
-                            ? ListView(children: const [
-                                SizedBox(height: 60),
-                                EmptyState(
-                                  'Sin paradas',
-                                  'Crea la primera con el botón +.',
-                                  icon: Icons.place_outlined,
-                                ),
-                              ])
-                            : ListView.builder(
-                                padding: const EdgeInsets.fromLTRB(
-                                    16, 4, 16, 16),
-                                itemCount: _filtered.length,
-                                itemBuilder: (_, i) =>
-                                    _stopTile(c, _filtered[i]),
-                              ),
-                      ),
+                      child: _mapMode
+                          ? _mapView(c)
+                          : RefreshIndicator(
+                              onRefresh: _load,
+                              color: c.accent,
+                              child: _filtered.isEmpty
+                                  ? ListView(children: const [
+                                      SizedBox(height: 60),
+                                      EmptyState(
+                                        'Sin paradas',
+                                        'Crea la primera con el botón +.',
+                                        icon: Icons.place_outlined,
+                                      ),
+                                    ])
+                                  : ListView.builder(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          16, 4, 16, 16),
+                                      itemCount: _filtered.length,
+                                      itemBuilder: (_, i) =>
+                                          _stopTile(c, _filtered[i]),
+                                    ),
+                            ),
                     ),
                   ],
                 ),
     );
+  }
+
+  Widget _mapView(TransitColorScheme c) {
+    final pts = _filtered
+        .map((s) => LatLng(s.lat, s.lng))
+        .toList();
+    final center = pts.isNotEmpty ? pts.first : const LatLng(36.6837, -6.1366);
+    return Stack(
+      children: [
+        FlutterMap(
+          mapController: _mapController,
+          options: MapOptions(
+            initialCenter: center,
+            initialZoom: 13,
+            onTap: (_, ll) async {
+              if (_pendingMoveStopId != null) {
+                final id = _pendingMoveStopId!;
+                setState(() => _pendingMoveStopId = null);
+                try {
+                  await _repo.moveStop(id, ll.latitude, ll.longitude);
+                  await _load();
+                } catch (e) {
+                  _toast('Error: $e');
+                }
+                return;
+              }
+              await _createAt(ll);
+            },
+            interactionOptions: const InteractionOptions(
+                flags: InteractiveFlag.all & ~InteractiveFlag.rotate),
+          ),
+          children: [
+            TileLayer(
+              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+              userAgentPackageName: 'com.transitly.transitly',
+            ),
+            MarkerLayer(
+              markers: [
+                for (final s in _filtered)
+                  Marker(
+                    point: LatLng(s.lat, s.lng),
+                    width: 32,
+                    height: 32,
+                    child: GestureDetector(
+                      onTap: () => _stopMapMenu(s),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: c.accent,
+                          border: Border.all(color: Colors.white, width: 2),
+                          boxShadow: [
+                            BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.3),
+                                blurRadius: 4),
+                          ],
+                        ),
+                        child: const Icon(Icons.directions_bus,
+                            size: 16, color: Colors.white),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ],
+        ),
+        // Hint flotante.
+        Positioned(
+          left: 16,
+          right: 16,
+          bottom: 16,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            decoration: BoxDecoration(
+              color: _pendingMoveStopId != null
+                  ? c.stateDelay.withValues(alpha: 0.95)
+                  : c.bgElevated,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                  color: _pendingMoveStopId != null
+                      ? c.stateDelay
+                      : c.border,
+                  width: 0.5),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.touch_app, size: 16,
+                    color: _pendingMoveStopId != null
+                        ? Colors.white
+                        : c.accent),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    _pendingMoveStopId != null
+                        ? 'Toca el mapa para reubicar la parada'
+                        : 'Toca el mapa para crear una parada · toca un marcador para gestionarla',
+                    style: TransitTypography.bodySmall(
+                        _pendingMoveStopId != null
+                            ? Colors.white
+                            : c.textMid),
+                  ),
+                ),
+                if (_pendingMoveStopId != null)
+                  GestureDetector(
+                    onTap: () => setState(() => _pendingMoveStopId = null),
+                    child: const Padding(
+                      padding: EdgeInsets.only(left: 8),
+                      child: Icon(Icons.close, size: 16, color: Colors.white),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _stopMapMenu(AdminStopRow s) async {
+    final action = await showModalBottomSheet<String>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        final c = TransitColorScheme.of(
+            Theme.of(ctx).brightness == Brightness.dark);
+        return SafeArea(
+          child: Container(
+            margin: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: c.bgElevated,
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: c.border, width: 0.5),
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  title: Text(s.name,
+                      style: TransitTypography.bodyPrimary(c.textHi)),
+                  subtitle: Text(s.code.isEmpty ? 'Sin código' : s.code,
+                      style: TransitTypography.bodySmall(c.textMid)),
+                ),
+                Divider(height: 1, color: c.border),
+                ListTile(
+                  leading: Icon(Icons.edit_outlined, color: c.textHi),
+                  title: Text('Editar parada',
+                      style: TransitTypography.bodyPrimary(c.textHi)),
+                  onTap: () => Navigator.pop(ctx, 'edit'),
+                ),
+                ListTile(
+                  leading: Icon(Icons.open_with, color: c.textHi),
+                  title: Text('Mover (toca el mapa)',
+                      style: TransitTypography.bodyPrimary(c.textHi)),
+                  subtitle: Text('Afecta a todas las líneas que la usan',
+                      style: TransitTypography.bodySmall(c.textLo)),
+                  onTap: () => Navigator.pop(ctx, 'move'),
+                ),
+                ListTile(
+                  leading: Icon(Icons.delete_outline, color: c.stateCancelled),
+                  title: Text('Eliminar parada',
+                      style: TransitTypography.bodyPrimary(c.stateCancelled)),
+                  onTap: () => Navigator.pop(ctx, 'delete'),
+                ),
+                const SizedBox(height: 6),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+    if (action == 'edit') {
+      await _edit(s);
+    } else if (action == 'move') {
+      setState(() => _pendingMoveStopId = s.id);
+      _toast('Toca en el mapa la nueva ubicación de la parada');
+    } else if (action == 'delete') {
+      await _delete(s);
+    }
   }
 
   Widget _statsHeader(TransitColorScheme c) {

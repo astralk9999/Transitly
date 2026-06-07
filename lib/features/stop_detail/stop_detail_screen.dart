@@ -16,6 +16,7 @@ import '../../shared/widgets/responsive_scaffold.dart';
 import '../../shared/widgets/capacity_indicator.dart';
 import '../../shared/widgets/stagger_list.dart';
 import '../../shared/widgets/transit_chip.dart';
+import 'widgets/stop_timetable_section.dart';
 
 class StopDetailScreen extends ConsumerWidget {
   const StopDetailScreen({super.key, required this.stopId});
@@ -96,6 +97,11 @@ class StopDetailScreen extends ConsumerWidget {
                 ),
 
                 Divider(height: 32, thickness: 0.5, color: c.border),
+
+                // ── HORARIOS EXACTOS POR LÍNEA (datos oficiales de PDFs) ──
+                // Solo aparece para paradas con horario exacto cargado; si no,
+                // queda "Próximas llegadas" como estimación.
+                StopTimetableSection(stopName: stop.name),
 
                 // ── 2. PRÓXIMAS LLEGADAS ──
                 Semantics(

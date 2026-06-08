@@ -70,6 +70,20 @@ class _SmokeBackgroundState extends State<SmokeBackground>
     }
   }
 
+  /// El shader GLSL puede quedar inutilizable (recurso GPU descartado por
+  /// el sistema, pérdida de contexto al navegar entre pantallas pesadas,
+  /// etc.). Si al pintar lanza, caemos al fallback animado por canvas — que
+  /// nunca se rompe — para que el fondo NUNCA se quede congelado/roto.
+  void _onShaderBroken() {
+    if (_shaderFailed || !mounted) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        setState(() => _shaderFailed = true);
+        AppLogger.warn('SmokeBackground', 'shader broke → canvas fallback');
+      }
+    });
+  }
+
   Future<void> _loadShader() async {
     try {
       final program =
@@ -99,6 +113,7 @@ class _SmokeBackgroundState extends State<SmokeBackground>
             time: _time,
             color: widget.color,
             isDark: widget.isDark,
+            onShaderError: _onShaderBroken,
           )
         : _SmokeGradientPainter(
             color: widget.color,
@@ -131,27 +146,34 @@ class _SmokePainter extends CustomPainter {
     required this.time,
     required this.color,
     required this.isDark,
+    this.onShaderError,
   }) : super(repaint: time);
 
   final ui.FragmentShader shader;
   final ValueNotifier<double> time;
   final Color color;
   final bool isDark;
+  final VoidCallback? onShaderError;
 
   @override
   void paint(Canvas canvas, Size size) {
-    shader.setFloat(0, time.value);
-    shader.setFloat(1, size.width);
-    shader.setFloat(2, size.height);
-    shader.setFloat(3, color.r);
-    shader.setFloat(4, color.g);
-    shader.setFloat(5, color.b);
-    shader.setFloat(6, isDark ? 1.0 : 0.0);
+    try {
+      shader.setFloat(0, time.value);
+      shader.setFloat(1, size.width);
+      shader.setFloat(2, size.height);
+      shader.setFloat(3, color.r);
+      shader.setFloat(4, color.g);
+      shader.setFloat(5, color.b);
+      shader.setFloat(6, isDark ? 1.0 : 0.0);
 
-    canvas.drawRect(
-      Offset.zero & size,
-      Paint()..shader = shader,
-    );
+      canvas.drawRect(
+        Offset.zero & size,
+        Paint()..shader = shader,
+      );
+    } catch (_) {
+      // Shader inutilizable → avisamos para caer al fallback animado.
+      onShaderError?.call();
+    }
   }
 
   @override

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/backgrounds/app_background.dart';
+import '../providers/map_visible_provider.dart';
 import '../providers/theme_notifier.dart';
 import '../providers/theme_provider.dart';
 import 'backgrounds/balatro_background.dart';
@@ -23,6 +24,10 @@ class BackgroundWrapper extends ConsumerWidget {
     final enabled = themeNotifier.backgroundEnabled;
     final opacity = themeNotifier.backgroundOpacity;
     final reduceMotion = themeNotifier.reduceMotion;
+    // En el mapa NO renderizamos el shader: en algunos dispositivos el
+    // fragment shader del fondo y el FlutterMap no pueden coexistir y la app
+    // crashea / el fondo se rompe globalmente. El mapa tapa el fondo igual.
+    final mapVisible = ref.watch(mapVisibleProvider);
 
     final themeMode = ref.watch(themeModeProvider);
     final brightness = MediaQuery.platformBrightnessOf(context);
@@ -32,7 +37,7 @@ class BackgroundWrapper extends ConsumerWidget {
         ? (palette.darkScheme ?? palette.scheme)
         : (palette.lightScheme ?? palette.scheme);
 
-    if (!enabled) {
+    if (!enabled || mapVisible) {
       return RepaintBoundary(child: Container(color: scheme.bgRoot, child: child));
     }
 

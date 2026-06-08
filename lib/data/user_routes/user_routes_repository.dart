@@ -17,6 +17,7 @@ class UserRouteModel {
     this.serviceType = 'urban',
     this.visibility = 'private',
     this.status = 'draft',
+    this.path,
     this.shareCode,
     this.publicSlug,
     this.totalDistanceKm,
@@ -36,6 +37,8 @@ class UserRouteModel {
   final String name;
   final String? code;
   final String? description;
+  /// Trazado: lista de segmentos [{points:[{lat,lng}]}]. null si no se trazó.
+  final List<dynamic>? path;
   final String routeColor;
   final String serviceType;
   final String visibility;
@@ -60,6 +63,7 @@ class UserRouteModel {
       name: json['name'] as String,
       code: json['code'] as String?,
       description: json['description'] as String?,
+      path: json['path'] as List<dynamic>?,
       routeColor: (json['route_color'] as String?) ?? '#977DDF',
       serviceType: (json['service_type'] as String?) ?? 'urban',
       visibility: (json['visibility'] as String?) ?? 'private',
@@ -86,6 +90,7 @@ class UserRouteModel {
     if (code != null && code!.isNotEmpty) 'code': code,
     if (region != null && region!.isNotEmpty) 'region': region,
     if (description != null) 'description': description,
+    if (path != null) 'path': path,
     'route_color': routeColor,
     'service_type': serviceType,
     'visibility': visibility,

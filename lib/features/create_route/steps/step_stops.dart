@@ -52,8 +52,13 @@ class _StepStopsState extends State<StepStops> {
   }
 
   void _reorder(int oldIndex, int newIndex) {
+    // ReorderableListView entrega newIndex como si el item NO se hubiera
+    // quitado todavía; al mover hacia abajo hay que restar 1 o el orden
+    // queda descolocado/invertido.
+    if (newIndex > oldIndex) newIndex -= 1;
     final item = widget.stops.removeAt(oldIndex);
     widget.stops.insert(newIndex, item);
+    setState(() {});
     widget.onChanged();
   }
 

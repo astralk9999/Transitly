@@ -230,53 +230,92 @@ class _MapStopPickerScreenState extends ConsumerState<MapStopPickerScreen> {
             // ── Resultados de búsqueda (overlay sobre mapa) ──
             if (_showSearchResults)
               Expanded(
-                child: searchResults.when(
-                  data: (results) {
-                    if (results.isEmpty) {
-                      return Center(
-                        child: Text(
-                          'Sin resultados',
-                          style: TransitTypography.bodySecondary(c.textMid),
-                        ),
-                      );
-                    }
-                    return ListView.separated(
-                      itemCount: results.length,
-                      separatorBuilder: (_, __) =>
-                          Divider(color: c.border, height: 1),
-                      itemBuilder: (_, i) {
-                        final r = results[i];
-                        return ListTile(
-                          leading: Icon(
-                            r.type == MapSearchResultType.place
-                                ? Icons.place
-                                : r.type == MapSearchResultType.stop
-                                    ? Icons.directions_bus
-                                    : Icons.route,
-                            color: c.accent,
+                child: Builder(builder: (context) {
+                  final q = _searchCtrl.text.trim().toLowerCase();
+                  // Paradas oficiales (COMUJESA/Jerez) que coinciden con la
+                  // búsqueda — van primero para que se encuentren fácil.
+                  final officialMatches = q.isEmpty
+                      ? const <_OfficialStop>[]
+                      : _official
+                          .where((s) => s.name.toLowerCase().contains(q))
+                          .take(20)
+                          .toList();
+                  return CustomScrollView(
+                    slivers: [
+                      if (officialMatches.isNotEmpty)
+                        SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                            (_, i) {
+                              final s = officialMatches[i];
+                              return ListTile(
+                                leading: Icon(Icons.directions_bus,
+                                    color: const Color(0xFF2196F3)),
+                                title: Text(s.name,
+                                    style: TransitTypography.bodyPrimary(
+                                        c.textHi)),
+                                subtitle: Text('Parada oficial',
+                                    style: TransitTypography.bodySecondary(
+                                        c.textMid)),
+                                onTap: () {
+                                  _selectOfficial(s);
+                                  _searchCtrl.clear();
+                                  setState(() => _showSearchResults = false);
+                                },
+                              );
+                            },
+                            childCount: officialMatches.length,
                           ),
-                          title: Text(r.title,
-                              style: TransitTypography.bodyPrimary(c.textHi)),
-                          subtitle: r.subtitle.isEmpty
-                              ? null
-                              : Text(r.subtitle,
-                                  style: TransitTypography.bodySecondary(
-                                      c.textMid)),
-                          onTap: () => _selectSearchResult(r),
-                        );
-                      },
-                    );
-                  },
-                  loading: () => Center(
-                    child: CircularProgressIndicator(color: c.accent),
-                  ),
-                  error: (_, __) => Center(
-                    child: Text(
-                      'Error al buscar',
-                      style: TransitTypography.bodySecondary(c.textMid),
-                    ),
-                  ),
-                ),
+                        ),
+                      SliverToBoxAdapter(
+                        child: searchResults.when(
+                          data: (results) {
+                            if (results.isEmpty && officialMatches.isEmpty) {
+                              return Padding(
+                                padding: const EdgeInsets.all(24),
+                                child: Center(
+                                  child: Text('Sin resultados',
+                                      style: TransitTypography.bodySecondary(
+                                          c.textMid)),
+                                ),
+                              );
+                            }
+                            return Column(
+                              children: [
+                                for (final r in results)
+                                  ListTile(
+                                    leading: Icon(
+                                      r.type == MapSearchResultType.place
+                                          ? Icons.place
+                                          : r.type ==
+                                                  MapSearchResultType.stop
+                                              ? Icons.directions_bus
+                                              : Icons.route,
+                                      color: c.accent,
+                                    ),
+                                    title: Text(r.title,
+                                        style: TransitTypography.bodyPrimary(
+                                            c.textHi)),
+                                    subtitle: r.subtitle.isEmpty
+                                        ? null
+                                        : Text(r.subtitle,
+                                            style: TransitTypography
+                                                .bodySecondary(c.textMid)),
+                                    onTap: () => _selectSearchResult(r),
+                                  ),
+                              ],
+                            );
+                          },
+                          loading: () => const Padding(
+                            padding: EdgeInsets.all(24),
+                            child: Center(
+                                child: CircularProgressIndicator()),
+                          ),
+                          error: (_, __) => const SizedBox.shrink(),
+                        ),
+                      ),
+                    ],
+                  );
+                }),
               )
             else
               // ── Mapa principal ──
@@ -448,7 +487,7 @@ class _SearchHeader extends StatelessWidget {
               focusNode: focusNode,
               style: TransitTypography.bodyPrimary(c.textHi),
               decoration: InputDecoration(
-                hintText: 'Buscar lugar (hotel, gasolinera...)',
+                hintText: 'Buscar parada oficial o lugar...',
                 hintStyle: TransitTypography.bodySecondary(c.textMid),
                 prefixIcon: Icon(Icons.search, color: c.textMid),
                 border: InputBorder.none,

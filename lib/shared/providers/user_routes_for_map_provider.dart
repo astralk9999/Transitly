@@ -90,6 +90,42 @@ final myRoutePolylinesProvider =
   return out;
 });
 
+/// Paradas (con coordenadas) de las rutas propias del usuario, para
+/// dibujarlas como marcadores en SU mapa. Dedup por id.
+class MapStopPoint {
+  MapStopPoint(this.id, this.name, this.lat, this.lng);
+  final String id;
+  final String name;
+  final double lat;
+  final double lng;
+}
+
+final myRouteStopsProvider =
+    FutureProvider<List<MapStopPoint>>((ref) async {
+  final client = ref.watch(supabaseClientProvider);
+  final authState = ref.watch(authStateProvider).valueOrNull;
+  if (authState is! AuthAuthenticated) return const [];
+
+  final routesRepo = UserRoutesRepository(client);
+  final stopsRepo = UserStopsRepository(client);
+  final byId = <String, MapStopPoint>{};
+  try {
+    final mine = await routesRepo.getMyRoutes();
+    for (final r in mine) {
+      final rs = await stopsRepo.getStopsForRoute(r.id);
+      for (final s in rs) {
+        if (s.stop != null) {
+          byId[s.userStopId] =
+              MapStopPoint(s.userStopId, s.stop!.name, s.stop!.lat, s.stop!.lng);
+        }
+      }
+    }
+  } catch (e) {
+    AppLogger.warn(_logTag, 'stops load failed', e);
+  }
+  return byId.values.toList(growable: false);
+});
+
 RouteModel _toRouteModel(UserRouteModel u) {
   return RouteModel(
     id: u.id,

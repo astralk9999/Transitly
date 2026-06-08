@@ -188,7 +188,7 @@ class _NotificationTile extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Text(
-                              _typeLabel(notification.type, l10n),
+                              _titleText(notification, l10n),
                               style: unread
                                   ? TextStyle(fontFamily: 'DM Sans', 
                                       fontSize: 14,
@@ -228,6 +228,17 @@ class _NotificationTile extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  /// Título a mostrar. Para notificaciones `custom` (avisos del servidor:
+  /// zonas propuestas, moderación, reportes…) usa el título real del payload
+  /// en lugar del genérico "Aviso", para que el admin vea de qué va.
+  String _titleText(AppNotification n, AppLocalizations l10n) {
+    if (n.type == AppNotificationType.custom) {
+      final t = n.payload['title'];
+      if (t is String && t.isNotEmpty) return t;
+    }
+    return _typeLabel(n.type, l10n);
   }
 
   String _typeLabel(AppNotificationType type, AppLocalizations l10n) {

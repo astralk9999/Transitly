@@ -13,6 +13,7 @@ import '../../data/supabase/supabase_client_provider.dart';
 import '../../data/user_routes/user_route_schedules_repository.dart';
 import '../../data/user_routes/user_routes_repository.dart';
 import '../../data/user_stops/user_stops_repository.dart';
+import '../../shared/providers/user_routes_for_map_provider.dart';
 import '../../shared/widgets/transit_app_bar.dart';
 import '../../shared/widgets/transit_button.dart';
 import 'steps/step_basic_info.dart';
@@ -121,6 +122,26 @@ class _CreateRouteWizardState extends ConsumerState<CreateRouteWizard> {
         _visibility = route.visibility;
         _zoneName = route.region;
       });
+      // Restaura el trazado guardado (segmentos con sus puntos).
+      if (route.path != null) {
+        _routePath.segments.clear();
+        for (final seg in route.path!) {
+          if (seg is Map) {
+            final pts = (seg['points'] as List?) ?? const [];
+            _routePath.segments.add(WizardSegment(
+              fromStopId: seg['from'] as String? ?? '',
+              toStopId: seg['to'] as String? ?? '',
+              points: pts
+                  .whereType<Map>()
+                  .map((p) => WizardRoutePathPoint(
+                        lat: (p['lat'] as num).toDouble(),
+                        lng: (p['lng'] as num).toDouble(),
+                      ))
+                  .toList(),
+            ));
+          }
+        }
+      }
       final stopsRepo = ref.read(userStopsRepositoryProvider);
       if (stopsRepo != null) {
         final routeStops = await stopsRepo.getStopsForRoute(widget.routeId!);
@@ -267,6 +288,17 @@ class _CreateRouteWizardState extends ConsumerState<CreateRouteWizard> {
 
       final status = _proposeAsCommunity ? 'review_pending' : 'published';
 
+      // Serializa el trazado (segmentos con sus puntos) para persistirlo.
+      final pathJson = _routePath.segments
+          .map((seg) => {
+                'from': seg.fromStopId,
+                'to': seg.toStopId,
+                'points': seg.points
+                    .map((p) => {'lat': p.lat, 'lng': p.lng})
+                    .toList(),
+              })
+          .toList();
+
       final routeModel = UserRouteModel(
         id: widget.routeId ?? generateUuidV4(),
         authorId: uid,
@@ -275,6 +307,7 @@ class _CreateRouteWizardState extends ConsumerState<CreateRouteWizard> {
         region: _zoneName,
         description:
             _descCtrl.text.trim().isEmpty ? null : _descCtrl.text.trim(),
+        path: pathJson.isEmpty ? null : pathJson,
         routeColor: color,
         serviceType: _serviceType,
         visibility: _visibility,
@@ -336,6 +369,12 @@ class _CreateRouteWizardState extends ConsumerState<CreateRouteWizard> {
       if (scheduleModels.isNotEmpty) {
         await schedRepo.saveAll(routeId, scheduleModels);
       }
+
+      // Invalida los providers del mapa/listas para que la ruta nueva (y sus
+      // paradas) aparezcan al instante, sin tener que cerrar y reabrir la app.
+      ref.invalidate(userRoutesForMapProvider);
+      ref.invalidate(myRoutePolylinesProvider);
+      ref.invalidate(myRouteStopsProvider);
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

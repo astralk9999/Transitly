@@ -574,6 +574,28 @@ class _MapTabState extends ConsumerState<MapTab>
                   polylines: ref.watch(myRoutePolylinesProvider).value ??
                       const <Polyline<Object>>[],
                 ),
+              // Marcadores de las paradas de mis rutas (propias/importadas).
+              if (ref.watch(myRouteStopsProvider).valueOrNull?.isNotEmpty ??
+                  false)
+                MarkerLayer(
+                  markers: [
+                    for (final s
+                        in ref.watch(myRouteStopsProvider).value ??
+                            const <MapStopPoint>[])
+                      Marker(
+                        point: LatLng(s.lat, s.lng),
+                        width: 22,
+                        height: 22,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: c.accent,
+                            border: Border.all(color: Colors.white, width: 2),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
               if (userLocationFix != null)
                 UserLocationLayer(
                   fix: userLocationFix,

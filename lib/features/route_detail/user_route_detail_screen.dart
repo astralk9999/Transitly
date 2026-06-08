@@ -566,6 +566,50 @@ class _UserRouteDetailScreenState extends ConsumerState<UserRouteDetailScreen> {
     );
   }
 
+  /// Si la ruta tiene trazado guardado, dibuja sus segmentos (más fiel al
+  /// recorrido real); si no, une las paradas en orden con líneas rectas.
+  List<Polyline> _buildRoutePolylines(
+      List<UserRouteStopModel> stops, Color color) {
+    final coordOf = <String, LatLng>{
+      for (final s in stops)
+        if (s.stop != null) s.userStopId: LatLng(s.stop!.lat, s.stop!.lng),
+    };
+    final path = _route?.path;
+    if (path != null && path.isNotEmpty) {
+      final lines = <Polyline>[];
+      for (final seg in path) {
+        if (seg is! Map) continue;
+        final pts = <LatLng>[];
+        final from = coordOf[seg['from']];
+        if (from != null) pts.add(from);
+        for (final p in (seg['points'] as List? ?? const [])) {
+          if (p is Map) {
+            pts.add(LatLng(
+                (p['lat'] as num).toDouble(), (p['lng'] as num).toDouble()));
+          }
+        }
+        final to = coordOf[seg['to']];
+        if (to != null) pts.add(to);
+        if (pts.length >= 2) {
+          lines.add(Polyline(
+              points: pts, strokeWidth: 4, color: color.withValues(alpha: 0.85)));
+        }
+      }
+      if (lines.isNotEmpty) return lines;
+    }
+    // Fallback: unir paradas en orden.
+    return [
+      Polyline(
+        points: stops
+            .where((s) => s.stop != null)
+            .map((s) => LatLng(s.stop!.lat, s.stop!.lng))
+            .toList(),
+        strokeWidth: 4,
+        color: color.withValues(alpha: 0.8),
+      ),
+    ];
+  }
+
   Widget _buildMap(
     TransitColorScheme c,
     List<UserRouteStopModel> stops,
@@ -595,16 +639,7 @@ class _UserRouteDetailScreenState extends ConsumerState<UserRouteDetailScreen> {
                 ),
                 // Línea de la ruta uniendo las paradas en orden.
                 PolylineLayer(
-                  polylines: [
-                    Polyline(
-                      points: stops
-                          .where((s) => s.stop != null)
-                          .map((s) => LatLng(s.stop!.lat, s.stop!.lng))
-                          .toList(),
-                      strokeWidth: 4,
-                      color: color.withValues(alpha: 0.8),
-                    ),
-                  ],
+                  polylines: _buildRoutePolylines(stops, color),
                 ),
                 MarkerLayer(
                   markers: [

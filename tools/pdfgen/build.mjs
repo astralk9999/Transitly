@@ -11,7 +11,8 @@ import puppeteer from 'puppeteer-core';
 const here = dirname(fileURLToPath(import.meta.url));
 const repo = resolve(here, '..', '..');
 const tfgDir = resolve(repo, 'docs', 'tfg');
-const out = resolve(tfgDir, 'Memoria_Transitly_TFG.pdf');
+// Salida en la carpeta public de la web para servirla en GitHub Pages.
+const out = resolve(repo, 'presentation', 'public', 'Memoria_Transitly_TFG.pdf');
 
 const CHROME = [
   'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',

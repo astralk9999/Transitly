@@ -2,6 +2,7 @@
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const docsBase = `${base}/docs`;
 const defensaUrl = `${base}/defensa`;
+const memoriaPdf = `${base}/Memoria_Transitly_TFG.pdf`;
 
 const items = [
   { n: '01–05', t: 'Memoria del proyecto', d: 'Análisis, diseño, planificación, desarrollo y evaluación.' },
@@ -33,6 +34,9 @@ const items = [
   <div class="flex flex-wrap gap-3 mt-8 reveal" data-delay="200">
     <a href={docsBase} class="inline-flex items-center gap-2 px-6 py-3 bg-transit-accent text-white rounded-full text-sm font-semibold hover:bg-transit-accent/85 transition-all">
       Ver todos los entregables →
+    </a>
+    <a href={memoriaPdf} class="inline-flex items-center gap-2 px-6 py-3 border border-transit-accent/30 text-transit-text-hi rounded-full text-sm font-semibold hover:bg-transit-accent-bg transition-all" download>
+      Memoria completa (PDF) ↓
     </a>
     <a href={defensaUrl} class="inline-flex items-center gap-2 px-6 py-3 border border-transit-accent/30 text-transit-text-hi rounded-full text-sm font-semibold hover:bg-transit-accent-bg transition-all">
       Presentación de defensa ▸

@@ -5,7 +5,6 @@ import 'package:latlong2/latlong.dart';
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_spacing.dart';
 import '../../../core/theme/transit_typography.dart';
-import '../../../shared/widgets/transit_button.dart';
 import 'wizard_models.dart';
 
 class StepRoutePath extends StatefulWidget {
@@ -87,6 +86,25 @@ class _StepRoutePathState extends State<StepRoutePath> {
       _currentPoints.clear();
     });
     widget.onChanged();
+  }
+
+  LatLng? _stopLatLng(String id) {
+    for (final s in widget.stops) {
+      if (s.stopId == id) return LatLng(s.lat, s.lng);
+    }
+    return null;
+  }
+
+  /// Puntos completos de un segmento: parada origen + waypoints + parada
+  /// destino, para que el trazado conecte siempre con las paradas.
+  List<LatLng> _segmentLine(WizardSegment seg) {
+    final from = _stopLatLng(seg.fromStopId);
+    final to = _stopLatLng(seg.toStopId);
+    return [
+      if (from != null) from,
+      for (final p in seg.points) LatLng(p.lat, p.lng),
+      if (to != null) to,
+    ];
   }
 
   Widget _buildMap(TransitColorScheme colors) {
@@ -179,17 +197,32 @@ class _StepRoutePathState extends State<StepRoutePath> {
             ),
             PolylineLayer(
               polylines: [
-                for (final seg in segments) ...[
-                  if (seg.points.isNotEmpty)
+                // Cada segmento conecta su parada origen → waypoints →
+                // parada destino. Sin waypoints es una línea recta entre
+                // las dos paradas (el recorrido siempre se ve continuo).
+                for (var i = 0; i < segments.length; i++)
+                  if (i != _editingSegmentIndex)
                     Polyline(
-                      points: [for (final p in seg.points) LatLng(p.lat, p.lng)],
+                      points: _segmentLine(segments[i]),
                       color: colors.accent,
                       strokeWidth: 3,
                     ),
-                ],
-                if (_editingSegmentIndex != null && _currentPoints.length >= 2)
+                // Vista previa del segmento en edición, también enganchada
+                // a las paradas origen y destino.
+                if (_editingSegmentIndex != null)
                   Polyline(
-                    points: [for (final p in _currentPoints) LatLng(p.lat, p.lng)],
+                    points: [
+                      if (_stopLatLng(
+                              segments[_editingSegmentIndex!].fromStopId) !=
+                          null)
+                        _stopLatLng(
+                            segments[_editingSegmentIndex!].fromStopId)!,
+                      for (final p in _currentPoints) LatLng(p.lat, p.lng),
+                      if (_stopLatLng(
+                              segments[_editingSegmentIndex!].toStopId) !=
+                          null)
+                        _stopLatLng(segments[_editingSegmentIndex!].toStopId)!,
+                    ],
                     color: Colors.amber,
                     strokeWidth: 3,
                   ),
@@ -217,7 +250,8 @@ class _StepRoutePathState extends State<StepRoutePath> {
         children: [
           Text('Trazar el camino', style: TransitTypography.heading(colors.textHi)),
           const SizedBox(height: 4),
-          Text('Toca el mapa para añadir puntos del recorrido entre paradas.',
+          Text('El trazado conecta cada parada con la siguiente. Toca el mapa '
+              'para añadir puntos intermedios y curvar el recorrido entre dos paradas.',
               style: TransitTypography.bodySecondary(colors.textMid)),
           const SizedBox(height: 16),
           _buildMap(colors),

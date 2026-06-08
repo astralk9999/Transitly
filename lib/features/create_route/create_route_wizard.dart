@@ -343,8 +343,14 @@ class _CreateRouteWizardState extends ConsumerState<CreateRouteWizard> {
     } on PostgrestException catch (e) {
       AppLogger.error(_logTag, 'publish PG error code=${e.code} msg=${e.message}');
       String msg = 'Error al publicar';
-      if (e.code == '22P02') {
+      final lower = e.message.toLowerCase();
+      if (lower.contains('quota')) {
+        msg = 'Has alcanzado tu límite de rutas publicadas. '
+            'Sube de nivel o elimina alguna ruta para crear más.';
+      } else if (e.code == '22P02') {
         msg = 'Error de formato en los datos. Revisa el color, tipo de servicio y horarios.';
+      } else if (lower.contains('name') && lower.contains('char_length')) {
+        msg = 'Revisa que el nombre de la ruta y de las paradas tengan al menos 2-3 caracteres.';
       }
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));

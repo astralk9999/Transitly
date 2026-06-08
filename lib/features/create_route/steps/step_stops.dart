@@ -63,7 +63,7 @@ class _StepStopsState extends State<StepStops> {
   Future<void> _showAddStopModal() async {
     final result = await Navigator.of(context).push<WizardStop>(
       MaterialPageRoute(
-        builder: (_) => const MapStopPickerScreen(),
+        builder: (_) => MapStopPickerScreen(existingStops: widget.stops),
         fullscreenDialog: true,
       ),
     );

@@ -230,13 +230,122 @@ class _MyRoutesScreenState extends ConsumerState<MyRoutesScreen> {
           ],
         ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // TODO: navigate to route creator
-        },
+        onPressed: _showAddMenu,
         backgroundColor: c.accent,
         child: const Icon(Icons.add, color: Colors.white),
       ),
     );
+  }
+
+  void _showAddMenu() {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        final c = TransitColorScheme.of(
+            Theme.of(ctx).brightness == Brightness.dark);
+        return SafeArea(
+          child: Container(
+            margin: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: c.bgElevated,
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: c.border, width: 0.5),
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  leading: Icon(Icons.add_road, color: c.accent),
+                  title: Text('Crear ruta',
+                      style: TransitTypography.bodyPrimary(c.textHi)),
+                  subtitle: Text('Diseña una ruta nueva paso a paso',
+                      style: TransitTypography.bodySmall(c.textMid)),
+                  onTap: () {
+                    Navigator.pop(ctx);
+                    context.push('/create-route').then((_) => _load());
+                  },
+                ),
+                Divider(height: 1, color: c.border),
+                ListTile(
+                  leading: Icon(Icons.qr_code_2, color: c.accent),
+                  title: Text('Añadir por código',
+                      style: TransitTypography.bodyPrimary(c.textHi)),
+                  subtitle: Text('Pega un código o enlace de ruta compartida',
+                      style: TransitTypography.bodySmall(c.textMid)),
+                  onTap: () {
+                    Navigator.pop(ctx);
+                    _addByCode();
+                  },
+                ),
+                Divider(height: 1, color: c.border),
+                ListTile(
+                  leading: Icon(Icons.groups_outlined, color: c.accent),
+                  title: Text('Explorar comunidad',
+                      style: TransitTypography.bodyPrimary(c.textHi)),
+                  subtitle: Text('Descubre e importa rutas de otros usuarios',
+                      style: TransitTypography.bodySmall(c.textMid)),
+                  onTap: () {
+                    Navigator.pop(ctx);
+                    context.push('/community');
+                  },
+                ),
+                const SizedBox(height: 6),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _addByCode() async {
+    final ctrl = TextEditingController();
+    final input = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Añadir por código'),
+        content: TextField(
+          controller: ctrl,
+          autofocus: true,
+          decoration: const InputDecoration(
+            labelText: 'Código o enlace',
+            hintText: 'p.ej. ABC123 o transitly://…',
+          ),
+        ),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Cancelar')),
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, ctrl.text.trim()),
+              child: const Text('Buscar')),
+        ],
+      ),
+    );
+    if (input == null || input.isEmpty) return;
+
+    // Extrae el código/slug de un enlace si lo pegaron entero.
+    final raw = input.split(RegExp(r'[/?=#]')).where((s) => s.isNotEmpty).last;
+    final repo = ref.read(userRoutesRepositoryProvider);
+    if (repo == null) return;
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      var route = await repo.getByShareCode(raw);
+      route ??= await repo.getBySlug(raw);
+      if (route == null) {
+        messenger.showSnackBar(const SnackBar(
+            content: Text('No se encontró ninguna ruta con ese código')));
+        return;
+      }
+      await repo.importRoute(route.id);
+      messenger.showSnackBar(SnackBar(
+          content: Text('Ruta "${route.name}" añadida a Mis rutas')));
+      await _load();
+    } catch (e) {
+      messenger.showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
   }
 
   Widget _buildHeader(TransitColorScheme c, UserReputation? reputation) {

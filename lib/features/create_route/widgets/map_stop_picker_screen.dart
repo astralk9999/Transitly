@@ -6,10 +6,21 @@ import 'package:latlong2/latlong.dart';
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../core/utils/uuid.dart';
+import '../../../data/supabase/supabase_client_provider.dart';
 import '../../../shared/providers/map_search_provider.dart';
 import '../../../shared/providers/user_location_provider.dart';
 import '../../../shared/widgets/transit_button.dart';
 import '../steps/wizard_models.dart';
+
+/// Una parada oficial cercana (para mostrarla en el picker y poder
+/// seleccionarla en vez de crear una nueva).
+class _OfficialStop {
+  _OfficialStop(this.id, this.name, this.lat, this.lng);
+  final String id;
+  final String name;
+  final double lat;
+  final double lng;
+}
 
 /// Pantalla interactiva para añadir una parada tocando el mapa.
 ///
@@ -20,10 +31,17 @@ import '../steps/wizard_models.dart';
 ///
 /// Devuelve el `WizardStop` con `Navigator.pop(stop)` o `null` si se cancela.
 class MapStopPickerScreen extends ConsumerStatefulWidget {
-  const MapStopPickerScreen({super.key, this.initialCenter});
+  const MapStopPickerScreen({
+    super.key,
+    this.initialCenter,
+    this.existingStops = const [],
+  });
 
   /// Centro opcional del mapa. Si es null, intenta GPS, si no, Jerez.
   final LatLng? initialCenter;
+
+  /// Paradas ya añadidas a la ruta (se muestran en gris para no repetir).
+  final List<WizardStop> existingStops;
 
   @override
   ConsumerState<MapStopPickerScreen> createState() =>
@@ -41,6 +59,53 @@ class _MapStopPickerScreenState extends ConsumerState<MapStopPickerScreen> {
   LatLng? _pinPosition;
   String _stopType = 'custom';
   bool _showSearchResults = false;
+  List<_OfficialStop> _official = const [];
+  String? _selectedOfficialId;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _loadOfficial());
+  }
+
+  Future<void> _loadOfficial() async {
+    final center = widget.initialCenter ??
+        ref.read(userLocationLatLngProvider) ??
+        _jerezCenter;
+    try {
+      final rows = await ref.read(supabaseClientProvider).rpc(
+        'list_official_stops_near',
+        params: {
+          'p_lat': center.latitude,
+          'p_lng': center.longitude,
+          'p_radius_m': 12000,
+        },
+      );
+      final list = (rows as List)
+          .map((e) => _OfficialStop(
+                e['id'] as String,
+                e['name'] as String? ?? '',
+                (e['lat'] as num).toDouble(),
+                (e['lng'] as num).toDouble(),
+              ))
+          .toList();
+      if (mounted) setState(() => _official = list);
+    } catch (_) {
+      // Sin oficiales (sin red o sin datos) → el usuario crea la suya.
+    }
+  }
+
+  void _selectOfficial(_OfficialStop s) {
+    setState(() {
+      _pinPosition = LatLng(s.lat, s.lng);
+      _selectedOfficialId = s.id;
+      _stopType = 'official';
+      _nameCtrl.text = s.name;
+      _showSearchResults = false;
+    });
+    _mapController.move(LatLng(s.lat, s.lng), 16);
+    _searchFocus.unfocus();
+  }
 
   static const _stopTypes = {
     'urban_custom': ('Parada urbana', Icons.directions_bus),
@@ -67,6 +132,8 @@ class _MapStopPickerScreenState extends ConsumerState<MapStopPickerScreen> {
   void _onMapTap(TapPosition tapPos, LatLng latlng) {
     setState(() {
       _pinPosition = latlng;
+      _selectedOfficialId = null; // tocar el mapa = parada nueva
+      if (_stopType == 'official') _stopType = 'custom';
       _showSearchResults = false;
     });
     _searchFocus.unfocus();
@@ -100,6 +167,9 @@ class _MapStopPickerScreenState extends ConsumerState<MapStopPickerScreen> {
       lat: _pinPosition!.latitude,
       lng: _pinPosition!.longitude,
       stopType: _stopType,
+      // Si se seleccionó una parada oficial, la enlazamos para reusarla
+      // al publicar (no se duplica la parada oficial).
+      officialStopId: _selectedOfficialId,
     );
     Navigator.of(context).pop(stop);
   }
@@ -212,6 +282,54 @@ class _MapStopPickerScreenState extends ConsumerState<MapStopPickerScreen> {
                               'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                           userAgentPackageName: 'com.transitly.transitly',
                         ),
+                        // Paradas oficiales cercanas (azul) — tócalas para
+                        // seleccionarlas en vez de crear una nueva.
+                        MarkerLayer(
+                          markers: [
+                            for (final s in _official)
+                              Marker(
+                                point: LatLng(s.lat, s.lng),
+                                width: 30,
+                                height: 30,
+                                child: GestureDetector(
+                                  onTap: () => _selectOfficial(s),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: _selectedOfficialId == s.id
+                                          ? c.accent
+                                          : const Color(0xFF2196F3),
+                                      border: Border.all(
+                                          color: Colors.white, width: 2),
+                                    ),
+                                    child: const Icon(Icons.directions_bus,
+                                        size: 15, color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                        // Paradas ya añadidas a la ruta (gris, no seleccionables).
+                        MarkerLayer(
+                          markers: [
+                            for (final s in widget.existingStops)
+                              Marker(
+                                point: LatLng(s.lat, s.lng),
+                                width: 26,
+                                height: 26,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: c.textLo,
+                                    border: Border.all(
+                                        color: Colors.white, width: 2),
+                                  ),
+                                  child: const Icon(Icons.check,
+                                      size: 14, color: Colors.white),
+                                ),
+                              ),
+                          ],
+                        ),
                         if (_pinPosition != null)
                           MarkerLayer(
                             markers: [
@@ -247,7 +365,9 @@ class _MapStopPickerScreenState extends ConsumerState<MapStopPickerScreen> {
                                 const SizedBox(width: 12),
                                 Expanded(
                                   child: Text(
-                                    'Toca el mapa para elegir la ubicación de la parada',
+                                    'Toca una parada oficial (azul) para usarla, '
+                                    'o toca el mapa para crear una nueva. '
+                                    'Las grises ya están en tu ruta.',
                                     style: TransitTypography.bodySecondary(
                                         c.textHi),
                                   ),

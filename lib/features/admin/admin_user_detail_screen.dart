@@ -13,6 +13,12 @@ import '../../shared/widgets/glass_card.dart';
 import '../../shared/widgets/role_gate.dart';
 import '../../shared/widgets/transit_app_bar.dart';
 
+/// El enum `user_role` de Postgres usa snake_case (`operator_admin`); la UI
+/// de roles trabaja con camelCase (`operatorAdmin`). El resto de roles
+/// coincide en ambos. Estos dos helpers convierten en cada frontera.
+String _roleDbToUi(String db) => db == 'operator_admin' ? 'operatorAdmin' : db;
+String _roleUiToDb(String ui) => ui == 'operatorAdmin' ? 'operator_admin' : ui;
+
 /// Pantalla detalle de usuario (admin). Tres tabs: Resumen / Rutas /
 /// Feedback. Cualquier mutación recarga la pantalla en sitio.
 class AdminUserDetailScreen extends ConsumerStatefulWidget {
@@ -350,7 +356,8 @@ class _UserHeader extends StatelessWidget {
     );
   }
 
-  Widget _rolePill(String role) {
+  Widget _rolePill(String rawRole) {
+    final role = _roleDbToUi(rawRole);
     final label = switch (role) {
       'admin' => 'ADMIN',
       'moderator' => 'MOD',
@@ -448,7 +455,9 @@ class _SummaryTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final role = profile['role'] as String? ?? 'passenger';
+    // profile['role'] viene del enum DB (snake_case); lo pasamos a la clave
+    // camelCase que usan _roleLabels/_roleIcons y la selección de chips.
+    final role = _roleDbToUi(profile['role'] as String? ?? 'passenger');
     final score = (profile['reputation_score'] as num?)?.toInt() ?? 0;
     final level = (profile['reputation_level'] as num?)?.toInt() ?? 0;
     final id = profile['id'] as String;
@@ -750,7 +759,10 @@ class _SummaryTab extends StatelessWidget {
     }
     try {
       await client.from('profiles').update({
-        'role': role,
+        // La columna profiles.role es el enum `user_role` (snake_case:
+        // operator_admin). La UI usa camelCase, así que convertimos antes de
+        // escribir o Postgres devuelve 22P02 (valor de enum inválido).
+        'role': _roleUiToDb(role),
         'operator_id': newOperatorId,
       }).eq('id', userId);
       messenger.showSnackBar(SnackBar(content: Text('Rol → $role')));

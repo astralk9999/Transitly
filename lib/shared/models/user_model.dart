@@ -25,9 +25,11 @@ abstract class UserModel with _$UserModel {
   bool get isAdmin => role == UserRole.admin;
 
   static UserModel fromJson(Map<String, dynamic> j) {
-    // La tabla `profiles` (Postgres) usa snake_case. Algunos sitios
-    // legacy todavía mandan camelCase, así que aceptamos los dos.
-    final roleStr = j['role'] as String? ?? 'passenger';
+    // La tabla `profiles` (Postgres) usa el enum user_role en snake_case
+    // (operator_admin). El enum Dart usa camelCase (operatorAdmin). Aceptamos
+    // ambas formas para no romper permisos de operator_admin ni datos legacy.
+    final rawRole = j['role'] as String? ?? 'passenger';
+    final roleStr = rawRole == 'operator_admin' ? 'operatorAdmin' : rawRole;
     final role = UserRole.values.firstWhere(
       (r) => r.name == roleStr,
       orElse: () => UserRole.passenger,

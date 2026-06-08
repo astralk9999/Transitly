@@ -224,6 +224,34 @@ class _ProfileAboutSectionState extends ConsumerState<ProfileAboutSection> {
                 ],
               ),
             ),
+            // Acceso al panel de OPERADORA (solo admin de operadora). Es como
+            // el de admin pero limitado a lo de su operadora.
+            RoleGate(
+              allow: const [UserRole.operatorAdmin],
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('OPERADORA',
+                      style: TransitTypography.sectionTitle(c.accent)),
+                  const SizedBox(height: 8),
+                  GestureDetector(
+                    onTap: () => context.push('/operator-admin'),
+                    child: Row(
+                      children: [
+                        Icon(Icons.apartment,
+                            size: 20, color: c.accent),
+                        const SizedBox(width: 12),
+                        Text('Panel de operadora',
+                            style:
+                                TransitTypography.bodyPrimary(c.textHi)),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Divider(height: 1, thickness: 0.5, color: c.border),
+                ],
+              ),
+            ),
             if (isPassenger) ...[
               GestureDetector(
                 onTap: () => context.go('/activate-driver'),

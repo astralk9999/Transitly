@@ -149,20 +149,34 @@ class _AdminOperatorsScreenState extends ConsumerState<AdminOperatorsScreen> {
     }
   }
 
+  /// Genera un código para que alguien se convierta en ADMIN de esta
+  /// operadora. El admin elige si es de un solo uso o reutilizable (con
+  /// caducidad). Quien lo canjee en "Activar" pasa a operator_admin de ella.
   Future<void> _offerAdminCode(String operatorId, String name) async {
-    String? code;
+    final opts = await _askCodeOptions(name);
+    if (opts == null || !mounted) return;
+    final String code;
     try {
-      code = await ref
-          .read(adminRoutesRepositoryProvider)
-          .createInvitationCode(
-              operatorId: operatorId, kind: 'operator_admin');
+      code = await ref.read(adminRoutesRepositoryProvider).createInvitationCode(
+            operatorId: operatorId,
+            kind: 'operator_admin',
+            maxUses: opts.maxUses,
+            expiresDays: opts.expiresDays,
+          );
     } catch (e) {
       AppLogger.warn('AdminOperators', 'operator_admin code failed', e);
+      if (mounted) _showSnack('No se pudo generar el código: $e');
       return;
     }
-    if (!mounted || code == null) return;
+    if (!mounted) return;
     final c = TransitColorScheme.of(
         Theme.of(context).brightness == Brightness.dark);
+    final modeLabel = opts.maxUses == 1
+        ? 'un solo uso'
+        : 'reutilizable (${opts.maxUses} usos)';
+    final expLabel = opts.expiresDays > 0
+        ? ' · caduca en ${opts.expiresDays} días'
+        : ' · sin caducidad';
     await showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -172,11 +186,11 @@ class _AdminOperatorsScreenState extends ConsumerState<AdminOperatorsScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Comparte este código de un solo uso. Quien lo introduzca '
-                'en "Activar" se convertirá en admin de $name y podrá generar '
-                'conductores y más admins.'),
+            Text('Comparte este código ($modeLabel$expLabel). Quien lo '
+                'introduzca en "Activar" se convertirá en admin de $name y '
+                'podrá generar conductores y más admins.'),
             const SizedBox(height: 12),
-            SelectableText(code!,
+            SelectableText(code,
                 style: TransitTypography.heading(c.accent)
                     .copyWith(letterSpacing: 3, fontFamily: 'monospace')),
           ],
@@ -184,13 +198,124 @@ class _AdminOperatorsScreenState extends ConsumerState<AdminOperatorsScreen> {
         actions: [
           TextButton(
             onPressed: () {
-              Clipboard.setData(ClipboardData(text: code!));
+              Clipboard.setData(ClipboardData(text: code));
               Navigator.pop(ctx);
             },
             child: const Text('Copiar y cerrar'),
           ),
         ],
       ),
+    );
+  }
+
+  /// Pregunta el modo del código: un solo uso o reutilizable con caducidad.
+  Future<_CodeOptions?> _askCodeOptions(String name) {
+    final c = TransitColorScheme.of(
+        Theme.of(context).brightness == Brightness.dark);
+    return showModalBottomSheet<_CodeOptions>(
+      context: context,
+      backgroundColor: c.bgSurface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (ctx) {
+        var single = true;
+        var days = 30;
+        var maxUses = 5;
+        return StatefulBuilder(builder: (ctx, setSheet) {
+          Widget choice(String label, bool value) => Expanded(
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(10),
+                  onTap: () => setSheet(() => single = value),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    decoration: BoxDecoration(
+                      color: single == value
+                          ? c.accent.withValues(alpha: 0.18)
+                          : c.bgRaised,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                          color: single == value ? c.accent : c.border,
+                          width: single == value ? 1.4 : 0.5),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(label,
+                        style: TransitTypography.bodyPrimary(
+                            single == value ? c.accent : c.textHi)),
+                  ),
+                ),
+              );
+          return SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 32,
+                      height: 4,
+                      decoration: BoxDecoration(
+                          color: c.border,
+                          borderRadius: BorderRadius.circular(2)),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text('Código de admin · $name',
+                      style: TransitTypography.heading(c.textHi)),
+                  const SizedBox(height: 12),
+                  Row(children: [
+                    choice('Un solo uso', true),
+                    const SizedBox(width: 8),
+                    choice('Reutilizable', false),
+                  ]),
+                  if (!single) ...[
+                    const SizedBox(height: 16),
+                    Text('Usos máximos: $maxUses',
+                        style: TransitTypography.bodyPrimary(c.textHi)),
+                    Slider(
+                      value: maxUses.toDouble(),
+                      min: 2,
+                      max: 50,
+                      divisions: 48,
+                      activeColor: c.accent,
+                      label: '$maxUses',
+                      onChanged: (v) => setSheet(() => maxUses = v.round()),
+                    ),
+                  ],
+                  const SizedBox(height: 8),
+                  Text(days > 0 ? 'Caduca en: $days días' : 'Sin caducidad',
+                      style: TransitTypography.bodyPrimary(c.textHi)),
+                  Slider(
+                    value: days.toDouble(),
+                    min: 0,
+                    max: 365,
+                    divisions: 73,
+                    activeColor: c.accent,
+                    label: days > 0 ? '$days d' : 'sin',
+                    onChanged: (v) => setSheet(() => days = v.round()),
+                  ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton(
+                      style: FilledButton.styleFrom(backgroundColor: c.accent),
+                      onPressed: () => Navigator.pop(
+                          ctx,
+                          _CodeOptions(
+                            maxUses: single ? 1 : maxUses,
+                            expiresDays: days,
+                          )),
+                      child: const Text('Generar código'),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+      },
     );
   }
 
@@ -715,6 +840,13 @@ class _AdminOperatorsScreenState extends ConsumerState<AdminOperatorsScreen> {
                   ),
                   const SizedBox(width: 4),
                   IconButton(
+                    icon: Icon(Icons.vpn_key_outlined,
+                        color: c.accent, size: 20),
+                    tooltip: 'Generar código de admin',
+                    onPressed: () => _offerAdminCode(op.id, op.name),
+                    visualDensity: VisualDensity.compact,
+                  ),
+                  IconButton(
                     icon: Icon(Icons.delete_outline,
                         color: c.stateCancelled, size: 20),
                     tooltip: l10n.adminOperatorsDelete,
@@ -756,4 +888,11 @@ class _AdminOperatorsScreenState extends ConsumerState<AdminOperatorsScreen> {
       ),
     );
   }
+}
+
+/// Opciones para generar un codigo de admin de operadora.
+class _CodeOptions {
+  const _CodeOptions({required this.maxUses, required this.expiresDays});
+  final int maxUses;
+  final int expiresDays;
 }

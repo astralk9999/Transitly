@@ -52,6 +52,45 @@ class LocalPushService {
     }
   }
 
+  /// Pide el permiso de notificaciones del sistema (Android 13+). Devuelve
+  /// true si quedó concedido. Reutilizable desde Ajustes del perfil.
+  Future<bool> requestPermission() async {
+    if (!_ready) await init();
+    try {
+      final granted = await _plugin
+          .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>()
+          ?.requestNotificationsPermission();
+      return granted ?? false;
+    } catch (e) {
+      AppLogger.warn(_logTag, 'requestPermission failed', e);
+      return false;
+    }
+  }
+
+  /// ¿Están habilitadas las notificaciones del sistema?
+  Future<bool> areEnabled() async {
+    if (!_ready) await init();
+    try {
+      final enabled = await _plugin
+          .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>()
+          ?.areNotificationsEnabled();
+      return enabled ?? false;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Cancela una notificación por id.
+  Future<void> cancel(int id) async {
+    try {
+      await _plugin.cancel(id: id);
+    } catch (e) {
+      AppLogger.warn(_logTag, 'cancel failed', e);
+    }
+  }
+
   Future<void> show({
     required int id,
     required String title,

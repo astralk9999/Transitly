@@ -406,6 +406,7 @@ class _UserRouteDetailScreenState extends ConsumerState<UserRouteDetailScreen> {
     final rm = _toOfficialModel(route, color);
     final stopsCount = _stops.length;
     final estimated = route.totalDurationMin ?? (stopsCount * 3);
+    final frequency = _avgFrequencyMin();
     return [
       const SizedBox(height: 48),
       // Cabecera: atrás + estrella favorito + info de la comunidad (iconos
@@ -443,7 +444,7 @@ class _UserRouteDetailScreenState extends ConsumerState<UserRouteDetailScreen> {
       RouteQuickInfoCells(
         stopsCount: stopsCount,
         estimatedMinutes: estimated,
-        frequencyMinutes: null,
+        frequencyMinutes: frequency,
       ),
       const SizedBox(height: 24),
       if (_stops.isNotEmpty) _buildTimeline(c, color),
@@ -453,6 +454,46 @@ class _UserRouteDetailScreenState extends ConsumerState<UserRouteDetailScreen> {
           _buildScheduleGroup(c, entry.key, entry.value),
       ],
     ];
+  }
+
+  /// Frecuencia media (min entre salidas consecutivas). Toma el tipo de día
+  /// con más salidas (normalmente laborable), ordena sus horas por la parada
+  /// de cabecera y promedia la diferencia entre salidas seguidas. null si no
+  /// hay datos suficientes.
+  int? _avgFrequencyMin() {
+    if (_schedules.isEmpty) return null;
+    // Agrupa horas por tipo de día.
+    final byDay = <String, List<String>>{};
+    for (final s in _schedules) {
+      (byDay[s.dayType] ??= []).add(s.departureTime);
+    }
+    // Día con más salidas.
+    List<String>? best;
+    for (final list in byDay.values) {
+      if (best == null || list.length > best.length) best = list;
+    }
+    if (best == null || best.length < 2) return null;
+    final mins = best
+        .map((t) {
+          final p = t.split(':');
+          if (p.length < 2) return -1;
+          return (int.tryParse(p[0]) ?? 0) * 60 + (int.tryParse(p[1]) ?? 0);
+        })
+        .where((m) => m >= 0)
+        .toList()
+      ..sort();
+    if (mins.length < 2) return null;
+    var sum = 0;
+    var n = 0;
+    for (var i = 1; i < mins.length; i++) {
+      final diff = mins[i] - mins[i - 1];
+      if (diff > 0 && diff <= 240) { // ignora huecos enormes (noche)
+        sum += diff;
+        n++;
+      }
+    }
+    if (n == 0) return null;
+    return (sum / n).round();
   }
 
   /// Vista "info de la comunidad": stats + acciones (votar/importar/etc.).

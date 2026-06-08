@@ -7,6 +7,7 @@ import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../data/driver_live/driver_live_repository.dart';
 import '../../data/geo/location_service.dart';
+import '../../data/notification/local_push_service.dart';
 import '../../data/mock/mock_data_service.dart';
 import '../../data/supabase/supabase_client_provider.dart';
 import '../../shared/models/route_model.dart';
@@ -34,10 +35,12 @@ class _DriverLiveScreenState extends ConsumerState<DriverLiveScreen> {
   bool _running = false;
   String? _tripId;
   Timer? _ticker;
+  Timer? _clock; // refresca el cronómetro cada segundo
   DateTime? _startedAt;
   String? _error;
 
   static const _updateEvery = Duration(seconds: 5);
+  static const _notifId = 778001; // id fijo de la notificación "compartiendo"
 
   @override
   void initState() {
@@ -64,7 +67,19 @@ class _DriverLiveScreenState extends ConsumerState<DriverLiveScreen> {
   @override
   void dispose() {
     _ticker?.cancel();
+    _clock?.cancel();
     super.dispose();
+  }
+
+  String _elapsed() {
+    if (_startedAt == null) return '0:00';
+    final d = DateTime.now().difference(_startedAt!);
+    final h = d.inHours;
+    final m = d.inMinutes % 60;
+    final s = d.inSeconds % 60;
+    final mm = m.toString().padLeft(2, '0');
+    final ss = s.toString().padLeft(2, '0');
+    return h > 0 ? '$h:$mm:$ss' : '$m:$ss';
   }
 
   List<String> _timesFor(RouteModel route) {
@@ -133,6 +148,14 @@ class _DriverLiveScreenState extends ConsumerState<DriverLiveScreen> {
         _startedAt = DateTime.now();
       });
       _startTicker();
+      // Notificación: avisa al conductor de que está compartiendo su posición.
+      unawaited(LocalPushService.instance.show(
+        id: _notifId,
+        title: 'Compartiendo tu ubicación',
+        body: 'Línea ${_route!.code} · ${_route!.name}'
+            '${_departureTime != null ? ' · salida $_departureTime' : ''}. '
+            'Los pasajeros te ven en el mapa.',
+      ));
     } catch (e) {
       if (mounted) {
         setState(() {
@@ -144,6 +167,10 @@ class _DriverLiveScreenState extends ConsumerState<DriverLiveScreen> {
   }
 
   void _startTicker() {
+    _clock?.cancel();
+    _clock = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (mounted) setState(() {});
+    });
     _ticker?.cancel();
     _ticker = Timer.periodic(_updateEvery, (_) async {
       final id = _tripId;
@@ -164,6 +191,8 @@ class _DriverLiveScreenState extends ConsumerState<DriverLiveScreen> {
 
   Future<void> _stop() async {
     _ticker?.cancel();
+    _clock?.cancel();
+    unawaited(LocalPushService.instance.cancel(_notifId));
     await ref.read(driverLiveRepositoryProvider).endTrip();
     if (mounted) {
       setState(() {
@@ -193,14 +222,38 @@ class _DriverLiveScreenState extends ConsumerState<DriverLiveScreen> {
               if (_running)
                 _runningCard(c)
               else ...[
-                Text('Inicia tu ruta',
-                    style: TransitTypography.heading(c.textHi)),
-                const SizedBox(height: 4),
-                Text(
-                    'Elige tu línea y la hora de salida. Tu posición se '
-                    'compartirá en vivo y los pasajeros te verán en el mapa.',
-                    style: TransitTypography.bodySecondary(c.textMid)),
-                const SizedBox(height: 20),
+                // Cabecera visual: icono de bus con resplandor.
+                Center(
+                  child: Container(
+                    width: 84,
+                    height: 84,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: RadialGradient(colors: [
+                        c.accent.withValues(alpha: 0.30),
+                        c.accent.withValues(alpha: 0.05),
+                      ]),
+                      border: Border.all(
+                          color: c.accent.withValues(alpha: 0.4), width: 1),
+                    ),
+                    child: Icon(Icons.directions_bus_rounded,
+                        size: 40, color: c.accent),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Center(
+                  child: Text('Inicia tu ruta',
+                      style: TransitTypography.heading(c.textHi)),
+                ),
+                const SizedBox(height: 6),
+                Center(
+                  child: Text(
+                      'Elige tu línea y la hora de salida. Tu posición se '
+                      'compartirá en vivo y los pasajeros te verán en el mapa.',
+                      textAlign: TextAlign.center,
+                      style: TransitTypography.bodySecondary(c.textMid)),
+                ),
+                const SizedBox(height: 24),
                 _label(c, 'Línea'),
                 const SizedBox(height: 8),
                 _routeSelector(c, routes),
@@ -254,21 +307,19 @@ class _DriverLiveScreenState extends ConsumerState<DriverLiveScreen> {
             children: [
               Row(
                 children: [
-                  Container(
-                    width: 10,
-                    height: 10,
-                    decoration: const BoxDecoration(
-                      color: Color(0xFF22C55E),
-                      shape: BoxShape.circle,
-                    ),
-                  ),
+                  const _PulsingDot(color: Color(0xFF22C55E)),
                   const SizedBox(width: 8),
                   Text('RUTA EN CURSO',
                       style: TransitTypography.bodySmall(const Color(0xFF22C55E))
                           .copyWith(fontWeight: FontWeight.w800, letterSpacing: 1)),
+                  const Spacer(),
+                  // Cronómetro de tiempo compartiendo.
+                  Text(_elapsed(),
+                      style: TransitTypography.bodyPrimary(c.textHi)
+                          .copyWith(fontFeatures: const [], fontWeight: FontWeight.w700)),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 18),
               Row(
                 children: [
                   if (r != null) ...[
@@ -286,25 +337,40 @@ class _DriverLiveScreenState extends ConsumerState<DriverLiveScreen> {
                     ),
                 ],
               ),
-              if (_departureTime != null) ...[
-                const SizedBox(height: 8),
-                Row(
+              const SizedBox(height: 14),
+              // Estado: posición compartida + salida.
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: c.accent.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: c.accent.withValues(alpha: 0.2)),
+                ),
+                child: Column(
                   children: [
-                    Icon(Icons.schedule, size: 16, color: c.textMid),
-                    const SizedBox(width: 6),
-                    Text('Salida ${_departureTime!}',
-                        style: TransitTypography.bodyPrimary(c.textMid)),
+                    Row(
+                      children: [
+                        Icon(Icons.my_location, size: 16, color: c.accent),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text('Compartiendo tu posición en vivo',
+                              style: TransitTypography.bodyPrimary(c.textHi)),
+                        ),
+                      ],
+                    ),
+                    if (_departureTime != null) ...[
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Icon(Icons.schedule, size: 16, color: c.textMid),
+                          const SizedBox(width: 8),
+                          Text('Salida programada · ${_departureTime!}',
+                              style: TransitTypography.bodySmall(c.textMid)),
+                        ],
+                      ),
+                    ],
                   ],
                 ),
-              ],
-              const SizedBox(height: 6),
-              Row(
-                children: [
-                  Icon(Icons.my_location, size: 16, color: c.accent),
-                  const SizedBox(width: 6),
-                  Text('Compartiendo tu posición en vivo',
-                      style: TransitTypography.bodySmall(c.textMid)),
-                ],
               ),
             ],
           ),
@@ -392,6 +458,65 @@ class _DriverLiveScreenState extends ConsumerState<DriverLiveScreen> {
           side: BorderSide(color: sel ? c.accent : c.border),
         );
       }).toList(),
+    );
+  }
+}
+
+/// Punto que late suavemente (indicador "en vivo").
+class _PulsingDot extends StatefulWidget {
+  const _PulsingDot({required this.color});
+  final Color color;
+
+  @override
+  State<_PulsingDot> createState() => _PulsingDotState();
+}
+
+class _PulsingDotState extends State<_PulsingDot>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 1100),
+  )..repeat(reverse: true);
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _ctrl,
+      builder: (_, __) {
+        final t = _ctrl.value; // 0..1
+        return SizedBox(
+          width: 14,
+          height: 14,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              // halo expandiéndose
+              Container(
+                width: 6 + t * 8,
+                height: 6 + t * 8,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: widget.color.withValues(alpha: (1 - t) * 0.5),
+                ),
+              ),
+              Container(
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: widget.color,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

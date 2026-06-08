@@ -1,9 +1,11 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
+import '../../../data/notification/local_push_service.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/providers/is_dark_provider.dart';
 import '../../../shared/providers/theme_notifier.dart';
@@ -38,6 +40,12 @@ class ProfileNotificationsSection extends ConsumerWidget {
             gradient: c.gradientAccent,
           ),
           const SizedBox(height: 12),
+          // Permiso del sistema: sin él, los toggles de abajo no pueden
+          // entregar notificaciones. Solo en móvil (en web no aplica).
+          if (!kIsWeb) ...[
+            const _NotifPermissionBanner(),
+            const SizedBox(height: 12),
+          ],
           _NotifToggle(
             c: c,
             icon: Icons.check_circle_outline,
@@ -369,5 +377,95 @@ class _TimePickerRow extends StatelessWidget {
       final mm = picked.minute.toString().padLeft(2, '0');
       onTimeSelected('$hh:$mm');
     }
+  }
+}
+
+/// Banner que muestra si las notificaciones del sistema están activas y
+/// permite pedir el permiso (Android 13+). Sin este permiso, ningún toggle
+/// entrega notificaciones.
+class _NotifPermissionBanner extends StatefulWidget {
+  const _NotifPermissionBanner();
+
+  @override
+  State<_NotifPermissionBanner> createState() => _NotifPermissionBannerState();
+}
+
+class _NotifPermissionBannerState extends State<_NotifPermissionBanner> {
+  bool? _enabled;
+  bool _busy = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _check();
+  }
+
+  Future<void> _check() async {
+    final e = await LocalPushService.instance.areEnabled();
+    if (mounted) setState(() => _enabled = e);
+  }
+
+  Future<void> _request() async {
+    setState(() => _busy = true);
+    final granted = await LocalPushService.instance.requestPermission();
+    if (mounted) setState(() { _enabled = granted; _busy = false; });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final c = TransitColorScheme.of(isDark);
+    final enabled = _enabled;
+
+    final color = enabled == true ? const Color(0xFF22C55E) : c.accent;
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withValues(alpha: 0.35)),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            enabled == true
+                ? Icons.notifications_active
+                : Icons.notifications_off_outlined,
+            size: 20,
+            color: color,
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  enabled == true
+                      ? 'Notificaciones activadas'
+                      : 'Notificaciones desactivadas',
+                  style: TransitTypography.bodyPrimary(c.textHi),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  enabled == true
+                      ? 'Recibirás avisos según tus preferencias.'
+                      : 'Actívalas para recibir avisos del sistema.',
+                  style: TransitTypography.bodySmall(c.textMid),
+                ),
+              ],
+            ),
+          ),
+          if (enabled != true)
+            FilledButton(
+              onPressed: _busy ? null : _request,
+              style: FilledButton.styleFrom(
+                backgroundColor: c.accent,
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              ),
+              child: Text(_busy ? '…' : 'Activar'),
+            ),
+        ],
+      ),
+    );
   }
 }

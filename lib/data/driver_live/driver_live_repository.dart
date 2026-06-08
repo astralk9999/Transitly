@@ -106,12 +106,22 @@ class DriverLiveRepository {
     }
   }
 
-  /// Cierra el viaje activo del conductor actual.
+  /// Cierra el viaje activo del conductor actual. BORRA la fila (no solo
+  /// marca inactivo) para que el stream Realtime emita el DELETE y el bus
+  /// desaparezca del mapa al instante; si solo marcáramos active=false, el
+  /// stream filtrado por active=true a veces no retiraba la fila → el bus
+  /// "se quedaba pillado".
   Future<void> endTrip() async {
+    final uid = _client.auth.currentUser?.id;
+    if (uid == null) return;
     try {
-      await _client.rpc('end_my_live_trip');
+      await _client.from('driver_live_trips').delete().eq('driver_id', uid);
     } catch (e) {
       AppLogger.warn(_logTag, 'endTrip failed', e);
+      // Respaldo: al menos marcar inactivo.
+      try {
+        await _client.rpc('end_my_live_trip');
+      } catch (_) {}
     }
   }
 

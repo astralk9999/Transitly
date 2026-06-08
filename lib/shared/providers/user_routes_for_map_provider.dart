@@ -56,42 +56,6 @@ final userRoutesForMapProvider =
       .toList(growable: false);
 });
 
-/// Polylines de las rutas propias del usuario (creadas o importadas), para
-/// dibujarlas en SU mapa sin necesidad de que un admin las oficialice.
-/// Carga las paradas de cada ruta y las une en orden.
-final myRoutePolylinesProvider =
-    FutureProvider<List<Polyline<Object>>>((ref) async {
-  final client = ref.watch(supabaseClientProvider);
-  final authState = ref.watch(authStateProvider).valueOrNull;
-  if (authState is! AuthAuthenticated) return const [];
-
-  final routesRepo = UserRoutesRepository(client);
-  final stopsRepo = UserStopsRepository(client);
-  final out = <Polyline<Object>>[];
-  try {
-    final mine = await routesRepo.getMyRoutes();
-    for (final r in mine) {
-      final rs = await stopsRepo.getStopsForRoute(r.id);
-      final pts = (rs..sort((a, b) => a.orderIndex.compareTo(b.orderIndex)))
-          .where((s) => s.stop != null)
-          .map((s) => LatLng(s.stop!.lat, s.stop!.lng))
-          .toList();
-      if (pts.length >= 2) {
-        out.add(Polyline<Object>(
-          points: pts,
-          strokeWidth: 4,
-          color: _parseColor(r.routeColor).withValues(alpha: 0.85),
-        ));
-      }
-    }
-  } catch (e) {
-    AppLogger.warn(_logTag, 'polylines load failed', e);
-  }
-  return out;
-});
-
-/// Paradas (con coordenadas) de las rutas propias del usuario, para
-/// dibujarlas como marcadores en SU mapa. Dedup por id.
 class MapStopPoint {
   MapStopPoint(this.id, this.name, this.lat, this.lng);
   final String id;
@@ -100,28 +64,86 @@ class MapStopPoint {
   final double lng;
 }
 
-final myRouteStopsProvider =
-    FutureProvider<List<MapStopPoint>>((ref) async {
+/// Forma (paradas en orden + color) de una ruta de comunidad para el mapa.
+class CommunityRouteShape {
+  CommunityRouteShape(this.routeId, this.color, this.points, this.stops);
+  final String routeId;
+  final Color color;
+  final List<LatLng> points;
+  final List<MapStopPoint> stops;
+}
+
+/// Fuente única: rutas propias del usuario (creadas/importadas) + rutas
+/// públicas de comunidad, con sus paradas en orden. De aquí derivan las
+/// polilíneas, los marcadores y las bounds para "ir a la línea".
+final communityRouteShapesProvider =
+    FutureProvider<List<CommunityRouteShape>>((ref) async {
   final client = ref.watch(supabaseClientProvider);
   final authState = ref.watch(authStateProvider).valueOrNull;
-  if (authState is! AuthAuthenticated) return const [];
+  final userId =
+      authState is AuthAuthenticated ? authState.user.id : null;
 
   final routesRepo = UserRoutesRepository(client);
   final stopsRepo = UserStopsRepository(client);
-  final byId = <String, MapStopPoint>{};
+  final byId = <String, UserRouteModel>{};
   try {
-    final mine = await routesRepo.getMyRoutes();
-    for (final r in mine) {
-      final rs = await stopsRepo.getStopsForRoute(r.id);
-      for (final s in rs) {
-        if (s.stop != null) {
-          byId[s.userStopId] =
-              MapStopPoint(s.userStopId, s.stop!.name, s.stop!.lat, s.stop!.lng);
-        }
+    for (final r in await routesRepo.searchPublic(limit: 100)) {
+      byId[r.id] = r;
+    }
+    if (userId != null) {
+      for (final r in await routesRepo.getMyRoutes()) {
+        byId[r.id] = r;
       }
     }
   } catch (e) {
-    AppLogger.warn(_logTag, 'stops load failed', e);
+    AppLogger.warn(_logTag, 'shapes routes load failed', e);
+  }
+
+  final out = <CommunityRouteShape>[];
+  for (final r in byId.values) {
+    try {
+      final rs = await stopsRepo.getStopsForRoute(r.id);
+      rs.sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
+      final pts = <LatLng>[];
+      final stops = <MapStopPoint>[];
+      for (final s in rs) {
+        if (s.stop != null) {
+          pts.add(LatLng(s.stop!.lat, s.stop!.lng));
+          stops.add(MapStopPoint(
+              s.userStopId, s.stop!.name, s.stop!.lat, s.stop!.lng));
+        }
+      }
+      if (pts.isNotEmpty) {
+        out.add(CommunityRouteShape(
+            r.id, _parseColor(r.routeColor), pts, stops));
+      }
+    } catch (_) {}
+  }
+  return out;
+});
+
+/// Polilíneas derivadas (para dibujar en el mapa).
+final myRoutePolylinesProvider = Provider<List<Polyline<Object>>>((ref) {
+  final shapes = ref.watch(communityRouteShapesProvider).valueOrNull ?? const [];
+  return [
+    for (final s in shapes)
+      if (s.points.length >= 2)
+        Polyline<Object>(
+          points: s.points,
+          strokeWidth: 4,
+          color: s.color.withValues(alpha: 0.85),
+        ),
+  ];
+});
+
+/// Marcadores de paradas derivados (dedup por id).
+final myRouteStopsProvider = Provider<List<MapStopPoint>>((ref) {
+  final shapes = ref.watch(communityRouteShapesProvider).valueOrNull ?? const [];
+  final byId = <String, MapStopPoint>{};
+  for (final s in shapes) {
+    for (final p in s.stops) {
+      byId[p.id] = p;
+    }
   }
   return byId.values.toList(growable: false);
 });

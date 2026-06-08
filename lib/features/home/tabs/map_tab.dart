@@ -565,23 +565,17 @@ class _MapTabState extends ConsumerState<MapTab>
             controller: _mapController,
             fmtcTileProvider: bypassFmtc ? null : fmtcTp,
             additionalLayers: [
-              // Polylines de las rutas propias del usuario (creadas o
+              // Polylines de las rutas de comunidad + propias (creadas o
               // importadas), dibujadas sin necesidad de oficializarlas.
-              if (ref.watch(myRoutePolylinesProvider).valueOrNull
-                      ?.isNotEmpty ??
-                  false)
+              if (ref.watch(myRoutePolylinesProvider).isNotEmpty)
                 PolylineLayer(
-                  polylines: ref.watch(myRoutePolylinesProvider).value ??
-                      const <Polyline<Object>>[],
+                  polylines: ref.watch(myRoutePolylinesProvider),
                 ),
-              // Marcadores de las paradas de mis rutas (propias/importadas).
-              if (ref.watch(myRouteStopsProvider).valueOrNull?.isNotEmpty ??
-                  false)
+              // Marcadores de las paradas de esas rutas.
+              if (ref.watch(myRouteStopsProvider).isNotEmpty)
                 MarkerLayer(
                   markers: [
-                    for (final s
-                        in ref.watch(myRouteStopsProvider).value ??
-                            const <MapStopPoint>[])
+                    for (final s in ref.watch(myRouteStopsProvider))
                       Marker(
                         point: LatLng(s.lat, s.lng),
                         width: 22,
@@ -795,17 +789,36 @@ class _MapTabState extends ConsumerState<MapTab>
                                       : '/route/${route.id}'),
                               onGoToLine: () {
                                 setState(() => _selectedRouteId = route.id);
+                                LatLngBounds? fit;
                                 final bounds = cache.routeBounds[route.id];
                                 if (bounds != null && bounds.length == 4) {
-                                  _mapController.fitCamera(
-                                    CameraFit.bounds(
-                                      bounds: LatLngBounds(
-                                        LatLng(bounds[2], bounds[3]),
-                                        LatLng(bounds[0], bounds[1]),
-                                      ),
-                                      padding: const EdgeInsets.all(40),
-                                    ),
+                                  fit = LatLngBounds(
+                                    LatLng(bounds[2], bounds[3]),
+                                    LatLng(bounds[0], bounds[1]),
                                   );
+                                } else if (route.source ==
+                                    RouteSource.community) {
+                                  // Rutas de comunidad no tienen bounds en el
+                                  // cache; las calculamos de sus paradas para
+                                  // poder centrar el mapa en ellas.
+                                  final shapes = ref
+                                          .read(communityRouteShapesProvider)
+                                          .valueOrNull ??
+                                      const [];
+                                  final matches = shapes
+                                      .where((s) => s.routeId == route.id)
+                                      .toList();
+                                  if (matches.isNotEmpty &&
+                                      matches.first.points.isNotEmpty) {
+                                    fit = LatLngBounds.fromPoints(
+                                        matches.first.points);
+                                  }
+                                }
+                                if (fit != null) {
+                                  _mapController.fitCamera(CameraFit.bounds(
+                                    bounds: fit,
+                                    padding: const EdgeInsets.all(60),
+                                  ));
                                   _didInitialCenter = true;
                                   _sheetController.animateTo(0.12,
                                       duration: const Duration(

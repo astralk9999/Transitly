@@ -175,11 +175,16 @@ class UserRoutesRepository {
     int offset = 0,
   }) async {
     try {
+      // Cualquier ruta PÚBLICA aparece en la comunidad. 'review_pending'
+      // (el autor pidió oficializarla) también: pedir oficialización NO la
+      // quita de la comunidad; el admin solo, en su caso, la hace oficial.
+      // Se excluyen borradores y las rechazadas/reportadas.
       var q = _client
           .from('user_routes')
           .select()
           .eq('visibility', 'public')
-          .or('status.eq.published,status.eq.community_approved');
+          .inFilter('status',
+              const ['published', 'community_approved', 'review_pending']);
 
       if (query != null && query.isNotEmpty) {
         q = q.ilike('name', '%$query%');

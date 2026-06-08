@@ -76,14 +76,24 @@ class ProfileContributionsSection extends ConsumerWidget {
               runSpacing: 6,
               children: [
                 _StatChip(
+                    icon: Icons.alt_route_outlined,
+                    label: 'Rutas creadas',
+                    count: stats.communityRoutes,
+                    c: c),
+                _StatChip(
+                    icon: Icons.add_location_alt_outlined,
+                    label: 'Paradas propuestas',
+                    count: stats.stopSuggestions,
+                    c: c),
+                _StatChip(
+                    icon: Icons.directions_outlined,
+                    label: 'Rutas sugeridas',
+                    count: stats.suggestions,
+                    c: c),
+                _StatChip(
                     icon: Icons.report_outlined,
                     label: 'Reportes',
                     count: stats.incidents,
-                    c: c),
-                _StatChip(
-                    icon: Icons.alt_route_outlined,
-                    label: 'Rutas sugeridas',
-                    count: stats.suggestions,
                     c: c),
                 _StatChip(
                     icon: Icons.edit_note_outlined,
@@ -95,11 +105,6 @@ class ProfileContributionsSection extends ConsumerWidget {
                     label: 'Funciones',
                     count: stats.featureRequests,
                     c: c),
-                _StatChip(
-                    icon: Icons.share_outlined,
-                    label: 'Compartidas',
-                    count: stats.routeShares,
-                    c: c),
               ],
             ),
             loading: () => const SizedBox.shrink(),
@@ -110,15 +115,6 @@ class ProfileContributionsSection extends ConsumerWidget {
             onTap: () => context.push('/contributions'),
             child: Text('VER TODO →',
                 style: TransitTypography.bodySecondary(c.accent)),
-          ),
-          Divider(
-            height: 24,
-            thickness: 0.5,
-            color: c.border,
-          ),
-          Text(
-            'Jerez de la Frontera · 8.2 MB · Actualizado hace 1 día',
-            style: TransitTypography.bodySecondary(c.textMid),
           ),
         ],
       ),

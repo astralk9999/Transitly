@@ -10,6 +10,8 @@ class MyContributionsStats {
     required this.feedback,
     required this.featureRequests,
     required this.routeShares,
+    required this.communityRoutes,
+    required this.stopSuggestions,
   });
 
   final int incidents;
@@ -17,12 +19,19 @@ class MyContributionsStats {
   final int feedback;
   final int featureRequests;
   final int routeShares;
+  /// Rutas que el usuario ha creado/compartido en la comunidad.
+  final int communityRoutes;
+  /// Paradas que el usuario ha propuesto como oficiales.
+  final int stopSuggestions;
 
   int get total =>
-      incidents + suggestions + feedback + featureRequests + routeShares;
-
-  // Una "verificada" es una contribución que el equipo resolvió como válida.
-  int get verifiedApprox => 0; // calculada en el método repo
+      incidents +
+      suggestions +
+      feedback +
+      featureRequests +
+      routeShares +
+      communityRoutes +
+      stopSuggestions;
 
   factory MyContributionsStats.empty() => const MyContributionsStats(
         incidents: 0,
@@ -30,6 +39,8 @@ class MyContributionsStats {
         feedback: 0,
         featureRequests: 0,
         routeShares: 0,
+        communityRoutes: 0,
+        stopSuggestions: 0,
       );
 }
 
@@ -51,6 +62,8 @@ class MyContributionsRepository {
         _count('route_feedback', 'author_id', uid),
         _count('feature_requests', 'author_id', uid),
         _count('route_shares', 'shared_by_id', uid),
+        _count('user_routes', 'author_id', uid),
+        _countStopSuggestions(uid),
       ]);
       return MyContributionsStats(
         incidents: results[0],
@@ -58,6 +71,8 @@ class MyContributionsRepository {
         feedback: results[2],
         featureRequests: results[3],
         routeShares: results[4],
+        communityRoutes: results[5],
+        stopSuggestions: results[6],
       );
     } catch (e) {
       AppLogger.warn(_logTag, 'getMyStats failed', e);
@@ -73,6 +88,21 @@ class MyContributionsRepository {
         .eq(authorCol, uid)
         .count(CountOption.exact);
     return res.count;
+  }
+
+  /// Paradas que el usuario propuso como oficiales (promotion_status requested).
+  Future<int> _countStopSuggestions(String uid) async {
+    try {
+      final res = await _client
+          .from('user_stops')
+          .select('id')
+          .eq('author_id', uid)
+          .eq('promotion_status', 'requested')
+          .count(CountOption.exact);
+      return res.count;
+    } catch (_) {
+      return 0;
+    }
   }
 
   /// Cuenta solo las marcadas como "resolved" / "verified" (status = resolved

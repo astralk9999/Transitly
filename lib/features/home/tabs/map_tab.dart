@@ -260,6 +260,21 @@ class _MapTabState extends ConsumerState<MapTab>
       }
     }
 
+    // Rutas de comunidad/propias: usan su trazado (path) para detectar el tap,
+    // igual que las oficiales. Antes no eran clicables en el mapa.
+    final shapes = ref.read(communityRouteShapesProvider).valueOrNull;
+    if (shapes != null) {
+      for (final s in shapes) {
+        for (int i = 0; i < s.points.length - 1; i++) {
+          final d = _distToSegment(point, s.points[i], s.points[i + 1]);
+          if (d < bestDist) {
+            bestDist = d;
+            bestRouteId = s.routeId;
+          }
+        }
+      }
+    }
+
     return bestDist < thresholdDeg ? bestRouteId : null;
   }
 

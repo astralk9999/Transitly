@@ -753,6 +753,50 @@ class _UserRouteDetailScreenState extends ConsumerState<UserRouteDetailScreen> {
     String dayType,
     List<UserRouteScheduleModel> schedules,
   ) {
+    // Mapea cada parada a su posición/nombre para agrupar y ordenar.
+    final nameOf = <String, String>{};
+    final orderOf = <String, int>{};
+    for (var i = 0; i < _stops.length; i++) {
+      final st = _stops[i];
+      nameOf[st.userStopId] = st.stop?.name ?? 'Parada ${i + 1}';
+      orderOf[st.userStopId] = i;
+    }
+
+    // Agrupa las horas de este día por parada de origen.
+    final byStop = <String, List<String>>{};
+    final noStop = <String>[];
+    for (final s in schedules) {
+      if (s.originStopId != null && nameOf.containsKey(s.originStopId)) {
+        byStop.putIfAbsent(s.originStopId!, () => []).add(s.departureTime);
+      } else {
+        noStop.add(s.departureTime);
+      }
+    }
+    final stopIds = byStop.keys.toList()
+      ..sort((a, b) => (orderOf[a] ?? 999).compareTo(orderOf[b] ?? 999));
+
+    Widget hourChips(List<String> hours) {
+      final sorted = [...hours]..sort();
+      return Wrap(
+        spacing: 8,
+        runSpacing: 4,
+        children: sorted
+            .map((t) => Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: c.accent.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(
+                        color: c.accent.withValues(alpha: 0.15), width: 0.5),
+                  ),
+                  child: Text(t,
+                      style: TransitTypography.sectionLabel(c.accent)),
+                ))
+            .toList(),
+      );
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: GlassCard(
@@ -763,29 +807,45 @@ class _UserRouteDetailScreenState extends ConsumerState<UserRouteDetailScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              _dayTypeLabel(dayType),
-              style: TransitTypography.subheading(c.accent),
-            ),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              runSpacing: 4,
-              children: schedules.map((s) {
-                return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: c.accent.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: c.accent.withValues(alpha: 0.15), width: 0.5),
+            Text(_dayTypeLabel(dayType),
+                style: TransitTypography.subheading(c.accent)),
+            const SizedBox(height: 10),
+            // Una sub-sección por parada con sus horas de paso.
+            for (final id in stopIds) ...[
+              Row(
+                children: [
+                  Container(
+                    width: 18,
+                    height: 18,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: c.accent.withValues(alpha: 0.2),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Text('${(orderOf[id] ?? 0) + 1}',
+                        style: TransitTypography.bodySmall(c.accent)),
                   ),
-                  child: Text(
-                    s.departureTime,
-                    style: TransitTypography.sectionLabel(c.accent),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(nameOf[id] ?? '',
+                        style: TransitTypography.bodyPrimary(c.textHi),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis),
                   ),
-                );
-              }).toList(),
-            ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              hourChips(byStop[id]!),
+              const SizedBox(height: 10),
+            ],
+            // Horas sin parada asociada (compat con datos antiguos).
+            if (noStop.isNotEmpty) ...[
+              if (stopIds.isNotEmpty)
+                Text('Salidas',
+                    style: TransitTypography.bodySmall(c.textMid)),
+              const SizedBox(height: 4),
+              hourChips(noStop),
+            ],
           ],
         ),
       ),

@@ -6,8 +6,10 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/utils/app_logger.dart';
 import '../../data/notification/local_push_service.dart';
 import '../../data/notification/notification_repository_provider.dart';
+import '../../data/reputation/reputation_repository.dart';
 import '../../data/supabase/supabase_client_provider.dart';
 import '../models/app_notification.dart';
+import 'user_provider.dart';
 
 const _logTag = 'Provider:NotificationStream';
 
@@ -102,6 +104,37 @@ final pushBridgeProvider = Provider<void>((ref) {
     // Limpia ids viejos para no crecer indefinidamente.
     if (seen.length > 200) {
       seen.removeWhere((id) => !list.any((n) => n.id == id));
+    }
+  }, fireImmediately: true);
+});
+
+/// Cuando llega una notificación de XP ganado o subida de rango por
+/// Realtime, refresca el perfil/reputación para que el rango y los puntos
+/// se actualicen al instante (antes solo se veían al entrar a Reputación).
+final reputationLiveRefreshProvider = Provider<void>((ref) {
+  final seen = <String>{};
+  var primed = false;
+  ref.listen<AsyncValue<List<AppNotification>>>(notificationStreamProvider,
+      (prev, next) {
+    final list = next.valueOrNull;
+    if (list == null) return;
+    if (!primed) {
+      primed = true;
+      for (final n in list) {
+        seen.add(n.id);
+      }
+      return;
+    }
+    final fresh = list.where((n) =>
+        !seen.contains(n.id) &&
+        (n.type == AppNotificationType.xpEarned ||
+            n.type == AppNotificationType.rankUp));
+    if (fresh.isNotEmpty) {
+      for (final n in fresh) {
+        seen.add(n.id);
+      }
+      ref.invalidate(userProfileFromSupabaseProvider);
+      ref.invalidate(userReputationProvider);
     }
   }, fireImmediately: true);
 });

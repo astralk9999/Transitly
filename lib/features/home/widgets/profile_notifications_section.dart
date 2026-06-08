@@ -72,37 +72,43 @@ class ProfileNotificationsSection extends ConsumerWidget {
                     '${notifier.busApproachingMinutesAhead} min de la parada',
                     style: TransitTypography.bodySmall(c.textMid),
                   ),
-                  const SizedBox(height: 4),
-                  SegmentedButton<int>(
-                    segments: const [
-                      ButtonSegment(value: 3, label: Text('3')),
-                      ButtonSegment(value: 5, label: Text('5')),
-                      ButtonSegment(value: 10, label: Text('10')),
-                      ButtonSegment(value: 15, label: Text('15')),
-                      ButtonSegment(value: 20, label: Text('20')),
+                  const SizedBox(height: 6),
+                  // Chips en Wrap en lugar de SegmentedButton: con 5 opciones
+                  // el SegmentedButton quedaba estrecho y el texto se
+                  // descolocaba en pantallas normales.
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      for (final m in const [3, 5, 10, 15, 20])
+                        () {
+                          final sel =
+                              notifier.busApproachingMinutesAhead == m;
+                          return GestureDetector(
+                            onTap: () =>
+                                notifier.busApproachingMinutesAhead = m,
+                            child: Container(
+                              width: 48,
+                              height: 38,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: sel
+                                    ? c.accent.withValues(alpha: 0.2)
+                                    : c.bgRaised,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                    color: sel ? c.accent : c.border,
+                                    width: sel ? 1.4 : 0.5),
+                              ),
+                              child: Text('$m',
+                                  style: TransitTypography.bodyPrimary(
+                                          sel ? c.accent : c.textMid)
+                                      .copyWith(
+                                          fontWeight: FontWeight.w700)),
+                            ),
+                          );
+                        }(),
                     ],
-                    selected: {notifier.busApproachingMinutesAhead},
-                    onSelectionChanged: (s) {
-                      if (s.isNotEmpty) {
-                        notifier.busApproachingMinutesAhead = s.first;
-                      }
-                    },
-                    style: ButtonStyle(
-                      backgroundColor:
-                          WidgetStateProperty.resolveWith((states) {
-                        if (states.contains(WidgetState.selected)) {
-                          return c.accent;
-                        }
-                        return c.bgRaised;
-                      }),
-                      foregroundColor:
-                          WidgetStateProperty.resolveWith((states) {
-                        if (states.contains(WidgetState.selected)) {
-                          return Colors.white;
-                        }
-                        return c.textMid;
-                      }),
-                    ),
                   ),
                   const SizedBox(height: 12),
                   Text(

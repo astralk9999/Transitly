@@ -28,6 +28,8 @@ class TransitlyApp extends ConsumerWidget {
     ref.watch(geoAlertsAutoNotifyProvider);
     // Puente notificación BD → push local del sistema Android.
     ref.watch(pushBridgeProvider);
+    // Refresca reputación/rango en vivo al recibir XP por Realtime.
+    ref.watch(reputationLiveRefreshProvider);
 
     return MaterialApp.router(
       title: 'Transitly',

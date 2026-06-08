@@ -14,6 +14,7 @@ import '../../shared/models/incident_model.dart';
 import '../../shared/models/route_feedback_model.dart';
 import '../../shared/models/route_suggestion_model.dart';
 import '../../shared/providers/local_feedback_provider.dart';
+import '../../shared/providers/my_contributions_provider.dart';
 import '../../shared/providers/user_provider.dart';
 import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/reputation_badge.dart';
@@ -142,7 +143,17 @@ class _MyContributionsScreenState
                                   l10n.myContributionsLabelCorrections),
                               _statCell(c, _incidents.length.toString(),
                                   l10n.myContributionsLabelReports),
-                              _statCell(c, '—', l10n.myContributionsLabelPhotos),
+                              // Antes "Fotos" (la app no tiene fotos); ahora
+                              // muestra las rutas que el usuario ha creado.
+                              _statCell(
+                                  c,
+                                  (ref
+                                              .watch(myContributionsProvider)
+                                              .valueOrNull
+                                              ?.communityRoutes ??
+                                          0)
+                                      .toString(),
+                                  'Rutas creadas'),
                             ],
                           ),
                           const SizedBox(height: 16),

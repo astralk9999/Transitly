@@ -397,113 +397,135 @@ class _MapTabState extends ConsumerState<MapTab>
     return [MarkerLayer(markers: arrows)];
   }
 
-  /// Hoja de info de una parada de comunidad/propia: nombre, coordenadas y
-  /// las rutas de comunidad que pasan por ella.
+  /// Hoja de info de una parada de comunidad/propia, con el MISMO formato
+  /// que la de paradas oficiales: nombre, "próximas llegadas" con cada
+  /// línea (badge color+código, nombre y próxima hora) y acceso al detalle.
   void _showCommunityStopSheet(MapStopPoint s) {
-    final shapes = ref.read(communityRouteShapesProvider).valueOrNull ?? const [];
-    final routesThrough = shapes
-        .where((sh) => sh.stops.any((p) => p.id == s.id))
-        .toList();
+    final shapes =
+        ref.read(communityRouteShapesProvider).valueOrNull ?? const [];
+    // Líneas que pasan por ESTA parada física: se compara por proximidad
+    // (cada ruta crea su propia user_stop, así que el id no coincide entre
+    // rutas que comparten la misma parada). Devuelve (shape, stopIdEnEsaRuta).
+    final through = <(CommunityRouteShape, String)>[];
+    for (final sh in shapes) {
+      for (final p in sh.stops) {
+        if (p.id == s.id ||
+            metersBetween(p.lat, p.lng, s.lat, s.lng) < 35) {
+          through.add((sh, p.id));
+          break;
+        }
+      }
+    }
+
     showModalBottomSheet<void>(
       context: context,
-      backgroundColor: Colors.transparent,
+      backgroundColor: TransitColorScheme.of(
+              Theme.of(context).brightness == Brightness.dark)
+          .bgSurface,
+      useSafeArea: true,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
+      ),
       builder: (ctx) {
         final c = TransitColorScheme.of(
             Theme.of(ctx).brightness == Brightness.dark);
-        return SafeArea(
-          child: Container(
-            margin: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: c.bgElevated,
-              borderRadius: BorderRadius.circular(18),
-              border: Border.all(color: c.border, width: 0.5),
-            ),
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      width: 36,
-                      height: 36,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: c.accent.withValues(alpha: 0.15),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(Icons.directions_bus, color: c.accent),
+        final bottomInset = MediaQuery.of(ctx).viewPadding.bottom +
+            TransitSpacing.heightNavBar;
+        return Padding(
+          padding: EdgeInsets.fromLTRB(16, 8, 16, 16 + bottomInset),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 32,
+                  height: 4,
+                  margin: const EdgeInsets.only(bottom: 16),
+                  decoration: BoxDecoration(
+                    color: c.textLo,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(s.name,
+                        style: TransitTypography.heading(c.textHi)),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF4CAF50).withValues(alpha: 0.18),
+                      borderRadius: BorderRadius.circular(6),
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Text('COMUNIDAD',
+                        style: TransitTypography.bodySmall(
+                                const Color(0xFF4CAF50))
+                            .copyWith(
+                                fontSize: 10, fontWeight: FontWeight.w800)),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Text(AppLocalizations.of(context).sectionUpcomingArrivals,
+                  style: TransitTypography.sectionTitle(c.textMid)),
+              const SizedBox(height: 8),
+              if (through.isEmpty)
+                Text('Ninguna línea registrada en esta parada',
+                    style: TransitTypography.bodySecondary(c.textMid))
+              else
+                ...through.map((e) {
+                  final sh = e.$1;
+                  final stopIdInRoute = e.$2;
+                  final time = sh.nextHourFor(stopIdInRoute) ?? '--:--';
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 6),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(6),
+                      onTap: () {
+                        Navigator.pop(ctx);
+                        context.push('/community/route/${sh.routeId}');
+                      },
+                      child: Row(
                         children: [
-                          Text(s.name,
-                              style: TransitTypography.subheading(c.textHi),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis),
-                          Text('Parada de comunidad',
-                              style: TransitTypography.bodySmall(c.textMid)),
+                          Container(
+                            width: 44,
+                            height: 24,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: sh.color,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(sh.code,
+                                  style: TransitTypography.routeCodeSmall(
+                                      Colors.white)),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(sh.name,
+                                style:
+                                    TransitTypography.bodySecondary(c.textHi),
+                                overflow: TextOverflow.ellipsis),
+                          ),
+                          Text(time,
+                              style: TransitTypography.stopTime(c.accent)),
                         ],
                       ),
                     ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                if (routesThrough.isNotEmpty) ...[
-                  Text('Líneas que pasan',
-                      style: TransitTypography.bodySmall(c.textMid)),
-                  const SizedBox(height: 6),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: [
-                      for (final r in routesThrough)
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.pop(ctx);
-                            context.push('/community/route/${r.routeId}');
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 8),
-                            decoration: BoxDecoration(
-                              color: r.color.withValues(alpha: 0.18),
-                              borderRadius: BorderRadius.circular(10),
-                              border:
-                                  Border.all(color: r.color, width: 1),
-                            ),
-                            child: Text(
-                                _routeNameForId(r.routeId) ?? 'Ruta',
-                                style: TransitTypography.bodySmall(c.textHi)),
-                          ),
-                        ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                ],
-                Text(
-                    'Lat ${s.lat.toStringAsFixed(5)}, '
-                    'Lng ${s.lng.toStringAsFixed(5)}',
-                    style: TransitTypography.bodySmall(c.textLo)),
-                const SizedBox(height: 6),
-              ],
-            ),
+                  );
+                }),
+            ],
           ),
         );
       },
     );
-  }
-
-  String? _routeNameForId(String id) {
-    final routes = ref.read(userRoutesForMapProvider).valueOrNull;
-    if (routes == null) return null;
-    for (final r in routes) {
-      if (r.id == id) return r.name;
-    }
-    return null;
   }
 
   Future<void> _centerOnUser() async {

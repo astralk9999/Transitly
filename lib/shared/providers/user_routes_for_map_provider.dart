@@ -7,6 +7,7 @@ import 'package:latlong2/latlong.dart';
 import '../../core/utils/app_logger.dart';
 import '../../data/auth/auth_repository.dart';
 import '../../data/supabase/supabase_client_provider.dart';
+import '../../data/user_routes/user_route_schedules_repository.dart';
 import '../../data/user_routes/user_routes_repository.dart';
 import '../../data/user_stops/user_stops_repository.dart';
 import '../models/enums.dart';
@@ -66,11 +67,32 @@ class MapStopPoint {
 
 /// Forma (paradas en orden + color) de una ruta de comunidad para el mapa.
 class CommunityRouteShape {
-  CommunityRouteShape(this.routeId, this.color, this.points, this.stops);
+  CommunityRouteShape(this.routeId, this.name, this.code, this.color,
+      this.points, this.stops, this.hoursByStop);
   final String routeId;
+  final String name;
+  final String code;
   final Color color;
   final List<LatLng> points;
   final List<MapStopPoint> stops;
+
+  /// stopId → horas (HH:mm ordenadas) a las que el bus pasa por esa parada.
+  final Map<String, List<String>> hoursByStop;
+
+  /// Próxima hora desde ahora para la parada indicada (o null).
+  String? nextHourFor(String stopId) {
+    final hours = hoursByStop[stopId];
+    if (hours == null || hours.isEmpty) return null;
+    final now = DateTime.now();
+    final nowMin = now.hour * 60 + now.minute;
+    for (final h in hours) {
+      final parts = h.split(':');
+      if (parts.length < 2) continue;
+      final m = (int.tryParse(parts[0]) ?? 0) * 60 + (int.tryParse(parts[1]) ?? 0);
+      if (m >= nowMin) return h;
+    }
+    return hours.first; // si todas pasaron, la primera de mañana
+  }
 }
 
 /// Fuente única: rutas propias del usuario (creadas/importadas) + rutas
@@ -85,6 +107,7 @@ final communityRouteShapesProvider =
 
   final routesRepo = UserRoutesRepository(client);
   final stopsRepo = UserStopsRepository(client);
+  final schedRepo = UserRouteSchedulesRepository(client);
   final byId = <String, UserRouteModel>{};
   try {
     for (final r in await routesRepo.searchPublic(limit: 100)) {
@@ -137,14 +160,39 @@ final communityRouteShapesProvider =
           if (s.stop != null) pts.add(LatLng(s.stop!.lat, s.stop!.lng));
         }
       }
+      // Horarios por parada (origin_stop_id → horas HH:mm ordenadas).
+      final hoursByStop = <String, List<String>>{};
+      try {
+        final schedules = await schedRepo.getForRoute(r.id);
+        for (final s in schedules) {
+          if (s.originStopId == null) continue;
+          (hoursByStop[s.originStopId!] ??= []).add(s.departureTime);
+        }
+        for (final list in hoursByStop.values) {
+          list.sort();
+        }
+      } catch (_) {}
       if (pts.isNotEmpty) {
         out.add(CommunityRouteShape(
-            r.id, _parseColor(r.routeColor), pts, stops));
+            r.id,
+            r.name,
+            _shortCode(r),
+            _parseColor(r.routeColor),
+            pts,
+            stops,
+            hoursByStop));
       }
     } catch (_) {}
   }
   return out;
 });
+
+/// Distancia aproximada en metros entre dos coords (suficiente para
+/// agrupar paradas que comparten ubicación entre rutas distintas).
+double metersBetween(double lat1, double lng1, double lat2, double lng2) {
+  const d = Distance();
+  return d.as(LengthUnit.Meter, LatLng(lat1, lng1), LatLng(lat2, lng2));
+}
 
 /// Polilíneas derivadas (para dibujar en el mapa).
 final myRoutePolylinesProvider = Provider<List<Polyline<Object>>>((ref) {

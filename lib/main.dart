@@ -29,6 +29,8 @@ import 'data/privacy_consent/privacy_consent_repository.dart';
 import 'data/notification/local_push_service.dart';
 import 'data/push/firebase_setup.dart';
 import 'data/push/push_service.dart';
+import 'data/admin/admin_routes_repository.dart';
+import 'data/reputation/reputation_repository.dart';
 import 'features/error/env_error_screen.dart';
 import 'features/recovery/recovery_screen.dart';
 import 'core/router/app_router.dart';
@@ -36,8 +38,10 @@ import 'shared/providers/boot_canary_provider.dart';
 import 'shared/services/widget_deep_link_service.dart';
 import 'shared/providers/active_palette_provider.dart';
 import 'shared/providers/auth_provider.dart';
+import 'shared/providers/my_contributions_provider.dart';
 import 'shared/providers/theme_notifier.dart';
 import 'shared/providers/user_location_provider.dart';
+import 'shared/providers/user_routes_for_map_provider.dart';
 
 /// F26 switch point: cuando las fuentes se empaqueten como assets locales,
 /// poner `true` (y seguir `docs/FONTS_F26.md`). Mientras es `false`,
@@ -303,11 +307,29 @@ void main() async {
 
   Supabase.instance.client.auth.onAuthStateChange.listen((data) {
     final event = data.event;
-    if (event == AuthChangeEvent.signedIn || event == AuthChangeEvent.tokenRefreshed) {
+    if (event == AuthChangeEvent.signedIn ||
+        event == AuthChangeEvent.tokenRefreshed) {
       container.invalidate(authStateProvider);
+      _invalidateUserScopedProviders(container);
       AppLogger.info('Startup', 'auth event=$event → invalidated providers');
+    } else if (event == AuthChangeEvent.signedOut) {
+      // Sin esto, los datos de la cuenta anterior (rol admin, rutas propias
+      // de comunidad, reputación) seguían cacheados al iniciar otra sesión.
+      container.invalidate(authStateProvider);
+      _invalidateUserScopedProviders(container);
+      AppLogger.info('Startup', 'auth event=signedOut → cleared user state');
     }
   });
+}
+
+/// Invalida los providers cuyo contenido depende del usuario logueado, para
+/// que al cambiar de cuenta no se filtren datos de la sesión anterior.
+void _invalidateUserScopedProviders(ProviderContainer container) {
+  container.invalidate(manageScopeProvider);
+  container.invalidate(communityRouteShapesProvider);
+  container.invalidate(userRoutesForMapProvider);
+  container.invalidate(userReputationProvider);
+  container.invalidate(myContributionsProvider);
 }
 
 class _TransitlyAppWithLifecycle extends StatefulWidget {

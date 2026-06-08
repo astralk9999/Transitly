@@ -390,17 +390,84 @@ class _UserRouteDetailScreenState extends ConsumerState<UserRouteDetailScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            route.name,
-            style: TransitTypography.heading(c.textHi),
+          Row(
+            children: [
+              // Badge cuadrado con código + color (estilo detalle oficial).
+              if ((route.code ?? '').isNotEmpty) ...[
+                Container(
+                  constraints: const BoxConstraints(minWidth: 48),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 10, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: color.withValues(alpha: 0.22),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                        color: color.withValues(alpha: 0.65), width: 1.5),
+                  ),
+                  child: Center(
+                    child: Text(route.code!,
+                        style: TransitTypography.routeCode(color),
+                        maxLines: 1),
+                  ),
+                ),
+                const SizedBox(width: 12),
+              ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(route.name,
+                        style: TransitTypography.heading(c.textHi),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis),
+                    const SizedBox(height: 4),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        color:
+                            const Color(0xFF4CAF50).withValues(alpha: 0.18),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.groups_outlined,
+                              size: 12, color: Color(0xFF4CAF50)),
+                          const SizedBox(width: 4),
+                          Text('RUTA DE LA COMUNIDAD',
+                              style: TransitTypography.bodySmall(
+                                      const Color(0xFF4CAF50))
+                                  .copyWith(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w800)),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
           if (route.description != null && route.description!.isNotEmpty) ...[
-            const SizedBox(height: 8),
-            Text(
-              route.description!,
-              style: TransitTypography.bodyPrimary(c.textMid),
-            ),
+            const SizedBox(height: 12),
+            Text(route.description!,
+                style: TransitTypography.bodyPrimary(c.textMid)),
           ],
+          const SizedBox(height: 12),
+          // Botón "ir a la comunidad" → sección de comunidad.
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: () => context.push('/community'),
+              icon: const Icon(Icons.groups_outlined, size: 16),
+              label: const Text('Ir a la comunidad'),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: const Color(0xFF4CAF50),
+                side: const BorderSide(color: Color(0xFF4CAF50)),
+              ),
+            ),
+          ),
         ],
       ),
     );

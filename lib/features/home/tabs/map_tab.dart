@@ -31,6 +31,7 @@ import '../../../shared/providers/search_selection_provider.dart';
 import '../../../shared/providers/user_routes_for_map_provider.dart';
 import '../../../shared/widgets/route_selection_banner.dart';
 import '../../../core/map/map_config.dart';
+import '../../map/layers/route_direction_arrows.dart';
 import '../../map/layers/search_pin_layer.dart';
 import '../../map/map_data_cache.dart';
 import '../../map/map_filter_controller.dart';
@@ -361,6 +362,25 @@ class _MapTabState extends ConsumerState<MapTab>
     }
   }
 
+  /// Flechas de dirección para la ruta de comunidad seleccionada (las
+  /// oficiales ya las pinta TransitMap con su LOD precalculado).
+  List<MarkerLayer> _communityDirectionArrows(TransitColorScheme c) {
+    final id = _selectedRouteId;
+    if (id == null) return const [];
+    final shapes = ref.watch(communityRouteShapesProvider).valueOrNull;
+    if (shapes == null) return const [];
+    final matches = shapes.where((s) => s.routeId == id).toList();
+    if (matches.isEmpty) return const [];
+    final zoom = _mapController.camera.zoom.round();
+    final arrows = RouteDirectionArrows.buildFromPoints(
+      points: matches.first.points,
+      zoom: zoom,
+      color: c.accent.withValues(alpha: 0.85),
+    );
+    if (arrows.isEmpty) return const [];
+    return [MarkerLayer(markers: arrows)];
+  }
+
   Future<void> _centerOnUser() async {
     final locFix = ref.read(userLocationStreamProvider).valueOrNull;
     if (locFix != null) {
@@ -590,6 +610,8 @@ class _MapTabState extends ConsumerState<MapTab>
                       ),
                   ],
                 ),
+              // Flechas de dirección de la ruta de comunidad seleccionada.
+              ..._communityDirectionArrows(c),
               if (userLocationFix != null)
                 UserLocationLayer(
                   fix: userLocationFix,

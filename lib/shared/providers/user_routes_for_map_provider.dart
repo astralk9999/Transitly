@@ -104,13 +104,37 @@ final communityRouteShapesProvider =
     try {
       final rs = await stopsRepo.getStopsForRoute(r.id);
       rs.sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
-      final pts = <LatLng>[];
+      final coordOf = <String, LatLng>{};
       final stops = <MapStopPoint>[];
       for (final s in rs) {
         if (s.stop != null) {
-          pts.add(LatLng(s.stop!.lat, s.stop!.lng));
+          coordOf[s.userStopId] = LatLng(s.stop!.lat, s.stop!.lng);
           stops.add(MapStopPoint(
               s.userStopId, s.stop!.name, s.stop!.lat, s.stop!.lng));
+        }
+      }
+      // Polilínea: usa el trazado guardado (parada origen → puntos
+      // intermedios → parada destino por segmento) si existe; si no, une
+      // las paradas en orden con líneas rectas.
+      final pts = <LatLng>[];
+      if (r.path != null && r.path!.isNotEmpty) {
+        for (final seg in r.path!) {
+          if (seg is! Map) continue;
+          final from = coordOf[seg['from']];
+          if (from != null) pts.add(from);
+          for (final p in (seg['points'] as List? ?? const [])) {
+            if (p is Map) {
+              pts.add(LatLng((p['lat'] as num).toDouble(),
+                  (p['lng'] as num).toDouble()));
+            }
+          }
+          final to = coordOf[seg['to']];
+          if (to != null) pts.add(to);
+        }
+      }
+      if (pts.isEmpty) {
+        for (final s in rs) {
+          if (s.stop != null) pts.add(LatLng(s.stop!.lat, s.stop!.lng));
         }
       }
       if (pts.isNotEmpty) {

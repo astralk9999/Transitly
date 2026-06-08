@@ -6,6 +6,7 @@ import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/widgets/glass_card.dart';
+import '../../../shared/widgets/transit_app_bar.dart';
 
 class OperatorDashboardScreen extends ConsumerWidget {
   const OperatorDashboardScreen({super.key});
@@ -17,9 +18,12 @@ class OperatorDashboardScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
+      // AppBar con botón de salir (back), igual que el panel de admin.
+      appBar: const TransitAppBar(title: 'Operadora', transparent: true),
       body: Stack(
         children: [
           SafeArea(
+            top: false,
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),
               child: Column(

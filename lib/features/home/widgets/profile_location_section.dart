@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../../shared/providers/primary_zone_provider.dart';
 import '../../../shared/widgets/glass_card.dart';
 import '../../../shared/widgets/gradient_text.dart';
+import 'primary_zone_picker.dart';
 
-class ProfileLocationSection extends StatelessWidget {
+class ProfileLocationSection extends ConsumerWidget {
   const ProfileLocationSection({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
     final l10n = AppLocalizations.of(context);
+    final zone = ref.watch(primaryZoneProvider).valueOrNull;
 
     return GlassCard(
       blur: 16,
@@ -26,7 +30,7 @@ class ProfileLocationSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           GradientText(
-            l10n.profileZoneTitle,
+            'ZONA PRINCIPAL',
             style: GoogleFonts.ibmPlexMono(
               fontSize: 11,
               fontWeight: FontWeight.w700,
@@ -35,15 +39,17 @@ class ProfileLocationSection extends StatelessWidget {
             gradient: c.gradientAccent,
           ),
           const SizedBox(height: 12),
+          // Selector de zona principal (centro por defecto del mapa cuando no
+          // hay ubicación). Antes abría /city-picker (Jerez/operadora fijo).
           GestureDetector(
-            onTap: () => context.push('/city-picker'),
+            onTap: () => showPrimaryZonePicker(context, ref),
             behavior: HitTestBehavior.opaque,
             child: Row(
               children: [
-                Icon(Icons.location_on, size: 16, color: c.accent),
+                Icon(Icons.location_city, size: 16, color: c.accent),
                 const SizedBox(width: 8),
                 Expanded(
-                  child: Text(l10n.profileZoneLocation,
+                  child: Text(zone?.name ?? 'Jerez (por defecto)',
                       style: TransitTypography.bodyPrimary(c.accent)),
                 ),
                 Icon(Icons.chevron_right, size: 20, color: c.textLo),

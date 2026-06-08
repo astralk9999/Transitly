@@ -43,9 +43,12 @@ class _DriversScreenState extends ConsumerState<DriversScreen> {
         return;
       }
 
+      // driver_assignments tiene DOS FKs a profiles (driver_id y granted_by):
+      // hay que desambiguar el embed con !driver_id. profiles no tiene columna
+      // email, así que solo traemos display_name.
       final rows = await client
           .from('driver_assignments')
-          .select('driver_id, granted_at, profiles(display_name, email)')
+          .select('driver_id, granted_at, profiles!driver_id(display_name)')
           .filter('revoked_at', 'is', null)
           .order('granted_at', ascending: false);
 
@@ -239,7 +242,9 @@ class _DriversScreenState extends ConsumerState<DriversScreen> {
               style: TransitTypography.bodyPrimary(c.textHi),
             ),
             subtitle: Text(
-              profile['email'] as String? ?? '',
+              driver['granted_at'] != null
+                  ? 'Desde ${(driver['granted_at'] as String).substring(0, 10)}'
+                  : 'Conductor',
               style: TransitTypography.bodySmall(c.textMid),
             ),
             trailing: TransitButton(

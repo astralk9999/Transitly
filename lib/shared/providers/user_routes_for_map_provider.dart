@@ -241,23 +241,40 @@ final communityFavoriteStopsProvider = Provider<List<MapStopPoint>>((ref) {
 /// línea oficial (L1, C1…).
 bool _looksLikeUuid(String s) => s.length == 36 && s.contains('-');
 
-/// Líneas de comunidad marcadas como favoritas, resueltas a [RouteModel]
-/// para mostrarlas en Inicio › Mis líneas (las oficiales las resuelve Inicio
-/// con mockData). Una sola consulta por id-UUID; la RLS devuelve solo las
-/// legibles (públicas o propias).
+/// Una línea de comunidad favorita + su nº de paradas (para Inicio › Mis
+/// líneas).
+class CommunityFavoriteRoute {
+  CommunityFavoriteRoute(this.route, this.stopCount);
+  final RouteModel route;
+  final int stopCount;
+}
+
+/// Líneas de comunidad marcadas como favoritas, resueltas a [RouteModel] con
+/// su nº de paradas para mostrarlas en Inicio › Mis líneas (las oficiales las
+/// resuelve Inicio con mockData). Una sola consulta por id-UUID; la RLS
+/// devuelve solo las legibles (públicas o propias).
 final communityFavoriteRoutesProvider =
-    FutureProvider<List<RouteModel>>((ref) async {
+    FutureProvider<List<CommunityFavoriteRoute>>((ref) async {
   final favIds = ref.watch(userFavoritesProvider);
   final uuidIds = favIds.where(_looksLikeUuid).toList();
   if (uuidIds.isEmpty) return const [];
   final client = ref.watch(supabaseClientProvider);
   try {
-    final rows =
-        await client.from('user_routes').select().inFilter('id', uuidIds);
-    return (rows as List)
-        .map((j) =>
-            _toRouteModel(UserRouteModel.fromJson(j as Map<String, dynamic>)))
-        .toList(growable: false);
+    final rows = await client
+        .from('user_routes')
+        .select('*, user_route_stops(count)')
+        .inFilter('id', uuidIds);
+    return (rows as List).map((j) {
+      final m = j as Map<String, dynamic>;
+      // user_route_stops(count) → [{count: N}].
+      var stops = 0;
+      final cnt = m['user_route_stops'];
+      if (cnt is List && cnt.isNotEmpty && cnt.first is Map) {
+        stops = ((cnt.first as Map)['count'] as num?)?.toInt() ?? 0;
+      }
+      return CommunityFavoriteRoute(
+          _toRouteModel(UserRouteModel.fromJson(m)), stops);
+    }).toList(growable: false);
   } catch (e) {
     AppLogger.warn(_logTag, 'fav community routes load failed', e);
     return const [];

@@ -10,9 +10,7 @@ import '../../../shared/widgets/glass_card.dart';
 import '../../../shared/widgets/gradient_text.dart';
 import '../../../shared/providers/auth_provider.dart';
 import '../../../shared/providers/user_provider.dart' show currentUserProvider, userProfileFromSupabaseProvider;
-import '../../../shared/providers/primary_zone_provider.dart';
 import '../../../shared/widgets/responsive_scaffold.dart';
-import '../widgets/primary_zone_picker.dart';
 import '../widgets/profile_about_section.dart';
 import '../widgets/profile_accessibility_section.dart';
 import '../widgets/profile_appearance_section.dart';
@@ -131,28 +129,6 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                               onTap: () =>
                                   context.push('/create-route'),
                             ),
-                            // Zona principal: destino por defecto del mapa
-                            // cuando no hay ubicación.
-                            Builder(builder: (_) {
-                              final zone =
-                                  ref.watch(primaryZoneProvider).valueOrNull;
-                              return ListTile(
-                                contentPadding: EdgeInsets.zero,
-                                leading: Icon(Icons.location_city,
-                                    size: 24, color: c.accent),
-                                title: Text('Zona principal',
-                                    style: TransitTypography.bodyPrimary(
-                                        c.textHi)),
-                                subtitle: Text(
-                                    zone?.name ?? 'Jerez (por defecto)',
-                                    style: TransitTypography.bodySecondary(
-                                        c.textMid)),
-                                trailing: Icon(Icons.chevron_right,
-                                    color: c.textMid),
-                                onTap: () =>
-                                    showPrimaryZonePicker(context, ref),
-                              );
-                            }),
                           ] else ...[
                             ListTile(
                               contentPadding: EdgeInsets.zero,

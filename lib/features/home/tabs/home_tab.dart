@@ -320,15 +320,15 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                       );
                     }),
                     // Líneas de comunidad favoritas → detalle de comunidad.
-                    ...favCommunityRoutes.map((route) => Padding(
+                    ...favCommunityRoutes.map((fav) => Padding(
                           padding: const EdgeInsets.only(bottom: 8),
                           child: RouteCard(
-                            route: route,
+                            route: fav.route,
                             activeTrip: null,
-                            remainingStops: 0,
+                            remainingStops: fav.stopCount,
                             estimatedMinutes: null,
                             onTap: () => context
-                                .push('/community/route/${route.id}'),
+                                .push('/community/route/${fav.route.id}'),
                           ),
                         )),
                   ],

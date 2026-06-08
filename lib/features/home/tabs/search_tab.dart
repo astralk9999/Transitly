@@ -4,8 +4,12 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/transit_colors.dart';
 import '../../../core/theme/transit_typography.dart';
+import '../../../data/mock/mock_data_service.dart';
+import '../../../l10n/generated/app_localizations.dart';
+import '../../../shared/models/stop_model.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/responsive_scaffold.dart';
+import '../../../shared/widgets/route_search_bar.dart';
 
 class SearchTab extends ConsumerStatefulWidget {
   const SearchTab({super.key});
@@ -19,36 +23,53 @@ class _SearchTabState extends ConsumerState<SearchTab> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
+    final l10n = AppLocalizations.of(context);
+    final mockData = ref.watch(mockDataServiceProvider);
     final padding = ResponsiveScaffold.screenPadding(context);
 
-    // DESACTIVADO (2026-06-08): el planificador "buscar ruta" (desde/hasta)
-    // no funciona de forma fiable todavía. Se muestra un aviso en su lugar.
-    // El formulario y el motor (RouteSearchBar + /route-plan) se conservan en
-    // el código para retomarlos. Ver docs/DESACTIVADO.md.
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: ContentConstraints(
         child: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.all(padding),
-            child: Column(
-              children: [
-                Expanded(
-                  child: EmptyState(
-                    'Búsqueda de rutas en mantenimiento',
-                    'El planificador de trayectos (origen → destino) estará '
-                        'disponible pronto. Mientras tanto, consulta las líneas '
-                        'y sus horarios desde el mapa o el inicio.',
-                    icon: Icons.construction_outlined,
-                  ),
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.all(padding),
+                child: RouteSearchBar(
+                  availableStops: mockData.stops,
+                  onSearchWith: _handleSearch,
                 ),
-                _buildSuggestLink(c),
-              ],
-            ),
+              ),
+              // Mientras no se busca: estado vacío. Al pulsar buscar se navega
+              // a /route-plan (planificador A→B con transbordos).
+              Expanded(
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: EmptyState(
+                        l10n.searchEmptyTitle,
+                        l10n.searchEmptySubtitle,
+                      ),
+                    ),
+                    _buildSuggestLink(c),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
+  }
+
+  void _handleSearch(
+      StopModel? origin, StopModel? destination, bool useMyLocation) {
+    if ((!useMyLocation && origin == null) || destination == null) return;
+    context.push('/route-plan', extra: {
+      'fromStopId': origin?.id,
+      'toStopId': destination.id,
+      'useMyLocation': useMyLocation,
+    });
   }
 
   Widget _buildSuggestLink(TransitColorScheme c) {

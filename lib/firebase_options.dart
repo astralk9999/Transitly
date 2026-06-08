@@ -17,14 +17,14 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyD-placeholder-key',
-    appId: '1:000000000000:android:0000000000000000',
-    messagingSenderId: '000000000000',
+    apiKey: 'AIzaSyDD_suD-cjJZb5D8BsdjSy-6QCwSRx7BOA',
+    appId: '1:176890877189:android:6859d0db0a4e03be21536c',
+    messagingSenderId: '176890877189',
     projectId: 'transitly-ee8cf',
     storageBucket: 'transitly-ee8cf.firebasestorage.app',
   );
 
-  // TODO: ejecutar `dart run flutterfire_cli configure --project=transitly-ee8cf --platforms=android`
-  // tras hacer `firebase login` manualmente. Sustituir los placeholders de arriba
-  // por los valores reales generados.
+  // Valores reales tomados de android/app/google-services.json (proyecto
+  // transitly-ee8cf). En Android el runtime los lee del propio JSON vía el
+  // plugin google-services; estos sirven de respaldo / referencia.
 }

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -144,8 +145,17 @@ Future<void> _bootstrap() async {
     try {
       await FirebaseSetup.init();
       AppLogger.info('Firebase', 'initialized');
+      // Handler de mensajes recibidos con la app cerrada/segundo plano.
+      // Debe registrarse en el arranque (lo exige el plugin FCM).
+      if (!kIsWeb) {
+        FirebaseMessaging.onBackgroundMessage(
+            PushService.onBackgroundMessage);
+      }
       final pushService = await PushService.init();
       if (pushService != null) {
+        // Muestra una notificación local cuando llega un push con la app
+        // en primer plano (sin esto, en foreground no se vería nada).
+        await pushService.setupForegroundHandler();
         pushService.setupBackgroundOpenedHandler((deeplink) {
           AppLogger.info('PushService', 'background deeplink: $deeplink');
         });

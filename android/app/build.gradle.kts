@@ -4,7 +4,7 @@ plugins {
     id("com.android.application")
     id("kotlin-android")
     id("dev.flutter.flutter-gradle-plugin")
-    // id("com.google.gms.google-services")  // Descomentar tras flutterfire configure (A.2)
+    id("com.google.gms.google-services") // FCM: lee android/app/google-services.json
 }
 
 android {

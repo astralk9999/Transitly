@@ -1,6 +1,7 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart'
+    show kIsWeb, defaultTargetPlatform;
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 // Import completo (sin `show`) para que entren los métodos de EXTENSIÓN de
@@ -37,6 +38,39 @@ class AuthRepositorySupabase implements AuthRepository {
     _stateController.add(state);
   }
 
+  /// Guarda el token FCM de este dispositivo en `device_tokens` para que el
+  /// backend pueda enviarle push aunque la app esté cerrada. Silencioso: si
+  /// Firebase no está disponible (web sin VAPID, init fallida) no hace nada.
+  Future<void> _syncPushToken(String userId) async {
+    if (kIsWeb) return; // push web no configurado (sin VAPID/service worker)
+    try {
+      final token = await FirebaseMessaging.instance.getToken();
+      if (token == null || token.isEmpty) return;
+      await _client.from('device_tokens').upsert({
+        'user_id': userId,
+        'token': token,
+        'platform': defaultTargetPlatform.name,
+        'last_seen': DateTime.now().toUtc().toIso8601String(),
+      });
+      AppLogger.info(_logTag, 'FCM token registered (device_tokens)');
+    } catch (e) {
+      AppLogger.warn(_logTag, 'FCM token register failed', e);
+    }
+  }
+
+  /// Elimina el token FCM de este dispositivo al cerrar sesión, para no
+  /// seguir enviándole push de una cuenta que ya no está activa aquí.
+  Future<void> _removePushToken() async {
+    if (kIsWeb) return;
+    try {
+      final token = await FirebaseMessaging.instance.getToken();
+      if (token == null || token.isEmpty) return;
+      await _client.from('device_tokens').delete().eq('token', token);
+    } catch (e) {
+      AppLogger.warn(_logTag, 'FCM token remove failed', e);
+    }
+  }
+
   @override
   Stream<AuthSessionState> get authState async* {
     yield _lastState;
@@ -63,8 +97,12 @@ class AuthRepositorySupabase implements AuthRepository {
               : user.id;
           AppLogger.info(_logTag,
               'signed in uid=$uidShort… (verification bypassed)');
+          // Registra el token FCM de este dispositivo para poder enviarle
+          // push aunque la app esté cerrada (tabla device_tokens).
+          unawaited(_syncPushToken(user.id));
         }
       } else if (event == AuthChangeEvent.signedOut) {
+        unawaited(_removePushToken());
         _emit(AuthUnauthenticated());
         AppLogger.info(_logTag, 'signed out');
       } else if (event == AuthChangeEvent.userUpdated) {

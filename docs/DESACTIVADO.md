@@ -5,12 +5,11 @@ retomarlo más adelante. No borrar sin revisar.
 
 ## 2026-06-08
 
-### Búsqueda de rutas (web/app)
-- **Estado:** DESACTIVADA (no funcionaba correctamente).
-- **Qué se hizo:** se ocultó/inhabilitó la entrada a la búsqueda de rutas.
-- **Dónde retomar:** ver pestaña/acción de búsqueda (`/home/buscar`, SearchTab) y
-  el sheet `map_search_sheet.dart`. Reactivar cuando la búsqueda devuelva
-  resultados fiables (líneas + paradas + comunidad).
+### Búsqueda de rutas (planificador origen→destino)
+- **Estado:** REACTIVADA (2026-06-09). La pestaña Buscar vuelve a la barra y el
+  formulario origen→destino navega a `/route-plan` (RoutePlannerService: rutas
+  directas + 1 transbordo sobre los datos). Si el motor necesita afinado
+  (más transbordos / horarios reales), ese es el siguiente paso.
 
 ### Modo conductor — flujo antiguo
 - **Estado:** REEMPLAZADO (HECHO) por un flujo simple: `DriverLiveScreen`

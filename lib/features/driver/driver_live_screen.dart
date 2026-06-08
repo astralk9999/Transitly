@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
 
 import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
@@ -34,7 +36,8 @@ class _DriverLiveScreenState extends ConsumerState<DriverLiveScreen> {
   bool _starting = false;
   bool _running = false;
   String? _tripId;
-  Timer? _ticker;
+  Timer? _ticker; // fallback (web): envío periódico
+  StreamSubscription<Position>? _posSub; // móvil: stream con foreground service
   Timer? _clock; // refresca el cronómetro cada segundo
   DateTime? _startedAt;
   String? _error;
@@ -67,6 +70,7 @@ class _DriverLiveScreenState extends ConsumerState<DriverLiveScreen> {
   @override
   void dispose() {
     _ticker?.cancel();
+    _posSub?.cancel();
     _clock?.cancel();
     super.dispose();
   }
@@ -148,16 +152,19 @@ class _DriverLiveScreenState extends ConsumerState<DriverLiveScreen> {
         _startedAt = DateTime.now();
       });
       _startTicker();
-      // Notificación PERSISTENTE: recuerda al conductor que comparte su
-      // posición; se mantiene en la barra hasta que termine la ruta.
-      unawaited(LocalPushService.instance.show(
-        id: _notifId,
-        title: 'Compartiendo tu ubicación',
-        body: 'Línea ${_route!.code} · ${_route!.name}'
-            '${_departureTime != null ? ' · salida $_departureTime' : ''}. '
-            'Los pasajeros te ven en el mapa.',
-        ongoing: true,
-      ));
+      // En móvil, el foreground service del stream de ubicación ya muestra su
+      // propia notificación persistente. En web no hay foreground service, así
+      // que mostramos una notificación local como recordatorio.
+      if (kIsWeb) {
+        unawaited(LocalPushService.instance.show(
+          id: _notifId,
+          title: 'Compartiendo tu ubicación',
+          body: 'Línea ${_route!.code} · ${_route!.name}'
+              '${_departureTime != null ? ' · salida $_departureTime' : ''}. '
+              'Los pasajeros te ven en el mapa.',
+          ongoing: true,
+        ));
+      }
     } catch (e) {
       if (mounted) {
         setState(() {
@@ -173,29 +180,58 @@ class _DriverLiveScreenState extends ConsumerState<DriverLiveScreen> {
     _clock = Timer.periodic(const Duration(seconds: 1), (_) {
       if (mounted) setState(() {});
     });
-    _ticker?.cancel();
-    _ticker = Timer.periodic(_updateEvery, (_) async {
+
+    void push(double lat, double lng, double? heading) {
       final id = _tripId;
       if (id == null) return;
-      final pos = await ref
-          .read(userLocationServiceProvider)
-          .getCurrent(timeout: const Duration(seconds: 8));
-      if (pos == null) return;
-      final ll = LocationService.toLatLng(pos);
-      await ref.read(driverLiveRepositoryProvider).updatePosition(
-            tripId: id,
-            lat: ll.latitude,
-            lng: ll.longitude,
-            heading: pos.heading,
-          );
-    });
+      ref.read(driverLiveRepositoryProvider).updatePosition(
+            tripId: id, lat: lat, lng: lng, heading: heading);
+    }
+
+    if (kIsWeb) {
+      // Web: no hay foreground service; envío periódico mientras la pestaña
+      // esté activa.
+      _ticker?.cancel();
+      _ticker = Timer.periodic(_updateEvery, (_) async {
+        final pos = await ref
+            .read(userLocationServiceProvider)
+            .getCurrent(timeout: const Duration(seconds: 8));
+        if (pos == null) return;
+        final ll = LocationService.toLatLng(pos);
+        push(ll.latitude, ll.longitude, pos.heading);
+      });
+      return;
+    }
+
+    // Móvil: stream de posición con FOREGROUND SERVICE → sigue enviando con
+    // la app en segundo plano / pantalla bloqueada, mostrando una
+    // notificación persistente nativa.
+    final settings = AndroidSettings(
+      accuracy: LocationAccuracy.high,
+      distanceFilter: 8,
+      foregroundNotificationConfig: ForegroundNotificationConfig(
+        notificationTitle: 'Compartiendo tu ubicación',
+        notificationText:
+            'Línea ${_route?.code ?? ''} · los pasajeros te ven en el mapa',
+        enableWakeLock: true,
+        setOngoing: true,
+        notificationIcon:
+            const AndroidResource(name: 'ic_notification', defType: 'drawable'),
+      ),
+    );
+    _posSub?.cancel();
+    _posSub = Geolocator.getPositionStream(locationSettings: settings).listen(
+      (pos) => push(pos.latitude, pos.longitude, pos.heading),
+      onError: (_) {},
+    );
   }
 
   Future<void> _stop() async {
     _ticker?.cancel();
+    await _posSub?.cancel(); // detiene el foreground service y su notificación
+    _posSub = null;
     _clock?.cancel();
-    // await para garantizar que la notificación persistente se retira antes
-    // de continuar (antes quedaba en la barra hasta reabrir la app).
+    // await para garantizar que la notificación (web) se retira.
     await LocalPushService.instance.cancel(_notifId);
     await ref.read(driverLiveRepositoryProvider).endTrip();
     if (mounted) {

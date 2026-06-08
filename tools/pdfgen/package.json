@@ -1,0 +1,10 @@
+{
+  "name": "transitly-pdfgen",
+  "private": true,
+  "type": "module",
+  "description": "Genera el PDF combinado de la memoria del TFG desde docs/tfg/*.md",
+  "dependencies": {
+    "marked": "^15.0.0",
+    "puppeteer-core": "^23.0.0"
+  }
+}

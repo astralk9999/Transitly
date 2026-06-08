@@ -85,7 +85,7 @@ gantt
     Cierre documento 02_diseno         :milestone, m2, after d5, 0d
 
     section 3. Planificacion (sem 5)
-    Gantt y WBS final                  :p1, after m2, 2d
+    WBS y plan definitivo              :p1, after m2, 2d
     Analisis de riesgos                :p2, after p1, 1d
     Plan logistico y entregables       :p3, after p2, 1d
     Repositorio público y estructura   :p4, after p3, 1d
@@ -98,7 +98,7 @@ gantt
     Sprint 4 features de comunidad     :de4, after de3, 7d
     Integracion Edge Functions         :de5, 2026-05-20, 5d
     Hardening seguridad y RLS          :de6, after de5, 3d
-    Suite de pruebas 619 tests         :de7, 2026-05-25, 6d
+    Suite de pruebas 679 tests         :de7, 2026-05-25, 6d
     ENTREGA 2 (app funcional)          :milestone, e2, 2026-06-02, 0d
 
     section 5. Evaluacion (sem 10)

@@ -87,22 +87,62 @@ const fullTitle = `${title} · Transitly`;
     details > summary { list-style: none; }
     details > summary::-webkit-details-marker { display: none; }
     details > summary::marker { content: ''; }
+
+    /* ── Navbar scroll-aware ── */
+    .site-header {
+      border-bottom: 1px solid transparent;
+      background: rgba(8, 8, 26, 0);
+      transition: background 0.35s ease, border-color 0.35s ease,
+        box-shadow 0.35s ease, backdrop-filter 0.35s ease;
+    }
+    .site-nav { height: 76px; transition: height 0.35s ease; }
+    .site-logo { transition: width 0.35s ease, height 0.35s ease,
+      transform 0.3s ease, filter 0.3s ease; }
+    .site-header.scrolled {
+      background: rgba(8, 8, 26, 0.78);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom-color: rgba(30, 30, 58, 0.9);
+      box-shadow: 0 8px 30px -12px rgba(0, 0, 0, 0.6);
+    }
+    .site-header.scrolled .site-nav { height: 60px; }
+    .site-header.scrolled .site-logo { width: 32px; height: 32px; }
+
+    /* Enlaces del nav con subrayado animado */
+    .nav-link {
+      position: relative;
+      padding: 6px 10px;
+      color: #A0A0B8;
+      transition: color 0.2s ease;
+    }
+    .nav-link:hover { color: #F8F8FF; }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      left: 10px; right: 10px; bottom: 2px;
+      height: 2px; border-radius: 2px;
+      background: linear-gradient(90deg, #977DDF, #C9B8F0);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.25s ease;
+    }
+    .nav-link:hover::after { transform: scaleX(1); }
   </style>
 </head>
 <body class="bg-transit-bg text-text-hi font-sans antialiased min-h-screen flex flex-col">
-  <header class="border-b border-transit-border bg-transit-bg/90 backdrop-blur-md sticky top-0 z-50">
-    <nav class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+  <header id="site-header" class="site-header sticky top-0 z-50">
+    <nav class="site-nav max-w-6xl mx-auto px-6 flex items-center justify-between">
       <a href="/" class="flex items-center gap-2.5 group">
         <img src="/branding/logo.png" alt="" width="40" height="40"
-          class="w-10 h-10 transition-transform group-hover:scale-110 drop-shadow-[0_0_12px_rgba(151,125,223,0.45)]" />
+          class="site-logo w-10 h-10 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-[8deg] drop-shadow-[0_0_12px_rgba(151,125,223,0.45)]" />
         <span class="text-2xl font-bold bg-gradient-accent bg-clip-text text-transparent tracking-tight">
           Transitly
         </span>
       </a>
-      <div class="flex items-center gap-6 text-text-mid text-sm">
-        <a href="/ciudades" class="hover:text-text-hi transition-colors">Ciudades</a>
-        <a href="/sobre" class="hover:text-text-hi transition-colors">Acerca de</a>
-        <a href="/app/" class="px-4 py-1.5 rounded-full border border-transit-accent text-transit-accent hover:bg-transit-accent-bg transition-colors text-xs font-medium">
+      <div class="flex items-center gap-1 sm:gap-2 text-text-mid text-sm">
+        <a href="/ciudades" class="nav-link hidden sm:inline-block">Ciudades</a>
+        <a href="/sobre" class="nav-link hidden sm:inline-block">Acerca de</a>
+        <a href="/app/" class="ml-2 px-4 py-2 rounded-full bg-gradient-accent text-white text-xs font-semibold hover:opacity-90 hover:-translate-y-0.5 transition-all shadow-lg shadow-transit-accent/30">
           Abrir app
         </a>
       </div>
@@ -146,6 +186,18 @@ const fullTitle = `${title} · Transitly`;
   </footer>
 
   <script is:inline>
+    // Navbar: añade .scrolled al bajar (compacta + blur + sombra).
+    (function () {
+      const header = document.getElementById('site-header');
+      if (!header) return;
+      const onScroll = () => {
+        if (window.scrollY > 12) header.classList.add('scrolled');
+        else header.classList.remove('scrolled');
+      };
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+    })();
+
     // Revela los elementos .reveal al entrar en el viewport (escalonado).
     (function () {
       const els = document.querySelectorAll('.reveal');

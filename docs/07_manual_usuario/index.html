@@ -1,0 +1,366 @@
+<!DOCTYPE html><html lang="es"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Guía de uso para el usuario final: instalación, pantallas, NFC, offline, accesibilidad y privacidad."><title>07 · Manual de usuario — Transitly TFG</title><meta property="og:title" content="07 · Manual de usuario — Transitly TFG"><meta property="og:description" content="Guía de uso para el usuario final: instalación, pantallas, NFC, offline, accesibilidad y privacidad."><meta property="og:image" content="/Transitly/og-image.png"><meta property="og:type" content="website"><meta property="og:url" content="https://astralk9999.github.io/Transitly/"><meta name="twitter:card" content="summary_large_image"><link rel="icon" type="image/png" href="/Transitly/transitly_logo.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"><link rel="stylesheet" href="/Transitly/_astro/Layout.CVcVUMNB.css"></head> <body class="bg-transit-bg-root text-transit-text-hi font-sans antialiased"> <nav id="main-nav" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"> <div class="bg-transit-bg-root/85 backdrop-blur-xl border-b border-transit-bg-raised/50"> <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between"> <a href="/Transitly" class="font-bold text-xl text-transit-accent hover:text-transit-accent/80 transition">
+Transitly
+</a> <div class="hidden lg:flex items-center gap-6 text-sm"> <a href="#problema" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Problema</a> <a href="#solucion" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Solución</a> <a href="#arquitectura" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Arquitectura</a> <a href="#features" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Features</a> <a href="#metodologia" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Metodología</a> <a href="#metricas" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Métricas</a> <a href="#calidad" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Calidad</a> <a href="#seguridad" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Seguridad</a> <a href="/Transitly/docs" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Entregables</a> <a href="/Transitly/defensa" class="text-transit-accent hover:text-transit-accent/80 transition-colors font-medium">Defensa ▸</a> <a href="https://github.com/astralk9999/Transitly/releases/latest" data-download-apk class="px-5 py-2 bg-transit-accent text-white rounded-full text-xs font-semibold hover:bg-transit-accent/85 transition-all" target="_blank" rel="noopener">
+Descargar APK
+</a> </div> <button id="mobile-menu-btn" class="lg:hidden text-transit-text-mid hover:text-transit-text-hi transition-colors" aria-label="Abrir menú"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"> <line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line> </svg> </button> </div> </div> </nav> <div id="mobile-menu" class="fixed inset-0 z-40 bg-transit-bg-root/95 backdrop-blur-xl hidden flex-col items-center justify-center gap-8"> <button id="mobile-menu-close" class="absolute top-6 right-6 text-transit-text-mid hover:text-transit-text-hi transition-colors" aria-label="Cerrar menú"> <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"> <line x1="18" x2="6" y1="6" y2="18"></line><line x1="6" x2="18" y1="6" y2="18"></line> </svg> </button> <a href="#problema" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Problema</a> <a href="#solucion" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Solución</a> <a href="#arquitectura" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Arquitectura</a> <a href="#features" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Features</a> <a href="#metricas" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Métricas</a> <a href="#calidad" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Calidad</a> <a href="#seguridad" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Seguridad</a> <a href="/Transitly/docs" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Entregables</a> <a href="/Transitly/defensa" class="mobile-link text-2xl font-medium text-transit-accent hover:text-transit-accent/80 transition-colors">Defensa ▸</a> <a href="https://github.com/astralk9999/Transitly/releases/latest" data-download-apk class="mobile-link px-8 py-3 bg-transit-accent text-white rounded-full text-lg font-semibold hover:bg-transit-accent/85 transition-all" target="_blank" rel="noopener">
+Descargar APK
+</a> </div> <main class="pt-16">  <article class="max-w-3xl mx-auto px-6 py-12"> <a href="/Transitly/docs" class="inline-flex items-center gap-2 text-sm text-transit-text-mid hover:text-transit-accent transition-colors mb-8"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
+Todos los entregables
+</a> <div class="mb-8"> <span class="text-xs font-mono text-transit-accent uppercase tracking-wider">Documento 07 · Manual de usuario</span> </div> <div class="doc-prose"> <h1 id="07--manual-de-usuario">07 — Manual de Usuario</h1>
+<p><strong>Aplicación:</strong> Transitly
+<strong>Versión del documento original:</strong> 2026-05-23
+<strong>Versión actualizada:</strong> 2026-06-08
+<strong>Versión instalable distribuida:</strong> v1.12.1 (APK universal, Android 7.0+) — descarga directa desde <a href="https://github.com/astralk9999/Transitly/releases/latest">https://github.com/astralk9999/Transitly/releases/latest</a> o desde la web del proyecto <a href="https://astralk9999.github.io/Transitly/">https://astralk9999.github.io/Transitly/</a>
+<strong>Plataformas:</strong> Android, iOS y Web (PWA)
+<strong>Audiencia:</strong> usuario final, sin conocimientos técnicos previos</p>
+<hr>
+<h2 id="1-que-es-transitly">1. Que es Transitly</h2>
+<p>Transitly es una aplicación móvil y web que te ayuda a usar el transporte
+público urbano e interurbano en ciudades medias espanolas. Te permite
+consultar las líneas y paradas de tu ciudad, ver donde están los autobuses
+en el mapa, conocer los próximos tiempos de llegada, reportar incidencias
+y sugerir mejoras al servicio. La aplicación se ha desarrollado tomando
+como operador piloto a COMUJESA (Jerez de la Frontera), aunque su diseno
+permite incorporar nuevos operadores en el futuro.</p>
+<p>Transitly busca cubrir el hueco que existe en ciudades sin aplicaciónes
+oficiales en tiempo real. Por eso combina datos de horario con la
+información que aportan los propios conductores y los pasajeros, ofrece
+modo sin conexión para zonas con cobertura débil y se ha disenado para
+ser accesible: alto contraste, lectores de pantalla, escala de texto,
+modo daltonismo y soporte de espanol, ingles y arabe con lectura de
+derecha a izquierda.</p>
+<hr>
+<h2 id="2-instalación">2. Instalación</h2>
+<h3 id="21-android-instalación-del-apk">2.1. Android (instalación del APK)</h3>
+<p>Durante la fase de TFG, Transitly se distribuye como APK (aún no está publicada en Google Play). La instalación es sencilla:</p>
+<ol>
+<li>Desde tu teléfono Android, entra en la web del proyecto
+<code>https://astralk9999.github.io/Transitly/</code> y pulsa <strong>Descargar APK</strong>
+(o ve directo a <code>https://github.com/astralk9999/Transitly/releases/latest</code>).</li>
+<li>Cuando termine la descarga, abre el archivo <code>transitly-vX.Y.Z.apk</code>.</li>
+<li>Android te avisará de que procede de un origen desconocido: pulsa
+<strong>Ajustes</strong> y concede permiso para instalar (puedes revocarlo después).</li>
+<li>Pulsa <strong>Instalar</strong> y, al terminar, <strong>Abrir</strong>. El icono de Transitly
+quedará en tu escritorio.</li>
+</ol>
+<blockquote>
+<p>Requiere <strong>Android 7.0 o superior</strong>. El APK es universal, así que
+funciona en cualquier móvil (arm64, arm de 32 bits o x86_64).</p>
+</blockquote>
+<h3 id="22-ios">2.2. iOS</h3>
+<ol>
+<li>Abre la App Store en tu iPhone o iPad.</li>
+<li>Busca <strong>Transitly</strong> o entra en <code>https://transitly.app/ios</code>.</li>
+<li>Pulsa <strong>Obtener</strong> y confirma con Face ID, Touch ID o contrasena.</li>
+<li>Cuando termine la instalación, pulsa <strong>Abrir</strong>.</li>
+</ol>
+<h3 id="23-web-pwa">2.3. Web (PWA)</h3>
+<ol>
+<li>Entra desde tu navegador en <code>https://transitly.app/web</code>.</li>
+<li>En el menu del navegador, seleccióna <strong>Instalar aplicación</strong> o
+<strong>Anadir a pantalla de inicio</strong>.</li>
+<li>Confirma cuando el navegador te lo pida. Tendras un icono igual que
+el de una aplicación nativa.</li>
+</ol>
+<blockquote>
+<p>Si tu teléfono no es compatible con la instalación nativa, la versión
+web funciona igualmente desde cualquier navegador moderno.</p>
+</blockquote>
+<hr>
+<h2 id="3-primera-vez-que-abres-la-aplicación">3. Primera vez que abres la aplicación</h2>
+<p>La primera vez que ejecutes Transitly veras tres pantallas de
+bienvenida que explican brevemente las funciones principales. Puedes
+deslizar el dedo para avanzar o pulsar <strong>Saltar</strong> si prefieres ir
+directo a la aplicación.</p>
+<p>A continuación se te pediran los siguientes pasos:</p>
+<ol>
+<li><strong>Seleccióna ciudad.</strong> Por defecto aparece <strong>Jerez de la Frontera</strong>.
+Si quieres cambiarla, pulsa sobre el nombre y elige otra de la lista.</li>
+<li><strong>Concede permisos.</strong> La aplicación solicita ubicación (para mostrar
+tu posición en el mapa), notificaciones (para avisos de retrasos) y,
+solo en Android, acceso a NFC (para leer la tarjeta del Consorcio).
+Puedes denegarlos y la aplicación seguira funcionando con menos
+funciones.</li>
+<li><strong>Banner de consentimiento (privacidad).</strong> Veras una pantalla
+resumiendo los tratamientos opcionales: analítica de uso, informes
+de fallos y comúnicaciónes. Cada uno tiene un interruptor
+independiente, todos desactivados por defecto. Acepta o rechaza con
+los botones inferiores.</li>
+<li><strong>Iniciar sesión o continuar como invitado.</strong> Pulsa <strong>Continuar como
+invitado</strong> para usar la aplicación sin registro, o <strong>Iniciar sesión</strong>
+para acceder a funciones avanzadas (favoritos sincronizados, reportar
+incidencias verificadas, modo conductor con código, etc.).</li>
+</ol>
+<hr>
+<h2 id="4-pantalla-principal">4. Pantalla principal</h2>
+<p>La pantalla de inicio tiene cinco pestanas en la barra inferior:</p>
+<ul>
+<li><strong>Inicio.</strong> Resumen personalizado: tus líneas favoritas, últimas
+alertas y accesos rápidos a planificar un viaje.</li>
+<li><strong>Mapa.</strong> Mapa interactivo con paradas y autobuses en circulación.</li>
+<li><strong>Tarjeta.</strong> Lectura del saldo de la tarjeta del Consorcio Andalucia
+mediante NFC.</li>
+<li><strong>Buscar.</strong> Buscador de líneas, paradas y direcciónes.</li>
+<li><strong>Perfil.</strong> Tu cuenta, ajustes, privacidad, idioma y accesibilidad.</li>
+</ul>
+<p>Para cambiar de pestana, pulsa el icono correspondiente. La pestana
+activa aparece resaltada.</p>
+<hr>
+<h2 id="5-consultar-una-línea">5. Consultar una línea</h2>
+<ol>
+<li>Ve a <strong>Buscar</strong> o pulsa una línea desde <strong>Inicio</strong>.</li>
+<li>Aparecera la pantalla de <strong>Detalle de línea</strong> con:
+<ul>
+<li>El recorrido en el mapa.</li>
+<li>La lista de paradas de ida y vuelta.</li>
+<li>Los horarios programados.</li>
+<li>Las alertas activas (desvios, cortes, refuerzos).</li>
+</ul>
+</li>
+<li>Si quieres guardar la línea, pulsa el icono de <strong>estrella</strong> en la
+esquina superior derecha. Aparecera entre tus favoritos en Inicio.</li>
+</ol>
+<hr>
+<h2 id="6-ver-un-autobus-en-el-mapa">6. Ver un autobus en el mapa</h2>
+<ol>
+<li>Pulsa la pestana <strong>Mapa</strong>.</li>
+<li>Cada parada aparece como un punto y cada autobus en circulación como
+un icono de bus.</li>
+<li>Pulsa un autobus para ver su línea, sentido y próxima parada.</li>
+<li>Pulsa una parada para ver las próximas llegadas en esa parada.</li>
+<li>Usa los gestos habituales: arrastra para desplazar, junta o separa
+los dedos para ampliar o reducir.</li>
+</ol>
+<hr>
+<h2 id="7-proximas-llegadas">7. Proximas llegadas</h2>
+<p>Cuando entras en una parada, ya sea desde el mapa o desde el detalle de
+una línea, veras una lista con las <strong>próximas tres salidas estimadas</strong>
+de las líneas que pasan por ella. Cada estimación indica:</p>
+<ul>
+<li>La línea y el destino.</li>
+<li>Los minutos restantes.</li>
+<li>Si la estimación procede de horario o de GPS de un conductor.</li>
+</ul>
+<p>Si la información es antigua o no esta disponible, la aplicación lo
+indica claramente y no inventa datos.</p>
+<hr>
+<h2 id="8-reportar-una-incidencia">8. Reportar una incidencia</h2>
+<ol>
+<li>Entra en la parada o en la línea afectada.</li>
+<li>Pulsa el boton <strong>Reportar</strong>.</li>
+<li>Elige el tipo de incidencia: <strong>Retraso</strong>, <strong>Vehiculo lleno</strong>,
+<strong>Desvio</strong> o <strong>Averia</strong>.</li>
+<li>Anade un comentario opcional (máximo 200 caracteres). No incluyas
+datos personales de terceros.</li>
+<li>Pulsa <strong>Enviar</strong>. Tu reporte se mostrara en el mapa para el resto
+de usuarios.</li>
+</ol>
+<p>Los reportes se moderan automáticamente y se contrastan con otros
+usuarios. Si alguien reporta lo mismo, gana reputación en la comunidad.</p>
+<hr>
+<h2 id="9-dejar-feedback-sobre-una-ruta">9. Dejar feedback sobre una ruta</h2>
+<ol>
+<li>Entra en el detalle de la línea.</li>
+<li>Pulsa <strong>Dar feedback</strong>.</li>
+<li>Puntua de 1 a 5 estrellas:
+<ul>
+<li><strong>Puntualidad</strong> del servicio.</li>
+<li><strong>Amabilidad</strong> del personal.</li>
+<li><strong>Limpieza</strong> del vehiculo.</li>
+</ul>
+</li>
+<li>Anade un comentario opcional.</li>
+<li>Pulsa <strong>Enviar</strong>.</li>
+</ol>
+<p>El operador recibe estos comentarios de forma agregada y anonima.</p>
+<hr>
+<h2 id="10-sugerir-una-nueva-ruta">10. Sugerir una nueva ruta</h2>
+<ol>
+<li>Ve a <strong>Perfil</strong> y pulsa <strong>Sugerir ruta nueva</strong>.</li>
+<li>Rellena el formulario:
+<ul>
+<li><strong>Origen</strong> y <strong>destino</strong> (puedes elegir paradas existentes o
+escribir direcciónes).</li>
+<li><strong>Operador</strong> propuesto.</li>
+<li><strong>Paradas intermedias</strong> que crees necesarias.</li>
+<li><strong>Justificacion</strong> breve.</li>
+</ul>
+</li>
+<li>Pulsa <strong>Enviar sugerencia</strong>.</li>
+</ol>
+<p>Otros usuarios podrán votar la sugerencia. Las propuestas con más votos
+se trasladan al operador.</p>
+<hr>
+<h2 id="11-leer-la-tarjeta-del-consorcio-nfc">11. Leer la tarjeta del Consorcio (NFC)</h2>
+<blockquote>
+<p>Esta función solo esta disponible en Android con NFC y con la tarjeta
+física del <strong>Consorcio de Transporte de Andalucia</strong>.</p>
+</blockquote>
+<ol>
+<li>Pulsa la pestana <strong>Tarjeta</strong>.</li>
+<li>Pulsa <strong>Escanear tarjeta</strong>.</li>
+<li>Acerca la tarjeta a la parte trasera del teléfono y mantenla quieta
+durante unos segúndos.</li>
+<li>Veras el <strong>saldo actual</strong> y los <strong>últimos viajes</strong> registrados.</li>
+</ol>
+<p>La aplicación no recarga la tarjeta ni modifica su contenido: solo lee
+la información pública grabada en el chip.</p>
+<hr>
+<h2 id="12-usar-la-aplicación-sin-conexión">12. Usar la aplicación sin conexión</h2>
+<ol>
+<li>Ve a <strong>Perfil</strong> > <strong>Datos sin conexión</strong>.</li>
+<li>Pulsa <strong>Descargar región de Jerez</strong>.</li>
+<li>Espera a que termine la descarga (puede tardar uno o dos minutos en
+conexión lenta).</li>
+<li>A partir de ese momento podras consultar el mapa, las paradas y los
+horarios aunque no tengas internet. Las llegadas en tiempo real
+requieren conexión.</li>
+</ol>
+<p>Para liberar espacio, en el mismo apartado puedes <strong>Borrar la región
+descargada</strong>.</p>
+<hr>
+<h2 id="13-cambiar-idioma-tema-y-accesibilidad">13. Cambiar idioma, tema y accesibilidad</h2>
+<p>Desde <strong>Perfil</strong> tienes tres apartados:</p>
+<ul>
+<li><strong>Apariencia.</strong> Permite elegir tema claro, oscuro o automático según
+el sistema, escoger la paleta de colores y la fuente.</li>
+<li><strong>Accesibilidad.</strong> Activa alto contraste, modo daltonismo (varias
+matrices disponibles), aumenta la escala de texto y habilita la
+fuente para dislexia.</li>
+<li><strong>Idioma.</strong> Seleccióna espanol, ingles o arabe. Al elegir arabe la
+aplicación cambia automáticamente a lectura de derecha a izquierda.</li>
+</ul>
+<p>Los cambios se aplican al instante y se recuerdan para la próxima vez.</p>
+<hr>
+<h2 id="14-privacidad-y-protección-de-datos">14. Privacidad y protección de datos</h2>
+<p>Transitly cumple el Reglamento General de Protección de Datos. Tienes
+control total sobre tu información desde <strong>Perfil</strong> > <strong>Privacidad</strong>.</p>
+<h3 id="141-modificar-el-consentimiento">14.1. Modificar el consentimiento</h3>
+<p>En cualquier momento puedes activar o desactivar:</p>
+<ul>
+<li><strong>Analitica de uso.</strong></li>
+<li><strong>Informes de fallos.</strong></li>
+<li><strong>Comúnicaciones comerciales.</strong></li>
+</ul>
+<p>Todos están desactivados por defecto y nunca afectan al funcionamiento
+básico de la aplicación.</p>
+<h3 id="142-solicitar-una-copia-de-tus-datos-articulo-20">14.2. Solicitar una copia de tus datos (Articulo 20)</h3>
+<ol>
+<li>Entra en <strong>Privacidad</strong> y pulsa <strong>Solicitar mis datos</strong>.</li>
+<li>Confirma tu correo electrónico.</li>
+<li>Recibiras un archivo ZIP con tu información en un plazo máximo de
+<strong>siete días</strong>.</li>
+</ol>
+<h3 id="143-eliminar-tu-cuenta-articulo-17">14.3. Eliminar tu cuenta (Articulo 17)</h3>
+<ol>
+<li>En <strong>Privacidad</strong>, pulsa <strong>Eliminar cuenta</strong>.</li>
+<li>Confirma tu intención. La cuenta entra en periodo de gracia de
+<strong>30 días</strong>.</li>
+<li>Si cambias de opinion, puedes cancelarla volviendo a entrar antes
+del <strong>día 29</strong>. A partir del día 30 el borrado es irreversible.</li>
+</ol>
+<h3 id="144-verificación-de-edad-articulo-8">14.4. Verificación de edad (Articulo 8)</h3>
+<p>Al registrarte se solicita la fecha de nacimiento. Los <strong>menores de
+16 anos</strong> no pueden crear cuenta. Si la introduces y el sistema detecta
+que no cumples la edad mínima, el registro se cancela.</p>
+<hr>
+<h2 id="15-modo-conductor">15. Modo conductor</h2>
+<p>Si trabajas como conductor o conductora y tu operador te ha fácilitado
+un código de invitación:</p>
+<ol>
+<li>Ve a <strong>Perfil</strong> > <strong>Activar modo conductor</strong>.</li>
+<li>Introduce el código proporcionado por el operador.</li>
+<li>Al activarse, en <strong>Perfil</strong> aparece un acceso <strong>Panel de conductor</strong>
+con tu cuadro de turnos.</li>
+<li>Pulsa <strong>Iniciar ruta</strong> cuando comiences un servicio. El teléfono
+compartira tu ubicación solo durante el trayecto.</li>
+<li>Cuando termines, pulsa <strong>Finalizar ruta</strong>. El historico queda en
+<strong>Mis viajes</strong> para tu propio control.</li>
+</ol>
+<p>Si no eres conductor o conductora, ignora este apartado: la opcion no
+hace nada sin un código válido.</p>
+<hr>
+<h2 id="16-notificaciones">16. Notificaciones</h2>
+<ol>
+<li>Ve a <strong>Perfil</strong> > <strong>Notificaciones</strong>.</li>
+<li>Activa o desactiva los avisos por categoria:
+<ul>
+<li><strong>Alertas de tus líneas favoritas.</strong></li>
+<li><strong>Retrasos significativos.</strong></li>
+<li><strong>Novedades del servicio.</strong></li>
+</ul>
+</li>
+<li>Si una notificacion concreta te molesta, mantenla pulsada para abrir
+los ajustes del sistema y silenciarla.</li>
+</ol>
+<hr>
+<h2 id="17-reportar-un-problema-con-la-aplicación">17. Reportar un problema con la aplicación</h2>
+<p>Si encuentras un fallo o una función no se comporta como esperas:</p>
+<ol>
+<li>Ve a <strong>Perfil</strong> > <strong>Ayuda</strong> > <strong>Reportar un problema</strong>.</li>
+<li>Describe lo ocurrido y, si quieres, adjunta una captura.</li>
+<li>Pulsa <strong>Enviar</strong>.</li>
+</ol>
+<p>También puedes escribir a <code>soporte@transitly.app</code> indicando versión del
+teléfono y de la aplicación.</p>
+<hr>
+<h2 id="18-atajos-de-accesibilidad">18. Atajos de accesibilidad</h2>
+<p>Transitly esta probada con los lectores de pantalla más habituales:</p>
+<ul>
+<li><strong>TalkBack (Android).</strong> Activa el lector desde **Ajustes del sistema
+<blockquote>
+<p>Accesibilidad**. Después, abre Transitly y desplaza el dedo sobre
+la pantalla para escuchar cada elemento. Doble toque activa la
+opcion enfocada.</p>
+</blockquote>
+</li>
+<li><strong>VoiceOver (iOS).</strong> Activalo desde <strong>Ajustes > Accesibilidad >
+VoiceOver</strong>. En Transitly funciona igual: deslizar para enfocar,
+doble toque para activar.</li>
+</ul>
+<p>La aplicación incluye descripciones para todos los iconos importantes,
+respeta la escala de texto del sistema y mantiene el contraste mínimo
+exigido en todos los temas, también con paletas alternativas para
+daltonismo.</p>
+<hr>
+<h2 id="19-preguntas-frecuentes">19. Preguntas frecuentes</h2>
+<p><strong>No me aparece mi ciudad en la lista.</strong> En la versión actual solo
+esta disponible Jerez de la Frontera con datos reales. Si necesitas
+otra ciudad, escribe a <code>soporte@transitly.app</code>.</p>
+<p><strong>La aplicación no detecta mi tarjeta NFC.</strong> Verifica que el NFC del
+teléfono este activo, que tu modelo lo soporte y que la tarjeta sea del
+Consorcio de Transporte de Andalucia. Algunas fundas gruesas dificultan
+la lectura.</p>
+<p><strong>Las llegadas estimadas no son exactas.</strong> Cuando un autobus no tiene
+GPS activo, la aplicación usa el horario teórico, que puede no reflejar
+retrasos. Reportar incidencias ayuda a mejorar la estimación.</p>
+<p><strong>He borrado la aplicación y quiero recuperar mis favoritos.</strong> Si te
+registraste con cuenta, vuelve a iniciar sesión y se restauraran. Si
+usaste modo invitado, los favoritos se guardan solo en el dispositivo.</p>
+<p><strong>Quiero borrar todos mis datos.</strong> Sigue el paso 14.3 de este manual.</p>
+<hr>
+<h2 id="adenda--novedades-de-la-versión-v1110-4-de-junio-de-2026">Adenda — Novedades de la versión v1.11.0 (4 de junio de 2026)</h2>
+<p>Si vienes de una versión anterior, en v1.11.0 encontrarás los siguientes cambios visibles:</p>
+<p><strong>Login con Google funcional.</strong> El botón “Continuar con Google” en la pantalla de inicio de sesión ya funciona en todos los dispositivos. Si tu cuenta no entra al primer intento, espera unos segundos y vuelve a tocarla — la app reintenta automáticamente.</p>
+<p><strong>Sin obligación de verificar email para usar la app.</strong> El flujo de registro envía las credenciales al servidor y entras directamente al inicio sin esperar a un correo de verificación. Esto es temporal mientras se configura el servidor de correo propio; si más adelante recibes un email de verificación, púlsalo igualmente para mantener la cuenta validada.</p>
+<p><strong>Personalización completa y persistente.</strong> Las paletas de color funcionan ahora en modo claro y oscuro, manteniendo el matiz característico de cada una (Sunrise sigue siendo cálida en claro, Forest sigue siendo verde). El fondo animado (Smoke, Aurora, FloatingLines, etc.) se aplica en todas las pestañas, no solo en Apariencia. El alto contraste fuerza texto negro sobre blanco (o blanco sobre negro en modo oscuro) en lugar del scheme original.</p>
+<p><strong>Pantalla de recuperación ante problemas de arranque.</strong> Si activas varias opciones de accesibilidad a la vez y la app no abre en los siguientes dos arranques, verás una pantalla blanca con un triángulo amarillo y la opción “Restaurar configuración por defecto”. Toca ese botón y la app volverá a abrir con los valores iniciales. No es necesario borrar datos del sistema.</p>
+<p><strong>Filtros del mapa por compañía y línea.</strong> En el sheet de filtros del mapa, ahora hay un árbol expandible: Jerez → COMUJESA → líneas L1, L2, … Puedes desmarcar una compañía entera o solo líneas individuales. El estado se guarda y se conserva entre sesiones.</p>
+<p><strong>Widgets de pantalla de inicio configurables.</strong> En Perfil → Widgets puedes configurar cada uno de los tres widgets:</p>
+<ul>
+<li><strong>Próximo bus</strong>: elige línea y parada → preview en vivo del widget → “Probar” actualiza el widget de tu launcher en segundos.</li>
+<li><strong>Mi línea</strong>: elige una línea favorita → preview con próximas salidas.</li>
+<li><strong>Saldo bonobús</strong>: enlaza directamente al escaneo NFC; no requiere configuración.</li>
+</ul>
+<p><strong>Wizard de crear ruta con mapa interactivo.</strong> Al crear una nueva ruta como usuario normal (Perfil → Comunidad → Crear nueva ruta), el paso “Paradas” ahora abre un mapa donde tocas el punto exacto en lugar de teclear coordenadas. También puedes buscar lugares por nombre (“Hotel Jerez”, “Gasolinera Cepsa”) y la app los localiza automáticamente.</p>
+<p><strong>Click sobre línea en el mapa.</strong> Si tocas una de las líneas de bus dibujadas sobre el mapa, aparece un snackbar con el código y nombre de la línea (p. ej. “Línea L8 · Norte”). El sheet inferior se filtra para mostrar sólo esa línea y sus paradas; toca la X para volver a ver todas.</p>
+<p><strong>Mejor saludo en el inicio.</strong> El saludo de bienvenida (“Buenos días”, “Buenas tardes”, “Buenas noches”, “Buena madrugada”) cambia ahora cuatro veces al día y se ajusta al idioma seleccionado.</p>
+<hr>
+<h2 id="adenda-2--novedades-de-la-versión-v1121-8-de-junio-de-2026">Adenda 2 — Novedades de la versión v1.12.1 (8 de junio de 2026)</h2>
+<p><strong>Avisos aunque tengas la app cerrada.</strong> Transitly ya recibe notificaciones push reales: cuando se resuelve una incidencia que reportaste, te comparten una ruta o hay novedades de tus líneas, te llega el aviso aunque no tengas la app abierta. Puedes seguir ajustando qué categorías quieres recibir desde <strong>Perfil → Notificaciones</strong> (y las horas silenciosas).</p>
+<p><strong>El modo conductor sigue compartiendo con la pantalla bloqueada.</strong> Si eres conductor o conductora, al <strong>Iniciar ruta</strong> la app mantiene una notificación permanente y sigue compartiendo tu posición aunque bloquees el móvil o cambies de aplicación. Así el resto de viajeros te ven en el mapa durante todo el trayecto. Al pulsar <strong>Finalizar ruta</strong>, deja de compartir y la notificación desaparece.</p>
+<p><strong>Planificador de viaje origen → destino.</strong> En la pestaña <strong>Buscar</strong> puedes indicar de dónde sales y a dónde quieres ir, y la app te propone cómo llegar, incluyendo trayectos con un transbordo.</p>
+<p><strong>Modo claro de la web mejorado.</strong> La página del proyecto se ve correctamente tanto en tema claro como oscuro.</p>
+<blockquote>
+<p><strong>Requisito actualizado:</strong> la app requiere <strong>Android 7.0 o superior</strong>.</p>
+</blockquote> </div> <nav class="mt-16 pt-8 border-t border-transit-bg-raised grid grid-cols-2 gap-4"> <a href="/Transitly/docs/06_manual_tecnico" class="glass-card hover-lift p-4 group"> <span class="text-xs text-transit-text-lo">← Anterior</span> <div class="text-sm font-semibold text-transit-text-hi group-hover:text-transit-accent transition-colors mt-1">06 · Manual técnico</div> </a> <a href="/Transitly/docs/08_presentacion" class="glass-card hover-lift p-4 text-right group"> <span class="text-xs text-transit-text-lo">Siguiente →</span> <div class="text-sm font-semibold text-transit-text-hi group-hover:text-transit-accent transition-colors mt-1">08 · Guion de defensa</div> </a> </nav> </article>  </main> <script type="module">history.scrollRestoration="manual";window.addEventListener("beforeunload",()=>{window.scrollTo(0,0)});const b=document.getElementById("mobile-menu-btn"),E=document.getElementById("mobile-menu-close"),o=document.getElementById("mobile-menu"),L=o?.querySelectorAll(".mobile-link"),l=document.getElementById("main-nav");function k(){o&&(o.classList.remove("hidden"),o.classList.add("flex"))}function i(){o&&(o.classList.add("hidden"),o.classList.remove("flex"))}b?.addEventListener("click",k);E?.addEventListener("click",i);L?.forEach(e=>e.addEventListener("click",i));if(l){const e=l.querySelector("div");window.addEventListener("scroll",()=>{window.scrollY>20?e?.classList.add("shadow-lg","shadow-transit-accent/5"):e?.classList.remove("shadow-lg","shadow-transit-accent/5")})}const y=document.querySelectorAll("section[id]"),A=document.querySelectorAll('nav a[href^="#"]');addEventListener("scroll",()=>{let e="";y.forEach(t=>{window.scrollY+120>=t.offsetTop&&(e=t.id)}),A.forEach(t=>{t.classList.toggle("!text-transit-accent",t.hash===`#${e}`)})},{passive:!0});const d=new IntersectionObserver(e=>{e.forEach(t=>{if(!t.isIntersecting)return;const n=t.target,s=+n.dataset.counterTarget,h=n.dataset.counterSuffix||"",v=1400,w=performance.now(),a=p=>{const c=Math.min((p-w)/v,1),g=Math.floor(x(c)*s);n.textContent=g+h,c<1&&requestAnimationFrame(a)};requestAnimationFrame(a),d.unobserve(n)})},{threshold:.4});function x(e){return 1-Math.pow(1-e,3)}document.querySelectorAll("[data-counter]").forEach(e=>d.observe(e));const u=new IntersectionObserver(e=>{e.forEach(t=>{t.isIntersecting&&(setTimeout(()=>{t.target.classList.add("revealed")},parseInt(t.target.dataset.delay||"0")),u.unobserve(t.target))})},{threshold:.15,rootMargin:"0px 0px -50px 0px"});document.querySelectorAll(".reveal, .reveal-left, .reveal-right, .reveal-scale").forEach(e=>{u.observe(e)});const f=document.querySelectorAll("[data-download-apk]");let r=null;async function m(){if(r)return r;try{const e=await fetch("https://api.github.com/repos/astralk9999/Transitly/releases/latest",{headers:{Accept:"application/vnd.github+json"}});if(!e.ok)return null;const n=(await e.json()).assets?.find(s=>s.name&&s.name.endsWith(".apk"));if(n?.browser_download_url)return r=n.browser_download_url,r}catch{}return null}f.length>0&&m();f.forEach(e=>{e.addEventListener("click",async t=>{const n=await m();n&&(t.preventDefault(),window.location.href=n)})});</script> </body> </html>

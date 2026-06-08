@@ -1,0 +1,847 @@
+<!DOCTYPE html><html lang="es"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Metodología, diagrama de Gantt, WBS, recursos, análisis de riesgos y entregables parciales."><title>03 · Planificación — Transitly TFG</title><meta property="og:title" content="03 · Planificación — Transitly TFG"><meta property="og:description" content="Metodología, diagrama de Gantt, WBS, recursos, análisis de riesgos y entregables parciales."><meta property="og:image" content="/Transitly/og-image.png"><meta property="og:type" content="website"><meta property="og:url" content="https://astralk9999.github.io/Transitly/"><meta name="twitter:card" content="summary_large_image"><link rel="icon" type="image/png" href="/Transitly/transitly_logo.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"><link rel="stylesheet" href="/Transitly/_astro/Layout.CVcVUMNB.css"></head> <body class="bg-transit-bg-root text-transit-text-hi font-sans antialiased"> <nav id="main-nav" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"> <div class="bg-transit-bg-root/85 backdrop-blur-xl border-b border-transit-bg-raised/50"> <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between"> <a href="/Transitly" class="font-bold text-xl text-transit-accent hover:text-transit-accent/80 transition">
+Transitly
+</a> <div class="hidden lg:flex items-center gap-6 text-sm"> <a href="#problema" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Problema</a> <a href="#solucion" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Solución</a> <a href="#arquitectura" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Arquitectura</a> <a href="#features" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Features</a> <a href="#metodologia" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Metodología</a> <a href="#metricas" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Métricas</a> <a href="#calidad" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Calidad</a> <a href="#seguridad" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Seguridad</a> <a href="/Transitly/docs" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Entregables</a> <a href="/Transitly/defensa" class="text-transit-accent hover:text-transit-accent/80 transition-colors font-medium">Defensa ▸</a> <a href="https://github.com/astralk9999/Transitly/releases/latest" data-download-apk class="px-5 py-2 bg-transit-accent text-white rounded-full text-xs font-semibold hover:bg-transit-accent/85 transition-all" target="_blank" rel="noopener">
+Descargar APK
+</a> </div> <button id="mobile-menu-btn" class="lg:hidden text-transit-text-mid hover:text-transit-text-hi transition-colors" aria-label="Abrir menú"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"> <line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line> </svg> </button> </div> </div> </nav> <div id="mobile-menu" class="fixed inset-0 z-40 bg-transit-bg-root/95 backdrop-blur-xl hidden flex-col items-center justify-center gap-8"> <button id="mobile-menu-close" class="absolute top-6 right-6 text-transit-text-mid hover:text-transit-text-hi transition-colors" aria-label="Cerrar menú"> <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"> <line x1="18" x2="6" y1="6" y2="18"></line><line x1="6" x2="18" y1="6" y2="18"></line> </svg> </button> <a href="#problema" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Problema</a> <a href="#solucion" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Solución</a> <a href="#arquitectura" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Arquitectura</a> <a href="#features" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Features</a> <a href="#metricas" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Métricas</a> <a href="#calidad" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Calidad</a> <a href="#seguridad" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Seguridad</a> <a href="/Transitly/docs" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Entregables</a> <a href="/Transitly/defensa" class="mobile-link text-2xl font-medium text-transit-accent hover:text-transit-accent/80 transition-colors">Defensa ▸</a> <a href="https://github.com/astralk9999/Transitly/releases/latest" data-download-apk class="mobile-link px-8 py-3 bg-transit-accent text-white rounded-full text-lg font-semibold hover:bg-transit-accent/85 transition-all" target="_blank" rel="noopener">
+Descargar APK
+</a> </div> <main class="pt-16">  <article class="max-w-3xl mx-auto px-6 py-12"> <a href="/Transitly/docs" class="inline-flex items-center gap-2 text-sm text-transit-text-mid hover:text-transit-accent transition-colors mb-8"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
+Todos los entregables
+</a> <div class="mb-8"> <span class="text-xs font-mono text-transit-accent uppercase tracking-wider">Documento 03 · 3 · Planificación</span> </div> <div class="doc-prose"> <h1 id="03--planificación-de-la-ejecución">03 — Planificación de la Ejecución</h1>
+<p><strong>Proyecto:</strong> Transitly
+<strong>Repositorio:</strong> nexto-stop-v2 (anclaje original <code>master @ b908f3c</code> · 2026-05-23; estado actualizado <code>master @ b47180d0</code> · 2026-06-08, release v1.12.1)
+<strong>Ciclo formativo:</strong> Desarrollo de Aplicaciones Multiplataforma (DAM)
+<strong>Sector:</strong> movilidad urbana — operador COMUJESA (Jerez de la Frontera)
+<strong>Cronograma:</strong> 11 semanas naturales, del 01/04/2026 al 16/06/2026
+<strong>Autor:</strong> estudiante individual, con asistencia de IA documentada con transparencia académica</p>
+<hr>
+<h2 id="1-metodología">1. Metodología</h2>
+<h3 id="11-marco-general-scrum-solo-adaptado">1.1. Marco general: Scrum solo adaptado</h3>
+<p>El proyecto se desarrolla por un único autor, lo que impide aplicar Scrum
+en su forma canónica (no existen Product Owner, Scrum Master y equipo
+diferenciados). Se adopta por tanto una variante reconocida en la
+literatura como <strong>Scrum solo</strong>: la persona desarrolladora asume los tres
+roles, y se preservan únicamente los artefactos que aportan valor real a
+un proyecto individual.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Artefacto Scrum oficial</th><th>Aplicación en Transitly</th></tr></thead><tbody><tr><td>Sprint</td><td>Iteración semanal cerrada (lunes a domingo).</td></tr><tr><td>Sprint planning</td><td>Sesión de planificación lunes (45 minutos) que selecciona ítems del backlog.</td></tr><tr><td>Daily stand-up</td><td>Auto-stand-up diario asíncrono escrito en <code>CHANGELOG.md</code> y commits convencionales.</td></tr><tr><td>Sprint review</td><td>Demostración al tutor cada dos semanas; verificación con CI verde como criterio de aceptación.</td></tr><tr><td>Sprint retrospective</td><td>Retrospectiva escrita cada dos sprints en <code>docs/retros/</code> (qué funcionó, qué no, acciones).</td></tr><tr><td>Backlog</td><td><code>docs/00_MAESTRO.md</code> y plan mega refinamiento priorizado (P0-P3).</td></tr></tbody></table>
+<h3 id="12-fases-iniciales-en-cascada">1.2. Fases iniciales en cascada</h3>
+<p>Las fases de <strong>Análisis</strong> (semanas 1-2) y <strong>Diseño</strong> (semanas 3-4) se
+ejecutan en <strong>modelo cascada</strong>, no iterativo, por dos motivos
+acreditables:</p>
+<ol>
+<li>La normativa del TFG exige documentación previa estable antes de
+programar (memoria del proyecto, especificación de requisitos).</li>
+<li>Las decisiones arquitectónicas estructurales (stack, modelo de datos,
+patrón de capas) deben fijarse antes de comenzar el desarrollo para
+evitar retrabajo masivo.</li>
+</ol>
+<p>Las semanas 6 a 9 (Desarrollo) sí se ejecutan en sprints semanales
+iterativos. La semana 5 (Planificación) cierra los entregables previos
+al desarrollo. Las semanas 10 (Evaluación) y 11 (Defensa) son fases
+secuenciales.</p>
+<h3 id="13-reglas-operativas">1.3. Reglas operativas</h3>
+<ul>
+<li><strong>Conventional Commits</strong> obligatorios (<code>feat:</code>, <code>fix:</code>, <code>docs:</code>,
+<code>test:</code>, <code>chore:</code>, <code>refactor:</code>, <code>perf:</code>, <code>ci:</code>, <code>build:</code>, <code>revert:</code>).</li>
+<li><strong>CI verde como criterio de mergeo</strong>: cuatro trabajos en GitHub
+Actions (analyze, test, build-web, build-android) más Gitleaks y
+Semgrep deben pasar antes de avanzar de iteración.</li>
+<li><strong>Auto-revisión por <em>pull request</em></strong> sobre <code>master</code>: aunque el autor
+sea único, todo cambio sustantivo se introduce vía PR para que CI
+ejecute las verificaciones automáticas y para dejar un rastro
+auditable.</li>
+</ul>
+<hr>
+<h2 id="2-diagrama-de-gantt">2. Diagrama de Gantt</h2>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="mermaid"><code><span class="line"><span style="color:#E1E4E8">gantt</span></span>
+<span class="line"><span style="color:#E1E4E8">    title Transitly — Plan de Ejecucion (11 semanas)</span></span>
+<span class="line"><span style="color:#E1E4E8">    dateFormat  YYYY-MM-DD</span></span>
+<span class="line"><span style="color:#E1E4E8">    axisFormat  S%V</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">    section 1. Analisis (sem 1-2)</span></span>
+<span class="line"><span style="color:#E1E4E8">    Estudio del sector y operador      :a1, 2026-04-01, 3d</span></span>
+<span class="line"><span style="color:#E1E4E8">    Entrevistas y observacion campo    :a2, after a1, 2d</span></span>
+<span class="line"><span style="color:#E1E4E8">    Catalogo de requisitos funcionales :a3, after a2, 3d</span></span>
+<span class="line"><span style="color:#E1E4E8">    Requisitos no funcionales          :a4, after a3, 2d</span></span>
+<span class="line"><span style="color:#E1E4E8">    Modelado de dominio                :a5, after a4, 2d</span></span>
+<span class="line"><span style="color:#E1E4E8">    Cierre documento 01_analisis       :milestone, m1, after a5, 0d</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">    section 2. Diseno (sem 3-4)</span></span>
+<span class="line"><span style="color:#E1E4E8">    Arquitectura de capas y ADR base   :d1, after m1, 2d</span></span>
+<span class="line"><span style="color:#E1E4E8">    Modelo entidad-relación y RLS      :d2, after d1, 3d</span></span>
+<span class="line"><span style="color:#E1E4E8">    Sistema de diseno y tokens         :d3, after d2, 3d</span></span>
+<span class="line"><span style="color:#E1E4E8">    Wireframes y prototipos clave      :d4, after d3, 3d</span></span>
+<span class="line"><span style="color:#E1E4E8">    Definicion de API y Edge Functions :d5, after d4, 2d</span></span>
+<span class="line"><span style="color:#E1E4E8">    Cierre documento 02_diseno         :milestone, m2, after d5, 0d</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">    section 3. Planificacion (sem 5)</span></span>
+<span class="line"><span style="color:#E1E4E8">    Gantt y WBS final                  :p1, after m2, 2d</span></span>
+<span class="line"><span style="color:#E1E4E8">    Analisis de riesgos                :p2, after p1, 1d</span></span>
+<span class="line"><span style="color:#E1E4E8">    Plan logistico y entregables       :p3, after p2, 1d</span></span>
+<span class="line"><span style="color:#E1E4E8">    Repositorio público y estructura   :p4, after p3, 1d</span></span>
+<span class="line"><span style="color:#E1E4E8">    ENTREGA 1 (doc 01 02 03 + repo)    :milestone, e1, 2026-05-05, 0d</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">    section 4. Desarrollo (sem 6-9)</span></span>
+<span class="line"><span style="color:#E1E4E8">    Sprint 1 nucleo de datos           :de1, 2026-05-06, 7d</span></span>
+<span class="line"><span style="color:#E1E4E8">    Sprint 2 features de identidad     :de2, after de1, 7d</span></span>
+<span class="line"><span style="color:#E1E4E8">    Sprint 3 features de movilidad     :de3, after de2, 7d</span></span>
+<span class="line"><span style="color:#E1E4E8">    Sprint 4 features de comunidad     :de4, after de3, 7d</span></span>
+<span class="line"><span style="color:#E1E4E8">    Integracion Edge Functions         :de5, 2026-05-20, 5d</span></span>
+<span class="line"><span style="color:#E1E4E8">    Hardening seguridad y RLS          :de6, after de5, 3d</span></span>
+<span class="line"><span style="color:#E1E4E8">    Suite de pruebas 619 tests         :de7, 2026-05-25, 6d</span></span>
+<span class="line"><span style="color:#E1E4E8">    ENTREGA 2 (app funcional)          :milestone, e2, 2026-06-02, 0d</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">    section 5. Evaluacion (sem 10)</span></span>
+<span class="line"><span style="color:#E1E4E8">    Pasada A11Y con TalkBack VoiceOver :ev1, after e2, 2d</span></span>
+<span class="line"><span style="color:#E1E4E8">    Test E2E push y deeplinks          :ev2, after ev1, 2d</span></span>
+<span class="line"><span style="color:#E1E4E8">    Sesion con 5 usuarios SUS          :ev3, after ev2, 2d</span></span>
+<span class="line"><span style="color:#E1E4E8">    Memoria completa y manuales        :ev4, 2026-06-03, 6d</span></span>
+<span class="line"><span style="color:#E1E4E8">    ENTREGA FINAL (memoria + repo)     :milestone, ef, 2026-06-09, 0d</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">    section 6. Defensa (sem 11)</span></span>
+<span class="line"><span style="color:#E1E4E8">    Presentacion oral preparacion      :df1, after ef, 4d</span></span>
+<span class="line"><span style="color:#E1E4E8">    Demo en vivo ensayos               :df2, after df1, 2d</span></span>
+<span class="line"><span style="color:#E1E4E8">    Defensa ante tribunal              :milestone, mf, 2026-06-16, 0d</span></span></code></pre>
+<p>El diagrama anterior se renderiza con Mermaid (sintaxis <code>gantt</code>). Cuatro
+hitos principales marcan los entregables: ENTREGA 1 (5 de mayo de 2026),
+ENTREGA 2 (2 de junio de 2026), ENTREGA FINAL (9 de junio de 2026) y la
+defensa ante el tribunal en la semana 11.</p>
+<hr>
+<h2 id="3-desglose-de-tareas-wbs">3. Desglose de tareas (WBS)</h2>
+<h3 id="31-fase-1--análisis-semanas-1-2">3.1. Fase 1 — Análisis (semanas 1-2)</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Tarea</th><th align="center">Duración</th><th>Producto</th></tr></thead><tbody><tr><td>Estudio del sector y operador (COMUJESA, GTFS, normativa)</td><td align="center">3 días</td><td>Marco teórico</td></tr><tr><td>Entrevistas y observación de campo</td><td align="center">2 días</td><td>Notas de campo</td></tr><tr><td>Catálogo de requisitos funcionales (RF01-RFnn)</td><td align="center">3 días</td><td>Tabla RF</td></tr><tr><td>Requisitos no funcionales (rendimiento, A11Y, seguridad, GDPR)</td><td align="center">2 días</td><td>Tabla RNF</td></tr><tr><td>Modelado de dominio (UML, glosario)</td><td align="center">2 días</td><td>Modelo</td></tr></tbody></table>
+<h3 id="32-fase-2--diseño-semanas-3-4">3.2. Fase 2 — Diseño (semanas 3-4)</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Tarea</th><th align="center">Duración</th><th>Producto</th></tr></thead><tbody><tr><td>Arquitectura de capas y ADR base (5 ADRs)</td><td align="center">2 días</td><td><code>docs/adr/</code></td></tr><tr><td>Modelo entidad-relación + políticas RLS</td><td align="center">3 días</td><td>DER + RLS plan</td></tr><tr><td>Sistema de diseño y <em>design tokens</em></td><td align="center">3 días</td><td><code>core/theme/</code></td></tr><tr><td>Wireframes y prototipos de pantallas críticas</td><td align="center">3 días</td><td>Figma / mocks</td></tr><tr><td>Definición de API y Edge Functions</td><td align="center">2 días</td><td>Especificación</td></tr></tbody></table>
+<h3 id="33-fase-3--planificación-semana-5">3.3. Fase 3 — Planificación (semana 5)</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Tarea</th><th align="center">Duración</th><th>Producto</th></tr></thead><tbody><tr><td>Gantt definitivo y WBS</td><td align="center">2 días</td><td>Este documento</td></tr><tr><td>Análisis de riesgos y plan de contingencia</td><td align="center">1 día</td><td>Tabla §6</td></tr><tr><td>Plan logístico y entregables parciales</td><td align="center">1 día</td><td>§7</td></tr><tr><td>Repositorio público y estructura inicial</td><td align="center">1 día</td><td>Repo</td></tr></tbody></table>
+<h3 id="34-fase-4--desarrollo-semanas-6-9">3.4. Fase 4 — Desarrollo (semanas 6-9)</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Sprint</th><th align="center">Duración</th><th>Producto</th></tr></thead><tbody><tr><td>Sprint 1: núcleo de datos (Hive, Supabase wiring, repos canónicos)</td><td align="center">7 días</td><td>6 dominios cableados</td></tr><tr><td>Sprint 2: identidad (auth, roles, perfiles, NFC)</td><td align="center">7 días</td><td>Auth + NFC</td></tr><tr><td>Sprint 3: movilidad (mapa, paradas, rutas, horarios, GPS)</td><td align="center">7 días</td><td>Núcleo funcional</td></tr><tr><td>Sprint 4: comunidad y admin (incidencias, votos, panel)</td><td align="center">7 días</td><td>App completa</td></tr><tr><td>Integración Edge Functions (4 funciones Deno)</td><td align="center">5 días</td><td>Backend en servicio</td></tr><tr><td><em>Hardening</em> seguridad: RLS DENY-by-default, scrubbing</td><td align="center">3 días</td><td>Capa segura</td></tr><tr><td>Suite de pruebas (objetivo verificado: 619 tests)</td><td align="center">6 días</td><td>Tests verdes</td></tr></tbody></table>
+<h3 id="35-fase-5--evaluación-semana-10">3.5. Fase 5 — Evaluación (semana 10)</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Tarea</th><th align="center">Duración</th><th>Producto</th></tr></thead><tbody><tr><td>Pasada manual A11Y con TalkBack y VoiceOver</td><td align="center">2 días</td><td><code>docs/A11Y_MANUAL_TEST_2026_06.md</code></td></tr><tr><td>Test E2E push (foreground / background / killed) y <em>deeplinks</em></td><td align="center">2 días</td><td>Informe E2E</td></tr><tr><td>Sesión con 5 usuarios reales + cuestionario SUS</td><td align="center">2 días</td><td>Resultados SUS</td></tr><tr><td>Memoria completa (8 documentos TFG) y manuales</td><td align="center">6 días</td><td>Memoria</td></tr></tbody></table>
+<h3 id="36-fase-6--defensa-semana-11">3.6. Fase 6 — Defensa (semana 11)</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Tarea</th><th align="center">Duración</th><th>Producto</th></tr></thead><tbody><tr><td>Preparación de presentación oral</td><td align="center">4 días</td><td>Diapositivas</td></tr><tr><td>Ensayo de demo en vivo</td><td align="center">2 días</td><td>Demo ensayada</td></tr><tr><td>Defensa ante tribunal</td><td align="center">1 día</td><td>Acto formal</td></tr></tbody></table>
+<hr>
+<h2 id="4-recursos-humanos">4. Recursos humanos</h2>
+<h3 id="41-equipo">4.1. Equipo</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Rol</th><th>Responsabilidades</th><th>Dedicación</th></tr></thead><tbody><tr><td>Desarrolladora / desarrollador único</td><td>Análisis, diseño, codificación, pruebas, documentación, despliegue, defensa</td><td>Tiempo prácticamente completo durante 11 semanas</td></tr><tr><td>Tutor académico</td><td>Revisión bi-semanal, validación de hitos, orientación metodológica</td><td>1 hora cada dos semanas + correo</td></tr><tr><td>Asistencia IA documentada</td><td>Apoyo en redacción, revisión de código, generación de pruebas; declarada con transparencia y trazada por commit</td><td>Por sesión</td></tr></tbody></table>
+<h3 id="42-usuarios-de-prueba-semana-10">4.2. Usuarios de prueba (semana 10)</h3>
+<p>Se reclutan <strong>cinco perfiles diversos</strong> para la sesión de evaluación de
+usabilidad con cuestionario SUS:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Perfil</th><th>Criterio de selección</th><th>Foco de la prueba</th></tr></thead><tbody><tr><td>Usuaria habitual de COMUJESA, 65 años</td><td>Representa al colectivo senior, baja alfabetización digital</td><td>Tamaño de tipografías, claridad de iconos, flujo de pago</td></tr><tr><td>Estudiante, 20 años, usuaria de TalkBack</td><td>Discapacidad visual; lector de pantalla activado</td><td>Cobertura semántica, orden de foco, etiquetas</td></tr><tr><td>Conductor profesional, 45 años</td><td>Usuario del rol <em>driver</em></td><td>Activación con código de invitación, modo en vivo</td></tr><tr><td>Turista anglohablante (sin español)</td><td>Localización al inglés y a árabe</td><td>Traducción de cadenas, <em>fallbacks</em></td></tr><tr><td>Persona en silla de ruedas</td><td>Ergonomía móvil con una sola mano</td><td>Distancia de pulsadores, <em>touch targets</em></td></tr></tbody></table>
+<hr>
+<h2 id="5-recursos-técnicos-y-financieros">5. Recursos técnicos y financieros</h2>
+<h3 id="51-recursos-técnicos">5.1. Recursos técnicos</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Categoría</th><th>Detalle</th></tr></thead><tbody><tr><td>Equipo de desarrollo</td><td>Portátil personal (16 GB RAM, SSD), Windows 10 Pro</td></tr><tr><td>IDE y <em>toolchain</em></td><td>Visual Studio Code, Android Studio (para emulador), Flutter 3.x, Dart 3, <code>dart_pub</code>, <code>build_runner</code></td></tr><tr><td>Emulador Android</td><td>Pixel 6, API 34, perfil de pantalla 6,4”</td></tr><tr><td>Dispositivo físico Android</td><td>Necesario para pruebas de NFC y <em>push</em> en <em>background</em> / <em>killed</em></td></tr><tr><td>Servicio backend</td><td>Cuenta Supabase plan <em>Free</em> (PostgreSQL, Auth, Edge Functions, Storage)</td></tr><tr><td>Mensajería <em>push</em></td><td>Firebase Spark (gratis, sin tarjeta)</td></tr><tr><td>Repositorio y CI</td><td>GitHub plan <em>Free</em> con GitHub Actions (6 <em>jobs</em>: analyze, test, build-web, build-apk, semgrep, gitleaks)</td></tr><tr><td>Observabilidad</td><td>Sentry plan <em>Free</em> (errores) y PostHog plan <em>Free</em> (eventos)</td></tr><tr><td>Sitio web del proyecto</td><td>GitHub Pages (presentación + entregables del TFG + descarga del APK)</td></tr></tbody></table>
+<h3 id="52-recursos-financieros">5.2. Recursos financieros</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Concepto</th><th align="right">Coste directo</th><th>Coste oculto</th></tr></thead><tbody><tr><td>Servicios <em>cloud</em> citados</td><td align="right">0 €</td><td>Limitaciones de cuota; bloqueadores documentados</td></tr><tr><td>Horas de la persona desarrolladora</td><td align="right">0 € (no facturadas)</td><td>Aproximadamente 300 horas</td></tr><tr><td>Electricidad y conectividad doméstica</td><td align="right">0 € (asumido)</td><td>Coste marginal</td></tr><tr><td>Licencia Apple Developer</td><td align="right">No aplica (se entrega para Android)</td><td>—</td></tr><tr><td>Licencia Google Play Console</td><td align="right">No aplica para el TFG (despliegue se aborda como trabajo futuro)</td><td>—</td></tr></tbody></table>
+<p><strong>Coste directo total: 0 €.</strong> El coste oculto principal son las horas
+del autor.</p>
+<hr>
+<h2 id="6-análisis-de-riesgos-y-contingencias">6. Análisis de riesgos y contingencias</h2>
+<p>La probabilidad se etiqueta como Baja (B), Media (M) o Alta (A). El
+impacto sigue la misma escala. Las contingencias se activan cuando el
+riesgo se materializa; las mitigaciones se aplican de forma preventiva.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>#</th><th>Riesgo</th><th align="center">Prob.</th><th align="center">Impacto</th><th>Mitigación</th><th>Contingencia</th></tr></thead><tbody><tr><td>R01</td><td>Pérdida del <em>keystore</em> Android (impide firmar futuras versiones)</td><td align="center">B</td><td align="center">A</td><td>Tres copias: USB cifrado, almacenamiento cloud privado, copia impresa en caja fuerte; documentado en <code>docs/runbooks/</code></td><td>Si falla todo, generar nuevo <em>keystore</em> y notificar la rotación de huella SHA-256; aceptar que la app figura como nueva en <em>stores</em></td></tr><tr><td>R02</td><td>Dependencia de Firebase Cloud Messaging (FCM) por Google</td><td align="center">M</td><td align="center">A</td><td>Abstracción en <code>send_notification</code> Edge Function; APNs preparado como alternativa iOS</td><td>Reemplazar capa FCM por OneSignal o un servicio equivalente; aislar cambio en una sola función</td></tr><tr><td>R03</td><td>Cuenta Supabase pausada por inactividad (<em>free tier</em>)</td><td align="center">A</td><td align="center">A</td><td>Acceso semanal forzado; <em>cron</em> semanal con <code>GET /health</code>; documentado en runbook</td><td>Migración manual a otra cuenta o restauración mediante migraciones SQL versionadas (001-013 y 016)</td></tr><tr><td>R04</td><td><em>Drift</em> documental: docs y código divergen</td><td align="center">A</td><td align="center">M</td><td>Revisión cruzada en cada PR; <code>docs/00_MAESTRO.md</code> como única fuente de verdad; <em>checklist</em> de cierre de sprint</td><td>Sprint dedicado de re-sincronización antes de la entrega final</td></tr><tr><td>R05</td><td><em>Scope creep</em> (alcance excesivo)</td><td align="center">A</td><td align="center">A</td><td><em>Backlog</em> priorizado (P0-P3) y plan mega refinamiento con criterios de cierre; 19 bloqueadores externos ya aceptados como diferidos</td><td>Cortar funcionalidad por debajo de P1 y marcarla como trabajo futuro en la memoria</td></tr><tr><td>R06</td><td>Falta de usuarios reales para la sesión de prueba</td><td align="center">M</td><td align="center">M</td><td>Cinco perfiles convocados con dos semanas de antelación; mensajes de recordatorio</td><td>Si fallan, sustituir por compañeras o compañeros del ciclo con perfil similar y registrar la limitación honestamente</td></tr><tr><td>R07</td><td>Plagio involuntario derivado de asistencia con IA</td><td align="center">M</td><td align="center">A</td><td>Cada contribución se revisa, atribuye y firma como autoría propia; <em>prompts</em> y respuestas relevantes archivados</td><td>Pasar la memoria y el código por una herramienta antiplagio antes de la entrega final</td></tr><tr><td>R08</td><td>Problemas reales de accesibilidad detectados con TalkBack</td><td align="center">M</td><td align="center">M</td><td>Tests automatizados con <code>Semantics</code>; matrices de daltonismo incorporadas</td><td>Ciclo de corrección priorizado P0 antes de la entrega final</td></tr><tr><td>R09</td><td>Bug bloqueante descubierto en la última semana</td><td align="center">M</td><td align="center">A</td><td>CI exhaustiva durante todo el desarrollo; <em>smoke tests</em> nocturnos; <em>feature flags</em></td><td>Aislar la funcionalidad afectada con <em>feature flag</em> y desactivar; documentar como limitación conocida</td></tr><tr><td>R10</td><td>Dependencia única (<em>bus-factor</em> 1)</td><td align="center">A</td><td align="center">A</td><td>Documentación exhaustiva (5 ADRs, 6 <em>runbooks</em>, manuales técnico y de usuario) para que la memoria sobreviva al autor</td><td>El proyecto está diseñado para ser legible sin el autor: 73+ documentos en <code>docs/</code></td></tr><tr><td>R11</td><td>Retraso por refactor mayor (por ejemplo, migración a Riverpod 3)</td><td align="center">B</td><td align="center">M</td><td>Versiones fijadas en <code>pubspec.yaml</code> (Riverpod 2.6, GoRouter 17.2, Sentry 8.14, Freezed 3); no se hacen <em>upgrades</em> especulativos en plena ejecución</td><td>Posponer la migración a trabajo futuro y dejarla recogida en plan mega refinamiento</td></tr><tr><td>R12</td><td>Fallos en CI por cambios en <em>runners</em> de GitHub</td><td align="center">B</td><td align="center">M</td><td><code>ubuntu-latest</code> fijado como objetivo; versiones de acciones ancladas</td><td>Anclar versión del <em>runner</em> o usar imagen autoalojada si el fallo persiste</td></tr><tr><td>R13</td><td>Dependencias OSS abandonadas o vulnerables</td><td align="center">M</td><td align="center">M</td><td>Auditoría con <code>flutter pub outdated</code> y <code>gitleaks</code>; lista de dependencias en <code>pubspec.yaml</code> revisada al inicio de cada sprint</td><td>Fork temporal con parche o sustitución por alternativa; documentar en ADR</td></tr></tbody></table>
+<h3 id="61-plan-de-contingencia-para-riesgos-críticos">6.1. Plan de contingencia para riesgos críticos</h3>
+<p>Tres riesgos requieren un plan ampliado porque su materialización
+pondría en peligro la entrega:</p>
+<p><strong>Pérdida del <em>keystore</em> (R01).</strong> Se mantiene una copia cifrada en un
+USB físico guardado en un domicilio distinto al de trabajo, una segunda
+copia en un <em>bucket</em> privado con cifrado en reposo, y una copia
+impresa de la <em>passphrase</em> (no del archivo) en una caja fuerte
+familiar. En caso de pérdida total, el procedimiento de emergencia
+documentado en <code>docs/runbooks/</code> describe la generación de un nuevo
+<em>keystore</em> y la comunicación de la nueva huella SHA-256 al tutor.</p>
+<p><strong>Cuenta Supabase pausada (R03).</strong> El <em>free tier</em> suspende proyectos
+sin actividad. Se programa un acceso forzado semanal y un <em>cron</em>
+externo (Vercel) que llama al endpoint de salud. Si el proyecto se
+pausa, las 14 migraciones SQL versionadas (001 a 013 y 016) permiten
+recrearlo en otra cuenta en menos de una hora.</p>
+<p><strong>Bug bloqueante en la última semana (R09).</strong> Toda funcionalidad
+candidata a romperse está aislada tras un <em>feature flag</em> (consulta de
+<em>remote config</em> o variable <code>--dart-define</code>). En caso de bloqueo, se
+desactiva el <em>flag</em>, se retira la funcionalidad de la <em>build</em> de
+defensa y se documenta como limitación conocida en la memoria.</p>
+<hr>
+<h2 id="7-necesidades-logísticas">7. Necesidades logísticas</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Necesidad</th><th>Cobertura</th></tr></thead><tbody><tr><td>Copia de seguridad diaria en la nube</td><td>Repositorio Git con <em>push</em> diario a GitHub más copia automática del directorio <code>docs/</code> a Google Drive</td></tr><tr><td>Repositorio Git con CI obligatoria para mergear</td><td>GitHub Actions con 6 <em>jobs</em> (analyze, test, build-web, build-apk, semgrep, gitleaks)</td></tr><tr><td>Gestor de contraseñas para <em>secrets</em></td><td>Bitwarden con bóveda dedicada al TFG; ningún <em>secret</em> commiteado</td></tr><tr><td>Copia del <em>keystore</em> Android</td><td>Tres ubicaciones independientes (USB cifrado, <em>bucket</em> privado, copia impresa)</td></tr><tr><td>Agenda con tutorías y entregas parciales</td><td>Calendario sincronizado con recordatorios 72 h antes de cada hito</td></tr><tr><td>Dispositivos físicos para NFC y <em>push</em></td><td>Móvil Android personal con NFC; segundo dispositivo prestado para pruebas multi-cuenta</td></tr><tr><td>Lista de contactos para usuarios de prueba</td><td>Cinco perfiles confirmados por escrito al menos dos semanas antes de la sesión</td></tr><tr><td>Conectividad fiable</td><td>Conexión doméstica de respaldo (compartición desde móvil) y <em>coworking</em> académico como plan B</td></tr></tbody></table>
+<hr>
+<h2 id="8-entregables-parciales">8. Entregables parciales</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Entrega</th><th align="center">Semana</th><th>Fecha</th><th>Contenido</th></tr></thead><tbody><tr><td><strong>ENTREGA 1</strong></td><td align="center">5</td><td>2026-05-05</td><td>Documentos <code>01_analisis.md</code>, <code>02_diseno_proyecto.md</code>, <code>03_planificacion.md</code>, repositorio Git público con estructura inicial del proyecto y diagrama de Gantt validado</td></tr><tr><td><strong>ENTREGA 2</strong></td><td align="center">9</td><td>2026-06-02</td><td>Aplicación funcional, suite de pruebas en verde, CI en verde, APK <em>release</em> firmado</td></tr><tr><td><strong>ENTREGA FINAL</strong></td><td align="center">10</td><td>2026-06-09</td><td>Memoria completa (8 documentos TFG), manuales técnico y de usuario, presentación, repositorio limpio</td></tr><tr><td><strong>DEFENSA</strong></td><td align="center">11</td><td>semana del 09-16/06/2026</td><td>Presentación oral ante tribunal y demostración en vivo</td></tr></tbody></table>
+<p>Cada entrega exige verificación previa: <code>flutter analyze</code> sin <em>issues</em>,
+<code>flutter test</code> íntegramente verde y CI sin fallos en el <em>commit</em> que se
+entrega.</p>
+<hr>
+<h2 id="9-procedimiento-de-cierre-de-sprint">9. Procedimiento de cierre de sprint</h2>
+<p>Cada sprint semanal se cierra el domingo con la siguiente lista de
+verificación:</p>
+<ol>
+<li><code>flutter analyze</code> con cero <em>issues</em>.</li>
+<li><code>flutter test</code> con cero fallos sobre los 679 tests del repositorio
+en el momento de la verificación.</li>
+<li><code>git status</code> con árbol limpio.</li>
+<li><em>Commit</em> convencional (<code>feat</code>, <code>fix</code>, <code>docs</code>, etc.) y <em>push</em> a
+<code>master</code> mediante PR de auto-revisión.</li>
+<li>CI completa en verde (seis <em>jobs</em>: analyze, test, build-web, build-apk,
+semgrep, gitleaks).</li>
+<li>Actualización de <code>docs/00_MAESTRO.md</code> y, si procede, del plan mega
+refinamiento.</li>
+<li>Anotación retrospectiva si toca cierre de sprint número par.</li>
+</ol>
+<p>Si alguno de los criterios falla, el sprint no se cierra y se decide si
+extender una jornada o trasladar el ítem al siguiente sprint con
+penalización documentada.</p>
+<hr>
+<h2 id="10-resumen-ejecutivo">10. Resumen ejecutivo</h2>
+<p>El plan de Transitly cubre 11 semanas naturales del 1 de abril al 16 de
+junio de 2026, con un calendario coherente con un TFG de DAM y con un
+único autor a tiempo prácticamente completo. La metodología combina
+cascada para las fases que requieren documentación previa estable
+(análisis y diseño) con sprints semanales tipo Scrum solo para el
+desarrollo. El coste directo es cero; los riesgos críticos están
+identificados, mitigados y con contingencia escrita. Los entregables
+parciales se anclan a fechas verificables y a criterios de aceptación
+objetivos (CI verde, tests sin fallos, documentación sincronizada).</p>
+<hr>
+<h2 id="adenda--avance-entre-el-23-de-mayo-y-el-4-de-junio-de-2026">Adenda — Avance entre el 23 de mayo y el 4 de junio de 2026</h2>
+<p>Entre la firma del anchor original <code>b908f3c</code> (23/05) y el cierre intermedio <code>5231f4c</code> (04/06) se han ejecutado <strong>94 commits</strong> repartidos en cinco oleadas de estabilización derivadas del feedback recogido en el primer ciclo de pruebas. La planificación inicial no contemplaba con detalle esta fase intensiva de bugfix posterior al <strong>hito de fin de desarrollo</strong> (02/06), pero se ha integrado en el calendario sin tensionar el cierre del 16/06 gracias al margen reservado a la <strong>semana 10</strong> (seguimiento y evaluación).</p>
+<p><strong>Asignación temporal real entre 23/05 y 04/06:</strong></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Lote de trabajo</th><th>Periodo</th><th>Resultado</th></tr></thead><tbody><tr><td>Reparación V3–V5 (personalización, fondos, paletas, dislexia, splash)</td><td>23–25 mayo</td><td>Bug crítico de fuentes neutralizado; recuperación de personalización persistente</td></tr><tr><td>Mega oleada 14 bugs (auth, widgets, theming, mapa, comunidad)</td><td>26–27 mayo</td><td>Cierre de 14 ítems con cobertura cross-sectorial</td></tr><tr><td>Crash a11y + recovery boot</td><td>28–29 mayo</td><td><code>BootCanary</code> + <code>RecoveryScreen</code> operativos</td></tr><tr><td>Plan 21 bugs (mapa, perfil, auth, comunidad)</td><td>30 mayo – 1 junio</td><td>16/21 cerrados en el primer pase; 5 cerrados en la oleada siguiente</td></tr><tr><td>Plan 8 mejoras + cierre auth Google + RLS 42P17 + release v1.11.0</td><td>2 – 4 junio</td><td>Release pública publicada en GitHub Releases con APK firmado</td></tr></tbody></table>
+<p><strong>Impacto en el cronograma global:</strong> las semanas 6 a 9 (desarrollo) se cierran con un excedente funcional positivo (widgets configurables, wizard de rutas con tap en mapa, recovery boot) que no estaba en la lista mínima del MVP, y con cero deudas técnicas críticas bloqueantes. La <strong>semana 10</strong> (seguimiento y evaluación, 3–9 junio) absorbe la estabilización post-MVP sin desplazar la fecha de defensa.</p>
+<p><strong>Decisión documentada de alcance:</strong> se confirma sin cambios la exclusión de <strong>GTFS-Realtime real</strong> (pendiente del operador), <strong>widget iOS completo</strong>, <strong>expansión a otras ciudades</strong> y <strong>modelo ML de ETA</strong>, ya recogida en <code>01_analisis_contexto.md</code> y en <code>docs/EXTERNAL_BLOCKERS.md</code>. Adicionalmente se documenta como <strong>deuda explícita</strong>: configuración SMTP propia (la verificación de email queda bypaseada durante el TFG con el flujo descrito en <code>docs/SUPABASE_SETUP.md</code>).</p>
+<p><strong>Riesgo materializado y resuelto:</strong> durante las pruebas con dispositivos físicos se detectó un crash nativo del engine al combinar opciones de accesibilidad. Inicialmente requería <code>adb shell pm clear</code> (borrado total). La mitigación implementada (boot canary + persistencia diferida + recovery UI) elimina el riesgo de aplicación brickeada y mantiene la usabilidad sin intervención del usuario más allá de un eventual botón “Restaurar configuración por defecto” en la pantalla de recovery.</p>
+<hr>
+<h2 id="adenda-2--cierre-del-cronograma-a-8-de-junio-de-2026">Adenda 2 — Cierre del cronograma a 8 de junio de 2026</h2>
+<p>La <strong>ENTREGA FINAL</strong> (semana 10, 09/06/2026) se alcanza en plazo. Durante las semanas 10 y 11 se ejecutaron, dentro del margen planificado, las funcionalidades que cerraban objetivos parciales y la publicación de la documentación, sin desplazar la fecha de defensa:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Lote de trabajo</th><th>Periodo</th><th>Resultado</th></tr></thead><tbody><tr><td>Push FCM real (cliente) + verificación en dispositivo</td><td>7–8 junio</td><td>App recibe push con la app cerrada; token en <code>device_tokens</code></td></tr><tr><td>Modo conductor en segundo plano (foreground service)</td><td>7–8 junio</td><td>Seguimiento GPS continúa con pantalla bloqueada</td></tr><tr><td>Planificador origen→destino reactivado</td><td>7–8 junio</td><td>Flujo de trayectos con transbordos (<code>/route-plan</code>)</td></tr><tr><td>Web del proyecto en GitHub Pages + release v1.12.1</td><td>8 junio</td><td>Presentación, entregables y descarga del APK públicos</td></tr></tbody></table>
+<p><strong>Cronograma cumplido sin desviación de la fecha de defensa.</strong> El coste directo se mantiene en 0 €. La planificación inicial (11 semanas, metodología híbrida cascada + Scrum solo) demostró robustez: absorbió tanto la estabilización post-MVP como las funcionalidades finales sin tensionar el hito de cierre.</p> </div> <nav class="mt-16 pt-8 border-t border-transit-bg-raised grid grid-cols-2 gap-4"> <a href="/Transitly/docs/02_diseno_proyecto" class="glass-card hover-lift p-4 group"> <span class="text-xs text-transit-text-lo">← Anterior</span> <div class="text-sm font-semibold text-transit-text-hi group-hover:text-transit-accent transition-colors mt-1">02 · Diseño del proyecto</div> </a> <a href="/Transitly/docs/04_desarrollo_implementacion" class="glass-card hover-lift p-4 text-right group"> <span class="text-xs text-transit-text-lo">Siguiente →</span> <div class="text-sm font-semibold text-transit-text-hi group-hover:text-transit-accent transition-colors mt-1">04 · Desarrollo</div> </a> </nav> </article>  </main> <script type="module">history.scrollRestoration="manual";window.addEventListener("beforeunload",()=>{window.scrollTo(0,0)});const b=document.getElementById("mobile-menu-btn"),E=document.getElementById("mobile-menu-close"),o=document.getElementById("mobile-menu"),L=o?.querySelectorAll(".mobile-link"),l=document.getElementById("main-nav");function k(){o&&(o.classList.remove("hidden"),o.classList.add("flex"))}function i(){o&&(o.classList.add("hidden"),o.classList.remove("flex"))}b?.addEventListener("click",k);E?.addEventListener("click",i);L?.forEach(e=>e.addEventListener("click",i));if(l){const e=l.querySelector("div");window.addEventListener("scroll",()=>{window.scrollY>20?e?.classList.add("shadow-lg","shadow-transit-accent/5"):e?.classList.remove("shadow-lg","shadow-transit-accent/5")})}const y=document.querySelectorAll("section[id]"),A=document.querySelectorAll('nav a[href^="#"]');addEventListener("scroll",()=>{let e="";y.forEach(t=>{window.scrollY+120>=t.offsetTop&&(e=t.id)}),A.forEach(t=>{t.classList.toggle("!text-transit-accent",t.hash===`#${e}`)})},{passive:!0});const d=new IntersectionObserver(e=>{e.forEach(t=>{if(!t.isIntersecting)return;const n=t.target,s=+n.dataset.counterTarget,h=n.dataset.counterSuffix||"",v=1400,w=performance.now(),a=p=>{const c=Math.min((p-w)/v,1),g=Math.floor(x(c)*s);n.textContent=g+h,c<1&&requestAnimationFrame(a)};requestAnimationFrame(a),d.unobserve(n)})},{threshold:.4});function x(e){return 1-Math.pow(1-e,3)}document.querySelectorAll("[data-counter]").forEach(e=>d.observe(e));const u=new IntersectionObserver(e=>{e.forEach(t=>{t.isIntersecting&&(setTimeout(()=>{t.target.classList.add("revealed")},parseInt(t.target.dataset.delay||"0")),u.unobserve(t.target))})},{threshold:.15,rootMargin:"0px 0px -50px 0px"});document.querySelectorAll(".reveal, .reveal-left, .reveal-right, .reveal-scale").forEach(e=>{u.observe(e)});const f=document.querySelectorAll("[data-download-apk]");let r=null;async function m(){if(r)return r;try{const e=await fetch("https://api.github.com/repos/astralk9999/Transitly/releases/latest",{headers:{Accept:"application/vnd.github+json"}});if(!e.ok)return null;const n=(await e.json()).assets?.find(s=>s.name&&s.name.endsWith(".apk"));if(n?.browser_download_url)return r=n.browser_download_url,r}catch{}return null}f.length>0&&m();f.forEach(e=>{e.addEventListener("click",async t=>{const n=await m();n&&(t.preventDefault(),window.location.href=n)})});</script> </body> </html>

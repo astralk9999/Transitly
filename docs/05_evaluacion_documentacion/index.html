@@ -1,0 +1,353 @@
+<!DOCTYPE html><html lang="es"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Control y seguimiento, registro de incidencias, feedback de usuarios, métricas finales y lecciones."><title>05 · Evaluación — Transitly TFG</title><meta property="og:title" content="05 · Evaluación — Transitly TFG"><meta property="og:description" content="Control y seguimiento, registro de incidencias, feedback de usuarios, métricas finales y lecciones."><meta property="og:image" content="/Transitly/og-image.png"><meta property="og:type" content="website"><meta property="og:url" content="https://astralk9999.github.io/Transitly/"><meta name="twitter:card" content="summary_large_image"><link rel="icon" type="image/png" href="/Transitly/transitly_logo.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"><link rel="stylesheet" href="/Transitly/_astro/Layout.CVcVUMNB.css"></head> <body class="bg-transit-bg-root text-transit-text-hi font-sans antialiased"> <nav id="main-nav" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"> <div class="bg-transit-bg-root/85 backdrop-blur-xl border-b border-transit-bg-raised/50"> <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between"> <a href="/Transitly" class="font-bold text-xl text-transit-accent hover:text-transit-accent/80 transition">
+Transitly
+</a> <div class="hidden lg:flex items-center gap-6 text-sm"> <a href="#problema" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Problema</a> <a href="#solucion" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Solución</a> <a href="#arquitectura" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Arquitectura</a> <a href="#features" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Features</a> <a href="#metodologia" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Metodología</a> <a href="#metricas" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Métricas</a> <a href="#calidad" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Calidad</a> <a href="#seguridad" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Seguridad</a> <a href="/Transitly/docs" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Entregables</a> <a href="/Transitly/defensa" class="text-transit-accent hover:text-transit-accent/80 transition-colors font-medium">Defensa ▸</a> <a href="https://github.com/astralk9999/Transitly/releases/latest" data-download-apk class="px-5 py-2 bg-transit-accent text-white rounded-full text-xs font-semibold hover:bg-transit-accent/85 transition-all" target="_blank" rel="noopener">
+Descargar APK
+</a> </div> <button id="mobile-menu-btn" class="lg:hidden text-transit-text-mid hover:text-transit-text-hi transition-colors" aria-label="Abrir menú"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"> <line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line> </svg> </button> </div> </div> </nav> <div id="mobile-menu" class="fixed inset-0 z-40 bg-transit-bg-root/95 backdrop-blur-xl hidden flex-col items-center justify-center gap-8"> <button id="mobile-menu-close" class="absolute top-6 right-6 text-transit-text-mid hover:text-transit-text-hi transition-colors" aria-label="Cerrar menú"> <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"> <line x1="18" x2="6" y1="6" y2="18"></line><line x1="6" x2="18" y1="6" y2="18"></line> </svg> </button> <a href="#problema" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Problema</a> <a href="#solucion" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Solución</a> <a href="#arquitectura" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Arquitectura</a> <a href="#features" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Features</a> <a href="#metricas" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Métricas</a> <a href="#calidad" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Calidad</a> <a href="#seguridad" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Seguridad</a> <a href="/Transitly/docs" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Entregables</a> <a href="/Transitly/defensa" class="mobile-link text-2xl font-medium text-transit-accent hover:text-transit-accent/80 transition-colors">Defensa ▸</a> <a href="https://github.com/astralk9999/Transitly/releases/latest" data-download-apk class="mobile-link px-8 py-3 bg-transit-accent text-white rounded-full text-lg font-semibold hover:bg-transit-accent/85 transition-all" target="_blank" rel="noopener">
+Descargar APK
+</a> </div> <main class="pt-16">  <article class="max-w-3xl mx-auto px-6 py-12"> <a href="/Transitly/docs" class="inline-flex items-center gap-2 text-sm text-transit-text-mid hover:text-transit-accent transition-colors mb-8"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
+Todos los entregables
+</a> <div class="mb-8"> <span class="text-xs font-mono text-transit-accent uppercase tracking-wider">Documento 05 · 5 · Evaluación</span> </div> <div class="doc-prose"> <h1 id="05--seguimiento-evaluación-y-documentación">05 — Seguimiento, Evaluación y Documentación</h1>
+<p><strong>Proyecto:</strong> Transitly (nexto-stop-v2)
+<strong>Rama / HEAD original:</strong> <code>master @ b908f3c</code>
+<strong>Fecha de cierre del anchor original:</strong> 2026-05-23
+<strong>Rama / HEAD actualizado:</strong> <code>master @ b47180d0</code> (2026-06-08)
+<strong>Release pública distribuida:</strong> v1.12.1 (APK universal) — <a href="https://github.com/astralk9999/Transitly/releases/tag/v1.12.1">https://github.com/astralk9999/Transitly/releases/tag/v1.12.1</a>
+<strong>Ciclo formativo:</strong> DAM (Desarrollo de Aplicaciónes Multiplataforma)
+<strong>Autoria:</strong> Koldo Uruburu (autoria individual; asistencia IA documentada).</p>
+<hr>
+<h2 id="1-procedimientos-de-control-y-seguimiento-aplicados">1. Procedimientos de control y seguimiento aplicados</h2>
+<p>El proyecto se ha desarrollado a lo largo de once semanas (01/04/2026 a 16/06/2026) y la disciplina de control se ha apoyado en una idea rectora: la documentación solo cuenta si es <strong>verificable contra el código</strong>. Toda cifra públicada en la memoria del TFG se genera o se contrasta con un script reproducible, y los cierres documentales se aceptan únicamente cuando existe un commit que los respalde.</p>
+<h3 id="11-integración-continua">1.1. Integración continua</h3>
+<p>Se mantiene un pipeline en GitHub Actions (<code>.github/workflows/ci.yml</code>) con <strong>seis trabajos</strong> ejecutados en cada push y en cada pull request hacia <code>master</code>:</p>
+<ol>
+<li><strong>Flutter Analyze</strong> — ejecuta <code>flutter analyze</code> con el preset <code>very_good_analysis</code>. Toda incidencia de tipo error, warning o info bloquea el avance.</li>
+<li><strong>Flutter Test</strong> — ejecuta <code>flutter test --coverage</code>, sube <code>coverage/lcov.info</code> como artefacto, válida el umbral global y comprueba budgets por módulo.</li>
+<li><strong>Build Web (release)</strong> — compila el target web para detectar regresiones de tree-shaking, tipos y l10n.</li>
+<li><strong>Build Android APK</strong> — construye el APK release y válida el budget de tamano, verificando el flujo de release completo.</li>
+<li><strong>Semgrep</strong> — análisis estático de seguridad (bloqueante en findings de severidad ERROR).</li>
+<li><strong>Gitleaks</strong> — escaneo de secretos en el árbol y el historial.</li>
+</ol>
+<p>Cuando el pipeline esta rojo, no se avanza en plan ni en documentación: la regla es <strong>CI verde antes de cerrar nada</strong>.</p>
+<h3 id="12-hooks-locales-lefthook">1.2. Hooks locales (lefthook)</h3>
+<p>El control en la máquina del desarrollador se ha automatizado con <code>lefthook</code>. Las reglas activas son:</p>
+<ul>
+<li><strong>pre-commit:</strong> <code>flutter analyze</code>, <code>dart format --set-exit-if-changed</code> y <code>tool/verify_state.sh</code>. Garantiza que los datos públicados en <code>docs/00_MAESTRO.md</code> (número de tests, migraciónes, features, ARB keys) coinciden con la realidad antes de aceptar el commit.</li>
+<li><strong>pre-push:</strong> <code>flutter test</code> y <code>flutter analyze</code>. Evita públicar a remoto un estado que la CI tumbaria.</li>
+</ul>
+<h3 id="13-auditorias-independientes-periodicas">1.3. Auditorias independientes periodicas</h3>
+<p>Durante el ciclo se han ejecutado tres auditorias formales que actuan como contrapeso al sesgo de autor:</p>
+<ul>
+<li><strong>2026-04-15:</strong> auditoria inicial sobre el alcance y la arquitectura base.</li>
+<li><strong>2026-05-17:</strong> auditoria intermedia, documentada en <code>docs/historico/REVISION_INDEPENDIENTE_2026_05_17.md</code>, focalizada en deuda de capa de datos y observabilidad.</li>
+<li><strong>2026-05-22:</strong> auditoria deep-dive con trece sub-agentes en paralelo, archivada en <code>docs/historico/AUDIT_2026_05_22.md</code>. Cubrio accesibilidad, RLS, contraste, observabilidad, dependencias, build Android y backend, y produjo la base del plan de remediacion v2.</li>
+</ul>
+<h3 id="14-code-review-y-plan-vivo">1.4. Code review y plan vivo</h3>
+<p>Al tratarse de autoria individual, el code review se ha realizado mediante <strong>self-review estructurado sobre pull requests internas</strong>: cada cambio significativo se prepara como rama, se revisa contra los criterios de aceptacion del mega plan y se fusiona solo si los hooks pasan. El plan vivo (<code>docs/MEGA_PLAN_REFINAMIENTO.md</code>) clasifica cada ítem en P0-P3 y se actualiza tras cada cierre real.</p>
+<p>El documento maestro (<code>docs/00_MAESTRO.md</code>) actua como fuente única de verdad: sus cifras se autogeneran con <code>tool/verify_state.sh</code>, que cuenta tests, migraciónes, features, ARB keys y commits, y deja constancia del HEAD. Cualquier discrepancia entre lo afirmado y lo medido bloquea el cierre del cambio.</p>
+<h3 id="15-plan-de-remediacion-v2">1.5. Plan de remediacion v2</h3>
+<p>Cuando la auditoria del 22 de mayo identifico desviaciones críticas, se redacto un plan de remediacion estructurado (<code>docs/historico/PLAN_ACCION_REMEDIACION_v2.md</code>) en seis fases ejecutadas en paralelo: capa de datos, observabilidad, accesibilidad, build Android, backend Supabase y documentación. Cada fase tiene criterios de aceptacion explicitos (grep verificable, commits asociados, tests anadidos) y un responsable IA por fase con supervisión humana.</p>
+<hr>
+<h2 id="2-registro-de-incidencias">2. Registro de incidencias</h2>
+<p>Las incidencias significativas detectadas durante el desarrollo se han registrado con fecha, descripcion, categoria, severidad y resolucion. Se listan a continuación las doce más representativas; el registro completo, junto con los SHA exactos de los commits que las cierran, vive en el historial de Git y en <code>docs/historico/</code>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Fecha</th><th>Descripcion</th><th>Categoria</th><th>Severidad</th><th>Resolucion</th></tr></thead><tbody><tr><td>2026-04-22</td><td>El APK release no compilaba: <code>workmanager</code> arrastraba la antigua v1 embedding incompatible con Flutter 3.x.</td><td>Build</td><td>Alta</td><td>Eliminacion del plugin de <code>pubspec.yaml</code> y rebajada de funcionalidad a un <code>Timer</code> controlado por <code>WidgetsBindingObserver</code>.</td></tr><tr><td>2026-04-29</td><td>Drift entre cifras de tests en cinco documentos (175 / 201 / 245 / 292 / 304).</td><td>Documental</td><td>Media</td><td>Creación de <code>tool/verify_state.sh</code> y consumo único en <code>00_MAESTRO.md</code>.</td></tr><tr><td>2026-05-04</td><td>La migración <code>014_audit_log.sql</code> duplicaba la tabla introducida en <code>001_init.sql</code> con un esquema incompatible.</td><td>Backend</td><td>Crítica</td><td>Renumeracion a <code>016_data_exports.sql</code> y conservacion de la auditoria como ampliacion (<code>011_audit_log_extras.sql</code>).</td></tr><tr><td>2026-05-08</td><td>Bug funcional <code>onPressed: () {}</code> en <code>route_detail_screen.dart</code> (línea 181) impedia marcar la ruta como favorita.</td><td>Funciónal</td><td>Alta</td><td>Cableado a <code>userFavoritesProvider</code> y test unitario que cubre el callback.</td></tr><tr><td>2026-05-12</td><td>El color <code>textLo</code> fallaba el contraste WCAG AA: 2,2:1 en tema oscuro y 3,1:1 en tema claro.</td><td>Accesibilidad</td><td>Alta</td><td>Aumento de luminancia + script regenerable <code>dart run tool/contrast_check.dart</code> integrado en <code>verify_state.sh</code>.</td></tr><tr><td>2026-05-15</td><td>El proyecto Supabase quedo pausado por inactividad del plan gratuito.</td><td>Infraestructura</td><td>Media</td><td>Reactivacion manual del proyecto y rotacion de la <code>publishable key</code> documentada.</td></tr><tr><td>2026-05-18</td><td>El scaffold de <code>integration_test</code> estaba roto: el paquete no figuraba en <code>pubspec.yaml</code>.</td><td>Test</td><td>Media</td><td>Incorporacion de la dependencia y tres pruebas felices (boot, login mock, navegación principal).</td></tr><tr><td>2026-05-20</td><td>TalkBack no leia el <code>_NotificationBell</code> de la pantalla <code>home</code>.</td><td>Accesibilidad</td><td>Alta</td><td>Envolver el icono en <code>TransitIconButton</code> con <code>Semantics(label: ...)</code> localizado en ES/EN/AR.</td></tr><tr><td>2026-05-21</td><td>Cero spans en Sentry pese a que <code>docs/SENTRY_SPANS.md</code> describia seis transacciones objetivo.</td><td>Observabilidad</td><td>Alta</td><td>Instrumentacion de las seis transacciones (arranque, mapa, busqueda, login, escaneo NFC, sincronizacion).</td></tr><tr><td>2026-05-21</td><td>Cero eventos en PostHog pese a documentarse diecisiete en <code>docs/POSTHOG_EVENTS.md</code>.</td><td>Observabilidad</td><td>Alta</td><td>Cableado de los diecisiete eventos en las features correspondientes y test que comprueba el mock client.</td></tr><tr><td>2026-05-22</td><td><code>AppLogger</code> quedaba como noop en release, lo que hacia perder los breadcrumbs de Sentry.</td><td>Observabilidad</td><td>Media</td><td>Movimiento de <code>addBreadcrumb</code> fuera del bloque <code>kDebugMode</code> y test asociado.</td></tr><tr><td>2026-05-23</td><td>Factoria de repositorios duplicada en doce providers (código casi identico).</td><td>Deuda técnica</td><td>Media</td><td>Helper <code>repositoryWithSessionFallback</code> reutilizable y refactor coordinado de los doce providers.</td></tr></tbody></table>
+<p>El conjunto de incidencias se encuentra cerrado al cierre del anchor (HEAD <code>b908f3c</code>), salvo los diecinueve bloqueadores externos enumerados en <code>docs/EXTERNAL_BLOCKERS.md</code>, que dependen de servicios o decisiónes fuera del alcance individual (alta en Play Console, certificado Apple, alta de COMUJESA como entidad colaboradora, etc.).</p>
+<hr>
+<h2 id="3-cambios-y-mejoras-documentados">3. Cambios y mejoras documentados</h2>
+<p>La evolucion de Transitly se materializa en un historial de commits trazables con la convencion <code>feat:</code>, <code>fix:</code>, <code>refactor:</code>, <code>test:</code> y <code>docs:</code>. La tabla siguiente resume los grandes bloques de mejora; los SHA exactos pueden consultarse en <code>git log</code> y en <code>CHANGELOG.md</code>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Bloque</th><th>Naturaleza</th><th>Descripcion</th><th>Cobertura tests antes / después</th></tr></thead><tbody><tr><td>Estabilizacion del build Android</td><td>Fix</td><td>Eliminacion de <code>workmanager</code>, paso a Kotlin DSL puro, signing condicional, ABI splits, <code>--obfuscate</code>.</td><td>304 → 314</td></tr><tr><td>Saneamiento de migraciónes SQL</td><td>Fix</td><td>Renumeracion y consolidacion en catorce migraciónes consecutivas con RLS default-deny.</td><td>314 → 334</td></tr><tr><td>Refactor de modelos a <code>@freezed</code></td><td>Refactor</td><td>Veintisiete modelos inmutables con <code>copyWith</code>, <code>==</code>, <code>hashCode</code> y serializacion <code>json_serializable</code>.</td><td>334 → 376</td></tr><tr><td>Cierre de PRO-A11Y completo</td><td>Feat</td><td>Contraste regenerable, <code>textScaler</code> correcto, semántica localizada en ES/EN/AR, foco visible, tap targets 48 dp.</td><td>376 → 500</td></tr><tr><td>Cierre de PRO-Rel (release readiness)</td><td>Feat</td><td>Pipeline de release con AAB firmado, budget de APK, debug-info archivado, splits ABI.</td><td>500 → 480 (regresion controlada y recuperacion)</td></tr><tr><td>Observabilidad real</td><td>Feat</td><td>Seis spans Sentry, diecisiete eventos PostHog, breadcrumbs en release, consent-gating efectivo.</td><td>500 → 523</td></tr><tr><td>Capa de datos con repositorio canonico</td><td>Refactor</td><td>Doce repositorios con domain/remote/local/mock/provider y SWR; helper de fallback de sesión.</td><td>523 → 570</td></tr><tr><td>Cierre de PRO-Ops y EXTERNAL_BLOCKERS</td><td>Docs + feat</td><td>Runbooks operativos, error budget policy, documentación de bloqueadores externos.</td><td>570 → 616</td></tr></tbody></table>
+<p>El detalle completo (commits + PRs internas) puede consultarse en <code>git log --oneline</code> desde el commit raiz hasta <code>b908f3c</code>, junto con los archivos <code>docs/MEGA_PLAN_REFINAMIENTO.md</code> y <code>docs/historico/AUDIT_2026_05_22.md</code>.</p>
+<hr>
+<h2 id="4-feedback-de-usuarios">4. Feedback de usuarios</h2>
+<h3 id="41-sesión-de-validacion-semana-10">4.1. Sesión de validacion (semana 10)</h3>
+<p>El plan académico contempla una sesión de validacion en la semana 10 del cronograma (prevista para el 04/06/2026) con <strong>cinco usuarios</strong> de perfiles diversos: pasajero senior con baja experiencia digital, pasajero joven habituado a apps de transporte, usuario con visión reducida que utiliza lector de pantalla, conductor en activo y administrador municipal.</p>
+<h3 id="42-tareas-guiadas">4.2. Tareas guiadas</h3>
+<p>Cada participante completa, en orden, las siguientes tareas, observadas por el autor sin intervenir:</p>
+<ol>
+<li>Crear una cuenta nueva con email y contrasena.</li>
+<li>Consultar la línea L1 y revisar la siguiente parada.</li>
+<li>Reportar una incidencia ficticia desde el detalle de la ruta.</li>
+<li>Cambiar el idioma de la aplicación a ingles y verificar el cambio.</li>
+<li>Descargar una región offline (Centro de Jerez) y validar la persistencia.</li>
+<li>Leer una tarjeta NFC simulada para comprobar saldo (mock controlado).</li>
+</ol>
+<h3 id="43-instrumento-de-medicion">4.3. Instrumento de medicion</h3>
+<p>La medicion principal es el <strong>System Usability Scale (SUS)</strong> clasico, con sus diez ítems en escala Likert de cinco puntos. El objetivo del proyecto es alcanzar una puntuacion media SUS ≥ 75 (umbral de “good” en la escala interpretativa de Bangor, Kortum y Miller). De forma complementaria se registra el tiempo de finalizacion por tarea, los errores observables y las preguntas verbales emitidas por el participante.</p>
+<h3 id="44-hallazgos-preliminares-y-acciones">4.4. Hallazgos preliminares y acciones</h3>
+<p>A partir de los pilotos internos (autora, dos revisores académicos y un conductor voluntario), los hallazgos cualitativos que ya han generado cambio en código son:</p>
+<ul>
+<li><strong>Positivo:</strong> claridad de los iconos del bottom navigation, paleta accesible para daltonismo (probada con simulador de Coblis), funcionamiento offline en ausencia de cobertura.</li>
+<li><strong>A mejorar:</strong> latencia inicial al cargar el mapa con muchas paradas (mitigada con clustering basado en zoom); nomenclatura arabe imprecisa en algunos campos (corregida tras revisión lingueistica de los 642 strings ARB); peso del APK (deuda reconocida; el universal de v1.12.1 prioriza compatibilidad sobre tamano).</li>
+</ul>
+<p>La sesión formal con los cinco usuarios externos producira un anexo en <code>docs/historico/SUS_2026_06_04.md</code> con los datos en bruto anonimizados y el calculo agregado.</p>
+<hr>
+<h2 id="5-metricas-finales-auditadas">5. Metricas finales auditadas</h2>
+<p>Las cifras siguientes son las verificadas a fecha de defensa (<code>master @ b47180d0</code>, release v1.12.1) y se públican como contrato del cierre del TFG:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Metrica</th><th>Valor</th><th>Comentario</th></tr></thead><tbody><tr><td>Tests automáticos en verde</td><td><strong>679</strong></td><td>Cobertura distribuida entre widgets, modelos, accesibilidad, utilidades y data layer (0 fallos).</td></tr><tr><td>Ficheros de código Dart</td><td><strong>446</strong> (~94k LOC)</td><td>Sin contar código generado (<code>.g.dart</code>, <code>.freezed.dart</code>).</td></tr><tr><td>Cobertura global de tests</td><td><strong>24-30 %</strong></td><td>Buena en componentes UI y modelos, débil en capa <code>data/remote</code> (deuda reconocida y priorizada en P2-4).</td></tr><tr><td>Migraciones SQL aplicadas</td><td><strong>51</strong> consecutivas</td><td>Schema completo con RLS default-deny, funciones helper, líneas/horarios COMUJESA, conductor en vivo y triggers de push.</td></tr><tr><td>Edge Functions desplegadas</td><td><strong>8</strong></td><td><code>send_notification</code>, <code>import_gtfs</code>, <code>delete_user</code>, <code>purge_old_data</code>, <code>generate_data_export</code>, <code>approve_user_route</code>, <code>promote_stop_to_official</code>, <code>validate_share_code</code>.</td></tr><tr><td>Jobs CI en verde</td><td><strong>6 / 6</strong></td><td>Analyze, Test, Build Web, Build APK, Semgrep, Gitleaks.</td></tr><tr><td>Modelos <code>@freezed</code></td><td><strong>30</strong></td><td>Inmutables, con <code>copyWith</code>, <code>==</code>, <code>hashCode</code> y serialización.</td></tr><tr><td>Widgets compartidos</td><td><strong>38</strong></td><td>Reutilizados en toda la app (<code>lib/shared/widgets/</code>).</td></tr><tr><td>Runbooks operativos</td><td><strong>6</strong></td><td>Disaster recovery, error budget, migration rollback, push down, Sentry spike, Supabase down.</td></tr><tr><td>Documentos vivos</td><td><strong>73+</strong></td><td>En <code>docs/</code> (incluye <code>tfg/</code>, <code>runbooks/</code>, <code>adr/</code>, <code>historico/</code>).</td></tr><tr><td>Claves ARB</td><td><strong>642</strong> en español (cobertura EN/AR)</td><td>Cobertura completa de la UI (incluye RTL en árabe).</td></tr><tr><td>Release pública</td><td><strong>v1.12.1</strong> (APK universal, Android 7.0+)</td><td>Distribuida en GitHub Releases; descarga resuelta desde la web.</td></tr><tr><td>Scorecard interno</td><td><strong>TFG 8,9 / 10 — Produccion 6,0 / 10</strong></td><td>Diferenciacion explicita entre madurez académica y madurez productiva.</td></tr></tbody></table>
+<hr>
+<h2 id="6-plan-de-elaboracion-de-manuales">6. Plan de elaboracion de manuales</h2>
+<p>La documentación entregable se ha estructurado en cuatro frentes complementarios:</p>
+<ol>
+<li><strong>Manual técnico (<code>docs/tfg/06_manual_tecnico.md</code>).</strong> Cubre requisitos, instalación, configuración avanzada, estructura del repositorio, despliegue de backend Supabase, configuración de CI/CD, mantenimiento rutinario, runbooks resumidos y resolucion de problemas habituales. Es el documento de referencia para cualquier desarrollador que herede el proyecto.</li>
+<li><strong>Manual de usuario (<code>docs/tfg/07_manual_usuario.md</code>).</strong> Cubre el uso de la aplicación desde la perspectiva del pasajero, conductor y administrador. Incluye capturas, flujos paso a paso y consejos de accesibilidad.</li>
+<li><strong>Runbooks operativos (<code>docs/runbooks/</code>).</strong> Seis documentos operativos pensados para incidentes reales en producción: recuperacion ante desastre, política de error budget, rollback de migraciónes, caida de push, picos en Sentry y caida de Supabase. Cada runbook sigue la estructura sintoma / diagnostico / contencion / resolucion / postmortem.</li>
+<li><strong>Documentación de API (<code>dartdoc</code> públicada en GitHub Pages).</strong> Generada automáticamente a partir de los comentarios <code>///</code> del código Dart y desplegada en cada release.</li>
+</ol>
+<hr>
+<h2 id="7-conclusiones-de-evaluación-y-lecciónes-aprendidas">7. Conclusiones de evaluación y lecciónes aprendidas</h2>
+<p>El proceso de evaluación arroja cinco lecciónes que conviene fijar como aprendizaje del proyecto:</p>
+<ol>
+<li><strong>La documentación tratada como contrato verificable evita el drift.</strong> Mientras las cifras se copiaron a mano entre documentos, aparecieron cinco valores distintos del número de tests. Una vez consumidas todas desde <code>verify_state.sh</code>, el drift desaparecio.</li>
+<li><strong>Una auditoria independiente con trece sub-agentes en paralelo detecta lo que la auto-revisión nunca encuentra.</strong> La pasada del 22 de mayo localizo deuda crítica (observabilidad inexistente, contraste fallido, factoria duplicada) que la auto-revisión habia normalizado.</li>
+<li><strong>La asistencia IA como colaboradora exige gobernanza.</strong> Sin un anchor canonico, sin <code>grep</code> verificable y sin la regla de “no inventar cifras”, la asistencia IA tiende a producir documentos coherentes pero falsos. Con esas tres reglas, su contribucion es trazable y defendible.</li>
+<li><strong>Un plan v2 dividido en seis fases con criterios de aceptacion explicitos permite progreso medible.</strong> Cada fase del plan de remediacion tenia criterios de aceptacion expresables como un <code>grep</code> o un test, lo que permitio coordinar trabajos en paralelo sin perder el control.</li>
+<li><strong>El cierre real (commit + grep) y el cierre documental son distintos; solo el primero cuenta.</strong> Esta disciplina ha sido el principal factor diferenciador entre lo declarado y lo entregable.</li>
+</ol>
+<p>El proyecto cumple los objetivos académicos definidos en la fase de planificación y deja, al cierre del anchor, un sistema documentado, auditado y verificable, con un plan público para llevarlo desde “TFG aprobado” hasta “producto en producción”.</p>
+<hr>
+<h2 id="adenda--evolución-entre-2305-y-0406-de-2026">Adenda — Evolución entre 23/05 y 04/06 de 2026</h2>
+<p>Tras el cierre del anchor original <code>b908f3c</code>, se ejecutaron 94 commits adicionales agrupados en cinco oleadas de estabilización post-MVP. Los hechos más relevantes para esta sección de evaluación son los siguientes:</p>
+<p><strong>Cierre de un crash bloqueante identificado en pruebas de usuario.</strong> Durante las sesiones de prueba con dispositivos físicos del 24-27 de mayo se detectó que la combinación simultánea de varias opciones de accesibilidad (dislexia + alto contraste + escala de texto máxima) provocaba un crash nativo del engine de Flutter no capturable por <code>try/catch</code> en Dart. La aplicación quedaba inutilizable y la única recuperación era <code>adb shell pm clear</code>. La mitigación implementada (BootCanary + persistencia diferida de preferencias + RecoveryScreen) elimina el riesgo: la app detecta el crash al siguiente arranque, revierte la última preferencia tóxica y, tras dos crashes consecutivos, muestra una pantalla de recovery con <code>MaterialApp</code> propio sin shaders ni fuentes custom. El indicador “número de crashes que requieren clear data” pasa de no-cero a cero en los criterios de aceptación operativos.</p>
+<p><strong>Resolución de un error PostgreSQL 42P17 detectado en el flujo post-login.</strong> La carga de “Mis contribuciones” en el perfil fallaba con <code>PostgrestException: infinite recursion detected in policy for relation route_shares</code>. Auditadas las políticas RLS de las tres tablas involucradas (<code>route_shares</code>, <code>routes</code>, <code>user_routes</code>), se identificó un ciclo cerrado entre <code>route_shares_select_owner</code> y <code>routes_select_visible</code>. Se desplegó la migración SQL <code>fix_route_shares_rls_recursion</code> que introduce la función <code>public.is_route_owner(uuid)</code> con <code>SECURITY DEFINER</code> para romper la recursión. Verificación: consulta <code>SELECT count(*) FROM route_shares</code> ejecuta sin error tras el deploy. Aumenta en uno el contador de migraciones SQL aplicadas (a 15 totales).</p>
+<p><strong>Release pública v1.11.0 con APK como Release Asset en GitHub.</strong> Hasta la fecha del anchor original, las versiones del APK se versionaban en el directorio <code>presentation/public/</code> del repositorio para servirlas desde GitHub Pages. Esta práctica generaba dos problemas: (a) GitHub avisaba (>50 MB) y rechazaría (>100 MB) en versiones futuras; (b) cada APK histórico inflaba el <code>.git/</code> indefinidamente. La solución implementada elimina los 9 APKs históricos del <code>HEAD</code> (~792 MB liberados), añade <code>*.apk</code> a <code>.gitignore</code> raíz, y publica el APK v1.11.0 como asset del release oficial. La presentación web enlaza ahora a <code>releases/latest</code>, URL estable que apunta siempre a la última versión publicada.</p>
+<p><strong>Bypass documentado de verificación de email.</strong> Como deuda explícita por la imposibilidad de configurar SMTP propio dentro del cronograma del TFG, se bypaseó la verificación de email obligatoria de Supabase. El listener emite <code>AuthAuthenticated</code> sin esperar a <code>emailConfirmedAt</code>, y <code>signUpWithEmail</code> realiza un auto-login defensivo si la configuración del dashboard fuerza la creación de usuarios sin sesión activa. La infraestructura para reactivar verificación (<code>EmailVerifyPendingScreen</code>, ruta <code>/verify-email</code>) queda intacta y documentada en <code>docs/SUPABASE_SETUP.md</code>.</p>
+<p><strong>Logs <code>warn</code> y <code>error</code> activos en builds de release.</strong> Para diagnosticar el bug del flujo Google Sign-In (descrito en <code>04_desarrollo_implementacion.md</code> §11.2) fue necesario eliminar el guard <code>kDebugMode</code> en los métodos <code>warn</code> y <code>error</code> de <code>AppLogger</code>. Esta decisión permite observabilidad en producción de errores reales sin inflar <code>logcat</code> con ruido (los niveles <code>debug</code>, <code>info</code> y <code>perf</code> siguen siendo debug-only). Refuerza el objetivo no funcional de observabilidad.</p>
+<p>Los indicadores cuantitativos del anchor original permanecen vigentes y se complementan con: <strong>release v1.11.0 publicada y descargable</strong>, <strong>migraciones SQL: 14 → 15</strong>, <strong>+94 commits</strong>, <strong>+5 documentos técnicos</strong> en <code>docs/historico/</code> (planes de acción de las cinco oleadas), <strong>0 crashes bloqueantes que requieran clear data</strong> tras la mitigación, y <strong>3 widgets configurables vía perfil</strong> con preview en vivo.</p>
+<hr>
+<h2 id="adenda-2--cierre-a-8-de-junio-de-2026-release-v1121">Adenda 2 — Cierre a 8 de junio de 2026 (release v1.12.1)</h2>
+<p>Tras la adenda anterior, el trabajo se concentró en cerrar los objetivos funcionales que aún se cubrían parcialmente y en publicar la documentación del proyecto. Hechos relevantes para la evaluación:</p>
+<p><strong>Notificaciones push reales (FCM) verificadas con la app cerrada.</strong> Se completó la integración de cliente Firebase Cloud Messaging y el registro del token en <code>device_tokens</code>; el backend de envío (<code>send_notification</code> + triggers) ya existía. Verificación en dispositivo físico: el log muestra <code>FlutterFirebaseMessagingBackgroundService started</code> y la app inicia sin fallos con FCM activo. Queda como dependencia externa la <em>service account</em> del operador (<code>docs/FCM_SETUP.md</code>), análoga al resto de bloqueadores de <code>docs/EXTERNAL_BLOCKERS.md</code>.</p>
+<p><strong>Modo conductor resiliente en segundo plano.</strong> Migración del seguimiento GPS a <code>Geolocator.getPositionStream</code> con foreground service: la posición sigue emitiéndose con la pantalla bloqueada. Indicador operativo “el conductor deja de compartir al bloquear el móvil” pasa de verdadero a falso.</p>
+<p><strong>Planificador origen→destino reactivado</strong> (<code>RoutePlannerService</code>, ruta <code>/route-plan</code>), cerrando el flujo de consulta de trayectos.</p>
+<p><strong>Publicación de la web del proyecto en GitHub Pages</strong> con la presentación, los entregables del TFG navegables y la descarga del APK resuelta desde la release más reciente. Corrección del modo claro de la web.</p>
+<p><strong>Evolución de métricas respecto al anchor original:</strong> tests <strong>619 → 679</strong>, migraciones SQL <strong>14 → 51</strong>, Edge Functions <strong>4 → 8</strong>, claves ARB <strong>628 → 642</strong>, jobs CI <strong>4 → 6</strong>, release <strong>v1.11.0 → v1.12.1 (APK universal)</strong>. Todas las cifras son verificables sobre el árbol en <code>master @ b47180d0</code>.</p>
+<p><strong>Nota de autoría:</strong> se corrige el nombre del autor a <strong>Koldo Uruburu</strong>, en coherencia con el resto de la documentación y los metadatos del proyecto.</p> </div> <nav class="mt-16 pt-8 border-t border-transit-bg-raised grid grid-cols-2 gap-4"> <a href="/Transitly/docs/04_desarrollo_implementacion" class="glass-card hover-lift p-4 group"> <span class="text-xs text-transit-text-lo">← Anterior</span> <div class="text-sm font-semibold text-transit-text-hi group-hover:text-transit-accent transition-colors mt-1">04 · Desarrollo</div> </a> <a href="/Transitly/docs/06_manual_tecnico" class="glass-card hover-lift p-4 text-right group"> <span class="text-xs text-transit-text-lo">Siguiente →</span> <div class="text-sm font-semibold text-transit-text-hi group-hover:text-transit-accent transition-colors mt-1">06 · Manual técnico</div> </a> </nav> </article>  </main> <script type="module">history.scrollRestoration="manual";window.addEventListener("beforeunload",()=>{window.scrollTo(0,0)});const b=document.getElementById("mobile-menu-btn"),E=document.getElementById("mobile-menu-close"),o=document.getElementById("mobile-menu"),L=o?.querySelectorAll(".mobile-link"),l=document.getElementById("main-nav");function k(){o&&(o.classList.remove("hidden"),o.classList.add("flex"))}function i(){o&&(o.classList.add("hidden"),o.classList.remove("flex"))}b?.addEventListener("click",k);E?.addEventListener("click",i);L?.forEach(e=>e.addEventListener("click",i));if(l){const e=l.querySelector("div");window.addEventListener("scroll",()=>{window.scrollY>20?e?.classList.add("shadow-lg","shadow-transit-accent/5"):e?.classList.remove("shadow-lg","shadow-transit-accent/5")})}const y=document.querySelectorAll("section[id]"),A=document.querySelectorAll('nav a[href^="#"]');addEventListener("scroll",()=>{let e="";y.forEach(t=>{window.scrollY+120>=t.offsetTop&&(e=t.id)}),A.forEach(t=>{t.classList.toggle("!text-transit-accent",t.hash===`#${e}`)})},{passive:!0});const d=new IntersectionObserver(e=>{e.forEach(t=>{if(!t.isIntersecting)return;const n=t.target,s=+n.dataset.counterTarget,h=n.dataset.counterSuffix||"",v=1400,w=performance.now(),a=p=>{const c=Math.min((p-w)/v,1),g=Math.floor(x(c)*s);n.textContent=g+h,c<1&&requestAnimationFrame(a)};requestAnimationFrame(a),d.unobserve(n)})},{threshold:.4});function x(e){return 1-Math.pow(1-e,3)}document.querySelectorAll("[data-counter]").forEach(e=>d.observe(e));const u=new IntersectionObserver(e=>{e.forEach(t=>{t.isIntersecting&&(setTimeout(()=>{t.target.classList.add("revealed")},parseInt(t.target.dataset.delay||"0")),u.unobserve(t.target))})},{threshold:.15,rootMargin:"0px 0px -50px 0px"});document.querySelectorAll(".reveal, .reveal-left, .reveal-right, .reveal-scale").forEach(e=>{u.observe(e)});const f=document.querySelectorAll("[data-download-apk]");let r=null;async function m(){if(r)return r;try{const e=await fetch("https://api.github.com/repos/astralk9999/Transitly/releases/latest",{headers:{Accept:"application/vnd.github+json"}});if(!e.ok)return null;const n=(await e.json()).assets?.find(s=>s.name&&s.name.endsWith(".apk"));if(n?.browser_download_url)return r=n.browser_download_url,r}catch{}return null}f.length>0&&m();f.forEach(e=>{e.addEventListener("click",async t=>{const n=await m();n&&(t.preventDefault(),window.location.href=n)})});</script> </body> </html>

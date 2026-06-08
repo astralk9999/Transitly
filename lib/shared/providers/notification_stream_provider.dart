@@ -9,9 +9,55 @@ import '../../data/notification/notification_repository_provider.dart';
 import '../../data/reputation/reputation_repository.dart';
 import '../../data/supabase/supabase_client_provider.dart';
 import '../models/app_notification.dart';
+import 'theme_notifier.dart';
 import 'user_provider.dart';
 
 const _logTag = 'Provider:NotificationStream';
+
+/// ¿Debe entregarse esta notificación según las preferencias del usuario?
+/// (toggles del perfil + horas de silencio). Centraliza el respeto a las
+/// preferencias, que antes se ignoraban al disparar la notificación local.
+bool _allowedByPrefs(ThemeNotifier prefs, AppNotification n) {
+  // Horas de silencio: si están activas y la hora actual cae dentro, no se
+  // muestra (salvo críticas, que siempre pasan).
+  final isCritical = n.payload['severity'] == 'critical';
+  if (prefs.quietHoursEnabled && !isCritical) {
+    final s = prefs.quietHoursStart, e = prefs.quietHoursEnd;
+    if (s != null && e != null && _inQuietHours(s, e)) return false;
+  }
+  // Toggle por tipo.
+  switch (n.type) {
+    case AppNotificationType.incidentResolved:
+      return prefs.notifIncidentResolved;
+    case AppNotificationType.routePromoted:
+      return prefs.notifRoutePromoted;
+    case AppNotificationType.busApproachingFavorite:
+      return prefs.notifBusApproaching;
+    case AppNotificationType.featureRequestReplied:
+      return prefs.notifFeatureRequestReplied;
+    default:
+      // Avisos de zona llegan como 'custom' con kind geo/zone.
+      final kind = n.payload['kind'] as String?;
+      if (kind == 'geo' || kind == 'zone' || kind == 'zone_recommendation') {
+        return prefs.notifZoneAlerts;
+      }
+      return true; // XP/rango, share y genéricos siempre
+  }
+}
+
+bool _inQuietHours(String start, String end) {
+  int toMin(String hhmm) {
+    final p = hhmm.split(':');
+    if (p.length < 2) return -1;
+    return (int.tryParse(p[0]) ?? 0) * 60 + (int.tryParse(p[1]) ?? 0);
+  }
+  final now = DateTime.now();
+  final m = now.hour * 60 + now.minute;
+  final s = toMin(start), e = toMin(end);
+  if (s < 0 || e < 0) return false;
+  // Rango que cruza medianoche (p.ej. 22:00–07:00).
+  return s <= e ? (m >= s && m < e) : (m >= s || m < e);
+}
 
 /// Stream of [AppNotification] objects for the currently authenticated
 /// user, delivered via Supabase Realtime.
@@ -91,9 +137,12 @@ final pushBridgeProvider = Provider<void>((ref) {
       return;
     }
     // Solo notificar las NO leídas para no spamear al re-suscribir.
+    final prefs = ref.read(themeNotifierProvider);
     final fresh = list.where((n) => !n.read && !seen.contains(n.id)).toList();
     for (final n in fresh) {
       seen.add(n.id);
+      // Respeta las preferencias del usuario (toggles + horas de silencio).
+      if (!_allowedByPrefs(prefs, n)) continue;
       final title = (n.payload['title'] as String?) ?? _defaultTitle(n);
       final body = (n.payload['body'] as String?) ?? '';
       final severity = n.payload['severity'] as String?;

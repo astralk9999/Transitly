@@ -148,13 +148,24 @@ final driverLiveRepositoryProvider = Provider<DriverLiveRepository>((ref) {
 });
 
 /// Buses en vivo (todos los viajes activos), refrescados por Realtime. El mapa
-/// los pinta moviéndose.
+/// los pinta moviéndose. Se descartan los "zombi": viajes que llevan más de 2
+/// min sin actualizar su posición (un conductor que cerró la app sin terminar)
+/// para que no queden buses parados en el mapa.
 final liveBusesProvider = StreamProvider<List<DriverLiveTrip>>((ref) {
   final client = ref.watch(supabaseClientProvider);
   return client
       .from('driver_live_trips')
       .stream(primaryKey: ['id'])
       .eq('active', true)
-      .map((rows) =>
-          rows.map((r) => DriverLiveTrip.fromJson(r)).toList(growable: false));
+      .map((rows) {
+    final now = DateTime.now();
+    return rows
+        .map((r) => DriverLiveTrip.fromJson(r))
+        .where((t) {
+          final u = t.updatedAt;
+          if (u == null) return true;
+          return now.difference(u.toLocal()).inMinutes < 2;
+        })
+        .toList(growable: false);
+  });
 });

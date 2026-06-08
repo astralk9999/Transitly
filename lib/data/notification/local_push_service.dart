@@ -96,6 +96,7 @@ class LocalPushService {
     required String title,
     required String body,
     String? severity,
+    bool ongoing = false,
   }) async {
     if (!_ready) await init();
     final isCritical = severity == 'critical';
@@ -117,6 +118,10 @@ class LocalPushService {
             importance: isCritical ? Importance.max : Importance.high,
             priority: isCritical ? Priority.max : Priority.high,
             category: AndroidNotificationCategory.message,
+            // Persistente mientras dure la acción (p.ej. conductor
+            // compartiendo): no se puede deslizar para descartar.
+            ongoing: ongoing,
+            autoCancel: !ongoing,
             // Icono pequeño monocromo (la barra de estado lo tinta con
             // `color`).
             icon: 'ic_notification',

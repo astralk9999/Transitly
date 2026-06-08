@@ -148,13 +148,15 @@ class _DriverLiveScreenState extends ConsumerState<DriverLiveScreen> {
         _startedAt = DateTime.now();
       });
       _startTicker();
-      // Notificación: avisa al conductor de que está compartiendo su posición.
+      // Notificación PERSISTENTE: recuerda al conductor que comparte su
+      // posición; se mantiene en la barra hasta que termine la ruta.
       unawaited(LocalPushService.instance.show(
         id: _notifId,
         title: 'Compartiendo tu ubicación',
         body: 'Línea ${_route!.code} · ${_route!.name}'
             '${_departureTime != null ? ' · salida $_departureTime' : ''}. '
             'Los pasajeros te ven en el mapa.',
+        ongoing: true,
       ));
     } catch (e) {
       if (mounted) {
@@ -192,7 +194,9 @@ class _DriverLiveScreenState extends ConsumerState<DriverLiveScreen> {
   Future<void> _stop() async {
     _ticker?.cancel();
     _clock?.cancel();
-    unawaited(LocalPushService.instance.cancel(_notifId));
+    // await para garantizar que la notificación persistente se retira antes
+    // de continuar (antes quedaba en la barra hasta reabrir la app).
+    await LocalPushService.instance.cancel(_notifId);
     await ref.read(driverLiveRepositoryProvider).endTrip();
     if (mounted) {
       setState(() {

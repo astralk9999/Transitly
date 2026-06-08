@@ -30,7 +30,15 @@ class WidgetRefreshService {
       final route = mockData.getRouteById(cfg.routeId!);
       if (route == null) return false;
 
-      final deps = mockData.getNextDepartures(cfg.routeId!, cfg.stopId!, 4);
+      // Salidas reales de HOY pendientes: si las hay, la línea está EN
+      // SERVICIO ahora. Si no, usamos getNextDepartures (que cae a mañana)
+      // solo para mostrar a qué hora reanuda, pero marcando fuera de servicio.
+      final todayDeps =
+          mockData.getUpcomingTodayDepartures(cfg.routeId!, cfg.stopId!, 4);
+      final inService = todayDeps.isNotEmpty;
+      final deps = inService
+          ? todayDeps
+          : mockData.getNextDepartures(cfg.routeId!, cfg.stopId!, 4);
       if (deps.isEmpty) return false;
 
       final first = deps.first;
@@ -51,12 +59,16 @@ class WidgetRefreshService {
         etaMinutes: eta,
         source: 'manual',
         updatedAt: now,
+        inService: inService,
+        nextDepartureTime: first.departureTime,
       );
       await WidgetDataWriter.writeMyLineStatus(
         routeCode: route.code,
         upcoming: deps.map((d) => {'time': d.departureTime}).toList(),
+        inService: inService,
       );
-      AppLogger.info(_tag, 'refreshNow ok — eta=${eta}min route=${route.code}');
+      AppLogger.info(_tag,
+          'refreshNow ok — inService=$inService eta=${eta}min route=${route.code}');
       return true;
     } catch (e) {
       AppLogger.warn(_tag, 'refreshNow failed', e);

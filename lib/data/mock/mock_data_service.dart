@@ -446,6 +446,39 @@ class MockDataService {
     return future.take(count).toList();
   }
 
+  /// Próximas salidas de HOY (día actual) que aún no han pasado, para
+  /// [routeId]+[stopId]. A diferencia de [getNextDepartures], NO hace fallback
+  /// a las salidas de mañana: devuelve lista vacía si la línea ya no circula
+  /// hoy. Se usa para saber si la línea está realmente "en servicio" ahora.
+  List<ScheduleModel> getUpcomingTodayDepartures(
+      String routeId, String stopId, int count) {
+    final rs = routeStops[routeId];
+    if (rs == null) return [];
+    final ordered = List<RouteStopModel>.from(rs)
+      ..sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
+    final stopIndex = ordered.indexWhere((e) => e.stopId == stopId);
+    if (stopIndex < 0) return [];
+    final offsetMinutes = stopIndex * 2;
+
+    final now = DateTime.now();
+    final nowMinutes = now.hour * 60 + now.minute;
+    final weekday = now.weekday;
+    final dayType = weekday == 6
+        ? DayType.saturday
+        : weekday == 7
+            ? DayType.sundayHoliday
+            : DayType.weekday;
+
+    final all = getSchedulesForRoute(routeId, dayType: dayType);
+    final future = all.where((s) {
+      final parts = s.departureTime.split(':');
+      final m = int.parse(parts[0]) * 60 + int.parse(parts[1]);
+      return m + offsetMinutes >= nowMinutes;
+    }).toList()
+      ..sort((a, b) => a.departureTime.compareTo(b.departureTime));
+    return future.take(count).toList();
+  }
+
   ActiveTripModel? getActiveTripForRoute(String routeId) {
     for (final t in activeTrips) {
       if (t.routeId == routeId && t.status != TripStatus.cancelled) return t;

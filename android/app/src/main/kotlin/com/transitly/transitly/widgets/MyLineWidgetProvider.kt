@@ -50,8 +50,17 @@ class MyLineWidgetProvider : HomeWidgetProvider() {
                         val data = JSONObject(jsonStr)
                         val status = data.optString("status", "Sin datos")
                         val summary = data.optString("summary", "")
+                        val updatedLabel = data.optString("updatedLabel", "")
                         views.setTextViewText(R.id.widget_line_status, status)
-                        views.setTextViewText(R.id.widget_line_updated, summary)
+                        // Resumen de próximas + última actualización, para que se
+                        // vea la frescura del dato.
+                        val footer = if (updatedLabel.isNotEmpty()) {
+                            if (summary.isNotEmpty()) "$summary  ·  act. $updatedLabel"
+                            else "Actualizado $updatedLabel"
+                        } else {
+                            summary
+                        }
+                        views.setTextViewText(R.id.widget_line_updated, footer)
 
                         val upcoming = data.optJSONArray("upcoming")
                         populateTimes(views, upcoming)

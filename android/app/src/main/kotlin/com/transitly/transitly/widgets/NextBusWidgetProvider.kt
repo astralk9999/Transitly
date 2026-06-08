@@ -49,9 +49,11 @@ class NextBusWidgetProvider : HomeWidgetProvider() {
                         views.setTextViewText(R.id.widget_next_time, time)
                         views.setTextViewText(R.id.widget_stop_name, stop)
 
-                        val source = data.optString("source", "")
-                        if (source.isNotEmpty()) {
-                            views.setTextViewText(R.id.widget_summary, "Fuente: $source")
+                        // Última actualización del widget, para que el usuario
+                        // sepa la frescura del dato.
+                        val updatedLabel = data.optString("updatedLabel", "")
+                        if (updatedLabel.isNotEmpty()) {
+                            views.setTextViewText(R.id.widget_summary, "Actualizado $updatedLabel")
                         } else {
                             views.setTextViewText(R.id.widget_summary, "")
                         }

@@ -32,7 +32,14 @@ final widgetDataSyncProvider = Provider<void>((ref) {
     unawaited(_pushFromSupabase(arrivalsRepo, route.code, stop, mockData, cfg));
   }
 
-  final deps = mockData.getNextDepartures(cfg.routeId!, cfg.stopId!, 4);
+  // En servicio = hay salidas HOY aún pendientes. Si no, caemos a las de
+  // mañana solo para informar de la reanudación, marcando fuera de servicio.
+  final todayDeps =
+      mockData.getUpcomingTodayDepartures(cfg.routeId!, cfg.stopId!, 4);
+  final inService = todayDeps.isNotEmpty;
+  final deps = inService
+      ? todayDeps
+      : mockData.getNextDepartures(cfg.routeId!, cfg.stopId!, 4);
   if (deps.isNotEmpty) {
     final dep = deps.first;
     final now = DateTime.now();
@@ -50,6 +57,8 @@ final widgetDataSyncProvider = Provider<void>((ref) {
       etaMinutes: etaMinutes,
       source: 'schedule',
       updatedAt: now,
+      inService: inService,
+      nextDepartureTime: dep.departureTime,
     );
 
     WidgetDataWriter.writeMyLineStatus(
@@ -59,6 +68,7 @@ final widgetDataSyncProvider = Provider<void>((ref) {
                 'time': d.departureTime,
               })
           .toList(),
+      inService: inService,
     );
   }
 });
@@ -77,11 +87,15 @@ void _fillFromFavorite(Ref ref) {
     if (route == null) continue;
     final stops = mockData.getStopsForRoute(route.id);
     final stopId = stops.isNotEmpty ? stops.first.id : '';
-    final deps = mockData.getNextDepartures(route.id, stopId, 4);
+    final todayDeps = mockData.getUpcomingTodayDepartures(route.id, stopId, 4);
+    final inService = todayDeps.isNotEmpty;
+    final deps =
+        inService ? todayDeps : mockData.getNextDepartures(route.id, stopId, 4);
     if (deps.isEmpty) continue;
     WidgetDataWriter.writeMyLineStatus(
       routeCode: route.code,
       upcoming: deps.map((d) => {'time': d.departureTime}).toList(),
+      inService: inService,
     );
     final now = DateTime.now();
     final parts = deps.first.departureTime.split(':');
@@ -95,6 +109,8 @@ void _fillFromFavorite(Ref ref) {
       etaMinutes: eta,
       source: 'favorite',
       updatedAt: now,
+      inService: inService,
+      nextDepartureTime: deps.first.departureTime,
     );
     return; // ya hay una oficial; suficiente para el widget
   }
@@ -132,19 +148,25 @@ Future<void> _pushFromCommunity(Ref ref, String routeId) async {
     final code = (route.code != null && route.code!.isNotEmpty)
         ? route.code!
         : route.name;
+    final now = DateTime.now();
+    final nowMin = now.hour * 60 + now.minute;
+    int minOf(String t) {
+      final p = t.split(':');
+      return (int.tryParse(p[0]) ?? 0) * 60 +
+          (p.length > 1 ? (int.tryParse(p[1]) ?? 0) : 0);
+    }
+
+    // En servicio = alguna salida de hoy aún por venir.
+    final inService = times.any((t) => minOf(t) >= nowMin);
     WidgetDataWriter.writeMyLineStatus(
       routeCode: code,
       upcoming: times.map((t) => {'time': t}).toList(),
+      inService: inService,
     );
-    final now = DateTime.now();
-    final nowMin = now.hour * 60 + now.minute;
-    // Próxima salida desde ahora.
+    // Próxima salida desde ahora (con wrap a mañana solo para el ETA).
     var nextEta = 24 * 60;
     for (final t in times) {
-      final p = t.split(':');
-      final m = (int.tryParse(p[0]) ?? 0) * 60 +
-          (p.length > 1 ? (int.tryParse(p[1]) ?? 0) : 0);
-      var eta = m - nowMin;
+      var eta = minOf(t) - nowMin;
       if (eta < 0) eta += 24 * 60;
       if (eta < nextEta) nextEta = eta;
     }
@@ -154,6 +176,8 @@ Future<void> _pushFromCommunity(Ref ref, String routeId) async {
       etaMinutes: nextEta,
       source: 'community',
       updatedAt: now,
+      inService: inService,
+      nextDepartureTime: times.isNotEmpty ? times.first : null,
     );
   } catch (_) {}
 }

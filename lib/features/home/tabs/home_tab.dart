@@ -18,6 +18,8 @@ import '../../../shared/providers/center_on_stop_provider.dart';
 import '../../../shared/providers/user_favorites_provider.dart';
 import '../../../shared/providers/user_location_provider.dart';
 import '../../../shared/providers/route_lookup_providers.dart';
+import '../../../shared/providers/search_selection_provider.dart';
+import '../../../shared/providers/user_routes_for_map_provider.dart';
 import '../../../data/auth/auth_repository.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/glass_card.dart';
@@ -90,32 +92,55 @@ class _HomeTabState extends ConsumerState<HomeTab> {
     final center = userLoc ??
         (refStop != null ? LatLng(refStop.lat, refStop.lng) : null);
 
-    List<StopModel> nearbyStops;
-    Map<String, double> nearbyDistances;
+    // Paradas cercanas: oficiales (mockData) + de comunidad (de las rutas
+    // del usuario, creadas/importadas). Se mezclan y ordenan por distancia.
+    List<({StopModel stop, double dist, bool community})> nearbyStops = [];
     if (center != null) {
-      final raw = mockData.stops
-          .map((s) => (
-                stop: s,
-                dist: const Distance().as(
-                    LengthUnit.Meter, center, LatLng(s.lat, s.lng)),
-              ))
-          .toList()
-        ..sort((a, b) => a.dist.compareTo(b.dist));
-      nearbyStops = raw.take(_nearbyCount).map((e) => e.stop).toList();
-      nearbyDistances = {
-        for (final e in raw.take(_nearbyCount)) e.stop.id: e.dist,
-      };
-    } else {
-      nearbyStops = [];
-      nearbyDistances = {};
+      final entries = <({StopModel stop, double dist, bool community})>[];
+      for (final s in mockData.stops) {
+        entries.add((
+          stop: s,
+          dist: const Distance()
+              .as(LengthUnit.Meter, center, LatLng(s.lat, s.lng)),
+          community: false,
+        ));
+      }
+      // Paradas de comunidad (dedup por PROXIMIDAD <35m: donde acaba una ruta
+      // y empieza otra comparten ubicación pero con ids distintos, así que
+      // dedup por id no basta y salían dos veces).
+      final commStops = <MapStopPoint>[];
+      for (final p in ref.watch(myRouteStopsProvider)) {
+        final dup = commStops.any(
+            (q) => metersBetween(p.lat, p.lng, q.lat, q.lng) < 35);
+        if (!dup) commStops.add(p);
+      }
+      for (final p in commStops) {
+        entries.add((
+          stop: StopModel(
+            id: p.id,
+            name: p.name,
+            officialCode: '',
+            lat: p.lat,
+            lng: p.lng,
+            municipality: '',
+          ),
+          dist: const Distance()
+              .as(LengthUnit.Meter, center, LatLng(p.lat, p.lng)),
+          community: true,
+        ));
+      }
+      entries.sort((a, b) => a.dist.compareTo(b.dist));
+      nearbyStops = entries.take(_nearbyCount).toList();
     }
 
-    // ── T7: Mis líneas desde favoritos reales ──
+    // ── T7: Mis líneas desde favoritos reales (oficiales + comunidad) ──
     final favLineIds = ref.watch(userFavoritesProvider);
     final favRoutes = favLineIds
         .map((id) => mockData.getRouteById(id))
         .whereType<RouteModel>()
         .toList();
+    final favCommunityRoutes =
+        ref.watch(communityFavoriteRoutesProvider).valueOrNull ?? const [];
 
     // ── T9: Mis paradas desde favoritos reales ──
     final favStopIds = ref.watch(userFavoriteStopsProvider);
@@ -123,6 +148,8 @@ class _HomeTabState extends ConsumerState<HomeTab> {
         .map((id) => mockData.getStopById(id))
         .whereType<StopModel>()
         .toList();
+    // Paradas de comunidad favoritas (resueltas desde las rutas del usuario).
+    final favCommunityStops = ref.watch(communityFavoriteStopsProvider);
 
     final favAlerts = ref.watch(homeFavAlertsProvider);
 
@@ -206,10 +233,12 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                 _buildPickReferenceCTA(c, l10n),
               ] else if (nearbyStops.isNotEmpty)
                 StaggerList(
-                  children: nearbyStops.map((stop) {
-                    final dist = nearbyDistances[stop.id];
-                    return _buildNearbyStop(
-                        context, c, mockData, stop, dist);
+                  children: nearbyStops.map((e) {
+                    return e.community
+                        ? _buildCommunityNearbyStop(
+                            context, c, e.stop, e.dist)
+                        : _buildNearbyStop(
+                            context, c, mockData, e.stop, e.dist);
                   }).toList(),
                 )
               else
@@ -262,35 +291,47 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                 const SizedBox(height: 28),
               ],
 
-              // ── 3) MIS LINEAS ──
+              // ── 3) MIS LINEAS (oficiales + comunidad) ──
               _sectionTitle(c, l10n.homeSectionMyLines),
               const SizedBox(height: 10),
-              if (favRoutes.isNotEmpty)
+              if (favRoutes.isNotEmpty || favCommunityRoutes.isNotEmpty)
                 StaggerList(
-                  children: favRoutes.map((route) {
-                    final trip = activeTripsMap[route.id] ??
-                        mockData.getActiveTripForRoute(route.id);
-                    final stopsForRoute =
-                        mockData.getStopsForRoute(route.id);
-                    final next =
-                        mockData.getNextDepartures(route.id, '', 1);
-                    final mins = next.isNotEmpty
-                        ? _minutesUntil(next.first.departureTime)
-                        : null;
-                    final minsStr =
-                        mins != null ? '${mins}m' : null;
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: RouteCard(
-                        route: route,
-                        activeTrip: trip,
-                        remainingStops: stopsForRoute.length,
-                        estimatedMinutes: minsStr,
-                        onTap: () =>
-                            context.push('/route/${route.id}'),
-                      ),
-                    );
-                  }).toList(),
+                  children: [
+                    ...favRoutes.map((route) {
+                      final trip = activeTripsMap[route.id] ??
+                          mockData.getActiveTripForRoute(route.id);
+                      final stopsForRoute =
+                          mockData.getStopsForRoute(route.id);
+                      final next =
+                          mockData.getNextDepartures(route.id, '', 1);
+                      final mins = next.isNotEmpty
+                          ? _minutesUntil(next.first.departureTime)
+                          : null;
+                      final minsStr = mins != null ? '${mins}m' : null;
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: RouteCard(
+                          route: route,
+                          activeTrip: trip,
+                          remainingStops: stopsForRoute.length,
+                          estimatedMinutes: minsStr,
+                          onTap: () => context.push('/route/${route.id}'),
+                        ),
+                      );
+                    }),
+                    // Líneas de comunidad favoritas → detalle de comunidad.
+                    ...favCommunityRoutes.map((route) => Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: RouteCard(
+                            route: route,
+                            activeTrip: null,
+                            remainingStops: 0,
+                            estimatedMinutes: null,
+                            onTap: () => context
+                                .push('/community/route/${route.id}'),
+                          ),
+                        )),
+                  ],
                 )
               else
                 EmptyState(
@@ -299,37 +340,52 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                   icon: Icons.star_border_outlined,
                 ),
 
-              // ── 4) MIS PARADAS ──
-              if (favStops.isNotEmpty) ...[
+              // ── 4) MIS PARADAS (oficiales + comunidad) ──
+              if (favStops.isNotEmpty || favCommunityStops.isNotEmpty) ...[
                 const SizedBox(height: 28),
                 _sectionTitle(c, l10n.homeMyStops),
                 const SizedBox(height: 10),
                 StaggerList(
-                  children: favStops.map((stop) {
-                    final routesAtStop =
-                        mockData.routeStops.entries
-                            .where((e) => e.value
-                                .any((rs) => rs.stopId == stop.id))
-                            .map((e) => e.key)
-                            .toList();
-                    String? nextBusStr;
-                    for (final rid in routesAtStop) {
-                      final dep = mockData.getNextDepartures(
-                          rid, stop.id, 1);
-                      if (dep.isNotEmpty) {
-                        final mins =
-                            _minutesUntil(dep.first.departureTime);
-                        if (mins != null) {
-                          nextBusStr =
-                              l10n.homeNextBus('$mins');
-                          break;
+                  children: [
+                    ...favStops.map((stop) {
+                      final routesAtStop = mockData.routeStops.entries
+                          .where((e) =>
+                              e.value.any((rs) => rs.stopId == stop.id))
+                          .map((e) => e.key)
+                          .toList();
+                      String? nextBusStr;
+                      for (final rid in routesAtStop) {
+                        final dep =
+                            mockData.getNextDepartures(rid, stop.id, 1);
+                        if (dep.isNotEmpty) {
+                          final mins =
+                              _minutesUntil(dep.first.departureTime);
+                          if (mins != null) {
+                            nextBusStr = l10n.homeNextBus('$mins');
+                            break;
+                          }
                         }
                       }
-                    }
-                    return _buildFavoriteStopCard(
-                        c, mockData, stop, routesAtStop,
-                        nextBusStr ?? l10n.homeNoUpcomingDepartures);
-                  }).toList(),
+                      return _buildFavoriteStopCard(c, mockData, stop,
+                          routesAtStop,
+                          nextBusStr ?? l10n.homeNoUpcomingDepartures);
+                    }),
+                    // Paradas de comunidad favoritas (mismo card que las
+                    // cercanas de comunidad, sin distancia).
+                    ...favCommunityStops.map((p) => _buildCommunityNearbyStop(
+                          context,
+                          c,
+                          StopModel(
+                            id: p.id,
+                            name: p.name,
+                            officialCode: '',
+                            lat: p.lat,
+                            lng: p.lng,
+                            municipality: '',
+                          ),
+                          null,
+                        )),
+                  ],
                 ),
               ],
 
@@ -724,6 +780,120 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                 );
               }).toList(),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ── Parada cercana DE COMUNIDAD (creada/importada por el usuario) ──
+  Widget _buildCommunityNearbyStop(BuildContext context, TransitColorScheme c,
+      StopModel stop, double? distanceMeters) {
+    final l10n = AppLocalizations.of(context);
+    final distStr = distanceMeters != null
+        ? l10n.homeNearbyDistance('${distanceMeters.toInt()}')
+        : null;
+    // Líneas de comunidad que pasan por esta parada (por proximidad: cada
+    // ruta crea su propia parada con id distinto).
+    final shapes =
+        ref.watch(communityRouteShapesProvider).valueOrNull ?? const [];
+    final through = <(CommunityRouteShape, String)>[];
+    for (final sh in shapes) {
+      for (final p in sh.stops) {
+        if (p.id == stop.id ||
+            metersBetween(p.lat, p.lng, stop.lat, stop.lng) < 35) {
+          through.add((sh, p.id));
+          break;
+        }
+      }
+    }
+
+    return Pressable(
+      onTap: () {
+        // Centramos el mapa en la parada (con pin destacado).
+        ref.read(searchSelectionProvider.notifier).state = SearchSelection(
+          id: 'community-stop-${stop.id}',
+          position: LatLng(stop.lat, stop.lng),
+          title: stop.name,
+          subtitle: 'Parada de la comunidad',
+          icon: Icons.directions_bus,
+          color: const Color(0xFF4CAF50),
+        );
+        context.go('/home/mapa');
+      },
+      child: GlassCard(
+        blur: 20,
+        fillOpacity: 0.06,
+        borderRadius: 14,
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.all(14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(stop.name,
+                      style: TransitTypography.bodyPrimary(c.textHi)),
+                ),
+                if (distStr != null)
+                  Text(distStr, style: TransitTypography.bodySmall(c.accent)),
+              ],
+            ),
+            const SizedBox(height: 6),
+            // Badge COMUNIDAD.
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+              decoration: BoxDecoration(
+                color: const Color(0xFF4CAF50).withValues(alpha: 0.18),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.groups_outlined,
+                      size: 11, color: Color(0xFF4CAF50)),
+                  const SizedBox(width: 4),
+                  Text('COMUNIDAD',
+                      style: TransitTypography.bodySmall(
+                              const Color(0xFF4CAF50))
+                          .copyWith(fontSize: 9.5, fontWeight: FontWeight.w800)),
+                ],
+              ),
+            ),
+            if (through.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 6,
+                runSpacing: 4,
+                children: through.take(4).map((e) {
+                  final sh = e.$1;
+                  final time = sh.nextHourFor(e.$2) ?? '--:--';
+                  return GestureDetector(
+                    onTap: () => context.push('/community/route/${sh.routeId}'),
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 4),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          TransitChip(sh.code, color: sh.color),
+                          const SizedBox(width: 6),
+                          Flexible(
+                            child: Text(sh.name,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TransitTypography.bodySmall(c.textMid)),
+                          ),
+                          const SizedBox(width: 6),
+                          Text(time,
+                              style: TransitTypography.stopTime(c.textHi)),
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ],
           ],
         ),
       ),

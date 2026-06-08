@@ -305,6 +305,10 @@ class UserRoutesRepository {
         .from('user_routes')
         .select(
             'id, name, code, status, visibility, route_color, vote_count, created_at, author_id, region, user_route_stops(count)')
+        // Las COPIAS importadas por usuarios (imported_from != null) son
+        // personales, no propuestas a la comunidad: no deben aparecer en el
+        // panel de gestión (si no, importar duplicaría la línea aquí).
+        .isFilter('imported_from', null)
         .order('created_at', ascending: false);
     final list = (rows as List<dynamic>).cast<Map<String, dynamic>>();
     final authorIds = list

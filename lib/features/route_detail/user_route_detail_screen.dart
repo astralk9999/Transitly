@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -14,11 +13,20 @@ import '../../data/supabase/supabase_client_provider.dart';
 import '../../data/user_routes/user_route_schedules_repository.dart';
 import '../../data/user_routes/user_routes_repository.dart';
 import '../../data/user_stops/user_stops_repository.dart';
+import '../../shared/models/enums.dart';
 import '../../shared/models/operator_model.dart';
+import '../../shared/models/route_model.dart';
+import '../../shared/models/stop_model.dart';
+import '../../shared/providers/search_selection_provider.dart';
+import '../../shared/providers/user_favorites_provider.dart';
+import '../../shared/providers/user_routes_for_map_provider.dart';
 import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/glass_card.dart';
 import '../../shared/widgets/pressable.dart';
+import '../../shared/widgets/responsive_scaffold.dart';
+import '../../shared/widgets/stop_list_item.dart';
 import '../../shared/widgets/transit_button.dart';
+import 'widgets/route_detail_header.dart';
 import 'user_route_report_modal.dart';
 import 'user_route_share_modal.dart';
 
@@ -41,6 +49,10 @@ class _UserRouteDetailScreenState extends ConsumerState<UserRouteDetailScreen> {
   bool _hasVoted = false;
   bool _isAdmin = false;
   String? _error;
+  String? _authorName;
+  // false = vista "recorrido" (estilo línea oficial); true = vista "info de
+  // la comunidad" (votos, importar, compartir, acciones de admin).
+  bool _showInfo = false;
 
   bool get _isOwner {
     final uid = ref.read(supabaseClientProvider).auth.currentUser?.id;
@@ -92,11 +104,27 @@ class _UserRouteDetailScreenState extends ConsumerState<UserRouteDetailScreen> {
 
       final voted = await routesRepo.hasVoted(widget.routeId);
 
+      // Nombre del creador para el badge "COMUNIDAD · <creador>". author_id
+      // referencia a auth.users, así que el nombre vive en profiles.
+      String? authorName;
+      try {
+        final prof = await ref
+            .read(supabaseClientProvider)
+            .from('profiles')
+            .select('display_name')
+            .eq('id', route.authorId)
+            .maybeSingle();
+        authorName = (prof?['display_name'] as String?)?.trim();
+      } catch (_) {}
+
       setState(() {
         _route = route;
         _stops = results[1] as List<UserRouteStopModel>;
         _schedules = results[2] as List<UserRouteScheduleModel>;
         _hasVoted = voted;
+        _authorName = (authorName != null && authorName.isNotEmpty)
+            ? authorName
+            : null;
         _loading = false;
       });
     } catch (e) {
@@ -153,6 +181,10 @@ class _UserRouteDetailScreenState extends ConsumerState<UserRouteDetailScreen> {
     setState(() => _importing = true);
     try {
       await repo.importRoute(_route!.id);
+      // La ruta importada pasa a ser propia → refrescamos las fuentes del
+      // mapa para que aparezca su trazado y paradas sin reiniciar la app.
+      ref.invalidate(communityRouteShapesProvider);
+      ref.invalidate(userRoutesForMapProvider);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text(
@@ -266,44 +298,43 @@ class _UserRouteDetailScreenState extends ConsumerState<UserRouteDetailScreen> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
+    // Fondo transparente SIEMPRE para que se vea el fondo animado global
+    // (BackgroundWrapper), igual que el detalle de línea oficial de Jerez.
+    final padding = ResponsiveScaffold.screenPadding(context);
 
     if (_loading) {
-      return Scaffold(
-        backgroundColor: c.bgRoot,
-        body: const Center(child: CircularProgressIndicator()),
+      return const Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Center(child: CircularProgressIndicator()),
       );
     }
 
     if (_error != null || _route == null) {
       return Scaffold(
-        backgroundColor: c.bgRoot,
-        appBar: AppBar(
-          backgroundColor: c.bgRoot,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: c.textHi),
-            onPressed: () => context.pop(),
+        backgroundColor: Colors.transparent,
+        body: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              IconButton(
+                icon: Icon(Icons.arrow_back, color: c.textHi),
+                onPressed: () => context.pop(),
+              ),
+              Expanded(
+                child: EmptyState(
+                  _error ?? 'Ruta no encontrada',
+                  'La ruta solicitada no está disponible',
+                  icon: Icons.error_outline,
+                ),
+              ),
+            ],
           ),
-        ),
-        body: EmptyState(
-          _error ?? 'Ruta no encontrada',
-          'La ruta solicitada no está disponible',
-          // TODO: l10n
-          icon: Icons.error_outline,
         ),
       );
     }
 
     final route = _route!;
     final color = _hexToColor(route.routeColor);
-    final stopsWithCoords = _stops
-        .where((s) => s.stop != null)
-        .toList();
-    final center = stopsWithCoords.isNotEmpty
-        ? LatLng(
-            stopsWithCoords.first.stop!.lat,
-            stopsWithCoords.first.stop!.lng,
-          )
-        : const LatLng(36.7, -6.1);
 
     final groupedSchedules = <String, List<UserRouteScheduleModel>>{};
     for (final s in _schedules) {
@@ -311,74 +342,283 @@ class _UserRouteDetailScreenState extends ConsumerState<UserRouteDetailScreen> {
     }
 
     return Scaffold(
-      backgroundColor: c.bgRoot,
-      body: RefreshIndicator(
-        onRefresh: _load,
-        color: c.accent,
-        child: CustomScrollView(
-          slivers: [
-            // AppBar
-            SliverAppBar(
-              backgroundColor: c.bgRoot,
-              pinned: true,
-              leading: IconButton(
-                icon: Icon(Icons.arrow_back, color: c.textHi),
-                onPressed: () => context.pop(),
-              ),
-              title: Text(
-                route.name,
-                style: TransitTypography.heading(c.textHi),
+      backgroundColor: Colors.transparent,
+      body: Stack(
+        children: [
+          ContentConstraints(
+            child: CustomScrollView(
+              slivers: [
+                SliverPadding(
+                  padding: EdgeInsets.fromLTRB(padding, 0, padding, 96),
+                  sliver: SliverList(
+                    delegate: SliverChildListDelegate(
+                      _showInfo
+                          ? _infoSlivers(c, route, color)
+                          : _recorridoSlivers(c, route, color, groupedSchedules),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Botonera inferior fija, IGUAL que el detalle de línea oficial:
+          // [EN EL MAPA] [FAVORITA/QUITAR].
+          if (!_showInfo)
+            Positioned(
+              left: padding,
+              right: padding,
+              bottom: 16,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TransitButton(
+                      label: 'EN EL MAPA',
+                      icon: Icons.map_outlined,
+                      isPrimary: false,
+                      onPressed: () => _enMapa(route),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Consumer(builder: (_, r, __) {
+                      final isFav =
+                          r.watch(userFavoritesProvider).contains(route.id);
+                      return TransitButton(
+                        label: isFav ? 'QUITAR' : 'FAVORITA',
+                        icon: isFav ? Icons.star_outline : Icons.star,
+                        isPrimary: !isFav,
+                        onPressed: () {
+                          final n = r.read(userFavoritesProvider.notifier);
+                          isFav ? n.removeLine(route.id) : n.addLine(route.id);
+                        },
+                      );
+                    }),
+                  ),
+                ],
               ),
             ),
-
-            // Header
-            SliverToBoxAdapter(child: _buildHeader(c, route, color)),
-
-            // Stats
-            SliverToBoxAdapter(child: _buildStatsRow(c, route)),
-
-            // Action buttons
-            SliverToBoxAdapter(child: _buildActionButtons(c)),
-
-            // Map
-            if (stopsWithCoords.isNotEmpty)
-              SliverToBoxAdapter(child: _buildMap(c, stopsWithCoords, color, center)),
-
-            // Stops
-            if (_stops.isNotEmpty)
-              SliverToBoxAdapter(child: _buildSectionTitle(c, 'Paradas', Icons.place)),
-
-            if (_stops.isNotEmpty)
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) => _buildStopTile(c, _stops[index], index),
-                  childCount: _stops.length,
-                ),
-              ),
-
-            // Schedules
-            if (_schedules.isNotEmpty)
-              SliverToBoxAdapter(child: _buildSectionTitle(c, 'Horarios', Icons.schedule)),
-
-            if (_schedules.isNotEmpty)
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final entry = groupedSchedules.entries.toList()[index];
-                    return _buildScheduleGroup(c, entry.key, entry.value);
-                  },
-                  childCount: groupedSchedules.length,
-                ),
-              ),
-
-            const SliverPadding(padding: EdgeInsets.only(bottom: 40)),
-          ],
-        ),
+        ],
       ),
     );
   }
 
-  Widget _buildHeader(TransitColorScheme c, UserRouteModel route, Color color) {
+  /// Vista "recorrido": MISMO display que el detalle de línea oficial de
+  /// Jerez (RouteDetailHeader + RouteQuickInfoCells + timeline), con el badge
+  /// "Comunidad · creador" que ya pinta RouteSourceBadge.
+  List<Widget> _recorridoSlivers(TransitColorScheme c, UserRouteModel route,
+      Color color, Map<String, List<UserRouteScheduleModel>> grouped) {
+    final rm = _toOfficialModel(route, color);
+    final stopsCount = _stops.length;
+    final estimated = route.totalDurationMin ?? (stopsCount * 3);
+    return [
+      const SizedBox(height: 48),
+      // Cabecera: atrás + acceso a la info de comunidad (icono arriba, igual
+      // que el detalle oficial pone sus iconos de acción arriba). El favorito
+      // va en la barra inferior, como las líneas oficiales.
+      Row(
+        children: [
+          GestureDetector(
+            onTap: () => context.pop(),
+            child: Icon(Icons.arrow_back, size: 24, color: c.textMid),
+          ),
+          const Spacer(),
+          IconButton(
+            icon: Icon(Icons.groups_outlined, size: 22, color: c.textMid),
+            tooltip: 'Info de la comunidad',
+            onPressed: () => setState(() => _showInfo = true),
+          ),
+        ],
+      ),
+      const SizedBox(height: 8),
+      RouteDetailHeader(route: rm, activeTrip: null),
+      Divider(height: 32, thickness: 0.5, color: c.border),
+      RouteQuickInfoCells(
+        stopsCount: stopsCount,
+        estimatedMinutes: estimated,
+        frequencyMinutes: null,
+      ),
+      const SizedBox(height: 24),
+      if (_stops.isNotEmpty) _buildTimeline(c, color),
+      if (_schedules.isNotEmpty) ...[
+        _buildSectionTitle(c, 'Horarios', Icons.schedule),
+        for (final entry in grouped.entries)
+          _buildScheduleGroup(c, entry.key, entry.value),
+      ],
+    ];
+  }
+
+  /// Vista "info de la comunidad": stats + acciones (votar/importar/etc.).
+  List<Widget> _infoSlivers(
+      TransitColorScheme c, UserRouteModel route, Color color) {
+    return [
+      const SizedBox(height: 48),
+      Row(
+        children: [
+          GestureDetector(
+            onTap: () => setState(() => _showInfo = false),
+            child: Icon(Icons.arrow_back, size: 24, color: c.textMid),
+          ),
+          const SizedBox(width: 12),
+          Text('Info de la comunidad',
+              style: TransitTypography.heading(c.textHi)),
+        ],
+      ),
+      const SizedBox(height: 16),
+      _buildInfoHeader(c, route, color),
+      _buildStatsRow(c, route),
+      _buildActionButtons(c),
+    ];
+  }
+
+  /// Construye el [RouteModel] oficial equivalente para reusar los widgets
+  /// del detalle de línea de Jerez. `ownerDisplayName` alimenta el badge
+  /// "Comunidad · creador".
+  RouteModel _toOfficialModel(UserRouteModel route, Color color) {
+    return RouteModel(
+      id: route.id,
+      operatorId: 'Comunidad',
+      code: (route.code ?? '').isNotEmpty ? route.code! : '∙',
+      name: route.name,
+      serviceType: switch (route.serviceType) {
+        'interurban' => ServiceType.interurban,
+        'long_distance' => ServiceType.longDistance,
+        'school' => ServiceType.school,
+        'on_demand' => ServiceType.onDemand,
+        _ => ServiceType.urban,
+      },
+      routeColor: color,
+      source: RouteSource.community,
+      status: route.status == 'community_approved'
+          ? RouteStatus.official
+          : RouteStatus.verified,
+      ownerDisplayName: _authorName,
+      lastUpdatedAt: route.updatedAt ?? route.createdAt,
+    );
+  }
+
+  /// Centra el mapa en esta ruta de comunidad (igual que "EN EL MAPA" del
+  /// detalle oficial) y deja la tarjeta del pin para reabrir el detalle.
+  void _enMapa(UserRouteModel route) {
+    final router = GoRouter.of(context);
+    final withCoords = _stops.where((s) => s.stop != null).toList();
+    final position = withCoords.isNotEmpty
+        ? LatLng(withCoords.first.stop!.lat, withCoords.first.stop!.lng)
+        : const LatLng(36.6850, -6.1376);
+    ref.read(searchSelectionProvider.notifier).state = SearchSelection(
+      id: 'community-${route.id}',
+      position: position,
+      title: (route.code ?? '').isNotEmpty ? 'Línea ${route.code}' : route.name,
+      subtitle: route.name,
+      icon: Icons.directions_bus,
+      color: _hexToColor(route.routeColor),
+      pushPath: '/community/route/${route.id}',
+      routeId: route.id,
+    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      router.go('/home/mapa');
+    });
+  }
+
+  /// Timeline de paradas estilo línea oficial (mismo `StopListItem`). Cada
+  /// parada muestra la próxima hora de paso del bus (de los horarios) o
+  /// "--:--" si esa parada no tiene horas registradas.
+  Widget _buildTimeline(TransitColorScheme c, Color color) {
+    final stops = _stops.where((s) => s.stop != null).toList();
+    final hoursByStop = <String, List<String>>{};
+    for (final s in _schedules) {
+      if (s.originStopId == null) continue;
+      (hoursByStop[s.originStopId!] ??= []).add(s.departureTime);
+    }
+    for (final l in hoursByStop.values) {
+      l.sort();
+    }
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.route_outlined, size: 16, color: c.accent),
+              const SizedBox(width: 8),
+              Text('Recorrido',
+                  style: TransitTypography.sectionTitle(c.textMid)),
+            ],
+          ),
+          const SizedBox(height: 8),
+          for (var i = 0; i < stops.length; i++)
+            StopListItem(
+              stop: _toStopModel(stops[i]),
+              scheduledTime:
+                  _nextHour(hoursByStop[stops[i].userStopId]) ?? '--:--',
+              isFirst: i == 0,
+              isLast: i == stops.length - 1,
+            ),
+        ],
+      ),
+    );
+  }
+
+  /// Adapta una parada de comunidad a [StopModel] para reusar los widgets
+  /// del detalle de línea oficial.
+  StopModel _toStopModel(UserRouteStopModel rs) {
+    final st = rs.stop;
+    return StopModel(
+      id: rs.userStopId,
+      name: st?.name ?? 'Parada',
+      officialCode: '',
+      lat: st?.lat ?? 0,
+      lng: st?.lng ?? 0,
+      municipality: '',
+    );
+  }
+
+  /// Próxima hora desde ahora de una lista ordenada HH:mm (o la primera de
+  /// mañana si todas ya pasaron).
+  String? _nextHour(List<String>? hours) {
+    if (hours == null || hours.isEmpty) return null;
+    final now = DateTime.now();
+    final nowMin = now.hour * 60 + now.minute;
+    for (final h in hours) {
+      final p = h.split(':');
+      if (p.length < 2) continue;
+      final m = (int.tryParse(p[0]) ?? 0) * 60 + (int.tryParse(p[1]) ?? 0);
+      if (m >= nowMin) return h;
+    }
+    return hours.first;
+  }
+
+  /// Cabecera estilo línea oficial: badge cuadrado con código + color,
+  /// nombre y badge "COMUNIDAD · creador".
+  /// Badge verde "COMUNIDAD · creador".
+  Widget _communityBadge(String creator) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: const Color(0xFF4CAF50).withValues(alpha: 0.18),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.groups_outlined,
+              size: 13, color: Color(0xFF4CAF50)),
+          const SizedBox(width: 5),
+          Flexible(
+            child: Text('COMUNIDAD · $creator',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TransitTypography.bodySmall(const Color(0xFF4CAF50))
+                    .copyWith(fontSize: 10.5, fontWeight: FontWeight.w800)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Cabecera de la vista de info (más sencilla: badge + creador).
+  Widget _buildInfoHeader(
+      TransitColorScheme c, UserRouteModel route, Color color) {
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
       decoration: BoxDecoration(
@@ -390,84 +630,14 @@ class _UserRouteDetailScreenState extends ConsumerState<UserRouteDetailScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              // Badge cuadrado con código + color (estilo detalle oficial).
-              if ((route.code ?? '').isNotEmpty) ...[
-                Container(
-                  constraints: const BoxConstraints(minWidth: 48),
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 10, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: color.withValues(alpha: 0.22),
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                        color: color.withValues(alpha: 0.65), width: 1.5),
-                  ),
-                  child: Center(
-                    child: Text(route.code!,
-                        style: TransitTypography.routeCode(color),
-                        maxLines: 1),
-                  ),
-                ),
-                const SizedBox(width: 12),
-              ],
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(route.name,
-                        style: TransitTypography.heading(c.textHi),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis),
-                    const SizedBox(height: 4),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 3),
-                      decoration: BoxDecoration(
-                        color:
-                            const Color(0xFF4CAF50).withValues(alpha: 0.18),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.groups_outlined,
-                              size: 12, color: Color(0xFF4CAF50)),
-                          const SizedBox(width: 4),
-                          Text('RUTA DE LA COMUNIDAD',
-                              style: TransitTypography.bodySmall(
-                                      const Color(0xFF4CAF50))
-                                  .copyWith(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w800)),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+          Text(route.name, style: TransitTypography.heading(c.textHi)),
+          const SizedBox(height: 6),
+          _communityBadge(_authorName ?? 'Comunidad'),
           if (route.description != null && route.description!.isNotEmpty) ...[
             const SizedBox(height: 12),
             Text(route.description!,
                 style: TransitTypography.bodyPrimary(c.textMid)),
           ],
-          const SizedBox(height: 12),
-          // Botón "ir a la comunidad" → sección de comunidad.
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton.icon(
-              onPressed: () => context.push('/community'),
-              icon: const Icon(Icons.groups_outlined, size: 16),
-              label: const Text('Ir a la comunidad'),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: const Color(0xFF4CAF50),
-                side: const BorderSide(color: Color(0xFF4CAF50)),
-              ),
-            ),
-          ),
         ],
       ),
     );
@@ -633,121 +803,6 @@ class _UserRouteDetailScreenState extends ConsumerState<UserRouteDetailScreen> {
     );
   }
 
-  /// Si la ruta tiene trazado guardado, dibuja sus segmentos (más fiel al
-  /// recorrido real); si no, une las paradas en orden con líneas rectas.
-  List<Polyline> _buildRoutePolylines(
-      List<UserRouteStopModel> stops, Color color) {
-    final coordOf = <String, LatLng>{
-      for (final s in stops)
-        if (s.stop != null) s.userStopId: LatLng(s.stop!.lat, s.stop!.lng),
-    };
-    final path = _route?.path;
-    if (path != null && path.isNotEmpty) {
-      final lines = <Polyline>[];
-      for (final seg in path) {
-        if (seg is! Map) continue;
-        final pts = <LatLng>[];
-        final from = coordOf[seg['from']];
-        if (from != null) pts.add(from);
-        for (final p in (seg['points'] as List? ?? const [])) {
-          if (p is Map) {
-            pts.add(LatLng(
-                (p['lat'] as num).toDouble(), (p['lng'] as num).toDouble()));
-          }
-        }
-        final to = coordOf[seg['to']];
-        if (to != null) pts.add(to);
-        if (pts.length >= 2) {
-          lines.add(Polyline(
-              points: pts, strokeWidth: 4, color: color.withValues(alpha: 0.85)));
-        }
-      }
-      if (lines.isNotEmpty) return lines;
-    }
-    // Fallback: unir paradas en orden.
-    return [
-      Polyline(
-        points: stops
-            .where((s) => s.stop != null)
-            .map((s) => LatLng(s.stop!.lat, s.stop!.lng))
-            .toList(),
-        strokeWidth: 4,
-        color: color.withValues(alpha: 0.8),
-      ),
-    ];
-  }
-
-  Widget _buildMap(
-    TransitColorScheme c,
-    List<UserRouteStopModel> stops,
-    Color color,
-    LatLng center,
-  ) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-      child: GlassCard(
-        blur: 12,
-        fillOpacity: 0.04,
-        borderRadius: 12,
-        padding: const EdgeInsets.all(2),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: SizedBox(
-            height: 220,
-            child: FlutterMap(
-              options: MapOptions(
-                initialCenter: center,
-                initialZoom: 13.0,
-              ),
-              children: [
-                TileLayer(
-                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  userAgentPackageName: 'com.transitly.transitly',
-                ),
-                // Línea de la ruta uniendo las paradas en orden.
-                PolylineLayer(
-                  polylines: _buildRoutePolylines(stops, color),
-                ),
-                MarkerLayer(
-                  markers: [
-                    for (final entry in stops.asMap().entries)
-                      if (entry.value.stop != null)
-                        Marker(
-                          point: LatLng(entry.value.stop!.lat,
-                              entry.value.stop!.lng),
-                          width: 26,
-                          height: 26,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: entry.key == 0
-                                  ? c.stateOnTime
-                                  : entry.key == stops.length - 1
-                                      ? c.stateCancelled
-                                      : color,
-                              shape: BoxShape.circle,
-                              border: Border.all(color: Colors.white, width: 2),
-                            ),
-                            alignment: Alignment.center,
-                            child: Text(
-                              '${entry.key + 1}',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 11,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ),
-                        ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildSectionTitle(TransitColorScheme c, String title, IconData icon) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
@@ -760,57 +815,6 @@ class _UserRouteDetailScreenState extends ConsumerState<UserRouteDetailScreen> {
             style: TransitTypography.subheading(c.textHi),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildStopTile(
-    TransitColorScheme c,
-    UserRouteStopModel rs,
-    int index,
-  ) {
-    final stop = rs.stop;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
-      child: GlassCard(
-        blur: 8,
-        fillOpacity: 0.03,
-        borderRadius: 8,
-        child: Row(
-          children: [
-            Container(
-              width: 28,
-              height: 28,
-              decoration: BoxDecoration(
-                color: c.accent.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(6),
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                '${index + 1}',
-                style: TransitTypography.routeCodeSmall(c.accent),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    stop?.name ?? 'Parada ${rs.userStopId.substring(0, 8)}',
-                    style: TransitTypography.routeName(c.textHi),
-                  ),
-                  if (stop != null)
-                    Text(
-                      '${stop.lat.toStringAsFixed(4)}, ${stop.lng.toStringAsFixed(4)}',
-                      style: TransitTypography.bodySmall(c.textMid),
-                    ),
-                ],
-              ),
-            ),
-            Icon(Icons.chevron_right, size: 16, color: c.textMid),
-          ],
-        ),
       ),
     );
   }

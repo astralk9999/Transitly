@@ -21,8 +21,11 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/models/enums.dart';
 import '../../../shared/models/route_model.dart';
 import '../../../shared/models/route_stop_model.dart';
+import '../../../shared/models/stop_model.dart';
+import '../../../shared/widgets/route_favorite_toast.dart';
 import '../../../shared/providers/center_on_stop_provider.dart';
 import '../../../shared/providers/connectivity_provider.dart';
+import '../../../shared/providers/primary_zone_provider.dart';
 import '../../../shared/providers/is_dark_provider.dart';
 import '../../../shared/providers/user_favorites_provider.dart';
 import '../../../shared/providers/user_location_provider.dart';
@@ -327,18 +330,21 @@ class _MapTabState extends ConsumerState<MapTab>
       final fix = await ref
           .read(userLocationStreamProvider.future)
           .timeout(const Duration(seconds: 4));
+      // Centro por defecto = zona principal del perfil (si tiene perímetro),
+      // si no Jerez. Así, sin ubicación, no siempre lleva a Jerez.
+      final defaultCenter = ref.read(defaultMapCenterProvider);
+      final hasOwnZone = defaultCenter != MapConfig.defaultCenter;
       if (fix != null && mounted) {
         final dist = const Distance().as(
           LengthUnit.Meter,
           fix.position,
-          MapConfig.defaultCenter,
+          defaultCenter,
         );
         if (dist <= 50000) {
           _mapController.move(fix.position, 14);
         } else {
-          _mapController.move(
-              MapConfig.defaultCenter, MapConfig.defaultZoom);
-          if (mounted) {
+          _mapController.move(defaultCenter, MapConfig.defaultZoom);
+          if (mounted && !hasOwnZone) {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text(
                   'Estás a ${(dist / 1000).round()} km de Jerez. '
@@ -455,6 +461,37 @@ class _MapTabState extends ConsumerState<MapTab>
                     child: Text(s.name,
                         style: TransitTypography.heading(c.textHi)),
                   ),
+                  // Estrella de favorito IDÉNTICA a las paradas oficiales:
+                  // toggle + toast "Añadida/Quitada de favoritas".
+                  Consumer(builder: (ctx2, ref2, _) {
+                    final isFav =
+                        ref2.watch(userFavoriteStopsProvider).contains(s.id);
+                    return IconButton(
+                      visualDensity: VisualDensity.compact,
+                      icon: Icon(isFav ? Icons.star : Icons.star_border,
+                          color: c.accent),
+                      tooltip:
+                          isFav ? 'Quitar de favoritas' : 'Añadir a favoritas',
+                      onPressed: () {
+                        ref2
+                            .read(userFavoriteStopsProvider.notifier)
+                            .toggleStop(s.id);
+                        showStopFavoriteToast(
+                          context,
+                          stop: StopModel(
+                            id: s.id,
+                            name: s.name,
+                            officialCode: '',
+                            lat: s.lat,
+                            lng: s.lng,
+                            municipality: '',
+                          ),
+                          added: !isFav,
+                        );
+                      },
+                    );
+                  }),
+                  const SizedBox(width: 4),
                   Container(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 8, vertical: 3),
@@ -521,6 +558,28 @@ class _MapTabState extends ConsumerState<MapTab>
                     ),
                   );
                 }),
+              const SizedBox(height: 16),
+              // Botón "ver detalle" igual que las paradas oficiales. Abre la
+              // pantalla de la PARADA (solo su horario), no el recorrido
+              // completo de la línea.
+              SizedBox(
+                width: double.infinity,
+                height: 44,
+                child: OutlinedButton(
+                  onPressed: () {
+                    Navigator.pop(ctx);
+                    context.push('/community/stop/${s.id}');
+                  },
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(color: c.border, width: 0.5),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                  ),
+                  child: Text('VER DETALLE →',
+                      style: TransitTypography.sectionTitle(c.accent)),
+                ),
+              ),
             ],
           ),
         );
@@ -595,12 +654,12 @@ class _MapTabState extends ConsumerState<MapTab>
         _mapController.move(LocationService.toLatLng(pos), 16);
       } else if (mounted) {
         _mapController.move(
-            MapConfig.defaultCenter, MapConfig.defaultZoom);
+            ref.read(defaultMapCenterProvider), MapConfig.defaultZoom);
       }
     } catch (_) {
       if (mounted) {
         _mapController.move(
-            MapConfig.defaultCenter, MapConfig.defaultZoom);
+            ref.read(defaultMapCenterProvider), MapConfig.defaultZoom);
       }
     } finally {
       if (mounted) {
@@ -733,39 +792,48 @@ class _MapTabState extends ConsumerState<MapTab>
             fmtcTileProvider: bypassFmtc ? null : fmtcTp,
             additionalLayers: [
               // Polylines de las rutas de comunidad + propias (creadas o
-              // importadas), dibujadas sin necesidad de oficializarlas.
+              // importadas), dibujadas sin necesidad de oficializarlas. Se
+              // ocultan al alejar (zoom < 11.5) para no saturar la vista.
               if (ref.watch(myRoutePolylinesProvider).isNotEmpty)
-                PolylineLayer(
-                  polylines: ref.watch(myRoutePolylinesProvider),
+                _ZoomVisibleLayer(
+                  minZoom: 11.5,
+                  child: PolylineLayer(
+                    polylines: ref.watch(myRoutePolylinesProvider),
+                  ),
                 ),
               // Marcadores de las paradas de esas rutas — clicables para
               // ver su info (las creadas por el usuario no eran tapables).
+              // Solo visibles con zoom suficiente (las paradas oficiales se
+              // comportan igual).
               if (ref.watch(myRouteStopsProvider).isNotEmpty)
-                MarkerLayer(
-                  markers: [
-                    for (final s in ref.watch(myRouteStopsProvider))
-                      Marker(
-                        point: LatLng(s.lat, s.lng),
-                        width: 30,
-                        height: 30,
-                        child: GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTap: () => _showCommunityStopSheet(s),
-                          child: Center(
-                            child: Container(
-                              width: 22,
-                              height: 22,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: c.accent,
-                                border:
-                                    Border.all(color: Colors.white, width: 2),
+                _ZoomVisibleLayer(
+                  minZoom: 13.5,
+                  child: MarkerLayer(
+                    markers: [
+                      for (final s in ref.watch(myRouteStopsProvider))
+                        Marker(
+                          point: LatLng(s.lat, s.lng),
+                          width: 30,
+                          height: 30,
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () => _showCommunityStopSheet(s),
+                            child: Center(
+                              child: Container(
+                                width: 22,
+                                height: 22,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: c.accent,
+                                  border: Border.all(
+                                      color: Colors.white, width: 2),
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
               // Flechas de dirección de la ruta de comunidad seleccionada.
               ..._communityDirectionArrows(c),
@@ -1276,6 +1344,23 @@ class _AnchoredMapControlsState extends State<_AnchoredMapControls> {
         ],
       ),
     );
+  }
+}
+
+/// Envuelve una capa del mapa para que solo se dibuje a partir de cierto
+/// zoom. `MapCamera.of(context)` es reactivo en flutter_map 7, así que la
+/// capa aparece/desaparece sola al hacer zoom sin tocar el estado de MapTab.
+class _ZoomVisibleLayer extends StatelessWidget {
+  const _ZoomVisibleLayer({required this.minZoom, required this.child});
+
+  final double minZoom;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final zoom = MapCamera.of(context).zoom;
+    if (zoom < minZoom) return const SizedBox.shrink();
+    return child;
   }
 }
 

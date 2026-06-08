@@ -13,12 +13,20 @@ import '../../data/user_stops/user_stops_repository.dart';
 import '../models/enums.dart';
 import '../models/route_model.dart';
 import 'auth_provider.dart';
+import 'user_favorites_provider.dart';
 
 const _logTag = 'UserRoutesForMap';
 
-/// Lee `user_routes` publicadas (públicas + propias publicadas) y las
+/// Lee SOLO las rutas del usuario actual (creadas + importadas) y las
 /// convierte a [RouteModel] para que `MapTab` pueda mezclarlas con las
 /// oficiales de COMUJESA.
+///
+/// IMPORTANTE: el mapa NO descarga todas las rutas públicas de la
+/// comunidad — eso saturaría la vista y descargaría rutas que el usuario
+/// no ha elegido. El descubrimiento se hace en la pantalla `/community`
+/// (vía `searchPublic`); al importar una ruta, se crea una copia con
+/// `author_id = usuario`, por lo que entra en `getMyRoutes()` y aparece
+/// en el mapa.
 ///
 /// No incluye polilíneas ni paradas — solo metadatos suficientes para
 /// que aparezcan en la lista del bottom-sheet y los filtros. El detalle
@@ -31,25 +39,18 @@ final userRoutesForMapProvider =
   final userId =
       authState is AuthAuthenticated ? authState.user.id : null;
 
+  if (userId == null) return const <RouteModel>[];
+
   final repo = UserRoutesRepository(client);
-  final results = <UserRouteModel>[];
+  final byId = <String, UserRouteModel>{};
   try {
-    // 1) Rutas públicas + publicadas/aprobadas de cualquier autor.
-    results.addAll(await repo.searchPublic(limit: 100));
-    // 2) TODAS mis rutas (creadas, importadas, borradores, privadas…). El
-    //    usuario debe ver sus propias rutas en su mapa sin necesidad de que
-    //    un admin las oficialice ni de publicarlas.
-    if (userId != null) {
-      results.addAll(await repo.getMyRoutes());
+    // SOLO mis rutas (creadas, importadas, borradores, privadas…). El
+    // usuario decide qué rutas de comunidad descargar importándolas.
+    for (final r in await repo.getMyRoutes()) {
+      byId[r.id] = r;
     }
   } catch (e) {
     AppLogger.warn(_logTag, 'load failed', e);
-  }
-
-  // Deduplicar por id (mis rutas públicas aparecen en ambas listas).
-  final byId = <String, UserRouteModel>{};
-  for (final r in results) {
-    byId[r.id] = r;
   }
 
   return byId.values
@@ -95,9 +96,13 @@ class CommunityRouteShape {
   }
 }
 
-/// Fuente única: rutas propias del usuario (creadas/importadas) + rutas
-/// públicas de comunidad, con sus paradas en orden. De aquí derivan las
-/// polilíneas, los marcadores y las bounds para "ir a la línea".
+/// Fuente única: SOLO las rutas del usuario (creadas/importadas), con sus
+/// paradas en orden. De aquí derivan las polilíneas, los marcadores y las
+/// bounds para "ir a la línea".
+///
+/// El mapa NO dibuja todas las rutas públicas de la comunidad (saturaría
+/// la vista); el usuario las descarga eligiéndolas e importándolas desde
+/// `/community`.
 final communityRouteShapesProvider =
     FutureProvider<List<CommunityRouteShape>>((ref) async {
   final client = ref.watch(supabaseClientProvider);
@@ -105,18 +110,15 @@ final communityRouteShapesProvider =
   final userId =
       authState is AuthAuthenticated ? authState.user.id : null;
 
+  if (userId == null) return const <CommunityRouteShape>[];
+
   final routesRepo = UserRoutesRepository(client);
   final stopsRepo = UserStopsRepository(client);
   final schedRepo = UserRouteSchedulesRepository(client);
   final byId = <String, UserRouteModel>{};
   try {
-    for (final r in await routesRepo.searchPublic(limit: 100)) {
+    for (final r in await routesRepo.getMyRoutes()) {
       byId[r.id] = r;
-    }
-    if (userId != null) {
-      for (final r in await routesRepo.getMyRoutes()) {
-        byId[r.id] = r;
-      }
     }
   } catch (e) {
     AppLogger.warn(_logTag, 'shapes routes load failed', e);
@@ -208,6 +210,60 @@ final myRoutePolylinesProvider = Provider<List<Polyline<Object>>>((ref) {
   ];
 });
 
+/// Paradas de comunidad marcadas como favoritas, resueltas a partir de las
+/// rutas del usuario (creadas/importadas). Las favoritas oficiales las
+/// resuelve Inicio con mockData; aquí solo salen las que corresponden a una
+/// parada de comunidad. Dedup por proximidad (misma ubicación física puede
+/// tener varios ids entre rutas).
+final communityFavoriteStopsProvider = Provider<List<MapStopPoint>>((ref) {
+  final favIds = ref.watch(userFavoriteStopsProvider);
+  if (favIds.isEmpty) return const [];
+  final shapes =
+      ref.watch(communityRouteShapesProvider).valueOrNull ?? const [];
+  final byId = <String, MapStopPoint>{};
+  for (final sh in shapes) {
+    for (final p in sh.stops) {
+      byId[p.id] = p;
+    }
+  }
+  final out = <MapStopPoint>[];
+  final seen = <String>{};
+  for (final id in favIds) {
+    final p = byId[id];
+    if (p == null) continue; // no es una parada de comunidad de mis rutas
+    final key = '${p.lat.toStringAsFixed(4)},${p.lng.toStringAsFixed(4)}';
+    if (seen.add(key)) out.add(p);
+  }
+  return out;
+});
+
+/// `true` si el id parece un UUID (rutas de comunidad) y no un código de
+/// línea oficial (L1, C1…).
+bool _looksLikeUuid(String s) => s.length == 36 && s.contains('-');
+
+/// Líneas de comunidad marcadas como favoritas, resueltas a [RouteModel]
+/// para mostrarlas en Inicio › Mis líneas (las oficiales las resuelve Inicio
+/// con mockData). Una sola consulta por id-UUID; la RLS devuelve solo las
+/// legibles (públicas o propias).
+final communityFavoriteRoutesProvider =
+    FutureProvider<List<RouteModel>>((ref) async {
+  final favIds = ref.watch(userFavoritesProvider);
+  final uuidIds = favIds.where(_looksLikeUuid).toList();
+  if (uuidIds.isEmpty) return const [];
+  final client = ref.watch(supabaseClientProvider);
+  try {
+    final rows =
+        await client.from('user_routes').select().inFilter('id', uuidIds);
+    return (rows as List)
+        .map((j) =>
+            _toRouteModel(UserRouteModel.fromJson(j as Map<String, dynamic>)))
+        .toList(growable: false);
+  } catch (e) {
+    AppLogger.warn(_logTag, 'fav community routes load failed', e);
+    return const [];
+  }
+});
+
 /// Marcadores de paradas derivados (dedup por id).
 final myRouteStopsProvider = Provider<List<MapStopPoint>>((ref) {
   final shapes = ref.watch(communityRouteShapesProvider).valueOrNull ?? const [];
@@ -218,6 +274,92 @@ final myRouteStopsProvider = Provider<List<MapStopPoint>>((ref) {
     }
   }
   return byId.values.toList(growable: false);
+});
+
+/// Una línea de comunidad que pasa por una parada, con sus horas de paso
+/// por ESA parada agrupadas por tipo de día (mismos buckets que el horario
+/// oficial: weekday / saturday / sunday_holiday).
+class CommunityStopLine {
+  CommunityStopLine(
+      this.routeId, this.code, this.name, this.color, this.hoursByDay);
+  final String routeId;
+  final String code;
+  final String name;
+  final Color color;
+
+  /// bucket de día → horas HH:mm ordenadas a las que el bus pasa por la parada.
+  final Map<String, List<String>> hoursByDay;
+}
+
+/// Horario de una parada de comunidad: nombre + líneas que pasan por ella.
+class CommunityStopTimetable {
+  CommunityStopTimetable(this.stopName, this.lat, this.lng, this.lines);
+  final String stopName;
+  final double lat;
+  final double lng;
+  final List<CommunityStopLine> lines;
+}
+
+List<String> _dayBuckets(String dt) => switch (dt) {
+      'saturday' => const ['saturday'],
+      'sunday' || 'holiday' => const ['sunday_holiday'],
+      'weekday' => const ['weekday'],
+      'every_day' => const ['weekday', 'saturday', 'sunday_holiday'],
+      _ => const ['weekday'],
+    };
+
+/// Horario de UNA parada de comunidad (solo lo de esa parada, como la
+/// pantalla de detalle de las paradas oficiales). Resuelve, por proximidad,
+/// todas las líneas del usuario que pasan por ahí y, para cada una, sus
+/// horas de paso por la parada agrupadas por día.
+final communityStopTimetableProvider = FutureProvider.autoDispose
+    .family<CommunityStopTimetable?, String>((ref, stopId) async {
+  final shapes = await ref.watch(communityRouteShapesProvider.future);
+
+  // Ancla: la parada física a partir de su id (pertenece a una ruta concreta).
+  MapStopPoint? anchor;
+  for (final sh in shapes) {
+    for (final p in sh.stops) {
+      if (p.id == stopId) {
+        anchor = p;
+        break;
+      }
+    }
+    if (anchor != null) break;
+  }
+  if (anchor == null) return null;
+
+  final client = ref.watch(supabaseClientProvider);
+  final schedRepo = UserRouteSchedulesRepository(client);
+  final lines = <CommunityStopLine>[];
+  for (final sh in shapes) {
+    // ¿Pasa esta línea por la parada? (mismo id o por proximidad <35m).
+    String? stopInRoute;
+    for (final p in sh.stops) {
+      if (p.id == anchor.id ||
+          metersBetween(p.lat, p.lng, anchor.lat, anchor.lng) < 35) {
+        stopInRoute = p.id;
+        break;
+      }
+    }
+    if (stopInRoute == null) continue;
+
+    final byDay = <String, List<String>>{};
+    try {
+      for (final s in await schedRepo.getForRoute(sh.routeId)) {
+        if (s.originStopId != stopInRoute) continue;
+        for (final b in _dayBuckets(s.dayType)) {
+          (byDay[b] ??= []).add(s.departureTime);
+        }
+      }
+    } catch (_) {}
+    for (final l in byDay.values) {
+      l.sort();
+    }
+    lines.add(CommunityStopLine(sh.routeId, sh.code, sh.name, sh.color, byDay));
+  }
+  lines.sort((a, b) => a.code.compareTo(b.code));
+  return CommunityStopTimetable(anchor.name, anchor.lat, anchor.lng, lines);
 });
 
 RouteModel _toRouteModel(UserRouteModel u) {

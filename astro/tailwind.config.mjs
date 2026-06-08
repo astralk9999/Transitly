@@ -1,20 +1,26 @@
 /** @type {import('tailwindcss').Config} */
+
+// Colores como canales RGB para que `bg-x/opacity` siga funcionando.
+// Los valores reales viven en variables CSS (ver Layout.astro): paleta
+// oscura por defecto y clara en `html.light`.
+const v = (name) => `rgb(var(${name}) / <alpha-value>)`;
+
 export default {
   content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
   theme: {
     extend: {
       colors: {
         transit: {
-          bg: '#08081A',
-          surface: '#10102A',
-          raised: '#181838',
-          input: '#0C0C1E',
-          elevated: '#161636',
-          border: '#1E1E3A',
-          'border-focus': '#3A3A60',
-          divider: '#151530',
-          accent: '#977DDF',
-          'accent-bg': '#14101E',
+          bg: v('--c-bg'),
+          surface: v('--c-surface'),
+          raised: v('--c-raised'),
+          input: v('--c-input'),
+          elevated: v('--c-elevated'),
+          border: v('--c-border'),
+          'border-focus': v('--c-border-focus'),
+          divider: v('--c-divider'),
+          accent: v('--c-accent'),
+          'accent-bg': v('--c-accent-bg'),
           'accent-muted': 'rgba(151, 125, 223, 0.2)',
           neon: {
             cyan: '#00D4FF',
@@ -31,10 +37,10 @@ export default {
           },
         },
         text: {
-          hi: '#F8F8FF',
-          mid: '#A0A0B8',
-          lo: '#6A6A80',
-          disabled: '#404060',
+          hi: v('--c-text-hi'),
+          mid: v('--c-text-mid'),
+          lo: v('--c-text-lo'),
+          disabled: v('--c-text-disabled'),
         },
       },
       fontFamily: {

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:home_widget/home_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -20,6 +21,7 @@ class WidgetDataWriter {
     required String source,
     required DateTime updatedAt,
   }) async {
+    if (kIsWeb) return; // los widgets nativos no existen en web
     final payload = jsonEncode({
       'time': '$etaMinutes min',
       'stop': stopName,
@@ -52,6 +54,7 @@ class WidgetDataWriter {
     required String routeCode,
     required List<Map<String, dynamic>> upcoming,
   }) async {
+    if (kIsWeb) return;
     final status = upcoming.isNotEmpty ? 'En servicio' : 'Sin datos';
     final updatedAt = DateTime.now().toIso8601String();
     final times = upcoming.map((d) => d['time'] as String).toList();
@@ -90,6 +93,7 @@ class WidgetDataWriter {
     required double balance,
     required DateTime scannedAt,
   }) async {
+    if (kIsWeb) return;
     final payload = jsonEncode({
       'balance': balance,
       'scannedAt': scannedAt.millisecondsSinceEpoch ~/ 1000,
@@ -116,6 +120,7 @@ class WidgetDataWriter {
     required String bgRoot,
     required String textHi,
   }) async {
+    if (kIsWeb) return;
     final payload = jsonEncode({
       'accent': accent,
       'bgRoot': bgRoot,

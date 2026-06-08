@@ -6,10 +6,16 @@ import '../../data/arrivals/arrivals_repository.dart';
 import '../../data/mock/mock_data_service.dart';
 import '../../data/widgets_native/widget_data_writer.dart';
 import 'home_habitual_config_provider.dart';
+import 'user_favorites_provider.dart';
 
 final widgetDataSyncProvider = Provider<void>((ref) {
   final cfg = ref.watch(homeHabitualConfigProvider);
-  if (!cfg.isConfigured) return;
+  if (!cfg.isConfigured) {
+    // Sin viaje habitual: rellena el widget "mi línea" con la primera línea
+    // favorita, para que el widget tenga datos desde el primer momento.
+    _fillFromFavorite(ref);
+    return;
+  }
 
   final mockData = ref.watch(mockDataServiceProvider);
   final route = mockData.getRouteById(cfg.routeId!);
@@ -53,6 +59,37 @@ final widgetDataSyncProvider = Provider<void>((ref) {
     );
   }
 });
+
+/// Rellena el widget "mi línea" desde la primera línea favorita (cuando no
+/// hay viaje habitual configurado), para que el widget no quede vacío.
+void _fillFromFavorite(Ref ref) {
+  final favs = ref.watch(userFavoritesProvider);
+  if (favs.isEmpty) return;
+  final mockData = ref.watch(mockDataServiceProvider);
+  final route = mockData.getRouteById(favs.first);
+  if (route == null) return;
+  final stops = mockData.getStopsForRoute(route.id);
+  final stopId = stops.isNotEmpty ? stops.first.id : '';
+  final deps = mockData.getNextDepartures(route.id, stopId, 4);
+  if (deps.isEmpty) return;
+  WidgetDataWriter.writeMyLineStatus(
+    routeCode: route.code,
+    upcoming: deps.map((d) => {'time': d.departureTime}).toList(),
+  );
+  final now = DateTime.now();
+  final parts = deps.first.departureTime.split(':');
+  final depMin = (int.tryParse(parts[0]) ?? 0) * 60 +
+      (parts.length > 1 ? (int.tryParse(parts[1]) ?? 0) : 0);
+  var eta = depMin - (now.hour * 60 + now.minute);
+  if (eta < 0) eta += 24 * 60;
+  WidgetDataWriter.writeNextBus(
+    stopName: stops.isNotEmpty ? stops.first.name : route.name,
+    routeCode: route.code,
+    etaMinutes: eta,
+    source: 'favorite',
+    updatedAt: now,
+  );
+}
 
 Future<void> _pushFromSupabase(
   ArrivalsRepository repo,

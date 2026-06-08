@@ -5,6 +5,7 @@ import 'core/router/app_router.dart';
 import 'core/theme/accessibility_matrix.dart';
 import 'l10n/generated/app_localizations.dart';
 import 'shared/models/user_preferences.dart';
+import 'shared/providers/bus_approaching_provider.dart';
 import 'shared/providers/geo_alerts_in_radius_provider.dart';
 import 'shared/providers/locale_provider.dart';
 import 'shared/providers/notification_stream_provider.dart';
@@ -30,6 +31,8 @@ class TransitlyApp extends ConsumerWidget {
     ref.watch(pushBridgeProvider);
     // Refresca reputación/rango en vivo al recibir XP por Realtime.
     ref.watch(reputationLiveRefreshProvider);
+    // Aviso "bus llegando" a paradas favoritas (según preferencias).
+    ref.watch(busApproachingNotifierProvider);
 
     return MaterialApp.router(
       title: 'Transitly',

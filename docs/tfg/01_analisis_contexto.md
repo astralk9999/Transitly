@@ -3,7 +3,7 @@
 **Proyecto:** Transitly (repositorio `nexto-stop-v2`).
 **Autor:** trabajo individual con asistencia documentada de un sistema multiagente de inteligencia artificial.
 **Ciclo formativo:** Desarrollo de Aplicaciones Multiplataforma (DAM).
-**Estado verificado:** `master @ 5231f4c` (4 de junio de 2026); incorpora 94 commits posteriores al anchor `b908f3c` original del 23 de mayo. Ver §6 al final del documento para el resumen de cambios.
+**Estado verificado:** `master @ b47180d0` (8 de junio de 2026); incorpora el ciclo de estabilización y las funcionalidades finales (push FCM real, modo conductor en segundo plano, planificador origen→destino) publicadas en la **release v1.12.1**. Ver §6 y §7 al final del documento para el resumen de cambios.
 
 ---
 
@@ -58,3 +58,17 @@ El análisis de contexto y oportunidades originalmente publicado el 23 de mayo p
 Las siete carencias detectadas se han abordado todas en mayor o menor medida con la implementación; el grado de cobertura final se documenta en `04_desarrollo_implementacion.md` §10 y en `05_evaluacion_documentacion.md`. La séptima carencia (ausencia de observabilidad) se traslada parcialmente al operador mediante las funciones de panel multi-rol y los paneles de moderación.
 
 No se incorporan nuevas necesidades respecto al análisis inicial: el ámbito funcional se mantiene dentro del catálogo de doce objetivos del documento 02. Los cambios introducidos durante junio responden todos a estabilización (fixes), pulido visual o ampliación de configurabilidad por el usuario (widgets Android, wizard de rutas con tap en mapa), sin alterar el alcance del TFG.
+
+---
+
+## 7. Cierre a 8 de junio de 2026 (preparación de la defensa)
+
+En la recta final previa a la defensa se cerraron las tres carencias que aún se cubrían de forma parcial, todas dentro del alcance original sin ampliarlo:
+
+1. **Notificaciones push reales (carencia 6, canal de incidencias).** Se completó la integración de **Firebase Cloud Messaging**: la aplicación recibe avisos con la app cerrada y registra el token del dispositivo en `device_tokens` al iniciar sesión. El backend de envío (Edge Function `send_notification` sobre FCM HTTP v1 más los disparadores SQL) ya existía; solo restaba el cableado del cliente y la *service account* del operador, documentada como dependencia externa en `docs/FCM_SETUP.md`.
+
+2. **Posición en vivo del vehículo (carencias 1 y 2).** El **modo conductor** pasó a compartir la ubicación mediante un *foreground service* de Android, de modo que el seguimiento continúa con la pantalla bloqueada o la app en segundo plano, reforzando la fiabilidad de la posición en el mapa para el resto de viajeros.
+
+3. **Planificación de trayecto origen→destino.** Se reactivó el planificador de rutas con transbordos, cerrando el bucle de "consulta" de la carencia informativa.
+
+Estos cambios se distribuyen en la **release pública v1.12.1** (APK universal, Android 7.0+) publicada en GitHub Releases. El diagnóstico de contexto y oportunidades permanece, por tanto, plenamente vigente y ahora respaldado por una implementación que cubre las siete carencias detectadas.

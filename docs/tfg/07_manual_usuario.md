@@ -2,8 +2,8 @@
 
 **Aplicación:** Transitly
 **Versión del documento original:** 2026-05-23
-**Versión actualizada:** 2026-06-04
-**Versión instalable distribuida:** v1.11.0 — descarga directa desde https://github.com/astralk9999/Transitly/releases/latest
+**Versión actualizada:** 2026-06-08
+**Versión instalable distribuida:** v1.12.1 (APK universal, Android 7.0+) — descarga directa desde https://github.com/astralk9999/Transitly/releases/latest o desde la web del proyecto https://astralk9999.github.io/Transitly/
 **Plataformas:** Android, iOS y Web (PWA)
 **Audiencia:** usuario final, sin conocimientos técnicos previos
 
@@ -31,13 +31,21 @@ derecha a izquierda.
 
 ## 2. Instalación
 
-### 2.1. Android
+### 2.1. Android (instalación del APK)
 
-1. Abre Google Play Store en tu teléfono.
-2. Busca **Transitly** o entra en `https://transitly.app/android`.
-3. Pulsa **Instalar** y espera a que termine la descarga.
-4. Cuando aparezca el icono de Transitly en tu escritorio, pulsalo para
-   abrir la aplicación.
+Durante la fase de TFG, Transitly se distribuye como APK (aún no está publicada en Google Play). La instalación es sencilla:
+
+1. Desde tu teléfono Android, entra en la web del proyecto
+   `https://astralk9999.github.io/Transitly/` y pulsa **Descargar APK**
+   (o ve directo a `https://github.com/astralk9999/Transitly/releases/latest`).
+2. Cuando termine la descarga, abre el archivo `transitly-vX.Y.Z.apk`.
+3. Android te avisará de que procede de un origen desconocido: pulsa
+   **Ajustes** y concede permiso para instalar (puedes revocarlo después).
+4. Pulsa **Instalar** y, al terminar, **Abrir**. El icono de Transitly
+   quedará en tu escritorio.
+
+> Requiere **Android 7.0 o superior**. El APK es universal, así que
+> funciona en cualquier móvil (arm64, arm de 32 bits o x86_64).
 
 ### 2.2. iOS
 
@@ -387,3 +395,17 @@ Si vienes de una versión anterior, en v1.11.0 encontrarás los siguientes cambi
 **Click sobre línea en el mapa.** Si tocas una de las líneas de bus dibujadas sobre el mapa, aparece un snackbar con el código y nombre de la línea (p. ej. "Línea L8 · Norte"). El sheet inferior se filtra para mostrar sólo esa línea y sus paradas; toca la X para volver a ver todas.
 
 **Mejor saludo en el inicio.** El saludo de bienvenida ("Buenos días", "Buenas tardes", "Buenas noches", "Buena madrugada") cambia ahora cuatro veces al día y se ajusta al idioma seleccionado.
+
+---
+
+## Adenda 2 — Novedades de la versión v1.12.1 (8 de junio de 2026)
+
+**Avisos aunque tengas la app cerrada.** Transitly ya recibe notificaciones push reales: cuando se resuelve una incidencia que reportaste, te comparten una ruta o hay novedades de tus líneas, te llega el aviso aunque no tengas la app abierta. Puedes seguir ajustando qué categorías quieres recibir desde **Perfil → Notificaciones** (y las horas silenciosas).
+
+**El modo conductor sigue compartiendo con la pantalla bloqueada.** Si eres conductor o conductora, al **Iniciar ruta** la app mantiene una notificación permanente y sigue compartiendo tu posición aunque bloquees el móvil o cambies de aplicación. Así el resto de viajeros te ven en el mapa durante todo el trayecto. Al pulsar **Finalizar ruta**, deja de compartir y la notificación desaparece.
+
+**Planificador de viaje origen → destino.** En la pestaña **Buscar** puedes indicar de dónde sales y a dónde quieres ir, y la app te propone cómo llegar, incluyendo trayectos con un transbordo.
+
+**Modo claro de la web mejorado.** La página del proyecto se ve correctamente tanto en tema claro como oscuro.
+
+> **Requisito actualizado:** la app requiere **Android 7.0 o superior**.

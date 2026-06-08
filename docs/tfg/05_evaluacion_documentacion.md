@@ -3,10 +3,10 @@
 **Proyecto:** Transitly (nexto-stop-v2)
 **Rama / HEAD original:** `master @ b908f3c`
 **Fecha de cierre del anchor original:** 2026-05-23
-**Rama / HEAD actualizado:** `master @ 5231f4c` (2026-06-04, +94 commits)
-**Release pública distribuida:** v1.11.0 — https://github.com/astralk9999/Transitly/releases/tag/v1.11.0
+**Rama / HEAD actualizado:** `master @ b47180d0` (2026-06-08)
+**Release pública distribuida:** v1.12.1 (APK universal) — https://github.com/astralk9999/Transitly/releases/tag/v1.12.1
 **Ciclo formativo:** DAM (Desarrollo de Aplicaciónes Multiplataforma)
-**Autoria:** Itziar Uruburu Elizalde (autoria individual; asistencia IA documentada).
+**Autoria:** Koldo Uruburu (autoria individual; asistencia IA documentada).
 
 ---
 
@@ -16,14 +16,16 @@ El proyecto se ha desarrollado a lo largo de once semanas (01/04/2026 a 16/06/20
 
 ### 1.1. Integración continua
 
-Se mantiene un pipeline en GitHub Actions (`.github/workflows/ci.yml`) con cuatro trabajos principales ejecutados en cada push y en cada pull request hacia `master`:
+Se mantiene un pipeline en GitHub Actions (`.github/workflows/ci.yml`) con **seis trabajos** ejecutados en cada push y en cada pull request hacia `master`:
 
 1. **Flutter Analyze** — ejecuta `flutter analyze` con el preset `very_good_analysis`. Toda incidencia de tipo error, warning o info bloquea el avance.
-2. **Flutter Test** — ejecuta `flutter test --coverage`, sube `coverage/lcov.info` como artefacto, válida el umbral global (24 %) y comprueba budgets por módulo.
+2. **Flutter Test** — ejecuta `flutter test --coverage`, sube `coverage/lcov.info` como artefacto, válida el umbral global y comprueba budgets por módulo.
 3. **Build Web (release)** — compila el target web para detectar regresiones de tree-shaking, tipos y l10n.
-4. **Build Android APK / AAB** — construye el APK release con `--split-per-abi`, `--obfuscate` y `--split-debug-info`, válida el budget de tamano (80 MB por ABI) y firma el AAB para verificar el flujo de release completo.
+4. **Build Android APK** — construye el APK release y válida el budget de tamano, verificando el flujo de release completo.
+5. **Semgrep** — análisis estático de seguridad (bloqueante en findings de severidad ERROR).
+6. **Gitleaks** — escaneo de secretos en el árbol y el historial.
 
-A los cuatro trabajos principales se anaden dos jobs de seguridad (Gitleaks y Semgrep) que actuan como complemento defensivo. Cuando el pipeline esta rojo, no se avanza en plan ni en documentación: la regla es **CI verde antes de cerrar nada**.
+Cuando el pipeline esta rojo, no se avanza en plan ni en documentación: la regla es **CI verde antes de cerrar nada**.
 
 ### 1.2. Hooks locales (lefthook)
 
@@ -120,7 +122,7 @@ La medicion principal es el **System Usability Scale (SUS)** clasico, con sus di
 A partir de los pilotos internos (autora, dos revisores académicos y un conductor voluntario), los hallazgos cualitativos que ya han generado cambio en código son:
 
 - **Positivo:** claridad de los iconos del bottom navigation, paleta accesible para daltonismo (probada con simulador de Coblis), funcionamiento offline en ausencia de cobertura.
-- **A mejorar:** latencia inicial al cargar el mapa con muchas paradas (mitigada con clustering basado en zoom); nomenclatura arabe imprecisa en algunos campos (corregida tras revisión lingueistica de los 628 strings ARB); peso del APK (mitigado con `--split-per-abi` y `--obfuscate`).
+- **A mejorar:** latencia inicial al cargar el mapa con muchas paradas (mitigada con clustering basado en zoom); nomenclatura arabe imprecisa en algunos campos (corregida tras revisión lingueistica de los 642 strings ARB); peso del APK (deuda reconocida; el universal de v1.12.1 prioriza compatibilidad sobre tamano).
 
 La sesión formal con los cinco usuarios externos producira un anexo en `docs/historico/SUS_2026_06_04.md` con los datos en bruto anonimizados y el calculo agregado.
 
@@ -128,20 +130,22 @@ La sesión formal con los cinco usuarios externos producira un anexo en `docs/hi
 
 ## 5. Metricas finales auditadas
 
-Las cifras siguientes son las verificadas en el anchor `master @ b908f3c` mediante `tool/verify_state.sh` y se públican como contrato del cierre del TFG:
+Las cifras siguientes son las verificadas a fecha de defensa (`master @ b47180d0`, release v1.12.1) y se públican como contrato del cierre del TFG:
 
 | Metrica | Valor | Comentario |
 |---------|-------|------------|
-| Tests automáticos en verde | **619** | Cobertura distribuida entre widgets, modelos, accesibilidad, utilidades y data layer. |
-| Mega plan | **171 / 190 (90,0 %)** | Los diecinueve ítems restantes son bloqueadores externos enumerados en `docs/EXTERNAL_BLOCKERS.md`. |
+| Tests automáticos en verde | **679** | Cobertura distribuida entre widgets, modelos, accesibilidad, utilidades y data layer (0 fallos). |
+| Ficheros de código Dart | **446** (~94k LOC) | Sin contar código generado (`.g.dart`, `.freezed.dart`). |
 | Cobertura global de tests | **24-30 %** | Buena en componentes UI y modelos, débil en capa `data/remote` (deuda reconocida y priorizada en P2-4). |
-| Migraciones SQL aplicadas | **14** consecutivas | Schema completo con RLS default-deny y funciones helper. |
-| Edge Functions desplegadas | **4** | `delete_user`, `import_gtfs`, `purge_old_data`, `send_notification`. |
-| Jobs CI en verde | **4 / 4** | Analyze, Test, Build Web, Build Android (más dos jobs auxiliares Gitleaks y Semgrep). |
-| ADRs vivos | **5** | Riverpod, Freezed, Hive, Supabase, Feature-first. |
+| Migraciones SQL aplicadas | **51** consecutivas | Schema completo con RLS default-deny, funciones helper, líneas/horarios COMUJESA, conductor en vivo y triggers de push. |
+| Edge Functions desplegadas | **8** | `send_notification`, `import_gtfs`, `delete_user`, `purge_old_data`, `generate_data_export`, `approve_user_route`, `promote_stop_to_official`, `validate_share_code`. |
+| Jobs CI en verde | **6 / 6** | Analyze, Test, Build Web, Build APK, Semgrep, Gitleaks. |
+| Modelos `@freezed` | **30** | Inmutables, con `copyWith`, `==`, `hashCode` y serialización. |
+| Widgets compartidos | **38** | Reutilizados en toda la app (`lib/shared/widgets/`). |
 | Runbooks operativos | **6** | Disaster recovery, error budget, migration rollback, push down, Sentry spike, Supabase down. |
 | Documentos vivos | **73+** | En `docs/` (incluye `tfg/`, `runbooks/`, `adr/`, `historico/`). |
-| Claves ARB | **628** en ES, EN y AR | Cobertura completa de la UI (incluye RTL). |
+| Claves ARB | **642** en español (cobertura EN/AR) | Cobertura completa de la UI (incluye RTL en árabe). |
+| Release pública | **v1.12.1** (APK universal, Android 7.0+) | Distribuida en GitHub Releases; descarga resuelta desde la web. |
 | Scorecard interno | **TFG 8,9 / 10 — Produccion 6,0 / 10** | Diferenciacion explicita entre madurez académica y madurez productiva. |
 
 ---
@@ -186,3 +190,21 @@ Tras el cierre del anchor original `b908f3c`, se ejecutaron 94 commits adicional
 **Logs `warn` y `error` activos en builds de release.** Para diagnosticar el bug del flujo Google Sign-In (descrito en `04_desarrollo_implementacion.md` §11.2) fue necesario eliminar el guard `kDebugMode` en los métodos `warn` y `error` de `AppLogger`. Esta decisión permite observabilidad en producción de errores reales sin inflar `logcat` con ruido (los niveles `debug`, `info` y `perf` siguen siendo debug-only). Refuerza el objetivo no funcional de observabilidad.
 
 Los indicadores cuantitativos del anchor original permanecen vigentes y se complementan con: **release v1.11.0 publicada y descargable**, **migraciones SQL: 14 → 15**, **+94 commits**, **+5 documentos técnicos** en `docs/historico/` (planes de acción de las cinco oleadas), **0 crashes bloqueantes que requieran clear data** tras la mitigación, y **3 widgets configurables vía perfil** con preview en vivo.
+
+---
+
+## Adenda 2 — Cierre a 8 de junio de 2026 (release v1.12.1)
+
+Tras la adenda anterior, el trabajo se concentró en cerrar los objetivos funcionales que aún se cubrían parcialmente y en publicar la documentación del proyecto. Hechos relevantes para la evaluación:
+
+**Notificaciones push reales (FCM) verificadas con la app cerrada.** Se completó la integración de cliente Firebase Cloud Messaging y el registro del token en `device_tokens`; el backend de envío (`send_notification` + triggers) ya existía. Verificación en dispositivo físico: el log muestra `FlutterFirebaseMessagingBackgroundService started` y la app inicia sin fallos con FCM activo. Queda como dependencia externa la *service account* del operador (`docs/FCM_SETUP.md`), análoga al resto de bloqueadores de `docs/EXTERNAL_BLOCKERS.md`.
+
+**Modo conductor resiliente en segundo plano.** Migración del seguimiento GPS a `Geolocator.getPositionStream` con foreground service: la posición sigue emitiéndose con la pantalla bloqueada. Indicador operativo "el conductor deja de compartir al bloquear el móvil" pasa de verdadero a falso.
+
+**Planificador origen→destino reactivado** (`RoutePlannerService`, ruta `/route-plan`), cerrando el flujo de consulta de trayectos.
+
+**Publicación de la web del proyecto en GitHub Pages** con la presentación, los entregables del TFG navegables y la descarga del APK resuelta desde la release más reciente. Corrección del modo claro de la web.
+
+**Evolución de métricas respecto al anchor original:** tests **619 → 679**, migraciones SQL **14 → 51**, Edge Functions **4 → 8**, claves ARB **628 → 642**, jobs CI **4 → 6**, release **v1.11.0 → v1.12.1 (APK universal)**. Todas las cifras son verificables sobre el árbol en `master @ b47180d0`.
+
+**Nota de autoría:** se corrige el nombre del autor a **Koldo Uruburu**, en coherencia con el resto de la documentación y los metadatos del proyecto.

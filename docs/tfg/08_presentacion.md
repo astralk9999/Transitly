@@ -6,8 +6,8 @@
 **Defensa prevista:** semana 11 del cronograma (10-16 de junio de 2026)
 **Duracion total estimada:** entre 18 y 22 minutos
 **Anclaje original:** master @ b908f3c · 2026-05-23
-**Anclaje actualizado:** master @ 5231f4c · 2026-06-04 (+94 commits)
-**Release pública:** v1.11.0 — https://github.com/astralk9999/Transitly/releases/tag/v1.11.0
+**Anclaje actualizado:** master @ b47180d0 · 2026-06-08
+**Release pública:** v1.12.1 (APK universal) — https://github.com/astralk9999/Transitly/releases/tag/v1.12.1
 
 > Este documento es la base textual sobre la que se montan las
 > diapositivas reales en la herramienta de presentación. Cada sección
@@ -139,8 +139,8 @@ ventajas para mantenimiento y onboarding de nuevos desarrolladores.
   TalkBack y VoiceOver prevista para la semana 10.
 - **Daltonismo:** ocho matrices de transformación de color
   configurables.
-- **Internacionalización:** 628 claves ARB para espanol, ingles y arabe,
-  con soporte completo de **RTL** en arabe.
+- **Internacionalización:** 642 claves ARB en espanol, con cobertura en
+  ingles y arabe y soporte completo de **RTL** en arabe.
 - **Escala de texto** y **fuente para dislexia** disponibles.
 - Auditoria interna con baterías automatizadas de pruebas de contraste
   y tamanos mínimos de objetivo tactil.
@@ -167,12 +167,14 @@ ninguna operación sea posible sin política explicita. (90 segúndos)
 
 ## Diapositiva 11 — Calidad
 
-- **619 tests** automatizados pasando.
-- **14 migraciónes SQL** consecutivas verificadas.
-- **27 features** funcionales y empaquetadas.
-- **4 Edge Functions** desplegadas: `delete_user`, `import_gtfs`,
-  `purge_old_data`, `send_notification`.
-- **171 de 190** hitos del mega plan cerrados, equivalente al **90,0%**.
+- **679 tests** automatizados pasando (0 fallos).
+- **51 migraciónes SQL** consecutivas verificadas.
+- **27 features** funcionales y empaquetadas (446 ficheros `.dart`, ~94k LOC).
+- **8 Edge Functions** desplegadas: `send_notification`, `import_gtfs`,
+  `delete_user`, `purge_old_data`, `generate_data_export`,
+  `approve_user_route`, `promote_stop_to_official`, `validate_share_code`.
+- **6 jobs de CI** en verde (analyze, test, build web, build APK,
+  Semgrep, Gitleaks).
 - **Scorecard:** 8,9 sobre 10 en el eje TFG y 6,0 sobre 10 en el eje
   Produccion.
 
@@ -262,8 +264,8 @@ sólida sobre la que construirlo. (60 segúndos)
   exigencias reales de accesibilidad y privacidad.
 - La arquitectura feature-first y la disciplina documental han sido las
   decisiónes de mayor retorno.
-- El TFG se entrega con metrica reproducible: 619 tests, 14 migraciónes,
-  27 features, 4 Edge Functions y un mega plan al 90,0%.
+- El TFG se entrega con metrica reproducible: 679 tests, 51 migraciónes,
+  27 features, 8 Edge Functions y una release pública instalable (v1.12.1).
 
 **Notas:** cerrar con una frase memorable, "Transitly no es una
 maqueta, es un sistema verificable". (45 segúndos)
@@ -406,3 +408,57 @@ La función ejecuta con permisos de owner (bypassa RLS) y rompe el ciclo. Las tr
 - Una sola URL que la presentación nunca tiene que actualizar.
 
 **Notas para la defensa:** mencionar que esto se descubrió en el aviso de GitHub al hacer `git push` y se decidió aplicar la práctica estándar del ecosistema (Releases para binarios, repo sólo para código). La presentación HTML usaba `import.meta.env.BASE_URL` que apuntaba a `/Transitly/<archivo>.apk`; la sustitución por `releases/latest` deja la web independiente del versionado. (60 segundos)
+
+---
+
+## Diapositivas adicionales — Versión 1.12.1 (8 de junio de 2026)
+
+Estas diapositivas cierran el bloque de "trabajo realizado hasta la defensa" y se insertan tras la slide 8.quinta. Demuestran que los objetivos funcionales 2, 7 y 12 quedan totalmente cubiertos en la release final.
+
+### Slide 8.sexta — Notificaciones push reales con la app cerrada
+
+**Título:** De la notificación local al push real — Firebase Cloud Messaging extremo a extremo.
+
+**Cuerpo:**
+
+- **Cliente:** integración completa de FCM (proyecto `transitly-ee8cf`): `google-services.json`, plugin Gradle, `firebase_options.dart` con claves reales, manejadores de mensajes en primer y segundo plano y registro del token del dispositivo en `device_tokens` al iniciar sesión.
+- **Servidor (ya existente):** Edge Function `send_notification` que firma un JWT OAuth y envía por **FCM HTTP v1**, con limpieza automática de tokens inválidos, disparada por triggers SQL (incidencia resuelta, ruta compartida, ruta promovida).
+- **Resultado verificado:** la app recibe push **con la app cerrada** (`FlutterFirebaseMessagingBackgroundService started`).
+- **Dependencia externa documentada:** la *service account* del operador para el envío programático (`docs/FCM_SETUP.md`).
+
+**Notas para la defensa:** distinguir entre la config de **cliente** (`google-services.json`) y la credencial de **servidor** (service account), y por qué el envío programático depende de esta última. (90 segundos)
+
+### Slide 8.séptima — Modo conductor en segundo plano (foreground service)
+
+**Título:** Compartir posición con la pantalla bloqueada — un foreground service de Android.
+
+**Cuerpo:**
+
+- El seguimiento del conductor pasó de un `Timer` en primer plano a `Geolocator.getPositionStream` con **foreground service** (`ForegroundNotificationConfig`, wake-lock, notificación persistente nativa).
+- La posición se sigue emitiendo al canal Realtime con la app en segundo plano o el móvil bloqueado; al terminar la ruta se cancela el stream y la notificación.
+- Permisos `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_LOCATION` y `WAKE_LOCK` en el manifiesto. En web (sin foreground service) se mantiene el envío periódico mientras la pestaña está activa.
+
+**Notas para la defensa:** explicar por qué un `Timer` se pausa al bloquear la pantalla y cómo el foreground service garantiza la continuidad, requisito real para un conductor en ruta. (75 segundos)
+
+### Slide 8.octava — Planificador origen→destino reactivado
+
+**Título:** Cerrar el bucle de consulta — trayectos con transbordos.
+
+**Cuerpo:**
+
+- Reactivación de la pestaña **Buscar** y del flujo origen→destino (`RoutePlannerService`: rutas directas y con un transbordo) navegando a `/route-plan`.
+- Completa la carencia informativa: el viajero no solo ve líneas y paradas, sino cómo ir de A a B.
+
+**Notas para la defensa:** mencionar que el motor de planificación es heurístico sobre el grafo de paradas y que la integración con horarios reales es la línea de evolución natural. (45 segundos)
+
+### Slide 8.novena — La web del proyecto en GitHub Pages
+
+**Título:** Distribución y documentación pública.
+
+**Cuerpo:**
+
+- Sitio público en **GitHub Pages** (`https://astralk9999.github.io/Transitly/`) con la presentación del proyecto, los **entregables del TFG** navegables y la **descarga del APK** resuelta automáticamente desde la release más reciente.
+- Release **v1.12.1**: APK **universal** (arm64-v8a, armeabi-v7a, x86_64), Android 7.0+.
+- La web de producto (landing + app Flutter embebida en `/app`) se ejecuta en local para la demo, con la app Android como eje central de la defensa.
+
+**Notas para la defensa:** señalar que la página sirve a la vez de portfolio, de canal de distribución y de índice documental del TFG. (45 segundos)

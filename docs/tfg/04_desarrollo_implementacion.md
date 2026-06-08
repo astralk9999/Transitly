@@ -1,10 +1,10 @@
 # 04 — Desarrollo e Implementación
 
 **Proyecto:** Transitly
-**Repositorio:** nexto-stop-v2 (anclaje original `master @ b908f3c` · 2026-05-23; estado actualizado `master @ 5231f4c` · 2026-06-04)
+**Repositorio:** nexto-stop-v2 (anclaje original `master @ b908f3c` · 2026-05-23; estado actualizado `master @ b47180d0` · 2026-06-08, release v1.12.1)
 **Pila tecnológica principal:** Flutter 3.x · Dart 3 · Riverpod 2.6 · GoRouter 17 · Freezed 3 · Supabase (PostgreSQL + Auth + Edge Functions) · Hive 2.2 con cifrado AES en cajas sensibles · Firebase Messaging 16 · Sentry 8 · PostHog 5 · `flutter_secure_storage` · `very_good_analysis` · `leak_tracker_flutter_testing`
-**Indicadores verificados a 23/05/2026:** 616 *tests* pasando, 14 migraciones SQL consecutivas, 27 *features*, 4 Edge Functions desplegadas, 5 ADRs, 6 *runbooks*, 171/190 ítems del plan mega cerrados (90,0 %), 19 bloqueadores externos documentados, 628 claves ARB (español, inglés y árabe), 4 *jobs* de CI en verde, *scorecard* TFG 8,9/10 y producción 6,0/10
-**Indicadores adicionales a 04/06/2026:** +94 commits posteriores, **release pública v1.11.0** con APK como asset en GitHub Releases (`https://github.com/astralk9999/Transitly/releases/tag/v1.11.0`), **+1 migración SQL** (`fix_route_shares_rls_recursion`), **+1 feature** (`widgets_config` con 3 pantallas configurables y `route_autocomplete` reusable), **+2 utilidades** (`BootCanary` y `TilePrewarmer`), **+1 pantalla de recovery** (`RecoveryScreen`), **+1 widget interactivo** (`MapStopPickerScreen` para wizard de rutas), **+18 claves ARB** para widgets config y avisos de zona. Ver §11 al final del documento para la cronología detallada de cambios.
+**Indicadores verificados a 23/05/2026 (anchor original):** 616 *tests*, 14 migraciones SQL, 27 *features*, 4 Edge Functions, 5 ADRs, 6 *runbooks*, 628 claves ARB, 4 *jobs* de CI, *scorecard* TFG 8,9/10 y producción 6,0/10.
+**Indicadores verificados a 08/06/2026 (defensa):** **679 *tests*** (0 fallos), **51 migraciones SQL** consecutivas, **27 *features*** (446 ficheros `.dart`, ~94k LOC), **8 Edge Functions** desplegadas, **30 modelos freezed**, **38 widgets compartidos**, **642 claves ARB** (es; cobertura EN/AR), **6 *jobs* de CI** en verde, **release pública v1.12.1** (APK universal, Android 7.0+) en GitHub Releases (`https://github.com/astralk9999/Transitly/releases/tag/v1.12.1`). Ver §11 (evolución 23/05–04/06) y §13 (cierre a 08/06) al final del documento.
 
 ---
 
@@ -76,7 +76,7 @@ lib/
   core/                Tokens, router, utils, theme
   data/                Repositorios + cache + sync (12 dominios)
   features/            Feature-first (27 features)
-  l10n/                ARB + generated (es, en, ar) — 628 claves
+  l10n/                ARB + generated (es, en, ar) — 642 claves
   shared/              Modelos, providers y widgets reutilizables
 ```
 
@@ -133,9 +133,9 @@ estricta entre `service_role` y `anon`** para evitar escaladas.
 
 | Indicador | Valor |
 |-----------|-------|
-| Migraciones SQL versionadas | 14 consecutivas (001 a 013 y 016) |
-| Tablas en `public` | 16 |
-| Helpers `SECURITY DEFINER` | 2 (`is_admin`, `is_moderator_or_admin`) |
+| Migraciones SQL versionadas | **51** consecutivas (núcleo + líneas/horarios COMUJESA, conductor en vivo, triggers de push, RLS helpers) |
+| Tablas en `public` | núcleo de 16, ampliado con líneas/horarios, `driver_live_trips`, `device_tokens`, zonas y comunidad |
+| Helpers `SECURITY DEFINER` | `is_admin`, `is_moderator_or_admin`, `is_route_owner`, `get_supabase_service_key`, `get_supabase_functions_url` |
 | Política por defecto | DENY-by-default |
 | Separación de claves | service_role frente a anon |
 
@@ -207,9 +207,9 @@ publicados en `core/theme/`.
 ### 5.4. Localización
 
 `flutter_localizations` con tres locales activos (español como
-fuente, inglés y árabe). El recuento actual es de **628 claves ARB**
-mantenidas con paridad estricta. La dirección RTL está soportada para
-árabe.
+fuente, inglés y árabe). El recuento actual es de **642 claves ARB**
+en español, con cobertura en inglés y árabe. La dirección RTL está
+soportada para árabe.
 
 ---
 
@@ -217,26 +217,37 @@ mantenidas con paridad estricta. La dirección RTL está soportada para
 
 ### 6.1. Edge Functions Deno
 
-Hay **cuatro Edge Functions desplegadas** en Supabase, todas escritas
+Hay **ocho Edge Functions desplegadas** en Supabase, todas escritas
 en Deno y con `verify_jwt` habilitado cuando la naturaleza del *endpoint*
 lo permite:
 
 | Función | Propósito | Notas |
 |---------|-----------|-------|
-| `send_notification` | Envío *push* a través de FCM HTTP v1 | OAuth JWT firmado en Deno; *fail-closed* si falla la persistencia |
+| `send_notification` | Envío *push* a través de FCM HTTP v1 | OAuth JWT firmado en Deno; *fail-closed* si falla la persistencia; limpia tokens inválidos |
 | `import_gtfs` | Importación de feeds GTFS | Anti-SSRF: resolución DNS estricta, redirecciones manuales, rangos privados bloqueados |
 | `delete_user` | Borrado total (Art. 17 GDPR) | Limpia perfil, datos derivados y referencias |
 | `purge_old_data` | Minimización (Art. 5 GDPR) y purga de datos antiguos | Ejecutada por `cron`; idempotente |
+| `generate_data_export` | Portabilidad (Art. 20 GDPR) | Exporta los datos del usuario en formato estructurado |
+| `approve_user_route` | Moderación de rutas sugeridas | Promueve una ruta comunitaria tras revisión |
+| `promote_stop_to_official` | Moderación de paradas | Convierte una parada comunitaria en oficial |
+| `validate_share_code` | Códigos de invitación (conductor/operador) | Valida y canjea el código contra el rol correspondiente |
 
 ### 6.2. Firebase Messaging
 
 `firebase_messaging` 16 gestiona los *tokens* del dispositivo y la
-recepción de mensajes. En Android se declara el canal
-`transitly_push` en el manifiesto. En iOS se preparan los
-*entitlements* de APNs y los `UIBackgroundModes` necesarios. Los
-*deeplinks* incluidos en el *payload* se consumen tanto en
-*foreground* como en *background* y en estado *killed* mediante la
-política recomendada por el SDK.
+recepción de mensajes. La integración quedó **completa y verificada en
+v1.12.1**: el proyecto Firebase `transitly-ee8cf` (con su
+`google-services.json` y el plugin Gradle `com.google.gms.google-services`)
+inicializa al arranque, se registran los manejadores de mensajes en
+primer plano (`setupForegroundHandler`) y en segundo plano
+(`onBackgroundMessage`), y el *token* del dispositivo se persiste en la
+tabla `device_tokens` al iniciar sesión (y se elimina al cerrarla). En
+Android se declara el canal `transitly_push` en el manifiesto. Los
+*deeplinks* incluidos en el *payload* se consumen tanto en *foreground*
+como en *background* y en estado *killed*. La recepción con la app
+cerrada se verificó en dispositivo físico (`FlutterFirebaseMessagingBackgroundService started`).
+El envío programático desde el *backend* depende de la *service account*
+del operador, documentada como dependencia externa en `docs/FCM_SETUP.md`.
 
 ### 6.3. Observabilidad: Sentry y PostHog
 
@@ -268,9 +279,9 @@ ofuscados que requieran persistir entre arranques.
 
 ## 7. Pruebas técnicas
 
-La suite actual cuenta con **616 *tests* pasando**. Esta cifra se
-verifica en el `commit` de cabecera (`master @ b908f3c`). El
-desglose aproximado por categoría es el siguiente:
+La suite actual cuenta con **679 *tests* pasando** (0 fallos). Esta cifra
+se verifica a fecha de defensa (`master @ b47180d0`). El desglose
+aproximado por categoría es el siguiente:
 
 | Categoría | Cantidad aproximada | Foco |
 |-----------|:-------------------:|------|
@@ -370,7 +381,7 @@ request* contra `master`:
 5. **Gitleaks**: escaneo de *secrets* con configuración `.gitleaks.toml`.
 6. **Semgrep**: SAST con reglas en `.semgrep/rules.yaml`.
 
-Los cuatro *jobs* principales (analyze, test, build-web, build-android)
+Los seis *jobs* (analyze, test, build-web, build-apk, semgrep, gitleaks)
 están **en verde de forma sostenida**. Gitleaks actúa como
 **bloqueante**: cualquier *secret* detectado impide el *merge*.
 
@@ -435,9 +446,9 @@ y, eventualmente, sus *widgets* internos.
 ## 12. Resumen ejecutivo
 
 El producto entregado es **funcional, verificable y trazable**. Cada
-*commit* atraviesa `flutter analyze` con cero *issues*, los 616
-*tests* y siete *jobs* de CI sostenidamente en verde. El *backend*
-descansa sobre PostgreSQL con RLS DENY-by-default y catorce
+*commit* atraviesa `flutter analyze` con cero *issues*, los 679
+*tests* y seis *jobs* de CI sostenidamente en verde. El *backend*
+descansa sobre PostgreSQL con RLS DENY-by-default y cincuenta y una
 migraciones versionadas; el cliente cifra los datos sensibles con
 AES en tres *boxes* de Hive y nunca expone *secrets* al repositorio
 gracias a Gitleaks. La observabilidad cubre seis transacciones y 17
@@ -492,3 +503,36 @@ Tras el cierre del anchor original `b908f3c`, la fase de estabilización post-MV
 ### 11.6. Release pública v1.11.0
 
 El APK release se publica como asset de release en GitHub (`https://github.com/astralk9999/Transitly/releases/tag/v1.11.0`). Los 9 APKs históricos que se versionaban en `presentation/public/` se eliminaron del HEAD del repositorio (~792 MB liberados del `working tree`) y se añadió el patrón `*.apk` al `.gitignore` raíz. La presentación web (`presentation/src/components/Section01Hero.astro`, `Section14Download.astro`, `Layout.astro`) se modificó para enlazar a `https://github.com/astralk9999/Transitly/releases/latest`, una URL estable que apunta siempre a la última versión publicada.
+
+---
+
+## 13. Cierre a 8 de junio de 2026 (release v1.12.1)
+
+La fase final, previa a la defensa, completó los objetivos funcionales que aún se cubrían de forma parcial y publicó la web del proyecto. Todo dentro del alcance original.
+
+### 13.1. Notificaciones push reales (FCM) extremo a extremo
+
+Se completó el **cliente** Firebase Cloud Messaging: integración de `google-services.json` (proyecto `transitly-ee8cf`), activación del plugin Gradle `com.google.gms.google-services`, claves reales en `firebase_options.dart`, registro de `onBackgroundMessage` y `setupForegroundHandler` en `main.dart`, y persistencia del *token* del dispositivo en `device_tokens` al iniciar sesión, con borrado al cerrar (`auth_repository_supabase.dart` → `_syncPushToken` / `_removePushToken`, ambos con guarda `kIsWeb`). El **pipeline servidor** —Edge Function `send_notification` (OAuth JWT → FCM HTTP v1, limpieza de tokens inválidos) y disparadores SQL `010_push_triggers.sql`— ya existía. Verificación en dispositivo físico: la app arranca sin fallos con FCM activo y recibe push con la app cerrada. La *service account* del operador para el envío programático queda documentada en `docs/FCM_SETUP.md`.
+
+### 13.2. Modo conductor en segundo plano (foreground service)
+
+El seguimiento GPS del conductor (`lib/features/driver/driver_live_screen.dart`) pasó de un `Timer.periodic` en primer plano a `Geolocator.getPositionStream` con un **foreground service** de Android (`AndroidSettings.foregroundNotificationConfig`, `enableWakeLock: true`, notificación persistente con icono `ic_notification`). La posición se sigue emitiendo al canal Realtime con la app en segundo plano o la pantalla bloqueada; al terminar la ruta se cancela el `StreamSubscription` y la notificación. Permisos `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_LOCATION` y `WAKE_LOCK` añadidos al `AndroidManifest.xml`. En web se conserva el envío periódico mientras la pestaña está activa.
+
+### 13.3. Planificador origen→destino reactivado
+
+Se reactivó la pestaña **Buscar** (`lib/features/home/tabs/search_tab.dart`) y el flujo origen→destino con `RouteSearchBar`, navegando a `/route-plan` (`RoutePlannerService`: rutas directas y con un transbordo sobre el grafo de paradas).
+
+### 13.4. Web del proyecto en GitHub Pages
+
+Se corrigió el modo claro de la web (velo de contraste y blobs adaptables al tema) y se publicó el sitio en **GitHub Pages** con la presentación del proyecto, los entregables del TFG navegables y la descarga del APK resuelta automáticamente desde la release más reciente vía la API de GitHub. Release **v1.12.1**: APK **universal** (arm64-v8a, armeabi-v7a, x86_64), Android 7.0+, que sustituye al anterior APK por ABI única.
+
+### 13.5. Evolución de métricas respecto al anchor original
+
+| Métrica | Anchor (23/05) | Defensa (08/06) |
+|---------|:--------------:|:---------------:|
+| Tests | 616 | **679** |
+| Migraciones SQL | 14 | **51** |
+| Edge Functions | 4 | **8** |
+| Claves ARB (es) | 628 | **642** |
+| Jobs CI | 4 | **6** |
+| Release pública | — | **v1.12.1 (APK universal)** |

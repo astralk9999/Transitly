@@ -2,9 +2,9 @@
 
 **Proyecto:** Transitly (nexto-stop-v2)
 **Rama / HEAD original:** `master @ b908f3c` (2026-05-23)
-**Rama / HEAD actualizado:** `master @ 5231f4c` (2026-06-04, +94 commits)
-**Release distribuible:** v1.11.0 — descargable desde https://github.com/astralk9999/Transitly/releases/tag/v1.11.0
-**Plataformas objetivo:** Android (minSdk 23, targetSdk 34, compileSdk 35), iOS 16.0+, Web (PWA experimental).
+**Rama / HEAD actualizado:** `master @ b47180d0` (2026-06-08)
+**Release distribuible:** v1.12.1 (APK universal) — descargable desde https://github.com/astralk9999/Transitly/releases/tag/v1.12.1
+**Plataformas objetivo:** Android (minSdk 24 / Android 7.0+, targetSdk 34, compileSdk 36), iOS 16.0+, Web (PWA experimental).
 
 > Este manual recoge las instrucciones de **instalación, configuración, despliegue y mantenimiento** de Transitly desde la perspectiva de un desarrollador o de un administrador técnico. Para el uso final de la aplicación vease `07_manual_usuario.md`.
 
@@ -20,7 +20,7 @@ Transitly es una aplicación Flutter con backend Supabase. Las decisiónes estru
 - **ADR 004 — Supabase** como backend (PostgreSQL, Auth, Realtime, Storage y Edge Functions Deno).
 - **ADR 005 — Feature-first** como organizacion del código en `lib/features/`.
 
-En el anchor actual el proyecto suma **veintisiete features**, **catorce migraciónes SQL consecutivas**, **cuatro Edge Functions** desplegadas, **seis runbooks operativos**, **619 tests** en verde, **628 claves ARB** localizadas a ES/EN/AR y **seis jobs CI** que validan analyze, test, build web y build Android (más dos jobs de seguridad). El cuadro de mando interno marca **TFG 8,9 / 10** y **Produccion 6,0 / 10**, diferenciando con claridad la madurez académica de la madurez productiva.
+A fecha de defensa el proyecto suma **veintisiete features** (446 ficheros `.dart`, ~94k LOC), **cincuenta y una migraciónes SQL consecutivas**, **ocho Edge Functions** desplegadas, **seis runbooks operativos**, **679 tests** en verde, **642 claves ARB** localizadas a ES/EN/AR y **seis jobs CI** (analyze, test, build web, build APK, semgrep, gitleaks). El cuadro de mando interno marca **TFG 8,9 / 10** y **Produccion 6,0 / 10**, diferenciando con claridad la madurez académica de la madurez productiva.
 
 ---
 
@@ -89,13 +89,13 @@ flutter gen-l10n
 
 ### 3.4. Firebase Cloud Messaging
 
-Para el target Android e iOS, se requiere generar la configuración de Firebase:
+El proyecto Firebase es `transitly-ee8cf`. El repositorio ya incluye `lib/firebase_options.dart` con las claves del proyecto; el fichero `android/app/google-services.json` **no se versiona** (está en `.gitignore`) y debe colocarse manualmente o regenerarse con:
 
 ```bash
-flutterfire configure --project=transitly-prod
+flutterfire configure --project=transitly-ee8cf --platforms=android
 ```
 
-Esto produce `lib/firebase_options.dart`, `android/app/google-services.json` y `ios/Runner/GoogleService-Info.plist`. Sin estos ficheros el `firebase_setup.dart` degrada silenciosamente: la app funciona sin push.
+Esto produce/actualiza `lib/firebase_options.dart` y `android/app/google-services.json`. Sin el `google-services.json` el `firebase_setup.dart` degrada silenciosamente: la app funciona sin push. Para el **envío programático** desde el backend hace falta además la *service account* de Firebase como secreto `FCM_SERVICE_ACCOUNT_JSON` (ver `docs/FCM_SETUP.md`).
 
 ### 3.5. Ejecución en debug
 
@@ -108,13 +108,16 @@ flutter run \
 ### 3.6. Build release
 
 ```bash
+# APK universal (el publicado en v1.12.1; máxima compatibilidad de dispositivos)
+flutter build apk --release --dart-define-from-file=dart_defines.json
+
+# Alternativa por ABI (binarios más pequeños) o App Bundle para Play Store
 flutter build apk --release --split-per-abi \
   --obfuscate --split-debug-info=build/debug-info \
-  --dart-define=SUPABASE_URL=... \
-  --dart-define=SUPABASE_ANON_KEY=...
+  --dart-define-from-file=dart_defines.json
 ```
 
-El binario se firma con la keystore real si existe `android/key.properties`; en caso contrario, se firma con la debug key y el artefacto no es públicable.
+El binario se firma con la keystore real si existe `android/key.properties`; en caso contrario, se firma con la debug key y el artefacto no es públicable. El APK universal de v1.12.1 ocupa ~91 MB (incluye arm64-v8a, armeabi-v7a y x86_64).
 
 ---
 
@@ -152,30 +155,32 @@ Las paletas viven en `lib/core/theme/palettes/`. Cada paleta declara los tokens 
 
 ```
 nexto-stop-v2/
-├── lib/                      Código Dart (~260 ficheros)
-│   ├── main.dart             Bootstrap (Env → Hive → Supabase → ProviderScope)
+├── lib/                      Código Dart (446 ficheros, ~94k LOC)
+│   ├── main.dart             Bootstrap (Env → Hive → Supabase → Firebase → ProviderScope)
 │   ├── app.dart              MaterialApp.router + theme + locale
 │   ├── core/                 router, theme, utils, observability
 │   ├── data/                 12 entidades con repositorio canonico, cache Hive,
 │   │                         realtime channel manager, push, sync, NFC
 │   ├── features/             27 features con `*_screen.dart`
-│   ├── l10n/                 ARB ES/EN/AR + generated
-│   └── shared/               Widgets reutilizables, models Freezed, providers
-├── test/                     619 tests
+│   ├── l10n/                 ARB ES/EN/AR + generated (642 claves)
+│   └── shared/               38 widgets reutilizables, 30 models Freezed, providers
+├── test/                     679 tests
 ├── supabase/
-│   ├── migrations/           14 migraciónes consecutivas
-│   └── functions/            4 Edge Functions Deno
-├── android/                  Kotlin DSL, signing condicional, ABI splits
+│   ├── migrations/           51 migraciónes consecutivas
+│   └── functions/            8 Edge Functions Deno
+├── android/                  Kotlin DSL, signing condicional, foreground service
 ├── ios/                      Info.plist, entitlements
 ├── web/                      PWA experimental
+├── astro/                    Web de producto (landing + app Flutter en /app, SSR)
+├── presentation/             Web del TFG (GitHub Pages: presentación + entregables)
 ├── docs/
 │   ├── 00_MAESTRO.md         Fuente única de verdad
 │   ├── adr/                  5 ADRs vivos
 │   ├── runbooks/             6 runbooks operativos
 │   ├── historico/            Auditorias y planes archivados
 │   └── tfg/                  Memoria académica (01..08)
-├── tool/                     Scripts Dart y shell (verify_state, contrast, build)
-└── .github/workflows/ci.yml  CI con 6 jobs (4 build + 2 seguridad)
+├── tool/ y tools/            Scripts Dart, shell y Node (verify_state, contrast, seed, apply_sql)
+└── .github/workflows/        CI (6 jobs) + deploy de Pages + dartdoc + release-please
 ```
 
 ---
@@ -196,15 +201,19 @@ supabase db push
 supabase migration list
 ```
 
-Las catorce migraciónes consecutivas (`001_init.sql` hasta `016_data_exports.sql`, sin que existan `014` ni `015` tras la consolidacion documentada en la incidencia de 04/05/2026) cubren: schema base, RLS default-deny, parches de `search_path`, storage, RPCs, helpers de votos, helpers de invitación, triggers de notificaciones, tokens FCM, triggers push, auditoria extendida, reputación, exportacion offline y exportaciones GDPR.
+Las **cincuenta y una migraciónes consecutivas** (`001_init.sql` en adelante) cubren: schema base, RLS default-deny, parches de `search_path`, storage, RPCs, helpers de votos, helpers de invitación, triggers de notificaciones, tokens FCM, triggers push, auditoria extendida, reputación, exportacion offline, exportaciones GDPR, sistema de reputación/XP, avisos geo, líneas y horarios de COMUJESA, conductor en vivo (`driver_live_trips`), zonas y la función `is_route_owner` que rompe la recursión RLS 42P17.
 
 ### 6.3. Despliegue de Edge Functions
 
-Las cuatro funciones desplegadas son `delete_user`, `import_gtfs`, `purge_old_data` y `send_notification`. Tres se despliegan con verificación de JWT y la cuarta (`import_gtfs`) sin verificación, porque se invoca desde una cron interna autenticada por `service_role`:
+Las **ocho funciones desplegadas** son `send_notification`, `import_gtfs`, `delete_user`, `purge_old_data`, `generate_data_export`, `approve_user_route`, `promote_stop_to_official` y `validate_share_code`. Las invocadas por el usuario verifican JWT; las invocadas por cron o triggers internos (autenticados por `service_role`) se despliegan sin verificación:
 
 ```bash
+supabase functions deploy send_notification        # invocada por triggers (service_role)
 supabase functions deploy delete_user --verify-jwt
-supabase functions deploy send_notification --verify-jwt
+supabase functions deploy generate_data_export --verify-jwt
+supabase functions deploy validate_share_code --verify-jwt
+supabase functions deploy approve_user_route --verify-jwt
+supabase functions deploy promote_stop_to_official --verify-jwt
 supabase functions deploy purge_old_data --verify-jwt
 supabase functions deploy import_gtfs --no-verify-jwt
 ```
@@ -395,3 +404,29 @@ $adb = "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe"
 $pid_app = & $adb -s <device-id> shell pidof com.transitly.transitly
 & $adb -s <device-id> logcat -d --pid=$pid_app | Select-String "Auth|WARN|ERROR"
 ```
+
+---
+
+## Adenda 2 — Procedimientos de la release v1.12.1 (8 de junio de 2026)
+
+### Activación del push FCM en el cliente
+
+1. Colocar `android/app/google-services.json` del proyecto `transitly-ee8cf` (no se versiona).
+2. Verificar que el plugin está activo en `android/app/build.gradle.kts`: `id("com.google.gms.google-services")` (el classpath ya está en `android/build.gradle.kts`).
+3. `lib/firebase_options.dart` ya contiene las claves reales del proyecto.
+4. Compilar e instalar. La app registra el token en `device_tokens` al iniciar sesión; verificación en logcat: `FlutterFirebaseMessagingBackgroundService started`.
+5. Para el envío programático, configurar la *service account* como secreto de la Edge Function (ver `docs/FCM_SETUP.md`):
+   ```bash
+   supabase secrets set FCM_PROJECT_ID=transitly-ee8cf
+   supabase secrets set FCM_SERVICE_ACCOUNT_JSON="$(cat service-account.json)"
+   ```
+
+### Modo conductor en segundo plano (foreground service)
+
+El seguimiento usa `Geolocator.getPositionStream` con `AndroidSettings.foregroundNotificationConfig`. Requiere en `AndroidManifest.xml` los permisos `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_LOCATION` y `WAKE_LOCK` (ya añadidos). No requiere paquetes adicionales.
+
+### Publicación de la release y la web (GitHub Pages)
+
+1. Compilar el APK universal: `flutter build apk --release --dart-define-from-file=dart_defines.json`.
+2. Crear la release y subir el APK como asset (vía `gh release create` o la API REST de GitHub) con un nombre claro (`transitly-vX.Y.Z.apk`); marcarla como *latest*.
+3. La web (`presentation/`) se despliega sola al hacer push a `master` tocando `presentation/**` (workflow `deploy-presentation.yml` → rama `gh-pages`). Los botones `[data-download-apk]` resuelven el APK desde `releases/latest` vía la API de GitHub, por lo que la web no necesita reconstruirse tras cada release.

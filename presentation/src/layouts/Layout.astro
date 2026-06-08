@@ -11,6 +11,7 @@ const {
 } = Astro.props;
 
 const baseUrl = import.meta.env.BASE_URL;
+const base = baseUrl.replace(/\/$/, '');
 ---
 
 <!DOCTYPE html>
@@ -54,6 +55,8 @@ const baseUrl = import.meta.env.BASE_URL;
           <a href="#metricas" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Métricas</a>
           <a href="#calidad" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Calidad</a>
           <a href="#seguridad" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Seguridad</a>
+          <a href={`${base}/docs`} class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Entregables</a>
+          <a href={`${base}/defensa`} class="text-transit-accent hover:text-transit-accent/80 transition-colors font-medium">Defensa ▸</a>
           <a
             href="https://github.com/astralk9999/Transitly/releases/latest"
             data-download-apk
@@ -90,6 +93,8 @@ const baseUrl = import.meta.env.BASE_URL;
     <a href="#metricas" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Métricas</a>
     <a href="#calidad" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Calidad</a>
     <a href="#seguridad" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Seguridad</a>
+    <a href={`${base}/docs`} class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Entregables</a>
+    <a href={`${base}/defensa`} class="mobile-link text-2xl font-medium text-transit-accent hover:text-transit-accent/80 transition-colors">Defensa ▸</a>
     <a
       href="https://github.com/astralk9999/Transitly/releases/latest"
       data-download-apk

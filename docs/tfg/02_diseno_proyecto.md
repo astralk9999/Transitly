@@ -2,7 +2,7 @@
 
 **Proyecto:** Transitly (repositorio `nexto-stop-v2`).
 **Estado verificado original:** `master @ b908f3c` (23 de mayo de 2026).
-**Estado actualizado:** `master @ 5231f4c` (4 de junio de 2026); **+94 commits** posteriores, **release pública v1.11.0** distribuida en GitHub Releases (https://github.com/astralk9999/Transitly/releases/tag/v1.11.0), migración SQL adicional `fix_route_shares_rls_recursion` aplicada para resolver recursión en políticas RLS. Métricas históricas del anchor original: **619 tests**, **14 migraciones SQL** consecutivas, **27 features**, **4 Edge Functions** desplegadas, **5 ADRs**, **6 runbooks**, **73 documentos** en `docs/`, **171 ítems** del mega plan cerrados sobre 190 (90,0 %), **628 claves ARB** en tres locales (ES/EN/AR). Scorecard maestro: **TFG 8,9/10 · Producción 6,0/10** (`docs/00_MAESTRO.md` línea 11). Ver §9 al final del documento para el resumen consolidado de los cambios de junio.
+**Estado actualizado:** `master @ b47180d0` (8 de junio de 2026); **release pública v1.12.1** con **APK universal** distribuida en GitHub Releases (https://github.com/astralk9999/Transitly/releases/tag/v1.12.1). Métricas verificadas a fecha de defensa: **679 tests** (0 fallos), **51 migraciones SQL** consecutivas, **27 features**, **8 Edge Functions** desplegadas, **446 ficheros `.dart`** (~94.000 líneas, sin contar código generado), **30 modelos freezed**, **38 widgets compartidos**, **642 claves ARB** en español (ES/EN/AR). Scorecard maestro: **TFG 8,9/10 · Producción 6,0/10** (`docs/00_MAESTRO.md`). Ver §9 y §10 al final del documento para el resumen consolidado de los cambios de junio.
 
 ---
 
@@ -30,8 +30,8 @@ Se han fijado **doce objetivos funcionales** con sus respectivos criterios de ac
 8. **Panel de administración multi-rol** (pasajero, conductor, administrador de operador, moderador, administrador global); aceptación: el guard del router consume `profiles.role` desde Supabase.
 9. **Modo offline** con regiones descargables y cola FIFO de acciones pendientes; aceptación: las acciones se drenan al recuperar conectividad con backoff exponencial.
 10. **Accesibilidad ajustable** —contraste configurable, soporte de daltonismo y dislexia, reduce-motion, escala de texto, objetivos táctiles de 48 dp—; aceptación: los ajustes persisten y aplican sin reinicio.
-11. **Internacionalización ES/EN/AR** con soporte completo de dirección de lectura inversa; aceptación: las 628 claves ARB existen en los tres locales.
-12. **Notificaciones push** con horas silenciosas configurables; aceptación: la entrega se gobierna por consentimiento explícito y `quiet_hours`.
+11. **Internacionalización ES/EN/AR** con soporte completo de dirección de lectura inversa; aceptación: las 642 claves ARB existen en español, con cobertura en inglés y árabe.
+12. **Notificaciones push** con horas silenciosas configurables; aceptación: la entrega se gobierna por consentimiento explícito y `quiet_hours`. Verificado en v1.12.1 con Firebase Cloud Messaging real (recepción con app cerrada y registro de token en `device_tokens`).
 
 ---
 
@@ -41,7 +41,7 @@ Los objetivos no funcionales se agrupan en siete familias. En **rendimiento**, e
 
 En **accesibilidad** se persigue la conformidad WCAG 2.2 AA verificable estáticamente sobre el código; el acta de pruebas con productos de apoyo (TalkBack y VoiceOver) se programa para la semana 10. En **seguridad** se aplica RLS DENY-by-default sobre todas las tablas, cifrado en reposo de las cajas Hive sensibles mediante `HiveAesCipher`, y almacenamiento de claves criptográficas en el llavero del sistema operativo a través de `flutter_secure_storage` (Keychain en iOS, Keystore en Android).
 
-En **privacidad** la política es opt-out por defecto, con consentimiento granular y persistente; se implementan el artículo 8 (verificación de edad), el artículo 13 (información al interesado), el artículo 17 (derecho de supresión mediante un worker de borrado), el artículo 20 (portabilidad por exportación) y el artículo 21 (revocación de consentimiento en caliente sin reinicio) del RGPD. En **observabilidad** se instrumentan **6 spans** de Sentry y **17 eventos** de PostHog, todos gobernados por consent-gating. Finalmente, en **mantenibilidad e internacionalización**, la arquitectura limpia se acompaña de **619 tests automatizados**, **6 jobs de CI en verde**, RTL para árabe y `flutter analyze` con cero issues bloqueantes.
+En **privacidad** la política es opt-out por defecto, con consentimiento granular y persistente; se implementan el artículo 8 (verificación de edad), el artículo 13 (información al interesado), el artículo 17 (derecho de supresión mediante un worker de borrado), el artículo 20 (portabilidad por exportación) y el artículo 21 (revocación de consentimiento en caliente sin reinicio) del RGPD. En **observabilidad** se instrumentan **6 spans** de Sentry y **17 eventos** de PostHog, todos gobernados por consent-gating. Finalmente, en **mantenibilidad e internacionalización**, la arquitectura limpia se acompaña de **679 tests automatizados**, **6 jobs de CI en verde**, RTL para árabe y `flutter analyze` con cero issues bloqueantes.
 
 ---
 
@@ -73,7 +73,7 @@ Los **recursos humanos** se reducen a un único desarrollador en régimen indivi
 
 ## 7. Indicadores de calidad
 
-Se han definido **nueve indicadores medibles** con sus respectivos umbrales y estado verificado. La cobertura de tests se fija como objetivo en el 60 % y se encuentra actualmente en el 24 %; la palanca correctiva, identificada y activa, consiste en escribir tests para la capa `remote/`. El análisis estático con `flutter analyze` debe mantenerse en cero issues bloqueantes. El tamaño del Android App Bundle objetivo es inferior a 50 MB total; el APK release actual ocupa 73,5 MiB sin separación por ABI, deuda explicitada en el scorecard. La accesibilidad WCAG 2.2 AA se verifica estáticamente y se complementará con acta manual. Los *advisors* de seguridad de Supabase deben permanecer en cero. La latencia p95 del flujo de autenticación se limita a 800 milisegundos y la del renderizado inicial del mapa a 1.500 milisegundos. Los 6 jobs de GitHub Actions deben permanecer en verde y el escáner Semgrep actúa de modo bloqueante en *pull request*.
+Se han definido **nueve indicadores medibles** con sus respectivos umbrales y estado verificado. La cobertura de tests se fija como objetivo en el 60 % y se encuentra actualmente en el 24 %; la palanca correctiva, identificada y activa, consiste en escribir tests para la capa `remote/`. El análisis estático con `flutter analyze` debe mantenerse en cero issues bloqueantes. El tamaño objetivo por ABI es inferior a 50 MB; el APK release v1.12.1 se distribuye como **APK universal de ~91 MB** (incluye arm64-v8a, armeabi-v7a y x86_64 en un solo binario para máxima compatibilidad), deuda de tamaño explicitada en el scorecard y mitigable con separación por ABI o App Bundle. La accesibilidad WCAG 2.2 AA se verifica estáticamente y se complementará con acta manual. Los *advisors* de seguridad de Supabase deben permanecer en cero. La latencia p95 del flujo de autenticación se limita a 800 milisegundos y la del renderizado inicial del mapa a 1.500 milisegundos. Los 6 jobs de GitHub Actions deben permanecer en verde y el escáner Semgrep actúa de modo bloqueante en *pull request*.
 
 ---
 
@@ -108,3 +108,21 @@ El diseño del proyecto presentado en este documento se mantiene íntegro: la pi
 7. **Release pública v1.11.0**: el APK release se publica como asset en GitHub Releases (`https://github.com/astralk9999/Transitly/releases/tag/v1.11.0`). La presentación web ahora enlaza a `releases/latest` en lugar de versionar APKs en el repositorio, lo que ha reducido el `working tree` en ~792 MB y previene el bloqueo de push por archivos >100 MB.
 
 Los demás aspectos del diseño —modelo de datos, objetivos de rendimiento, cronograma, indicadores de calidad y marco legal— continúan vigentes sin modificaciones.
+
+---
+
+## 10. Actualización a 8 de junio de 2026 (cierre y release v1.12.1)
+
+En los días previos a la defensa se consolidaron las funcionalidades que cerraban los objetivos funcionales 2, 7 y 12, junto con el pulido de la web de presentación. Ninguna decisión arquitectónica de fondo se vio alterada; los cambios son extensión incremental y estabilización.
+
+1. **Notificaciones push reales con FCM (objetivo funcional 12).** Se completó el cliente Firebase Cloud Messaging: `google-services.json` del proyecto `transitly-ee8cf`, plugin Gradle `com.google.gms.google-services`, claves reales en `firebase_options.dart`, registro de los manejadores de mensajes en segundo y primer plano, y persistencia del token del dispositivo en `device_tokens` al iniciar sesión (`auth_repository_supabase.dart`). El pipeline servidor —Edge Function `send_notification` (OAuth JWT → FCM HTTP v1, con limpieza de tokens inválidos) y disparadores SQL (`010_push_triggers.sql`)— ya estaba construido. La única dependencia externa pendiente, la *service account* del operador para el envío programático, queda documentada en `docs/FCM_SETUP.md`.
+
+2. **Modo conductor en segundo plano (objetivo funcional 7).** El seguimiento GPS del conductor pasó de un temporizador en primer plano a `Geolocator.getPositionStream` con un **foreground service** de Android (`ForegroundNotificationConfig`, wake-lock, notificación persistente). La posición sigue emitiéndose al canal Realtime con la app en segundo plano o la pantalla bloqueada. Permisos `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_LOCATION` y `WAKE_LOCK` añadidos al manifiesto.
+
+3. **Planificador origen→destino (objetivo funcional 1/2).** Se reactivó la pestaña de búsqueda y el flujo origen→destino con transbordos (`RoutePlannerService`), navegando a `/route-plan`.
+
+4. **Web de presentación.** Corrección del modo claro (velo de contraste y blobs adaptables al tema) y publicación del sitio en GitHub Pages, con descarga del APK resuelta automáticamente desde la release más reciente.
+
+5. **Release pública v1.12.1.** APK **universal** (arm64-v8a, armeabi-v7a, x86_64), Android 7.0+, publicado como asset en GitHub Releases. Sustituye al anterior APK por ABI única (solo arm64) y al v1.11.0.
+
+Los demás aspectos del diseño continúan vigentes sin modificaciones.

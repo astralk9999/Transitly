@@ -1,7 +1,7 @@
 # 03 — Planificación de la Ejecución
 
 **Proyecto:** Transitly
-**Repositorio:** nexto-stop-v2 (anclaje original `master @ b908f3c` · 2026-05-23; estado actualizado `master @ 5231f4c` · 2026-06-04, +94 commits)
+**Repositorio:** nexto-stop-v2 (anclaje original `master @ b908f3c` · 2026-05-23; estado actualizado `master @ b47180d0` · 2026-06-08, release v1.12.1)
 **Ciclo formativo:** Desarrollo de Aplicaciones Multiplataforma (DAM)
 **Sector:** movilidad urbana — operador COMUJESA (Jerez de la Frontera)
 **Cronograma:** 11 semanas naturales, del 01/04/2026 al 16/06/2026
@@ -220,9 +220,9 @@ usabilidad con cuestionario SUS:
 | Dispositivo físico Android | Necesario para pruebas de NFC y *push* en *background* / *killed* |
 | Servicio backend | Cuenta Supabase plan *Free* (PostgreSQL, Auth, Edge Functions, Storage) |
 | Mensajería *push* | Firebase Spark (gratis, sin tarjeta) |
-| Repositorio y CI | GitHub plan *Free* con GitHub Actions (4 *jobs* operativos: analyze, test, build-web, build-android, más gitleaks y semgrep) |
+| Repositorio y CI | GitHub plan *Free* con GitHub Actions (6 *jobs*: analyze, test, build-web, build-apk, semgrep, gitleaks) |
 | Observabilidad | Sentry plan *Free* (errores) y PostHog plan *Free* (eventos) |
-| Sitio de *marketing* | Vercel plan *Free* (despliegue Astro) |
+| Sitio web del proyecto | GitHub Pages (presentación + entregables del TFG + descarga del APK) |
 
 ### 5.2. Recursos financieros
 
@@ -293,7 +293,7 @@ defensa y se documenta como limitación conocida en la memoria.
 | Necesidad | Cobertura |
 |-----------|-----------|
 | Copia de seguridad diaria en la nube | Repositorio Git con *push* diario a GitHub más copia automática del directorio `docs/` a Google Drive |
-| Repositorio Git con CI obligatoria para mergear | GitHub Actions con 4 *jobs* (analyze, test, build-web, build-android) más Gitleaks y Semgrep |
+| Repositorio Git con CI obligatoria para mergear | GitHub Actions con 6 *jobs* (analyze, test, build-web, build-apk, semgrep, gitleaks) |
 | Gestor de contraseñas para *secrets* | Bitwarden con bóveda dedicada al TFG; ningún *secret* commiteado |
 | Copia del *keystore* Android | Tres ubicaciones independientes (USB cifrado, *bucket* privado, copia impresa) |
 | Agenda con tutorías y entregas parciales | Calendario sincronizado con recordatorios 72 h antes de cada hito |
@@ -324,12 +324,13 @@ Cada sprint semanal se cierra el domingo con la siguiente lista de
 verificación:
 
 1. `flutter analyze` con cero *issues*.
-2. `flutter test` con cero fallos sobre los 619 tests del repositorio
+2. `flutter test` con cero fallos sobre los 679 tests del repositorio
    en el momento de la verificación.
 3. `git status` con árbol limpio.
 4. *Commit* convencional (`feat`, `fix`, `docs`, etc.) y *push* a
    `master` mediante PR de auto-revisión.
-5. CI completa en verde (cuatro *jobs* más gitleaks y semgrep).
+5. CI completa en verde (seis *jobs*: analyze, test, build-web, build-apk,
+   semgrep, gitleaks).
 6. Actualización de `docs/00_MAESTRO.md` y, si procede, del plan mega
    refinamiento.
 7. Anotación retrospectiva si toca cierre de sprint número par.
@@ -373,3 +374,18 @@ Entre la firma del anchor original `b908f3c` (23/05) y el cierre intermedio `523
 **Decisión documentada de alcance:** se confirma sin cambios la exclusión de **GTFS-Realtime real** (pendiente del operador), **widget iOS completo**, **expansión a otras ciudades** y **modelo ML de ETA**, ya recogida en `01_analisis_contexto.md` y en `docs/EXTERNAL_BLOCKERS.md`. Adicionalmente se documenta como **deuda explícita**: configuración SMTP propia (la verificación de email queda bypaseada durante el TFG con el flujo descrito en `docs/SUPABASE_SETUP.md`).
 
 **Riesgo materializado y resuelto:** durante las pruebas con dispositivos físicos se detectó un crash nativo del engine al combinar opciones de accesibilidad. Inicialmente requería `adb shell pm clear` (borrado total). La mitigación implementada (boot canary + persistencia diferida + recovery UI) elimina el riesgo de aplicación brickeada y mantiene la usabilidad sin intervención del usuario más allá de un eventual botón "Restaurar configuración por defecto" en la pantalla de recovery.
+
+---
+
+## Adenda 2 — Cierre del cronograma a 8 de junio de 2026
+
+La **ENTREGA FINAL** (semana 10, 09/06/2026) se alcanza en plazo. Durante las semanas 10 y 11 se ejecutaron, dentro del margen planificado, las funcionalidades que cerraban objetivos parciales y la publicación de la documentación, sin desplazar la fecha de defensa:
+
+| Lote de trabajo | Periodo | Resultado |
+|------------------|---------|-----------|
+| Push FCM real (cliente) + verificación en dispositivo | 7–8 junio | App recibe push con la app cerrada; token en `device_tokens` |
+| Modo conductor en segundo plano (foreground service) | 7–8 junio | Seguimiento GPS continúa con pantalla bloqueada |
+| Planificador origen→destino reactivado | 7–8 junio | Flujo de trayectos con transbordos (`/route-plan`) |
+| Web del proyecto en GitHub Pages + release v1.12.1 | 8 junio | Presentación, entregables y descarga del APK públicos |
+
+**Cronograma cumplido sin desviación de la fecha de defensa.** El coste directo se mantiene en 0 €. La planificación inicial (11 semanas, metodología híbrida cascada + Scrum solo) demostró robustez: absorbió tanto la estabilización post-MVP como las funcionalidades finales sin tensionar el hito de cierre.

@@ -1,0 +1,314 @@
+---
+import metrics from '../data/metrics.json';
+const baseUrl = import.meta.env.BASE_URL;
+const base = baseUrl.replace(/\/$/, '');
+const docsBase = `${base}/docs`;
+const m = metrics;
+---
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Transitly — Presentación de defensa</title>
+  <link rel="icon" type="image/png" href={`${base}/transitly_logo.png`} />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #08081A; --surface: #10102A; --raised: #1A1A35;
+      --hi: #F0F0FA; --mid: #8888A8; --lo: #6A6A88;
+      --accent: #977DDF; --accent2: #B8A5F0; --cyan: #00D4FF;
+      --success: #B0FF00;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; }
+    body {
+      background: var(--bg); color: var(--hi);
+      font-family: "DM Sans", system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    /* Fondo con blobs */
+    body::before {
+      content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background:
+        radial-gradient(45vw 45vw at 15% 12%, rgba(151,125,223,0.18), transparent 60%),
+        radial-gradient(40vw 40vw at 85% 25%, rgba(0,212,255,0.10), transparent 60%),
+        radial-gradient(45vw 45vw at 50% 100%, rgba(151,125,223,0.12), transparent 60%);
+    }
+    #deck { position: relative; z-index: 1; height: 100%; width: 100%; }
+    .slide {
+      position: absolute; inset: 0; display: none;
+      flex-direction: column; justify-content: center;
+      padding: clamp(2rem, 7vw, 7rem);
+      opacity: 0; transition: opacity 0.45s ease;
+    }
+    .slide.active { display: flex; opacity: 1; }
+    .slide.active .anim {
+      animation: rise 0.6s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    .slide.active .anim:nth-child(2) { animation-delay: 0.08s; }
+    .slide.active .anim:nth-child(3) { animation-delay: 0.16s; }
+    .slide.active .anim:nth-child(4) { animation-delay: 0.24s; }
+    .slide.active .anim:nth-child(5) { animation-delay: 0.32s; }
+    @keyframes rise { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
+
+    .kicker { font-family: "IBM Plex Mono", monospace; font-size: clamp(0.7rem,1.1vw,0.9rem);
+      text-transform: uppercase; letter-spacing: 0.2em; color: var(--accent); margin-bottom: 1.2rem; }
+    h1 { font-size: clamp(2.4rem, 7vw, 5.5rem); font-weight: 700; line-height: 1.02; letter-spacing: -0.02em; }
+    h2 { font-size: clamp(1.8rem, 4.5vw, 3.4rem); font-weight: 700; line-height: 1.1; letter-spacing: -0.01em; margin-bottom: 1.5rem; }
+    .lead { font-size: clamp(1.05rem, 2.2vw, 1.6rem); color: var(--mid); line-height: 1.5; max-width: 60ch; }
+    .grad { background: linear-gradient(120deg, var(--accent), var(--accent2) 60%, var(--cyan));
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    .muted { color: var(--mid); }
+    .big { font-size: clamp(2.2rem,6vw,4rem); font-weight: 700; }
+
+    .cards { display: grid; gap: 1rem; margin-top: 2rem; }
+    .cols-2 { grid-template-columns: repeat(2, 1fr); }
+    .cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .cols-4 { grid-template-columns: repeat(4, 1fr); }
+    @media (max-width: 800px) { .cols-2,.cols-3,.cols-4 { grid-template-columns: 1fr 1fr; } }
+    .card {
+      background: rgba(26,26,53,0.55); border: 1px solid rgba(151,125,223,0.18);
+      border-radius: 1rem; padding: 1.1rem 1.3rem; backdrop-filter: blur(8px);
+    }
+    .card .t { color: var(--hi); font-weight: 600; font-size: clamp(0.95rem,1.5vw,1.15rem); }
+    .card .d { color: var(--mid); font-size: clamp(0.8rem,1.2vw,0.95rem); margin-top: 0.3rem; line-height: 1.4; }
+    .card .ico { font-size: 1.6rem; margin-bottom: 0.5rem; display: block; }
+
+    .stat { text-align: center; }
+    .stat .n { font-family: "IBM Plex Mono", monospace; font-size: clamp(1.8rem,5vw,3.2rem); font-weight: 700; color: var(--accent2); font-variant-numeric: tabular-nums; }
+    .stat .l { color: var(--mid); font-size: clamp(0.75rem,1.2vw,0.95rem); margin-top: 0.3rem; }
+
+    ul.feat { list-style: none; display: grid; gap: 0.7rem; margin-top: 1.5rem; }
+    ul.feat li { font-size: clamp(1rem,1.8vw,1.4rem); color: var(--hi); display: flex; gap: 0.7rem; align-items: baseline; }
+    ul.feat li::before { content: '▸'; color: var(--accent); }
+    ul.feat li span { color: var(--mid); font-size: 0.85em; }
+
+    .logo-badge { width: clamp(64px,9vw,110px); height: clamp(64px,9vw,110px); border-radius: 26%;
+      background: linear-gradient(135deg, var(--accent), #5B4A9E); display: grid; place-items: center;
+      font-weight: 700; font-size: clamp(2rem,4vw,3rem); color: #fff; box-shadow: 0 20px 60px rgba(151,125,223,0.4); margin-bottom: 2rem; }
+
+    .pill { display: inline-flex; gap: 0.5rem; align-items: center; padding: 0.5rem 1rem; border-radius: 999px;
+      background: rgba(151,125,223,0.12); color: var(--accent2); font-size: 0.9rem; font-family: "IBM Plex Mono", monospace; }
+    .row { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.5rem; }
+
+    /* Chrome del deck */
+    #progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg,var(--accent),var(--cyan)); z-index: 10; transition: width 0.3s ease; }
+    #hud { position: fixed; bottom: 1.2rem; right: 1.5rem; z-index: 10; display: flex; gap: 0.8rem; align-items: center;
+      font-family: "IBM Plex Mono", monospace; font-size: 0.85rem; color: var(--mid); }
+    #hud button { background: rgba(26,26,53,0.7); border: 1px solid rgba(151,125,223,0.25); color: var(--hi);
+      width: 38px; height: 38px; border-radius: 50%; cursor: pointer; font-size: 1.1rem; transition: all 0.2s; }
+    #hud button:hover { background: var(--accent); border-color: var(--accent); }
+    #hint { position: fixed; bottom: 1.4rem; left: 1.5rem; z-index: 10; color: var(--lo); font-size: 0.8rem; font-family: "IBM Plex Mono", monospace; }
+    a.link { color: var(--accent2); text-decoration: none; border-bottom: 1px solid rgba(184,165,240,0.4); }
+    @media (prefers-reduced-motion: reduce) { .slide, .slide.active .anim { transition: none; animation: none !important; } }
+  </style>
+</head>
+<body>
+  <div id="progress"></div>
+  <div id="deck">
+
+    <!-- 1 · Portada -->
+    <section class="slide">
+      <div class="logo-badge anim">T</div>
+      <h1 class="anim">Transit<span class="grad">ly</span></h1>
+      <p class="lead anim" style="margin-top:1.2rem">Aplicación multiplataforma de transporte público en tiempo real para ciudades medias.</p>
+      <div class="row anim">
+        <span class="pill">TFG · DAM</span>
+        <span class="pill">{m.context.author}</span>
+        <span class="pill">{m.context.school} · {m.context.course}</span>
+        <span class="pill">Defensa {m.context.defenseDate}</span>
+      </div>
+    </section>
+
+    <!-- 2 · Problema -->
+    <section class="slide">
+      <div class="kicker anim">El problema</div>
+      <h2 class="anim">En ciudades medias no sabes cuándo<br/>llegará tu autobús.</h2>
+      <p class="lead anim">El viajero depende de horarios impresos o de apps fragmentadas por operador. No hay posición en vivo, ni ETA, ni un canal de incidencias. Y empeora con discapacidad visual, motora o cognitiva.</p>
+      <p class="lead anim" style="margin-top:1rem;color:var(--accent2)">Caso piloto: <strong>Jerez de la Frontera · operador COMUJESA</strong>, sin app oficial con seguimiento en vivo.</p>
+    </section>
+
+    <!-- 3 · Sector / oportunidad -->
+    <section class="slide">
+      <div class="kicker anim">Sector y oportunidad</div>
+      <h2 class="anim">Una demanda masiva y desatendida.</h2>
+      <div class="cards cols-3 anim">
+        <div class="card stat"><div class="n">{m.context.urbanRiders2024}</div><div class="l">viajes urbanos / año en autobús (INE)</div></div>
+        <div class="card stat"><div class="n">{m.context.interurbanRiders2024}</div><div class="l">viajes interurbanos / año</div></div>
+        <div class="card stat"><div class="n">0</div><div class="l">estándar único de datos en tiempo real</div></div>
+      </div>
+      <p class="lead anim" style="margin-top:2rem">Una capa de aplicación comunitaria que cubra ese hueco hasta que GTFS-Realtime se generalice.</p>
+    </section>
+
+    <!-- 4 · Solución -->
+    <section class="slide">
+      <div class="kicker anim">La solución</div>
+      <h2 class="anim">Transitly unifica <span class="grad">información, comunidad y accesibilidad</span> en una sola app.</h2>
+      <div class="cards cols-4 anim">
+        <div class="card"><span class="ico">🗺️</span><div class="t">Tiempo real</div><div class="d">Mapa con paradas y autobuses en circulación.</div></div>
+        <div class="card"><span class="ico">💳</span><div class="t">Tarjeta NFC</div><div class="d">Saldo del Consorcio Andaluz desde el móvil.</div></div>
+        <div class="card"><span class="ico">👥</span><div class="t">Comunidad</div><div class="d">Incidencias, feedback y reputación.</div></div>
+        <div class="card"><span class="ico">♿</span><div class="t">Accesible</div><div class="d">WCAG AA, daltonismo, RTL, offline.</div></div>
+      </div>
+    </section>
+
+    <!-- 5 · Funcionalidades clave -->
+    <section class="slide">
+      <div class="kicker anim">Funcionalidades clave</div>
+      <h2 class="anim">27 features, verticales y probadas.</h2>
+      <ul class="feat anim">
+        <li>Mapa en vivo <span>· paradas y buses en circulación</span></li>
+        <li>Lectura NFC <span>· saldo de la tarjeta del Consorcio Andaluz</span></li>
+        <li>Incidencias y feedback <span>· reporte geolocalizado + moderación comunitaria</span></li>
+        <li>Modo conductor <span>· código de invitación + GPS en segundo plano</span></li>
+        <li>Modo sin conexión <span>· región descargable y cola de acciones</span></li>
+        <li>Multi-rol <span>· pasajero, conductor, operador, moderador, admin</span></li>
+      </ul>
+    </section>
+
+    <!-- 6 · Stack -->
+    <section class="slide">
+      <div class="kicker anim">Stack tecnológico</div>
+      <h2 class="anim">Elecciones justificadas, no por moda.</h2>
+      <div class="cards cols-2 anim">
+        <div class="card"><div class="t">Flutter + Dart 3</div><div class="d">Una sola base de código para Android, iOS y web. Riverpod para estado, Hive (cifrado AES) para persistencia.</div></div>
+        <div class="card"><div class="t">Supabase</div><div class="d">PostgreSQL con RLS, Auth, Realtime, Storage y Edge Functions (Deno) en un servicio gestionado.</div></div>
+        <div class="card"><div class="t">Firebase Cloud Messaging</div><div class="d">Notificaciones push reales con la app cerrada (HTTP v1, OAuth JWT).</div></div>
+        <div class="card"><div class="t">Sentry · PostHog</div><div class="d">Observabilidad con consent-gating y scrubbing de datos personales.</div></div>
+      </div>
+    </section>
+
+    <!-- 7 · Cifras -->
+    <section class="slide">
+      <div class="kicker anim">El proyecto en cifras</div>
+      <h2 class="anim">Métricas verificables, no afirmadas.</h2>
+      <div class="cards cols-4 anim">
+        <div class="card stat"><div class="n" data-count="27">0</div><div class="l">features</div></div>
+        <div class="card stat"><div class="n" data-count={m.tests.passed}>0</div><div class="l">tests en verde</div></div>
+        <div class="card stat"><div class="n" data-count={m.project.migrations}>0</div><div class="l">migraciones SQL</div></div>
+        <div class="card stat"><div class="n" data-count={m.project.edgeFunctions}>0</div><div class="l">Edge Functions</div></div>
+        <div class="card stat"><div class="n" data-count="6">0</div><div class="l">jobs de CI</div></div>
+        <div class="card stat"><div class="n" data-count={m.project.dartFiles}>0</div><div class="l">ficheros Dart</div></div>
+        <div class="card stat"><div class="n" data-count={m.i18n.keys.es}>0</div><div class="l">claves i18n (ES/EN/AR)</div></div>
+        <div class="card stat"><div class="n" data-count="3">0</div><div class="l">idiomas (con RTL)</div></div>
+      </div>
+    </section>
+
+    <!-- 8 · Accesibilidad y privacidad -->
+    <section class="slide">
+      <div class="kicker anim">Accesibilidad y privacidad por diseño</div>
+      <h2 class="anim">Desde la semana 1, no como añadido.</h2>
+      <div class="cards cols-2 anim">
+        <div class="card"><div class="t">Accesibilidad WCAG 2.2 AA</div><div class="d">8 matrices de daltonismo, alto contraste, escala de texto, foco visible, objetivos táctiles de 48 dp, lectores de pantalla.</div></div>
+        <div class="card"><div class="t">Internacionalización</div><div class="d">{m.i18n.keys.es} claves en español, inglés y árabe, con lectura de derecha a izquierda (RTL).</div></div>
+        <div class="card"><div class="t">RGPD completo</div><div class="d">Consentimiento opt-out, supresión (art. 17), portabilidad (art. 20), verificación de edad (art. 8).</div></div>
+        <div class="card"><div class="t">Seguridad</div><div class="d">RLS DENY-by-default en PostgreSQL, cifrado en reposo (Hive AES), claves en el llavero del SO.</div></div>
+      </div>
+    </section>
+
+    <!-- 9 · Novedades v1.12.1 -->
+    <section class="slide">
+      <div class="kicker anim">Lo último — release v{m.release.version}</div>
+      <h2 class="anim">Cerrando el círculo antes de la defensa.</h2>
+      <div class="cards cols-3 anim">
+        <div class="card"><span class="ico">🔔</span><div class="t">Push reales (FCM)</div><div class="d">La app recibe avisos aunque esté cerrada.</div></div>
+        <div class="card"><span class="ico">📍</span><div class="t">Conductor en 2º plano</div><div class="d">Comparte ubicación con la pantalla bloqueada (foreground service).</div></div>
+        <div class="card"><span class="ico">🧭</span><div class="t">Planificador A → B</div><div class="d">Trayectos origen-destino con transbordos.</div></div>
+      </div>
+      <p class="lead anim" style="margin-top:2rem">APK universal · {m.release.apkSize} · {m.release.androidMin} · publicado en GitHub Releases.</p>
+    </section>
+
+    <!-- 10 · Demo -->
+    <section class="slide" style="align-items:center;text-align:center">
+      <div class="kicker anim">Y ahora…</div>
+      <h1 class="anim">Vamos a la <span class="grad">demo en vivo</span>.</h1>
+      <p class="lead anim" style="margin:1.5rem auto 0">La app Android es el eje: mapa en tiempo real, incidencias, NFC, comunidad, modo conductor y notificaciones. La web la veremos de pasada.</p>
+    </section>
+
+    <!-- 11 · Cierre -->
+    <section class="slide" style="align-items:center;text-align:center">
+      <div class="logo-badge anim" style="margin-left:auto;margin-right:auto">T</div>
+      <h2 class="anim">Gracias.</h2>
+      <p class="lead anim" style="margin:0 auto">Transitly no es una maqueta: es un sistema verificable, documentado y accesible.</p>
+      <div class="row anim" style="justify-content:center">
+        <a class="pill link" href="https://astralk9999.github.io/Transitly/">astralk9999.github.io/Transitly</a>
+        <a class="pill link" href={docsBase}>Entregables</a>
+        <a class="pill link" href="https://github.com/astralk9999/Transitly">GitHub</a>
+      </div>
+    </section>
+
+  </div>
+
+  <div id="hud">
+    <button id="prev" aria-label="Anterior">‹</button>
+    <span id="counter">1 / 11</span>
+    <button id="next" aria-label="Siguiente">›</button>
+    <button id="fs" aria-label="Pantalla completa">⛶</button>
+  </div>
+  <div id="hint">← → para navegar · F pantalla completa</div>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const progress = document.getElementById('progress');
+    const counter = document.getElementById('counter');
+    let i = 0;
+
+    function animateCounters(slide) {
+      slide.querySelectorAll('[data-count]').forEach((el) => {
+        const target = parseInt(el.getAttribute('data-count')) || 0;
+        const dur = 1100; const start = performance.now();
+        const tick = (t) => {
+          const p = Math.min((t - start) / dur, 1);
+          el.textContent = Math.floor((1 - Math.pow(1 - p, 3)) * target).toLocaleString('es-ES');
+          if (p < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      });
+    }
+
+    function show(n) {
+      i = Math.max(0, Math.min(slides.length - 1, n));
+      slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
+      progress.style.width = ((i + 1) / slides.length * 100) + '%';
+      counter.textContent = (i + 1) + ' / ' + slides.length;
+      animateCounters(slides[i]);
+      try { history.replaceState(null, '', '#' + (i + 1)); } catch (_) {}
+    }
+
+    function next() { show(i + 1); }
+    function prev() { show(i - 1); }
+
+    document.getElementById('next').addEventListener('click', next);
+    document.getElementById('prev').addEventListener('click', prev);
+    document.getElementById('fs').addEventListener('click', () => {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+      else document.exitFullscreen?.();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (['ArrowRight', ' ', 'PageDown'].includes(e.key)) { e.preventDefault(); next(); }
+      else if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); prev(); }
+      else if (e.key === 'Home') show(0);
+      else if (e.key === 'End') show(slides.length - 1);
+      else if (e.key === 'f' || e.key === 'F') document.getElementById('fs').click();
+    });
+
+    // swipe táctil
+    let x0 = null;
+    addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; }, { passive: true });
+    addEventListener('touchend', (e) => {
+      if (x0 === null) return;
+      const dx = e.changedTouches[0].clientX - x0;
+      if (Math.abs(dx) > 50) (dx < 0 ? next : prev)();
+      x0 = null;
+    }, { passive: true });
+
+    const startAt = parseInt((location.hash || '').replace('#', '')) || 1;
+    show(startAt - 1);
+  </script>
+</body>
+</html>

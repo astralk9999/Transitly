@@ -1,0 +1,60 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import { metaForId, orderForId } from '../../data/tfgDocs';
+
+export async function getStaticPaths() {
+  const docs = await getCollection('tfg');
+  const sorted = docs.sort((a, b) => orderForId(a.id) - orderForId(b.id));
+  return sorted.map((doc, i) => ({
+    params: { id: doc.id },
+    props: {
+      doc,
+      prev: i > 0 ? sorted[i - 1] : null,
+      next: i < sorted.length - 1 ? sorted[i + 1] : null,
+    },
+  }));
+}
+
+const { doc, prev, next } = Astro.props;
+const { Content } = await render(doc);
+const meta = metaForId(doc.id);
+const prevMeta = prev ? metaForId(prev.id) : null;
+const nextMeta = next ? metaForId(next.id) : null;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const docsBase = `${base}/docs`;
+---
+
+<Layout title={`${meta?.num} · ${meta?.short ?? 'Documento'} — Transitly TFG`} description={meta?.desc}>
+  <article class="max-w-3xl mx-auto px-6 py-12">
+    <a href={docsBase} class="inline-flex items-center gap-2 text-sm text-transit-text-mid hover:text-transit-accent transition-colors mb-8">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+      Todos los entregables
+    </a>
+
+    {meta && (
+      <div class="mb-8">
+        <span class="text-xs font-mono text-transit-accent uppercase tracking-wider">Documento {meta.num} · {meta.phase}</span>
+      </div>
+    )}
+
+    <div class="doc-prose">
+      <Content />
+    </div>
+
+    <nav class="mt-16 pt-8 border-t border-transit-bg-raised grid grid-cols-2 gap-4">
+      {prev ? (
+        <a href={`${docsBase}/${prev.id}`} class="glass-card hover-lift p-4 group">
+          <span class="text-xs text-transit-text-lo">← Anterior</span>
+          <div class="text-sm font-semibold text-transit-text-hi group-hover:text-transit-accent transition-colors mt-1">{prevMeta?.num} · {prevMeta?.short}</div>
+        </a>
+      ) : <span></span>}
+      {next ? (
+        <a href={`${docsBase}/${next.id}`} class="glass-card hover-lift p-4 text-right group">
+          <span class="text-xs text-transit-text-lo">Siguiente →</span>
+          <div class="text-sm font-semibold text-transit-text-hi group-hover:text-transit-accent transition-colors mt-1">{nextMeta?.num} · {nextMeta?.short}</div>
+        </a>
+      ) : <span></span>}
+    </nav>
+  </article>
+</Layout>

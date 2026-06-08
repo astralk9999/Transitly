@@ -1,0 +1,41 @@
+---
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const docsBase = `${base}/docs`;
+const defensaUrl = `${base}/defensa`;
+
+const items = [
+  { n: '01–05', t: 'Memoria del proyecto', d: 'Análisis, diseño, planificación, desarrollo y evaluación.' },
+  { n: '06', t: 'Documentación técnica', d: 'Manual de instalación, configuración y mantenimiento.' },
+  { n: '07', t: 'Manual de usuario', d: 'Guía de uso para el usuario final no técnico.' },
+  { n: '08', t: 'Presentación y defensa', d: 'Guion de diapositivas + deck de defensa.' },
+];
+---
+
+<section id="entregables" class="py-28 px-6 max-w-6xl mx-auto">
+  <div class="reveal">
+    <div class="section-divider mb-6"></div>
+    <h2 class="text-4xl md:text-5xl font-bold mb-4">Entregables del TFG</h2>
+    <p class="text-transit-text-mid text-lg max-w-3xl leading-relaxed">
+      Toda la documentación del proyecto —memoria, manuales, planificación, evaluación y presentación— consultable online.
+    </p>
+  </div>
+
+  <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mt-12">
+    {items.map((it, idx) => (
+      <a href={docsBase} class="glass-card hover-lift p-6 reveal group" data-delay={`${idx * 100}`}>
+        <div class="text-xs font-mono text-transit-accent mb-2">{it.n}</div>
+        <h3 class="font-bold text-transit-text-hi group-hover:text-transit-accent transition-colors">{it.t}</h3>
+        <p class="text-transit-text-mid text-sm mt-2 leading-relaxed">{it.d}</p>
+      </a>
+    ))}
+  </div>
+
+  <div class="flex flex-wrap gap-3 mt-8 reveal" data-delay="200">
+    <a href={docsBase} class="inline-flex items-center gap-2 px-6 py-3 bg-transit-accent text-white rounded-full text-sm font-semibold hover:bg-transit-accent/85 transition-all">
+      Ver todos los entregables →
+    </a>
+    <a href={defensaUrl} class="inline-flex items-center gap-2 px-6 py-3 border border-transit-accent/30 text-transit-text-hi rounded-full text-sm font-semibold hover:bg-transit-accent-bg transition-all">
+      Presentación de defensa ▸
+    </a>
+  </div>
+</section>

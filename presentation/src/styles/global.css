@@ -228,3 +228,57 @@ html {
 
 /* ── Counter animation reset ── */
 [data-counter] { font-variant-numeric: tabular-nums; }
+
+/* ── Prosa de documentos del TFG (renderizado de docs/tfg/*.md) ── */
+.doc-prose { color: var(--color-transit-text-mid); line-height: 1.75; font-size: 1rem; }
+.doc-prose > :first-child { margin-top: 0; }
+.doc-prose h1 {
+  color: var(--color-transit-text-hi); font-size: 2rem; font-weight: 700;
+  line-height: 1.2; margin: 0 0 1.25rem;
+}
+.doc-prose h2 {
+  color: var(--color-transit-text-hi); font-size: 1.5rem; font-weight: 700;
+  margin: 2.5rem 0 1rem; padding-top: 1.5rem;
+  border-top: 1px solid rgba(151, 125, 223, 0.18);
+}
+.doc-prose h3 {
+  color: var(--color-transit-text-hi); font-size: 1.2rem; font-weight: 600;
+  margin: 1.75rem 0 0.75rem;
+}
+.doc-prose h4 { color: var(--color-transit-text-hi); font-size: 1.05rem; font-weight: 600; margin: 1.25rem 0 0.5rem; }
+.doc-prose p { margin: 0 0 1rem; }
+.doc-prose a { color: var(--color-transit-accent); text-decoration: underline; text-underline-offset: 2px; }
+.doc-prose a:hover { color: #b8a5f0; }
+.doc-prose strong { color: var(--color-transit-text-hi); font-weight: 600; }
+.doc-prose ul, .doc-prose ol { margin: 0 0 1rem; padding-left: 1.5rem; }
+.doc-prose li { margin: 0.35rem 0; }
+.doc-prose ul li { list-style: disc; }
+.doc-prose ol li { list-style: decimal; }
+.doc-prose blockquote {
+  border-left: 3px solid var(--color-transit-accent);
+  background: rgba(151, 125, 223, 0.07);
+  margin: 1.25rem 0; padding: 0.75rem 1rem; border-radius: 0 0.5rem 0.5rem 0;
+  color: var(--color-transit-text-mid);
+}
+.doc-prose code {
+  font-family: var(--font-family-mono); font-size: 0.85em;
+  background: rgba(151, 125, 223, 0.12); color: #c9b8f0;
+  padding: 0.15em 0.4em; border-radius: 0.3rem;
+}
+.doc-prose pre {
+  background: #0c0c20; border: 1px solid rgba(151, 125, 223, 0.15);
+  border-radius: 0.75rem; padding: 1rem 1.25rem; overflow-x: auto;
+  margin: 0 0 1.25rem; font-size: 0.85rem; line-height: 1.6;
+}
+.doc-prose pre code { background: none; color: #d8d8ec; padding: 0; font-size: 0.85rem; }
+.doc-prose hr { border: none; border-top: 1px solid rgba(151, 125, 223, 0.18); margin: 2rem 0; }
+.doc-prose table {
+  width: 100%; border-collapse: collapse; margin: 0 0 1.5rem; font-size: 0.9rem;
+  display: block; overflow-x: auto;
+}
+.doc-prose thead { background: rgba(151, 125, 223, 0.1); }
+.doc-prose th, .doc-prose td {
+  border: 1px solid rgba(151, 125, 223, 0.15); padding: 0.5rem 0.75rem; text-align: left;
+}
+.doc-prose th { color: var(--color-transit-text-hi); font-weight: 600; }
+.doc-prose img { max-width: 100%; border-radius: 0.5rem; }

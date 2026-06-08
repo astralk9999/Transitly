@@ -82,6 +82,11 @@ const fullTitle = `${title} · Transitly`;
       .aurora-blob, .glow-pulse, .float-y, .gradient-animated { animation: none; }
       .reveal { opacity: 1; transform: none; transition: none; }
     }
+
+    /* Oculta el triángulo nativo del <details> (FAQ) en todos los navegadores */
+    details > summary { list-style: none; }
+    details > summary::-webkit-details-marker { display: none; }
+    details > summary::marker { content: ''; }
   </style>
 </head>
 <body class="bg-transit-bg text-text-hi font-sans antialiased min-h-screen flex flex-col">

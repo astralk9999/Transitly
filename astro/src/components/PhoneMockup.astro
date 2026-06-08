@@ -1,0 +1,146 @@
+---
+// Maqueta de teléfono con una UI de la app simulada (HTML/CSS, sin captura
+// real). Reproduce la estética: mapa con líneas de colores, pin de bus en
+// vivo, tarjeta de "próximo bus" y barra de navegación.
+interface Props { class?: string }
+const { class: className = '' } = Astro.props;
+---
+<div class:list={['phone', className]}>
+  <div class="phone-frame">
+    <div class="phone-notch"></div>
+    <div class="phone-screen">
+      <!-- Barra superior -->
+      <div class="ui-top">
+        <img src="/branding/logo.png" alt="" width="22" height="22" />
+        <span class="ui-brand">Transitly</span>
+        <span class="ui-live"><span class="ui-dot"></span>EN VIVO</span>
+      </div>
+
+      <!-- "Mapa" -->
+      <div class="ui-map">
+        <svg viewBox="0 0 300 360" preserveAspectRatio="xMidYMid slice" class="ui-map-svg">
+          <defs>
+            <radialGradient id="pm-glow" cx="50%" cy="40%" r="70%">
+              <stop offset="0%" stop-color="#977DDF" stop-opacity="0.25" />
+              <stop offset="100%" stop-color="#08081A" stop-opacity="0" />
+            </radialGradient>
+          </defs>
+          <rect width="300" height="360" fill="#0C0C20" />
+          <rect width="300" height="360" fill="url(#pm-glow)" />
+          <!-- líneas -->
+          <path d="M-10,90 C80,60 150,160 320,120" stroke="#00D4FF" stroke-width="4" fill="none" opacity="0.9"/>
+          <path d="M-10,210 C90,180 170,250 320,210" stroke="#977DDF" stroke-width="4" fill="none" opacity="0.9"/>
+          <path d="M40,-10 C70,120 120,220 90,380" stroke="#FF006E" stroke-width="4" fill="none" opacity="0.85"/>
+          <!-- paradas -->
+          <circle cx="80" cy="73" r="4" fill="#fff"/><circle cx="80" cy="73" r="7" fill="#00D4FF" opacity="0.3"/>
+          <circle cx="170" cy="148" r="4" fill="#fff"/>
+          <circle cx="90" cy="195" r="4" fill="#fff"/>
+          <circle cx="200" cy="225" r="4" fill="#fff"/>
+        </svg>
+        <!-- pin de bus en vivo -->
+        <div class="ui-bus float-y">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="#fff"><path d="M4 17V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v11M4 11h16"/><circle cx="7.5" cy="17.5" r="1.5"/><circle cx="16.5" cy="17.5" r="1.5"/></svg>
+          L1
+        </div>
+      </div>
+
+      <!-- Tarjeta próximo bus -->
+      <div class="ui-card">
+        <div class="ui-card-head">
+          <span class="ui-badge">L1</span>
+          <div class="ui-card-text">
+            <div class="ui-card-title">Plaza del Arenal → Hospital</div>
+            <div class="ui-card-sub">Próxima salida · horario oficial</div>
+          </div>
+          <div class="ui-eta">
+            <div class="ui-eta-time">08:42</div>
+            <div class="ui-eta-min">en 5 min</div>
+          </div>
+        </div>
+        <div class="ui-times">
+          <span>08:42</span><span>08:54</span><span>09:06</span><span>09:18</span>
+        </div>
+      </div>
+
+      <!-- Nav inferior -->
+      <div class="ui-nav">
+        <span class="ui-nav-i on">●</span>
+        <span class="ui-nav-i">◆</span>
+        <span class="ui-nav-i">▮</span>
+        <span class="ui-nav-i">○</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .phone { display: flex; justify-content: center; }
+  .phone-frame {
+    position: relative;
+    width: 270px;
+    height: 552px;
+    border-radius: 42px;
+    padding: 12px;
+    background: linear-gradient(160deg, #2a2a4a, #14142e 60%);
+    box-shadow:
+      0 30px 80px -20px rgba(151,125,223,0.45),
+      0 0 0 1px rgba(255,255,255,0.06) inset;
+  }
+  .phone-notch {
+    position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
+    width: 90px; height: 18px; border-radius: 0 0 12px 12px; background: #0a0a18; z-index: 3;
+  }
+  .phone-screen {
+    width: 100%; height: 100%; border-radius: 32px; overflow: hidden;
+    background: #08081A; display: flex; flex-direction: column;
+    font-family: 'DM Sans', system-ui, sans-serif;
+  }
+  .ui-top {
+    display: flex; align-items: center; gap: 7px;
+    padding: 26px 16px 10px; color: #F8F8FF;
+  }
+  .ui-brand { font-weight: 700; font-size: 14px; }
+  .ui-live {
+    margin-left: auto; display: inline-flex; align-items: center; gap: 4px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 8px; font-weight: 700;
+    letter-spacing: 1px; color: #22C55E;
+  }
+  .ui-dot { width: 6px; height: 6px; border-radius: 50%; background: #22C55E; }
+  .ui-map { position: relative; flex: 1; margin: 4px 12px; border-radius: 16px; overflow: hidden; }
+  .ui-map-svg { width: 100%; height: 100%; display: block; }
+  .ui-bus {
+    position: absolute; top: 38%; left: 52%;
+    display: inline-flex; align-items: center; gap: 3px;
+    background: #00D4FF; color: #04121a; font-weight: 800; font-size: 10px;
+    padding: 3px 7px; border-radius: 7px; border: 2px solid #fff;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+  }
+  .ui-bus svg { stroke: #04121a; stroke-width: 0; }
+  .ui-card {
+    margin: 0 12px 8px; padding: 12px;
+    background: rgba(24,24,56,0.92); border: 1px solid #1E1E3A;
+    border-radius: 16px; backdrop-filter: blur(8px);
+  }
+  .ui-card-head { display: flex; align-items: center; gap: 9px; }
+  .ui-badge {
+    background: #977DDF; color: #fff; font-weight: 800; font-size: 12px;
+    padding: 5px 9px; border-radius: 8px; font-family: 'IBM Plex Mono', monospace;
+  }
+  .ui-card-text { flex: 1; min-width: 0; }
+  .ui-card-title { color: #F8F8FF; font-size: 11px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ui-card-sub { color: #6A6A80; font-size: 9px; margin-top: 2px; }
+  .ui-eta { text-align: right; }
+  .ui-eta-time { color: #977DDF; font-weight: 800; font-size: 15px; font-family: 'IBM Plex Mono', monospace; }
+  .ui-eta-min { color: #00D4FF; font-size: 8px; }
+  .ui-times {
+    display: flex; gap: 10px; margin-top: 10px; padding-top: 8px;
+    border-top: 1px solid #1E1E3A; font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; color: #A0A0B8;
+  }
+  .ui-times span:first-child { color: #977DDF; font-weight: 700; }
+  .ui-nav {
+    display: flex; justify-content: space-around; align-items: center;
+    padding: 10px 0 16px; color: #404060; font-size: 13px;
+  }
+  .ui-nav-i.on { color: #977DDF; }
+</style>

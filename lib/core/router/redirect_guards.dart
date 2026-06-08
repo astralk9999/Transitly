@@ -45,11 +45,19 @@ String? authRedirect(Ref ref, GoRouterState state) {
 
   if (isAdminRoute || isManagementRoute || isOperatorAdminRoute) {
     if (!isAuth) return '/home/inicio';
+    // Si el perfil aún no ha resuelto (p.ej. ProfileTab lo invalida al
+    // entrar), el rol colapsa al mock 'passenger' y sacaría a un admin /
+    // operator_admin de su propio panel. No bloqueamos hasta saber el rol.
+    final profileAsync = ref.read(userProfileFromSupabaseProvider);
+    if (!profileAsync.hasValue && !profileAsync.hasError) return null;
     final role = ref.read(currentUserRoleProvider);
     if (isAdminRoute && role != UserRole.admin) return '/home/inicio';
+    // Gestión: admin global, moderador, y admin de operadora (este último
+    // solo ve/edita lo de su operadora, filtrado por las propias pantallas).
     if (isManagementRoute &&
         role != UserRole.admin &&
-        role != UserRole.moderator) {
+        role != UserRole.moderator &&
+        role != UserRole.operatorAdmin) {
       return '/home/inicio';
     }
     if (isOperatorAdminRoute &&

@@ -361,8 +361,8 @@ class _UserRouteDetailScreenState extends ConsumerState<UserRouteDetailScreen> {
               ],
             ),
           ),
-          // Botonera inferior fija, IGUAL que el detalle de línea oficial:
-          // [EN EL MAPA] [FAVORITA/QUITAR].
+          // Botonera inferior fija: [EN EL MAPA] + [DESCARGAR] (si la ruta no
+          // es tuya, para importarla a tus rutas). Si es tuya, solo el mapa.
           if (!_showInfo)
             Positioned(
               left: padding,
@@ -374,26 +374,22 @@ class _UserRouteDetailScreenState extends ConsumerState<UserRouteDetailScreen> {
                     child: TransitButton(
                       label: 'EN EL MAPA',
                       icon: Icons.map_outlined,
-                      isPrimary: false,
+                      isPrimary: _isOwner,
                       onPressed: () => _enMapa(route),
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Consumer(builder: (_, r, __) {
-                      final isFav =
-                          r.watch(userFavoritesProvider).contains(route.id);
-                      return TransitButton(
-                        label: isFav ? 'QUITAR' : 'FAVORITA',
-                        icon: isFav ? Icons.star_outline : Icons.star,
-                        isPrimary: !isFav,
-                        onPressed: () {
-                          final n = r.read(userFavoritesProvider.notifier);
-                          isFav ? n.removeLine(route.id) : n.addLine(route.id);
-                        },
-                      );
-                    }),
-                  ),
+                  if (!_isOwner) ...[
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: TransitButton(
+                        label: _importing ? 'Descargando…' : 'DESCARGAR',
+                        icon: Icons.download_outlined,
+                        isPrimary: true,
+                        isLoading: _importing,
+                        onPressed: _import,
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -412,9 +408,9 @@ class _UserRouteDetailScreenState extends ConsumerState<UserRouteDetailScreen> {
     final estimated = route.totalDurationMin ?? (stopsCount * 3);
     return [
       const SizedBox(height: 48),
-      // Cabecera: atrás + acceso a la info de comunidad (icono arriba, igual
-      // que el detalle oficial pone sus iconos de acción arriba). El favorito
-      // va en la barra inferior, como las líneas oficiales.
+      // Cabecera: atrás + estrella favorito + info de la comunidad (iconos
+      // arriba, igual que el detalle oficial). El botón grande de abajo es
+      // DESCARGAR (importar) cuando la ruta no es tuya.
       Row(
         children: [
           GestureDetector(
@@ -422,6 +418,18 @@ class _UserRouteDetailScreenState extends ConsumerState<UserRouteDetailScreen> {
             child: Icon(Icons.arrow_back, size: 24, color: c.textMid),
           ),
           const Spacer(),
+          Consumer(builder: (_, r, __) {
+            final isFav = r.watch(userFavoritesProvider).contains(route.id);
+            return IconButton(
+              icon: Icon(isFav ? Icons.star : Icons.star_border,
+                  size: 22, color: c.accent),
+              tooltip: isFav ? 'Quitar de favoritas' : 'Añadir a favoritas',
+              onPressed: () {
+                final n = r.read(userFavoritesProvider.notifier);
+                isFav ? n.removeLine(route.id) : n.addLine(route.id);
+              },
+            );
+          }),
           IconButton(
             icon: Icon(Icons.groups_outlined, size: 22, color: c.textMid),
             tooltip: 'Info de la comunidad',

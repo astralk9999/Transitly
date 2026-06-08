@@ -192,6 +192,28 @@ Widget build(BuildContext context) {
           ),
         ),
 
+        const SizedBox(height: TransitSpacing.space16),
+        &#47;&#47; Botón &quot;Vista previa&quot; — abre un mapa interactivo con las
+        &#47;&#47; paradas + trazado para que el usuario revise antes de
+        &#47;&#47; publicar. Antes solo se podían ver números (paradas, h)
+        &#47;&#47; sin saber realmente cómo iba a quedar la ruta.
+        TransitButton(
+          label: &#39;Vista previa en el mapa&#39;,
+          icon: Icons.map_outlined,
+          isPrimary: false,
+          onPressed: stops.length &gt;= 2
+              ? () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (_) =&gt; _PreviewMapScreen(
+                      stops: stops,
+                      path: path,
+                      color: parsedColor ?? colors.accent,
+                      routeName: routeName,
+                    ),
+                  ));
+                }
+              : null,
+        ),
         const SizedBox(height: TransitSpacing.space24),
 
         GlassCard(
@@ -258,7 +280,7 @@ Widget build(BuildContext context) {
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

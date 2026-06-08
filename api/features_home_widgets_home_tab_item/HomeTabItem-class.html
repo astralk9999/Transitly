@@ -64,7 +64,7 @@
     <h2>Constructors</h2>
     <dl class="constructor-summary-list">
         <dt id="HomeTabItem.new" class="callable">
-          <span class="name"><a href="../features_home_widgets_home_tab_item/HomeTabItem/HomeTabItem.html">HomeTabItem.new</a></span><span class="signature">({<span class="parameter" id="-param-icon"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/widgets/IconData-class.html">IconData</a></span> <span class="parameter-name">icon</span>, </span><span class="parameter" id="-param-activeIcon"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/widgets/IconData-class.html">IconData</a></span> <span class="parameter-name">activeIcon</span>, </span><span class="parameter" id="-param-label"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">label</span></span>})</span>
+          <span class="name"><a href="../features_home_widgets_home_tab_item/HomeTabItem/HomeTabItem.html">HomeTabItem.new</a></span><span class="signature">({<span class="parameter" id="-param-icon"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/widgets/IconData-class.html">IconData</a></span> <span class="parameter-name">icon</span>, </span><span class="parameter" id="-param-activeIcon"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/widgets/IconData-class.html">IconData</a></span> <span class="parameter-name">activeIcon</span>, </span><span class="parameter" id="-param-label"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">label</span>, </span><span class="parameter" id="-param-branchIndex"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">branchIndex</span></span>})</span>
         </dt>
         <dd>
           
@@ -86,6 +86,20 @@
 </dt>
 <dd>
   
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="branchIndex" class="property">
+  <span class="name"><a href="../features_home_widgets_home_tab_item/HomeTabItem/branchIndex.html">branchIndex</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>
+  
+
+</dt>
+<dd>
+  Índice de la rama en el StatefulShellRoute (<code>app_router.dart</code>). Es FIJO
+aunque alguna tab se oculte de la barra, para que goBranch siga apuntando
+a la pantalla correcta: inicio=0, mapa=1, buscar=2, tarjeta=3, perfil=4.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -223,7 +237,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

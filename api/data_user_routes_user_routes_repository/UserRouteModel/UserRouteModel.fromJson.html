@@ -68,7 +68,9 @@
     id: json[&#39;id&#39;] as String,
     authorId: json[&#39;author_id&#39;] as String,
     name: json[&#39;name&#39;] as String,
+    code: json[&#39;code&#39;] as String?,
     description: json[&#39;description&#39;] as String?,
+    path: json[&#39;path&#39;] as List&lt;dynamic&gt;?,
     routeColor: (json[&#39;route_color&#39;] as String?) ?? &#39;#977DDF&#39;,
     serviceType: (json[&#39;service_type&#39;] as String?) ?? &#39;urban&#39;,
     visibility: (json[&#39;visibility&#39;] as String?) ?? &#39;private&#39;,
@@ -114,7 +116,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

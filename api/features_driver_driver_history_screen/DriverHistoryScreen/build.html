@@ -126,15 +126,12 @@ Widget build(BuildContext context, WidgetRef ref) {
   }
 
   return Scaffold(
-    backgroundColor: c.bgRoot,
+    backgroundColor: Colors.transparent,
     body: Stack(
       children: [
-        Positioned.fill(
-          child: SmokeBackground(color: c.accent, isDark: isDark),
-        ),
         Column(
           children: [
-            TransitAppBar(title: l10n.driverHistoryTitle),
+            TransitAppBar(title: l10n.driverHistoryTitle, transparent: true),
             Expanded(
               child: trips.isEmpty
                   ? EmptyState(
@@ -187,7 +184,7 @@ Widget build(BuildContext context, WidgetRef ref) {
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

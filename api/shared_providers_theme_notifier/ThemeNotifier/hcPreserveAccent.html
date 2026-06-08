@@ -93,6 +93,7 @@
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">set hcPreserveAccent(bool value) {
   if (_hcPreserveAccent == value) return;
+  BootCanary.markPendingSensitive(&#39;hcPreserveAccent&#39;);
   _hcPreserveAccent = value;
   notifyListeners();
   unawaited(_persist());
@@ -125,7 +126,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

@@ -114,17 +114,14 @@ Widget build(BuildContext context, WidgetRef ref) {
   final c = TransitColorScheme.of(isDark);
 
   return Scaffold(
-    backgroundColor: c.bgRoot,
-    body: Stack(
-      children: [
-        Positioned.fill(
-          child: SmokeBackground(color: c.accent, isDark: isDark),
-        ),
-        Column(
-          children: [
-            const TransitAppBar(title: &#39;Administración&#39;),
-            Expanded(
-              child: RoleGate(
+    backgroundColor: Colors.transparent,
+    &#47;&#47; appBar: deja a Material gestionar el padding del status bar
+    &#47;&#47; (consistente con todas las pantallas que también usan este
+    &#47;&#47; patrón). Antes el TransitAppBar iba en el body con SafeAreas
+    &#47;&#47; distintos por pantalla, lo que daba alturas dispares.
+    appBar: const TransitAppBar(
+        title: &#39;Administración&#39;, transparent: true),
+    body: RoleGate(
                 allow: const [UserRole.admin],
                 fallback: Center(
                   child: Padding(
@@ -169,17 +166,10 @@ Widget build(BuildContext context, WidgetRef ref) {
                         _OptionCard(
                           c: c,
                           icon: Icons.inbox,
-                          title: &#39;Bandeja de moderación&#39;,
-                          subtitle: &#39;Revisar reportes y contenido&#39;,
+                          title: &#39;Bandeja&#39;,
+                          subtitle:
+                              &#39;Mejoras, incidencias, sugerencias, zonas, operadores y RGPD en un solo sitio&#39;,
                           onTap: () =&gt; context.push(&#39;&#47;management&#47;inbox&#39;),
-                        ),
-                        const SizedBox(height: 12),
-                        _OptionCard(
-                          c: c,
-                          icon: Icons.assignment_outlined,
-                          title: &#39;Solicitudes&#39;,
-                          subtitle: &#39;RGPD, rutas, alta operador y escalado&#39;,
-                          onTap: () =&gt; context.push(&#39;&#47;admin&#47;requests&#39;),
                         ),
                         const SizedBox(height: 12),
                         _OptionCard(
@@ -189,17 +179,50 @@ Widget build(BuildContext context, WidgetRef ref) {
                           subtitle: &#39;Anunciar en zona con radio&#39;,
                           onTap: () =&gt; context.push(&#39;&#47;admin&#47;geo-alerts&#39;),
                         ),
+                        const SizedBox(height: 12),
+                        _OptionCard(
+                          c: c,
+                          icon: Icons.alt_route,
+                          title: &#39;Gestión de líneas&#39;,
+                          subtitle:
+                              &#39;Editar rutas, paradas y horarios de cualquier operador&#39;,
+                          onTap: () =&gt;
+                              context.push(&#39;&#47;management&#47;routes&#39;),
+                        ),
+                        const SizedBox(height: 12),
+                        _OptionCard(
+                          c: c,
+                          icon: Icons.place_outlined,
+                          title: &#39;Gestión de paradas&#39;,
+                          subtitle:
+                              &#39;Ver, crear y editar paradas de cualquier operador&#39;,
+                          onTap: () =&gt; context.push(&#39;&#47;management&#47;stops&#39;),
+                        ),
+                        const SizedBox(height: 12),
+                        _OptionCard(
+                          c: c,
+                          icon: Icons.groups_outlined,
+                          title: &#39;Gestión de comunidad&#39;,
+                          subtitle:
+                              &#39;Rutas de la comunidad: revisar y oficializar&#39;,
+                          onTap: () =&gt;
+                              context.push(&#39;&#47;management&#47;community&#39;),
+                        ),
+                        const SizedBox(height: 12),
+                        _OptionCard(
+                          c: c,
+                          icon: Icons.map_outlined,
+                          title: &#39;Gestión de zonas&#39;,
+                          subtitle:
+                              &#39;Zonas con perímetro (centro y radio) para perfil y mapa&#39;,
+                          onTap: () =&gt; context.push(&#39;&#47;management&#47;zones&#39;),
+                        ),
                         const SizedBox(height: 32),
                       ],
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
-        ),
-      ],
-    ),
   );
 }</code></pre>
 </section>
@@ -229,7 +252,7 @@ Widget build(BuildContext context, WidgetRef ref) {
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

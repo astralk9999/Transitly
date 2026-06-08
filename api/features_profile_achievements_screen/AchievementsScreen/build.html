@@ -116,22 +116,10 @@ Widget build(BuildContext context, WidgetRef ref) {
   final mockData = ref.watch(mockDataServiceProvider);
 
   return Scaffold(
-    backgroundColor: c.bgRoot,
-    appBar: AppBar(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      leading: IconButton(
-        icon: Icon(Icons.arrow_back, color: c.textMid),
-        tooltip: l10n.actionBack,
-        onPressed: () =&gt; context.pop(),
-      ),
-      title: Text(l10n.achievementsTitle,
-          style: TransitTypography.sectionTitle(c.textHi)),
-      centerTitle: false,
-    ),
+    backgroundColor: Colors.transparent,
+    appBar: TransitAppBar(title: l10n.achievementsTitle, transparent: true),
     body: Stack(
       children: [
-        Positioned.fill(child: SmokeBackground(color: c.accent, isDark: isDark)),
         ContentConstraints(
       child: Builder(builder: (context) {
       final padding = ResponsiveScaffold.screenPadding(context);
@@ -264,7 +252,7 @@ Widget build(BuildContext context, WidgetRef ref) {
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

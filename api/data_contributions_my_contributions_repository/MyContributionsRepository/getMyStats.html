@@ -81,6 +81,8 @@ devuelve stats vacías.</p>
       _count(&#39;route_feedback&#39;, &#39;author_id&#39;, uid),
       _count(&#39;feature_requests&#39;, &#39;author_id&#39;, uid),
       _count(&#39;route_shares&#39;, &#39;shared_by_id&#39;, uid),
+      _count(&#39;user_routes&#39;, &#39;author_id&#39;, uid),
+      _countStopSuggestions(uid),
     ]);
     return MyContributionsStats(
       incidents: results[0],
@@ -88,6 +90,8 @@ devuelve stats vacías.</p>
       feedback: results[2],
       featureRequests: results[3],
       routeShares: results[4],
+      communityRoutes: results[5],
+      stopSuggestions: results[6],
     );
   } catch (e) {
     AppLogger.warn(_logTag, &#39;getMyStats failed&#39;, e);
@@ -121,7 +125,7 @@ devuelve stats vacías.</p>
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

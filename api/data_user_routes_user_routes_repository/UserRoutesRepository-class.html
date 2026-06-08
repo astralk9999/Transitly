@@ -110,6 +110,36 @@
       id="instance-methods">
     <h2>Methods</h2>
     <dl class="callables">
+        <dt id="adminDelete" class="callable">
+  <span class="name"><a href="../data_user_routes_user_routes_repository/UserRoutesRepository/adminDelete.html">adminDelete</a></span><span class="signature">(<wbr><span class="parameter" id="adminDelete-param-id"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">id</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/flutter_test/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Borrado por admin de la ruta de cualquier usuario (vía RPC con
+SECURITY DEFINER; la RLS normal solo deja borrar al dueño).
+  
+
+</dd>
+
+        <dt id="adminListCommunity" class="callable">
+  <span class="name"><a href="../data_user_routes_user_routes_repository/UserRoutesRepository/adminListCommunity.html">adminListCommunity</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/flutter_test/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/Map-class.html">Map</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>, <span class="type-parameter">dynamic</span>&gt;</span></span>&gt;</span></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Lista TODAS las rutas de comunidad para el panel admin (la RLS
+'Admin sees all routes' lo permite). Incluye nº de paradas y resuelve
+el nombre del autor con una consulta aparte (author_id referencia a
+auth.users, no a profiles, por lo que no se puede embeber).
+  
+
+</dd>
+
         <dt id="create" class="callable">
   <span class="name"><a href="../data_user_routes_user_routes_repository/UserRoutesRepository/create.html">create</a></span><span class="signature">(<wbr><span class="parameter" id="create-param-route"><span class="type-annotation"><a href="../data_user_routes_user_routes_repository/UserRouteModel-class.html">UserRouteModel</a></span> <span class="parameter-name">route</span></span>)
     <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/flutter_test/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../data_user_routes_user_routes_repository/UserRouteModel-class.html">UserRouteModel</a>?</span>&gt;</span></span>
@@ -201,6 +231,20 @@
 
 </dd>
 
+        <dt id="importRoute" class="callable">
+  <span class="name"><a href="../data_user_routes_user_routes_repository/UserRoutesRepository/importRoute.html">importRoute</a></span><span class="signature">(<wbr><span class="parameter" id="importRoute-param-routeId"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">routeId</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/flutter_test/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Importa una ruta de comunidad (con sus paradas y horarios) a las
+rutas del usuario actual. Devuelve el id de la copia creada.
+  
+
+</dd>
+
         <dt id="noSuchMethod" class="callable inherited">
   <span class="name"><a href="https://api.flutter.dev/flutter/dart-core/Object/noSuchMethod.html">noSuchMethod</a></span><span class="signature">(<wbr><span class="parameter" id="noSuchMethod-param-invocation"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Invocation-class.html">Invocation</a></span> <span class="parameter-name">invocation</span></span>)
     <span class="returntype parameter">&#8594; dynamic</span>
@@ -211,6 +255,20 @@
 <dd class="inherited">
   Invoked when a nonexistent method or property is accessed.
   <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="officialize" class="callable">
+  <span class="name"><a href="../data_user_routes_user_routes_repository/UserRoutesRepository/officialize.html">officialize</a></span><span class="signature">(<wbr>{<span class="parameter" id="officialize-param-routeId"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">routeId</span>, </span><span class="parameter" id="officialize-param-operatorId"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">operatorId</span>, </span><span class="parameter" id="officialize-param-zoneId"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">zoneId</span>, </span><span class="parameter" id="officialize-param-code"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">code</span>, </span><span class="parameter" id="officialize-param-color"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">color</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/flutter_test/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Oficializa una ruta comunitaria: crea la ruta oficial (con paradas y
+horarios) y borra la comunitaria. Devuelve el id de la oficial.
+  
 
 </dd>
 
@@ -360,7 +418,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

@@ -58,13 +58,42 @@
 </ol>)
     </section>
     
+<section class="desc markdown">
+  <p>Parser tolerante. Acepta:</p>
+<ul>
+<li>El JSON canónico de Hive (camelCase, generado por
+<code>_$AppNotificationFromJson</code>).</li>
+<li>Filas Supabase (snake_case en el campo <code>type</code>).</li>
+<li>Tipos desconocidos: los degrada a <a href="../../shared_models_app_notification/AppNotificationType.html">AppNotificationType.custom</a>
+en lugar de lanzar — antes una notif cacheada con un tipo que
+ya no existía rompía Hive.openBox en el siguiente arranque.</li>
+</ul>
+</section>
 
 
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">factory AppNotification.fromJson(Map&lt;String, dynamic&gt; json) =&gt;
-    _$AppNotificationFromJson(json);</code></pre>
+  <pre class="language-dart"><code class="language-dart">factory AppNotification.fromJson(Map&lt;String, dynamic&gt; json) {
+  final rawType = json[&#39;type&#39;];
+  if (rawType is String) {
+    return AppNotification(
+      id: json[&#39;id&#39;] as String,
+      userId: (json[&#39;userId&#39;] ?? json[&#39;user_id&#39;]) as String,
+      type: AppNotificationType.fromDbName(rawType),
+      payload: json[&#39;payload&#39;] is Map
+          ? Map&lt;String, dynamic&gt;.from(json[&#39;payload&#39;] as Map)
+          : const &lt;String, dynamic&gt;{},
+      read: json[&#39;read&#39;] as bool? ?? false,
+      createdAt: json[&#39;createdAt&#39;] is String
+          ? DateTime.parse(json[&#39;createdAt&#39;] as String)
+          : json[&#39;created_at&#39;] is String
+              ? DateTime.parse(json[&#39;created_at&#39;] as String)
+              : DateTime.now(),
+    );
+  }
+  return _$AppNotificationFromJson(json);
+}</code></pre>
 </section>
 
 
@@ -92,7 +121,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

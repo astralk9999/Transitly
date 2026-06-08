@@ -113,10 +113,9 @@ Widget build(BuildContext context) {
   final c = TransitColorScheme.of(isDark);
 
   return Scaffold(
-    backgroundColor: c.bgRoot,
+    backgroundColor: Colors.transparent,
     body: Stack(
       children: [
-        Positioned.fill(child: SmokeBackground(color: c.accent, isDark: isDark)),
         Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: TransitSpacing.space32),
@@ -179,7 +178,7 @@ Widget build(BuildContext context) {
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

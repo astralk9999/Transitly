@@ -76,9 +76,9 @@
         &#39;critical&#39; =&gt; GeoAlertSeverity.critical,
         _ =&gt; GeoAlertSeverity.info,
       },
-      centerLat: (j[&#39;center_lat&#39;] as num).toDouble(),
-      centerLng: (j[&#39;center_lng&#39;] as num).toDouble(),
-      radiusM: (j[&#39;radius_m&#39;] as num).toInt(),
+      centerLat: (j[&#39;center_lat&#39;] as num?)?.toDouble(),
+      centerLng: (j[&#39;center_lng&#39;] as num?)?.toDouble(),
+      radiusM: (j[&#39;radius_m&#39;] as num?)?.toInt(),
       active: j[&#39;active&#39;] as bool? ?? true,
       createdBy: j[&#39;created_by&#39;] as String?,
       createdAt: j[&#39;created_at&#39;] != null
@@ -87,6 +87,16 @@
       expiresAt: j[&#39;expires_at&#39;] != null
           ? DateTime.tryParse(j[&#39;expires_at&#39;] as String)
           : null,
+      affectedRouteIds: (j[&#39;affected_route_ids&#39;] as List?)
+              ?.map((e) =&gt; e.toString())
+              .toList() ??
+          const &lt;String&gt;[],
+      isGlobal: j[&#39;is_global&#39;] as bool? ?? false,
+      targetRole: j[&#39;target_role&#39;] as String?,
+      scheduledAt: j[&#39;scheduled_at&#39;] != null
+          ? DateTime.tryParse(j[&#39;scheduled_at&#39;] as String)
+          : null,
+      actionUrl: j[&#39;action_url&#39;] as String?,
     );</code></pre>
 </section>
 
@@ -115,7 +125,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

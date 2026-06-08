@@ -131,7 +131,13 @@ Widget build(BuildContext context) {
         child: LayoutBuilder(
           builder: (context, constraints) {
             final tabWidth = constraints.maxWidth &#47; tabs.length;
-            final pillLeft = tabWidth * currentIndex + (tabWidth - 28) &#47; 2;
+            &#47;&#47; Posición de la pastilla según la posición VISIBLE de la tab
+            &#47;&#47; activa (no su branchIndex, que puede saltarse números si hay
+            &#47;&#47; pestañas ocultas).
+            final activePos =
+                tabs.indexWhere((t) =&gt; t.branchIndex == currentIndex);
+            final pillLeft =
+                tabWidth * (activePos &lt; 0 ? 0 : activePos) + (tabWidth - 28) &#47; 2;
 
             return Stack(
               children: [
@@ -157,8 +163,8 @@ Widget build(BuildContext context) {
                 ),
                 Row(
                   children: List.generate(tabs.length, (i) {
-                    final isActive = i == currentIndex;
                     final tab = tabs[i];
+                    final isActive = tab.branchIndex == currentIndex;
                     return Expanded(
                       child: Semantics(
                         label: tab.label,
@@ -170,7 +176,7 @@ Widget build(BuildContext context) {
                             cursor: SystemMouseCursors.click,
                             child: GestureDetector(
                               behavior: HitTestBehavior.opaque,
-                              onTap: () =&gt; onTap(i),
+                              onTap: () =&gt; onTap(tab.branchIndex),
                               child: SizedBox(
                                 width: double.infinity,
                                 height: 64,
@@ -250,7 +256,7 @@ Widget build(BuildContext context) {
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

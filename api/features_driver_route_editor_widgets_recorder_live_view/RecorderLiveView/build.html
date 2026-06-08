@@ -113,11 +113,9 @@ Widget build(BuildContext context) {
   final lastStopDist = controller.distanceFromLastMarkedKm();
 
   return Scaffold(
-    backgroundColor: c.bgRoot,
+    backgroundColor: Colors.transparent,
     body: Stack(
       children: [
-        Positioned.fill(
-            child: SmokeBackground(color: c.accent, isDark: isDark)),
         Column(
           children: [
             SizedBox(height: MediaQuery.of(context).padding.top),
@@ -257,7 +255,7 @@ Widget build(BuildContext context) {
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

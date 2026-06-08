@@ -68,8 +68,10 @@
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">Future&lt;void&gt; removeStop(String stopId) async {
+  if (!state.contains(stopId)) return;
   state = {...state}..remove(stopId);
-  await _persist();
+  await _persistLocal();
+  await _pushRemote(stopId, add: false);
 }</code></pre>
 </section>
 
@@ -98,7 +100,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

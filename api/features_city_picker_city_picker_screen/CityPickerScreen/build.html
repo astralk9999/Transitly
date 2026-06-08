@@ -115,33 +115,12 @@ Widget build(BuildContext context, WidgetRef ref) {
   final operatorsAsync = ref.watch(activeOperatorsProvider);
 
   return Scaffold(
-    backgroundColor: c.bgRoot,
-    body: Stack(
-      children: [
-        Positioned.fill(
-            child: SmokeBackground(color: c.accent, isDark: isDark)),
-        SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(8, 8, 16, 8),
-                child: Row(
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      color: c.textHi,
-                      tooltip: AppLocalizations.of(context).actionClose,
-                      onPressed: () =&gt; Navigator.of(context).pop(),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(AppLocalizations.of(context).cityPickerSelectOperator,
-                        style: TransitTypography.heading(c.textHi)),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: operatorsAsync.when(
+    backgroundColor: Colors.transparent,
+    appBar: TransitAppBar(
+      title: AppLocalizations.of(context).cityPickerSelectOperator,
+      transparent: true,
+    ),
+    body: operatorsAsync.when(
                   data: (operators) {
                     if (operators.isEmpty) {
                       return Center(
@@ -163,12 +142,6 @@ Widget build(BuildContext context, WidgetRef ref) {
                         style: const TextStyle(color: Colors.redAccent)),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    ),
   );
 }</code></pre>
 </section>
@@ -198,7 +171,7 @@ Widget build(BuildContext context, WidgetRef ref) {
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

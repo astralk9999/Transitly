@@ -79,11 +79,16 @@
   int offset = 0,
 }) async {
   try {
+    &#47;&#47; Cualquier ruta PÚBLICA aparece en la comunidad. &#39;review_pending&#39;
+    &#47;&#47; (el autor pidió oficializarla) también: pedir oficialización NO la
+    &#47;&#47; quita de la comunidad; el admin solo, en su caso, la hace oficial.
+    &#47;&#47; Se excluyen borradores y las rechazadas&#47;reportadas.
     var q = _client
         .from(&#39;user_routes&#39;)
         .select()
         .eq(&#39;visibility&#39;, &#39;public&#39;)
-        .or(&#39;status.eq.published,status.eq.community_approved&#39;);
+        .inFilter(&#39;status&#39;,
+            const [&#39;published&#39;, &#39;community_approved&#39;, &#39;review_pending&#39;]);
 
     if (query != null &amp;&amp; query.isNotEmpty) {
       q = q.ilike(&#39;name&#39;, &#39;%$query%&#39;);
@@ -130,7 +135,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

@@ -110,7 +110,7 @@ and</li>
   <pre class="language-dart"><code class="language-dart">@override
 Widget build(BuildContext context) {
   return Scaffold(
-    backgroundColor: c.bgRoot,
+    backgroundColor: Colors.transparent,
     appBar: AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
@@ -120,13 +120,11 @@ Widget build(BuildContext context) {
         onPressed: () =&gt; context.pop(),
       ),
       title: Text(&#39;GRABAR RUTA&#39;,
-          style: TransitTypography.sectionTitle(c.textHi)),
+          style: TransitTypography.subheading(c.textHi)),
       centerTitle: false,
     ),
     body: Stack(
       children: [
-        Positioned.fill(
-            child: SmokeBackground(color: c.accent, isDark: isDark)),
         SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -227,7 +225,7 @@ Widget build(BuildContext context) {
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

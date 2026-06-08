@@ -79,7 +79,12 @@
   );
   if (_highContrast) {
     try {
-      return HighContrastTheme.apply(base, scheme);
+      return HighContrastTheme.apply(
+        base,
+        scheme,
+        preserveAccent: _hcPreserveAccent,
+        originalAccent: scheme.accent,
+      );
     } catch (e, st) {
       AppLogger.error(_logTag, &#39;HighContrastTheme.apply failed, using base theme&#39;, e, st);
       return base;
@@ -114,7 +119,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

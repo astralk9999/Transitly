@@ -66,231 +66,17 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  &#47;&#47; ── Boot canary: detecta si el arranque anterior crasheó ──
-  final canary = await BootCanary.startBoot();
-  if (canary.crashed) {
-    AppLogger.warn(&#39;BootCanary&#39;,
-        &#39;previous boot crashed, pending=${canary.pendingChange} streak=${canary.crashStreak}&#39;);
-    await BootCanary.incrementCrashStreak();
-    if (canary.pendingChange != null) {
-      await _revertSensitiveSetting(canary.pendingChange!);
+  <pre class="language-dart"><code class="language-dart">void main() {
+  &#47;&#47; Capturamos cualquier error no manejado de la zona para poder
+  &#47;&#47; diagnosticarlo (en web la consola lo muestra minificado como &quot;Error&quot;).
+  runZonedGuarded(_bootstrap, (error, stack) {
+    if (kIsWeb) {
+      &#47;&#47; ignore: avoid_print
+      print(&#39;🔴 UNCAUGHT ${error.runtimeType}: $error&#39;);
+      &#47;&#47; ignore: avoid_print
+      print(&#39;$stack&#39;);
     }
-    if (canary.crashStreak &gt;= 1) {
-      &#47;&#47; 2+ crashes consecutivos → recovery mode
-      runApp(ProviderScope(
-        overrides: [
-          bootCanaryStateProvider.overrideWith((ref) =&gt; canary),
-        ],
-        child: const RecoveryScreen(),
-      ));
-      return;
-    }
-  }
-  &#47;&#47; Permitir todas las orientaciones (portrait + landscape). El usuario
-  &#47;&#47; puede querer ver mapa, formularios o fondos animados en horizontal,
-  &#47;&#47; y en tablet&#47;web es lo esperable.
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-    DeviceOrientation.landscapeLeft,
-    DeviceOrientation.landscapeRight,
-  ]);
-  ErrorBoundary.setup();
-
-  &#47;&#47; F26: con fuentes empaquetadas se desactiva el fetch por red (privacidad
-  &#47;&#47; + offline). Sin empaquetar, se precargan en segundo plano sin bloquear
-  &#47;&#47; el arranque. Pasos exactos para cerrar F26: docs&#47;FONTS_F26.md.
-  if (_fontsBundled) {
-    GoogleFonts.config.allowRuntimeFetching = false;
-  } else {
-    unawaited(GoogleFonts.pendingFonts([
-      GoogleFonts.ibmPlexMono(),
-    ]));
-  }
-
-  &#47;&#47; Valida las variables de entorno compiladas vía --dart-define.
-  &#47;&#47; Si falta una clave crítica, la app se monta con una pantalla de
-  &#47;&#47; error explicativa en lugar de crashear silenciosamente.
-  try {
-    Env.supabaseUrl; &#47;&#47; dispara _required validation
-    await HiveInit.bootstrap();
-    AppLogger.info(&#39;HiveCache&#39;, &#39;bootstrap complete&#39;);
-    await _initFmtc();
-    unawaited(TilePrewarmer.prewarmOnce());
-    await Supabase.initialize(
-      url: Env.supabaseUrl,
-      anonKey: Env.supabaseAnonKey,
-      authOptions: const FlutterAuthClientOptions(
-        authFlowType: AuthFlowType.pkce,
-        autoRefreshToken: true,
-      ),
-    );
-    final restoredSession = Supabase.instance.client.auth.currentSession;
-    final hasUser = restoredSession?.user != null;
-    final uidShort = restoredSession?.user.id.substring(0, 8) ?? &#39;none&#39;;
-    AppLogger.info(&#39;Supabase&#39;,
-        &#39;initialized url=${Env.supabaseUrl} session=$hasUser uid=$uidShort expiresAt=${restoredSession?.expiresAt}&#39;);
-    try {
-      await FirebaseSetup.init();
-      AppLogger.info(&#39;Firebase&#39;, &#39;initialized&#39;);
-      final pushService = await PushService.init();
-      if (pushService != null) {
-        pushService.setupBackgroundOpenedHandler((deeplink) {
-          AppLogger.info(&#39;PushService&#39;, &#39;background deeplink: $deeplink&#39;);
-        });
-        await pushService.handleColdStartMessage((deeplink) {
-          AppLogger.info(&#39;PushService&#39;, &#39;cold start deeplink: $deeplink&#39;);
-        });
-      }
-    } catch (e) {
-      AppLogger.warn(&#39;Firebase&#39;, &#39;init failed — push unavailable&#39;, e);
-    }
-    try {
-      final postHogKey = Env.postHogApiKey;
-      if (postHogKey != null &amp;&amp; postHogKey.isNotEmpty) {
-        final config = PostHogConfig(postHogKey);
-        config.host = Env.postHogHost;
-        &#47;&#47; GDPR: arrancar SIN autocapture y en opt-out. El SDK no envía
-        &#47;&#47; nada (ni &quot;Application Opened&quot;) hasta que haya consentimiento
-        &#47;&#47; explícito; entonces PostHogAnalyticsService llama a enable().
-        config.captureApplicationLifecycleEvents = false;
-        config.optOut = true;
-        await Posthog().setup(config);
-        AppLogger.info(&#39;Analytics&#39;,
-            &#39;PostHog initialized (opt-out until consent) host=${Env.postHogHost}&#39;);
-      } else {
-        AppLogger.info(&#39;Analytics&#39;, &#39;PostHog skipped — no API key&#39;);
-      }
-    } catch (e) {
-      AppLogger.warn(&#39;Analytics&#39;, &#39;PostHog init failed — analytics unavailable&#39;, e);
-    }
-
-    final sentryDsn = Env.sentryDsn;
-    if (sentryDsn != null &amp;&amp; sentryDsn.isNotEmpty) {
-      final consentRepo = PrivacyConsentRepository(Supabase.instance.client);
-      &#47;&#47; GDPR: default-deny. Sin sesión (invitado) NO se inicializa Sentry;
-      &#47;&#47; se activa más abajo en onAuthStateChange tras leer el consentimiento.
-      &#47;&#47; Si la lectura de consentimiento falla, se mantiene desactivado.
-      bool crashReportingOk = false;
-
-      final session = Supabase.instance.client.auth.currentSession;
-      if (session?.user != null) {
-        try {
-          final consents = await consentRepo.getConsents(session!.user.id);
-          crashReportingOk = consents[&#39;crash_reporting&#39;] != false;
-        } catch (e) {
-          AppLogger.warn(&#39;Sentry&#39;,
-              &#39;consent read failed — keeping crash reporting OFF&#39;, e);
-        }
-      }
-
-      await SentrySetup.init(dsn: sentryDsn, enabled: crashReportingOk);
-      AppLogger.info(&#39;Sentry&#39;, &#39;init enabled=$crashReportingOk&#39;);
-
-      Supabase.instance.client.auth.onAuthStateChange.listen((data) async {
-        if (data.event == AuthChangeEvent.signedIn &amp;&amp;
-            data.session?.user != null) {
-          try {
-            final c = await consentRepo.getConsents(data.session!.user.id);
-            if (c[&#39;crash_reporting&#39;] != false) {
-              await SentrySetup.init(dsn: sentryDsn, enabled: true);
-            }
-          } catch (e) {
-            AppLogger.warn(&#39;Sentry&#39;,
-                &#39;consent read on sign-in failed — keeping crash reporting OFF&#39;,
-                e);
-          }
-        }
-      });
-    }
-  } on EnvException catch (e, st) {
-    &#47;&#47; print se usa intencionadamente: el AppLogger filtra por kDebugMode y
-    &#47;&#47; este es un fallo crítico de arranque que necesitamos ver en release.
-    &#47;&#47; ignore: avoid_print
-    &#47;&#47; nosemgrep: no-print-in-lib
-    print(&#39;[Env] failed to load critical key: $e\n$st&#39;);
-    AppLogger.error(&#39;Env&#39;, &#39;failed to load critical key&#39;, e, st);
-    runApp(EnvErrorApp(exception: e));
-    return;
-  } catch (e, st) {
-    &#47;&#47; Fallo de arranque pre-AppLogger; ver razón en bloque anterior.
-    &#47;&#47; ignore: avoid_print
-    &#47;&#47; nosemgrep: no-print-in-lib
-    print(&#39;[Startup] init failed (will show EnvErrorApp as malformed): $e\n$st&#39;);
-    AppLogger.error(&#39;Supabase&#39;, &#39;initialize failed&#39;, e, st);
-    runApp(EnvErrorApp(
-      exception: EnvException(
-        error: EnvError.malformed,
-        key: &#39;SUPABASE_URL&#47;ANON_KEY&#39;,
-        message: e.toString(),
-      ),
-    ));
-    return;
-  }
-
-  final mockData = await MockDataService.init();
-
-  final container = ProviderContainer(
-    observers: const [TransitProviderObserver()],
-    overrides: [
-      mockDataServiceProvider.overrideWithValue(mockData),
-    ],
-  );
-
-  &#47;&#47; FIX bug 7 (sesión se cierra al reabrir):
-  &#47;&#47; En algunos dispositivos `Supabase.initialize` devuelve `currentSession`
-  &#47;&#47; como null inmediatamente aunque la sesión SÍ exista en storage
-  &#47;&#47; (FlutterSecureStorage tarda en hidratar). Damos un pequeño margen
-  &#47;&#47; y reintentamos antes de declarar al usuario como invitado.
-  var session = Supabase.instance.client.auth.currentSession;
-  if (session?.user == null) {
-    await Future&lt;void&gt;.delayed(const Duration(milliseconds: 300));
-    session = Supabase.instance.client.auth.currentSession;
-  }
-  AppLogger.info(&#39;Startup&#39;,
-      &#39;post-init session userId=${session?.user.id.substring(0, 8) ?? &quot;guest&quot;}&#39;);
-  if (session?.user == null) {
-    await container.read(themeNotifierProvider).loadGuest();
-  }
-
-  registerAppContainer(container);
-  TransitColorScheme.registerResolver(
-    resolveActiveScheme,
-  );
-
-  final launchUri = await HomeWidget.initiallyLaunchedFromHomeWidget();
-  if (launchUri != null) {
-    &#47;&#47; Reconstruimos el path uniendo host + pathSegments. El host de URIs
-    &#47;&#47; tipo transitly:&#47;&#47;home&#47;tarjeta es &quot;home&quot; y path &quot;&#47;tarjeta&quot;; concatenar
-    &#47;&#47; crudo produciría &quot;&#47;&#47;tarjeta&quot; si host viniera vacío en algún OEM.
-    final segments = &lt;String&gt;[
-      if ((launchUri.host).isNotEmpty) launchUri.host,
-      ...launchUri.pathSegments,
-    ];
-    final deepPath = &#39;&#47;${segments.join(&#39;&#47;&#39;)}&#39;;
-    setWidgetLaunchPath(deepPath);
-    AppLogger.info(&#39;Startup&#39;,
-        &#39;widget deep link raw=$launchUri host=${launchUri.host} path=${launchUri.path} → resolved=$deepPath&#39;);
-  }
-
-  HomeWidget.registerBackgroundCallback(_widgetBackgroundCallback);
-
-  runApp(
-    UncontrolledProviderScope(
-      container: container,
-      child: const _TransitlyAppWithLifecycle(),
-    ),
-  );
-
-  Supabase.instance.client.auth.onAuthStateChange.listen((data) {
-    final event = data.event;
-    if (event == AuthChangeEvent.signedIn || event == AuthChangeEvent.tokenRefreshed) {
-      container.invalidate(authStateProvider);
-      AppLogger.info(&#39;Startup&#39;, &#39;auth event=$event → invalidated providers&#39;);
-    }
+    AppLogger.error(&#39;Main&#39;, &#39;uncaught zone error&#39;, error, stack);
   });
 }</code></pre>
 </section>
@@ -319,7 +105,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

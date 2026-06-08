@@ -115,6 +115,13 @@ Widget build(BuildContext context, WidgetRef ref) {
   final router = ref.watch(routerProvider);
   final themeMode = ref.watch(themeModeProvider);
   ref.watch(widgetSyncListenerProvider);
+  &#47;&#47; Detector de avisos geo en radio → inserta notificaciones cuando
+  &#47;&#47; el usuario entra en zona de un aviso nuevo.
+  ref.watch(geoAlertsAutoNotifyProvider);
+  &#47;&#47; Puente notificación BD → push local del sistema Android.
+  ref.watch(pushBridgeProvider);
+  &#47;&#47; Refresca reputación&#47;rango en vivo al recibir XP por Realtime.
+  ref.watch(reputationLiveRefreshProvider);
 
   return MaterialApp.router(
     title: &#39;Transitly&#39;,
@@ -198,7 +205,7 @@ Widget build(BuildContext context, WidgetRef ref) {
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

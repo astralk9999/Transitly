@@ -181,44 +181,62 @@ Widget build(BuildContext context, WidgetRef ref) {
   final photoUrl = (metadata[&#39;avatar_url&#39;] as String?) ??
       (metadata[&#39;picture&#39;] as String?);
 
-  return GlassCard(
-    blur: 20,
-    fillOpacity: 0.06,
-    borderRadius: 16,
-    padding: const EdgeInsets.all(16),
-    child: Row(
-      children: [
-        UserAvatar(
-          name: displayName,
-          photoUrl: photoUrl,
-          accent: c.accent,
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                displayName,
-                style: TextStyle(fontFamily: &#39;DM Sans&#39;,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
-                  color: c.textHi,
-                ),
+  &#47;&#47; Toda la card es tappable y abre la pantalla de reputación.
+  &#47;&#47; Antes solo el badge de reputación a la derecha era tappable, lo
+  &#47;&#47; cual hacía la entrada al perfil&#47;reputación poco accesible.
+  return Semantics(
+    button: true,
+    label: &#39;Abrir perfil y reputación&#39;,
+    child: GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () =&gt; context.push(&#39;&#47;profile&#47;reputation&#39;),
+      child: GlassCard(
+        blur: 20,
+        fillOpacity: 0.06,
+        borderRadius: 16,
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            UserAvatar(
+              name: displayName,
+              photoUrl: photoUrl,
+              accent: c.accent,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    displayName,
+                    style: TextStyle(
+                      fontFamily: &#39;DM Sans&#39;,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: c.textHi,
+                    ),
+                  ),
+                  Text(
+                    displayEmail,
+                    style: TransitTypography.bodySecondary(c.textMid),
+                  ),
+                ],
               ),
-              Text(
-                displayEmail,
-                style: TransitTypography.bodySecondary(c.textMid),
-              ),
-            ],
-          ),
+            ),
+            &#47;&#47; Badge compacto (icono + número, sin label del rango)
+            &#47;&#47; para no comerle ancho al email&#47;nombre. SizedBox a su
+            &#47;&#47; izquierda separa el badge del bloque de texto y a su
+            &#47;&#47; derecha 8 lo despega del borde de la tarjeta.
+            const SizedBox(width: 8),
+            ReputationBadge(
+              user.reputationLevel,
+              score: user.reputationScore,
+              compact: true,
+            ),
+            const SizedBox(width: 8),
+          ],
         ),
-        GestureDetector(
-          onTap: () =&gt; context.push(&#39;&#47;profile&#47;reputation&#39;),
-          child: ReputationBadge(user.reputationLevel,
-              score: user.reputationScore),
-        ),
-      ],
+      ),
     ),
   );
 }</code></pre>
@@ -249,7 +267,7 @@ Widget build(BuildContext context, WidgetRef ref) {
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

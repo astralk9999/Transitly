@@ -185,6 +185,21 @@
 
 </dd>
 
+        <dt id="upsert" class="callable">
+  <span class="name"><a href="../data_user_stops_user_stops_repository/UserStopsRepository/upsert.html">upsert</a></span><span class="signature">(<wbr><span class="parameter" id="upsert-param-stop"><span class="type-annotation"><a href="../data_user_stops_user_stops_repository/UserStopModel-class.html">UserStopModel</a></span> <span class="parameter-name">stop</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/flutter_test/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Inserta o actualiza una parada por id. Necesario al EDITAR una ruta:
+las paradas ya existen, así que un insert plano daría error de clave
+duplicada y reventaría toda la publicación.
+  
+
+</dd>
+
     </dl>
   </section>
     
@@ -235,7 +250,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

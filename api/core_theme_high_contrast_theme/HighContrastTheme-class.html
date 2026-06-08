@@ -151,14 +151,18 @@
     <h2>Static Methods</h2>
     <dl class="callables">
         <dt id="apply" class="callable">
-  <span class="name"><a href="../core_theme_high_contrast_theme/HighContrastTheme/apply.html">apply</a></span><span class="signature">(<wbr><span class="parameter" id="apply-param-base"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/material/ThemeData-class.html">ThemeData</a></span> <span class="parameter-name">base</span>, </span><span class="parameter" id="apply-param-scheme"><span class="type-annotation">dynamic</span> <span class="parameter-name">scheme</span></span>)
+  <span class="name"><a href="../core_theme_high_contrast_theme/HighContrastTheme/apply.html">apply</a></span><span class="signature">(<wbr><span class="parameter" id="apply-param-base"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/material/ThemeData-class.html">ThemeData</a></span> <span class="parameter-name">base</span>, </span><span class="parameter" id="apply-param-scheme"><span class="type-annotation">dynamic</span> <span class="parameter-name">scheme</span>, {</span><span class="parameter" id="apply-param-preserveAccent"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">preserveAccent</span> = <span class="default-value">false</span>, </span><span class="parameter" id="apply-param-originalAccent"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a>?</span> <span class="parameter-name">originalAccent</span></span>})
     <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/material/ThemeData-class.html">ThemeData</a></span>
   </span>
   
 
 </dt>
 <dd>
-  
+  <code>preserveAccent</code> = true mantiene el accent de la paleta original
+(compromiso entre contraste extremo y branding). Si false, fuerza
+amarillo (dark) o azul (light), que son los colores con mejor ratio
+sobre fondo negro/blanco respectivamente.
+<code>originalAccent</code> solo se usa cuando preserveAccent es true.
   
 
 </dd>
@@ -190,7 +194,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

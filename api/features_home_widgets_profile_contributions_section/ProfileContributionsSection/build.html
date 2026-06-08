@@ -168,14 +168,24 @@ Widget build(BuildContext context, WidgetRef ref) {
             runSpacing: 6,
             children: [
               _StatChip(
+                  icon: Icons.alt_route_outlined,
+                  label: &#39;Rutas creadas&#39;,
+                  count: stats.communityRoutes,
+                  c: c),
+              _StatChip(
+                  icon: Icons.add_location_alt_outlined,
+                  label: &#39;Paradas propuestas&#39;,
+                  count: stats.stopSuggestions,
+                  c: c),
+              _StatChip(
+                  icon: Icons.directions_outlined,
+                  label: &#39;Rutas sugeridas&#39;,
+                  count: stats.suggestions,
+                  c: c),
+              _StatChip(
                   icon: Icons.report_outlined,
                   label: &#39;Reportes&#39;,
                   count: stats.incidents,
-                  c: c),
-              _StatChip(
-                  icon: Icons.alt_route_outlined,
-                  label: &#39;Rutas sugeridas&#39;,
-                  count: stats.suggestions,
                   c: c),
               _StatChip(
                   icon: Icons.edit_note_outlined,
@@ -187,11 +197,6 @@ Widget build(BuildContext context, WidgetRef ref) {
                   label: &#39;Funciones&#39;,
                   count: stats.featureRequests,
                   c: c),
-              _StatChip(
-                  icon: Icons.share_outlined,
-                  label: &#39;Compartidas&#39;,
-                  count: stats.routeShares,
-                  c: c),
             ],
           ),
           loading: () =&gt; const SizedBox.shrink(),
@@ -202,15 +207,6 @@ Widget build(BuildContext context, WidgetRef ref) {
           onTap: () =&gt; context.push(&#39;&#47;contributions&#39;),
           child: Text(&#39;VER TODO →&#39;,
               style: TransitTypography.bodySecondary(c.accent)),
-        ),
-        Divider(
-          height: 24,
-          thickness: 0.5,
-          color: c.border,
-        ),
-        Text(
-          &#39;Jerez de la Frontera · 8.2 MB · Actualizado hace 1 día&#39;,
-          style: TransitTypography.bodySecondary(c.textMid),
         ),
       ],
     ),
@@ -243,7 +239,7 @@ Widget build(BuildContext context, WidgetRef ref) {
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

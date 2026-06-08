@@ -55,24 +55,40 @@
     <section class="multi-line-signature">
       
 <span class="returntype"><a href="https://api.flutter.dev/flutter/material/ThemeData-class.html">ThemeData</a></span>
-<span class="name ">apply</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="apply-param-base"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/material/ThemeData-class.html">ThemeData</a></span> <span class="parameter-name">base</span>, </span></li>
-<li><span class="parameter" id="apply-param-scheme"><span class="type-annotation">dynamic</span> <span class="parameter-name">scheme</span></span></li>
-</ol>)
+<span class="name ">apply</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="apply-param-base"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/material/ThemeData-class.html">ThemeData</a></span> <span class="parameter-name">base</span>, </span></li>
+<li><span class="parameter" id="apply-param-scheme"><span class="type-annotation">dynamic</span> <span class="parameter-name">scheme</span>, {</span></li>
+<li><span class="parameter" id="apply-param-preserveAccent"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">preserveAccent</span> = <span class="default-value">false</span>, </span></li>
+<li><span class="parameter" id="apply-param-originalAccent"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a>?</span> <span class="parameter-name">originalAccent</span>, </span></li>
+</ol>})
 
       
 
     </section>
     
+<section class="desc markdown">
+  <p><code>preserveAccent</code> = true mantiene el accent de la paleta original
+(compromiso entre contraste extremo y branding). Si false, fuerza
+amarillo (dark) o azul (light), que son los colores con mejor ratio
+sobre fondo negro/blanco respectivamente.
+<code>originalAccent</code> solo se usa cuando preserveAccent es true.</p>
+</section>
 
 
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">static ThemeData apply(ThemeData base, dynamic scheme) {
+  <pre class="language-dart"><code class="language-dart">static ThemeData apply(
+  ThemeData base,
+  dynamic scheme, {
+  bool preserveAccent = false,
+  Color? originalAccent,
+}) {
   final isDark = base.colorScheme.brightness == Brightness.dark;
   final hcText = isDark ? const Color(0xFFFFFFFF) : const Color(0xFF000000);
   final hcBg = isDark ? const Color(0xFF000000) : const Color(0xFFFFFFFF);
-  final hcAccent = isDark ? const Color(0xFFFFFF00) : const Color(0xFF0000FF);
+  final hcAccent = preserveAccent &amp;&amp; originalAccent != null
+      ? originalAccent
+      : (isDark ? const Color(0xFFFFFF00) : const Color(0xFF0000FF));
   final hcBorder = isDark ? const Color(0xFFFFFFFF) : const Color(0xFF000000);
 
   return base.copyWith(
@@ -219,7 +235,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

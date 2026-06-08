@@ -116,6 +116,10 @@ Widget build(BuildContext context, WidgetRef ref) {
   final enabled = themeNotifier.backgroundEnabled;
   final opacity = themeNotifier.backgroundOpacity;
   final reduceMotion = themeNotifier.reduceMotion;
+  &#47;&#47; En el mapa NO renderizamos el shader EN MÓVIL: en algunos dispositivos
+  &#47;&#47; el fragment shader del fondo y el FlutterMap no pueden coexistir y la
+  &#47;&#47; app crashea. En web sí coexisten, así que ahí mantenemos el fondo.
+  final mapVisible = ref.watch(mapVisibleProvider) &amp;&amp; !kIsWeb;
 
   final themeMode = ref.watch(themeModeProvider);
   final brightness = MediaQuery.platformBrightnessOf(context);
@@ -125,7 +129,7 @@ Widget build(BuildContext context, WidgetRef ref) {
       ? (palette.darkScheme ?? palette.scheme)
       : (palette.lightScheme ?? palette.scheme);
 
-  if (!enabled) {
+  if (!enabled || mapVisible) {
     return RepaintBoundary(child: Container(color: scheme.bgRoot, child: child));
   }
 
@@ -337,7 +341,7 @@ Widget build(BuildContext context, WidgetRef ref) {
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

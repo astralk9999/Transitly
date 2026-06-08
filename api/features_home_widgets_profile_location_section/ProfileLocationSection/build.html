@@ -60,7 +60,8 @@
     </ol>
   </div>
 <span class="returntype"><a href="https://api.flutter.dev/flutter/widgets/Widget-class.html">Widget</a></span>
-<span class="name ">build</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="build-param-context"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/widgets/BuildContext-class.html">BuildContext</a></span> <span class="parameter-name">context</span></span></li>
+<span class="name ">build</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="build-param-context"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/widgets/BuildContext-class.html">BuildContext</a></span> <span class="parameter-name">context</span>, </span></li>
+<li><span class="parameter" id="build-param-ref"><span class="type-annotation"><a href="https://pub.dev/documentation/flutter_riverpod/2.6.1/flutter_riverpod/WidgetRef-class.html">WidgetRef</a></span> <span class="parameter-name">ref</span></span></li>
 </ol>)
 
       <div class="features"><span class="feature">override</span></div>
@@ -108,10 +109,11 @@ and</li>
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">@override
-Widget build(BuildContext context) {
+Widget build(BuildContext context, WidgetRef ref) {
   final isDark = Theme.of(context).brightness == Brightness.dark;
   final c = TransitColorScheme.of(isDark);
   final l10n = AppLocalizations.of(context);
+  final zone = ref.watch(primaryZoneProvider).valueOrNull;
 
   return GlassCard(
     blur: 16,
@@ -122,7 +124,7 @@ Widget build(BuildContext context) {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         GradientText(
-          l10n.profileZoneTitle,
+          &#39;ZONA PRINCIPAL&#39;,
           style: GoogleFonts.ibmPlexMono(
             fontSize: 11,
             fontWeight: FontWeight.w700,
@@ -131,15 +133,17 @@ Widget build(BuildContext context) {
           gradient: c.gradientAccent,
         ),
         const SizedBox(height: 12),
+        &#47;&#47; Selector de zona principal (centro por defecto del mapa cuando no
+        &#47;&#47; hay ubicación). Antes abría &#47;city-picker (Jerez&#47;operadora fijo).
         GestureDetector(
-          onTap: () =&gt; context.push(&#39;&#47;city-picker&#39;),
+          onTap: () =&gt; showPrimaryZonePicker(context, ref),
           behavior: HitTestBehavior.opaque,
           child: Row(
             children: [
-              Icon(Icons.location_on, size: 16, color: c.accent),
+              Icon(Icons.location_city, size: 16, color: c.accent),
               const SizedBox(width: 8),
               Expanded(
-                child: Text(l10n.profileZoneLocation,
+                child: Text(zone?.name ?? &#39;Jerez (por defecto)&#39;,
                     style: TransitTypography.bodyPrimary(c.accent)),
               ),
               Icon(Icons.chevron_right, size: 20, color: c.textLo),
@@ -228,7 +232,7 @@ Widget build(BuildContext context) {
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

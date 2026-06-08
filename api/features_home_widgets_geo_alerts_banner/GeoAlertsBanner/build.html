@@ -121,12 +121,17 @@ Widget build(BuildContext context, WidgetRef ref) {
       final relevant = userPos == null
           ? const &lt;GeoAlertModel&gt;[]
           : alerts.where((a) {
+              &#47;&#47; Globales aplican siempre.
+              if (a.isGlobal) return true;
+              if (a.centerLat == null || a.centerLng == null) {
+                return false;
+              }
               const dist = Distance();
               final d = dist.as(
                   LengthUnit.Meter,
                   userPos,
-                  LatLng(a.centerLat, a.centerLng));
-              return d &lt;= a.radiusM;
+                  LatLng(a.centerLat!, a.centerLng!));
+              return d &lt;= (a.radiusM ?? 0);
             }).toList();
       if (relevant.isEmpty) return const SizedBox.shrink();
 
@@ -170,7 +175,7 @@ Widget build(BuildContext context, WidgetRef ref) {
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

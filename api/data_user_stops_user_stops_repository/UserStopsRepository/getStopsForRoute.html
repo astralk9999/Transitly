@@ -73,10 +73,14 @@
         .from(&#39;user_route_stops&#39;)
         .select(&#39;*, user_stops(*)&#39;)
         .eq(&#39;route_id&#39;, routeId)
-        .order(&#39;order_index&#39;);
-    return (res as List&lt;dynamic&gt;)
+        .order(&#39;order_index&#39;, ascending: true);
+    final list = (res as List&lt;dynamic&gt;)
         .map((j) =&gt; UserRouteStopModel.fromJson(j as Map&lt;String, dynamic&gt;))
         .toList();
+    &#47;&#47; Orden ASCENDENTE garantizado en Dart: el embed de PostgREST a veces
+    &#47;&#47; no respeta el .order() del nivel raíz y las paradas salían al revés.
+    list.sort((a, b) =&gt; a.orderIndex.compareTo(b.orderIndex));
+    return list;
   } catch (e) {
     AppLogger.error(_logTag, &#39;getStopsForRoute failed&#39;, e);
     return [];
@@ -109,7 +113,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

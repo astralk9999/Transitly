@@ -167,37 +167,43 @@ Widget build(BuildContext context, WidgetRef ref) {
                   &#39;${notifier.busApproachingMinutesAhead} min de la parada&#39;,
                   style: TransitTypography.bodySmall(c.textMid),
                 ),
-                const SizedBox(height: 4),
-                SegmentedButton&lt;int&gt;(
-                  segments: const [
-                    ButtonSegment(value: 3, label: Text(&#39;3&#39;)),
-                    ButtonSegment(value: 5, label: Text(&#39;5&#39;)),
-                    ButtonSegment(value: 10, label: Text(&#39;10&#39;)),
-                    ButtonSegment(value: 15, label: Text(&#39;15&#39;)),
-                    ButtonSegment(value: 20, label: Text(&#39;20&#39;)),
+                const SizedBox(height: 6),
+                &#47;&#47; Chips en Wrap en lugar de SegmentedButton: con 5 opciones
+                &#47;&#47; el SegmentedButton quedaba estrecho y el texto se
+                &#47;&#47; descolocaba en pantallas normales.
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    for (final m in const [3, 5, 10, 15, 20])
+                      () {
+                        final sel =
+                            notifier.busApproachingMinutesAhead == m;
+                        return GestureDetector(
+                          onTap: () =&gt;
+                              notifier.busApproachingMinutesAhead = m,
+                          child: Container(
+                            width: 48,
+                            height: 38,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: sel
+                                  ? c.accent.withValues(alpha: 0.2)
+                                  : c.bgRaised,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                  color: sel ? c.accent : c.border,
+                                  width: sel ? 1.4 : 0.5),
+                            ),
+                            child: Text(&#39;$m&#39;,
+                                style: TransitTypography.bodyPrimary(
+                                        sel ? c.accent : c.textMid)
+                                    .copyWith(
+                                        fontWeight: FontWeight.w700)),
+                          ),
+                        );
+                      }(),
                   ],
-                  selected: {notifier.busApproachingMinutesAhead},
-                  onSelectionChanged: (s) {
-                    if (s.isNotEmpty) {
-                      notifier.busApproachingMinutesAhead = s.first;
-                    }
-                  },
-                  style: ButtonStyle(
-                    backgroundColor:
-                        WidgetStateProperty.resolveWith((states) {
-                      if (states.contains(WidgetState.selected)) {
-                        return c.accent;
-                      }
-                      return c.bgRaised;
-                    }),
-                    foregroundColor:
-                        WidgetStateProperty.resolveWith((states) {
-                      if (states.contains(WidgetState.selected)) {
-                        return Colors.white;
-                      }
-                      return c.textMid;
-                    }),
-                  ),
                 ),
                 const SizedBox(height: 12),
                 Text(
@@ -325,7 +331,7 @@ Widget build(BuildContext context, WidgetRef ref) {
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

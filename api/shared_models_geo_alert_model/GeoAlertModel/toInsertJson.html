@@ -76,6 +76,12 @@
       &#39;radius_m&#39;: radiusM,
       &#39;active&#39;: active,
       &#39;created_by&#39;: createdByUserId,
+      &#39;affected_route_ids&#39;: affectedRouteIds,
+      &#39;is_global&#39;: isGlobal,
+      if (targetRole != null) &#39;target_role&#39;: targetRole,
+      if (scheduledAt != null)
+        &#39;scheduled_at&#39;: scheduledAt!.toIso8601String(),
+      if (actionUrl != null) &#39;action_url&#39;: actionUrl,
       if (expiresAt != null) &#39;expires_at&#39;: expiresAt!.toIso8601String(),
     };</code></pre>
 </section>
@@ -105,7 +111,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

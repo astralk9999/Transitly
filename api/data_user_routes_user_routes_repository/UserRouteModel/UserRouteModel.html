@@ -57,11 +57,13 @@
       <span class="name ">UserRouteModel</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="-param-id"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">id</span>, </span></li>
 <li><span class="parameter" id="-param-authorId"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">authorId</span>, </span></li>
 <li><span class="parameter" id="-param-name"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">name</span>, </span></li>
+<li><span class="parameter" id="-param-code"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">code</span>, </span></li>
 <li><span class="parameter" id="-param-description"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">description</span>, </span></li>
 <li><span class="parameter" id="-param-routeColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">routeColor</span> = <span class="default-value">&#39;#977DDF&#39;</span>, </span></li>
 <li><span class="parameter" id="-param-serviceType"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">serviceType</span> = <span class="default-value">&#39;urban&#39;</span>, </span></li>
 <li><span class="parameter" id="-param-visibility"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">visibility</span> = <span class="default-value">&#39;private&#39;</span>, </span></li>
 <li><span class="parameter" id="-param-status"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">status</span> = <span class="default-value">&#39;draft&#39;</span>, </span></li>
+<li><span class="parameter" id="-param-path"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a>?</span> <span class="parameter-name">path</span>, </span></li>
 <li><span class="parameter" id="-param-shareCode"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">shareCode</span>, </span></li>
 <li><span class="parameter" id="-param-publicSlug"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">publicSlug</span>, </span></li>
 <li><span class="parameter" id="-param-totalDistanceKm"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a>?</span> <span class="parameter-name">totalDistanceKm</span>, </span></li>
@@ -86,11 +88,13 @@
   required this.id,
   required this.authorId,
   required this.name,
+  this.code,
   this.description,
   this.routeColor = &#39;#977DDF&#39;,
   this.serviceType = &#39;urban&#39;,
   this.visibility = &#39;private&#39;,
   this.status = &#39;draft&#39;,
+  this.path,
   this.shareCode,
   this.publicSlug,
   this.totalDistanceKm,
@@ -131,7 +135,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

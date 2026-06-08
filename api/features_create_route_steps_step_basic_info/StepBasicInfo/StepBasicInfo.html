@@ -61,6 +61,11 @@
 <li><span class="parameter" id="-param-serviceType"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">serviceType</span>, </span></li>
 <li><span class="parameter" id="-param-onColorChanged"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/foundation/ValueChanged.html">ValueChanged</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>&gt;</span></span> <span class="parameter-name">onColorChanged</span>, </span></li>
 <li><span class="parameter" id="-param-onServiceTypeChanged"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/foundation/ValueChanged.html">ValueChanged</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>&gt;</span></span> <span class="parameter-name">onServiceTypeChanged</span>, </span></li>
+<li><span class="parameter" id="-param-codeCtrl"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/widgets/TextEditingController-class.html">TextEditingController</a>?</span> <span class="parameter-name">codeCtrl</span>, </span></li>
+<li><span class="parameter" id="-param-zoneNames"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>&gt;</span></span> <span class="parameter-name">zoneNames</span> = <span class="default-value">const []</span>, </span></li>
+<li><span class="parameter" id="-param-selectedZone"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">selectedZone</span>, </span></li>
+<li><span class="parameter" id="-param-onZoneChanged"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/foundation/ValueChanged.html">ValueChanged</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span>&gt;</span>?</span> <span class="parameter-name">onZoneChanged</span>, </span></li>
+<li><span class="parameter" id="-param-onRecommendZone"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/foundation/ValueChanged.html">ValueChanged</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>&gt;</span>?</span> <span class="parameter-name">onRecommendZone</span>, </span></li>
 </ol>})
     </section>
     
@@ -77,6 +82,11 @@
   required this.serviceType,
   required this.onColorChanged,
   required this.onServiceTypeChanged,
+  this.codeCtrl,
+  this.zoneNames = const [],
+  this.selectedZone,
+  this.onZoneChanged,
+  this.onRecommendZone,
 });</code></pre>
 </section>
 
@@ -105,7 +115,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

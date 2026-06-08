@@ -131,63 +131,146 @@ Widget build(BuildContext context) {
           ? const SizedBox.shrink(key: ValueKey(&#39;hidden&#39;))
           : Padding(
               key: ValueKey(&#39;banner-${route!.id}&#39;),
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-              child: GlassCard(
-                blur: 16,
-                fillOpacity: 0.08,
-                borderRadius: 14,
+              &#47;&#47; Padding top 76 deja libre la fila de FABs (search&#47;
+              &#47;&#47; filter) que viven en top: 16, height 48. Padding
+              &#47;&#47; horizontal 80 evita que las esquinas pisen los FABs
+              &#47;&#47; si la pantalla es estrecha (FAB izq + 16 margen).
+              padding: const EdgeInsets.fromLTRB(80, 16, 80, 0),
+              child: Container(
+                decoration: BoxDecoration(
+                  &#47;&#47; bgSurface opaco para legibilidad clara en tema
+                  &#47;&#47; light (el GlassCard translúcido sobre mapa claro
+                  &#47;&#47; perdía contraste).
+                  color: c.bgSurface,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: route!.routeColor.withValues(alpha: 0.55),
+                    width: 1.5,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.22),
+                      blurRadius: 10,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
                 padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
                 child: Row(
                   children: [
-                    &#47;&#47; Badge cuadrado con código + color de la línea.
-                    Container(
-                      constraints:
-                          const BoxConstraints(minWidth: 52, maxWidth: 72),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: route!.routeColor.withValues(alpha: 0.22),
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                          color: route!.routeColor.withValues(alpha: 0.65),
-                          width: 1.5,
-                        ),
-                      ),
-                      child: Center(
-                        child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: Text(
-                            route!.code,
-                            style: TransitTypography.routeCode(
-                                route!.routeColor),
-                            maxLines: 1,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    &#47;&#47; Nombre de la línea.
+                    &#47;&#47; Badge + nombre = zona tapable que abre detalle.
+                    &#47;&#47; El botón cerrar queda fuera para no canibalizar
+                    &#47;&#47; su propio gesto.
                     Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            route!.name.toUpperCase(),
-                            style: TransitTypography.routeName(c.textHi),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            &#39;Línea seleccionada · toca para deseleccionar&#39;,
-                            style: TransitTypography.bodySmall(c.textLo),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: onTap,
+                        child: Row(
+                          children: [
+                            &#47;&#47; Badge cuadrado con código + color.
+                            Container(
+                              constraints: const BoxConstraints(
+                                  minWidth: 52, maxWidth: 72),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: route!.routeColor
+                                    .withValues(alpha: 0.22),
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                  color: route!.routeColor
+                                      .withValues(alpha: 0.65),
+                                  width: 1.5,
+                                ),
+                              ),
+                              child: Center(
+                                child: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(
+                                    route!.code,
+                                    style: TransitTypography.routeCode(
+                                        route!.routeColor),
+                                    maxLines: 1,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            &#47;&#47; Nombre de la línea.
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Flexible(
+                                        child: Text(
+                                          route!.name.toUpperCase(),
+                                          style: TransitTypography.routeName(
+                                              c.textHi),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      if (isCommunity) ...[
+                                        const SizedBox(width: 6),
+                                        Container(
+                                          padding: const EdgeInsets
+                                              .symmetric(
+                                              horizontal: 6, vertical: 2),
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xFF4CAF50)
+                                                .withValues(alpha: 0.18),
+                                            borderRadius:
+                                                BorderRadius.circular(6),
+                                          ),
+                                          child: Text(&#39;COMUNIDAD&#39;,
+                                              style: TransitTypography
+                                                      .bodySmall(
+                                                          const Color(
+                                                              0xFF4CAF50))
+                                                  .copyWith(
+                                                      fontSize: 9,
+                                                      fontWeight:
+                                                          FontWeight.w800)),
+                                        ),
+                                      ],
+                                    ],
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    onTap != null
+                                        ? &#39;Toca para ver detalles&#39;
+                                        : &#39;Línea seleccionada&#39;,
+                                    style: TransitTypography.bodySmall(
+                                        c.textLo),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
+                    &#47;&#47; Botón &quot;ir a comunidad&quot; para rutas de comunidad.
+                    if (isCommunity &amp;&amp; onOpenCommunity != null)
+                      Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(20),
+                          onTap: onOpenCommunity,
+                          child: Container(
+                            width: 36,
+                            height: 36,
+                            alignment: Alignment.center,
+                            child: Icon(Icons.groups_outlined,
+                                size: 20, color: const Color(0xFF4CAF50)),
+                          ),
+                        ),
+                      ),
                     &#47;&#47; Botón cerrar.
                     if (onClose != null)
                       Material(
@@ -238,7 +321,7 @@ Widget build(BuildContext context) {
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

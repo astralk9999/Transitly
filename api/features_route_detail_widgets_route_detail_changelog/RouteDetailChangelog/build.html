@@ -112,24 +112,34 @@ and</li>
 Widget build(BuildContext context, WidgetRef ref) {
   final isDark = Theme.of(context).brightness == Brightness.dark;
   final c = TransitColorScheme.of(isDark);
-  final mockData = ref.watch(mockDataServiceProvider);
-  final entries = mockData.getChangelogForRoute(routeId);
 
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Semantics(
-        header: true,
-        child: Text(AppLocalizations.of(context).sectionRecentChanges,
-            style: TransitTypography.sectionTitle(c.textMid)),
-      ),
-      const SizedBox(height: 8),
-      if (entries.isEmpty)
-        Text(AppLocalizations.of(context).routeChangelogEmpty,
-            style: TransitTypography.bodySecondary(c.textMid))
-      else
-        ...entries.map((e) =&gt; _item(c, e)),
-    ],
+  return FutureBuilder&lt;List&lt;RouteChangeRow&gt;&gt;(
+    future: ref.read(adminRoutesRepositoryProvider).listChangelog(routeId),
+    builder: (context, snap) {
+      final entries = snap.data ?? const &lt;RouteChangeRow&gt;[];
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Semantics(
+            header: true,
+            child: Text(AppLocalizations.of(context).sectionRecentChanges,
+                style: TransitTypography.sectionTitle(c.textMid)),
+          ),
+          const SizedBox(height: 8),
+          if (snap.connectionState == ConnectionState.waiting)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Text(&#39;…&#39;,
+                  style: TransitTypography.bodySecondary(c.textMid)),
+            )
+          else if (entries.isEmpty)
+            Text(AppLocalizations.of(context).routeChangelogEmpty,
+                style: TransitTypography.bodySecondary(c.textMid))
+          else
+            ...entries.map((e) =&gt; _item(c, e)),
+        ],
+      );
+    },
   );
 }</code></pre>
 </section>
@@ -159,7 +169,7 @@ Widget build(BuildContext context, WidgetRef ref) {
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

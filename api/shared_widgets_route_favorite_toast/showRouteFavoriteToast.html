@@ -65,12 +65,14 @@
     </section>
     
 <section class="desc markdown">
-  <p>Toast flotante arriba de la pantalla cuando se añade/quita una línea
-de favoritos. Reemplaza el SnackBar simple que aparecía abajo y no
-reflejaba qué línea era.</p>
-<p>Diseño igual que RouteSelectionBanner: glass-card con badge de
-color/código + nombre. Anima slide desde arriba + fade, auto-dismiss
-a los 2.2 s.</p>
+  <p>Toast flotante arriba de la pantalla cuando se añade/quita una
+línea o parada de favoritos. Mismo widget para ambas — solo cambia
+el "leading" (badge de línea vs icono de parada).</p>
+<p>Mantiene la estética de la app (bgSurface opaco + borde de color</p>
+<ul>
+<li>sombra), idéntica al RouteSelectionBanner para coherencia.
+Anima slide desde arriba + fade, auto-dismiss a los 2.2 s.</li>
+</ul>
 </section>
 
 
@@ -82,13 +84,13 @@ a los 2.2 s.</p>
   required RouteModel route,
   required bool added,
 }) {
-  final overlay = Overlay.maybeOf(context, rootOverlay: true);
-  if (overlay == null) return;
-
-  final entry = _RouteFavoriteToastEntry(route: route, added: added);
-  overlay.insert(entry.overlayEntry);
-
-  Timer(const Duration(milliseconds: 2200), entry.dismiss);
+  _show(
+    context,
+    title: route.name.toUpperCase(),
+    added: added,
+    accentColor: route.routeColor,
+    leading: _RouteBadge(route: route),
+  );
 }</code></pre>
 </section>
 
@@ -116,7 +118,7 @@ a los 2.2 s.</p>
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

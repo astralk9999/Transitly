@@ -130,7 +130,9 @@ Widget build(BuildContext context, WidgetRef ref) {
                   child: TransitButton(
                     label: l10n.notificationsMarkAllRead,
                     isPrimary: false,
-                    onPressed: () =&gt; _markAllRead(ref, l10n, context),
+                    onPressed: () {
+                      unawaited(_markAllRead(ref, l10n, context));
+                    },
                   ),
                 ),
             ],
@@ -206,7 +208,7 @@ Widget build(BuildContext context, WidgetRef ref) {
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

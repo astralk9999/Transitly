@@ -64,11 +64,13 @@
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">factory UserRouteScheduleModel.fromJson(Map&lt;String, dynamic&gt; json) {
+  final rawTime = json[&#39;departure_time&#39;] as String;
   return UserRouteScheduleModel(
     id: json[&#39;id&#39;] as String?,
     routeId: json[&#39;route_id&#39;] as String,
     dayType: json[&#39;day_type&#39;] as String,
-    departureTime: json[&#39;departure_time&#39;] as String,
+    &#47;&#47; La BD guarda TIME como &quot;HH:MM:SS&quot;; la UI usa siempre &quot;HH:MM&quot;.
+    departureTime: rawTime.length &gt;= 5 ? rawTime.substring(0, 5) : rawTime,
     originStopId: json[&#39;origin_stop_id&#39;] as String?,
     notes: json[&#39;notes&#39;] as String?,
   );
@@ -100,7 +102,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

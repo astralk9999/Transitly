@@ -180,13 +180,40 @@ Widget build(BuildContext context) {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      route.name.toUpperCase(),
-                      style: TransitTypography.routeName(c.textHi),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            route.name.toUpperCase(),
+                            style: TransitTypography.routeName(c.textHi),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        &#47;&#47; Badge COMUNIDAD para distinguir las líneas de
+                        &#47;&#47; comunidad de las oficiales.
+                        if (route.source == RouteSource.community) ...[
+                          const SizedBox(width: 6),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF4CAF50)
+                                  .withValues(alpha: 0.18),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: const Text(&#39;COMUNIDAD&#39;,
+                                style: TextStyle(
+                                  fontSize: 8.5,
+                                  fontWeight: FontWeight.w800,
+                                  color: Color(0xFF4CAF50),
+                                  letterSpacing: 0.5,
+                                )),
+                          ),
+                        ],
+                      ],
                     ),
-                    if (remainingStops != null) ...[
+                    if (remainingStops != null &amp;&amp; remainingStops! &gt; 0) ...[
                       const SizedBox(height: 2),
                       Text(
                         &#39;$remainingStops paradas&#39;,
@@ -272,7 +299,7 @@ Widget build(BuildContext context) {
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

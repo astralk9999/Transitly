@@ -121,17 +121,10 @@ Widget build(BuildContext context, WidgetRef ref) {
     ..sort((a, b) =&gt; b.voteCount.compareTo(a.voteCount));
 
   return Scaffold(
-    backgroundColor: c.bgRoot,
-    body: Stack(
-      children: [
-        Positioned.fill(
-          child: SmokeBackground(color: c.accent, isDark: isDark),
-        ),
-        Column(
-          children: [
-            TransitAppBar(title: l10n.suggestionContributeTitle),
-            Expanded(
-              child: open.isEmpty
+    backgroundColor: Colors.transparent,
+    appBar: TransitAppBar(
+        title: l10n.suggestionContributeTitle, transparent: true),
+    body: open.isEmpty
                   ? EmptyState(
                       l10n.suggestionContributeEmptyTitle,
                       l10n.suggestionContributeEmptySubtitle,
@@ -151,11 +144,6 @@ Widget build(BuildContext context, WidgetRef ref) {
                     );
                   },
                 ),
-        ),
-      ],
-    ),
-    ],
-    ),
   );
 }</code></pre>
 </section>
@@ -185,7 +173,7 @@ Widget build(BuildContext context, WidgetRef ref) {
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

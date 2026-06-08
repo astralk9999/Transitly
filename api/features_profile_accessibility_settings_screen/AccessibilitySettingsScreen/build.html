@@ -119,27 +119,12 @@ Widget build(BuildContext context, WidgetRef ref) {
   final mq = MediaQuery.of(context);
 
   return Scaffold(
-    backgroundColor: c.bgRoot,
-    appBar: AppBar(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      leading: IconButton(
-        icon: Icon(Icons.arrow_back, color: c.textMid),
-        tooltip: AppLocalizations.of(context).actionBack,
-        onPressed: () =&gt; context.pop(),
-      ),
-      title: Text(AppLocalizations.of(context).accessibilityTitle,
-          style: TransitTypography.sectionTitle(c.textHi)),
-      centerTitle: false,
-    ),
-    body: Stack(
-      children: [
-        Positioned.fill(
-          child: SmokeBackground(color: c.accent, isDark: isDark),
-        ),
-        SafeArea(
-          child: ResponsivePageWrapper(
-            child: ListView(
+    backgroundColor: Colors.transparent,
+    appBar: TransitAppBar(
+        title: AppLocalizations.of(context).accessibilityTitle,
+        transparent: true),
+    body: ResponsivePageWrapper(
+              child: ListView(
             padding: const EdgeInsets.all(16),
             children: [
               _ThemeSection(
@@ -165,11 +150,8 @@ Widget build(BuildContext context, WidgetRef ref) {
                     ref.read(localeProvider.notifier).state = l,
               ),
             ],
-          ),
-          ),
-        ),
-      ],
-    ),
+              ),
+            ),
   );
 }</code></pre>
 </section>
@@ -199,7 +181,7 @@ Widget build(BuildContext context, WidgetRef ref) {
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

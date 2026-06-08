@@ -114,12 +114,13 @@ Widget build(BuildContext context, WidgetRef ref) {
   final c = TransitColorScheme.of(isDark);
 
   return Scaffold(
-    backgroundColor: c.bgRoot,
+    backgroundColor: Colors.transparent,
+    &#47;&#47; AppBar con botón de salir (back), igual que el panel de admin.
+    appBar: const TransitAppBar(title: &#39;Operadora&#39;, transparent: true),
     body: Stack(
       children: [
-        Positioned.fill(
-            child: SmokeBackground(color: c.accent, isDark: isDark)),
         SafeArea(
+          top: false,
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -148,6 +149,44 @@ Widget build(BuildContext context, WidgetRef ref) {
                   title: &#39;Conductores&#39;,
                   subtitle: &#39;Lista de conductores asignados&#39;,
                   onTap: () =&gt; context.push(&#39;&#47;operator-admin&#47;drivers&#39;),
+                ),
+                const SizedBox(height: 12),
+
+                _OptionCard(
+                  c: c,
+                  icon: Icons.alt_route,
+                  title: &#39;Gestión de líneas&#39;,
+                  subtitle:
+                      &#39;Editar rutas, paradas y horarios de tu operadora&#39;,
+                  onTap: () =&gt; context.push(&#39;&#47;management&#47;routes&#39;),
+                ),
+                const SizedBox(height: 12),
+
+                _OptionCard(
+                  c: c,
+                  icon: Icons.place_outlined,
+                  title: &#39;Gestión de paradas&#39;,
+                  subtitle: &#39;Ver, crear y editar paradas de tu operadora&#39;,
+                  onTap: () =&gt; context.push(&#39;&#47;management&#47;stops&#39;),
+                ),
+                const SizedBox(height: 12),
+
+                _OptionCard(
+                  c: c,
+                  icon: Icons.inbox,
+                  title: &#39;Bandeja&#39;,
+                  subtitle:
+                      &#39;Mejoras, incidencias y sugerencias de tus líneas&#39;,
+                  onTap: () =&gt; context.push(&#39;&#47;management&#47;inbox&#39;),
+                ),
+                const SizedBox(height: 12),
+
+                _OptionCard(
+                  c: c,
+                  icon: Icons.map_outlined,
+                  title: &#39;Gestión de zonas&#39;,
+                  subtitle: &#39;Zonas con perímetro (centro y radio)&#39;,
+                  onTap: () =&gt; context.push(&#39;&#47;management&#47;zones&#39;),
                 ),
                 const SizedBox(height: 32),
               ],
@@ -185,7 +224,7 @@ Widget build(BuildContext context, WidgetRef ref) {
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

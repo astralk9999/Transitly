@@ -65,8 +65,30 @@
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">final userFavoritesProvider =
-    StateNotifierProvider&lt;UserFavoritesNotifier, Set&lt;String&gt;&gt;(
-        (ref) =&gt; UserFavoritesNotifier());</code></pre>
+    StateNotifierProvider&lt;UserFavoritesNotifier, Set&lt;String&gt;&gt;((ref) {
+  final notifier = UserFavoritesNotifier(
+    () =&gt; ref.read(supabaseClientProvider),
+    () =&gt; ref.read(currentAuthUserProvider),
+  );
+  &#47;&#47; Resync solo cuando cambia el id del usuario (login&#47;logout),
+  &#47;&#47; no en cada tokenRefreshed.
+  &#47;&#47; Listen a authStateProvider (reactivo vía StreamProvider), no a
+  &#47;&#47; currentAuthUserProvider — éste es síncrono y nunca cambia su
+  &#47;&#47; valor en runtime: si el provider de favoritos se crea ANTES del
+  &#47;&#47; login, currentAuthUserProvider sigue devolviendo null y el sync
+  &#47;&#47; jamás dispara. El bug era: tras borrar caché, abrir la app, hacer
+  &#47;&#47; login → los favoritos remotos solo aparecían tras reiniciar.
+  String? lastUserId;
+  ref.listen&lt;AsyncValue&lt;AuthSessionState&gt;&gt;(authStateProvider, (_, next) {
+    final state = next.valueOrNull;
+    final user = state is AuthAuthenticated ? state.user : null;
+    final id = user?.id;
+    if (id == lastUserId) return;
+    lastUserId = id;
+    if (id != null) notifier.syncWithRemote();
+  }, fireImmediately: true);
+  return notifier;
+});</code></pre>
 </section>
 
 
@@ -94,7 +116,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

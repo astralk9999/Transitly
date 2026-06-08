@@ -65,10 +65,30 @@
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">final routerProvider = Provider&lt;GoRouter&gt;((ref) {
+  &#47;&#47; refreshListenable: cuando cambia el estado de auth (p.ej. al volver del
+  &#47;&#47; login OAuth por deep link), go_router re-evalúa el `redirect` y navega
+  &#47;&#47; SOLO una vez. Sin esto, las pantallas navegaban a mano y, con OAuth, el
+  &#47;&#47; deep link + esa navegación coincidían → &quot;Duplicate GlobalKey&quot; (HomeShell
+  &#47;&#47; montado dos veces) y la pantalla de error.
+  final authRefresh = ValueNotifier&lt;int&gt;(0);
+  ref.listen(authStateProvider, (_, __) =&gt; authRefresh.value++);
+  ref.onDispose(authRefresh.dispose);
+
   return GoRouter(
     initialLocation: ref.watch(routerInitialLocationProvider),
+    refreshListenable: authRefresh,
     errorBuilder: notFoundErrorBuilder,
-    redirect: (context, state) =&gt; authRedirect(ref, state),
+    redirect: (context, state) {
+      &#47;&#47; Marca si el mapa es la pantalla visible superior, para suprimir el
+      &#47;&#47; fondo shader ahí (evita el conflicto GPU shader+FlutterMap). Se
+      &#47;&#47; difiere para no mutar un provider durante el routing.
+      final isMap = state.matchedLocation == &#39;&#47;home&#47;mapa&#39;;
+      Future.microtask(() {
+        final n = ref.read(mapVisibleProvider.notifier);
+        if (n.state != isMap) n.state = isMap;
+      });
+      return authRedirect(ref, state);
+    },
     routes: [
       GoRoute(
         path: &#39;&#47;splash&#39;,
@@ -80,6 +100,13 @@
       ),
 
       &#47;&#47; ── Auth routes ──
+      &#47;&#47; Retorno del login OAuth (deep link transitly:&#47;&#47;login-callback). Sin
+      &#47;&#47; esta ruta go_router daba 404 al volver del navegador de Google.
+      GoRoute(
+        path: &#39;&#47;login-callback&#39;,
+        pageBuilder: (context, state) =&gt;
+            _fadeSlow(state, const AuthCallbackScreen()),
+      ),
       GoRoute(
         path: &#39;&#47;sign-in&#39;,
         pageBuilder: (context, state) =&gt; _slide(state, const SignInScreen()),
@@ -161,10 +188,13 @@
         ),
       ),
       &#47;&#47; ── Driver screens ──
+      &#47;&#47; Modo conductor SIMPLE (iniciar ruta + posición en vivo). El dashboard
+      &#47;&#47; y el editor antiguos quedan en el código pero sin acceso desde la UI.
+      &#47;&#47; Ver docs&#47;DESACTIVADO.md.
       GoRoute(
         path: &#39;&#47;driver&#47;dashboard&#39;,
         pageBuilder: (context, state) =&gt;
-            _slide(state, const DriverDashboardScreen()),
+            _slide(state, const DriverLiveScreen()),
       ),
       GoRoute(
         path: &#39;&#47;driver&#47;start&#39;,
@@ -265,6 +295,14 @@
               routeId: state.pathParameters[&#39;routeId&#39;]!),
         ),
       ),
+      GoRoute(
+        path: &#39;&#47;community&#47;stop&#47;:stopId&#39;,
+        pageBuilder: (context, state) =&gt; _slide(
+          state,
+          CommunityStopDetailScreen(
+              stopId: state.pathParameters[&#39;stopId&#39;]!),
+        ),
+      ),
 
       &#47;&#47; ── My Routes ──
       GoRoute(
@@ -286,7 +324,82 @@
       GoRoute(
         path: &#39;&#47;management&#47;inbox&#39;,
         pageBuilder: (context, state) =&gt;
+            _slide(state, const UnifiedInboxScreen()),
+      ),
+      GoRoute(
+        path: &#39;&#47;management&#47;inbox-legacy&#39;,
+        pageBuilder: (context, state) =&gt;
             _slide(state, const ManagerInboxScreen()),
+      ),
+      GoRoute(
+        path: &#39;&#47;management&#47;routes&#39;,
+        pageBuilder: (context, state) =&gt;
+            _slide(state, const RoutesManagementScreen()),
+      ),
+      GoRoute(
+        path: &#39;&#47;management&#47;stops&#39;,
+        pageBuilder: (context, state) =&gt;
+            _slide(state, const StopsManagementScreen()),
+      ),
+      GoRoute(
+        path: &#39;&#47;management&#47;community&#39;,
+        pageBuilder: (context, state) =&gt;
+            _slide(state, const CommunityManagementScreen()),
+      ),
+      GoRoute(
+        path: &#39;&#47;management&#47;zones&#39;,
+        pageBuilder: (context, state) =&gt;
+            _slide(state, const ZonesManagementScreen()),
+      ),
+      GoRoute(
+        path: &#39;&#47;management&#47;routes&#47;new&#39;,
+        pageBuilder: (context, state) =&gt; _slide(
+          state,
+          AdminRouteWizard(
+            initialOperatorId: state.uri.queryParameters[&#39;operator&#39;],
+          ),
+        ),
+      ),
+      &#47;&#47; Editor simple (formulario) para edición rápida de campos básicos.
+      GoRoute(
+        path: &#39;&#47;management&#47;routes&#47;new-simple&#39;,
+        pageBuilder: (context, state) =&gt; _slide(
+          state,
+          RouteEditorScreen(
+            initialOperatorId: state.uri.queryParameters[&#39;operator&#39;],
+          ),
+        ),
+      ),
+      &#47;&#47; Edición de línea oficial con el wizard (datos + paradas en mapa +
+      &#47;&#47; horarios), igual que el de comunidad. El form simple sigue en
+      &#47;&#47; &#47;management&#47;routes&#47;:id&#47;simple por si se necesita edición rápida.
+      GoRoute(
+        path: &#39;&#47;management&#47;routes&#47;:id&#39;,
+        pageBuilder: (context, state) =&gt; _slide(
+          state,
+          AdminRouteWizard(routeId: state.pathParameters[&#39;id&#39;]),
+        ),
+      ),
+      GoRoute(
+        path: &#39;&#47;management&#47;routes&#47;:id&#47;simple&#39;,
+        pageBuilder: (context, state) =&gt; _slide(
+          state,
+          RouteEditorScreen(routeId: state.pathParameters[&#39;id&#39;]),
+        ),
+      ),
+      GoRoute(
+        path: &#39;&#47;management&#47;routes&#47;:id&#47;stops&#39;,
+        pageBuilder: (context, state) =&gt; _slide(
+          state,
+          RouteStopsEditorScreen(routeId: state.pathParameters[&#39;id&#39;]!),
+        ),
+      ),
+      GoRoute(
+        path: &#39;&#47;management&#47;routes&#47;:id&#47;schedules&#39;,
+        pageBuilder: (context, state) =&gt; _slide(
+          state,
+          RouteSchedulesEditorScreen(routeId: state.pathParameters[&#39;id&#39;]!),
+        ),
       ),
 
       &#47;&#47; ── Admin ──
@@ -299,6 +412,13 @@
         path: &#39;&#47;admin&#47;users&#39;,
         pageBuilder: (context, state) =&gt;
             _slide(state, const AdminUsersScreen()),
+      ),
+      GoRoute(
+        path: &#39;&#47;admin&#47;users&#47;:userId&#39;,
+        pageBuilder: (context, state) =&gt; _slide(
+          state,
+          AdminUserDetailScreen(userId: state.pathParameters[&#39;userId&#39;]!),
+        ),
       ),
       GoRoute(
         path: &#39;&#47;admin&#47;operators&#39;,
@@ -355,6 +475,16 @@
         path: &#39;&#47;profile&#47;privacy&#39;,
         pageBuilder: (context, state) =&gt;
             _slide(state, const PrivacyScreen()),
+      ),
+      GoRoute(
+        path: &#39;&#47;legal&#47;terms&#39;,
+        pageBuilder: (context, state) =&gt;
+            _slide(state, const LegalScreen(doc: LegalDoc.terms)),
+      ),
+      GoRoute(
+        path: &#39;&#47;legal&#47;privacy&#39;,
+        pageBuilder: (context, state) =&gt;
+            _slide(state, const LegalScreen(doc: LegalDoc.privacy)),
       ),
       GoRoute(
         path: &#39;&#47;profile&#47;reputation&#39;,
@@ -504,7 +634,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

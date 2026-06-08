@@ -121,16 +121,9 @@ Widget build(BuildContext context, WidgetRef ref) {
       .toList();
 
   return Scaffold(
-    backgroundColor: c.bgRoot,
-    appBar: AppBar(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      leading: IconButton(
-        icon: Icon(Icons.arrow_back, color: c.textHi),
-        onPressed: () =&gt; context.pop(),
-      ),
-      title: Text(l10n.widgetsConfigMyLine, style: TransitTypography.heading(c.textHi)),
-    ),
+    backgroundColor: Colors.transparent,
+    appBar: TransitAppBar(
+        title: l10n.widgetsConfigMyLine, transparent: true),
     body: SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -246,7 +239,7 @@ Widget build(BuildContext context, WidgetRef ref) {
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

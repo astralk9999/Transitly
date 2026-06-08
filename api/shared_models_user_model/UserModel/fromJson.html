@@ -68,24 +68,36 @@
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">static UserModel fromJson(Map&lt;String, dynamic&gt; j) {
-  final roleStr = j[&#39;role&#39;] as String? ?? &#39;passenger&#39;;
+  &#47;&#47; La tabla `profiles` (Postgres) usa el enum user_role en snake_case
+  &#47;&#47; (operator_admin). El enum Dart usa camelCase (operatorAdmin). Aceptamos
+  &#47;&#47; ambas formas para no romper permisos de operator_admin ni datos legacy.
+  final rawRole = j[&#39;role&#39;] as String? ?? &#39;passenger&#39;;
+  final roleStr = rawRole == &#39;operator_admin&#39; ? &#39;operatorAdmin&#39; : rawRole;
   final role = UserRole.values.firstWhere(
     (r) =&gt; r.name == roleStr,
     orElse: () =&gt; UserRole.passenger,
   );
 
+  final score =
+      (j[&#39;reputation_score&#39;] ?? j[&#39;reputation&#39;] ?? 0) as int;
+  &#47;&#47; reputation_level en BD es INT (0..6). El enum dart solo tiene 4
+  &#47;&#47; valores (new_&#47;contributor&#47;trusted&#47;expert), así que derivamos
+  &#47;&#47; desde el score para mantener el badge coherente.
+  final level = _levelFromScore(score);
+
   return UserModel(
     id: j[&#39;id&#39;] as String,
-    name: j[&#39;displayName&#39;] as String? ?? j[&#39;username&#39;] as String? ?? &#39;&#39;,
+    name: (j[&#39;display_name&#39;] ?? j[&#39;displayName&#39;] ?? j[&#39;username&#39;] ?? &#39;&#39;)
+        as String,
     email: j[&#39;email&#39;] as String? ?? &#39;&#39;,
     role: role,
-    driverOperatorIds: roleStr == &#39;driver&#39; ? (j[&#39;operator&#39;] != null
-        ? &lt;String&gt;[j[&#39;operator&#39;] as String]
-        : const &lt;String&gt;[])
+    driverOperatorIds: roleStr == &#39;driver&#39;
+        ? (j[&#39;operator&#39;] != null
+            ? &lt;String&gt;[j[&#39;operator&#39;] as String]
+            : const &lt;String&gt;[])
         : const &lt;String&gt;[],
-    reputationScore: j[&#39;reputation&#39;] as int? ?? 0,
-    reputationLevel: ReputationLevel.fromString(
-        j[&#39;reputationLevel&#39;] as String? ?? &#39;new&#39;),
+    reputationScore: score,
+    reputationLevel: level,
   );
 }</code></pre>
 </section>
@@ -115,7 +127,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

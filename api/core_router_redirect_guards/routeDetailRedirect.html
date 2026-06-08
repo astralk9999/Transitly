@@ -70,11 +70,17 @@
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">String? routeDetailRedirect(Ref ref, GoRouterState state) {
   final id = state.pathParameters[&#39;routeId&#39;];
+  if (id == null) return &#39;&#47;home&#47;inicio&#39;;
+  &#47;&#47; Aceptamos tanto rutas oficiales (mockData) como user_routes
+  &#47;&#47; (UUID v4). Si la id no parece de mock y tiene formato UUID,
+  &#47;&#47; dejamos que la pantalla de detalle la cargue desde Supabase.
   final mock = ref.read(mockDataServiceProvider);
-  if (id == null || mock.getRouteById(id) == null) {
-    return &#39;&#47;home&#47;inicio&#39;;
-  }
-  return null;
+  if (mock.getRouteById(id) != null) return null;
+  final isUuid = RegExp(
+          r&#39;^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$&#39;)
+      .hasMatch(id);
+  if (isUuid) return null;
+  return &#39;&#47;home&#47;inicio&#39;;
 }</code></pre>
 </section>
 
@@ -102,7 +108,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

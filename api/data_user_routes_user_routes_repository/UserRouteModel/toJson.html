@@ -70,7 +70,10 @@
   if (id != &#39;&#39;) &#39;id&#39;: id,
   &#39;author_id&#39;: authorId,
   &#39;name&#39;: name,
+  if (code != null &amp;&amp; code!.isNotEmpty) &#39;code&#39;: code,
+  if (region != null &amp;&amp; region!.isNotEmpty) &#39;region&#39;: region,
   if (description != null) &#39;description&#39;: description,
+  if (path != null) &#39;path&#39;: path,
   &#39;route_color&#39;: routeColor,
   &#39;service_type&#39;: serviceType,
   &#39;visibility&#39;: visibility,
@@ -107,7 +110,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

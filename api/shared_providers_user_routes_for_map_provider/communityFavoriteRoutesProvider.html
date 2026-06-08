@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the communityFavoriteRoutesProvider property from the user_routes_for_map_provider library, for the Dart programming language.">
+  <title>communityFavoriteRoutesProvider property - user_routes_for_map_provider library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">transitly</a></li>
+    <li><a href="../shared_providers_user_routes_for_map_provider/">shared&#47;providers&#47;user_routes_for_map_provider.dart</a></li>
+    <li class="self-crumb">communityFavoriteRoutesProvider property</li>
+  </ol>
+  <div class="self-name">communityFavoriteRoutesProvider</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+  <div
+      id="dartdoc-main-content"
+      class="main-content"
+      data-above-sidebar="shared_providers_user_routes_for_map_provider&#47;shared_providers_user_routes_for_map_provider-library-sidebar.html"
+      data-below-sidebar="">
+      <div>
+<h1><span class="kind-top-level-property">communityFavoriteRoutesProvider</span> top-level property 
+ 
+</h1></div>
+
+        <section class="multi-line-signature">
+          
+          <a href="https://pub.dev/documentation/riverpod/2.6.1/riverpod/FutureProvider-class.html">FutureProvider</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../shared_providers_user_routes_for_map_provider/CommunityFavoriteRoute-class.html">CommunityFavoriteRoute</a></span>&gt;</span></span>&gt;</span>
+          <span class="name ">communityFavoriteRoutesProvider</span>
+          <div class="features"><span class="feature">final</span></div>
+
+        </section>
+        
+<section class="desc markdown">
+  <p>Líneas de comunidad marcadas como favoritas, resueltas a <a href="../shared_models_route_model/RouteModel-class.html">RouteModel</a> con
+su nº de paradas para mostrarlas en Inicio › Mis líneas (las oficiales las
+resuelve Inicio con mockData). Una sola consulta por id-UUID; la RLS
+devuelve solo las legibles (públicas o propias).</p>
+</section>
+
+        
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">final communityFavoriteRoutesProvider =
+    FutureProvider&lt;List&lt;CommunityFavoriteRoute&gt;&gt;((ref) async {
+  final favIds = ref.watch(userFavoritesProvider);
+  final uuidIds = favIds.where(_looksLikeUuid).toList();
+  if (uuidIds.isEmpty) return const [];
+  final client = ref.watch(supabaseClientProvider);
+  try {
+    final rows = await client
+        .from(&#39;user_routes&#39;)
+        .select(&#39;*, user_route_stops(count)&#39;)
+        .inFilter(&#39;id&#39;, uuidIds);
+    return (rows as List).map((j) {
+      final m = j as Map&lt;String, dynamic&gt;;
+      &#47;&#47; user_route_stops(count) → [{count: N}].
+      var stops = 0;
+      final cnt = m[&#39;user_route_stops&#39;];
+      if (cnt is List &amp;&amp; cnt.isNotEmpty &amp;&amp; cnt.first is Map) {
+        stops = ((cnt.first as Map)[&#39;count&#39;] as num?)?.toInt() ?? 0;
+      }
+      return CommunityFavoriteRoute(
+          _toRouteModel(UserRouteModel.fromJson(m)), stops);
+    }).toList(growable: false);
+  } catch (e) {
+    AppLogger.warn(_logTag, &#39;fav community routes load failed&#39;, e);
+    return const [];
+  }
+});</code></pre>
+</section>
+
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../index.html">transitly</a></li>
+    <li><a href="../shared_providers_user_routes_for_map_provider/">user_routes_for_map_provider</a></li>
+    <li class="self-crumb">communityFavoriteRoutesProvider property</li>
+</ol>
+
+    <h5>user_routes_for_map_provider library</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-left-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    transitly
+      1.2.0+1780900000
+  </span>
+  
+</footer>
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

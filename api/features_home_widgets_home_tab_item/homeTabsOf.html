@@ -63,8 +63,12 @@
     </section>
     
 <section class="desc markdown">
-  <p>The five tabs rendered by <a href="../features_home_home_shell/HomeShell-class.html">HomeShell</a>. Order must match the routes in
-<code>app_router.dart</code> (inicio / mapa / buscar / tarjeta / perfil).</p>
+  <p>Tabs visibles en la barra de navegación. El orden de los branches en
+<code>app_router.dart</code> es inicio/mapa/buscar/tarjeta/perfil (0..4).</p>
+<p>NOTA: la pestaña "Buscar" (branch 2) está OCULTA temporalmente porque el
+planificador de rutas no está terminado. El branch sigue existiendo en el
+router; solo se quita de la barra. Para reactivarla, descomentar su entrada.
+Ver docs/DESACTIVADO.md.</p>
 </section>
 
 
@@ -76,26 +80,28 @@
         icon: Icons.home_outlined,
         activeIcon: Icons.home,
         label: l10n.tabHome.toUpperCase(),
+        branchIndex: 0,
       ),
       HomeTabItem(
         icon: Icons.map_outlined,
         activeIcon: Icons.map,
         label: l10n.tabMap.toUpperCase(),
+        branchIndex: 1,
       ),
-      HomeTabItem(
-        icon: Icons.search_outlined,
-        activeIcon: Icons.search,
-        label: l10n.tabSearch.toUpperCase(),
-      ),
+      &#47;&#47; OCULTA (planificador no terminado):
+      &#47;&#47; HomeTabItem(icon: Icons.search_outlined, activeIcon: Icons.search,
+      &#47;&#47;     label: l10n.tabSearch.toUpperCase(), branchIndex: 2),
       HomeTabItem(
         icon: Icons.nfc_outlined,
         activeIcon: Icons.nfc,
         label: l10n.tabCard.toUpperCase(),
+        branchIndex: 3,
       ),
       HomeTabItem(
         icon: Icons.person_outline,
         activeIcon: Icons.person,
         label: l10n.tabProfile.toUpperCase(),
+        branchIndex: 4,
       ),
     ];</code></pre>
 </section>
@@ -124,7 +130,7 @@
 <footer>
   <span class="no-break">
     transitly
-      1.2.0+3
+      1.2.0+1780900000
   </span>
   
 </footer>

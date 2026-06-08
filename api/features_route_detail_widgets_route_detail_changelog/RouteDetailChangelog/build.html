@@ -112,34 +112,34 @@ and</li>
 Widget build(BuildContext context, WidgetRef ref) {
   final isDark = Theme.of(context).brightness == Brightness.dark;
   final c = TransitColorScheme.of(isDark);
+  &#47;&#47; Provider cacheado por routeId: no se vuelve a pedir en cada rebuild.
+  final async = ref.watch(routeChangelogProvider(routeId));
 
-  return FutureBuilder&lt;List&lt;RouteChangeRow&gt;&gt;(
-    future: ref.read(adminRoutesRepositoryProvider).listChangelog(routeId),
-    builder: (context, snap) {
-      final entries = snap.data ?? const &lt;RouteChangeRow&gt;[];
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Semantics(
-            header: true,
-            child: Text(AppLocalizations.of(context).sectionRecentChanges,
-                style: TransitTypography.sectionTitle(c.textMid)),
-          ),
-          const SizedBox(height: 8),
-          if (snap.connectionState == ConnectionState.waiting)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Text(&#39;…&#39;,
-                  style: TransitTypography.bodySecondary(c.textMid)),
-            )
-          else if (entries.isEmpty)
-            Text(AppLocalizations.of(context).routeChangelogEmpty,
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Semantics(
+        header: true,
+        child: Text(AppLocalizations.of(context).sectionRecentChanges,
+            style: TransitTypography.sectionTitle(c.textMid)),
+      ),
+      const SizedBox(height: 8),
+      async.when(
+        &#47;&#47; Mientras carga (solo la primera vez) no mostramos un placeholder
+        &#47;&#47; que cambie de tamaño: dejamos hueco vacío para no provocar saltos.
+        loading: () =&gt; const SizedBox(height: 8),
+        error: (_, __) =&gt; Text(
+            AppLocalizations.of(context).routeChangelogEmpty,
+            style: TransitTypography.bodySecondary(c.textMid)),
+        data: (entries) =&gt; entries.isEmpty
+            ? Text(AppLocalizations.of(context).routeChangelogEmpty,
                 style: TransitTypography.bodySecondary(c.textMid))
-          else
-            ...entries.map((e) =&gt; _item(c, e)),
-        ],
-      );
-    },
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [for (final e in entries) _item(c, e)],
+              ),
+      ),
+    ],
   );
 }</code></pre>
 </section>

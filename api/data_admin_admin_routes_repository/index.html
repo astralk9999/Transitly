@@ -175,6 +175,22 @@ usuario auth actual.
 
 </dd>
 
+          <dt id="routeChangelogProvider" class="property">
+  <span class="name"><a href="../data_admin_admin_routes_repository/routeChangelogProvider.html">routeChangelogProvider</a></span>
+  <span class="signature">&#8594; <a href="https://pub.dev/documentation/riverpod/2.6.1/riverpod/FutureProviderFamily-class.html">FutureProviderFamily</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../data_admin_admin_routes_repository/RouteChangeRow-class.html">RouteChangeRow</a></span>&gt;</span></span>, <span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>&gt;</span></span>
+  
+
+</dt>
+<dd>
+  Changelog de una ruta, CACHEADO por routeId. Antes la UI creaba el Future
+dentro de <code>build()</code> (FutureBuilder), así que cada rebuild del detalle
+generaba una petición nueva → volvía a "cargando" → parpadeo constante.
+Con este provider el resultado se memoiza y solo se vuelve a pedir si se
+invalida explícitamente.
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
       </dl>
     </section>
 

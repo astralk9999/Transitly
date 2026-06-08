@@ -64,11 +64,8 @@
     
 <section class="desc markdown">
   <p>Tabs visibles en la barra de navegación. El orden de los branches en
-<code>app_router.dart</code> es inicio/mapa/buscar/tarjeta/perfil (0..4).</p>
-<p>NOTA: la pestaña "Buscar" (branch 2) está OCULTA temporalmente porque el
-planificador de rutas no está terminado. El branch sigue existiendo en el
-router; solo se quita de la barra. Para reactivarla, descomentar su entrada.
-Ver docs/DESACTIVADO.md.</p>
+<code>app_router.dart</code> es inicio/mapa/buscar/tarjeta/perfil (0..4). Cada tab
+lleva su <code>branchIndex</code> fijo para poder ocultar alguna sin desalinear.</p>
 </section>
 
 
@@ -88,9 +85,12 @@ Ver docs/DESACTIVADO.md.</p>
         label: l10n.tabMap.toUpperCase(),
         branchIndex: 1,
       ),
-      &#47;&#47; OCULTA (planificador no terminado):
-      &#47;&#47; HomeTabItem(icon: Icons.search_outlined, activeIcon: Icons.search,
-      &#47;&#47;     label: l10n.tabSearch.toUpperCase(), branchIndex: 2),
+      HomeTabItem(
+        icon: Icons.search_outlined,
+        activeIcon: Icons.search,
+        label: l10n.tabSearch.toUpperCase(),
+        branchIndex: 2,
+      ),
       HomeTabItem(
         icon: Icons.nfc_outlined,
         activeIcon: Icons.nfc,

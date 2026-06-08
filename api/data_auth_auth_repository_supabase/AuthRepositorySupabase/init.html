@@ -83,8 +83,12 @@
             : user.id;
         AppLogger.info(_logTag,
             &#39;signed in uid=$uidShort… (verification bypassed)&#39;);
+        &#47;&#47; Registra el token FCM de este dispositivo para poder enviarle
+        &#47;&#47; push aunque la app esté cerrada (tabla device_tokens).
+        unawaited(_syncPushToken(user.id));
       }
     } else if (event == AuthChangeEvent.signedOut) {
+      unawaited(_removePushToken());
       _emit(AuthUnauthenticated());
       AppLogger.info(_logTag, &#39;signed out&#39;);
     } else if (event == AuthChangeEvent.userUpdated) {

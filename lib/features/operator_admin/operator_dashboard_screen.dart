@@ -78,6 +78,15 @@ class OperatorDashboardScreen extends ConsumerWidget {
                         'Mejoras, incidencias y sugerencias de tus líneas',
                     onTap: () => context.push('/management/inbox'),
                   ),
+                  const SizedBox(height: 12),
+
+                  _OptionCard(
+                    c: c,
+                    icon: Icons.map_outlined,
+                    title: 'Gestión de zonas',
+                    subtitle: 'Zonas con perímetro (centro y radio)',
+                    onTap: () => context.push('/management/zones'),
+                  ),
                   const SizedBox(height: 32),
                 ],
               ),

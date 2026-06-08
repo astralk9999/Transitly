@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'error_builder.dart';
 import 'redirect_guards.dart';
 import '../../shared/providers/auth_provider.dart';
+import '../../shared/providers/map_visible_provider.dart';
 import '../../features/auth/signin_screen.dart';
 import '../../features/auth/auth_callback_screen.dart';
 import '../../features/auth/signup_screen.dart';
@@ -40,6 +41,7 @@ import '../../features/management/admin_route_wizard.dart';
 import '../../features/management/route_schedules_editor_screen.dart';
 import '../../features/management/route_stops_editor_screen.dart';
 import '../../features/management/community_management_screen.dart';
+import '../../features/management/zones_management_screen.dart';
 import '../../features/management/routes_management_screen.dart';
 import '../../features/management/stops_management_screen.dart';
 import '../../features/management/unified_inbox_screen.dart';
@@ -70,6 +72,7 @@ import '../../features/community/community_routes_screen.dart';
 import '../../features/my_routes/my_routes_screen.dart';
 import '../../features/splash/splash_screen.dart';
 import '../../features/stop_detail/stop_detail_screen.dart';
+import '../../features/stop_detail/community_stop_detail_screen.dart';
 import '../../features/create_route/create_route_wizard.dart';
 import '../../features/suggestions/suggest_route_screen.dart';
 import '../../features/suggestions/suggestion_contribute_screen.dart';
@@ -114,7 +117,17 @@ final routerProvider = Provider<GoRouter>((ref) {
     initialLocation: ref.watch(routerInitialLocationProvider),
     refreshListenable: authRefresh,
     errorBuilder: notFoundErrorBuilder,
-    redirect: (context, state) => authRedirect(ref, state),
+    redirect: (context, state) {
+      // Marca si el mapa es la pantalla visible superior, para suprimir el
+      // fondo shader ahí (evita el conflicto GPU shader+FlutterMap). Se
+      // difiere para no mutar un provider durante el routing.
+      final isMap = state.matchedLocation == '/home/mapa';
+      Future.microtask(() {
+        final n = ref.read(mapVisibleProvider.notifier);
+        if (n.state != isMap) n.state = isMap;
+      });
+      return authRedirect(ref, state);
+    },
     routes: [
       GoRoute(
         path: '/splash',
@@ -318,6 +331,14 @@ final routerProvider = Provider<GoRouter>((ref) {
               routeId: state.pathParameters['routeId']!),
         ),
       ),
+      GoRoute(
+        path: '/community/stop/:stopId',
+        pageBuilder: (context, state) => _slide(
+          state,
+          CommunityStopDetailScreen(
+              stopId: state.pathParameters['stopId']!),
+        ),
+      ),
 
       // ── My Routes ──
       GoRoute(
@@ -360,6 +381,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/management/community',
         pageBuilder: (context, state) =>
             _slide(state, const CommunityManagementScreen()),
+      ),
+      GoRoute(
+        path: '/management/zones',
+        pageBuilder: (context, state) =>
+            _slide(state, const ZonesManagementScreen()),
       ),
       GoRoute(
         path: '/management/routes/new',

@@ -114,6 +114,15 @@ class AdminScreen extends ConsumerWidget {
                             onTap: () =>
                                 context.push('/management/community'),
                           ),
+                          const SizedBox(height: 12),
+                          _OptionCard(
+                            c: c,
+                            icon: Icons.map_outlined,
+                            title: 'Gestión de zonas',
+                            subtitle:
+                                'Zonas con perímetro (centro y radio) para perfil y mapa',
+                            onTap: () => context.push('/management/zones'),
+                          ),
                           const SizedBox(height: 32),
                         ],
                       ),

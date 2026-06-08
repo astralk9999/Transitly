@@ -176,13 +176,23 @@ class ZoneRow {
     required this.zoneType,
     required this.status,
     this.operatorId,
+    this.centerLat,
+    this.centerLng,
+    this.radiusM,
   });
   final String id;
   final String name;
   final String zoneType;
   final String status;
   final String? operatorId;
+  final double? centerLat;
+  final double? centerLng;
+  final int? radiusM;
   bool get isPending => status == 'pending';
+
+  /// `true` si tiene perímetro (centro + radio) definido.
+  bool get hasGeometry =>
+      centerLat != null && centerLng != null && radiusM != null;
 
   factory ZoneRow.fromRow(Map<String, dynamic> j) => ZoneRow(
         id: j['id'] as String,
@@ -190,6 +200,9 @@ class ZoneRow {
         zoneType: j['zone_type'] as String? ?? 'municipality',
         status: j['status'] as String? ?? 'active',
         operatorId: j['operator_id'] as String?,
+        centerLat: (j['center_lat'] as num?)?.toDouble(),
+        centerLng: (j['center_lng'] as num?)?.toDouble(),
+        radiusM: (j['radius_m'] as num?)?.toInt(),
       );
 }
 
@@ -273,6 +286,9 @@ class AdminRoutesRepository {
     String type = 'municipality',
     String? parentId,
     String? operatorId,
+    double? centerLat,
+    double? centerLng,
+    int? radiusM,
   }) async {
     final res = await _client.rpc('zone_upsert', params: {
       'p_id': id,
@@ -280,8 +296,21 @@ class AdminRoutesRepository {
       'p_type': type,
       'p_parent': parentId,
       'p_operator_id': operatorId,
+      'p_center_lat': centerLat,
+      'p_center_lng': centerLng,
+      'p_radius_m': radiusM,
     });
     return res as String;
+  }
+
+  /// Borra una zona (admin global o admin de su operadora). Usa RPC con
+  /// SECURITY DEFINER si existe; si no, intenta delete directo (RLS).
+  Future<void> zoneDelete(String id) async {
+    try {
+      await _client.rpc('zone_delete', params: {'p_id': id});
+    } catch (_) {
+      await _client.from('zones').delete().eq('id', id);
+    }
   }
 
   Future<String> zoneRecommend(String name, {String type = 'municipality'}) async {

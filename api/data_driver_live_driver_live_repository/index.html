@@ -111,7 +111,9 @@
 </dt>
 <dd>
   Buses en vivo (todos los viajes activos), refrescados por Realtime. El mapa
-los pinta moviéndose.
+los pinta moviéndose. Se descartan los "zombi": viajes que llevan más de 2
+min sin actualizar su posición (un conductor que cerró la app sin terminar)
+para que no queden buses parados en el mapa.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>

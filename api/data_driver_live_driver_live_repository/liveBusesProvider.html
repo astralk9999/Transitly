@@ -62,7 +62,9 @@
         
 <section class="desc markdown">
   <p>Buses en vivo (todos los viajes activos), refrescados por Realtime. El mapa
-los pinta moviéndose.</p>
+los pinta moviéndose. Se descartan los "zombi": viajes que llevan más de 2
+min sin actualizar su posición (un conductor que cerró la app sin terminar)
+para que no queden buses parados en el mapa.</p>
 </section>
 
         
@@ -74,8 +76,17 @@ los pinta moviéndose.</p>
       .from(&#39;driver_live_trips&#39;)
       .stream(primaryKey: [&#39;id&#39;])
       .eq(&#39;active&#39;, true)
-      .map((rows) =&gt;
-          rows.map((r) =&gt; DriverLiveTrip.fromJson(r)).toList(growable: false));
+      .map((rows) {
+    final now = DateTime.now();
+    return rows
+        .map((r) =&gt; DriverLiveTrip.fromJson(r))
+        .where((t) {
+          final u = t.updatedAt;
+          if (u == null) return true;
+          return now.difference(u.toLocal()).inMinutes &lt; 2;
+        })
+        .toList(growable: false);
+  });
 });</code></pre>
 </section>
 

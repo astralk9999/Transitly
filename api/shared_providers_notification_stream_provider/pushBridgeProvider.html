@@ -87,9 +87,12 @@ nativa del sistema vía <a href="../data_notification_local_push_service/LocalPu
       return;
     }
     &#47;&#47; Solo notificar las NO leídas para no spamear al re-suscribir.
+    final prefs = ref.read(themeNotifierProvider);
     final fresh = list.where((n) =&gt; !n.read &amp;&amp; !seen.contains(n.id)).toList();
     for (final n in fresh) {
       seen.add(n.id);
+      &#47;&#47; Respeta las preferencias del usuario (toggles + horas de silencio).
+      if (!_allowedByPrefs(prefs, n)) continue;
       final title = (n.payload[&#39;title&#39;] as String?) ?? _defaultTitle(n);
       final body = (n.payload[&#39;body&#39;] as String?) ?? &#39;&#39;;
       final severity = n.payload[&#39;severity&#39;] as String?;

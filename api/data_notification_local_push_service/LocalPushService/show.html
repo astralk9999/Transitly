@@ -59,6 +59,7 @@
 <li><span class="parameter" id="show-param-title"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">title</span>, </span></li>
 <li><span class="parameter" id="show-param-body"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">body</span>, </span></li>
 <li><span class="parameter" id="show-param-severity"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">severity</span>, </span></li>
+<li><span class="parameter" id="show-param-ongoing"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">ongoing</span> = <span class="default-value">false</span>, </span></li>
 </ol>})
 
       
@@ -75,6 +76,7 @@
   required String title,
   required String body,
   String? severity,
+  bool ongoing = false,
 }) async {
   if (!_ready) await init();
   final isCritical = severity == &#39;critical&#39;;
@@ -96,6 +98,10 @@
           importance: isCritical ? Importance.max : Importance.high,
           priority: isCritical ? Priority.max : Priority.high,
           category: AndroidNotificationCategory.message,
+          &#47;&#47; Persistente mientras dure la acción (p.ej. conductor
+          &#47;&#47; compartiendo): no se puede deslizar para descartar.
+          ongoing: ongoing,
+          autoCancel: !ongoing,
           &#47;&#47; Icono pequeño monocromo (la barra de estado lo tinta con
           &#47;&#47; `color`).
           icon: &#39;ic_notification&#39;,

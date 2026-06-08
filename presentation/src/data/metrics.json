@@ -35,7 +35,7 @@
     }
   },
   "release": {
-    "version": "1.12.1",
+    "version": "1.12.2",
     "apkSize": "91 MB",
     "androidMin": "Android 7.0+"
   },

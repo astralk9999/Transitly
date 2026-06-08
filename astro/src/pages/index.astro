@@ -88,8 +88,12 @@ const faqs = [
   <!-- ── FONDO SHADER ColorBends (paleta por defecto de la app: tonos del
        accent morado #977DDF, igual que el fondo ColorBends de la app) ── -->
   <ColorBends colors={["#C9B8F0", "#977DDF", "#5B4A9E"]} />
-  <!-- Velo suave para legibilidad del texto sobre el shader -->
-  <div class="fixed inset-0 -z-[9] bg-transit-bg/35 pointer-events-none"></div>
+  <!-- Velo de contraste: vignette + degradado vertical para que el texto sea
+       legible en cualquier zona del fondo animado, sin apagar el shader. -->
+  <div class="fixed inset-0 -z-[9] pointer-events-none"
+       style="background:
+         radial-gradient(120% 80% at 50% 0%, rgba(8,8,26,0.15), rgba(8,8,26,0.55) 70%),
+         linear-gradient(to bottom, rgba(8,8,26,0.25), rgba(8,8,26,0.5));"></div>
 
   <!-- ── HERO ── -->
   <section class="relative">
@@ -97,24 +101,24 @@ const faqs = [
       <div class="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
         <!-- Columna izquierda: copy -->
         <div class="text-center lg:text-left">
-          <div class="reveal inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-transit-accent/30 bg-transit-surface/60 backdrop-blur-sm text-text-mid text-xs font-medium mb-6">
+          <div class="hero-in inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-transit-accent/30 bg-transit-surface/60 backdrop-blur-sm text-text-mid text-xs font-medium mb-6" style="animation-delay:.05s">
             <span class="w-1.5 h-1.5 rounded-full bg-transit-state-ontime glow-pulse"></span>
             Jerez de la Frontera · COMUJESA
           </div>
 
-          <h1 class="reveal text-4xl md:text-6xl font-bold tracking-tight leading-[1.05]">
+          <h1 class="hero-in text-4xl md:text-6xl font-bold tracking-tight leading-[1.05]" style="animation-delay:.12s">
             Tu transporte público,<br />
             <span class="gradient-animated bg-gradient-to-r from-transit-neon-cyan via-transit-accent to-transit-neon-magenta bg-clip-text text-transparent">
               simple y al día.
             </span>
           </h1>
-          <p class="reveal text-text-mid text-lg md:text-xl mt-6 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+          <p class="hero-in text-text-mid text-lg md:text-xl mt-6 max-w-xl mx-auto lg:mx-0 leading-relaxed" style="animation-delay:.2s">
             Horarios exactos por parada de los autobuses de Jerez, rutas creadas
             por la comunidad y tus líneas favoritas siempre a mano. Online y sin
             conexión.
           </p>
 
-          <div class="reveal flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mt-9">
+          <div class="hero-in flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mt-9" style="animation-delay:.28s">
             <a href="/app/" class="px-8 py-3.5 rounded-full bg-gradient-accent text-white font-semibold text-sm hover:opacity-90 hover:-translate-y-0.5 transition-all shadow-lg shadow-transit-accent/40">
               Abrir Transitly
             </a>
@@ -123,7 +127,7 @@ const faqs = [
             </a>
           </div>
 
-          <div class="reveal grid grid-cols-3 gap-6 mt-12 max-w-md mx-auto lg:mx-0">
+          <div class="hero-in grid grid-cols-3 gap-6 mt-12 max-w-md mx-auto lg:mx-0" style="animation-delay:.36s">
             <div>
               <Counter value={operatorsCount} class="text-3xl md:text-4xl font-bold font-mono text-transit-neon-cyan" />
               <div class="text-text-lo text-xs mt-1 uppercase tracking-wider">Operadores</div>
@@ -140,7 +144,7 @@ const faqs = [
         </div>
 
         <!-- Columna derecha: logo de la app con anillos orbitales animados -->
-        <div class="reveal flex justify-center lg:justify-end">
+        <div class="hero-in flex justify-center lg:justify-end" style="animation-delay:.2s">
           <div class="hero-logo">
             <!-- resplandor pulsante -->
             <div class="hero-logo-glow"></div>
@@ -166,7 +170,7 @@ const faqs = [
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {features.map((f, i) => (
-        <div class="reveal group p-7 rounded-2xl bg-transit-surface/70 backdrop-blur-sm border border-transit-border hover:border-transit-accent/50 hover:bg-transit-raised/70 hover:-translate-y-1 transition-all duration-300" style={`transition-delay:${i * 60}ms`}>
+        <div class="reveal spot feature-card group p-7 rounded-2xl bg-transit-surface/70 backdrop-blur-sm border border-transit-border hover:border-transit-accent/50 hover:bg-transit-raised/70 hover:-translate-y-1 transition-all duration-300" style={`transition-delay:${i * 60}ms`}>
           <div class="w-12 h-12 rounded-xl bg-transit-accent-bg flex items-center justify-center mb-5 text-transit-accent group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-transit-accent/30 transition-all" set:html={icons[f.icon]} />
           <h3 class="text-lg font-semibold mb-2">{f.title}</h3>
           <p class="text-text-lo text-sm leading-relaxed">{f.body}</p>
@@ -232,6 +236,59 @@ const faqs = [
     </div>
   </section>
 
+  <!-- ── RECORRIDO: mini-vistas de la app ── -->
+  <section class="max-w-6xl mx-auto px-6 py-20 md:py-24">
+    <div class="reveal text-center mb-14">
+      <span class="text-transit-accent text-xs font-mono font-semibold uppercase tracking-[0.2em]">Un vistazo</span>
+      <h2 class="text-3xl md:text-4xl font-bold mt-3">Así se ve por dentro</h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <!-- Vista: Mapa -->
+      <div class="reveal rounded-2xl bg-transit-surface/70 backdrop-blur-sm border border-transit-border overflow-hidden">
+        <div class="screen-map h-44 relative">
+          <span class="screen-bus">L1</span>
+        </div>
+        <div class="p-5">
+          <h3 class="font-semibold">Mapa en vivo</h3>
+          <p class="text-text-lo text-sm mt-1 leading-relaxed">Líneas y paradas sobre el mapa, con los buses moviéndose en tiempo real.</p>
+        </div>
+      </div>
+      <!-- Vista: Parada -->
+      <div class="reveal rounded-2xl bg-transit-surface/70 backdrop-blur-sm border border-transit-border overflow-hidden" style="transition-delay:80ms">
+        <div class="h-44 p-4 flex flex-col gap-2 bg-transit-bg/40">
+          <div class="text-xs text-text-lo uppercase tracking-wider">Plaza del Arenal</div>
+          {['L1 · 08:42', 'L2 · 08:47', 'L8 · 08:51'].map((t) => (
+            <div class="flex items-center gap-3 rounded-lg bg-transit-raised/60 px-3 py-2">
+              <span class="w-9 h-6 rounded grid place-items-center text-[11px] font-bold font-mono text-white" style="background:#977DDF">{t.split(' · ')[0]}</span>
+              <span class="text-text-mid text-sm flex-1">Hospital</span>
+              <span class="font-mono text-transit-accent text-sm">{t.split(' · ')[1]}</span>
+            </div>
+          ))}
+        </div>
+        <div class="p-5">
+          <h3 class="font-semibold">Horario por parada</h3>
+          <p class="text-text-lo text-sm mt-1 leading-relaxed">La hora exacta de cada línea que pasa, con la próxima llegada resaltada.</p>
+        </div>
+      </div>
+      <!-- Vista: Comunidad -->
+      <div class="reveal rounded-2xl bg-transit-surface/70 backdrop-blur-sm border border-transit-border overflow-hidden" style="transition-delay:160ms">
+        <div class="h-44 p-4 flex flex-col gap-2 bg-transit-bg/40">
+          {[['#00D4FF','C1','Ruta Norte'],['#FF006E','C2','Polígono'],['#22C55E','C3','Universidad']].map((r) => (
+            <div class="flex items-center gap-3 rounded-lg bg-transit-raised/60 px-3 py-2">
+              <span class="w-9 h-6 rounded grid place-items-center text-[11px] font-bold font-mono text-white" style={`background:${r[0]}`}>{r[1]}</span>
+              <span class="text-text-mid text-sm flex-1">{r[2]}</span>
+              <span class="text-[10px] text-transit-state-ontime font-bold">COMUNIDAD</span>
+            </div>
+          ))}
+        </div>
+        <div class="p-5">
+          <h3 class="font-semibold">Rutas de la comunidad</h3>
+          <p class="text-text-lo text-sm mt-1 leading-relaxed">Líneas creadas por usuarios que puedes votar e importar a tu mapa.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ── CÓMO EMPEZAR ── -->
   <section class="max-w-5xl mx-auto px-6 pb-20 md:pb-24">
     <div class="reveal text-center mb-14">
@@ -291,6 +348,37 @@ const faqs = [
 </Layout>
 
 <style>
+  /* Entrada del hero al cargar (no espera al scroll). */
+  .hero-in {
+    opacity: 0;
+    transform: translateY(22px);
+    animation: hero-in-anim 0.7s cubic-bezier(0.22,1,0.36,1) forwards;
+  }
+  @keyframes hero-in-anim { to { opacity: 1; transform: none; } }
+
+  /* Spotlight que sigue al cursor en las tarjetas de features. */
+  .spot {
+    position: relative;
+    overflow: hidden;
+  }
+  .spot::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(
+      360px circle at var(--mx, 50%) var(--my, 0%),
+      rgba(151,125,223,0.22), transparent 45%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+  .spot:hover::before { opacity: 1; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-in { opacity: 1; transform: none; animation: none; }
+  }
+
   /* Logo del hero con anillos orbitales (estética animada de la app). */
   .hero-logo {
     position: relative;
@@ -342,4 +430,44 @@ const faqs = [
   @media (prefers-reduced-motion: reduce) {
     .hero-logo-glow, .hero-ring, .hero-orbit { animation: none; }
   }
+
+  /* Mini-vista "mapa" de la sección de recorrido. */
+  .screen-map {
+    background:
+      radial-gradient(circle at 30% 30%, rgba(151,125,223,0.25), transparent 60%),
+      #0C0C20;
+    background-image:
+      linear-gradient(rgba(151,125,223,0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(151,125,223,0.08) 1px, transparent 1px);
+    background-size: 100% 100%, 26px 26px, 26px 26px;
+    position: relative;
+  }
+  .screen-map::before, .screen-map::after {
+    content: ''; position: absolute; left: -10%; right: -10%; height: 3px;
+    border-radius: 3px;
+  }
+  .screen-map::before { top: 38%; background: #00D4FF; transform: rotate(-8deg); opacity: 0.85; }
+  .screen-map::after  { top: 62%; background: #977DDF; transform: rotate(6deg); opacity: 0.85; }
+  .screen-bus {
+    position: absolute; top: 32%; left: 46%;
+    background: #00D4FF; color: #04121a; font-weight: 800; font-size: 11px;
+    font-family: 'IBM Plex Mono', monospace;
+    padding: 3px 7px; border-radius: 7px; border: 2px solid #fff;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+    animation: float-y 5s ease-in-out infinite;
+    z-index: 2;
+  }
 </style>
+
+<script is:inline>
+  // Spotlight que sigue al cursor en las tarjetas de features.
+  (function () {
+    document.querySelectorAll('.feature-card').forEach((card) => {
+      card.addEventListener('pointermove', (e) => {
+        const r = card.getBoundingClientRect();
+        card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+        card.style.setProperty('--my', (e.clientY - r.top) + 'px');
+      });
+    });
+  })();
+</script>

@@ -127,6 +127,42 @@ const fullTitle = `${title} · Transitly`;
       transition: transform 0.25s ease;
     }
     .nav-link:hover::after { transform: scaleX(1); }
+
+    /* Menú móvil desplegable */
+    .nav-mobile {
+      overflow: hidden;
+      max-height: 0;
+      background: rgba(8, 8, 26, 0.95);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid transparent;
+      transition: max-height 0.3s ease, border-color 0.3s ease;
+    }
+    .nav-mobile.open {
+      max-height: 240px;
+      border-bottom-color: rgba(30, 30, 58, 0.9);
+    }
+
+    /* Botón volver arriba */
+    .to-top {
+      position: fixed;
+      right: 20px; bottom: 20px;
+      width: 46px; height: 46px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%;
+      color: #fff;
+      background: linear-gradient(135deg, #977DDF, #B8A5F0);
+      box-shadow: 0 8px 24px -6px rgba(151,125,223,0.6);
+      opacity: 0; transform: translateY(16px) scale(0.9);
+      pointer-events: none;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      z-index: 60;
+    }
+    .to-top.show { opacity: 1; transform: none; pointer-events: auto; }
+    .to-top:hover { transform: translateY(-2px); }
+    @media (prefers-reduced-motion: reduce) {
+      .to-top { transition: opacity 0.2s ease; }
+    }
   </style>
 </head>
 <body class="bg-transit-bg text-text-hi font-sans antialiased min-h-screen flex flex-col">
@@ -145,29 +181,57 @@ const fullTitle = `${title} · Transitly`;
         <a href="/app/" class="ml-2 px-4 py-2 rounded-full bg-gradient-accent text-white text-xs font-semibold hover:opacity-90 hover:-translate-y-0.5 transition-all shadow-lg shadow-transit-accent/30">
           Abrir app
         </a>
+        <!-- Botón hamburguesa (solo móvil) -->
+        <button id="nav-toggle" class="sm:hidden ml-1 p-2 text-text-hi" aria-label="Menú" aria-expanded="false">
+          <svg id="nav-icon-open" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          <svg id="nav-icon-close" class="hidden" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+        </button>
       </div>
     </nav>
+    <!-- Menú desplegable móvil -->
+    <div id="nav-mobile" class="nav-mobile sm:hidden">
+      <a href="/ciudades" class="block px-6 py-3 text-text-mid hover:text-text-hi hover:bg-transit-surface/60 transition-colors">Ciudades</a>
+      <a href="/sobre" class="block px-6 py-3 text-text-mid hover:text-text-hi hover:bg-transit-surface/60 transition-colors">Acerca de</a>
+      <a href="/app/" class="block px-6 py-3 text-transit-accent font-semibold hover:bg-transit-surface/60 transition-colors">Abrir app →</a>
+    </div>
   </header>
 
   <main class="flex-1">
     <slot />
   </main>
 
-  <footer class="border-t border-transit-border bg-transit-bg py-12">
-    <div class="max-w-6xl mx-auto px-6">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div>
-          <span class="text-lg font-bold bg-gradient-accent bg-clip-text text-transparent">Transitly</span>
-          <p class="text-text-lo text-sm mt-2 max-w-xs">
-            Tu transporte público, simple. Rutas, horarios y paradas de autobús en España.
+  <footer class="relative border-t border-transit-border bg-transit-bg py-14 overflow-hidden">
+    <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-[500px] h-[200px] bg-transit-accent/10 blur-3xl pointer-events-none"></div>
+    <div class="max-w-6xl mx-auto px-6 relative">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div class="col-span-2 md:col-span-1">
+          <a href="/" class="flex items-center gap-2.5">
+            <img src="/branding/logo.png" alt="" width="32" height="32" class="w-8 h-8" />
+            <span class="text-lg font-bold bg-gradient-accent bg-clip-text text-transparent">Transitly</span>
+          </a>
+          <p class="text-text-lo text-sm mt-3 max-w-xs leading-relaxed">
+            Tu transporte público, simple. Horarios exactos, rutas de la comunidad
+            y avisos en tu zona. Empezamos en Jerez.
           </p>
+          <a href="https://github.com/astralk9999/Transitly" target="_blank" rel="noopener"
+            class="inline-flex items-center gap-2 mt-4 text-text-mid hover:text-text-hi transition-colors text-sm">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.2.8-.5v-1.7c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17 4.3 18 4.6 18 4.6c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.6.8.5 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5z"/></svg>
+            GitHub
+          </a>
         </div>
         <div>
           <h4 class="text-text-mid text-xs font-semibold uppercase tracking-widest mb-3">Explora</h4>
           <ul class="space-y-2 text-sm">
             <li><a href="/ciudades" class="text-text-lo hover:text-text-hi transition-colors">Ciudades</a></li>
             <li><a href="/app/" class="text-text-lo hover:text-text-hi transition-colors">Abrir app</a></li>
+            <li><a href="/#descargar" class="text-text-lo hover:text-text-hi transition-colors">Descargar APK</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-text-mid text-xs font-semibold uppercase tracking-widest mb-3">Producto</h4>
+          <ul class="space-y-2 text-sm">
             <li><a href="/sobre" class="text-text-lo hover:text-text-hi transition-colors">Funcionalidades</a></li>
+            <li><a href="/sobre" class="text-text-lo hover:text-text-hi transition-colors">Acerca de</a></li>
           </ul>
         </div>
         <div>
@@ -175,27 +239,60 @@ const fullTitle = `${title} · Transitly`;
           <ul class="space-y-2 text-sm">
             <li><a href="/privacidad" class="text-text-lo hover:text-text-hi transition-colors">Privacidad</a></li>
             <li><a href="/terminos" class="text-text-lo hover:text-text-hi transition-colors">Términos</a></li>
-            <li><a href="/sobre" class="text-text-lo hover:text-text-hi transition-colors">Acerca de</a></li>
           </ul>
         </div>
       </div>
-      <div class="border-t border-transit-divider mt-8 pt-6 text-center text-text-disabled text-xs">
-        &copy; {new Date().getFullYear()} Transitly. Todos los derechos reservados.
+      <div class="border-t border-transit-divider mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-text-disabled text-xs">
+        <span>&copy; {new Date().getFullYear()} Transitly. Todos los derechos reservados.</span>
+        <span class="flex items-center gap-1.5">Hecho con <span class="text-transit-neon-magenta">♥</span> en Jerez de la Frontera</span>
       </div>
     </div>
   </footer>
+
+  <!-- Botón volver arriba -->
+  <button id="to-top" class="to-top" aria-label="Volver arriba">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+  </button>
 
   <script is:inline>
     // Navbar: añade .scrolled al bajar (compacta + blur + sombra).
     (function () {
       const header = document.getElementById('site-header');
-      if (!header) return;
+      const toTop = document.getElementById('to-top');
       const onScroll = () => {
-        if (window.scrollY > 12) header.classList.add('scrolled');
-        else header.classList.remove('scrolled');
+        const y = window.scrollY;
+        if (header) header.classList.toggle('scrolled', y > 12);
+        if (toTop) toTop.classList.toggle('show', y > 600);
       };
       onScroll();
       window.addEventListener('scroll', onScroll, { passive: true });
+      if (toTop) {
+        toTop.addEventListener('click', () =>
+          window.scrollTo({ top: 0, behavior: 'smooth' }));
+      }
+    })();
+
+    // Menú móvil (hamburguesa).
+    (function () {
+      const btn = document.getElementById('nav-toggle');
+      const menu = document.getElementById('nav-mobile');
+      const iOpen = document.getElementById('nav-icon-open');
+      const iClose = document.getElementById('nav-icon-close');
+      if (!btn || !menu) return;
+      btn.addEventListener('click', () => {
+        const open = menu.classList.toggle('open');
+        btn.setAttribute('aria-expanded', String(open));
+        iOpen?.classList.toggle('hidden', open);
+        iClose?.classList.toggle('hidden', !open);
+      });
+      // Cierra al pulsar un enlace.
+      menu.querySelectorAll('a').forEach((a) =>
+        a.addEventListener('click', () => {
+          menu.classList.remove('open');
+          btn.setAttribute('aria-expanded', 'false');
+          iOpen?.classList.remove('hidden');
+          iClose?.classList.add('hidden');
+        }));
     })();
 
     // Revela los elementos .reveal al entrar en el viewport (escalonado).

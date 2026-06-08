@@ -397,6 +397,115 @@ class _MapTabState extends ConsumerState<MapTab>
     return [MarkerLayer(markers: arrows)];
   }
 
+  /// Hoja de info de una parada de comunidad/propia: nombre, coordenadas y
+  /// las rutas de comunidad que pasan por ella.
+  void _showCommunityStopSheet(MapStopPoint s) {
+    final shapes = ref.read(communityRouteShapesProvider).valueOrNull ?? const [];
+    final routesThrough = shapes
+        .where((sh) => sh.stops.any((p) => p.id == s.id))
+        .toList();
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        final c = TransitColorScheme.of(
+            Theme.of(ctx).brightness == Brightness.dark);
+        return SafeArea(
+          child: Container(
+            margin: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: c.bgElevated,
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: c.border, width: 0.5),
+            ),
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 36,
+                      height: 36,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: c.accent.withValues(alpha: 0.15),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(Icons.directions_bus, color: c.accent),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(s.name,
+                              style: TransitTypography.subheading(c.textHi),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis),
+                          Text('Parada de comunidad',
+                              style: TransitTypography.bodySmall(c.textMid)),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                if (routesThrough.isNotEmpty) ...[
+                  Text('Líneas que pasan',
+                      style: TransitTypography.bodySmall(c.textMid)),
+                  const SizedBox(height: 6),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      for (final r in routesThrough)
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pop(ctx);
+                            context.push('/community/route/${r.routeId}');
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: r.color.withValues(alpha: 0.18),
+                              borderRadius: BorderRadius.circular(10),
+                              border:
+                                  Border.all(color: r.color, width: 1),
+                            ),
+                            child: Text(
+                                _routeNameForId(r.routeId) ?? 'Ruta',
+                                style: TransitTypography.bodySmall(c.textHi)),
+                          ),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                ],
+                Text(
+                    'Lat ${s.lat.toStringAsFixed(5)}, '
+                    'Lng ${s.lng.toStringAsFixed(5)}',
+                    style: TransitTypography.bodySmall(c.textLo)),
+                const SizedBox(height: 6),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  String? _routeNameForId(String id) {
+    final routes = ref.read(userRoutesForMapProvider).valueOrNull;
+    if (routes == null) return null;
+    for (final r in routes) {
+      if (r.id == id) return r.name;
+    }
+    return null;
+  }
+
   Future<void> _centerOnUser() async {
     final locFix = ref.read(userLocationStreamProvider).valueOrNull;
     if (locFix != null) {
@@ -607,20 +716,30 @@ class _MapTabState extends ConsumerState<MapTab>
                 PolylineLayer(
                   polylines: ref.watch(myRoutePolylinesProvider),
                 ),
-              // Marcadores de las paradas de esas rutas.
+              // Marcadores de las paradas de esas rutas — clicables para
+              // ver su info (las creadas por el usuario no eran tapables).
               if (ref.watch(myRouteStopsProvider).isNotEmpty)
                 MarkerLayer(
                   markers: [
                     for (final s in ref.watch(myRouteStopsProvider))
                       Marker(
                         point: LatLng(s.lat, s.lng),
-                        width: 22,
-                        height: 22,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: c.accent,
-                            border: Border.all(color: Colors.white, width: 2),
+                        width: 30,
+                        height: 30,
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () => _showCommunityStopSheet(s),
+                          child: Center(
+                            child: Container(
+                              width: 22,
+                              height: 22,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: c.accent,
+                                border:
+                                    Border.all(color: Colors.white, width: 2),
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -708,6 +827,8 @@ class _MapTabState extends ConsumerState<MapTab>
                 ignoring: _selectedRouteId == null,
                 child: RouteSelectionBanner(
                   route: selRoute,
+                  isCommunity:
+                      selRoute?.source == RouteSource.community,
                   onClose: _clearSelection,
                   onTap: selRoute == null
                       ? null
@@ -717,6 +838,9 @@ class _MapTabState extends ConsumerState<MapTab>
                               ? '/community/route/${r.id}'
                               : '/route/${r.id}');
                         },
+                  onOpenCommunity: selRoute?.source == RouteSource.community
+                      ? () => context.push('/community/route/${selRoute!.id}')
+                      : null,
                 ),
               ),
             );

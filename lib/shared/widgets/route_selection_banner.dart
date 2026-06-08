@@ -20,6 +20,8 @@ class RouteSelectionBanner extends StatelessWidget {
     required this.route,
     this.onClose,
     this.onTap,
+    this.isCommunity = false,
+    this.onOpenCommunity,
   });
 
   /// `null` = banner oculto.
@@ -31,6 +33,12 @@ class RouteSelectionBanner extends StatelessWidget {
   /// Callback opcional al tocar el cuerpo del banner (badge + nombre).
   /// El botón de cerrar mantiene su propio handler independiente.
   final VoidCallback? onTap;
+
+  /// Si la línea seleccionada es de la comunidad (muestra badge + botón).
+  final bool isCommunity;
+
+  /// Abre la pantalla de comunidad de esta ruta.
+  final VoidCallback? onOpenCommunity;
 
   @override
   Widget build(BuildContext context) {
@@ -127,12 +135,41 @@ class RouteSelectionBanner extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Text(
-                                      route!.name.toUpperCase(),
-                                      style: TransitTypography.routeName(
-                                          c.textHi),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
+                                    Row(
+                                      children: [
+                                        Flexible(
+                                          child: Text(
+                                            route!.name.toUpperCase(),
+                                            style: TransitTypography.routeName(
+                                                c.textHi),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                        if (isCommunity) ...[
+                                          const SizedBox(width: 6),
+                                          Container(
+                                            padding: const EdgeInsets
+                                                .symmetric(
+                                                horizontal: 6, vertical: 2),
+                                            decoration: BoxDecoration(
+                                              color: const Color(0xFF4CAF50)
+                                                  .withValues(alpha: 0.18),
+                                              borderRadius:
+                                                  BorderRadius.circular(6),
+                                            ),
+                                            child: Text('COMUNIDAD',
+                                                style: TransitTypography
+                                                        .bodySmall(
+                                                            const Color(
+                                                                0xFF4CAF50))
+                                                    .copyWith(
+                                                        fontSize: 9,
+                                                        fontWeight:
+                                                            FontWeight.w800)),
+                                          ),
+                                        ],
+                                      ],
                                     ),
                                     const SizedBox(height: 2),
                                     Text(
@@ -151,6 +188,22 @@ class RouteSelectionBanner extends StatelessWidget {
                           ),
                         ),
                       ),
+                      // Botón "ir a comunidad" para rutas de comunidad.
+                      if (isCommunity && onOpenCommunity != null)
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(20),
+                            onTap: onOpenCommunity,
+                            child: Container(
+                              width: 36,
+                              height: 36,
+                              alignment: Alignment.center,
+                              child: Icon(Icons.groups_outlined,
+                                  size: 20, color: const Color(0xFF4CAF50)),
+                            ),
+                          ),
+                        ),
                       // Botón cerrar.
                       if (onClose != null)
                         Material(

@@ -406,8 +406,18 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
         ),
       ),
+      // Edición de línea oficial con el wizard (datos + paradas en mapa +
+      // horarios), igual que el de comunidad. El form simple sigue en
+      // /management/routes/:id/simple por si se necesita edición rápida.
       GoRoute(
         path: '/management/routes/:id',
+        pageBuilder: (context, state) => _slide(
+          state,
+          AdminRouteWizard(routeId: state.pathParameters['id']),
+        ),
+      ),
+      GoRoute(
+        path: '/management/routes/:id/simple',
         pageBuilder: (context, state) => _slide(
           state,
           RouteEditorScreen(routeId: state.pathParameters['id']),

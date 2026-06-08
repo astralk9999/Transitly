@@ -21,14 +21,19 @@ import '../create_route/steps/step_schedules.dart';
 import '../create_route/steps/step_stops.dart';
 import '../create_route/steps/wizard_models.dart';
 
-/// Wizard de creación de línea OFICIAL para admin / operator_admin. Reutiliza
-/// los pasos del wizard de comunidad (Info, Paradas con mapa, Horarios) pero
-/// escribe en las tablas oficiales vía RPCs admin y añade un paso de
-/// Operador + Código + Estado en lugar de Visibilidad.
+/// Wizard de creación/edición de línea OFICIAL para admin / operator_admin.
+/// Reutiliza los pasos del wizard de comunidad (Info, Paradas con mapa,
+/// Horarios) pero escribe en las tablas oficiales vía RPCs admin y añade un
+/// paso de Operador + Código + Estado en lugar de Visibilidad.
+///
+/// Si se pasa [routeId], entra en modo EDICIÓN: carga la línea con sus
+/// paradas y horarios y, al guardar, sincroniza por diff (preserva los
+/// horarios que no se tocan, incluidos los exactos por parada).
 class AdminRouteWizard extends ConsumerStatefulWidget {
-  const AdminRouteWizard({super.key, this.initialOperatorId});
+  const AdminRouteWizard({super.key, this.initialOperatorId, this.routeId});
 
   final String? initialOperatorId;
+  final String? routeId;
 
   @override
   ConsumerState<AdminRouteWizard> createState() => _AdminRouteWizardState();
@@ -58,6 +63,13 @@ class _AdminRouteWizardState extends ConsumerState<AdminRouteWizard> {
   List<OperatorModel> _operators = const [];
   bool _isAdmin = false;
 
+  // Modo edición: id de la línea + estado original para hacer diff seguro al
+  // guardar (paradas y horarios) sin destruir lo que no se toca.
+  String? get _editingId => widget.routeId;
+  bool get _isEditing => widget.routeId != null;
+  List<String> _origStopIds = const []; // stopId de las paradas actuales
+  final Map<String, String> _origSchedKeys = {}; // 'dayType|HH:mm' → schedule id
+
   @override
   void initState() {
     super.initState();
@@ -84,7 +96,60 @@ class _AdminRouteWizardState extends ConsumerState<AdminRouteWizard> {
     _operatorId = widget.initialOperatorId ??
         scope.operatorId ??
         (_operators.isNotEmpty ? _operators.first.id : null);
+
+    if (_isEditing) {
+      await _loadExisting();
+    }
     if (mounted) setState(() => _loading = false);
+  }
+
+  /// Carga la línea existente (datos + paradas + horarios) para editarla.
+  Future<void> _loadExisting() async {
+    final repo = ref.read(adminRoutesRepositoryProvider);
+    try {
+      final route = await repo.getRoute(_editingId!);
+      if (route != null) {
+        _nameCtrl.text = route.name;
+        _codeCtrl.text = route.code;
+        _operatorId = route.operatorId;
+        if ((route.color ?? '').isNotEmpty) {
+          final hex = route.color!.replaceFirst('#', '');
+          _routeColor = '0xFF${hex.length == 6 ? hex : '977DDF'}';
+        }
+        _status = route.status;
+        _descCtrl.text = route.description ?? '';
+      }
+      // Paradas en orden (dirección 0).
+      final rs = await repo.listRouteStops(_editingId!);
+      rs.sort((a, b) => a.sequence.compareTo(b.sequence));
+      _stops.clear();
+      for (final r in rs) {
+        final st = r.stop;
+        if (st == null) continue;
+        _stops.add(WizardStop(
+          stopId: st.id,
+          name: st.name,
+          lat: st.lat,
+          lng: st.lng,
+          officialStopId: st.id,
+          orderIndex: r.sequence,
+        ));
+      }
+      _origStopIds = [for (final r in rs) r.stopId];
+      // Horarios: cargamos todos como horas de cabecera y guardamos su id por
+      // clave para hacer diff al guardar (preserva los que no se tocan).
+      final scheds = await repo.listSchedules(_editingId!);
+      _schedules.clear();
+      _origSchedKeys.clear();
+      for (final s in scheds) {
+        final dayName = s.dayType.name;
+        _schedules.add(WizardSchedule(
+            dayType: dayName, departureTime: s.departureTime));
+        _origSchedKeys['$dayName|${s.departureTime}'] = s.id;
+      }
+    } catch (e) {
+      AppLogger.error(_logTag, 'load existing failed', e);
+    }
   }
 
   @override
@@ -134,6 +199,7 @@ class _AdminRouteWizardState extends ConsumerState<AdminRouteWizard> {
     final repo = ref.read(adminRoutesRepositoryProvider);
     try {
       final routeId = await repo.upsertRoute(
+        id: _editingId,
         operatorId: _operatorId!,
         code: _codeCtrl.text.trim(),
         name: _nameCtrl.text.trim(),
@@ -145,7 +211,10 @@ class _AdminRouteWizardState extends ConsumerState<AdminRouteWizard> {
         active: _active,
       );
 
-      // Paradas: crea cada una y la vincula a la ruta en orden.
+      // Paradas: vincula cada una a la ruta en orden (admin_route_stop_add
+      // hace upsert por secuencia). En edición, quita después las que ya no
+      // están.
+      final keptStopIds = <String>{};
       for (var i = 0; i < _stops.length; i++) {
         final ws = _stops[i];
         final stopId = await repo.upsertStop(
@@ -157,10 +226,25 @@ class _AdminRouteWizardState extends ConsumerState<AdminRouteWizard> {
         );
         await repo.addStopToRoute(
             routeId: routeId, stopId: stopId, sequence: i, direction: 0);
+        keptStopIds.add(stopId);
+      }
+      if (_isEditing) {
+        for (final oldId in _origStopIds) {
+          if (!keptStopIds.contains(oldId)) {
+            await repo.removeStopFromRoute(
+                routeId: routeId, stopId: oldId, direction: 0);
+          }
+        }
       }
 
-      // Horarios de cabecera.
+      // Horarios: diff por clave 'dayType|HH:mm'. Solo se crean los nuevos y
+      // se borran los que el admin quitó; los que no cambian (incluidos los
+      // exactos por parada con arrival_offsets) se preservan intactos.
+      final keptKeys = <String>{};
       for (final s in _schedules) {
+        final key = '${s.dayType}|${s.departureTime}';
+        keptKeys.add(key);
+        if (_origSchedKeys.containsKey(key)) continue; // ya existe, no tocar
         await repo.upsertSchedule(
           routeId: routeId,
           dayType: DayType.fromString(s.dayType),
@@ -168,10 +252,19 @@ class _AdminRouteWizardState extends ConsumerState<AdminRouteWizard> {
           departureTime: s.departureTime,
         );
       }
+      if (_isEditing) {
+        for (final entry in _origSchedKeys.entries) {
+          if (!keptKeys.contains(entry.key)) {
+            await repo.deleteSchedule(entry.value);
+          }
+        }
+      }
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Línea oficial creada')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(_isEditing
+                ? 'Línea oficial actualizada'
+                : 'Línea oficial creada')));
         context.pop();
       }
     } catch (e) {
@@ -191,17 +284,20 @@ class _AdminRouteWizardState extends ConsumerState<AdminRouteWizard> {
     final c = TransitColorScheme.of(isDark);
 
     if (_loading) {
-      return const Scaffold(
+      return Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: TransitAppBar(title: 'Nueva línea oficial', transparent: true),
-        body: Center(child: CircularProgressIndicator()),
+        appBar: TransitAppBar(
+            title: _isEditing ? 'Editar línea oficial' : 'Nueva línea oficial',
+            transparent: true),
+        body: const Center(child: CircularProgressIndicator()),
       );
     }
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      appBar: const TransitAppBar(
-          title: 'Nueva línea oficial', transparent: true),
+      appBar: TransitAppBar(
+          title: _isEditing ? 'Editar línea oficial' : 'Nueva línea oficial',
+          transparent: true),
       body: Column(
         children: [
           _indicator(c),
@@ -415,7 +511,9 @@ class _AdminRouteWizardState extends ConsumerState<AdminRouteWizard> {
             const Spacer(),
             if (isLast)
               TransitButton(
-                label: _saving ? 'Creando...' : 'Crear línea',
+                label: _saving
+                    ? 'Guardando...'
+                    : (_isEditing ? 'Guardar cambios' : 'Crear línea'),
                 isLoading: _saving,
                 onPressed: _canProceed() && !_saving ? _publish : null,
               )

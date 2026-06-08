@@ -4,16 +4,16 @@
     "phases": 28,
     "phasesCompleted": 28,
     "features": 27,
-    "loc": "35.000",
-    "dartFiles": 260,
+    "loc": "94.000",
+    "dartFiles": 446,
     "repositoriesCanonical": 12,
     "realtimeRepos": "5/12",
     "paginationRepos": "11/11",
     "autoDisposeProviders": 6,
-    "freezedModels": 27,
-    "sharedWidgets": 27,
-    "edgeFunctions": 4,
-    "migrations": 15,
+    "freezedModels": 30,
+    "sharedWidgets": 38,
+    "edgeFunctions": 8,
+    "migrations": 51,
     "hiveBoxes": 17,
     "encryptedBoxes": 2
   },
@@ -35,8 +35,8 @@
     }
   },
   "release": {
-    "version": "1.12.0",
-    "apkSize": "88 MB",
+    "version": "1.12.1",
+    "apkSize": "91 MB",
     "androidMin": "Android 6.0+"
   },
   "scorecard": {

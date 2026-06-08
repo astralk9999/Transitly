@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the widgetAlarmCallback function from the widget_alarm library, for the Dart programming language.">
+  <title>widgetAlarmCallback function - widget_alarm library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">transitly</a></li>
+    <li><a href="../data_widgets_native_widget_alarm/">data&#47;widgets_native&#47;widget_alarm.dart</a></li>
+    <li class="self-crumb">widgetAlarmCallback function</li>
+  </ol>
+  <div class="self-name">widgetAlarmCallback</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+  <div
+      id="dartdoc-main-content"
+      class="main-content"
+      data-above-sidebar="data_widgets_native_widget_alarm&#47;data_widgets_native_widget_alarm-library-sidebar.html"
+      data-below-sidebar="">
+      <div>
+<h1><span class="kind-function">widgetAlarmCallback</span> function 
+ 
+</h1></div>
+
+    <section class="multi-line-signature">
+        
+<span class="returntype"><a href="https://api.flutter.dev/flutter/flutter_test/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>
+<span class="name ">widgetAlarmCallback</span>(<wbr>)
+
+        
+
+    </section>
+    
+<section class="desc markdown">
+  <p>Callback de la alarma (corre en un isolate de fondo). Debe ser top-level y
+llevar la anotación vm:entry-point para que sobreviva al tree-shaking.</p>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">@pragma(&#39;vm:entry-point&#39;)
+Future&lt;void&gt; widgetAlarmCallback() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  DartPluginRegistrant.ensureInitialized();
+  try {
+    final prefs = await SharedPreferences.getInstance();
+    final route = prefs.getString(WidgetDataWriter.kBgRoute);
+    final stop = prefs.getString(WidgetDataWriter.kBgStop);
+    final timesJson = prefs.getString(WidgetDataWriter.kBgTodayTimes);
+    if (route == null || route.isEmpty || timesJson == null) return;
+
+    final times = (jsonDecode(timesJson) as List).cast&lt;String&gt;();
+    if (times.isEmpty) return;
+
+    int minOf(String t) {
+      final p = t.split(&#39;:&#39;);
+      return (int.tryParse(p[0]) ?? 0) * 60 +
+          (p.length &gt; 1 ? (int.tryParse(p[1]) ?? 0) : 0);
+    }
+
+    final now = DateTime.now();
+    final nowMin = now.hour * 60 + now.minute;
+    final upcoming = times.where((t) =&gt; minOf(t) &gt;= nowMin).toList()..sort();
+    final inService = upcoming.isNotEmpty;
+    final shown = (inService ? upcoming : times).take(4).toList();
+    final eta = inService ? (minOf(upcoming.first) - nowMin) : 0;
+
+    await WidgetDataWriter.writeNextBus(
+      stopName: stop ?? route,
+      routeCode: route,
+      etaMinutes: eta,
+      source: &#39;auto&#39;,
+      updatedAt: now,
+      inService: inService,
+      nextDepartureTime: inService ? upcoming.first : times.first,
+    );
+    await WidgetDataWriter.writeMyLineStatus(
+      routeCode: route,
+      upcoming: shown.map((t) =&gt; {&#39;time&#39;: t}).toList(),
+      inService: inService,
+    );
+  } catch (_) {
+    &#47;&#47; Silencioso: el siguiente tick lo reintentará.
+  }
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../index.html">transitly</a></li>
+    <li><a href="../data_widgets_native_widget_alarm/">widget_alarm</a></li>
+    <li class="self-crumb">widgetAlarmCallback function</li>
+</ol>
+
+    <h5>widget_alarm library</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-left-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    transitly
+      1.2.0+1780900000
+  </span>
+  
+</footer>
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

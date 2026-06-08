@@ -119,6 +119,13 @@ escribe en los 3 widgets. Devuelve <code>true</code> si escribió datos.</p>
       upcoming: deps.map((d) =&gt; {&#39;time&#39;: d.departureTime}).toList(),
       inService: inService,
     );
+    &#47;&#47; Persiste el horario COMPLETO de hoy para el refresco periódico en
+    &#47;&#47; segundo plano (recalcula el próximo bus cada N min sin la app abierta).
+    await WidgetDataWriter.writeBackgroundSchedule(
+      routeCode: route.code,
+      stopName: stop?.name ?? cfg.stopId!,
+      todayTimes: mockData.getTodayStopTimesAll(cfg.routeId!, cfg.stopId!),
+    );
     AppLogger.info(_tag,
         &#39;refreshNow ok — inService=$inService eta=${eta}min route=${route.code}&#39;);
     return true;

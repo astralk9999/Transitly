@@ -177,8 +177,10 @@ Widget build(BuildContext context, WidgetRef ref) {
         ),
         const SizedBox(height: 8),
         Text(
-          &#39;La frecuencia se aplica al refresco periódico cuando esté &#39;
-          &#39;disponible; usa &quot;Refrescar ahora&quot; para forzar la actualización.&#39;,
+          &#39;Los widgets se actualizan solos cada ${_label(cfg.refreshMinutes)} &#39;
+          &#39;en segundo plano (Android puede ajustar el momento exacto para &#39;
+          &#39;ahorrar batería). Usa &quot;Refrescar ahora&quot; para forzar la &#39;
+          &#39;actualización al instante.&#39;,
           style: TransitTypography.bodySmall(c.textLo),
         ),
         const SizedBox(height: 14),

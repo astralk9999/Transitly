@@ -123,6 +123,12 @@
           .toList(),
       inService: inService,
     );
+    &#47;&#47; Horario completo de hoy para el refresco periódico en segundo plano.
+    WidgetDataWriter.writeBackgroundSchedule(
+      routeCode: route.code,
+      stopName: stop?.name ?? cfg.stopId!,
+      todayTimes: mockData.getTodayStopTimesAll(cfg.routeId!, cfg.stopId!),
+    );
   }
 });</code></pre>
 </section>

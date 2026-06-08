@@ -73,6 +73,15 @@
 líneas).
 </dd>
 
+          <dt id="CommunityFilterRoute">
+  <span class="name "><a href="../shared_providers_user_routes_for_map_provider/CommunityFilterRoute-class.html">CommunityFilterRoute</a></span> 
+
+</dt>
+<dd>
+  Línea de comunidad del usuario, lista para el árbol de filtros del mapa
+(id, código, nombre, color y la zona/region elegida al crearla).
+</dd>
+
           <dt id="CommunityRouteShape">
   <span class="name "><a href="../shared_providers_user_routes_for_map_provider/CommunityRouteShape-class.html">CommunityRouteShape</a></span> 
 
@@ -145,6 +154,19 @@ rutas del usuario (creadas/importadas). Las favoritas oficiales las
 resuelve Inicio con mockData; aquí solo salen las que corresponden a una
 parada de comunidad. Dedup por proximidad (misma ubicación física puede
 tener varios ids entre rutas).
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+          <dt id="communityFilterRoutesProvider" class="property">
+  <span class="name"><a href="../shared_providers_user_routes_for_map_provider/communityFilterRoutesProvider.html">communityFilterRoutesProvider</a></span>
+  <span class="signature">&#8594; <a href="https://pub.dev/documentation/riverpod/2.6.1/riverpod/FutureProvider-class.html">FutureProvider</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../shared_providers_user_routes_for_map_provider/CommunityFilterRoute-class.html">CommunityFilterRoute</a></span>&gt;</span></span>&gt;</span></span>
+  
+
+</dt>
+<dd>
+  Mis líneas de comunidad (creadas/importadas) con su zona, para poder
+activarlas/desactivarlas en los filtros del mapa igual que las oficiales.
   <div class="features"><span class="feature">final</span></div>
 
 </dd>
@@ -398,6 +420,7 @@ agrupar paradas que comparten ubicación entre rutas distintas).
       <li><a href="../data_user_routes_user_route_schedules_repository/">data/user_routes/user_route_schedules_repository</a></li>
       <li><a href="../data_user_routes_user_routes_repository/">data/user_routes/user_routes_repository</a></li>
       <li><a href="../data_user_stops_user_stops_repository/">data/user_stops/user_stops_repository</a></li>
+      <li><a href="../data_widgets_native_widget_alarm/">data/widgets_native/widget_alarm</a></li>
       <li><a href="../data_widgets_native_widget_data_writer/">data/widgets_native/widget_data_writer</a></li>
       <li><a href="../data_widgets_native_widget_refresh_service/">data/widgets_native/widget_refresh_service</a></li>
       <li><a href="../features_admin_admin_geo_alerts_screen/">features/admin/admin_geo_alerts_screen</a></li>

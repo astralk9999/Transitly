@@ -72,6 +72,8 @@
   state = state.copyWith(refreshMinutes: value);
   final box = await Hive.openBox&lt;dynamic&gt;(_boxName);
   await box.put(_kRefresh, value);
+  &#47;&#47; Aplica el nuevo intervalo al refresco periódico en segundo plano.
+  await WidgetAlarm.reschedule(value);
 }</code></pre>
 </section>
 

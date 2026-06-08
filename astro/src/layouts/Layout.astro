@@ -16,6 +16,10 @@ const fullTitle = `${title} · Transitly`;
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content={description || fullTitle} />
 
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="apple-touch-icon" href="/favicon.png" />
+  <meta name="theme-color" content="#08081A" />
+
   <meta property="og:type" content="website" />
   <meta property="og:title" content={fullTitle} />
   <meta property="og:description" content={description || fullTitle} />
@@ -35,12 +39,58 @@ const fullTitle = `${title} · Transitly`;
   />
 
   <title>{fullTitle}</title>
+
+  <style is:global>
+    /* Animaciones globales para imitar la estética animada de la app. */
+    @keyframes aurora-drift {
+      0%   { transform: translate(0, 0) scale(1); }
+      33%  { transform: translate(6%, -4%) scale(1.1); }
+      66%  { transform: translate(-5%, 5%) scale(0.95); }
+      100% { transform: translate(0, 0) scale(1); }
+    }
+    @keyframes glow-pulse {
+      0%, 100% { opacity: 0.55; transform: scale(1); }
+      50%      { opacity: 0.9; transform: scale(1.06); }
+    }
+    @keyframes float-y {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-10px); }
+    }
+    @keyframes gradient-shift {
+      0%, 100% { background-position: 0% 50%; }
+      50%      { background-position: 100% 50%; }
+    }
+    @keyframes spin-slow { to { transform: rotate(360deg); } }
+
+    .aurora-blob { will-change: transform; animation: aurora-drift 18s ease-in-out infinite; }
+    .glow-pulse  { animation: glow-pulse 4s ease-in-out infinite; }
+    .float-y     { animation: float-y 6s ease-in-out infinite; }
+    .gradient-animated {
+      background-size: 200% 200%;
+      animation: gradient-shift 6s ease infinite;
+    }
+
+    /* Reveal on scroll */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1);
+    }
+    .reveal.is-visible { opacity: 1; transform: none; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .aurora-blob, .glow-pulse, .float-y, .gradient-animated { animation: none; }
+      .reveal { opacity: 1; transform: none; transition: none; }
+    }
+  </style>
 </head>
 <body class="bg-transit-bg text-text-hi font-sans antialiased min-h-screen flex flex-col">
   <header class="border-b border-transit-border bg-transit-bg/90 backdrop-blur-md sticky top-0 z-50">
     <nav class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-      <a href="/" class="flex items-center gap-2">
-        <span class="text-xl font-bold bg-gradient-accent bg-clip-text text-transparent tracking-tight">
+      <a href="/" class="flex items-center gap-2.5 group">
+        <img src="/branding/logo.png" alt="" width="40" height="40"
+          class="w-10 h-10 transition-transform group-hover:scale-110 drop-shadow-[0_0_12px_rgba(151,125,223,0.45)]" />
+        <span class="text-2xl font-bold bg-gradient-accent bg-clip-text text-transparent tracking-tight">
           Transitly
         </span>
       </a>
@@ -89,5 +139,25 @@ const fullTitle = `${title} · Transitly`;
       </div>
     </div>
   </footer>
+
+  <script is:inline>
+    // Revela los elementos .reveal al entrar en el viewport (escalonado).
+    (function () {
+      const els = document.querySelectorAll('.reveal');
+      if (!('IntersectionObserver' in window) || els.length === 0) {
+        els.forEach((e) => e.classList.add('is-visible'));
+        return;
+      }
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12 });
+      els.forEach((e) => io.observe(e));
+    })();
+  </script>
 </body>
 </html>

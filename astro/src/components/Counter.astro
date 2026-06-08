@@ -1,0 +1,48 @@
+---
+// Contador animado (cuenta desde 0 hasta el valor al entrar en viewport).
+// Versión vanilla, sin React/motion. Mantén el estilo con `class`.
+interface Props {
+  value: number;
+  class?: string;
+  duration?: number; // ms
+}
+const { value, class: className = '', duration = 1400 } = Astro.props;
+---
+<span class:list={['counter', className]} data-target={value} data-duration={duration}>0</span>
+
+<script>
+  function animateCounter(el: HTMLElement) {
+    const target = parseInt(el.dataset.target || '0', 10);
+    const duration = parseInt(el.dataset.duration || '1400', 10);
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || target <= 0) {
+      el.textContent = String(target);
+      return;
+    }
+    let started = false;
+    const run = () => {
+      if (started) return;
+      started = true;
+      const start = performance.now();
+      const tick = (now: number) => {
+        const p = Math.min(1, (now - start) / duration);
+        // easeOutCubic
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = String(Math.round(eased * target));
+        if (p < 1) requestAnimationFrame(tick);
+        else el.textContent = String(target);
+      };
+      requestAnimationFrame(tick);
+    };
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) { run(); io.disconnect(); }
+        });
+      }, { threshold: 0.4 });
+      io.observe(el);
+    } else {
+      run();
+    }
+  }
+  document.querySelectorAll<HTMLElement>('.counter').forEach(animateCounter);
+</script>

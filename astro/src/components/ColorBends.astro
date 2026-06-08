@@ -1,0 +1,236 @@
+---
+// Fondo animado ColorBends (shader WebGL con three.js), portado de React a
+// vanilla para Astro. Mantiene la estética de la app (mismo shader que el
+// fondo "ColorBends" del tema). Se renderiza fijo detrás del contenido.
+interface Props {
+  colors?: string[];
+  class?: string;
+}
+const {
+  colors = ['#00D4FF', '#977DDF', '#FF006E'],
+  class: className = '',
+} = Astro.props;
+const colorsJson = JSON.stringify(colors);
+---
+
+<div
+  class:list={['color-bends', className]}
+  data-colors={colorsJson}
+  aria-hidden="true"
+>
+  <!-- Fondo CSS de respaldo: visible siempre (también si WebGL no está
+       disponible, p. ej. con bloqueadores). El canvas del shader se dibuja
+       encima cuando carga. -->
+  <div class="cb-fallback">
+    <div class="cb-blob cb-blob-1"></div>
+    <div class="cb-blob cb-blob-2"></div>
+    <div class="cb-blob cb-blob-3"></div>
+  </div>
+</div>
+
+<style>
+  .color-bends {
+    position: fixed;
+    inset: 0;
+    z-index: -10;
+    overflow: hidden;
+    pointer-events: none;
+    background: #08081A;
+  }
+  .color-bends canvas {
+    position: absolute;
+    inset: 0;
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+  }
+  .cb-fallback { position: absolute; inset: 0; }
+  .cb-blob {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(120px);
+    opacity: 0.55;
+    will-change: transform;
+    animation: cb-drift 18s ease-in-out infinite;
+  }
+  .cb-blob-1 { top: -15%; left: -10%; width: 55vw; height: 55vw; max-width: 700px; max-height: 700px; background: #00D4FF; }
+  .cb-blob-2 { top: 25%; right: -12%; width: 50vw; height: 50vw; max-width: 640px; max-height: 640px; background: #977DDF; animation-delay: -6s; }
+  .cb-blob-3 { bottom: -10%; left: 20%; width: 48vw; height: 48vw; max-width: 600px; max-height: 600px; background: #FF006E; animation-delay: -11s; opacity: 0.4; }
+  @keyframes cb-drift {
+    0%, 100% { transform: translate(0,0) scale(1); }
+    33% { transform: translate(6%, -4%) scale(1.1); }
+    66% { transform: translate(-5%, 5%) scale(0.95); }
+  }
+  @media (prefers-reduced-motion: reduce) { .cb-blob { animation: none; } }
+</style>
+
+<script>
+  import * as THREE from 'three';
+
+  const MAX_COLORS = 8;
+
+  const vert = `
+    varying vec2 vUv;
+    void main() { vUv = uv; gl_Position = vec4(position, 1.0); }
+  `;
+
+  const frag = `
+    #define MAX_COLORS ${MAX_COLORS}
+    uniform vec2 uCanvas;
+    uniform float uTime;
+    uniform float uSpeed;
+    uniform vec2 uRot;
+    uniform int uColorCount;
+    uniform vec3 uColors[MAX_COLORS];
+    uniform float uScale;
+    uniform float uFrequency;
+    uniform float uWarpStrength;
+    uniform float uNoise;
+    uniform float uIntensity;
+    uniform float uBandWidth;
+    varying vec2 vUv;
+
+    void main() {
+      float t = uTime * uSpeed;
+      vec2 p = vUv * 2.0 - 1.0;
+      vec2 rp = vec2(p.x * uRot.x - p.y * uRot.y, p.x * uRot.y + p.y * uRot.x);
+      vec2 q = vec2(rp.x * (uCanvas.x / uCanvas.y), rp.y);
+      q /= max(uScale, 0.0001);
+      q /= 0.5 + 0.2 * dot(q, q);
+      q += 0.2 * cos(t) - 7.56;
+
+      vec2 r2 = sin(1.5 * (q.yx * uFrequency) + 2.0 * cos(q * uFrequency));
+      q += (r2 - q) * 0.15;
+
+      vec3 col = vec3(0.0);
+      float a = 1.0;
+      vec2 s = q;
+      vec3 sumCol = vec3(0.0);
+      float cover = 0.0;
+      for (int i = 0; i < MAX_COLORS; ++i) {
+        if (i >= uColorCount) break;
+        s -= 0.01;
+        vec2 r = sin(1.5 * (s.yx * uFrequency) + 2.0 * cos(s * uFrequency));
+        float m0 = length(r + sin(5.0 * r.y * uFrequency - 3.0 * t + float(i)) / 4.0);
+        float kBelow = clamp(uWarpStrength, 0.0, 1.0);
+        float kMix = pow(kBelow, 0.3);
+        float gain = 1.0 + max(uWarpStrength - 1.0, 0.0);
+        vec2 disp = (r - s) * kBelow;
+        vec2 warped = s + disp * gain;
+        float m1 = length(warped + sin(5.0 * warped.y * uFrequency - 3.0 * t + float(i)) / 4.0);
+        float m = mix(m0, m1, kMix);
+        float w = 1.0 - exp(-uBandWidth / exp(uBandWidth * m));
+        sumCol += uColors[i] * w;
+        cover = max(cover, w);
+      }
+      col = clamp(sumCol, 0.0, 1.0);
+      a = cover;
+      col *= uIntensity;
+
+      if (uNoise > 0.0001) {
+        float n = fract(sin(dot(gl_FragCoord.xy + vec2(uTime), vec2(12.9898, 78.233))) * 43758.5453123);
+        col += (n - 0.5) * uNoise;
+        col = clamp(col, 0.0, 1.0);
+      }
+      gl_FragColor = vec4(col * a, a);
+    }
+  `;
+
+  function hexToVec3(hex: string) {
+    const h = hex.replace('#', '').trim();
+    const f =
+      h.length === 3
+        ? [h[0] + h[0], h[1] + h[1], h[2] + h[2]]
+        : [h.slice(0, 2), h.slice(2, 4), h.slice(4, 6)];
+    return new THREE.Vector3(
+      parseInt(f[0], 16) / 255,
+      parseInt(f[1], 16) / 255,
+      parseInt(f[2], 16) / 255,
+    );
+  }
+
+  function initColorBends(container: HTMLElement) {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let colors: string[] = ['#00D4FF', '#977DDF', '#FF006E'];
+    try {
+      colors = JSON.parse(container.dataset.colors || '[]');
+    } catch {}
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+    const geometry = new THREE.PlaneGeometry(2, 2);
+
+    const uColors = Array.from({ length: MAX_COLORS }, () => new THREE.Vector3(0, 0, 0));
+    const arr = colors.slice(0, MAX_COLORS).map(hexToVec3);
+    arr.forEach((v, i) => uColors[i].copy(v));
+
+    const material = new THREE.ShaderMaterial({
+      vertexShader: vert,
+      fragmentShader: frag,
+      transparent: true,
+      premultipliedAlpha: true,
+      uniforms: {
+        uCanvas: { value: new THREE.Vector2(1, 1) },
+        uTime: { value: 0 },
+        uSpeed: { value: 0.18 },
+        uRot: { value: new THREE.Vector2(Math.cos(Math.PI / 2), Math.sin(Math.PI / 2)) },
+        uColorCount: { value: arr.length },
+        uColors: { value: uColors },
+        uScale: { value: 1.1 },
+        uFrequency: { value: 1.0 },
+        uWarpStrength: { value: 1.0 },
+        uNoise: { value: 0.12 },
+        uIntensity: { value: 1.35 },
+        uBandWidth: { value: 6.0 },
+      },
+    });
+
+    scene.add(new THREE.Mesh(geometry, material));
+
+    const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true, powerPreference: 'high-performance' });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+    renderer.setClearColor(0x000000, 0);
+    container.appendChild(renderer.domElement);
+
+    const resize = () => {
+      const w = container.clientWidth || 1;
+      const h = container.clientHeight || 1;
+      renderer.setSize(w, h, false);
+      material.uniforms.uCanvas.value.set(w, h);
+    };
+    resize();
+    if ('ResizeObserver' in window) new ResizeObserver(resize).observe(container);
+    else window.addEventListener('resize', resize);
+
+    const clock = new THREE.Clock();
+    let raf = 0;
+    const loop = () => {
+      material.uniforms.uTime.value = clock.elapsedTime;
+      renderer.render(scene, camera);
+      raf = requestAnimationFrame(loop);
+    };
+    if (reduce) {
+      // Sin movimiento: un único frame.
+      material.uniforms.uTime.value = 2.0;
+      renderer.render(scene, camera);
+    } else {
+      raf = requestAnimationFrame(loop);
+    }
+
+    // Pausa el render cuando la pestaña no está visible (ahorro de batería).
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) cancelAnimationFrame(raf);
+      else if (!reduce) raf = requestAnimationFrame(loop);
+    });
+  }
+
+  const el = document.querySelector<HTMLElement>('.color-bends');
+  if (el) {
+    try {
+      initColorBends(el);
+    } catch (e) {
+      // Si WebGL no está disponible, el fondo CSS de respaldo se ve igual.
+      console.warn('ColorBends no disponible:', e);
+    }
+  }
+</script>

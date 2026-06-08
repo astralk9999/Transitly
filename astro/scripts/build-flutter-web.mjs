@@ -24,9 +24,12 @@ const definesArg = existsSync(defines)
   ? `--dart-define-from-file="${defines}"`
   : '';
 
-console.log('▶ flutter build web --base-href /app/ …');
+// --no-web-resources-cdn: empaqueta CanvasKit local (algunos navegadores con
+//   bloqueador, p. ej. Opera GX, cortan el CDN de gstatic → pantalla blanca).
+// --pwa-strategy=none: sin service worker, para que no cachee builds viejos.
+console.log('▶ flutter build web --base-href /app/ (canvaskit local, sin SW) …');
 execSync(
-  `flutter build web --release --base-href /app/ ${definesArg}`,
+  `flutter build web --release --base-href /app/ --no-web-resources-cdn --pwa-strategy=none ${definesArg}`,
   { cwd: flutterRoot, stdio: 'inherit' },
 );
 

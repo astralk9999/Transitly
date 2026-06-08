@@ -98,6 +98,11 @@
       document.getElementById("splash-branding")?.remove();
       document.body.style.background = "transparent";
     }
+    // La app no usa flutter_native_splash desde Dart, así que el splash web
+    // no se quitaba solo. Lo retiramos al renderizar el primer frame de
+    // Flutter (y como red de seguridad, a los 8 s).
+    window.addEventListener("flutter-first-frame", removeSplashFromWeb);
+    setTimeout(removeSplashFromWeb, 8000);
   </script>
 </head>
 <body>

@@ -1,195 +1,244 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import ColorBends from '../components/ColorBends.astro';
+import Counter from '../components/Counter.astro';
+import CurvedLoop from '../components/CurvedLoop.astro';
 
 const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
 const supabaseKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 
-let operatorsCount = 0;
-let routesCount = 0;
-let stopsCount = 0;
+// Cifras de respaldo (datos reales del despliegue de COMUJESA en Jerez).
+// Se usan para la presentación cuando el fetch a Supabase no está disponible
+// o devuelve 0 (p. ej. sin variables PUBLIC_SUPABASE_* en el entorno).
+let operatorsCount = 1;
+let routesCount = 20;
+let stopsCount = 306;
 
 if (supabaseUrl && supabaseKey) {
   try {
     const headers: Record<string, string> = {
       apikey: supabaseKey,
       Authorization: `Bearer ${supabaseKey}`,
+      Prefer: 'count=exact',
     };
-
     const [opRes, rtRes, stRes] = await Promise.all([
       fetch(`${supabaseUrl}/rest/v1/operators?select=count`, { headers }),
       fetch(`${supabaseUrl}/rest/v1/routes?select=count`, { headers }),
       fetch(`${supabaseUrl}/rest/v1/stops?select=count`, { headers }),
     ]);
-
-    if (opRes.ok) {
-      const data = await opRes.json();
-      operatorsCount = data[0]?.count || 0;
-    }
-    if (rtRes.ok) {
-      const data = await rtRes.json();
-      routesCount = data[0]?.count || 0;
-    }
-    if (stRes.ok) {
-      const data = await stRes.json();
-      stopsCount = data[0]?.count || 0;
-    }
+    if (opRes.ok) { const n = (await opRes.json())[0]?.count; if (n) operatorsCount = n; }
+    if (rtRes.ok) { const n = (await rtRes.json())[0]?.count; if (n) routesCount = n; }
+    if (stRes.ok) { const n = (await stRes.json())[0]?.count; if (n) stopsCount = n; }
   } catch {
-    // Stats unavailable — show placeholder
+    // Mantiene las cifras de respaldo
   }
 }
+
+const appVersion = 'v0.1.0';
+
+const icons: Record<string, string> = {
+  clock: '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+  users: '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+  star: '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+  'wifi-off': '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l22 22"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55M5 12.55a10.94 10.94 0 0 1 5.17-2.39M10.71 5.05A16 16 0 0 1 22.58 9M1.42 9a15.91 15.91 0 0 1 4.7-2.88M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"/></svg>',
+  bell: '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>',
+  map: '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>',
+  user: '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+  bus: '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v11"/><path d="M4 11h16"/><circle cx="7.5" cy="17.5" r="1.5"/><circle cx="16.5" cy="17.5" r="1.5"/></svg>',
+  building: '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4M9 6h.01M15 6h.01M9 10h.01M15 10h.01M9 14h.01M15 14h.01"/></svg>',
+  android: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18a.4.4 0 0 0-.69-.4l-1.86 3.22a11.5 11.5 0 0 0-9.78 0L5.25 5.9a.4.4 0 1 0-.69.4L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52zM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"/></svg>',
+  download: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
+};
+
+const features = [
+  { title: 'Horarios exactos por parada', body: 'La hora real de paso de cada línea en cada parada, de los horarios oficiales de COMUJESA. Entre semana, sábado y domingo, con la próxima llegada resaltada.', icon: 'clock' },
+  { title: 'Rutas de la comunidad', body: '¿Falta una línea? Créala sobre el mapa con sus paradas y horarios, compártela y deja que otros la voten y la descarguen a su mapa.', icon: 'users' },
+  { title: 'Favoritos y paradas cercanas', body: 'Guarda tus líneas y paradas favoritas —oficiales o de la comunidad— y tenlas en tu inicio, junto a las paradas más cercanas a ti.', icon: 'star' },
+  { title: 'Funciona sin conexión', body: 'Descarga las líneas y sus horarios para consultarlos sin datos. La app sincroniza sola cuando vuelves a tener internet.', icon: 'wifi-off' },
+  { title: 'Avisos en tu zona', body: 'Recibe avisos geolocalizados (cortes, desvíos, incidencias) cuando afectan a tu zona, y reporta lo que veas para ayudar a los demás.', icon: 'bell' },
+  { title: 'Mapa en vivo', body: 'Explora todas las líneas y paradas sobre un mapa interactivo. Toca una parada y mira qué pasa por ella y a qué hora.', icon: 'map' },
+];
+
+const audiences = [
+  { title: 'Viajeros', body: 'Consulta horarios, guarda favoritas, mira las paradas cercanas y planifica tu trayecto. Online y sin conexión.', icon: 'user' },
+  { title: 'Conductores', body: 'Modo conductor con seguimiento en vivo del trayecto, activable con un código de invitación de tu operadora.', icon: 'bus' },
+  { title: 'Operadoras', body: 'Panel propio para gestionar líneas, paradas, horarios, zonas y el equipo de conductores de tu empresa.', icon: 'building' },
+];
+
+const steps = [
+  { n: '01', title: 'Abre Transitly', body: 'En el navegador o instala la app para Android. Sin registro para consultar.' },
+  { n: '02', title: 'Encuentra tu línea', body: 'Busca por nombre, explora el mapa o mira las paradas más cercanas a ti.' },
+  { n: '03', title: 'Viaja informado', body: 'Guarda favoritas, mira la próxima llegada exacta y recibe avisos de tu zona.' },
+];
 ---
 
 <Layout
   title="Tu transporte público, simple"
   description="Líneas, horarios exactos por parada y rutas de la comunidad en Jerez. Consulta los autobuses de COMUJESA, crea y comparte rutas, guarda tus favoritas y viaja informado con Transitly."
 >
-  <section class="relative overflow-hidden">
-    <div class="absolute inset-0 bg-gradient-to-b from-transit-neon-purple/5 via-transparent to-transparent pointer-events-none" />
-    <div class="max-w-6xl mx-auto px-6 py-28 md:py-40 text-center relative">
-      <h1 class="text-4xl md:text-6xl font-bold tracking-tight leading-tight">
-        Tu transporte público, <br />
-        <span class="bg-gradient-neon bg-clip-text text-transparent">simple.</span>
+  <!-- ── FONDO SHADER ColorBends (mismo motor que la app) ── -->
+  <ColorBends colors={["#00D4FF", "#977DDF", "#FF006E"]} />
+  <!-- Velo suave para legibilidad del texto sobre el shader -->
+  <div class="fixed inset-0 -z-[9] bg-transit-bg/35 pointer-events-none"></div>
+
+  <!-- ── HERO ── -->
+  <section class="relative">
+    <div class="max-w-5xl mx-auto px-6 pt-24 pb-20 md:pt-32 md:pb-28 text-center">
+      <div class="relative inline-block mb-8 float-y">
+        <div class="glow-pulse absolute inset-0 rounded-full bg-transit-accent/40 blur-2xl"></div>
+        <img src="/branding/logo.png" alt="Transitly" width="160" height="160"
+          class="relative w-32 h-32 md:w-40 md:h-40 drop-shadow-[0_0_40px_rgba(151,125,223,0.55)]" />
+      </div>
+
+      <div class="reveal inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-transit-accent/30 bg-transit-surface/60 backdrop-blur-sm text-text-mid text-xs font-medium mb-6">
+        <span class="w-1.5 h-1.5 rounded-full bg-transit-state-ontime glow-pulse"></span>
+        Jerez de la Frontera · COMUJESA
+      </div>
+
+      <h1 class="reveal text-5xl md:text-7xl font-bold tracking-tight leading-[1.05]">
+        Tu transporte público,<br />
+        <span class="gradient-animated bg-gradient-to-r from-transit-neon-cyan via-transit-accent to-transit-neon-magenta bg-clip-text text-transparent">
+          simple y al día.
+        </span>
       </h1>
-      <p class="text-text-mid text-lg md:text-xl mt-6 max-w-2xl mx-auto leading-relaxed">
-        Horarios exactos por parada de los autobuses de Jerez (COMUJESA),
-        rutas creadas por la comunidad y tus líneas favoritas siempre a mano.
-        Online y sin conexión.
+      <p class="reveal text-text-mid text-lg md:text-xl mt-7 max-w-2xl mx-auto leading-relaxed">
+        Horarios exactos por parada de los autobuses de Jerez, rutas creadas por
+        la comunidad y tus líneas favoritas siempre a mano. Online y sin conexión.
       </p>
 
-      <div class="flex flex-col md:flex-row gap-4 justify-center mt-10">
-        <a
-          href="/app/"
-          class="px-8 py-3 rounded-full bg-gradient-accent text-white font-semibold text-sm hover:opacity-90 transition-all shadow-lg shadow-transit-accent/25"
-        >
-          Ver en navegador
+      <div class="reveal flex flex-col sm:flex-row gap-4 justify-center mt-10">
+        <a href="/app/" class="px-8 py-3.5 rounded-full bg-gradient-accent text-white font-semibold text-sm hover:opacity-90 hover:-translate-y-0.5 transition-all shadow-lg shadow-transit-accent/40">
+          Abrir Transitly
         </a>
-        <a
-          href="/ciudades"
-          class="px-8 py-3 rounded-full border border-transit-border text-text-mid font-semibold text-sm hover:border-transit-accent hover:text-text-hi transition-all"
-        >
-          Descubrir ciudades
+        <a href="#descargar" class="px-8 py-3.5 rounded-full border border-transit-border bg-transit-surface/40 backdrop-blur-sm text-text-hi font-semibold text-sm hover:border-transit-accent hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2">
+          <span set:html={icons.android} /> Descargar APK
         </a>
       </div>
 
-      <div class="grid grid-cols-3 gap-8 mt-20 max-w-lg mx-auto">
-        <div class="text-center">
-          <div class="text-3xl font-bold font-mono text-transit-neon-cyan">
-            {operatorsCount || '—'}
-          </div>
-          <div class="text-text-lo text-xs mt-1">Operadores</div>
+      <div class="reveal grid grid-cols-3 gap-6 mt-16 max-w-md mx-auto">
+        <div>
+          <Counter value={operatorsCount} class="text-3xl md:text-4xl font-bold font-mono text-transit-neon-cyan" />
+          <div class="text-text-lo text-xs mt-1 uppercase tracking-wider">Operadores</div>
         </div>
-        <div class="text-center">
-          <div class="text-3xl font-bold font-mono text-transit-neon-magenta">
-            {routesCount || '—'}
-          </div>
-          <div class="text-text-lo text-xs mt-1">Rutas</div>
+        <div>
+          <Counter value={routesCount} class="text-3xl md:text-4xl font-bold font-mono text-transit-neon-magenta" />
+          <div class="text-text-lo text-xs mt-1 uppercase tracking-wider">Líneas</div>
         </div>
-        <div class="text-center">
-          <div class="text-3xl font-bold font-mono text-transit-neon-purple">
-            {stopsCount || '—'}
-          </div>
-          <div class="text-text-lo text-xs mt-1">Paradas</div>
+        <div>
+          <Counter value={stopsCount} class="text-3xl md:text-4xl font-bold font-mono text-transit-neon-purple" />
+          <div class="text-text-lo text-xs mt-1 uppercase tracking-wider">Paradas</div>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="max-w-6xl mx-auto px-6 py-24">
-    <h2 class="text-2xl md:text-3xl font-bold text-center mb-14">
-      ¿Por qué <span class="text-transit-accent">Transitly</span>?
-    </h2>
+  <!-- ── FEATURES ── -->
+  <section class="max-w-6xl mx-auto px-6 py-20 md:py-24">
+    <div class="reveal text-center mb-14">
+      <span class="text-transit-accent text-xs font-mono font-semibold uppercase tracking-[0.2em]">Funcionalidades</span>
+      <h2 class="text-3xl md:text-4xl font-bold mt-3">Todo lo que necesitas para moverte</h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {features.map((f, i) => (
+        <div class="reveal group p-7 rounded-2xl bg-transit-surface/70 backdrop-blur-sm border border-transit-border hover:border-transit-accent/50 hover:bg-transit-raised/70 hover:-translate-y-1 transition-all duration-300" style={`transition-delay:${i * 60}ms`}>
+          <div class="w-12 h-12 rounded-xl bg-transit-accent-bg flex items-center justify-center mb-5 text-transit-accent group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-transit-accent/30 transition-all" set:html={icons[f.icon]} />
+          <h3 class="text-lg font-semibold mb-2">{f.title}</h3>
+          <p class="text-text-lo text-sm leading-relaxed">{f.body}</p>
+        </div>
+      ))}
+    </div>
+  </section>
 
+  <!-- ── PARA QUIÉN ── -->
+  <section class="relative border-y border-transit-border bg-transit-surface/30 backdrop-blur-sm">
+    <div class="max-w-6xl mx-auto px-6 py-20 md:py-24">
+      <div class="reveal text-center mb-14">
+        <span class="text-transit-accent text-xs font-mono font-semibold uppercase tracking-[0.2em]">Para cada tipo de usuario</span>
+        <h2 class="text-3xl md:text-4xl font-bold mt-3">Una plataforma, muchos roles</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {audiences.map((a, i) => (
+          <div class="reveal p-8 rounded-2xl bg-transit-bg/60 border border-transit-border hover:border-transit-accent/40 transition-all" style={`transition-delay:${i * 80}ms`}>
+            <div class="w-14 h-14 rounded-full bg-transit-accent-bg border border-transit-accent/30 flex items-center justify-center mb-5 text-transit-accent" set:html={icons[a.icon]} />
+            <h3 class="text-lg font-semibold mb-2">{a.title}</h3>
+            <p class="text-text-lo text-sm leading-relaxed">{a.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SEPARADOR: texto curvo en marquesina ── -->
+  <div class="py-6 md:py-10 opacity-90">
+    <CurvedLoop text="Horarios exactos ✦ Rutas de la comunidad ✦ Sin conexión ✦ Avisos en tu zona ✦ " speed={0.8} curveAmount={120} />
+  </div>
+
+  <!-- ── DESCARGA APK ── -->
+  <section id="descargar" class="max-w-5xl mx-auto px-6 py-16 md:py-20">
+    <div class="reveal relative p-8 md:p-12 rounded-3xl bg-gradient-to-br from-transit-raised/80 to-transit-surface/60 backdrop-blur border border-transit-accent/20 overflow-hidden">
+      <div class="absolute -top-24 -right-16 w-72 h-72 rounded-full bg-transit-accent/15 blur-3xl pointer-events-none"></div>
+      <div class="relative flex flex-col md:flex-row items-center gap-8">
+        <div class="shrink-0 float-y">
+          <div class="w-24 h-24 rounded-3xl bg-transit-bg/60 border border-transit-accent/30 flex items-center justify-center shadow-xl shadow-transit-accent/20">
+            <img src="/branding/logo.png" alt="" width="64" height="64" class="w-16 h-16" />
+          </div>
+        </div>
+        <div class="flex-1 text-center md:text-left">
+          <span class="text-transit-accent text-xs font-mono font-semibold uppercase tracking-[0.2em]">Descarga la app</span>
+          <h2 class="text-2xl md:text-3xl font-bold mt-2">Transitly para Android</h2>
+          <p class="text-text-mid text-sm mt-3 max-w-lg">
+            Instala la última versión en tu móvil. Widgets, modo conductor, notificaciones
+            y uso sin conexión. (Fuera de Google Play: permite "instalar apps de orígenes desconocidos").
+          </p>
+          <div class="flex flex-wrap items-center justify-center md:justify-start gap-3 mt-6">
+            <a href="/downloads/transitly-latest.apk" download
+              class="px-7 py-3.5 rounded-full bg-gradient-accent text-white font-semibold text-sm hover:opacity-90 hover:-translate-y-0.5 transition-all shadow-lg shadow-transit-accent/40 flex items-center gap-2">
+              <span set:html={icons.download} /> Descargar APK
+            </a>
+            <div class="flex items-center gap-3 text-text-lo text-xs font-mono">
+              <span class="flex items-center gap-1.5"><span class="text-transit-accent" set:html={icons.android} /> {appVersion}</span>
+              <span>·</span>
+              <span>Android 6+</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CÓMO EMPEZAR ── -->
+  <section class="max-w-5xl mx-auto px-6 pb-20 md:pb-24">
+    <div class="reveal text-center mb-14">
+      <span class="text-transit-accent text-xs font-mono font-semibold uppercase tracking-[0.2em]">Cómo empezar</span>
+      <h2 class="text-3xl md:text-4xl font-bold mt-3">En tres pasos</h2>
+    </div>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      <div class="p-8 rounded-2xl bg-transit-surface border border-transit-border hover:border-transit-accent/30 transition-colors">
-        <div class="w-12 h-12 rounded-xl bg-transit-accent-bg flex items-center justify-center mb-5">
-          <span class="text-transit-accent text-xl font-mono font-bold">01</span>
+      {steps.map((s, i) => (
+        <div class="reveal" style={`transition-delay:${i * 80}ms`}>
+          <div class="text-6xl font-bold font-mono bg-gradient-accent bg-clip-text text-transparent opacity-30">{s.n}</div>
+          <h3 class="text-lg font-semibold mt-2 mb-2">{s.title}</h3>
+          <p class="text-text-lo text-sm leading-relaxed">{s.body}</p>
         </div>
-        <h3 class="text-lg font-semibold mb-2">Horarios exactos por parada</h3>
-        <p class="text-text-lo text-sm leading-relaxed">
-          Hora de paso real de cada línea en cada parada, extraída de los
-          horarios oficiales de COMUJESA. Entre semana, sábado y domingo, con
-          la próxima llegada resaltada.
-        </p>
-      </div>
-
-      <div class="p-8 rounded-2xl bg-transit-surface border border-transit-border hover:border-transit-accent/30 transition-colors">
-        <div class="w-12 h-12 rounded-xl bg-transit-accent-bg flex items-center justify-center mb-5">
-          <span class="text-transit-accent text-xl font-mono font-bold">02</span>
-        </div>
-        <h3 class="text-lg font-semibold mb-2">Rutas de la comunidad</h3>
-        <p class="text-text-lo text-sm leading-relaxed">
-          ¿Falta una línea? Créala sobre el mapa con sus paradas y horarios,
-          compártela y deja que otros la voten y la descarguen a su mapa.
-        </p>
-      </div>
-
-      <div class="p-8 rounded-2xl bg-transit-surface border border-transit-border hover:border-transit-accent/30 transition-colors">
-        <div class="w-12 h-12 rounded-xl bg-transit-accent-bg flex items-center justify-center mb-5">
-          <span class="text-transit-accent text-xl font-mono font-bold">03</span>
-        </div>
-        <h3 class="text-lg font-semibold mb-2">Favoritos y paradas cercanas</h3>
-        <p class="text-text-lo text-sm leading-relaxed">
-          Guarda tus líneas y paradas favoritas —oficiales o de la comunidad—
-          y tenlas en tu inicio, junto a las paradas más cercanas a ti.
-        </p>
-      </div>
-
-      <div class="p-8 rounded-2xl bg-transit-surface border border-transit-border hover:border-transit-accent/30 transition-colors">
-        <div class="w-12 h-12 rounded-xl bg-transit-accent-bg flex items-center justify-center mb-5">
-          <span class="text-transit-accent text-xl font-mono font-bold">04</span>
-        </div>
-        <h3 class="text-lg font-semibold mb-2">Funciona sin conexión</h3>
-        <p class="text-text-lo text-sm leading-relaxed">
-          Descarga las líneas y sus horarios para consultarlos sin datos.
-          La app sincroniza sola cuando vuelves a tener internet.
-        </p>
-      </div>
-
-      <div class="p-8 rounded-2xl bg-transit-surface border border-transit-border hover:border-transit-accent/30 transition-colors">
-        <div class="w-12 h-12 rounded-xl bg-transit-accent-bg flex items-center justify-center mb-5">
-          <span class="text-transit-accent text-xl font-mono font-bold">05</span>
-        </div>
-        <h3 class="text-lg font-semibold mb-2">Para conductores y operadoras</h3>
-        <p class="text-text-lo text-sm leading-relaxed">
-          Modo conductor con seguimiento en vivo y un panel para cada operadora:
-          gestiona líneas, paradas, horarios, zonas y tu equipo de conductores.
-        </p>
-      </div>
-
-      <div class="p-8 rounded-2xl bg-transit-surface border border-transit-border hover:border-transit-accent/30 transition-colors">
-        <div class="w-12 h-12 rounded-xl bg-transit-accent-bg flex items-center justify-center mb-5">
-          <span class="text-transit-accent text-xl font-mono font-bold">06</span>
-        </div>
-        <h3 class="text-lg font-semibold mb-2">Avisos en tu zona</h3>
-        <p class="text-text-lo text-sm leading-relaxed">
-          Recibe avisos geolocalizados (cortes, desvíos, incidencias) cuando
-          afectan a tu zona, y reporta lo que veas para ayudar a los demás.
-        </p>
-      </div>
+      ))}
     </div>
   </section>
 
-  <section class="max-w-6xl mx-auto px-6 pb-28 text-center">
-    <div class="p-10 md:p-16 rounded-3xl bg-gradient-to-br from-transit-surface to-transit-raised border border-transit-border relative overflow-hidden">
-      <div class="absolute inset-0 bg-gradient-to-r from-transit-neon-cyan/5 via-transparent to-transit-neon-purple/5 pointer-events-none" />
-      <h2 class="text-2xl md:text-3xl font-bold relative z-10">
-        ¿Listo para empezar?
-      </h2>
+  <!-- ── CTA FINAL ── -->
+  <section class="max-w-6xl mx-auto px-6 pb-28">
+    <div class="reveal p-10 md:p-16 rounded-3xl bg-gradient-to-br from-transit-surface to-transit-raised border border-transit-border relative overflow-hidden text-center">
+      <div class="absolute inset-0 bg-gradient-to-r from-transit-neon-cyan/8 via-transparent to-transit-neon-purple/8 pointer-events-none"></div>
+      <div class="aurora-blob absolute -bottom-20 left-1/2 -translate-x-1/2 w-80 h-80 rounded-full bg-transit-accent/15 blur-3xl pointer-events-none"></div>
+      <img src="/branding/logo.png" alt="" width="72" height="72" class="mx-auto mb-6 w-18 h-18 relative z-10 float-y" />
+      <h2 class="text-2xl md:text-3xl font-bold relative z-10">¿Listo para empezar?</h2>
       <p class="text-text-mid mt-4 max-w-md mx-auto relative z-10">
-        Abre Transitly en tu navegador o descarga la app para iOS y Android.
+        Abre Transitly en tu navegador, sin instalar nada, o descarga la app para Android.
       </p>
-      <div class="flex flex-col md:flex-row gap-4 justify-center mt-8 relative z-10">
-        <a
-          href="/app/"
-          class="px-8 py-3 rounded-full bg-white text-transit-bg font-semibold text-sm hover:opacity-90 transition-all"
-        >
-          Abrir en navegador
+      <div class="flex flex-col sm:flex-row gap-4 justify-center mt-8 relative z-10">
+        <a href="/app/" class="px-8 py-3.5 rounded-full bg-white text-transit-bg font-semibold text-sm hover:opacity-90 hover:-translate-y-0.5 transition-all">
+          Abrir en el navegador
         </a>
-        <a
-          href="/ciudades"
-          class="px-8 py-3 rounded-full border border-transit-border text-text-mid font-semibold text-sm hover:border-transit-accent hover:text-text-hi transition-all"
-        >
-          Explorar ciudades
+        <a href="#descargar" class="px-8 py-3.5 rounded-full border border-transit-border text-text-mid font-semibold text-sm hover:border-transit-accent hover:text-text-hi transition-all">
+          Descargar APK
         </a>
       </div>
     </div>

@@ -282,3 +282,11 @@ html {
 }
 .doc-prose th { color: var(--color-transit-text-hi); font-weight: 600; }
 .doc-prose img { max-width: 100%; border-radius: 0.5rem; }
+/* Diagramas Mermaid (Gantt del doc 03) */
+.doc-prose pre.mermaid {
+  background: #0c0c20; border: 1px solid rgba(151, 125, 223, 0.2);
+  border-radius: 0.75rem; padding: 1.25rem; margin: 0 0 1.5rem;
+  overflow-x: auto; text-align: center; line-height: normal;
+}
+.doc-prose pre.mermaid svg { max-width: 100%; height: auto; }
+.doc-prose pre.mermaid:not([data-processed]) { color: var(--color-transit-text-lo); font-size: 0.8rem; }

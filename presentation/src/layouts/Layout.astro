@@ -46,17 +46,29 @@ const base = baseUrl.replace(/\/$/, '');
         <a href={baseUrl} class="font-bold text-xl text-transit-accent hover:text-transit-accent/80 transition">
           Transitly
         </a>
-        <div class="hidden lg:flex items-center gap-6 text-sm">
-          <a href="#problema" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Problema</a>
-          <a href="#solucion" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Solución</a>
-          <a href="#arquitectura" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Arquitectura</a>
-          <a href="#features" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Features</a>
-          <a href="#metodologia" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Metodología</a>
-          <a href="#metricas" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Métricas</a>
-          <a href="#calidad" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Calidad</a>
-          <a href="#seguridad" class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Seguridad</a>
+        <div class="hidden lg:flex items-center gap-5 text-sm">
+          <a href={`${base}/#solucion`} class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Solución</a>
+          <a href={`${base}/#features`} class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Features</a>
+          <a href={`${base}/#metricas`} class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Métricas</a>
           <a href={`${base}/docs`} class="text-transit-text-mid hover:text-transit-text-hi transition-colors">Entregables</a>
-          <a href={`${base}/defensa`} class="text-transit-accent hover:text-transit-accent/80 transition-colors font-medium">Defensa ▸</a>
+
+          <div class="relative group">
+            <button class="flex items-center gap-1 text-transit-text-mid hover:text-transit-text-hi transition-colors" aria-haspopup="true">
+              Más
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:rotate-180"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div class="absolute right-0 top-full pt-3 hidden group-hover:block group-focus-within:block">
+              <div class="w-48 bg-transit-bg-surface/95 backdrop-blur-xl border border-transit-bg-raised rounded-xl shadow-xl shadow-black/40 p-2 flex flex-col">
+                <a href={`${base}/#problema`} class="px-3 py-2 rounded-lg text-transit-text-mid hover:text-transit-text-hi hover:bg-transit-accent-bg transition-colors">Problema</a>
+                <a href={`${base}/#arquitectura`} class="px-3 py-2 rounded-lg text-transit-text-mid hover:text-transit-text-hi hover:bg-transit-accent-bg transition-colors">Arquitectura</a>
+                <a href={`${base}/#metodologia`} class="px-3 py-2 rounded-lg text-transit-text-mid hover:text-transit-text-hi hover:bg-transit-accent-bg transition-colors">Metodología</a>
+                <a href={`${base}/#calidad`} class="px-3 py-2 rounded-lg text-transit-text-mid hover:text-transit-text-hi hover:bg-transit-accent-bg transition-colors">Calidad</a>
+                <a href={`${base}/#seguridad`} class="px-3 py-2 rounded-lg text-transit-text-mid hover:text-transit-text-hi hover:bg-transit-accent-bg transition-colors">Seguridad</a>
+              </div>
+            </div>
+          </div>
+
+          <a href={`${base}/defensa`} class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-transit-accent/40 text-transit-accent hover:bg-transit-accent-bg transition-all font-medium">Defensa ▸</a>
           <a
             href="https://github.com/astralk9999/Transitly/releases/latest"
             data-download-apk
@@ -86,13 +98,10 @@ const base = baseUrl.replace(/\/$/, '');
         <line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/>
       </svg>
     </button>
-    <a href="#problema" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Problema</a>
-    <a href="#solucion" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Solución</a>
-    <a href="#arquitectura" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Arquitectura</a>
-    <a href="#features" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Features</a>
-    <a href="#metricas" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Métricas</a>
-    <a href="#calidad" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Calidad</a>
-    <a href="#seguridad" class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Seguridad</a>
+    <a href={`${base}/#solucion`} class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Solución</a>
+    <a href={`${base}/#features`} class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Features</a>
+    <a href={`${base}/#metricas`} class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Métricas</a>
+    <a href={`${base}/#seguridad`} class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Seguridad</a>
     <a href={`${base}/docs`} class="mobile-link text-2xl font-medium text-transit-text-hi hover:text-transit-accent transition-colors">Entregables</a>
     <a href={`${base}/defensa`} class="mobile-link text-2xl font-medium text-transit-accent hover:text-transit-accent/80 transition-colors">Defensa ▸</a>
     <a

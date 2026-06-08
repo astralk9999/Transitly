@@ -42,6 +42,49 @@ const docsBase = `${base}/docs`;
       <Content />
     </div>
 
+    <script>
+      // Renderiza los diagramas Mermaid (p. ej. el Gantt del doc 03) solo si
+      // la página los contiene; carga la librería bajo demanda.
+      const blocks = document.querySelectorAll('pre.mermaid');
+      if (blocks.length) {
+        const { default: mermaid } = await import('mermaid');
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: 'base',
+          fontFamily: 'DM Sans, system-ui, sans-serif',
+          themeVariables: {
+            background: '#0c0c20',
+            primaryColor: '#1a1a35',
+            primaryBorderColor: '#977DDF',
+            primaryTextColor: '#F0F0FA',
+            lineColor: '#977DDF',
+            textColor: '#C9B8F0',
+            // Gantt
+            taskBkgColor: '#977DDF',
+            taskBorderColor: '#B8A5F0',
+            taskTextColor: '#0c0c20',
+            taskTextDarkColor: '#0c0c20',
+            taskTextOutsideColor: '#C9B8F0',
+            activeTaskBkgColor: '#00D4FF',
+            activeTaskBorderColor: '#00D4FF',
+            doneTaskBkgColor: '#3ECF8E',
+            doneTaskBorderColor: '#3ECF8E',
+            critBkgColor: '#FF4D6D',
+            sectionBkgColor: 'rgba(151,125,223,0.06)',
+            altSectionBkgColor: 'rgba(151,125,223,0.12)',
+            sectionBkgColor2: 'rgba(0,212,255,0.06)',
+            gridColor: 'rgba(151,125,223,0.2)',
+            todayLineColor: '#FFB000',
+          },
+        });
+        try {
+          await mermaid.run({ nodes: blocks });
+        } catch (e) {
+          console.error('Mermaid render error', e);
+        }
+      }
+    </script>
+
     <nav class="mt-16 pt-8 border-t border-transit-bg-raised grid grid-cols-2 gap-4">
       {prev ? (
         <a href={`${docsBase}/${prev.id}`} class="glass-card hover-lift p-4 group">

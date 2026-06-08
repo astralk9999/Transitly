@@ -82,8 +82,10 @@ class WidgetAppearancePanel extends ConsumerWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'La frecuencia se aplica al refresco periódico cuando esté '
-            'disponible; usa "Refrescar ahora" para forzar la actualización.',
+            'Los widgets se actualizan solos cada ${_label(cfg.refreshMinutes)} '
+            'en segundo plano (Android puede ajustar el momento exacto para '
+            'ahorrar batería). Usa "Refrescar ahora" para forzar la '
+            'actualización al instante.',
             style: TransitTypography.bodySmall(c.textLo),
           ),
           const SizedBox(height: 14),
@@ -117,6 +119,8 @@ class WidgetAppearancePanel extends ConsumerWidget {
       ),
     );
   }
+
+  String _label(int minutes) => minutes >= 60 ? '1 h' : '$minutes min';
 
   ButtonStyle _segmentedStyle(TransitColorScheme c) {
     return ButtonStyle(

@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 
+import '../../data/widgets_native/widget_alarm.dart';
+
 enum WidgetSize { small, medium, large }
 
 enum WidgetTheme { auto, light, dark, brand }
@@ -57,6 +59,8 @@ class WidgetAppearanceConfigNotifier
               ? refresh
               : 60,
     );
+    // Programa el refresco periódico de los widgets con el intervalo guardado.
+    await WidgetAlarm.reschedule(state.refreshMinutes);
   }
 
   Future<void> setSize(WidgetSize value) async {
@@ -76,6 +80,8 @@ class WidgetAppearanceConfigNotifier
     state = state.copyWith(refreshMinutes: value);
     final box = await Hive.openBox<dynamic>(_boxName);
     await box.put(_kRefresh, value);
+    // Aplica el nuevo intervalo al refresco periódico en segundo plano.
+    await WidgetAlarm.reschedule(value);
   }
 
   WidgetSize _parseSize(String? raw) {

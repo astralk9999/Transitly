@@ -48,10 +48,10 @@ dependencies:
   supabase_flutter: ^2.8.0
   url_launcher: ^6.3.1
   http: ^1.6.0
-  # workmanager eliminado: declarado pero nunca cableado en Dart, y la
-  # 0.5.2 usa la API v1-embedding (ShimPluginRegistry/Registrar) removida
-  # en Flutter 3.x → rompía `flutter build apk --release`. El refresco
-  # periódico del widget (docs/HOME_WIDGETS.md) queda como trabajo futuro.
+  # Refresco periódico del widget en segundo plano (intervalo configurable).
+  # android_alarm_manager_plus usa embedding v2 (compatible con Flutter 3.x),
+  # a diferencia del antiguo workmanager 0.5.2 que rompía el build release.
+  android_alarm_manager_plus: ^4.0.7
 
 dev_dependencies:
   build_runner: ^2.4.13

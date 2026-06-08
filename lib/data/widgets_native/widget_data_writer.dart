@@ -112,6 +112,30 @@ class WidgetDataWriter {
     AppLogger.debug(_tag, 'writeMyLineStatus saved (key=$key)');
   }
 
+  // Claves que lee el refresco periódico en segundo plano (widget_alarm.dart).
+  static const kBgRoute = 'widget_bg_route';
+  static const kBgStop = 'widget_bg_stop';
+  static const kBgTodayTimes = 'widget_bg_today_times';
+  static const kBgDay = 'widget_bg_day'; // yyyy-mm-dd de cuándo se calcularon
+
+  /// Persiste en SharedPreferences (acceso seguro entre isolates) el horario
+  /// COMPLETO de hoy por la parada, para que el callback en segundo plano
+  /// recalcule el próximo bus sin recargar el dataset ni tocar Hive.
+  static Future<void> writeBackgroundSchedule({
+    required String routeCode,
+    required String stopName,
+    required List<String> todayTimes,
+  }) async {
+    if (kIsWeb) return;
+    final now = DateTime.now();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(kBgRoute, routeCode);
+    await prefs.setString(kBgStop, stopName);
+    await prefs.setString(kBgTodayTimes, jsonEncode(todayTimes));
+    await prefs.setString(kBgDay,
+        '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}');
+  }
+
   static Future<void> writeNfcBalance({
     required double balance,
     required DateTime scannedAt,

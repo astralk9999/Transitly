@@ -70,6 +70,12 @@ final widgetDataSyncProvider = Provider<void>((ref) {
           .toList(),
       inService: inService,
     );
+    // Horario completo de hoy para el refresco periódico en segundo plano.
+    WidgetDataWriter.writeBackgroundSchedule(
+      routeCode: route.code,
+      stopName: stop?.name ?? cfg.stopId!,
+      todayTimes: mockData.getTodayStopTimesAll(cfg.routeId!, cfg.stopId!),
+    );
   }
 });
 
@@ -111,6 +117,11 @@ void _fillFromFavorite(Ref ref) {
       updatedAt: now,
       inService: inService,
       nextDepartureTime: deps.first.departureTime,
+    );
+    WidgetDataWriter.writeBackgroundSchedule(
+      routeCode: route.code,
+      stopName: stops.isNotEmpty ? stops.first.name : route.name,
+      todayTimes: mockData.getTodayStopTimesAll(route.id, stopId),
     );
     return; // ya hay una oficial; suficiente para el widget
   }
@@ -178,6 +189,12 @@ Future<void> _pushFromCommunity(Ref ref, String routeId) async {
       updatedAt: now,
       inService: inService,
       nextDepartureTime: times.isNotEmpty ? times.first : null,
+    );
+    // Las horas de comunidad ya son las del día → directas al refresco de fondo.
+    await WidgetDataWriter.writeBackgroundSchedule(
+      routeCode: code,
+      stopName: route.name,
+      todayTimes: times,
     );
   } catch (_) {}
 }

@@ -67,6 +67,13 @@ class WidgetRefreshService {
         upcoming: deps.map((d) => {'time': d.departureTime}).toList(),
         inService: inService,
       );
+      // Persiste el horario COMPLETO de hoy para el refresco periódico en
+      // segundo plano (recalcula el próximo bus cada N min sin la app abierta).
+      await WidgetDataWriter.writeBackgroundSchedule(
+        routeCode: route.code,
+        stopName: stop?.name ?? cfg.stopId!,
+        todayTimes: mockData.getTodayStopTimesAll(cfg.routeId!, cfg.stopId!),
+      );
       AppLogger.info(_tag,
           'refreshNow ok — inService=$inService eta=${eta}min route=${route.code}');
       return true;

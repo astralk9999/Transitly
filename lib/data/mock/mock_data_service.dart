@@ -479,6 +479,41 @@ class MockDataService {
     return future.take(count).toList();
   }
 
+  /// TODAS las horas de paso de HOY por la parada [stopId] de [routeId],
+  /// ajustadas con el offset por parada y ordenadas ("HH:mm"). Se persiste
+  /// para que el refresco periódico en segundo plano recalcule el próximo bus
+  /// sin necesitar recargar todo el dataset.
+  List<String> getTodayStopTimesAll(String routeId, String stopId) {
+    final rs = routeStops[routeId];
+    if (rs == null) return const [];
+    final ordered = List<RouteStopModel>.from(rs)
+      ..sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
+    final stopIndex = ordered.indexWhere((e) => e.stopId == stopId);
+    if (stopIndex < 0) return const [];
+    final offset = stopIndex * 2;
+
+    final weekday = DateTime.now().weekday;
+    final dayType = weekday == 6
+        ? DayType.saturday
+        : weekday == 7
+            ? DayType.sundayHoliday
+            : DayType.weekday;
+
+    final all = getSchedulesForRoute(routeId, dayType: dayType);
+    final times = <String>[];
+    for (final s in all) {
+      final parts = s.departureTime.split(':');
+      final m = (int.tryParse(parts[0]) ?? 0) * 60 +
+          (parts.length > 1 ? (int.tryParse(parts[1]) ?? 0) : 0) +
+          offset;
+      final hh = (m ~/ 60) % 24;
+      final mm = m % 60;
+      times.add('${hh.toString().padLeft(2, '0')}:${mm.toString().padLeft(2, '0')}');
+    }
+    times.sort();
+    return times;
+  }
+
   ActiveTripModel? getActiveTripForRoute(String routeId) {
     for (final t in activeTrips) {
       if (t.routeId == routeId && t.status != TripStatus.cancelled) return t;

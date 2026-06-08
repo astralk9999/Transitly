@@ -151,7 +151,11 @@ class _CreateRouteWizardState extends ConsumerState<CreateRouteWizard> {
             for (final s in schedules) {
               _schedules.add(WizardSchedule(
                 dayType: s.dayType,
-                departureTime: s.departureTime,
+                // Normaliza "06:00:00" → "06:00" (la BD guarda TIME con
+                // segundos; la UI trabaja siempre con HH:mm).
+                departureTime: s.departureTime.length >= 5
+                    ? s.departureTime.substring(0, 5)
+                    : s.departureTime,
                 originStopId: s.originStopId,
                 notes: s.notes,
               ));
@@ -309,7 +313,10 @@ class _CreateRouteWizardState extends ConsumerState<CreateRouteWizard> {
           stopType: ws.stopType,
           promotionStatus: ws.suggestAsOfficial ? 'requested' : 'none',
         );
-        await stopsRepo.create(stopModel);
+        // upsert (no create): al editar, las paradas ya existen y un insert
+        // plano fallaría por clave duplicada y abortaría toda la publicación.
+        await stopsRepo.upsert(stopModel);
+        // orderIndex = posición real en la lista (garantiza el orden).
         routeStops.add(UserRouteStopModel(
           userStopId: ws.stopId,
           orderIndex: i,

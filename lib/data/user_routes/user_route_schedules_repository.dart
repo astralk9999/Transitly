@@ -22,11 +22,13 @@ class UserRouteScheduleModel {
   final String? notes;
 
   factory UserRouteScheduleModel.fromJson(Map<String, dynamic> json) {
+    final rawTime = json['departure_time'] as String;
     return UserRouteScheduleModel(
       id: json['id'] as String?,
       routeId: json['route_id'] as String,
       dayType: json['day_type'] as String,
-      departureTime: json['departure_time'] as String,
+      // La BD guarda TIME como "HH:MM:SS"; la UI usa siempre "HH:MM".
+      departureTime: rawTime.length >= 5 ? rawTime.substring(0, 5) : rawTime,
       originStopId: json['origin_stop_id'] as String?,
       notes: json['notes'] as String?,
     );

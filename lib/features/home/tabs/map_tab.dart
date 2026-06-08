@@ -633,25 +633,40 @@ class _MapTabState extends ConsumerState<MapTab>
           // Banner flotante "línea seleccionada" arriba del mapa.
           // Sustituye al SnackBar feo que aparecía abajo tapando el
           // desplegable de líneas.
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: IgnorePointer(
-              ignoring: _selectedRouteId == null,
-              child: RouteSelectionBanner(
-                route: _selectedRouteId == null
-                    ? null
-                    : ref
-                        .read(mockDataServiceProvider)
-                        .getRouteById(_selectedRouteId!),
-                onClose: _clearSelection,
-                onTap: _selectedRouteId == null
-                    ? null
-                    : () => context.push('/route/$_selectedRouteId'),
+          Builder(builder: (context) {
+            // Busca la ruta seleccionada en la lista combinada (oficiales +
+            // comunidad). Antes solo miraba mockData, así que con una ruta
+            // de comunidad el banner salía vacío y el tap crasheaba.
+            RouteModel? selRoute;
+            if (_selectedRouteId != null) {
+              for (final r in routes) {
+                if (r.id == _selectedRouteId) {
+                  selRoute = r;
+                  break;
+                }
+              }
+            }
+            return Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: IgnorePointer(
+                ignoring: _selectedRouteId == null,
+                child: RouteSelectionBanner(
+                  route: selRoute,
+                  onClose: _clearSelection,
+                  onTap: selRoute == null
+                      ? null
+                      : () {
+                          final r = selRoute!;
+                          context.push(r.source == RouteSource.community
+                              ? '/community/route/${r.id}'
+                              : '/route/${r.id}');
+                        },
+                ),
               ),
-            ),
-          ),
+            );
+          }),
           if (offline)
             Positioned(
               top: 0,
@@ -749,8 +764,13 @@ class _MapTabState extends ConsumerState<MapTab>
                               route: route,
                               activeTrip: trip,
                               remainingStops: routeStops.length,
-                              onTap: () =>
-                                  context.push('/route/${route.id}'),
+                              // Las rutas de comunidad abren su propio
+                              // detalle; '/route/:id' es solo para oficiales
+                              // (mockData) y crasheaba con las de comunidad.
+                              onTap: () => context.push(
+                                  route.source == RouteSource.community
+                                      ? '/community/route/${route.id}'
+                                      : '/route/${route.id}'),
                               onGoToLine: () {
                                 setState(() => _selectedRouteId = route.id);
                                 final bounds = cache.routeBounds[route.id];

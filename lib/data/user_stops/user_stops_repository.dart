@@ -144,6 +144,18 @@ class UserStopsRepository {
     }
   }
 
+  /// Inserta o actualiza una parada por id. Necesario al EDITAR una ruta:
+  /// las paradas ya existen, así que un insert plano daría error de clave
+  /// duplicada y reventaría toda la publicación.
+  Future<void> upsert(UserStopModel stop) async {
+    try {
+      await _client.from('user_stops').upsert(stop.toJson());
+    } catch (e) {
+      AppLogger.error(_logTag, 'upsert stop failed', e);
+      rethrow;
+    }
+  }
+
   Future<void> saveRouteStops(String routeId, List<UserRouteStopModel> stops) async {
     try {
       // Borrar existentes y reinsertar

@@ -10,6 +10,7 @@ import '../../core/theme/transit_colors.dart';
 import '../../core/theme/transit_typography.dart';
 import '../../data/admin/admin_routes_repository.dart';
 import '../../data/operator/operator_repository_provider.dart';
+import '../../data/supabase/supabase_client_provider.dart';
 import '../../data/user_routes/user_route_schedules_repository.dart';
 import '../../data/user_routes/user_routes_repository.dart';
 import '../../data/user_stops/user_stops_repository.dart';
@@ -40,6 +41,11 @@ class _UserRouteDetailScreenState extends ConsumerState<UserRouteDetailScreen> {
   bool _hasVoted = false;
   bool _isAdmin = false;
   String? _error;
+
+  bool get _isOwner {
+    final uid = ref.read(supabaseClientProvider).auth.currentUser?.id;
+    return uid != null && _route != null && _route!.authorId == uid;
+  }
 
   @override
   void initState() {
@@ -442,7 +448,22 @@ class _UserRouteDetailScreenState extends ConsumerState<UserRouteDetailScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: Column(
         children: [
-          // Acciones primarias según rol.
+          // El dueño puede editar su propia ruta.
+          if (_isOwner) ...[
+            SizedBox(
+              width: double.infinity,
+              child: TransitButton(
+                label: 'Editar ruta',
+                icon: Icons.edit_outlined,
+                isPrimary: true,
+                onPressed: () => context
+                    .push('/create-route/${_route!.id}')
+                    .then((_) => _load()),
+              ),
+            ),
+            const SizedBox(height: 8),
+          ],
+          // Acciones de admin (oficializar solo desde aquí, rol admin).
           if (_isAdmin) ...[
             Row(
               children: [
@@ -450,7 +471,7 @@ class _UserRouteDetailScreenState extends ConsumerState<UserRouteDetailScreen> {
                   child: TransitButton(
                     label: 'Oficializar',
                     icon: Icons.verified_outlined,
-                    isPrimary: true,
+                    isPrimary: !_isOwner,
                     onPressed: _openOfficialize,
                   ),
                 ),
@@ -467,17 +488,20 @@ class _UserRouteDetailScreenState extends ConsumerState<UserRouteDetailScreen> {
             ),
             const SizedBox(height: 8),
           ],
-          SizedBox(
-            width: double.infinity,
-            child: TransitButton(
-              label: _importing ? 'Importando…' : 'Importar a mis rutas',
-              icon: Icons.download_outlined,
-              isPrimary: !_isAdmin,
-              isLoading: _importing,
-              onPressed: _import,
+          // Importar solo tiene sentido si NO es tu propia ruta.
+          if (!_isOwner) ...[
+            SizedBox(
+              width: double.infinity,
+              child: TransitButton(
+                label: _importing ? 'Importando…' : 'Importar a mis rutas',
+                icon: Icons.download_outlined,
+                isPrimary: !_isAdmin,
+                isLoading: _importing,
+                onPressed: _import,
+              ),
             ),
-          ),
-          const SizedBox(height: 8),
+            const SizedBox(height: 8),
+          ],
           // Acciones secundarias compactas (icono + etiqueta pequeña), en una
           // fila de iguales que nunca desborda.
           Row(

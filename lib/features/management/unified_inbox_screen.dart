@@ -33,6 +33,10 @@ const _filters = [
   _Filter('incident', 'Incidencias', Icons.warning_amber, Color(0xFFFF9800)),
   _Filter('suggestion', 'Sugerencias', Icons.route_outlined, Color(0xFF4CAF50)),
   _Filter('feature', 'Solicitudes', Icons.lightbulb_outline, Color(0xFF9C27B0)),
+  _Filter('community_route', 'Rutas comunidad', Icons.alt_route,
+      Color(0xFF4CAF50)),
+  _Filter('stop_suggestion', 'Paradas', Icons.add_location_alt_outlined,
+      Color(0xFF009688)),
   _Filter('route_report', 'Reportes', Icons.flag_outlined, Color(0xFFE53935)),
   _Filter('zone', 'Zonas', Icons.map_outlined, Color(0xFF00BCD4)),
   _Filter('operator_app', 'Operadores', Icons.business_outlined,
@@ -147,6 +151,8 @@ class _State extends ConsumerState<UnifiedInboxScreen> {
         'feature' => 'Aceptar',
         'zone' => 'Aprobar',
         'operator_app' => 'Aprobar',
+        'community_route' => 'Aprobar',
+        'stop_suggestion' => 'Aprobar',
         'route_report' => 'Eliminar ruta',
         'rgpd' => 'Borrar',
         _ => 'Aplicar',
@@ -159,6 +165,8 @@ class _State extends ConsumerState<UnifiedInboxScreen> {
         'feature' => 'Aceptar solicitud',
         'zone' => 'Aprobar zona',
         'operator_app' => 'Aprobar operador',
+        'community_route' => 'Aprobar ruta',
+        'stop_suggestion' => 'Aprobar parada',
         'route_report' => 'Eliminar ruta reportada',
         'rgpd' => 'Confirmar borrado',
         _ => 'Aplicar',
@@ -589,15 +597,38 @@ class _State extends ConsumerState<UnifiedInboxScreen> {
             children: [
               _statusBadge(c, it.status),
               const Spacer(),
-              if (it.authorId != null)
+              // Vista previa: si la aportación referencia una ruta de
+              // comunidad, abre el detalle directamente (sin pasar por el
+              // perfil) para revisarla/oficializarla.
+              if (it.routeId != null &&
+                  (it.source == 'community_route' ||
+                      it.source == 'route_report'))
+                OutlinedButton.icon(
+                  onPressed: () => context
+                      .push('/community/route/${it.routeId}')
+                      .then((_) => _load()),
+                  icon: const Icon(Icons.visibility_outlined, size: 14),
+                  label: const Text('Vista previa'),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: c.accent,
+                    side: BorderSide(color: c.accent.withValues(alpha: 0.5)),
+                    visualDensity: VisualDensity.compact,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                    textStyle: const TextStyle(
+                        fontSize: 12, fontWeight: FontWeight.w600),
+                  ),
+                ),
+              if (it.authorId != null) ...[
+                const SizedBox(width: 8),
                 OutlinedButton.icon(
                   onPressed: () =>
                       context.push('/admin/users/${it.authorId}'),
                   icon: const Icon(Icons.person_outline, size: 14),
-                  label: const Text('Ver autor'),
+                  label: const Text('Autor'),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: c.accent,
-                    side: BorderSide(color: c.accent.withValues(alpha: 0.5)),
+                    foregroundColor: c.textMid,
+                    side: BorderSide(color: c.border),
                     visualDensity: VisualDensity.compact,
                     padding: const EdgeInsets.symmetric(
                         horizontal: 10, vertical: 0),
@@ -605,6 +636,7 @@ class _State extends ConsumerState<UnifiedInboxScreen> {
                         fontSize: 12, fontWeight: FontWeight.w600),
                   ),
                 ),
+              ],
             ],
           ),
           if (it.isOpen) ...[

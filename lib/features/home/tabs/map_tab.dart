@@ -565,6 +565,15 @@ class _MapTabState extends ConsumerState<MapTab>
             controller: _mapController,
             fmtcTileProvider: bypassFmtc ? null : fmtcTp,
             additionalLayers: [
+              // Polylines de las rutas propias del usuario (creadas o
+              // importadas), dibujadas sin necesidad de oficializarlas.
+              if (ref.watch(myRoutePolylinesProvider).valueOrNull
+                      ?.isNotEmpty ??
+                  false)
+                PolylineLayer(
+                  polylines: ref.watch(myRoutePolylinesProvider).value ??
+                      const <Polyline<Object>>[],
+                ),
               if (userLocationFix != null)
                 UserLocationLayer(
                   fix: userLocationFix,

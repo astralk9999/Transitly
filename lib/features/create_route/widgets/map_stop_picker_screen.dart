@@ -68,28 +68,45 @@ class _MapStopPickerScreenState extends ConsumerState<MapStopPickerScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) => _loadOfficial());
   }
 
+  Future<List<_OfficialStop>> _fetchOfficial(LatLng center) async {
+    final rows = await ref.read(supabaseClientProvider).rpc(
+      'list_official_stops_near',
+      params: {
+        'p_lat': center.latitude,
+        'p_lng': center.longitude,
+        'p_radius_m': 12000,
+      },
+    );
+    return (rows as List)
+        .map((e) => _OfficialStop(
+              e['id'] as String,
+              e['name'] as String? ?? '',
+              (e['lat'] as num).toDouble(),
+              (e['lng'] as num).toDouble(),
+            ))
+        .toList();
+  }
+
   Future<void> _loadOfficial() async {
     final center = widget.initialCenter ??
         ref.read(userLocationLatLngProvider) ??
         _jerezCenter;
     try {
-      final rows = await ref.read(supabaseClientProvider).rpc(
-        'list_official_stops_near',
-        params: {
-          'p_lat': center.latitude,
-          'p_lng': center.longitude,
-          'p_radius_m': 12000,
-        },
-      );
-      final list = (rows as List)
-          .map((e) => _OfficialStop(
-                e['id'] as String,
-                e['name'] as String? ?? '',
-                (e['lat'] as num).toDouble(),
-                (e['lng'] as num).toDouble(),
-              ))
-          .toList();
-      if (mounted) setState(() => _official = list);
+      var list = await _fetchOfficial(center);
+      // Si no hay paradas cerca (p.ej. GPS lejos de la ciudad), probamos en
+      // Jerez para que siempre se vean las paradas oficiales del sistema.
+      if (list.isEmpty && widget.initialCenter == null) {
+        list = await _fetchOfficial(_jerezCenter);
+      }
+      if (!mounted) return;
+      setState(() => _official = list);
+      // Centra el mapa en las paradas si no había centro fijado ni se ha
+      // colocado un pin todavía.
+      if (list.isNotEmpty &&
+          widget.initialCenter == null &&
+          _pinPosition == null) {
+        _mapController.move(LatLng(list.first.lat, list.first.lng), 14);
+      }
     } catch (_) {
       // Sin oficiales (sin red o sin datos) → el usuario crea la suya.
     }

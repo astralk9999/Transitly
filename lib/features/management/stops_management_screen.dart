@@ -25,7 +25,10 @@ class StopsManagementScreen extends ConsumerStatefulWidget {
 class _State extends ConsumerState<StopsManagementScreen> {
   bool _isAdmin = false;
   List<OperatorModel> _operators = const [];
+  List<ZoneRow> _zones = const [];
   String? _operatorId;
+  String? _filterZoneId;
+  bool _onlyAccessible = false;
   List<AdminStopRow> _stops = const [];
   String _query = '';
   bool _loading = true;
@@ -64,9 +67,11 @@ class _State extends ConsumerState<StopsManagementScreen> {
       final stops = _operatorId == null
           ? <AdminStopRow>[]
           : await _repo.listStopsOfOperator(_operatorId!);
+      final zones = await _repo.listZones(includePending: false);
       if (!mounted) return;
       setState(() {
         _stops = stops;
+        _zones = zones;
         _loading = false;
       });
     } catch (e) {
@@ -80,12 +85,18 @@ class _State extends ConsumerState<StopsManagementScreen> {
 
   List<AdminStopRow> get _filtered {
     final q = _query.trim().toLowerCase();
-    if (q.isEmpty) return _stops;
-    return _stops
-        .where((s) =>
-            s.name.toLowerCase().contains(q) ||
-            s.code.toLowerCase().contains(q))
-        .toList();
+    return _stops.where((s) {
+      if (_filterZoneId != null && s.zoneId != _filterZoneId) return false;
+      if (_onlyAccessible && !s.accessible) return false;
+      if (q.isEmpty) return true;
+      return s.name.toLowerCase().contains(q) ||
+          s.code.toLowerCase().contains(q);
+    }).toList();
+  }
+
+  String _zoneName(String id) {
+    final m = _zones.where((z) => z.id == id).toList();
+    return m.isEmpty ? 'Zona' : m.first.name;
   }
 
   Future<void> _create() async {
@@ -124,6 +135,8 @@ class _State extends ConsumerState<StopsManagementScreen> {
         accessible: result.accessible,
         hasShelter: result.hasShelter,
         hasBench: result.hasBench,
+        // Si hay un filtro de zona activo, la nueva parada nace en esa zona.
+        zoneId: _filterZoneId,
       );
       await _load();
     } catch (e) {
@@ -145,6 +158,7 @@ class _State extends ConsumerState<StopsManagementScreen> {
         accessible: result.accessible,
         hasShelter: result.hasShelter,
         hasBench: result.hasBench,
+        zoneId: s.zoneId, // preserva la zona existente
       );
       await _load();
     } catch (e) {
@@ -220,6 +234,7 @@ class _State extends ConsumerState<StopsManagementScreen> {
                         child: _operatorSelector(c),
                       ),
                     if (!_mapMode) _searchBar(c),
+                    if (!_mapMode) _filtersBar(c),
                     const SizedBox(height: 6),
                     Expanded(
                       child: _mapMode
@@ -513,6 +528,117 @@ class _State extends ConsumerState<StopsManagementScreen> {
           ),
         ),
       );
+
+  Widget _filtersBar(TransitColorScheme c) => Padding(
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+        child: Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            if (_zones.length > 1)
+              _filterChip(
+                c,
+                label: _filterZoneId == null
+                    ? 'Todas las zonas'
+                    : _zoneName(_filterZoneId!),
+                icon: Icons.map_outlined,
+                selected: _filterZoneId != null,
+                onTap: _pickZoneFilter,
+              ),
+            _filterChip(
+              c,
+              label: 'Accesibles',
+              icon: Icons.accessible,
+              selected: _onlyAccessible,
+              onTap: () => setState(() => _onlyAccessible = !_onlyAccessible),
+            ),
+            if (_filterZoneId != null || _onlyAccessible)
+              _filterChip(
+                c,
+                label: 'Limpiar',
+                icon: Icons.clear,
+                selected: false,
+                onTap: () => setState(() {
+                  _filterZoneId = null;
+                  _onlyAccessible = false;
+                }),
+              ),
+          ],
+        ),
+      );
+
+  Widget _filterChip(TransitColorScheme c,
+          {required String label,
+          required IconData icon,
+          required bool selected,
+          required VoidCallback onTap}) =>
+      InkWell(
+        borderRadius: BorderRadius.circular(20),
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: selected ? c.accent.withValues(alpha: 0.18) : c.bgRaised,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+                color: selected ? c.accent : c.border,
+                width: selected ? 1.2 : 0.5),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 14, color: selected ? c.accent : c.textMid),
+              const SizedBox(width: 6),
+              Text(label,
+                  style: TransitTypography.bodySmall(
+                      selected ? c.accent : c.textMid)),
+            ],
+          ),
+        ),
+      );
+
+  Future<void> _pickZoneFilter() async {
+    final picked = await showModalBottomSheet<String?>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        final c = TransitColorScheme.of(
+            Theme.of(ctx).brightness == Brightness.dark);
+        return SafeArea(
+          child: Container(
+            margin: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: c.bgElevated,
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: c.border, width: 0.5),
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  leading: Icon(Icons.all_inclusive, color: c.accent),
+                  title: Text('Todas las zonas',
+                      style: TransitTypography.bodyPrimary(c.textHi)),
+                  onTap: () => Navigator.pop(ctx, '__all__'),
+                ),
+                Divider(height: 1, color: c.border),
+                ..._zones.map((z) => ListTile(
+                      leading: Icon(Icons.map_outlined, color: c.textMid),
+                      title: Text(z.name,
+                          style: TransitTypography.bodyPrimary(c.textHi)),
+                      onTap: () => Navigator.pop(ctx, z.id),
+                    )),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+    if (mounted && picked != null) {
+      setState(() => _filterZoneId = picked == '__all__' ? null : picked);
+    }
+  }
 
   Widget _searchBar(TransitColorScheme c) => Padding(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),

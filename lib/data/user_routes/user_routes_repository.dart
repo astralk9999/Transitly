@@ -287,15 +287,38 @@ class UserRoutesRepository {
   }
 
   /// Lista TODAS las rutas de comunidad para el panel admin (la RLS
-  /// 'Admin sees all routes' lo permite). Incluye nº de paradas y el
-  /// nombre del autor.
+  /// 'Admin sees all routes' lo permite). Incluye nº de paradas y resuelve
+  /// el nombre del autor con una consulta aparte (author_id referencia a
+  /// auth.users, no a profiles, por lo que no se puede embeber).
   Future<List<Map<String, dynamic>>> adminListCommunity() async {
     final rows = await _client
         .from('user_routes')
         .select(
-            'id, name, code, status, visibility, route_color, vote_count, created_at, author_id, region, user_route_stops(count), profiles:author_id(display_name)')
+            'id, name, code, status, visibility, route_color, vote_count, created_at, author_id, region, user_route_stops(count)')
         .order('created_at', ascending: false);
-    return (rows as List<dynamic>).cast<Map<String, dynamic>>();
+    final list = (rows as List<dynamic>).cast<Map<String, dynamic>>();
+    final authorIds = list
+        .map((r) => r['author_id'] as String?)
+        .whereType<String>()
+        .toSet()
+        .toList();
+    if (authorIds.isNotEmpty) {
+      try {
+        final profs = await _client
+            .from('profiles')
+            .select('id, display_name')
+            .inFilter('id', authorIds);
+        final names = <String, String>{
+          for (final p in (profs as List))
+            (p as Map)['id'] as String:
+                (p['display_name'] as String?) ?? '',
+        };
+        for (final r in list) {
+          r['author_name'] = names[r['author_id']];
+        }
+      } catch (_) {}
+    }
+    return list;
   }
 
   /// Oficializa una ruta comunitaria: crea la ruta oficial (con paradas y

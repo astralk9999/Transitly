@@ -92,6 +92,7 @@ class AdminStopRow {
     required this.accessible,
     required this.hasShelter,
     required this.hasBench,
+    this.zoneId,
   });
 
   final String id;
@@ -103,6 +104,7 @@ class AdminStopRow {
   final bool accessible;
   final bool hasShelter;
   final bool hasBench;
+  final String? zoneId;
 
   /// PostGIS devuelve geom como GeoJSON cuando se pide via to_json o
   /// como string WKT por defecto. Para simplificar usamos las columnas
@@ -119,6 +121,7 @@ class AdminStopRow {
       accessible: (acc['wheelchair'] as bool?) ?? false,
       hasShelter: (acc['shelter'] as bool?) ?? false,
       hasBench: (acc['bench'] as bool?) ?? false,
+      zoneId: j['zone_id'] as String?,
     );
   }
 }

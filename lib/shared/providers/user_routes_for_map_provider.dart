@@ -1,11 +1,14 @@
 import 'dart:ui';
 
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:latlong2/latlong.dart';
 
 import '../../core/utils/app_logger.dart';
 import '../../data/auth/auth_repository.dart';
 import '../../data/supabase/supabase_client_provider.dart';
 import '../../data/user_routes/user_routes_repository.dart';
+import '../../data/user_stops/user_stops_repository.dart';
 import '../models/enums.dart';
 import '../models/route_model.dart';
 import 'auth_provider.dart';
@@ -32,14 +35,11 @@ final userRoutesForMapProvider =
   try {
     // 1) Rutas públicas + publicadas/aprobadas de cualquier autor.
     results.addAll(await repo.searchPublic(limit: 100));
-    // 2) Mis propias rutas publicadas, aunque sean unlisted/private.
+    // 2) TODAS mis rutas (creadas, importadas, borradores, privadas…). El
+    //    usuario debe ver sus propias rutas en su mapa sin necesidad de que
+    //    un admin las oficialice ni de publicarlas.
     if (userId != null) {
-      final mine = await repo.getMyRoutes();
-      for (final r in mine) {
-        if (r.status == 'published' || r.status == 'community_approved') {
-          results.add(r);
-        }
-      }
+      results.addAll(await repo.getMyRoutes());
     }
   } catch (e) {
     AppLogger.warn(_logTag, 'load failed', e);
@@ -54,6 +54,40 @@ final userRoutesForMapProvider =
   return byId.values
       .map((u) => _toRouteModel(u))
       .toList(growable: false);
+});
+
+/// Polylines de las rutas propias del usuario (creadas o importadas), para
+/// dibujarlas en SU mapa sin necesidad de que un admin las oficialice.
+/// Carga las paradas de cada ruta y las une en orden.
+final myRoutePolylinesProvider =
+    FutureProvider<List<Polyline<Object>>>((ref) async {
+  final client = ref.watch(supabaseClientProvider);
+  final authState = ref.watch(authStateProvider).valueOrNull;
+  if (authState is! AuthAuthenticated) return const [];
+
+  final routesRepo = UserRoutesRepository(client);
+  final stopsRepo = UserStopsRepository(client);
+  final out = <Polyline<Object>>[];
+  try {
+    final mine = await routesRepo.getMyRoutes();
+    for (final r in mine) {
+      final rs = await stopsRepo.getStopsForRoute(r.id);
+      final pts = (rs..sort((a, b) => a.orderIndex.compareTo(b.orderIndex)))
+          .where((s) => s.stop != null)
+          .map((s) => LatLng(s.stop!.lat, s.stop!.lng))
+          .toList();
+      if (pts.length >= 2) {
+        out.add(Polyline<Object>(
+          points: pts,
+          strokeWidth: 4,
+          color: _parseColor(r.routeColor).withValues(alpha: 0.85),
+        ));
+      }
+    }
+  } catch (e) {
+    AppLogger.warn(_logTag, 'polylines load failed', e);
+  }
+  return out;
 });
 
 RouteModel _toRouteModel(UserRouteModel u) {

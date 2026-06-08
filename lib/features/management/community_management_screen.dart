@@ -310,7 +310,7 @@ class _State extends ConsumerState<CommunityManagementScreen> {
     final status = r['status'] as String? ?? '';
     final votes = (r['vote_count'] as num?)?.toInt() ?? 0;
     final stops = _count(r['user_route_stops']);
-    final author = (r['profiles'] as Map?)?['display_name'] as String?;
+    final author = r['author_name'] as String?;
     final routeColor = _parseHex(r['route_color'] as String?) ?? c.accent;
     final pending = _isPending(status);
 

@@ -66,7 +66,12 @@
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">final widgetDataSyncProvider = Provider&lt;void&gt;((ref) {
   final cfg = ref.watch(homeHabitualConfigProvider);
-  if (!cfg.isConfigured) return;
+  if (!cfg.isConfigured) {
+    &#47;&#47; Sin viaje habitual: rellena el widget &quot;mi línea&quot; con la primera línea
+    &#47;&#47; favorita, para que el widget tenga datos desde el primer momento.
+    _fillFromFavorite(ref);
+    return;
+  }
 
   final mockData = ref.watch(mockDataServiceProvider);
   final route = mockData.getRouteById(cfg.routeId!);

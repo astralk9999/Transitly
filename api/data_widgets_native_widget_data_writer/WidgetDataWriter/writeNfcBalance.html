@@ -72,6 +72,7 @@
   required double balance,
   required DateTime scannedAt,
 }) async {
+  if (kIsWeb) return;
   final payload = jsonEncode({
     &#39;balance&#39;: balance,
     &#39;scannedAt&#39;: scannedAt.millisecondsSinceEpoch ~&#47; 1000,

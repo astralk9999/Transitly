@@ -78,6 +78,7 @@
   required String source,
   required DateTime updatedAt,
 }) async {
+  if (kIsWeb) return; &#47;&#47; los widgets nativos no existen en web
   final payload = jsonEncode({
     &#39;time&#39;: &#39;$etaMinutes min&#39;,
     &#39;stop&#39;: stopName,

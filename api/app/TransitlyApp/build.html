@@ -122,6 +122,8 @@ Widget build(BuildContext context, WidgetRef ref) {
   ref.watch(pushBridgeProvider);
   &#47;&#47; Refresca reputación&#47;rango en vivo al recibir XP por Realtime.
   ref.watch(reputationLiveRefreshProvider);
+  &#47;&#47; Aviso &quot;bus llegando&quot; a paradas favoritas (según preferencias).
+  ref.watch(busApproachingNotifierProvider);
 
   return MaterialApp.router(
     title: &#39;Transitly&#39;,

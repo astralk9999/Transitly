@@ -72,6 +72,7 @@
   required String routeCode,
   required List&lt;Map&lt;String, dynamic&gt;&gt; upcoming,
 }) async {
+  if (kIsWeb) return;
   final status = upcoming.isNotEmpty ? &#39;En servicio&#39; : &#39;Sin datos&#39;;
   final updatedAt = DateTime.now().toIso8601String();
   final times = upcoming.map((d) =&gt; d[&#39;time&#39;] as String).toList();

@@ -74,6 +74,7 @@
   required String bgRoot,
   required String textHi,
 }) async {
+  if (kIsWeb) return;
   final payload = jsonEncode({
     &#39;accent&#39;: accent,
     &#39;bgRoot&#39;: bgRoot,

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -23,6 +24,7 @@ import '../../../shared/models/route_model.dart';
 import '../../../shared/models/route_stop_model.dart';
 import '../../../shared/models/stop_model.dart';
 import '../../../shared/widgets/route_favorite_toast.dart';
+import '../../../data/driver_live/driver_live_repository.dart';
 import '../../../shared/providers/center_on_stop_provider.dart';
 import '../../../shared/providers/connectivity_provider.dart';
 import '../../../shared/providers/primary_zone_provider.dart';
@@ -425,6 +427,7 @@ class _MapTabState extends ConsumerState<MapTab>
 
     showModalBottomSheet<void>(
       context: context,
+      useRootNavigator: true,
       backgroundColor: TransitColorScheme.of(
               Theme.of(context).brightness == Brightness.dark)
           .bgSurface,
@@ -791,6 +794,21 @@ class _MapTabState extends ConsumerState<MapTab>
             controller: _mapController,
             fmtcTileProvider: bypassFmtc ? null : fmtcTp,
             additionalLayers: [
+              // Buses en vivo (conductores que han iniciado ruta). Se
+              // actualizan por Realtime y se ven sobre el mapa para todos.
+              if (ref.watch(liveBusesProvider).valueOrNull?.isNotEmpty ?? false)
+                MarkerLayer(
+                  markers: [
+                    for (final bus in ref.watch(liveBusesProvider).value!)
+                      Marker(
+                        point: LatLng(bus.lat, bus.lng),
+                        width: 84,
+                        height: 56,
+                        alignment: Alignment.topCenter,
+                        child: _LiveBusMarker(bus: bus, c: c),
+                      ),
+                  ],
+                ),
               // Polylines de las rutas de comunidad + propias (creadas o
               // importadas), dibujadas sin necesidad de oficializarlas. Se
               // ocultan al alejar (zoom < 11.5) para no saturar la vista.
@@ -1362,6 +1380,80 @@ class _ZoomVisibleLayer extends StatelessWidget {
     if (zoom < minZoom) return const SizedBox.shrink();
     return child;
   }
+}
+
+/// Marcador de un bus en vivo en el mapa (conductor compartiendo posición):
+/// pin con el código de la línea en su color.
+class _LiveBusMarker extends StatelessWidget {
+  const _LiveBusMarker({required this.bus, required this.c});
+  final DriverLiveTrip bus;
+  final TransitColorScheme c;
+
+  Color get _color {
+    final hex = (bus.routeColor ?? '').replaceFirst('#', '');
+    if (hex.length == 6) {
+      final v = int.tryParse('FF$hex', radix: 16);
+      if (v != null) return Color(v);
+    }
+    return c.accent;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final color = _color;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: Colors.white, width: 2),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.3),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2)),
+            ],
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.directions_bus, size: 13, color: Colors.white),
+              const SizedBox(width: 4),
+              Text(bus.routeCode ?? '∙',
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w800)),
+            ],
+          ),
+        ),
+        // Punta del pin.
+        CustomPaint(size: const Size(12, 6), painter: _PinTip(color)),
+      ],
+    );
+  }
+}
+
+class _PinTip extends CustomPainter {
+  _PinTip(this.color);
+  final Color color;
+  @override
+  void paint(Canvas canvas, Size size) {
+    final p = Paint()..color = color;
+    // ui.Path para no chocar con el Path<LatLng> de flutter_map.
+    final path = ui.Path()
+      ..moveTo(0, 0)
+      ..lineTo(size.width, 0)
+      ..lineTo(size.width / 2, size.height)
+      ..close();
+    canvas.drawPath(path, p);
+  }
+
+  @override
+  bool shouldRepaint(_PinTip old) => old.color != color;
 }
 
 class _FabButton extends StatelessWidget {

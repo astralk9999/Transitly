@@ -14,7 +14,6 @@ import '../../shared/providers/user_provider.dart';
 import '../../shared/providers/widget_data_provider.dart';
 import '../../shared/widgets/background_wrapper.dart';
 import '../../shared/widgets/responsive_scaffold.dart';
-import '../driver/driver_panel.dart';
 import '../notifications/widgets/notification_bell.dart';
 import 'widgets/home_bottom_nav.dart';
 import 'widgets/home_side_nav.dart';
@@ -246,13 +245,10 @@ class _DriverFab extends StatelessWidget {
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
-        onTap: () {
-          showModalBottomSheet(
-            context: context,
-            backgroundColor: Colors.transparent,
-            builder: (_) => const DriverPanel(),
-          );
-        },
+        // Modo conductor SIMPLE: abre directamente la pantalla de iniciar
+        // ruta (ubicación + línea + hora → posición en vivo). El panel
+        // antiguo (DriverPanel) queda desactivado. Ver docs/DESACTIVADO.md.
+        onTap: () => context.push('/driver/dashboard'),
         child: SizedBox(
           width: 52,
           height: 52,

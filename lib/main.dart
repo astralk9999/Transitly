@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -54,12 +55,29 @@ import 'shared/providers/user_routes_for_map_provider.dart';
 /// sí están empaquetadas y se sirven local sin red.
 const bool _fontsBundled = false;
 
-void main() async {
+void main() {
+  // Capturamos cualquier error no manejado de la zona para poder
+  // diagnosticarlo (en web la consola lo muestra minificado como "Error").
+  runZonedGuarded(_bootstrap, (error, stack) {
+    if (kIsWeb) {
+      // ignore: avoid_print
+      print('🔴 UNCAUGHT ${error.runtimeType}: $error');
+      // ignore: avoid_print
+      print('$stack');
+    }
+    AppLogger.error('Main', 'uncaught zone error', error, stack);
+  });
+}
+
+Future<void> _bootstrap() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // ── Boot canary: detecta si el arranque anterior crasheó ──
+  // En web NO aplica: una recarga de página no es un crash, pero el contador
+  // se persiste en el navegador y dejaría al usuario atrapado en la pantalla
+  // de recovery. Solo se activa en móvil.
   final canary = await BootCanary.startBoot();
-  if (canary.crashed) {
+  if (!kIsWeb && canary.crashed) {
     AppLogger.warn('BootCanary',
         'previous boot crashed, pending=${canary.pendingChange} streak=${canary.crashStreak}');
     await BootCanary.incrementCrashStreak();

@@ -48,7 +48,13 @@ class HomeBottomNav extends StatelessWidget {
           child: LayoutBuilder(
             builder: (context, constraints) {
               final tabWidth = constraints.maxWidth / tabs.length;
-              final pillLeft = tabWidth * currentIndex + (tabWidth - 28) / 2;
+              // Posición de la pastilla según la posición VISIBLE de la tab
+              // activa (no su branchIndex, que puede saltarse números si hay
+              // pestañas ocultas).
+              final activePos =
+                  tabs.indexWhere((t) => t.branchIndex == currentIndex);
+              final pillLeft =
+                  tabWidth * (activePos < 0 ? 0 : activePos) + (tabWidth - 28) / 2;
 
               return Stack(
                 children: [
@@ -74,8 +80,8 @@ class HomeBottomNav extends StatelessWidget {
                   ),
                   Row(
                     children: List.generate(tabs.length, (i) {
-                      final isActive = i == currentIndex;
                       final tab = tabs[i];
+                      final isActive = tab.branchIndex == currentIndex;
                       return Expanded(
                         child: Semantics(
                           label: tab.label,
@@ -87,7 +93,7 @@ class HomeBottomNav extends StatelessWidget {
                               cursor: SystemMouseCursors.click,
                               child: GestureDetector(
                                 behavior: HitTestBehavior.opaque,
-                                onTap: () => onTap(i),
+                                onTap: () => onTap(tab.branchIndex),
                                 child: SizedBox(
                                   width: double.infinity,
                                   height: 64,

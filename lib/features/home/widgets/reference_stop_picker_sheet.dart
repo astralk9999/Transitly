@@ -21,6 +21,7 @@ void showReferenceStopPickerSheet(BuildContext context, WidgetRef ref) {
 
   showModalBottomSheet(
     context: context,
+      useRootNavigator: true,
     isScrollControlled: true,
     backgroundColor: c.bgSurface,
     shape: const RoundedRectangleBorder(

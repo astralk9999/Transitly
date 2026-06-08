@@ -98,14 +98,28 @@ class _SplashScreenState extends State<SplashScreen>
       _mainCtrl.value = 1.0;
       _titleCtrl.value = 1.0;
     }
-    _navTimer = Timer(_animDuration + _holdAfterAnim, () async {
-      if (!mounted) return;
-      final prefs = await SharedPreferences.getInstance();
-      final hasSeen = prefs.getBool('hasSeenOnboarding') ?? false;
-      if (mounted) {
-        context.go(hasSeen ? '/home/inicio' : '/onboarding');
-      }
-    });
+    _navTimer = Timer(_animDuration + _holdAfterAnim, _navigateAway);
+  }
+
+  bool _navigated = false;
+
+  /// Navega fuera del splash. Robusto: si SharedPreferences se cuelga (puede
+  /// pasar en web), no se queda atascado — usa un timeout y, ante cualquier
+  /// fallo, va a inicio. Idempotente por si se llama dos veces.
+  Future<void> _navigateAway() async {
+    if (_navigated || !mounted) return;
+    _navigated = true;
+    var hasSeen = true;
+    try {
+      final prefs = await SharedPreferences.getInstance()
+          .timeout(const Duration(seconds: 2));
+      hasSeen = prefs.getBool('hasSeenOnboarding') ?? false;
+    } catch (_) {
+      hasSeen = true; // ante fallo, no forzamos onboarding
+    }
+    if (mounted) {
+      context.go(hasSeen ? '/home/inicio' : '/onboarding');
+    }
   }
 
   @override

@@ -5,8 +5,11 @@ import 'package:go_router/go_router.dart';
 
 import 'error_builder.dart';
 import 'redirect_guards.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+
 import '../../shared/providers/auth_provider.dart';
 import '../../shared/providers/map_visible_provider.dart';
+import '../../shared/widgets/responsive_scaffold.dart';
 import '../../features/auth/signin_screen.dart';
 import '../../features/auth/auth_callback_screen.dart';
 import '../../features/auth/signup_screen.dart';
@@ -21,6 +24,7 @@ import '../../features/debug/component_showcase_screen.dart';
 import '../../features/driver/active_route_screen.dart';
 import '../../features/driver/ai_schedule_import.dart';
 import '../../features/driver/driver_dashboard_screen.dart';
+import '../../features/driver/driver_live_screen.dart';
 import '../../features/driver/driver_history_screen.dart';
 import '../../features/driver/driver_stats_screen.dart';
 import '../../features/driver/route_editor/live_route_recorder.dart';
@@ -227,10 +231,13 @@ final routerProvider = Provider<GoRouter>((ref) {
         ),
       ),
       // ── Driver screens ──
+      // Modo conductor SIMPLE (iniciar ruta + posición en vivo). El dashboard
+      // y el editor antiguos quedan en el código pero sin acceso desde la UI.
+      // Ver docs/DESACTIVADO.md.
       GoRoute(
         path: '/driver/dashboard',
         pageBuilder: (context, state) =>
-            _slide(state, const DriverDashboardScreen()),
+            _slide(state, const DriverLiveScreen()),
       ),
       GoRoute(
         path: '/driver/start',
@@ -680,11 +687,16 @@ CustomTransitionPage<void> _fadeSlow(GoRouterState state, Widget child) {
   );
 }
 
+/// En web/escritorio centra el contenido (como la pestaña de Inicio) para que
+/// las pantallas no se estiren a lo ancho de un monitor. En móvil no afecta.
+Widget _webConstrain(Widget child) =>
+    kIsWeb ? ContentConstraints(maxWidth: 900, child: child) : child;
+
 /// Detail screens: slide + fade combined, custom easing
 CustomTransitionPage<void> _slide(GoRouterState state, Widget child) {
   return CustomTransitionPage(
     key: state.pageKey,
-    child: child,
+    child: _webConstrain(child),
     transitionDuration: const Duration(milliseconds: 250),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       if (!TransitAnimations.shouldAnimate(context)) return child;
@@ -711,7 +723,7 @@ CustomTransitionPage<void> _slide(GoRouterState state, Widget child) {
 CustomTransitionPage<void> _slideUp(GoRouterState state, Widget child) {
   return CustomTransitionPage(
     key: state.pageKey,
-    child: child,
+    child: _webConstrain(child),
     transitionDuration: const Duration(milliseconds: 300),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       if (!TransitAnimations.shouldAnimate(context)) return child;

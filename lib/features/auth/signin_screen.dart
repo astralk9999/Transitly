@@ -85,19 +85,66 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
           SafeArea(
             child: Center(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Form(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 420),
+                  child: Form(
                   key: _formKey,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      // Logo con resplandor (marca, como el splash/landing).
+                      Container(
+                        width: 96,
+                        height: 96,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: RadialGradient(colors: [
+                            c.accent.withValues(alpha: 0.30),
+                            c.accent.withValues(alpha: 0.0),
+                          ]),
+                        ),
+                        alignment: Alignment.center,
+                        child: Image.asset(
+                          isDark
+                              ? 'assets/branding/transitly_logo_white_square.png'
+                              : 'assets/branding/transitly_logo.png',
+                          width: 76,
+                          height: 76,
+                          filterQuality: FilterQuality.high,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
                       Text('Transitly',
-                          style: TransitTypography.heading(c.textHi)),
-                      const SizedBox(height: 8),
+                          style: TransitTypography.displayNumber(c.textHi)
+                              .copyWith(fontSize: 28, fontWeight: FontWeight.w800)),
+                      const SizedBox(height: 6),
                       Text(l10n.authSignInSubtitle,
                           style:
-                              TransitTypography.bodySecondary(c.textMid)),
-                      const SizedBox(height: 32),
+                              TransitTypography.bodySecondary(c.textMid),
+                          textAlign: TextAlign.center),
+                      const SizedBox(height: 28),
+
+                      // Tarjeta glass con el formulario.
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: c.bgSurface.withValues(alpha: 0.7),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                              color: c.border.withValues(alpha: 0.6), width: 0.8),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.25),
+                              blurRadius: 24,
+                              offset: const Offset(0, 8),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
 
                       if (_error != null) ...[
                         Container(
@@ -225,6 +272,9 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                             style:
                                 TransitTypography.bodySmall(c.accent)),
                       ),
+                          ],
+                        ),
+                      ),
                       const SizedBox(height: 20),
 
                       // Modo invitado destacado: para usuarios que quieren
@@ -280,6 +330,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                       const SizedBox(height: 32),
                     ],
                   ),
+                ),
                 ),
               ),
             ),

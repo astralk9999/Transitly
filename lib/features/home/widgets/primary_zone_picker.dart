@@ -20,6 +20,10 @@ Future<void> showPrimaryZonePicker(BuildContext context, WidgetRef ref) async {
     backgroundColor: c.bgSurface,
     isScrollControlled: true,
     useSafeArea: true,
+    // En web el shell centra el contenido; sin esto el fondo oscuro del
+    // sheet solo cubre esa área. El navegador raíz lo extiende a toda la
+    // ventana.
+    useRootNavigator: true,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
     ),

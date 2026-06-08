@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 // Import completo (sin `show`) para que entren los métodos de EXTENSIÓN de
 // supabase_flutter como `signInWithOAuth`, que lanzan el navegador.
@@ -151,14 +153,25 @@ class AuthRepositorySupabase implements AuthRepository {
     // configurado en su panel; al terminar, redirige al deep link y el SDK
     // completa la sesión, disparando onAuthStateChange → AuthAuthenticated.
     try {
-      // inAppBrowserView = Chrome Custom Tab: se CIERRA sola al volver por el
-      // deep link (con externalApplication, Chrome quedaba abierto "cargando").
-      final launched = await _client.auth.signInWithOAuth(
-        OAuthProvider.google,
-        redirectTo: 'transitly://login-callback',
-        authScreenLaunchMode: LaunchMode.inAppBrowserView,
-      );
-      AppLogger.info(_logTag, 'Google OAuth (web) launched=$launched');
+      final bool launched;
+      if (kIsWeb) {
+        // En web NO hay deep link: el OAuth redirige a una URL HTTP de la
+        // propia app (debe estar en Supabase → Auth → URL Configuration →
+        // Redirect URLs). Volvemos a /app/, donde supabase_flutter detecta
+        // el token en la URL y completa la sesión.
+        launched = await _client.auth.signInWithOAuth(
+          OAuthProvider.google,
+          redirectTo: '${Uri.base.origin}/app/',
+        );
+      } else {
+        // Móvil: deep link + Chrome Custom Tab (se cierra sola al volver).
+        launched = await _client.auth.signInWithOAuth(
+          OAuthProvider.google,
+          redirectTo: 'transitly://login-callback',
+          authScreenLaunchMode: LaunchMode.inAppBrowserView,
+        );
+      }
+      AppLogger.info(_logTag, 'Google OAuth launched=$launched');
       // No emitimos estado aquí: signInWithOAuth solo abre el navegador. La
       // sesión llega al volver por el deep link (onAuthStateChange).
     } on supa.AuthException catch (e) {

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -24,10 +25,10 @@ class BackgroundWrapper extends ConsumerWidget {
     final enabled = themeNotifier.backgroundEnabled;
     final opacity = themeNotifier.backgroundOpacity;
     final reduceMotion = themeNotifier.reduceMotion;
-    // En el mapa NO renderizamos el shader: en algunos dispositivos el
-    // fragment shader del fondo y el FlutterMap no pueden coexistir y la app
-    // crashea / el fondo se rompe globalmente. El mapa tapa el fondo igual.
-    final mapVisible = ref.watch(mapVisibleProvider);
+    // En el mapa NO renderizamos el shader EN MÓVIL: en algunos dispositivos
+    // el fragment shader del fondo y el FlutterMap no pueden coexistir y la
+    // app crashea. En web sí coexisten, así que ahí mantenemos el fondo.
+    final mapVisible = ref.watch(mapVisibleProvider) && !kIsWeb;
 
     final themeMode = ref.watch(themeModeProvider);
     final brightness = MediaQuery.platformBrightnessOf(context);

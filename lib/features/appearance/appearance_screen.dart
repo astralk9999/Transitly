@@ -7,6 +7,7 @@ import '../../core/theme/transit_typography.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../shared/providers/is_dark_provider.dart';
 import '../../shared/providers/theme_provider.dart';
+import '../../shared/widgets/responsive_scaffold.dart';
 import '../../shared/widgets/transit_app_bar.dart';
 import 'widgets/accessibility_section.dart';
 import 'widgets/background_selector.dart';
@@ -72,7 +73,8 @@ class _AppearanceScreenState extends ConsumerState<AppearanceScreen>
           position: _enterSlide,
           child: SafeArea(
             top: false,
-            child: SingleChildScrollView(
+            child: ContentConstraints(
+              child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -95,6 +97,7 @@ class _AppearanceScreenState extends ConsumerState<AppearanceScreen>
                   const SizedBox(height: 32),
                 ],
               ),
+            ),
             ),
           ),
         ),

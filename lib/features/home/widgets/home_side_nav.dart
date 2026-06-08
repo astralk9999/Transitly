@@ -42,31 +42,50 @@ class HomeSideNav extends StatelessWidget {
         child: Column(
           children: [
             const SizedBox(height: 20),
+            // Logo de la marca (web/escritorio). En modo extendido el logo
+            // va acompañado del nombre.
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: extended
-                    ? Text(
-                        AppLocalizations.of(context).appTitle.toUpperCase(),
-                        style: GoogleFonts.ibmPlexMono(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 2,
-                          color: c.accent,
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: extended
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          isDark
+                              ? 'assets/branding/transitly_logo_white_square.png'
+                              : 'assets/branding/transitly_logo.png',
+                          width: 32,
+                          height: 32,
+                          filterQuality: FilterQuality.high,
                         ),
-                      )
-                    : Text(
-                        AppLocalizations.of(context).appTitle[0].toUpperCase(),
-                      style: GoogleFonts.ibmPlexMono(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w900,
-                        color: c.accent,
-                      ),
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: Text(
+                            AppLocalizations.of(context).appTitle.toUpperCase(),
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.ibmPlexMono(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 1.5,
+                              color: c.accent,
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  : Image.asset(
+                      isDark
+                          ? 'assets/branding/transitly_logo_white_square.png'
+                          : 'assets/branding/transitly_logo.png',
+                      width: 36,
+                      height: 36,
+                      filterQuality: FilterQuality.high,
                     ),
             ),
             const SizedBox(height: 32),
             ...List.generate(tabs.length, (i) {
-              final isActive = i == currentIndex;
               final tab = tabs[i];
+              final isActive = tab.branchIndex == currentIndex;
               return _SideNavItem(
                 icon: isActive ? tab.activeIcon : tab.icon,
                 label: tab.label,
@@ -74,7 +93,7 @@ class HomeSideNav extends StatelessWidget {
                 extended: extended,
                 accent: c.accent,
                 textColor: c.textLo,
-                onTap: () => onTap(i),
+                onTap: () => onTap(tab.branchIndex),
               );
             }),
             const Spacer(),

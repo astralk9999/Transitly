@@ -27,6 +27,7 @@ void showHabitualConfigSheet(BuildContext context, WidgetRef ref) {
 
   showModalBottomSheet(
     context: context,
+      useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
     backgroundColor: c.bgSurface,

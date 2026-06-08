@@ -34,6 +34,7 @@ void showStopInfoSheet(
 
   showModalBottomSheet(
     context: context,
+      useRootNavigator: true,
     backgroundColor: c.bgSurface,
     // useSafeArea para que el sheet no quede pisado por la status bar,
     // y bottom padding manual para esquivar la navbar inferior custom

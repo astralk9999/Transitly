@@ -281,22 +281,29 @@ void main() async {
     resolveActiveScheme,
   );
 
-  final launchUri = await HomeWidget.initiallyLaunchedFromHomeWidget();
-  if (launchUri != null) {
-    // Reconstruimos el path uniendo host + pathSegments. El host de URIs
-    // tipo transitly://home/tarjeta es "home" y path "/tarjeta"; concatenar
-    // crudo produciría "//tarjeta" si host viniera vacío en algún OEM.
-    final segments = <String>[
-      if ((launchUri.host).isNotEmpty) launchUri.host,
-      ...launchUri.pathSegments,
-    ];
-    final deepPath = '/${segments.join('/')}';
-    setWidgetLaunchPath(deepPath);
-    AppLogger.info('Startup',
-        'widget deep link raw=$launchUri host=${launchUri.host} path=${launchUri.path} → resolved=$deepPath');
+  // Widgets de pantalla de inicio: solo Android/iOS. En web el plugin
+  // home_widget no tiene implementación y lanzaría MissingPluginException.
+  if (!kIsWeb) {
+    try {
+      final launchUri = await HomeWidget.initiallyLaunchedFromHomeWidget();
+      if (launchUri != null) {
+        // Reconstruimos el path uniendo host + pathSegments. El host de URIs
+        // tipo transitly://home/tarjeta es "home" y path "/tarjeta";
+        // concatenar crudo produciría "//tarjeta" si host viniera vacío.
+        final segments = <String>[
+          if ((launchUri.host).isNotEmpty) launchUri.host,
+          ...launchUri.pathSegments,
+        ];
+        final deepPath = '/${segments.join('/')}';
+        setWidgetLaunchPath(deepPath);
+        AppLogger.info('Startup',
+            'widget deep link raw=$launchUri host=${launchUri.host} path=${launchUri.path} → resolved=$deepPath');
+      }
+      HomeWidget.registerBackgroundCallback(_widgetBackgroundCallback);
+    } catch (e) {
+      AppLogger.warn('HomeWidget', 'init failed', e);
+    }
   }
-
-  HomeWidget.registerBackgroundCallback(_widgetBackgroundCallback);
 
   runApp(
     UncontrolledProviderScope(

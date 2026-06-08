@@ -6,6 +6,8 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
+    "build:app": "node scripts/build-flutter-web.mjs",
+    "build:all": "npm run build:app && npm run build",
     "preview": "astro preview"
   },
   "dependencies": {

@@ -1,3 +1,7 @@
 node_modules/
 dist/
 .env
+# App Flutter Web compilada (generada; ~38 MB). Se regenera con
+# `npm run build:app` y no se versiona.
+public/app/
+.astro/

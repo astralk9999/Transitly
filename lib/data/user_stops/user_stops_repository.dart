@@ -120,10 +120,14 @@ class UserStopsRepository {
           .from('user_route_stops')
           .select('*, user_stops(*)')
           .eq('route_id', routeId)
-          .order('order_index');
-      return (res as List<dynamic>)
+          .order('order_index', ascending: true);
+      final list = (res as List<dynamic>)
           .map((j) => UserRouteStopModel.fromJson(j as Map<String, dynamic>))
           .toList();
+      // Orden ASCENDENTE garantizado en Dart: el embed de PostgREST a veces
+      // no respeta el .order() del nivel raíz y las paradas salían al revés.
+      list.sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
+      return list;
     } catch (e) {
       AppLogger.error(_logTag, 'getStopsForRoute failed', e);
       return [];

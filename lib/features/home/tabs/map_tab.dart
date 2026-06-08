@@ -375,7 +375,8 @@ class _MapTabState extends ConsumerState<MapTab>
     final arrows = RouteDirectionArrows.buildFromPoints(
       points: matches.first.points,
       zoom: zoom,
-      color: c.accent.withValues(alpha: 0.85),
+      color: c.accent.withValues(alpha: 0.9),
+      minZoom: 12,
     );
     if (arrows.isEmpty) return const [];
     return [MarkerLayer(markers: arrows)];

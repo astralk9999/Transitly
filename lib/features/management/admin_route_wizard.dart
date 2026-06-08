@@ -8,7 +8,9 @@ import '../../core/theme/transit_typography.dart';
 import '../../core/utils/app_logger.dart';
 import '../../core/utils/uuid.dart';
 import '../../data/admin/admin_routes_repository.dart';
+import '../../data/mock/mock_data_service.dart';
 import '../../data/operator/operator_repository_provider.dart';
+import '../../data/snapshot/snapshot_service.dart';
 import '../../shared/models/enums.dart';
 import '../../shared/models/operator_model.dart';
 import '../../shared/widgets/glass_card.dart';
@@ -16,7 +18,9 @@ import '../../shared/widgets/pressable.dart';
 import '../../shared/widgets/transit_app_bar.dart';
 import '../../shared/widgets/transit_button.dart';
 import '../../shared/widgets/transit_input.dart';
+import '../map/map_data_cache.dart';
 import '../create_route/steps/step_basic_info.dart';
+import '../create_route/steps/step_route_path.dart';
 import '../create_route/steps/step_schedules.dart';
 import '../create_route/steps/step_stops.dart';
 import '../create_route/steps/wizard_models.dart';
@@ -43,7 +47,9 @@ class _AdminRouteWizardState extends ConsumerState<AdminRouteWizard> {
   static const _logTag = 'AdminRouteWizard';
   final _pageController = PageController();
   int _step = 0;
-  static const _stepCount = 4; // Info · Paradas · Horarios · Operador/Resumen
+  // Info · Paradas · Trazado · Horarios · Operador/Resumen (igual que comunidad
+  // + el paso de Operador en lugar de Visibilidad).
+  static const _stepCount = 5;
 
   final _nameCtrl = TextEditingController();
   final _descCtrl = TextEditingController();
@@ -52,7 +58,11 @@ class _AdminRouteWizardState extends ConsumerState<AdminRouteWizard> {
   String _serviceType = 'urban';
 
   final List<WizardStop> _stops = [];
+  final WizardRoutePath _routePath = WizardRoutePath();
   final List<WizardSchedule> _schedules = [];
+  // En edición solo sobrescribimos el trazado guardado si el usuario lo tocó,
+  // para no destruir el recorrido existente al editar otros campos.
+  bool _pathTouched = false;
 
   String? _operatorId;
   RouteStatus _status = RouteStatus.official;
@@ -100,7 +110,60 @@ class _AdminRouteWizardState extends ConsumerState<AdminRouteWizard> {
     if (_isEditing) {
       await _loadExisting();
     }
+    _syncPathSegments(); // construye los segmentos del trazado desde las paradas
     if (mounted) setState(() => _loading = false);
+  }
+
+  /// Mantiene un segmento del trazado por cada par de paradas consecutivas
+  /// (mismo enfoque que el wizard de comunidad). Preserva los waypoints ya
+  /// dibujados para los pares que no cambian.
+  void _syncPathSegments() {
+    final existing = _routePath.segments;
+    final needed = <WizardSegment>[];
+    for (var i = 0; i < _stops.length - 1; i++) {
+      final fromId = _stops[i].stopId;
+      final toId = _stops[i + 1].stopId;
+      final found =
+          existing.where((s) => s.fromStopId == fromId && s.toStopId == toId);
+      needed.add(found.isNotEmpty
+          ? found.first
+          : WizardSegment(fromStopId: fromId, toStopId: toId));
+    }
+    existing
+      ..clear()
+      ..addAll(needed);
+    if (mounted) setState(() {});
+  }
+
+  /// Aplana el trazado (parada → waypoints → parada → …) a una lista de
+  /// `[lng, lat]` para guardarla en `metadata.polyline_lod`. Si no hay
+  /// waypoints dibujados, conecta las paradas en línea recta.
+  List<List<double>> _flatPath() {
+    final pts = <List<double>>[];
+    final segs = _routePath.segments;
+    WizardStop? byId(String id) {
+      for (final s in _stops) {
+        if (s.stopId == id) return s;
+      }
+      return null;
+    }
+
+    if (segs.isEmpty) {
+      for (final s in _stops) {
+        pts.add([s.lng, s.lat]);
+      }
+      return pts;
+    }
+    final first = byId(segs.first.fromStopId);
+    if (first != null) pts.add([first.lng, first.lat]);
+    for (final seg in segs) {
+      for (final p in seg.points) {
+        pts.add([p.lng, p.lat]);
+      }
+      final to = byId(seg.toStopId);
+      if (to != null) pts.add([to.lng, to.lat]);
+    }
+    return pts;
   }
 
   /// Carga la línea existente (datos + paradas + horarios) para editarla.
@@ -174,9 +237,11 @@ class _AdminRouteWizardState extends ConsumerState<AdminRouteWizard> {
             _nameCtrl.text.trim().length >= 3;
       case 1:
         return _stops.length >= 2;
-      case 2:
+      case 2: // Trazado
         return true;
-      case 3:
+      case 3: // Horarios
+        return true;
+      case 4: // Operador / Resumen
         return _operatorId != null &&
             _codeCtrl.text.trim().isNotEmpty &&
             _nameCtrl.text.trim().length >= 3 &&
@@ -260,6 +325,35 @@ class _AdminRouteWizardState extends ConsumerState<AdminRouteWizard> {
         }
       }
 
+      // Trazado: guarda la polilínea en metadata.polyline_lod (de donde la lee
+      // snapshot_lines para pintarla en el mapa). En creación siempre; en
+      // edición solo si el usuario tocó el trazado (no destruir el existente).
+      if (!_isEditing || _pathTouched) {
+        final flat = _flatPath();
+        if (flat.length >= 2) {
+          await repo.setRoutePolyline(
+            routeId: routeId,
+            polylineLod: {
+              for (final k in const ['lod0', 'lod1', 'lod2', 'lod3', 'lod4'])
+                k: flat,
+            },
+          );
+        }
+      }
+
+      // Descarga automática: replica "Actualizar desde el servidor" de Datos
+      // offline para que la línea oficial aparezca al instante en el mapa sin
+      // recargar a mano. Best-effort: si no hay red, la línea queda guardada.
+      try {
+        final raw = await ref.read(snapshotServiceProvider).syncAndSave();
+        await ref
+            .read(mockDataServiceProvider)
+            .loadFromSnapshotString(raw, label: 'snapshot');
+        ref.invalidate(mapDataCacheProvider);
+      } catch (e) {
+        AppLogger.warn(_logTag, 'auto-sync tras guardar ruta falló', e);
+      }
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(_isEditing
@@ -308,7 +402,20 @@ class _AdminRouteWizardState extends ConsumerState<AdminRouteWizard> {
               onPageChanged: (i) => setState(() => _step = i),
               children: [
                 _infoPage(c),
-                StepStops(stops: _stops, onChanged: () => setState(() {})),
+                StepStops(
+                  stops: _stops,
+                  // Resync de segmentos al añadir/quitar/reordenar paradas,
+                  // igual que en el wizard de comunidad.
+                  onChanged: _syncPathSegments,
+                ),
+                StepRoutePath(
+                  stops: _stops,
+                  path: _routePath,
+                  onChanged: () {
+                    _pathTouched = true;
+                    _syncPathSegments();
+                  },
+                ),
                 StepSchedules(
                   schedules: _schedules,
                   stops: _stops,
@@ -440,6 +547,12 @@ class _AdminRouteWizardState extends ConsumerState<AdminRouteWizard> {
         _summaryRow(c, 'Código', _codeCtrl.text.trim()),
         _summaryRow(c, 'Nombre', _nameCtrl.text.trim()),
         _summaryRow(c, 'Paradas', '${_stops.length}'),
+        _summaryRow(
+            c,
+            'Trazado',
+            _routePath.segments.any((s) => s.points.isNotEmpty)
+                ? 'Personalizado'
+                : 'Línea recta'),
         _summaryRow(c, 'Horarios', '${_schedules.length}'),
       ],
     );
@@ -458,7 +571,7 @@ class _AdminRouteWizardState extends ConsumerState<AdminRouteWizard> {
       );
 
   Widget _indicator(TransitColorScheme c) {
-    const labels = ['Info', 'Paradas', 'Horarios', 'Operador'];
+    const labels = ['Info', 'Paradas', 'Trazado', 'Horarios', 'Operador'];
     return Container(
       padding: const EdgeInsets.symmetric(
           horizontal: TransitSpacing.space16, vertical: TransitSpacing.space12),

@@ -106,7 +106,12 @@ MapDataCache _buildFromRepos(Ref ref) {
   for (final route in routesBox.values) {
     routeMap[route.id] = route;
 
-    final lodData = mockData.polylinesLod[route.id];
+    // La geometría de MockDataService se indexa por CÓDIGO de línea, pero las
+    // rutas de Supabase llegan con id = UUID. Probamos por id y, si no hay,
+    // por código (así las líneas oficiales — incluidas las recién creadas por
+    // admin/operador — pintan su trazado estando con sesión iniciada).
+    final lodData =
+        mockData.polylinesLod[route.id] ?? mockData.polylinesLod[route.code];
     if (lodData != null) {
       final lodLatLng = <int, List<LatLng>>{};
       for (final entry in lodData.entries) {
@@ -116,9 +121,9 @@ MapDataCache _buildFromRepos(Ref ref) {
       routePathsLod[route.id] = lodLatLng;
     }
 
-    final stopIds = mockData
-        .getStopsForRoute(route.id)
-        .map((s) => s.id);
+    var mockStops = mockData.getStopsForRoute(route.id);
+    if (mockStops.isEmpty) mockStops = mockData.getStopsForRoute(route.code);
+    final stopIds = mockStops.map((s) => s.id);
     routeStopsMap[route.id] = stopIds
         .map((id) => stopsBox.get('stop:$id'))
         .whereType<StopModel>()

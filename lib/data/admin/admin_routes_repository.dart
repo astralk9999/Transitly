@@ -428,6 +428,18 @@ class AdminRoutesRepository {
   Future<void> deleteRoute(String id) =>
       _client.rpc('admin_route_delete', params: {'p_id': id});
 
+  /// Guarda el TRAZADO (polilínea multinivel) de una ruta oficial en
+  /// `metadata.polyline_lod`, de donde lo lee `snapshot_lines` para el mapa.
+  /// [polylineLod] = { 'lod0': [[lng,lat],...], ..., 'lod4': [...] }.
+  Future<void> setRoutePolyline({
+    required String routeId,
+    required Map<String, List<List<double>>> polylineLod,
+  }) =>
+      _client.rpc('admin_route_set_polyline', params: {
+        'p_id': routeId,
+        'p_polyline_lod': polylineLod,
+      });
+
   Future<void> setRouteOperator(String id, String newOperatorId) =>
       _client.rpc('admin_route_set_operator', params: {
         'p_id': id,
@@ -619,6 +631,16 @@ class AdminRoutesRepository {
 
 final adminRoutesRepositoryProvider = Provider<AdminRoutesRepository>((ref) {
   return AdminRoutesRepository(ref.watch(supabaseClientProvider));
+});
+
+/// Changelog de una ruta, CACHEADO por routeId. Antes la UI creaba el Future
+/// dentro de `build()` (FutureBuilder), así que cada rebuild del detalle
+/// generaba una petición nueva → volvía a "cargando" → parpadeo constante.
+/// Con este provider el resultado se memoiza y solo se vuelve a pedir si se
+/// invalida explícitamente.
+final routeChangelogProvider =
+    FutureProvider.family<List<RouteChangeRow>, String>((ref, routeId) {
+  return ref.watch(adminRoutesRepositoryProvider).listChangelog(routeId);
 });
 
 /// Alcance editable: admin → null (todas), operator_admin → su operatorId.

@@ -21,34 +21,34 @@ class RouteDetailChangelog extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final c = TransitColorScheme.of(isDark);
+    // Provider cacheado por routeId: no se vuelve a pedir en cada rebuild.
+    final async = ref.watch(routeChangelogProvider(routeId));
 
-    return FutureBuilder<List<RouteChangeRow>>(
-      future: ref.read(adminRoutesRepositoryProvider).listChangelog(routeId),
-      builder: (context, snap) {
-        final entries = snap.data ?? const <RouteChangeRow>[];
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Semantics(
-              header: true,
-              child: Text(AppLocalizations.of(context).sectionRecentChanges,
-                  style: TransitTypography.sectionTitle(c.textMid)),
-            ),
-            const SizedBox(height: 8),
-            if (snap.connectionState == ConnectionState.waiting)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: Text('…',
-                    style: TransitTypography.bodySecondary(c.textMid)),
-              )
-            else if (entries.isEmpty)
-              Text(AppLocalizations.of(context).routeChangelogEmpty,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Semantics(
+          header: true,
+          child: Text(AppLocalizations.of(context).sectionRecentChanges,
+              style: TransitTypography.sectionTitle(c.textMid)),
+        ),
+        const SizedBox(height: 8),
+        async.when(
+          // Mientras carga (solo la primera vez) no mostramos un placeholder
+          // que cambie de tamaño: dejamos hueco vacío para no provocar saltos.
+          loading: () => const SizedBox(height: 8),
+          error: (_, __) => Text(
+              AppLocalizations.of(context).routeChangelogEmpty,
+              style: TransitTypography.bodySecondary(c.textMid)),
+          data: (entries) => entries.isEmpty
+              ? Text(AppLocalizations.of(context).routeChangelogEmpty,
                   style: TransitTypography.bodySecondary(c.textMid))
-            else
-              ...entries.map((e) => _item(c, e)),
-          ],
-        );
-      },
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [for (final e in entries) _item(c, e)],
+                ),
+        ),
+      ],
     );
   }
 

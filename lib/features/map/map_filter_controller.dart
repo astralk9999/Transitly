@@ -4,11 +4,32 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/utils/app_logger.dart';
+import '../../data/admin/admin_routes_repository.dart';
 import 'map_filter_state.dart';
 
 final mapFilterControllerProvider =
     StateNotifierProvider<MapFilterController, MapFilterState>((ref) {
   return MapFilterController();
+});
+
+/// Nombres de zonas existentes en la BD (incluye las pendientes que el usuario
+/// acaba de crear), para que el árbol de filtros del mapa sea ampliable: las
+/// zonas nuevas aparecen aunque aún no tengan líneas. Tolerante a fallos.
+final filterZonesProvider = FutureProvider<List<String>>((ref) async {
+  try {
+    final zones = await ref
+        .watch(adminRoutesRepositoryProvider)
+        .listZones(includePending: true);
+    final names = zones
+        .map((z) => z.name.trim())
+        .where((n) => n.isNotEmpty)
+        .toSet()
+        .toList()
+      ..sort();
+    return names;
+  } catch (_) {
+    return const <String>[];
+  }
 });
 
 class MapFilterController extends StateNotifier<MapFilterState> {

@@ -66,6 +66,50 @@ class MapStopPoint {
   final double lng;
 }
 
+/// Línea de comunidad del usuario, lista para el árbol de filtros del mapa
+/// (id, código, nombre, color y la zona/region elegida al crearla).
+class CommunityFilterRoute {
+  CommunityFilterRoute({
+    required this.id,
+    required this.code,
+    required this.name,
+    required this.color,
+    this.region,
+  });
+  final String id;
+  final String code;
+  final String name;
+  final Color color;
+  final String? region;
+}
+
+/// Mis líneas de comunidad (creadas/importadas) con su zona, para poder
+/// activarlas/desactivarlas en los filtros del mapa igual que las oficiales.
+final communityFilterRoutesProvider =
+    FutureProvider<List<CommunityFilterRoute>>((ref) async {
+  final client = ref.watch(supabaseClientProvider);
+  final authState = ref.watch(authStateProvider).valueOrNull;
+  final userId = authState is AuthAuthenticated ? authState.user.id : null;
+  if (userId == null) return const <CommunityFilterRoute>[];
+  try {
+    final routes = await UserRoutesRepository(client).getMyRoutes();
+    return routes
+        .map((u) => CommunityFilterRoute(
+              id: u.id,
+              code: _shortCode(u),
+              name: u.name,
+              color: _parseColor(u.routeColor),
+              region: (u.region != null && u.region!.trim().isNotEmpty)
+                  ? u.region!.trim()
+                  : null,
+            ))
+        .toList(growable: false);
+  } catch (e) {
+    AppLogger.warn(_logTag, 'community filter routes load failed', e);
+    return const <CommunityFilterRoute>[];
+  }
+});
+
 /// Forma (paradas en orden + color) de una ruta de comunidad para el mapa.
 class CommunityRouteShape {
   CommunityRouteShape(this.routeId, this.name, this.code, this.color,

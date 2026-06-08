@@ -699,6 +699,33 @@ class _MapTabState extends ConsumerState<MapTab>
     final showAllStops = ref.watch(
         mapFilterControllerProvider.select((s) => s.showAllStops));
 
+    // Comunidad: dibujamos SOLO las líneas que pasan los filtros (mostrar
+    // comunidad, activar/desactivar línea o zona). Antes se pintaban siempre,
+    // así que no se podían ocultar como las oficiales.
+    final visibleCommunityIds = filteredRoutes
+        .where((r) => r.source == RouteSource.community)
+        .map((r) => r.id)
+        .toSet();
+    final communityShapesAll =
+        ref.watch(communityRouteShapesProvider).valueOrNull ?? const [];
+    final visibleCommunityShapes = communityShapesAll
+        .where((s) => visibleCommunityIds.contains(s.routeId))
+        .toList();
+    // Paradas de comunidad a mostrar: las de las líneas visibles. Con el filtro
+    // "ver todas las paradas" desactivado, solo las favoritas (igual criterio
+    // que las oficiales).
+    final favStopIds = ref.watch(userFavoriteStopsProvider);
+    final communityStopsToShow = <MapStopPoint>[];
+    final seenCommunityStop = <String>{};
+    for (final s in visibleCommunityShapes) {
+      for (final p in s.stops) {
+        if (!seenCommunityStop.add(p.id)) continue;
+        if (showAllStops || favStopIds.contains(p.id)) {
+          communityStopsToShow.add(p);
+        }
+      }
+    }
+
     final currentKey = '${isDark ? "d" : "l"}-$mapStyle';
 
     // B1.4: en lugar de ref.listen (que no dispara cuando el valor ya
@@ -812,23 +839,32 @@ class _MapTabState extends ConsumerState<MapTab>
               // Polylines de las rutas de comunidad + propias (creadas o
               // importadas), dibujadas sin necesidad de oficializarlas. Se
               // ocultan al alejar (zoom < 11.5) para no saturar la vista.
-              if (ref.watch(myRoutePolylinesProvider).isNotEmpty)
+              // Respetan los filtros (línea/zona/mostrar comunidad).
+              if (visibleCommunityShapes.isNotEmpty)
                 _ZoomVisibleLayer(
                   minZoom: 11.5,
                   child: PolylineLayer(
-                    polylines: ref.watch(myRoutePolylinesProvider),
+                    polylines: [
+                      for (final s in visibleCommunityShapes)
+                        if (s.points.length >= 2)
+                          Polyline<Object>(
+                            points: s.points,
+                            strokeWidth: 4,
+                            color: s.color.withValues(alpha: 0.85),
+                          ),
+                    ],
                   ),
                 ),
               // Marcadores de las paradas de esas rutas — clicables para
               // ver su info (las creadas por el usuario no eran tapables).
-              // Solo visibles con zoom suficiente (las paradas oficiales se
-              // comportan igual).
-              if (ref.watch(myRouteStopsProvider).isNotEmpty)
+              // Solo visibles con zoom suficiente y respetando los filtros
+              // de línea y de "ver todas las paradas".
+              if (communityStopsToShow.isNotEmpty)
                 _ZoomVisibleLayer(
                   minZoom: 13.5,
                   child: MarkerLayer(
                     markers: [
-                      for (final s in ref.watch(myRouteStopsProvider))
+                      for (final s in communityStopsToShow)
                         Marker(
                           point: LatLng(s.lat, s.lng),
                           width: 30,

@@ -7,7 +7,7 @@ interface Props {
   class?: string;
 }
 const {
-  colors = ['#00D4FF', '#977DDF', '#FF006E'],
+  colors = ['#C9B8F0', '#977DDF', '#5B4A9E'],
   class: className = '',
 } = Astro.props;
 const colorsJson = JSON.stringify(colors);
@@ -53,9 +53,9 @@ const colorsJson = JSON.stringify(colors);
     will-change: transform;
     animation: cb-drift 18s ease-in-out infinite;
   }
-  .cb-blob-1 { top: -15%; left: -10%; width: 55vw; height: 55vw; max-width: 700px; max-height: 700px; background: #00D4FF; }
+  .cb-blob-1 { top: -15%; left: -10%; width: 55vw; height: 55vw; max-width: 700px; max-height: 700px; background: #C9B8F0; }
   .cb-blob-2 { top: 25%; right: -12%; width: 50vw; height: 50vw; max-width: 640px; max-height: 640px; background: #977DDF; animation-delay: -6s; }
-  .cb-blob-3 { bottom: -10%; left: 20%; width: 48vw; height: 48vw; max-width: 600px; max-height: 600px; background: #FF006E; animation-delay: -11s; opacity: 0.4; }
+  .cb-blob-3 { bottom: -10%; left: 20%; width: 48vw; height: 48vw; max-width: 600px; max-height: 600px; background: #5B4A9E; animation-delay: -11s; opacity: 0.45; }
   @keyframes cb-drift {
     0%, 100% { transform: translate(0,0) scale(1); }
     33% { transform: translate(6%, -4%) scale(1.1); }

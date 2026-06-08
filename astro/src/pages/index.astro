@@ -3,7 +3,6 @@ import Layout from '../layouts/Layout.astro';
 import ColorBends from '../components/ColorBends.astro';
 import Counter from '../components/Counter.astro';
 import CurvedLoop from '../components/CurvedLoop.astro';
-import PhoneMockup from '../components/PhoneMockup.astro';
 
 const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
 const supabaseKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
@@ -86,8 +85,9 @@ const faqs = [
   title="Tu transporte público, simple"
   description="Líneas, horarios exactos por parada y rutas de la comunidad en Jerez. Consulta los autobuses de COMUJESA, crea y comparte rutas, guarda tus favoritas y viaja informado con Transitly."
 >
-  <!-- ── FONDO SHADER ColorBends (mismo motor que la app) ── -->
-  <ColorBends colors={["#00D4FF", "#977DDF", "#FF006E"]} />
+  <!-- ── FONDO SHADER ColorBends (paleta por defecto de la app: tonos del
+       accent morado #977DDF, igual que el fondo ColorBends de la app) ── -->
+  <ColorBends colors={["#C9B8F0", "#977DDF", "#5B4A9E"]} />
   <!-- Velo suave para legibilidad del texto sobre el shader -->
   <div class="fixed inset-0 -z-[9] bg-transit-bg/35 pointer-events-none"></div>
 
@@ -139,13 +139,12 @@ const faqs = [
           </div>
         </div>
 
-        <!-- Columna derecha: maqueta del móvil -->
+        <!-- Columna derecha: logo de la app -->
         <div class="reveal flex justify-center lg:justify-end">
           <div class="relative">
-            <div class="absolute inset-0 -m-10 rounded-[60px] bg-transit-accent/20 blur-3xl glow-pulse pointer-events-none"></div>
-            <div class="relative float-y">
-              <PhoneMockup />
-            </div>
+            <div class="absolute inset-0 -m-12 rounded-full bg-transit-accent/25 blur-3xl glow-pulse pointer-events-none"></div>
+            <img src="/branding/logo.png" alt="Transitly" width="320" height="320"
+              class="relative float-y w-56 h-56 md:w-72 md:h-72 drop-shadow-[0_0_50px_rgba(151,125,223,0.55)]" />
           </div>
         </div>
       </div>

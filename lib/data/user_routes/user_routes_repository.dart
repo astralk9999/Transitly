@@ -286,6 +286,18 @@ class UserRoutesRepository {
     await _client.rpc('admin_delete_user_route', params: {'p_route_id': id});
   }
 
+  /// Lista TODAS las rutas de comunidad para el panel admin (la RLS
+  /// 'Admin sees all routes' lo permite). Incluye nº de paradas y el
+  /// nombre del autor.
+  Future<List<Map<String, dynamic>>> adminListCommunity() async {
+    final rows = await _client
+        .from('user_routes')
+        .select(
+            'id, name, code, status, visibility, route_color, vote_count, created_at, author_id, region, user_route_stops(count), profiles:author_id(display_name)')
+        .order('created_at', ascending: false);
+    return (rows as List<dynamic>).cast<Map<String, dynamic>>();
+  }
+
   /// Oficializa una ruta comunitaria: crea la ruta oficial (con paradas y
   /// horarios) y borra la comunitaria. Devuelve el id de la oficial.
   Future<String> officialize({

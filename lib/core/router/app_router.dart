@@ -39,6 +39,7 @@ import '../../features/management/route_editor_screen.dart';
 import '../../features/management/admin_route_wizard.dart';
 import '../../features/management/route_schedules_editor_screen.dart';
 import '../../features/management/route_stops_editor_screen.dart';
+import '../../features/management/community_management_screen.dart';
 import '../../features/management/routes_management_screen.dart';
 import '../../features/management/stops_management_screen.dart';
 import '../../features/management/unified_inbox_screen.dart';
@@ -354,6 +355,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/management/stops',
         pageBuilder: (context, state) =>
             _slide(state, const StopsManagementScreen()),
+      ),
+      GoRoute(
+        path: '/management/community',
+        pageBuilder: (context, state) =>
+            _slide(state, const CommunityManagementScreen()),
       ),
       GoRoute(
         path: '/management/routes/new',

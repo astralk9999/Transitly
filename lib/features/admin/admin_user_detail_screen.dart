@@ -167,7 +167,8 @@ class _AdminUserDetailScreenState
                                 client: ref.read(supabaseClientProvider),
                                 userId: widget.userId,
                               ),
-                              _RoutesTab(routes: _routes, c: c),
+                              _RoutesTab(
+                                  routes: _routes, c: c, onReturn: _load),
                               _FeedbackTab(feedback: _feedback, c: c),
                             ],
                           ),
@@ -968,9 +969,10 @@ class _SummaryTab extends StatelessWidget {
 // TAB 2 — RUTAS
 // ─────────────────────────────────────────────────────────────────────
 class _RoutesTab extends StatelessWidget {
-  const _RoutesTab({required this.routes, required this.c});
+  const _RoutesTab({required this.routes, required this.c, this.onReturn});
   final List<Map<String, dynamic>> routes;
   final TransitColorScheme c;
+  final VoidCallback? onReturn;
 
   @override
   Widget build(BuildContext context) {
@@ -999,7 +1001,9 @@ class _RoutesTab extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: 10),
           child: InkWell(
             borderRadius: BorderRadius.circular(12),
-            onTap: () => context.push('/community/route/$id'),
+            onTap: () => context
+                .push('/community/route/$id')
+                .then((_) => onReturn?.call()),
             child: GlassCard(
               blur: 12,
               fillOpacity: 0.05,

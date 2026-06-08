@@ -104,6 +104,16 @@ class AdminScreen extends ConsumerWidget {
                                 'Ver, crear y editar paradas de cualquier operador',
                             onTap: () => context.push('/management/stops'),
                           ),
+                          const SizedBox(height: 12),
+                          _OptionCard(
+                            c: c,
+                            icon: Icons.groups_outlined,
+                            title: 'Gestión de comunidad',
+                            subtitle:
+                                'Rutas de la comunidad: revisar y oficializar',
+                            onTap: () =>
+                                context.push('/management/community'),
+                          ),
                           const SizedBox(height: 32),
                         ],
                       ),

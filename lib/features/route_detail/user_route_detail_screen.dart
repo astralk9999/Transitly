@@ -783,6 +783,48 @@ class _OfficializeSheetState extends ConsumerState<_OfficializeSheet> {
     }
   }
 
+  /// Crea una zona nueva al vuelo (admin) y la selecciona.
+  Future<void> _createZone() async {
+    final ctrl = TextEditingController();
+    final name = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Nueva zona'),
+        content: TextField(
+          controller: ctrl,
+          autofocus: true,
+          decoration: const InputDecoration(
+              labelText: 'Nombre', hintText: 'p.ej. El Puerto de Santa María'),
+        ),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Cancelar')),
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, ctrl.text.trim()),
+              child: const Text('Crear')),
+        ],
+      ),
+    );
+    if (name == null || name.isEmpty) return;
+    try {
+      final repo = ref.read(adminRoutesRepositoryProvider);
+      final id = await repo.zoneUpsert(name: name);
+      final zones = await repo.listZones();
+      if (mounted) {
+        setState(() {
+          _zones = zones;
+          _zoneId = id;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Error: $e')));
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -837,17 +879,37 @@ class _OfficializeSheetState extends ConsumerState<_OfficializeSheet> {
                       const SizedBox(height: 14),
                       _label(c, 'Zona (opcional)'),
                       const SizedBox(height: 6),
-                      _dropdown<String>(
-                        c,
-                        value: _zoneId,
-                        hint: 'Sin zona',
-                        items: [
-                          const DropdownMenuItem(
-                              value: null, child: Text('Sin zona')),
-                          ..._zones.map((z) => DropdownMenuItem(
-                              value: z.id, child: Text(z.name))),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _dropdown<String>(
+                              c,
+                              value: _zoneId,
+                              hint: 'Sin zona',
+                              items: [
+                                const DropdownMenuItem(
+                                    value: null, child: Text('Sin zona')),
+                                ..._zones.map((z) => DropdownMenuItem(
+                                    value: z.id, child: Text(z.name))),
+                              ],
+                              onChanged: (v) => setState(() => _zoneId = v),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Material(
+                            color: c.accent.withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(12),
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(12),
+                              onTap: _createZone,
+                              child: Padding(
+                                padding: const EdgeInsets.all(12),
+                                child: Icon(Icons.add_location_alt_outlined,
+                                    color: c.accent),
+                              ),
+                            ),
+                          ),
                         ],
-                        onChanged: (v) => setState(() => _zoneId = v),
                       ),
                       const SizedBox(height: 14),
                       _label(c, 'Código de línea (opcional)'),

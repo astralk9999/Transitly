@@ -76,12 +76,12 @@
 
   final routes = mockData.routes;
 
-  final selectedRoute = _HabitualSheetState&lt;RouteModel&gt;();
-  final selectedStop = _HabitualSheetState&lt;StopModel&gt;();
+  RouteModel? selectedRoute;
+  StopModel? selectedStop;
 
   showModalBottomSheet(
     context: context,
-      useRootNavigator: true,
+    useRootNavigator: true,
     isScrollControlled: true,
     useSafeArea: true,
     backgroundColor: c.bgSurface,
@@ -91,24 +91,18 @@
     builder: (ctx) {
       return StatefulBuilder(
         builder: (ctx, setSheetState) {
-          &#47;&#47; Paradas únicas (dedupe por stopId) para la ruta elegida.
-          &#47;&#47; getStopsForRoute devuelve outbound+inbound; sin dedupe
-          &#47;&#47; aparecían paradas duplicadas o de sentido contrario.
-          final stopsForRoute = selectedRoute.value != null
-              ? _uniqueStopsFor(mockData, selectedRoute.value!.id)
+          final stopsForRoute = selectedRoute != null
+              ? _uniqueStopsFor(mockData, selectedRoute!.id)
               : &lt;StopModel&gt;[];
-          final canSave =
-              selectedRoute.value != null &amp;&amp; selectedStop.value != null;
+          final canSave = selectedRoute != null &amp;&amp; selectedStop != null;
 
-          &#47;&#47; Padding inferior que respeta: teclado + safe area + nav bar
-          &#47;&#47; de la app. Sin sumar HomeBottomNav.height los botones quedan
-          &#47;&#47; tapados por la navegación.
+          &#47;&#47; Este sheet ya NO contiene los buscadores con teclado: cada campo
+          &#47;&#47; abre un selector buscable a pantalla casi completa (el teclado
+          &#47;&#47; queda abajo y la lista arriba, sin taparse). Así el padding solo
+          &#47;&#47; necesita respetar la safe area y la nav bar de la app.
           final mq = MediaQuery.of(ctx);
-          final bottomInset = (24 +
-              mq.viewInsets.bottom +
-              mq.padding.bottom +
-              HomeBottomNav.height)
-              .clamp(16.0, 100.0);
+          final bottomInset =
+              (24 + mq.padding.bottom + HomeBottomNav.height).clamp(16.0, 100.0);
 
           return Padding(
             padding: EdgeInsets.fromLTRB(16, 8, 16, bottomInset),
@@ -132,151 +126,57 @@
                   style: TransitTypography.heading(c.textHi),
                 ),
                 const SizedBox(height: 20),
-                &#47;&#47; Autocomplete: el usuario escribe parte del código o
-                &#47;&#47; nombre (ej. &quot;L1&quot;, &quot;estadio&quot;) y se filtra. Si tu app
-                &#47;&#47; crece a cientos de líneas, esto sigue siendo usable.
-                Autocomplete&lt;RouteModel&gt;(
-                  displayStringForOption: (r) =&gt; &#39;${r.code} · ${r.name}&#39;,
-                  optionsBuilder: (textEditingValue) {
-                    final q = textEditingValue.text.trim().toLowerCase();
-                    if (q.isEmpty) return routes;
-                    return routes.where((r) =&gt;
-                        r.code.toLowerCase().contains(q) ||
-                        r.name.toLowerCase().contains(q));
-                  },
-                  onSelected: (r) {
-                    setSheetState(() {
-                      selectedRoute.value = r;
-                      selectedStop.value = null;
-                    });
-                  },
-                  fieldViewBuilder:
-                      (ctx, controller, focusNode, onSubmitted) {
-                    return TextField(
-                      controller: controller,
-                      focusNode: focusNode,
-                      style: TransitTypography.bodyPrimary(c.textHi),
-                      decoration: _sheetInputDecoration(
-                        c,
-                        l10n.homeConfigureHabitualRoute,
-                      ).copyWith(
-                        suffixIcon: Icon(Icons.search, color: c.textMid),
-                      ),
+                &#47;&#47; Campo Línea: abre selector buscable.
+                _PickerField(
+                  c: c,
+                  label: l10n.homeConfigureHabitualRoute,
+                  value: selectedRoute == null
+                      ? null
+                      : &#39;${selectedRoute!.code} · ${selectedRoute!.name}&#39;,
+                  onTap: () async {
+                    final picked = await _showSearchPicker&lt;RouteModel&gt;(
+                      context: ctx,
+                      c: c,
+                      title: l10n.homeConfigureHabitualRoute,
+                      items: routes,
+                      labelOf: (r) =&gt; &#39;${r.code} · ${r.name}&#39;,
+                      matches: (r, q) =&gt;
+                          r.code.toLowerCase().contains(q) ||
+                          r.name.toLowerCase().contains(q),
                     );
-                  },
-                  optionsViewBuilder: (ctx, onSelected, options) {
-                    return Align(
-                      alignment: Alignment.topLeft,
-                      child: Material(
-                        color: c.bgRaised,
-                        elevation: 4,
-                        borderRadius: BorderRadius.circular(8),
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(maxHeight: 240),
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            padding: EdgeInsets.zero,
-                            itemCount: options.length,
-                            itemBuilder: (_, i) {
-                              final r = options.elementAt(i);
-                              return ListTile(
-                                dense: true,
-                                title: Text(
-                                  &#39;${r.code} · ${r.name}&#39;,
-                                  style:
-                                      TransitTypography.bodyPrimary(c.textHi),
-                                ),
-                                onTap: () =&gt; onSelected(r),
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                    );
+                    if (picked != null) {
+                      setSheetState(() {
+                        selectedRoute = picked;
+                        selectedStop = null; &#47;&#47; resetea la parada al cambiar línea
+                      });
+                    }
                   },
                 ),
-                const SizedBox(height: 16),
-                &#47;&#47; Sustituido el DropdownButtonFormField por un Autocomplete:
-                &#47;&#47; con muchas paradas el dropdown se desbordaba en toda la
-                &#47;&#47; pantalla y era imposible buscar. Ahora el usuario teclea
-                &#47;&#47; parte del nombre y la lista se filtra en sitio.
-                Autocomplete&lt;StopModel&gt;(
-                  displayStringForOption: (s) =&gt; s.name,
-                  &#47;&#47; Reset del input cuando cambia la ruta: el initialValue
-                  &#47;&#47; se evalúa solo al construir. Usamos clave dinámica:
-                  key: ValueKey(&#39;stop-ac-${selectedRoute.value?.id}-&#39;
-                      &#39;${selectedStop.value?.id}&#39;),
-                  optionsBuilder: (textEditingValue) {
-                    if (selectedRoute.value == null) {
-                      return const Iterable&lt;StopModel&gt;.empty();
+                const SizedBox(height: 12),
+                &#47;&#47; Campo Parada: deshabilitado hasta elegir línea.
+                _PickerField(
+                  c: c,
+                  label: selectedRoute == null
+                      ? l10n.homeConfigureHabitualSelectRouteFirst
+                      : l10n.homeConfigureHabitualStop,
+                  value: selectedStop?.name,
+                  enabled: selectedRoute != null,
+                  onTap: () async {
+                    final picked = await _showSearchPicker&lt;StopModel&gt;(
+                      context: ctx,
+                      c: c,
+                      title: l10n.homeConfigureHabitualStop,
+                      items: stopsForRoute,
+                      labelOf: (s) =&gt; s.name,
+                      sublabelOf: (s) =&gt;
+                          s.officialCode.isEmpty ? null : s.officialCode,
+                      matches: (s, q) =&gt;
+                          s.name.toLowerCase().contains(q) ||
+                          s.officialCode.toLowerCase().contains(q),
+                    );
+                    if (picked != null) {
+                      setSheetState(() =&gt; selectedStop = picked);
                     }
-                    final q = textEditingValue.text.trim().toLowerCase();
-                    if (q.isEmpty) return stopsForRoute;
-                    return stopsForRoute.where((s) =&gt;
-                        s.name.toLowerCase().contains(q) ||
-                        s.officialCode.toLowerCase().contains(q));
-                  },
-                  initialValue: TextEditingValue(
-                      text: selectedStop.value?.name ?? &#39;&#39;),
-                  onSelected: (s) {
-                    setSheetState(() {
-                      selectedStop.value = s;
-                    });
-                  },
-                  fieldViewBuilder:
-                      (ctx, controller, focusNode, onSubmitted) {
-                    return TextField(
-                      controller: controller,
-                      focusNode: focusNode,
-                      enabled: selectedRoute.value != null,
-                      style: TransitTypography.bodyPrimary(c.textHi),
-                      decoration: _sheetInputDecoration(
-                        c,
-                        selectedRoute.value == null
-                            ? l10n.homeConfigureHabitualSelectRouteFirst
-                            : l10n.homeConfigureHabitualStop,
-                      ).copyWith(
-                        suffixIcon: Icon(Icons.search, color: c.textMid),
-                      ),
-                    );
-                  },
-                  optionsViewBuilder: (ctx, onSelected, options) {
-                    return Align(
-                      alignment: Alignment.topLeft,
-                      child: Material(
-                        color: c.bgRaised,
-                        elevation: 4,
-                        borderRadius: BorderRadius.circular(8),
-                        child: ConstrainedBox(
-                          constraints:
-                              const BoxConstraints(maxHeight: 240),
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            padding: EdgeInsets.zero,
-                            itemCount: options.length,
-                            itemBuilder: (_, i) {
-                              final s = options.elementAt(i);
-                              return ListTile(
-                                dense: true,
-                                title: Text(
-                                  s.name,
-                                  style: TransitTypography.bodyPrimary(
-                                      c.textHi),
-                                ),
-                                subtitle: s.officialCode.isEmpty
-                                    ? null
-                                    : Text(
-                                        s.officialCode,
-                                        style: TransitTypography.bodySmall(
-                                            c.textLo),
-                                      ),
-                                onTap: () =&gt; onSelected(s),
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                    );
                   },
                 ),
                 const SizedBox(height: 24),
@@ -284,21 +184,13 @@
                   label: l10n.actionSave,
                   onPressed: canSave
                       ? () async {
-                          &#47;&#47; Capturamos container y nav antes del await
-                          &#47;&#47; para no usar BuildContext tras async gap.
-                          final container =
-                              ProviderScope.containerOf(ctx);
+                          final container = ProviderScope.containerOf(ctx);
                           final nav = Navigator.of(ctx);
                           await ref
                               .read(homeHabitualConfigProvider.notifier)
-                              .save(selectedRoute.value!.id,
-                                  selectedStop.value!.id);
-                          &#47;&#47; Refresca los widgets nativos inmediatamente
-                          &#47;&#47; tras guardar (antes el usuario tenía que
-                          &#47;&#47; esperar 30 min al sistema Android para verlos
-                          &#47;&#47; actualizados con la nueva línea habitual).
-                          unawaited(WidgetRefreshService.refreshNow(
-                              container));
+                              .save(selectedRoute!.id, selectedStop!.id);
+                          unawaited(
+                              WidgetRefreshService.refreshNow(container));
                           nav.pop();
                         }
                       : null,

@@ -57,6 +57,7 @@
 <span class="returntype"><a href="https://api.flutter.dev/flutter/flutter_test/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>
 <span class="name ">writeMyLineStatus</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="writeMyLineStatus-param-routeCode"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">routeCode</span>, </span></li>
 <li><span class="parameter" id="writeMyLineStatus-param-upcoming"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/Map-class.html">Map</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>, <span class="type-parameter">dynamic</span>&gt;</span></span>&gt;</span></span> <span class="parameter-name">upcoming</span>, </span></li>
+<li><span class="parameter" id="writeMyLineStatus-param-inService"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">inService</span> = <span class="default-value">true</span>, </span></li>
 </ol>})
 
       
@@ -71,19 +72,29 @@
   <pre class="language-dart"><code class="language-dart">static Future&lt;void&gt; writeMyLineStatus({
   required String routeCode,
   required List&lt;Map&lt;String, dynamic&gt;&gt; upcoming,
+  bool inService = true,
 }) async {
   if (kIsWeb) return;
-  final status = upcoming.isNotEmpty ? &#39;En servicio&#39; : &#39;Sin datos&#39;;
-  final updatedAt = DateTime.now().toIso8601String();
+  &#47;&#47; &quot;En servicio&quot; solo si la línea circula AHORA (hay salidas hoy pendientes).
+  &#47;&#47; Antes se marcaba en servicio con cualquier salida del horario, aunque
+  &#47;&#47; fuera de madrugada para una línea que no opera.
+  final now = DateTime.now();
+  final status = inService ? &#39;En servicio&#39; : &#39;Fuera de servicio&#39;;
   final times = upcoming.map((d) =&gt; d[&#39;time&#39;] as String).toList();
-  final summary = times.isEmpty
-      ? &#39;Sin próximas salidas&#39;
-      : &#39;Próximos: ${times.take(3).join(&#39; · &#39;)}&#39;;
+  final summary = !inService
+      ? (times.isEmpty
+          ? &#39;Sin servicio ahora&#39;
+          : &#39;Reanuda: ${times.first}&#39;)
+      : (times.isEmpty
+          ? &#39;Sin próximas salidas&#39;
+          : &#39;Próximos: ${times.take(3).join(&#39; · &#39;)}&#39;);
   final payload = jsonEncode({
     &#39;routeCode&#39;: routeCode,
     &#39;status&#39;: status,
+    &#39;inService&#39;: inService,
     &#39;summary&#39;: summary,
-    &#39;updatedAt&#39;: updatedAt,
+    &#39;updatedAt&#39;: now.toIso8601String(),
+    &#39;updatedLabel&#39;: _hhmm(now),
     &#39;upcoming&#39;: upcoming,
   });
 

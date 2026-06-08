@@ -604,6 +604,22 @@ reciente a más antiguo.
 
 </dd>
 
+        <dt id="getUpcomingTodayDepartures" class="callable">
+  <span class="name"><a href="../data_mock_mock_data_service/MockDataService/getUpcomingTodayDepartures.html">getUpcomingTodayDepartures</a></span><span class="signature">(<wbr><span class="parameter" id="getUpcomingTodayDepartures-param-routeId"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">routeId</span>, </span><span class="parameter" id="getUpcomingTodayDepartures-param-stopId"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">stopId</span>, </span><span class="parameter" id="getUpcomingTodayDepartures-param-count"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">count</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../shared_models_schedule_model/ScheduleModel-class.html">ScheduleModel</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Próximas salidas de HOY (día actual) que aún no han pasado, para
+<code>routeId</code>+<code>stopId</code>. A diferencia de <a href="../data_mock_mock_data_service/MockDataService/getNextDepartures.html">getNextDepartures</a>, NO hace fallback
+a las salidas de mañana: devuelve lista vacía si la línea ya no circula
+hoy. Se usa para saber si la línea está realmente "en servicio" ahora.
+  
+
+</dd>
+
         <dt id="loadFromSnapshotString" class="callable">
   <span class="name"><a href="../data_mock_mock_data_service/MockDataService/loadFromSnapshotString.html">loadFromSnapshotString</a></span><span class="signature">(<wbr><span class="parameter" id="loadFromSnapshotString-param-raw"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">raw</span>, {</span><span class="parameter" id="loadFromSnapshotString-param-label"><span>required</span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">label</span></span>})
     <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/flutter_test/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>

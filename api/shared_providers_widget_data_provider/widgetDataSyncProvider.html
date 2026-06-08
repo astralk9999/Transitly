@@ -85,7 +85,14 @@
     unawaited(_pushFromSupabase(arrivalsRepo, route.code, stop, mockData, cfg));
   }
 
-  final deps = mockData.getNextDepartures(cfg.routeId!, cfg.stopId!, 4);
+  &#47;&#47; En servicio = hay salidas HOY aún pendientes. Si no, caemos a las de
+  &#47;&#47; mañana solo para informar de la reanudación, marcando fuera de servicio.
+  final todayDeps =
+      mockData.getUpcomingTodayDepartures(cfg.routeId!, cfg.stopId!, 4);
+  final inService = todayDeps.isNotEmpty;
+  final deps = inService
+      ? todayDeps
+      : mockData.getNextDepartures(cfg.routeId!, cfg.stopId!, 4);
   if (deps.isNotEmpty) {
     final dep = deps.first;
     final now = DateTime.now();
@@ -103,6 +110,8 @@
       etaMinutes: etaMinutes,
       source: &#39;schedule&#39;,
       updatedAt: now,
+      inService: inService,
+      nextDepartureTime: dep.departureTime,
     );
 
     WidgetDataWriter.writeMyLineStatus(
@@ -112,6 +121,7 @@
                 &#39;time&#39;: d.departureTime,
               })
           .toList(),
+      inService: inService,
     );
   }
 });</code></pre>

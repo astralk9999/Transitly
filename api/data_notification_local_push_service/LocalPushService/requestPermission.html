@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
-  <meta name="description" content="API docs for the endTrip method from the DriverLiveRepository class, for the Dart programming language.">
-  <title>endTrip method - DriverLiveRepository class - driver_live_repository library - Dart API</title>
+  <meta name="description" content="API docs for the requestPermission method from the LocalPushService class, for the Dart programming language.">
+  <title>requestPermission method - LocalPushService class - local_push_service library - Dart API</title>
 
 
   
@@ -25,11 +25,11 @@
   <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
   <ol class="breadcrumbs gt-separated dark hidden-xs">
     <li><a href="../../index.html">transitly</a></li>
-    <li><a href="../../data_driver_live_driver_live_repository/">data&#47;driver_live&#47;driver_live_repository.dart</a></li>
-    <li><a href="../../data_driver_live_driver_live_repository/DriverLiveRepository-class.html">DriverLiveRepository</a></li>
-    <li class="self-crumb">endTrip method</li>
+    <li><a href="../../data_notification_local_push_service/">data&#47;notification&#47;local_push_service.dart</a></li>
+    <li><a href="../../data_notification_local_push_service/LocalPushService-class.html">LocalPushService</a></li>
+    <li class="self-crumb">requestPermission method</li>
   </ol>
-  <div class="self-name">endTrip</div>
+  <div class="self-name">requestPermission</div>
   <form class="search navbar-right" role="search">
     <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
@@ -46,44 +46,41 @@
 <div
     id="dartdoc-main-content"
     class="main-content"
-    data-above-sidebar="data_driver_live_driver_live_repository&#47;DriverLiveRepository-class-sidebar.html"
+    data-above-sidebar="data_notification_local_push_service&#47;LocalPushService-class-sidebar.html"
     data-below-sidebar="">
     <div>
-<h1><span class="kind-method">endTrip</span> method 
+<h1><span class="kind-method">requestPermission</span> method 
 </h1></div>
 
     <section class="multi-line-signature">
       
-<span class="returntype"><a href="https://api.flutter.dev/flutter/flutter_test/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>
-<span class="name ">endTrip</span>(<wbr>)
+<span class="returntype"><a href="https://api.flutter.dev/flutter/flutter_test/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>&gt;</span></span>
+<span class="name ">requestPermission</span>(<wbr>)
 
       
 
     </section>
     
 <section class="desc markdown">
-  <p>Cierra el viaje activo del conductor actual. BORRA la fila (no solo
-marca inactivo) para que el stream Realtime emita el DELETE y el bus
-desaparezca del mapa al instante; si solo marcáramos active=false, el
-stream filtrado por active=true a veces no retiraba la fila → el bus
-"se quedaba pillado".</p>
+  <p>Pide el permiso de notificaciones del sistema (Android 13+). Devuelve
+true si quedó concedido. Reutilizable desde Ajustes del perfil.</p>
 </section>
 
 
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">Future&lt;void&gt; endTrip() async {
-  final uid = _client.auth.currentUser?.id;
-  if (uid == null) return;
+  <pre class="language-dart"><code class="language-dart">Future&lt;bool&gt; requestPermission() async {
+  if (!_ready) await init();
   try {
-    await _client.from(&#39;driver_live_trips&#39;).delete().eq(&#39;driver_id&#39;, uid);
+    final granted = await _plugin
+        .resolvePlatformSpecificImplementation&lt;
+            AndroidFlutterLocalNotificationsPlugin&gt;()
+        ?.requestNotificationsPermission();
+    return granted ?? false;
   } catch (e) {
-    AppLogger.warn(_logTag, &#39;endTrip failed&#39;, e);
-    &#47;&#47; Respaldo: al menos marcar inactivo.
-    try {
-      await _client.rpc(&#39;end_my_live_trip&#39;);
-    } catch (_) {}
+    AppLogger.warn(_logTag, &#39;requestPermission failed&#39;, e);
+    return false;
   }
 }</code></pre>
 </section>
@@ -99,12 +96,12 @@ stream filtrado por active=true a veces no retiraba la fila → el bus
 </header>
 <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
     <li><a href="../../index.html">transitly</a></li>
-    <li><a href="../../data_driver_live_driver_live_repository/">driver_live_repository</a></li>
-    <li><a href="../../data_driver_live_driver_live_repository/DriverLiveRepository-class.html">DriverLiveRepository</a></li>
-    <li class="self-crumb">endTrip method</li>
+    <li><a href="../../data_notification_local_push_service/">local_push_service</a></li>
+    <li><a href="../../data_notification_local_push_service/LocalPushService-class.html">LocalPushService</a></li>
+    <li class="self-crumb">requestPermission method</li>
 </ol>
 
-    <h5>DriverLiveRepository class</h5>
+    <h5>LocalPushService class</h5>
     <div id="dartdoc-sidebar-left-content"></div>
   </div><!--/.sidebar-offcanvas-->
   <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">

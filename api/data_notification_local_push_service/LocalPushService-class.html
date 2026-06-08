@@ -102,6 +102,32 @@ segundo plano (con la app abierta también, como fallback visible).</p>
       id="instance-methods">
     <h2>Methods</h2>
     <dl class="callables">
+        <dt id="areEnabled" class="callable">
+  <span class="name"><a href="../data_notification_local_push_service/LocalPushService/areEnabled.html">areEnabled</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/flutter_test/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  ¿Están habilitadas las notificaciones del sistema?
+  
+
+</dd>
+
+        <dt id="cancel" class="callable">
+  <span class="name"><a href="../data_notification_local_push_service/LocalPushService/cancel.html">cancel</a></span><span class="signature">(<wbr><span class="parameter" id="cancel-param-id"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">id</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/flutter_test/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Cancela una notificación por id.
+  
+
+</dd>
+
         <dt id="init" class="callable">
   <span class="name"><a href="../data_notification_local_push_service/LocalPushService/init.html">init</a></span><span class="signature">(<wbr>)
     <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/flutter_test/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>
@@ -125,6 +151,20 @@ segundo plano (con la app abierta también, como fallback visible).</p>
 <dd class="inherited">
   Invoked when a nonexistent method or property is accessed.
   <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="requestPermission" class="callable">
+  <span class="name"><a href="../data_notification_local_push_service/LocalPushService/requestPermission.html">requestPermission</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/flutter_test/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Pide el permiso de notificaciones del sistema (Android 13+). Devuelve
+true si quedó concedido. Reutilizable desde Ajustes del perfil.
+  
 
 </dd>
 

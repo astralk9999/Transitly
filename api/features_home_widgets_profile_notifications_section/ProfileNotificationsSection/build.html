@@ -133,6 +133,12 @@ Widget build(BuildContext context, WidgetRef ref) {
           gradient: c.gradientAccent,
         ),
         const SizedBox(height: 12),
+        &#47;&#47; Permiso del sistema: sin él, los toggles de abajo no pueden
+        &#47;&#47; entregar notificaciones. Solo en móvil (en web no aplica).
+        if (!kIsWeb) ...[
+          const _NotifPermissionBanner(),
+          const SizedBox(height: 12),
+        ],
         _NotifToggle(
           c: c,
           icon: Icons.check_circle_outline,

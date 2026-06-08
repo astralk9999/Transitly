@@ -115,7 +115,11 @@
 
 </dt>
 <dd>
-  Cierra el viaje activo del conductor actual.
+  Cierra el viaje activo del conductor actual. BORRA la fila (no solo
+marca inactivo) para que el stream Realtime emita el DELETE y el bus
+desaparezca del mapa al instante; si solo marcáramos active=false, el
+stream filtrado por active=true a veces no retiraba la fila → el bus
+"se quedaba pillado".
   
 
 </dd>

@@ -18,15 +18,55 @@ class InvitationCodesScreen extends ConsumerStatefulWidget {
       _InvitationCodesScreenState();
 }
 
+enum _CodeFilter { all, active, driver, operatorAdmin }
+
 class _InvitationCodesScreenState extends ConsumerState<InvitationCodesScreen> {
   List<Map<String, dynamic>>? _codes;
   bool _loading = true;
   String? _error;
+  String _search = '';
+  _CodeFilter _filter = _CodeFilter.all;
+  final _searchCtrl = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _loadCodes();
+  }
+
+  @override
+  void dispose() {
+    _searchCtrl.dispose();
+    super.dispose();
+  }
+
+  bool _isActive(Map<String, dynamic> code) {
+    final uses = (code['uses'] as num?)?.toInt() ?? 0;
+    final maxUses = (code['max_uses'] as num?)?.toInt() ?? 1;
+    final exp = code['expires_at'] as String?;
+    final notExpired =
+        exp == null || DateTime.parse(exp).isAfter(DateTime.now());
+    return uses < maxUses && notExpired;
+  }
+
+  List<Map<String, dynamic>> get _filtered {
+    final q = _search.trim().toLowerCase();
+    return (_codes ?? const []).where((code) {
+      if (q.isNotEmpty &&
+          !(code['code'] as String? ?? '').toLowerCase().contains(q)) {
+        return false;
+      }
+      switch (_filter) {
+        case _CodeFilter.active:
+          return _isActive(code);
+        case _CodeFilter.driver:
+          return (code['kind'] as String?) == 'driver';
+        case _CodeFilter.operatorAdmin:
+          return (code['kind'] as String?) == 'operator_admin';
+        case _CodeFilter.all:
+          return true;
+      }
+    }).toList();
   }
 
   Future<void> _loadCodes() async {
@@ -394,11 +434,177 @@ class _InvitationCodesScreenState extends ConsumerState<InvitationCodesScreen> {
       );
     }
 
+    return Column(
+      children: [
+        _statsHeader(c),
+        _searchBar(c),
+        _filtersBar(c),
+        const SizedBox(height: 4),
+        Expanded(child: _codesList(c)),
+      ],
+    );
+  }
+
+  Widget _statsHeader(TransitColorScheme c) {
+    final all = _codes ?? const [];
+    final total = all.length;
+    final active = all.where(_isActive).length;
+    final opAdmin =
+        all.where((x) => x['kind'] == 'operator_admin').length;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      child: Row(
+        children: [
+          Expanded(child: _statPill(c, Icons.vpn_key, '$total', 'Total', c.accent)),
+          const SizedBox(width: 8),
+          Expanded(child: _statPill(c, Icons.bolt, '$active', 'Activos', const Color(0xFF4CAF50))),
+          const SizedBox(width: 8),
+          Expanded(child: _statPill(c, Icons.apartment, '$opAdmin', 'Admin op.', const Color(0xFF9C27B0))),
+        ],
+      ),
+    );
+  }
+
+  Widget _statPill(TransitColorScheme c, IconData icon, String value,
+      String label, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 0.5),
+      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 13, color: color),
+              const SizedBox(width: 4),
+              Text(value,
+                  style: TransitTypography.bodyPrimary(c.textHi)
+                      .copyWith(fontWeight: FontWeight.w700)),
+            ],
+          ),
+          const SizedBox(height: 2),
+          Text(label,
+              style: TransitTypography.bodySmall(c.textLo),
+              maxLines: 1, overflow: TextOverflow.ellipsis),
+        ],
+      ),
+    );
+  }
+
+  Widget _searchBar(TransitColorScheme c) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+      child: Container(
+        decoration: BoxDecoration(
+          color: c.bgRaised,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: c.border, width: 0.5),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        child: Row(
+          children: [
+            Icon(Icons.search, size: 18, color: c.textMid),
+            const SizedBox(width: 8),
+            Expanded(
+              child: TextField(
+                controller: _searchCtrl,
+                onChanged: (v) => setState(() => _search = v),
+                style: TransitTypography.bodyPrimary(c.textHi),
+                decoration: InputDecoration(
+                  hintText: 'Buscar código',
+                  hintStyle: TransitTypography.bodySecondary(c.textMid),
+                  border: InputBorder.none,
+                  isDense: true,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                ),
+              ),
+            ),
+            if (_search.isNotEmpty)
+              IconButton(
+                icon: Icon(Icons.close, size: 16, color: c.textMid),
+                onPressed: () {
+                  _searchCtrl.clear();
+                  setState(() => _search = '');
+                },
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _filtersBar(TransitColorScheme c) {
+    Widget chip(String label, _CodeFilter f, IconData icon, Color color) {
+      final selected = _filter == f;
+      return InkWell(
+        borderRadius: BorderRadius.circular(20),
+        onTap: () => setState(() => _filter = f),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: selected ? color.withValues(alpha: 0.18) : c.bgRaised,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+                color: selected ? color : c.border,
+                width: selected ? 1.2 : 0.5),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 14, color: selected ? color : c.textMid),
+              const SizedBox(width: 4),
+              Text(label,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: selected ? color : c.textHi,
+                    fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                  )),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return SizedBox(
+      height: 36,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        children: [
+          chip('Todos', _CodeFilter.all, Icons.list, c.accent),
+          const SizedBox(width: 6),
+          chip('Activos', _CodeFilter.active, Icons.bolt,
+              const Color(0xFF4CAF50)),
+          const SizedBox(width: 6),
+          chip('Conductor', _CodeFilter.driver, Icons.directions_bus,
+              const Color(0xFF2196F3)),
+          const SizedBox(width: 6),
+          chip('Admin op.', _CodeFilter.operatorAdmin, Icons.apartment,
+              const Color(0xFF9C27B0)),
+        ],
+      ),
+    );
+  }
+
+  Widget _codesList(TransitColorScheme c) {
+    final list = _filtered;
+    if (list.isEmpty) {
+      return Center(
+        child: Text('Sin resultados',
+            style: TransitTypography.bodyPrimary(c.textMid)),
+      );
+    }
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      itemCount: _codes!.length,
+      itemCount: list.length,
       itemBuilder: (context, index) {
-        final code = _codes![index];
+        final code = list[index];
         final isExpired = code['expires_at'] != null &&
             DateTime.parse(code['expires_at'] as String).isBefore(DateTime.now());
 

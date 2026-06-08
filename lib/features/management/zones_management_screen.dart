@@ -30,15 +30,41 @@ class ZonesManagementScreen extends ConsumerStatefulWidget {
       _ZonesManagementScreenState();
 }
 
+enum _ZoneFilter { all, withGeometry, pending }
+
 class _ZonesManagementScreenState extends ConsumerState<ZonesManagementScreen> {
   List<ZoneRow> _zones = [];
   bool _loading = true;
   String? _error;
+  String _search = '';
+  _ZoneFilter _filter = _ZoneFilter.all;
+  final _searchCtrl = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _load();
+  }
+
+  @override
+  void dispose() {
+    _searchCtrl.dispose();
+    super.dispose();
+  }
+
+  List<ZoneRow> get _filtered {
+    final q = _search.trim().toLowerCase();
+    return _zones.where((z) {
+      if (q.isNotEmpty && !z.name.toLowerCase().contains(q)) return false;
+      switch (_filter) {
+        case _ZoneFilter.withGeometry:
+          return z.hasGeometry;
+        case _ZoneFilter.pending:
+          return z.isPending;
+        case _ZoneFilter.all:
+          return true;
+      }
+    }).toList();
   }
 
   Future<void> _load() async {
@@ -132,15 +158,178 @@ class _ZonesManagementScreenState extends ConsumerState<ZonesManagementScreen> {
                 ? _errorView(c)
                 : _zones.isEmpty
                     ? _emptyView(c)
-                    : RefreshIndicator(
-                        color: c.accent,
-                        onRefresh: _load,
-                        child: ListView.builder(
-                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-                          itemCount: _zones.length,
-                          itemBuilder: (_, i) => _zoneCard(c, _zones[i]),
-                        ),
+                    : Column(
+                        children: [
+                          _statsHeader(c),
+                          _searchBar(c),
+                          _filtersBar(c),
+                          const SizedBox(height: 4),
+                          Expanded(
+                            child: Builder(builder: (_) {
+                              final list = _filtered;
+                              if (list.isEmpty) {
+                                return Center(
+                                  child: Text('Sin resultados',
+                                      style: TransitTypography.bodyPrimary(
+                                          c.textMid)),
+                                );
+                              }
+                              return RefreshIndicator(
+                                color: c.accent,
+                                onRefresh: _load,
+                                child: ListView.builder(
+                                  padding: const EdgeInsets.fromLTRB(
+                                      16, 4, 16, 24),
+                                  itemCount: list.length,
+                                  itemBuilder: (_, i) => _zoneCard(c, list[i]),
+                                ),
+                              );
+                            }),
+                          ),
+                        ],
                       ),
+      ),
+    );
+  }
+
+  Widget _statsHeader(TransitColorScheme c) {
+    final total = _zones.length;
+    final withGeo = _zones.where((z) => z.hasGeometry).length;
+    final pending = _zones.where((z) => z.isPending).length;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      child: Row(
+        children: [
+          Expanded(child: _statPill(c, Icons.map_outlined, '$total', 'Total', c.accent)),
+          const SizedBox(width: 8),
+          Expanded(child: _statPill(c, Icons.location_on, '$withGeo', 'Con área', const Color(0xFF4CAF50))),
+          const SizedBox(width: 8),
+          Expanded(child: _statPill(c, Icons.pending_outlined, '$pending', 'Propuestas', const Color(0xFFFF9800))),
+        ],
+      ),
+    );
+  }
+
+  Widget _statPill(TransitColorScheme c, IconData icon, String value,
+      String label, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 0.5),
+      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 13, color: color),
+              const SizedBox(width: 4),
+              Text(value,
+                  style: TransitTypography.bodyPrimary(c.textHi)
+                      .copyWith(fontWeight: FontWeight.w700)),
+            ],
+          ),
+          const SizedBox(height: 2),
+          Text(label,
+              style: TransitTypography.bodySmall(c.textLo),
+              maxLines: 1, overflow: TextOverflow.ellipsis),
+        ],
+      ),
+    );
+  }
+
+  Widget _searchBar(TransitColorScheme c) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+      child: Container(
+        decoration: BoxDecoration(
+          color: c.bgRaised,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: c.border, width: 0.5),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        child: Row(
+          children: [
+            Icon(Icons.search, size: 18, color: c.textMid),
+            const SizedBox(width: 8),
+            Expanded(
+              child: TextField(
+                controller: _searchCtrl,
+                onChanged: (v) => setState(() => _search = v),
+                style: TransitTypography.bodyPrimary(c.textHi),
+                decoration: InputDecoration(
+                  hintText: 'Buscar zona',
+                  hintStyle: TransitTypography.bodySecondary(c.textMid),
+                  border: InputBorder.none,
+                  isDense: true,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                ),
+              ),
+            ),
+            if (_search.isNotEmpty)
+              IconButton(
+                icon: Icon(Icons.close, size: 16, color: c.textMid),
+                onPressed: () {
+                  _searchCtrl.clear();
+                  setState(() => _search = '');
+                },
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _filtersBar(TransitColorScheme c) {
+    Widget chip(String label, _ZoneFilter f, IconData icon, Color color) {
+      final selected = _filter == f;
+      return InkWell(
+        borderRadius: BorderRadius.circular(20),
+        onTap: () => setState(() => _filter = f),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: selected ? color.withValues(alpha: 0.18) : c.bgRaised,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+                color: selected ? color : c.border,
+                width: selected ? 1.2 : 0.5),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 14, color: selected ? color : c.textMid),
+              const SizedBox(width: 4),
+              Text(label,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: selected ? color : c.textHi,
+                    fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                  )),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return SizedBox(
+      height: 36,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        children: [
+          chip('Todas', _ZoneFilter.all, Icons.list, c.accent),
+          const SizedBox(width: 6),
+          chip('Con área', _ZoneFilter.withGeometry, Icons.location_on,
+              const Color(0xFF4CAF50)),
+          const SizedBox(width: 6),
+          chip('Propuestas', _ZoneFilter.pending, Icons.pending_outlined,
+              const Color(0xFFFF9800)),
+        ],
       ),
     );
   }

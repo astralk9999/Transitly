@@ -58,11 +58,14 @@ no existe. El plan prioriza recuperar la base (P0) antes de seguir añadiendo.
   rama de trabajo **no tiene CI**. Añadir `post-tfg` a `branches` de `push`
   y `pull_request` (docs.yml y deploy-presentation.yml pueden quedarse solo
   en master, son publicación).
-- [ ] **P0.6 — Triaje de los 11 PRs abiertos.** Mergear los bumps de
-  GitHub Actions (seguros), valorar los de pub menores, y cerrar o
-  re-apuntar el PR de release-please 1.13.0 (ver P6.3).
-- [ ] **P0.7 — Regenerar `coverage/lcov.info`** tras P0.1–P0.3 para tener
-  línea base real de cobertura (el actual es del 22 de mayo).
+- [x] **P0.6 — Triaje de los 11 PRs abiertos.** Decisión 2026-06-12: NO se
+  mergean — todos apuntan a `master`, que está congelada para la corrección.
+  Los bumps de dependencias se harán directamente en `post-tfg` (P6.1) y el
+  PR de release-please se resolverá con P6.3 al final de la corrección.
+- [x] **P0.7 — Regenerar `coverage/lcov.info`**. Hecho 2026-06-12: la
+  cobertura real es **17,30 %** (6.233/36.033 líneas) — bajó desde 24 %
+  porque junio duplicó las líneas instrumentadas. Gate de CI ajustado a
+  16 % para frenar regresiones; la subida escalonada es P4.4.
 
 ---
 
@@ -71,7 +74,10 @@ no existe. El plan prioriza recuperar la base (P0) antes de seguir añadiendo.
 > 160 lints de seguridad, 2 de nivel ERROR. El proyecto remoto es real y
 > público: esto es lo segundo más urgente.
 
-- [ ] **P1.1 — 🔴 ERROR: tabla `route_vote_xp_awarded` sin RLS.**
+- [x] **P1.1 — 🔴 ERROR: tabla `route_vote_xp_awarded` sin RLS.** ✅ 2026-06-12
+  (migración `20260612100000`): RLS activado sin policies + los dos triggers
+  de voto ahora son SECURITY DEFINER — de paso arregla que el UPDATE de
+  `vote_count` en rutas ajenas se filtrara en silencio bajo RLS.
   Está en `public` expuesta vía PostgREST sin ninguna política. Habilitar
   RLS + políticas (o moverla a un schema privado si es solo contabilidad
   interna de triggers). (`spatial_ref_sys`, el otro ERROR, es de PostGIS y
@@ -82,10 +88,13 @@ no existe. El plan prioriza recuperar la base (P0) antes de seguir añadiendo.
   Verificar una a una que el cuerpo valida el rol; para las que no deban
   ser públicas: `REVOKE EXECUTE FROM anon, authenticated` y conceder solo a
   quien toque. Es la superficie de ataque más grande del backend.
-- [ ] **P1.3 — Fijar `search_path` en las 31 funciones marcadas**
+- [x] **P1.3 — Fijar `search_path` en las 31 funciones marcadas** ✅
+  2026-06-12 (migración `20260612101000` + P1.1 para los 2 triggers de voto).
   (`SET search_path = ''` o explícito) — mitiga escalada por shadowing.
-- [ ] **P1.4 — Activar protección de contraseñas filtradas** (Auth →
-  leaked password protection, hoy OFF) y revisar política de contraseñas.
+- [ ] **P1.4 — Activar protección de contraseñas filtradas.** ⛔ BLOQUEADO
+  2026-06-12: la Management API devuelve 402 — HIBP requiere plan Pro.
+  Mitigación actual: min 6 caracteres (alineado app/servidor). Retomar si
+  el proyecto pasa a Pro.
 - [ ] **P1.5 — Buckets públicos con listado permitido** (`avatars`,
   `operator-assets`): impedir `list` a anónimos manteniendo lectura por URL.
 - [ ] **P1.6 — `user_route_views` tiene una política RLS always-true** —

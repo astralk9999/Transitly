@@ -1,196 +1,325 @@
 # Transitly · `nexto-stop-v2`
 
-> Academic Flutter project (TFG) — a public-transit companion app built around
-> **COMUJESA**, the urban bus operator of Jerez de la Frontera (Cádiz, Spain).
-
-Transitly is a portfolio-grade transit companion: live(-ish) arrivals, a real
-route catalogue, an NFC card reader for the *Consorcio de Transportes de
-Andalucía* prepaid card, a route editor for drivers, community contributions,
-and a polished motion / typography system.
-
-The data layer is **mock-first with an optional Supabase backend**: COMUJESA
-timetable/stop/line data ships as mock JSON (`assets/mock/comujesa_data.json`)
-and is served by the mock repositories when there is no authenticated session;
-when a Supabase session exists, the same repositories read/write the remote
-backend. Telemetry (Sentry/PostHog), push (FCM) and the Astro web surface are
-present but optional and consent/env-gated.
-
-> **Honest scope note (read before evaluating).** Phases F0–F27 (28/28
-> completed) added a full Supabase backend, auth, FCM push, telemetry,
-> an Astro SSR site and native home widgets. Real-time updates (F13) are
-> implemented on the critical repos (5 of 12: `bus_location`, `stop`,
-> `route`, `incident`, `route_feedback`) via a shared
-> `RealtimeChannelManager` with exponential backoff + jitter. APK
-> release builds and CI is green on 4 jobs (incl. Build Android APK).
-> The remaining production gaps are documented in
-> [`docs/00_MAESTRO.md`](./docs/00_MAESTRO.md) — start there.
-
----
-
-## Documentation entry-point
-
-All documentation is indexed in **[`docs/README.md`](./docs/README.md)**,
-which maps each TFG required deliverable to the corresponding file and
-points to the audit dossiers (`00_MAESTRO`, `SCALABILITY`,
-`ACCESSIBILITY`) and the action plan.
-
----
-
-## Status
-
-The project completed 28/28 incremental phases (**F0 → F27**); state in
-`multiagent/state/project.json`. Development was assisted by an autonomous
-multi-agent system (Queen / Developer / Review / Git / Documentation),
-documented in `multiagent/ARCHITECTURE.md` and in the TFG memory
-(`docs/tfg/03–05`).
-
-Verified quality metrics (2026-05-22):
-
-| Metric | Value |
-|--------|-------|
-| `flutter analyze` | **0 issues** |
-| `flutter test` | **616 / 616 passing** |
-| Line coverage | **~25,5 %** — known debt |
-| `flutter build apk --release` | **OK** (73,5 MB) |
-| CI GitHub Actions | **4 jobs green** (Analyze, Test, Build Web, Build Android APK) |
+> Proyecto académico (TFG) — aplicación companion de transporte público urbano
+> construida alrededor de **COMUJESA**, el operador de autobuses de Jerez de la
+> Frontera (Cádiz). **Plataformas soportadas: Android y Web.**
 
 [![codecov](https://codecov.io/gh/astralk9999/Transitly/branch/master/graph/badge.svg)](https://codecov.io/gh/astralk9999/Transitly)
 
-> Coverage is the remaining lever: the `remote/` data layer (auth + 7
-> repos) is at ~0 %. Plan in
-> [`docs/MEGA_PLAN_REFINAMIENTO.md §P2-4`](./docs/MEGA_PLAN_REFINAMIENTO.md).
+---
+
+## Resumen del proyecto
+
+Transitly es una app de movilidad urbana con backend real en **Supabase**
+(PostgreSQL + PostGIS, Auth, Storage, Realtime y Edge Functions) y
+notificaciones push reales vía **Firebase Cloud Messaging**. Sus funcionalidades
+principales:
+
+- **Mapa en vivo** (`flutter_map` + MapTiler/CartoDB): líneas, paradas, zonas,
+  posición de autobuses en tiempo real (canal Realtime con backoff exponencial)
+  y caché de teselas offline (FMTC).
+- **Líneas y horarios de COMUJESA**: catálogo real de líneas, paradas físicas
+  deduplicadas y horarios exactos, con sincronización offline.
+- **Estimación de llegadas** (ETA) combinando horario oficial, GPS del conductor
+  y estimación propia.
+- **Lector NFC** de la tarjeta prepago del *Consorcio de Transportes de
+  Andalucía* (Mifare Classic): saldo e histórico de viajes.
+- **Comunidad**: incidencias, sugerencias de paradas/zonas, votos, reputación
+  (XP), moderación y promoción de aportaciones a contenido oficial.
+- **Multi-rol**: usuario, conductor (emisión GPS en vivo, editor de rutas),
+  operador y administrador (panel de gestión completo).
+- **Push reales con la app cerrada** (FCM + Edge Function `send_notification`
+  + triggers SQL), notificaciones in-app y alertas geográficas.
+- **Widgets nativos de Android** (próximo bus / estado de línea) con refresco
+  periódico en segundo plano (`home_widget` + `workmanager`).
+- **Offline-first**: caché Hive, cola de sincronización y exportación de datos.
+- **i18n** ES / EN / AR (RTL) — ARB completos y sincronizados — y trabajo real
+  de **accesibilidad** (alto contraste, matrices para daltonismo, fuente
+  OpenDyslexic, `textScaler`, movimiento reducido, objetivos táctiles 48 dp).
+  Estado WCAG 2.2 AA: *parcial*, auditoría en [`docs/ACCESSIBILITY.md`](./docs/ACCESSIBILITY.md).
+- **Telemetría opcional** (Sentry + PostHog) condicionada al consentimiento.
+- **Superficie web**: build de Flutter Web embebida en un sitio **Astro**
+  (`astro/`, uso local) y web de entregables del TFG en GitHub Pages
+  (`presentation/`).
+
+### Stack técnico
+
+| Capa | Tecnología |
+|------|------------|
+| UI / framework | Flutter 3.9.2+ · Dart 3 (strict casts + strict raw types) |
+| Estado | Riverpod 2.6 (`autoDispose`, providers derivados, `overrideWith` en tests) |
+| Navegación | go_router 17.2 (`StatefulShellRoute`, `redirect` por ruta) |
+| Backend | Supabase (`supabase_flutter` 2.8) — 53 migraciones SQL, 8 Edge Functions, RLS completo |
+| Push | Firebase Cloud Messaging (`firebase_messaging`) con degradación elegante |
+| Mapa | flutter_map 7 + MapTiler (fallback gratuito CartoDB) + FMTC offline |
+| NFC | nfc_manager 3.5 (Mifare Classic, solo Android) |
+| Telemetría | Sentry + PostHog (opt-in) |
+| Web | Astro SSR + islas de Flutter Web |
+| Tipografía | DM Sans + IBM Plex Mono (assets locales) |
+
+La capa de datos sigue el patrón de repositorios `domain / local / mock /
+remote` por entidad: sin sesión autenticada la app sirve los datos mock de
+`assets/mock/comujesa_data.json`; con sesión Supabase, los mismos repositorios
+leen/escriben el backend remoto.
+
+Toda la documentación está indexada en [`docs/README.md`](./docs/README.md)
+(arquitectura, escalabilidad, accesibilidad, memoria del TFG, runbooks…).
 
 ---
 
-## Architecture / Stack
+## Guía de instalación desde cero
 
-- **Flutter** 3.9.2+ / **Dart** 3 (strict casts + strict raw types)
-- **Riverpod** 2.6 (StateProviders, derived providers, `autoDispose` on
-  streams/timers/futures, `overrideWith` in tests)
-- **go_router** 17.2 with `StatefulShellRoute` and per-route `redirect`
-- **Supabase** (`supabase_flutter` 2.8) — auth, 13 SQL migrations, 2 Edge
-  Functions; `domain/local/mock/remote` repository pattern per entity
-- **Firebase / FCM** (`firebase_messaging`) — push, with graceful degradation
-- **Sentry + PostHog** — crash reporting / analytics, consent-gated
-- **flutter_map** 7.0 + `latlong2`; **MapTiler** + FMTC offline tile caching
-- **nfc_manager** 3.5 over Mifare Classic (sector keys via `--dart-define`)
-- **Astro** SSR marketing site (`astro/`)
-- Native Android/iOS home widgets (`home_widget`, `workmanager`)
-- **DM Sans + IBM Plex Mono** bundled as local assets (F26 closed)
-- **flutter_localizations** + ARB generation (`flutter gen-l10n`) — **ES / EN / AR (RTL)**, 343 keys/locale
+La guía cubre todo el camino: base de datos (Supabase), Google Cloud (OAuth),
+Firebase (push), mapas y la app en Android y Web.
 
----
+### 0. Prerrequisitos
 
-## Getting started
+| Herramienta | Versión | Para qué |
+|-------------|---------|----------|
+| [Flutter SDK](https://docs.flutter.dev/get-started/install) (canal stable) | ≥ 3.9.2 | App Android y Web |
+| Android Studio + Android SDK | API 24+ | Emulador / dispositivo |
+| [Node.js](https://nodejs.org) | ≥ 18 | Scripts de seed y sitio Astro |
+| [Supabase CLI](https://supabase.com/docs/guides/cli) | última | Migraciones y Edge Functions |
+| Git | — | Clonar el repo |
 
 ```bash
-cp .env.example .env       # fill SUPABASE_URL / SUPABASE_ANON_KEY (required to boot)
+git clone https://github.com/astralk9999/Transitly.git nexto-stop-v2
+cd nexto-stop-v2
 flutter pub get
-flutter gen-l10n           # one-shot; generated files live in lib/l10n/generated
-flutter run                # Android emulator or connected device
+flutter gen-l10n        # genera lib/l10n/generated (ES/EN/AR)
 ```
 
-`SUPABASE_URL` and `SUPABASE_ANON_KEY` are **required** (`lib/core/env.dart`
-validates them and the app shows an env-error screen if missing). Telemetry
-(`SENTRY_DSN`, `POSTHOG_API_KEY`) and `MAPTILER_API_KEY` are optional and
-degrade silently. `.env` is gitignored and must never be committed.
+### 1. Crear el proyecto Supabase (base de datos)
 
-### NFC (sensitive)
+1. Entra en <https://supabase.com/dashboard> → **New project** (región UE
+   recomendada). Anota:
+   - **Project ref** (el subdominio: `https://<ref>.supabase.co`),
+   - **anon key** (Settings → API),
+   - **service_role key** (solo para backend/CLI, *nunca* en el cliente).
+2. Aplica las **53 migraciones** de [`supabase/migrations/`](./supabase/migrations)
+   en orden. Opción recomendada (CLI):
 
-The default Mifare keys for the *Consorcio* card live in
-`lib/data/nfc/nfc_card_service.dart`. They were reverse-engineered from the
-public `saldotarjetas` Android app and are kept here for **academic** use
-only. To override them at build time, pass:
+   ```bash
+   npm install -g supabase
+   supabase login
+   supabase link --project-ref <ref>
+   supabase db push
+   ```
+
+   Alternativa: copiar/pegar cada `NNN_*.sql` en el SQL Editor del Dashboard,
+   en orden numérico. La `001_init.sql` tarda 30–60 s (instala PostGIS e
+   índices GIST). Verificaciones post-instalación en
+   [`supabase/README.md`](./supabase/README.md).
+3. **Storage**: los 5 buckets (`avatars`, `report-attachments`,
+   `route-attachments`, `data-exports`, `operator-assets`) los crea la
+   migración `004_storage.sql`; detalle de límites y paths en
+   [`supabase/storage_setup.md`](./supabase/storage_setup.md).
+
+### 2. Sembrar los datos de COMUJESA
+
+Las migraciones solo contienen DDL; los datos de líneas/paradas/horarios se
+generan desde el JSON del repo:
 
 ```bash
-flutter run \
-  --dart-define=NFC_KEY_SECTOR0=<6-byte-hex> \
-  --dart-define=NFC_KEY_SECTOR9=<6-byte-hex>
+node tools/seed_comujesa.mjs        # escribe tools/seed_out/comujesa_seed.sql
 ```
 
-iOS additionally needs the entitlements declared in `ios/Runner/Info.plist`
-(`NFCReaderUsageDescription` + `com.apple.developer.nfc.readersession.formats:
-TAG`).
+Ejecuta el SQL resultante en el SQL Editor del Dashboard (es **idempotente**:
+usa UUIDs deterministas y se puede relanzar). Sin este paso la app funciona,
+pero el backend remoto estará vacío.
 
----
+### 3. Configurar autenticación
 
-## Tests
+#### 3.1 Email / contraseña
+
+En el Dashboard → **Authentication → Providers → Email**:
+
+- **Confirm email → OFF** (el proyecto no usa SMTP propio; el código asume
+  login inmediato tras el registro). Si más adelante configuras SMTP, los
+  pasos para reactivar la verificación están en
+  [`docs/SUPABASE_SETUP.md`](./docs/SUPABASE_SETUP.md).
+
+En **Authentication → URL Configuration → Redirect URLs** añade:
+
+- `transitly://login-callback` (deep link de la app Android)
+- la URL de tu despliegue web + `/app/` si vas a usar login en Web
+
+#### 3.2 Google OAuth (Google Cloud)
+
+El login con Google usa el flujo OAuth **web** de Supabase (no depende del
+SHA-1 del APK):
+
+1. <https://console.cloud.google.com> → crea un proyecto → **APIs & Services →
+   OAuth consent screen** (tipo *External*, añade tu email de prueba).
+2. **Credentials → Create credentials → OAuth client ID → Web application**:
+   - *Authorized redirect URI*: `https://<ref>.supabase.co/auth/v1/callback`
+3. Copia **Client ID** y **Client Secret** en Supabase → **Authentication →
+   Providers → Google** (actívalo).
+4. Guarda el Client ID también como `GOOGLE_WEB_CLIENT_ID` (paso 6).
+
+### 4. Edge Functions y secretos
+
+Despliega las 8 funciones de [`supabase/functions/`](./supabase/functions):
 
 ```bash
-flutter test                       # 616 tests
-flutter test --coverage            # writes coverage/lcov.info (24,30 % lines)
+supabase functions deploy approve_user_route delete_user generate_data_export \
+  import_gtfs promote_stop_to_official purge_old_data send_notification \
+  validate_share_code --project-ref <ref>
 ```
 
-The suite covers `MockDataService`, the NFC parser and error mapping
-(`test/data/`), Riverpod state transitions (`test/shared/providers/`), router
-deeplinks/redirects and design-system widgets (`test/widget/`), plus offline
-queue smoke tests (`test/smoke/`). Coverage of business logic
-(`bus_estimator`, offline sync, the remote repositories) is **partial** and is
-acknowledged technical debt rather than a finished safety net.
+Para que los **triggers SQL** puedan invocar `send_notification` (push), crea
+estos secretos en el Vault (SQL Editor, una sola vez):
 
-Pixel goldens were intentionally **not** committed: `google_fonts` resolves
-fonts over the network, so byte-identical output across machines is not
-realistic. Structural assertions cover the same surface.
+```sql
+select vault.create_secret('<service_role_key>', 'service_role_key');
+select vault.create_secret('https://<ref>.supabase.co/functions/v1', 'functions_url');
+```
+
+`import_gtfs` requiere además la env var `ALLOWED_ORIGINS` (allowlist CORS,
+sin comodines). Detalles de endurecimiento en
+[`supabase/README.md`](./supabase/README.md).
+
+### 5. Firebase / FCM (push reales)
+
+Opcional pero recomendado — sin esto la app funciona y simplemente no recibe
+push. Guía completa: [`docs/FCM_SETUP.md`](./docs/FCM_SETUP.md) y
+[`docs/PLATFORM_SETUP.md`](./docs/PLATFORM_SETUP.md).
+
+1. <https://console.firebase.google.com> → **Add project**.
+2. Añade una app **Android** con package name `com.transitly.transitly`
+   (el `applicationId` de `android/app/build.gradle.kts`).
+3. Descarga `google-services.json` → colócalo en `android/app/`.
+4. Genera `lib/firebase_options.dart`:
+
+   ```bash
+   dart pub global activate flutterfire_cli
+   flutterfire configure --project=<tu-proyecto-firebase>
+   ```
+
+5. Para que el **backend envíe** push: Firebase → ⚙️ Configuración del
+   proyecto → *Cuentas de servicio* → **Generar nueva clave privada** (JSON), y:
+
+   ```bash
+   supabase secrets set FCM_PROJECT_ID=<tu-proyecto-firebase> --project-ref <ref>
+   supabase secrets set FCM_SERVICE_ACCOUNT_JSON="$(cat service-account.json)" --project-ref <ref>
+   supabase functions deploy send_notification --project-ref <ref>
+   ```
+
+Prueba rápida: Firebase Console → Cloud Messaging → *Enviar mensaje de
+prueba* pegando el token del dispositivo (queda en la tabla `device_tokens`
+tras iniciar sesión).
+
+### 6. Variables de entorno de la app
+
+La app lee la configuración **en tiempo de compilación** vía `--dart-define`
+(ver `lib/core/env.dart`). Lo cómodo es un archivo `dart_defines.json` en la
+raíz (está **gitignored** — nunca lo subas):
+
+```json
+{
+  "SUPABASE_URL": "https://<ref>.supabase.co",
+  "SUPABASE_ANON_KEY": "<anon-key>",
+  "SUPABASE_FUNCTIONS_URL": "https://<ref>.supabase.co/functions/v1",
+  "GOOGLE_WEB_CLIENT_ID": "<client-id>.apps.googleusercontent.com",
+  "POSTHOG_API_KEY": "",
+  "POSTHOG_HOST": "https://eu.posthog.com",
+  "SENTRY_DSN": "",
+  "MAPTILER_API_KEY": ""
+}
+```
+
+- **Obligatorias**: `SUPABASE_URL` y `SUPABASE_ANON_KEY` (si faltan, la app
+  arranca con una pantalla de error de entorno).
+- **Opcionales** (degradan en silencio): telemetría (`SENTRY_DSN`,
+  `POSTHOG_API_KEY`) y `MAPTILER_API_KEY` — sin clave de MapTiler el mapa usa
+  CartoDB gratuito como fallback. Clave gratuita en
+  <https://cloud.maptiler.com> (100k teselas/mes).
+
+`.env.example` documenta las mismas variables como referencia.
+
+### 7. Ejecutar en Android
+
+```bash
+flutter run --dart-define-from-file=dart_defines.json
+```
+
+Para el APK de release:
+
+```bash
+flutter build apk --release --dart-define-from-file=dart_defines.json
+```
+
+Si existe `android/key.properties` (con `storeFile`, `storePassword`,
+`keyAlias`, `keyPassword`) el build se firma con ese keystore; si no, usa la
+firma debug — suficiente para instalar y probar.
+
+### 8. Ejecutar en Web
+
+Build de Flutter Web:
+
+```bash
+flutter build web --release --base-href "/app/" --pwa-strategy none \
+  --dart-define-from-file=dart_defines.json
+```
+
+El sitio Astro (`astro/`, uso local) sirve las páginas públicas SSR y embebe
+la build de Flutter:
+
+```bash
+cd astro
+cp .env.example .env    # PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY, PUBLIC_MAPTILER_API_KEY
+npm install
+npm run dev             # http://localhost:4321
+```
+
+Detalles (entry points por feature, despliegue, Docker) en
+[`docs/PLATFORM_SETUP.md`](./docs/PLATFORM_SETUP.md). La web de entregables
+del TFG vive aparte en `presentation/` (GitHub Pages).
+
+### 9. Verificar la instalación
+
+```bash
+flutter analyze     # debe terminar sin issues
+flutter test        # suite completa
+```
+
+Checklist funcional: crear una cuenta (login inmediato, sin email de
+confirmación), iniciar sesión con Google, ver líneas y paradas de COMUJESA en
+el mapa, y — si configuraste FCM — recibir un push de prueba con la app
+cerrada.
 
 ---
 
-## i18n
+## NFC (sensible)
 
-Strings live in `lib/l10n/app_es.arb` (template), `lib/l10n/app_en.arb`
-and `lib/l10n/app_ar.arb` (Arabic / RTL), generated into
-`lib/l10n/generated/`. The selector is at **Profile → Accessibility →
-Idioma** (`localeProvider`). The three ARB files are **complete and in
-sync** (343 keys each). The driver-side route editor remains
-single-locale (`es`) — internal tooling for the demo persona.
+Las claves Mifare por defecto de la tarjeta del Consorcio viven en
+`lib/data/nfc/nfc_card_service.dart` (ingeniería inversa de la app pública
+`saldotarjetas`, **solo uso académico**). Se pueden sobreescribir en build:
 
----
-
-## Accessibility
-
-The app implements real accessibility work: `Semantics` nodes localized
-to ES/EN/AR, high-contrast theme, color-blind matrices
-(protanopia/deuteranopia/tritanopia), an OpenDyslexic font option,
-`textScaler` that composes with the OS setting, reduced-motion handling,
-a WCAG-AA contrast validator for custom palettes, and a `Pressable`
-widget enforcing the 48 dp minimum tap target.
-
-The **"WCAG 2.2 AA"** claim is qualified to **"AA partial / in
-progress"**: there is no manual TalkBack/VoiceOver pass yet, the map
-(`flutter_map`) still needs an accessible alternative integration, and
-contrast ratios for base tokens are not verified with tooling. Full
-audit and remediation plan in
-[`docs/ACCESSIBILITY.md`](./docs/ACCESSIBILITY.md).
+```bash
+flutter run --dart-define=NFC_KEY_SECTOR0=<hex-6-bytes> --dart-define=NFC_KEY_SECTOR9=<hex-6-bytes>
+```
 
 ---
 
-## Scope decisions (what this project deliberately is / is not)
+## Estructura del repositorio
 
-This is an academic project (TFG). Conscious boundaries:
-
-- The Supabase backend is **scaffolded with real-time on the 5 critical
-  repos**, not yet production-hardened at scale: no FORCE RLS, Edge
-  Functions with best-effort anti-SSRF + rate-limit (documented as
-  known debt), single-region project. See
-  [`docs/SCALABILITY.md`](./docs/SCALABILITY.md).
-- Mock data is the primary demonstrable surface; the other ~9 Spanish
-  operators referenced in the design depend on a populated Supabase and
-  are **future work**.
-- No A → B route planner. No migration away from Riverpod.
-- No `very_good_analysis`. Lint rules are layered on top of
-  `flutter_lints` (`prefer_single_quotes`, `unawaited_futures`,
-  `use_build_context_synchronously`, etc.) — strict but not noisy.
-
-The full critical self-review (production-lens scoring, trajectory and
-remediation plan) lives in **[`docs/00_MAESTRO.md`](./docs/00_MAESTRO.md)**
-with detailed dossiers in [`docs/SCALABILITY.md`](./docs/SCALABILITY.md)
-and [`docs/ACCESSIBILITY.md`](./docs/ACCESSIBILITY.md). The historical
-trace of the four critical review passes is preserved under
-[`docs/historico/`](./docs/historico/).
+```
+lib/            App Flutter (domain / data / shared / features)
+supabase/       53 migraciones SQL + 8 Edge Functions (Deno)
+assets/mock/    Datos COMUJESA (fuente del seed)
+tools/          Seed, OCR de horarios, build web, utilidades
+astro/          Sitio web Astro (SSR + islas Flutter Web, uso local)
+presentation/   Web de entregables del TFG (GitHub Pages)
+docs/           Documentación técnica + memoria del TFG
+test/           Suite de tests (unit, widget, smoke)
+multiagent/     Sistema multiagente usado durante el desarrollo
+```
 
 ---
 
-## License & data
+## Licencia y datos
 
-The COMUJESA timetable / stop / line data shipped under `assets/mock/` is
-sourced from publicly available timetables and reformatted for educational
-use. This project does not claim authorship of the underlying data.
+Los datos de horarios/paradas/líneas de COMUJESA incluidos en `assets/mock/`
+proceden de horarios públicos, reformateados con fines educativos. Este
+proyecto no reclama autoría sobre los datos subyacentes.

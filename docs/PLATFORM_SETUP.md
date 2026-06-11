@@ -19,7 +19,7 @@
 ## 1.2 Android: google-services.json
 
 1. In Firebase Console → **Project settings** → **Add app** → **Android**
-2. Package name: match `android/app/build.gradle.kts` (default: `com.transitly.app`)
+2. Package name: match `android/app/build.gradle.kts` (default: `com.transitly.transitly`)
 3. SHA-1 (optional; needed later for dynamic links / phone auth)
 4. Click **Register app**, then **Download google-services.json**
 5. Place at: `android/app/google-services.json`

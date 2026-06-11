@@ -5,6 +5,18 @@ All notable changes to Transitly will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.13.0](https://github.com/astralk9999/Transitly/compare/v1.12.4...v1.13.0) (2026-06-11)
+
+
+### Features
+
+* **widgets:** refresco periódico real en segundo plano (intervalo configurable) ([12b2c9c](https://github.com/astralk9999/Transitly/commit/12b2c9c6ef59f466d9c6178d5d22d8b9b24caffb))
+
+
+### Bug Fixes
+
+* **mapa:** filtros de líneas/zonas/paradas comunitarias funcionales y ampliables ([5614809](https://github.com/astralk9999/Transitly/commit/5614809863f987bd239f2c4bb81f777b226ecd4f))
+
 ## [1.0.0] — 2026-05-21
 
 ### Added

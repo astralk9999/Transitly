@@ -45,184 +45,345 @@
 <section class="desc markdown">
   <h1 id="transitly--nexto-stop-v2">Transitly · <code>nexto-stop-v2</code></h1>
 <blockquote>
-<p>Academic Flutter project (TFG) — a public-transit companion app built around
-<strong>COMUJESA</strong>, the urban bus operator of Jerez de la Frontera (Cádiz, Spain).</p>
+<p>Proyecto académico (TFG) — aplicación companion de transporte público urbano
+construida alrededor de <strong>COMUJESA</strong>, el operador de autobuses de Jerez de la
+Frontera (Cádiz). <strong>Plataformas soportadas: Android y Web.</strong></p>
 </blockquote>
-<p>Transitly is a portfolio-grade transit companion: live(-ish) arrivals, a real
-route catalogue, an NFC card reader for the <em>Consorcio de Transportes de
-Andalucía</em> prepaid card, a route editor for drivers, community contributions,
-and a polished motion / typography system.</p>
-<p>The data layer is <strong>mock-first with an optional Supabase backend</strong>: COMUJESA
-timetable/stop/line data ships as mock JSON (<code>assets/mock/comujesa_data.json</code>)
-and is served by the mock repositories when there is no authenticated session;
-when a Supabase session exists, the same repositories read/write the remote
-backend. Telemetry (Sentry/PostHog), push (FCM) and the Astro web surface are
-present but optional and consent/env-gated.</p>
-<blockquote>
-<p><strong>Honest scope note (read before evaluating).</strong> Phases F0–F27 (28/28
-completed) added a full Supabase backend, auth, FCM push, telemetry,
-an Astro SSR site and native home widgets. Real-time updates (F13) are
-implemented on the critical repos (5 of 12: <code>bus_location</code>, <code>stop</code>,
-<code>route</code>, <code>incident</code>, <code>route_feedback</code>) via a shared
-<code>RealtimeChannelManager</code> with exponential backoff + jitter. APK
-release builds and CI is green on 4 jobs (incl. Build Android APK).
-The remaining production gaps are documented in
-<a href="./docs/00_MAESTRO.md"><code>docs/00_MAESTRO.md</code></a> — start there.</p>
-</blockquote>
+<p><a href="https://codecov.io/gh/astralk9999/Transitly"><img src="https://codecov.io/gh/astralk9999/Transitly/branch/master/graph/badge.svg" alt="codecov"></a></p>
 <hr>
-<h2 id="documentation-entry-point">Documentation entry-point</h2>
-<p>All documentation is indexed in <strong><a href="./docs/README.md"><code>docs/README.md</code></a></strong>,
-which maps each TFG required deliverable to the corresponding file and
-points to the audit dossiers (<code>00_MAESTRO</code>, <code>SCALABILITY</code>,
-<code>ACCESSIBILITY</code>) and the action plan.</p>
-<hr>
-<h2 id="status">Status</h2>
-<p>The project completed 28/28 incremental phases (<strong>F0 → F27</strong>); state in
-<code>multiagent/state/project.json</code>. Development was assisted by an autonomous
-multi-agent system (Queen / Developer / Review / Git / Documentation),
-documented in <code>multiagent/ARCHITECTURE.md</code> and in the TFG memory
-(<code>docs/tfg/03–05</code>).</p>
-<p>Verified quality metrics (2026-05-22):</p>
+<h2 id="resumen-del-proyecto">Resumen del proyecto</h2>
+<p>Transitly es una app de movilidad urbana con backend real en <strong>Supabase</strong>
+(PostgreSQL + PostGIS, Auth, Storage, Realtime y Edge Functions) y
+notificaciones push reales vía <strong>Firebase Cloud Messaging</strong>. Sus funcionalidades
+principales:</p>
+<ul>
+<li><strong>Mapa en vivo</strong> (<code>flutter_map</code> + MapTiler/CartoDB): líneas, paradas, zonas,
+posición de autobuses en tiempo real (canal Realtime con backoff exponencial)
+y caché de teselas offline (FMTC).</li>
+<li><strong>Líneas y horarios de COMUJESA</strong>: catálogo real de líneas, paradas físicas
+deduplicadas y horarios exactos, con sincronización offline.</li>
+<li><strong>Estimación de llegadas</strong> (ETA) combinando horario oficial, GPS del conductor
+y estimación propia.</li>
+<li><strong>Lector NFC</strong> de la tarjeta prepago del <em>Consorcio de Transportes de
+Andalucía</em> (Mifare Classic): saldo e histórico de viajes.</li>
+<li><strong>Comunidad</strong>: incidencias, sugerencias de paradas/zonas, votos, reputación
+(XP), moderación y promoción de aportaciones a contenido oficial.</li>
+<li><strong>Multi-rol</strong>: usuario, conductor (emisión GPS en vivo, editor de rutas),
+operador y administrador (panel de gestión completo).</li>
+<li><strong>Push reales con la app cerrada</strong> (FCM + Edge Function <code>send_notification</code>
+<ul>
+<li>triggers SQL), notificaciones in-app y alertas geográficas.</li>
+</ul>
+</li>
+<li><strong>Widgets nativos de Android</strong> (próximo bus / estado de línea) con refresco
+periódico en segundo plano (<code>home_widget</code> + <code>workmanager</code>).</li>
+<li><strong>Offline-first</strong>: caché Hive, cola de sincronización y exportación de datos.</li>
+<li><strong>i18n</strong> ES / EN / AR (RTL) — ARB completos y sincronizados — y trabajo real
+de <strong>accesibilidad</strong> (alto contraste, matrices para daltonismo, fuente
+OpenDyslexic, <code>textScaler</code>, movimiento reducido, objetivos táctiles 48 dp).
+Estado WCAG 2.2 AA: <em>parcial</em>, auditoría en <a href="./docs/ACCESSIBILITY.md"><code>docs/ACCESSIBILITY.md</code></a>.</li>
+<li><strong>Telemetría opcional</strong> (Sentry + PostHog) condicionada al consentimiento.</li>
+<li><strong>Superficie web</strong>: build de Flutter Web embebida en un sitio <strong>Astro</strong>
+(<code>astro/</code>, uso local) y web de entregables del TFG en GitHub Pages
+(<code>presentation/</code>).</li>
+</ul>
+<h3 id="stack-tcnico">Stack técnico</h3>
 <table>
 <thead>
 <tr>
-<th>Metric</th>
-<th>Value</th>
+<th>Capa</th>
+<th>Tecnología</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>flutter analyze</code></td>
-<td><strong>0 issues</strong></td>
+<td>UI / framework</td>
+<td>Flutter 3.9.2+ · Dart 3 (strict casts + strict raw types)</td>
 </tr>
 <tr>
-<td><code>flutter test</code></td>
-<td><strong>616 / 616 passing</strong></td>
+<td>Estado</td>
+<td>Riverpod 2.6 (<code>autoDispose</code>, providers derivados, <code>overrideWith</code> en tests)</td>
 </tr>
 <tr>
-<td>Line coverage</td>
-<td><strong>~25,5 %</strong> — known debt</td>
+<td>Navegación</td>
+<td>go_router 17.2 (<code>StatefulShellRoute</code>, <code>redirect</code> por ruta)</td>
 </tr>
 <tr>
-<td><code>flutter build apk --release</code></td>
-<td><strong>OK</strong> (73,5 MB)</td>
+<td>Backend</td>
+<td>Supabase (<code>supabase_flutter</code> 2.8) — 53 migraciones SQL, 8 Edge Functions, RLS completo</td>
 </tr>
 <tr>
-<td>CI GitHub Actions</td>
-<td><strong>4 jobs green</strong> (Analyze, Test, Build Web, Build Android APK)</td>
+<td>Push</td>
+<td>Firebase Cloud Messaging (<code>firebase_messaging</code>) con degradación elegante</td>
+</tr>
+<tr>
+<td>Mapa</td>
+<td>flutter_map 7 + MapTiler (fallback gratuito CartoDB) + FMTC offline</td>
+</tr>
+<tr>
+<td>NFC</td>
+<td>nfc_manager 3.5 (Mifare Classic, solo Android)</td>
+</tr>
+<tr>
+<td>Telemetría</td>
+<td>Sentry + PostHog (opt-in)</td>
+</tr>
+<tr>
+<td>Web</td>
+<td>Astro SSR + islas de Flutter Web</td>
+</tr>
+<tr>
+<td>Tipografía</td>
+<td>DM Sans + IBM Plex Mono (assets locales)</td>
 </tr>
 </tbody>
 </table>
-<p><a href="https://codecov.io/gh/astralk9999/Transitly"><img src="https://codecov.io/gh/astralk9999/Transitly/branch/master/graph/badge.svg" alt="codecov"></a></p>
-<blockquote>
-<p>Coverage is the remaining lever: the <code>remote/</code> data layer (auth + 7
-repos) is at ~0 %. Plan in
-<a href="./docs/MEGA_PLAN_REFINAMIENTO.md"><code>docs/MEGA_PLAN_REFINAMIENTO.md §P2-4</code></a>.</p>
-</blockquote>
+<p>La capa de datos sigue el patrón de repositorios <code>domain / local / mock / remote</code> por entidad: sin sesión autenticada la app sirve los datos mock de
+<code>assets/mock/comujesa_data.json</code>; con sesión Supabase, los mismos repositorios
+leen/escriben el backend remoto.</p>
+<p>Toda la documentación está indexada en <a href="./docs/README.md"><code>docs/README.md</code></a>
+(arquitectura, escalabilidad, accesibilidad, memoria del TFG, runbooks…).</p>
 <hr>
-<h2 id="architecture--stack">Architecture / Stack</h2>
-<ul>
-<li><strong>Flutter</strong> 3.9.2+ / <strong>Dart</strong> 3 (strict casts + strict raw types)</li>
-<li><strong>Riverpod</strong> 2.6 (StateProviders, derived providers, <code>autoDispose</code> on
-streams/timers/futures, <code>overrideWith</code> in tests)</li>
-<li><strong>go_router</strong> 17.2 with <code>StatefulShellRoute</code> and per-route <code>redirect</code></li>
-<li><strong>Supabase</strong> (<code>supabase_flutter</code> 2.8) — auth, 13 SQL migrations, 2 Edge
-Functions; <code>domain/local/mock/remote</code> repository pattern per entity</li>
-<li><strong>Firebase / FCM</strong> (<code>firebase_messaging</code>) — push, with graceful degradation</li>
-<li><strong>Sentry + PostHog</strong> — crash reporting / analytics, consent-gated</li>
-<li><strong>flutter_map</strong> 7.0 + <code>latlong2</code>; <strong>MapTiler</strong> + FMTC offline tile caching</li>
-<li><strong>nfc_manager</strong> 3.5 over Mifare Classic (sector keys via <code>--dart-define</code>)</li>
-<li><strong>Astro</strong> SSR marketing site (<code>astro/</code>)</li>
-<li>Native Android/iOS home widgets (<code>home_widget</code>, <code>workmanager</code>)</li>
-<li><strong>DM Sans + IBM Plex Mono</strong> bundled as local assets (F26 closed)</li>
-<li><strong>flutter_localizations</strong> + ARB generation (<code>flutter gen-l10n</code>) — <strong>ES / EN / AR (RTL)</strong>, 343 keys/locale</li>
-</ul>
-<hr>
-<h2 id="getting-started">Getting started</h2>
-<pre class="language-bash"><code class="language-bash">cp .env.example .env       # fill SUPABASE_URL / SUPABASE_ANON_KEY (required to boot)
+<h2 id="gua-de-instalacin-desde-cero">Guía de instalación desde cero</h2>
+<p>La guía cubre todo el camino: base de datos (Supabase), Google Cloud (OAuth),
+Firebase (push), mapas y la app en Android y Web.</p>
+<h3 id="0-prerrequisitos">0. Prerrequisitos</h3>
+<table>
+<thead>
+<tr>
+<th>Herramienta</th>
+<th>Versión</th>
+<th>Para qué</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://docs.flutter.dev/get-started/install">Flutter SDK</a> (canal stable)</td>
+<td>≥ 3.9.2</td>
+<td>App Android y Web</td>
+</tr>
+<tr>
+<td>Android Studio + Android SDK</td>
+<td>API 24+</td>
+<td>Emulador / dispositivo</td>
+</tr>
+<tr>
+<td><a href="https://nodejs.org">Node.js</a></td>
+<td>≥ 18</td>
+<td>Scripts de seed y sitio Astro</td>
+</tr>
+<tr>
+<td><a href="https://supabase.com/docs/guides/cli">Supabase CLI</a></td>
+<td>última</td>
+<td>Migraciones y Edge Functions</td>
+</tr>
+<tr>
+<td>Git</td>
+<td>—</td>
+<td>Clonar el repo</td>
+</tr>
+</tbody>
+</table>
+<pre class="language-bash"><code class="language-bash">git clone https://github.com/astralk9999/Transitly.git nexto-stop-v2
+cd nexto-stop-v2
 flutter pub get
-flutter gen-l10n           # one-shot; generated files live in lib/l10n/generated
-flutter run                # Android emulator or connected device
+flutter gen-l10n        # genera lib/l10n/generated (ES/EN/AR)
 </code></pre>
-<p><code>SUPABASE_URL</code> and <code>SUPABASE_ANON_KEY</code> are <strong>required</strong> (<code>lib/core/env.dart</code>
-validates them and the app shows an env-error screen if missing). Telemetry
-(<code>SENTRY_DSN</code>, <code>POSTHOG_API_KEY</code>) and <code>MAPTILER_API_KEY</code> are optional and
-degrade silently. <code>.env</code> is gitignored and must never be committed.</p>
-<h3 id="nfc-sensitive">NFC (sensitive)</h3>
-<p>The default Mifare keys for the <em>Consorcio</em> card live in
-<code>lib/data/nfc/nfc_card_service.dart</code>. They were reverse-engineered from the
-public <code>saldotarjetas</code> Android app and are kept here for <strong>academic</strong> use
-only. To override them at build time, pass:</p>
-<pre class="language-bash"><code class="language-bash">flutter run \
-  --dart-define=NFC_KEY_SECTOR0=&lt;6-byte-hex&gt; \
-  --dart-define=NFC_KEY_SECTOR9=&lt;6-byte-hex&gt;
-</code></pre>
-<p>iOS additionally needs the entitlements declared in <code>ios/Runner/Info.plist</code>
-(<code>NFCReaderUsageDescription</code> + <code>com.apple.developer.nfc.readersession.formats: TAG</code>).</p>
-<hr>
-<h2 id="tests">Tests</h2>
-<pre class="language-bash"><code class="language-bash">flutter test                       # 616 tests
-flutter test --coverage            # writes coverage/lcov.info (24,30 % lines)
-</code></pre>
-<p>The suite covers <code>MockDataService</code>, the NFC parser and error mapping
-(<code>test/data/</code>), Riverpod state transitions (<code>test/shared/providers/</code>), router
-deeplinks/redirects and design-system widgets (<code>test/widget/</code>), plus offline
-queue smoke tests (<code>test/smoke/</code>). Coverage of business logic
-(<code>bus_estimator</code>, offline sync, the remote repositories) is <strong>partial</strong> and is
-acknowledged technical debt rather than a finished safety net.</p>
-<p>Pixel goldens were intentionally <strong>not</strong> committed: <code>google_fonts</code> resolves
-fonts over the network, so byte-identical output across machines is not
-realistic. Structural assertions cover the same surface.</p>
-<hr>
-<h2 id="i18n">i18n</h2>
-<p>Strings live in <code>lib/l10n/app_es.arb</code> (template), <code>lib/l10n/app_en.arb</code>
-and <code>lib/l10n/app_ar.arb</code> (Arabic / RTL), generated into
-<code>lib/l10n/generated/</code>. The selector is at <strong>Profile → Accessibility →
-Idioma</strong> (<code>localeProvider</code>). The three ARB files are <strong>complete and in
-sync</strong> (343 keys each). The driver-side route editor remains
-single-locale (<code>es</code>) — internal tooling for the demo persona.</p>
-<hr>
-<h2 id="accessibility">Accessibility</h2>
-<p>The app implements real accessibility work: <code>Semantics</code> nodes localized
-to ES/EN/AR, high-contrast theme, color-blind matrices
-(protanopia/deuteranopia/tritanopia), an OpenDyslexic font option,
-<code>textScaler</code> that composes with the OS setting, reduced-motion handling,
-a WCAG-AA contrast validator for custom palettes, and a <code>Pressable</code>
-widget enforcing the 48 dp minimum tap target.</p>
-<p>The <strong>"WCAG 2.2 AA"</strong> claim is qualified to <strong>"AA partial / in
-progress"</strong>: there is no manual TalkBack/VoiceOver pass yet, the map
-(<code>flutter_map</code>) still needs an accessible alternative integration, and
-contrast ratios for base tokens are not verified with tooling. Full
-audit and remediation plan in
-<a href="./docs/ACCESSIBILITY.md"><code>docs/ACCESSIBILITY.md</code></a>.</p>
-<hr>
-<h2 id="scope-decisions-what-this-project-deliberately-is--is-not">Scope decisions (what this project deliberately is / is not)</h2>
-<p>This is an academic project (TFG). Conscious boundaries:</p>
+<h3 id="1-crear-el-proyecto-supabase-base-de-datos">1. Crear el proyecto Supabase (base de datos)</h3>
+<ol>
+<li>
+<p>Entra en <a href="https://supabase.com/dashboard">supabase.com/dashboard</a> → <strong>New project</strong> (región UE
+recomendada). Anota:</p>
 <ul>
-<li>The Supabase backend is <strong>scaffolded with real-time on the 5 critical
-repos</strong>, not yet production-hardened at scale: no FORCE RLS, Edge
-Functions with best-effort anti-SSRF + rate-limit (documented as
-known debt), single-region project. See
-<a href="./docs/SCALABILITY.md"><code>docs/SCALABILITY.md</code></a>.</li>
-<li>Mock data is the primary demonstrable surface; the other ~9 Spanish
-operators referenced in the design depend on a populated Supabase and
-are <strong>future work</strong>.</li>
-<li>No A → B route planner. No migration away from Riverpod.</li>
-<li>No <code>very_good_analysis</code>. Lint rules are layered on top of
-<code>flutter_lints</code> (<code>prefer_single_quotes</code>, <code>unawaited_futures</code>,
-<code>use_build_context_synchronously</code>, etc.) — strict but not noisy.</li>
+<li><strong>Project ref</strong> (el subdominio: <code>https://&lt;ref&gt;.supabase.co</code>),</li>
+<li><strong>anon key</strong> (Settings → API),</li>
+<li><strong>service_role key</strong> (solo para backend/CLI, <em>nunca</em> en el cliente).</li>
 </ul>
-<p>The full critical self-review (production-lens scoring, trajectory and
-remediation plan) lives in <strong><a href="./docs/00_MAESTRO.md"><code>docs/00_MAESTRO.md</code></a></strong>
-with detailed dossiers in <a href="./docs/SCALABILITY.md"><code>docs/SCALABILITY.md</code></a>
-and <a href="./docs/ACCESSIBILITY.md"><code>docs/ACCESSIBILITY.md</code></a>. The historical
-trace of the four critical review passes is preserved under
-<a href="./docs/historico/"><code>docs/historico/</code></a>.</p>
+</li>
+<li>
+<p>Aplica las <strong>53 migraciones</strong> de <a href="./supabase/migrations"><code>supabase/migrations/</code></a>
+en orden. Opción recomendada (CLI):</p>
+<pre class="language-bash"><code class="language-bash">npm install -g supabase
+supabase login
+supabase link --project-ref &lt;ref&gt;
+supabase db push
+</code></pre>
+<p>Alternativa: copiar/pegar cada <code>NNN_*.sql</code> en el SQL Editor del Dashboard,
+en orden numérico. La <code>001_init.sql</code> tarda 30–60 s (instala PostGIS e
+índices GIST). Verificaciones post-instalación en
+<a href="./supabase/README.md"><code>supabase/README.md</code></a>.</p>
+</li>
+<li>
+<p><strong>Storage</strong>: los 5 buckets (<code>avatars</code>, <code>report-attachments</code>,
+<code>route-attachments</code>, <code>data-exports</code>, <code>operator-assets</code>) los crea la
+migración <code>004_storage.sql</code>; detalle de límites y paths en
+<a href="./supabase/storage_setup.md"><code>supabase/storage_setup.md</code></a>.</p>
+</li>
+</ol>
+<h3 id="2-sembrar-los-datos-de-comujesa">2. Sembrar los datos de COMUJESA</h3>
+<p>Las migraciones solo contienen DDL; los datos de líneas/paradas/horarios se
+generan desde el JSON del repo:</p>
+<pre class="language-bash"><code class="language-bash">node tools/seed_comujesa.mjs        # escribe tools/seed_out/comujesa_seed.sql
+</code></pre>
+<p>Ejecuta el SQL resultante en el SQL Editor del Dashboard (es <strong>idempotente</strong>:
+usa UUIDs deterministas y se puede relanzar). Sin este paso la app funciona,
+pero el backend remoto estará vacío.</p>
+<h3 id="3-configurar-autenticacin">3. Configurar autenticación</h3>
+<h4 id="31-email--contrasea">3.1 Email / contraseña</h4>
+<p>En el Dashboard → <strong>Authentication → Providers → Email</strong>:</p>
+<ul>
+<li><strong>Confirm email → OFF</strong> (el proyecto no usa SMTP propio; el código asume
+login inmediato tras el registro). Si más adelante configuras SMTP, los
+pasos para reactivar la verificación están en
+<a href="./docs/SUPABASE_SETUP.md"><code>docs/SUPABASE_SETUP.md</code></a>.</li>
+</ul>
+<p>En <strong>Authentication → URL Configuration → Redirect URLs</strong> añade:</p>
+<ul>
+<li><code>transitly://login-callback</code> (deep link de la app Android)</li>
+<li>la URL de tu despliegue web + <code>/app/</code> si vas a usar login en Web</li>
+</ul>
+<h4 id="32-google-oauth-google-cloud">3.2 Google OAuth (Google Cloud)</h4>
+<p>El login con Google usa el flujo OAuth <strong>web</strong> de Supabase (no depende del
+SHA-1 del APK):</p>
+<ol>
+<li><a href="https://console.cloud.google.com">console.cloud.google.com</a> → crea un proyecto → <strong>APIs &amp; Services →
+OAuth consent screen</strong> (tipo <em>External</em>, añade tu email de prueba).</li>
+<li><strong>Credentials → Create credentials → OAuth client ID → Web application</strong>:
+<ul>
+<li><em>Authorized redirect URI</em>: <code>https://&lt;ref&gt;.supabase.co/auth/v1/callback</code></li>
+</ul>
+</li>
+<li>Copia <strong>Client ID</strong> y <strong>Client Secret</strong> en Supabase → <strong>Authentication →
+Providers → Google</strong> (actívalo).</li>
+<li>Guarda el Client ID también como <code>GOOGLE_WEB_CLIENT_ID</code> (paso 6).</li>
+</ol>
+<h3 id="4-edge-functions-y-secretos">4. Edge Functions y secretos</h3>
+<p>Despliega las 8 funciones de <a href="./supabase/functions"><code>supabase/functions/</code></a>:</p>
+<pre class="language-bash"><code class="language-bash">supabase functions deploy approve_user_route delete_user generate_data_export \
+  import_gtfs promote_stop_to_official purge_old_data send_notification \
+  validate_share_code --project-ref &lt;ref&gt;
+</code></pre>
+<p>Para que los <strong>triggers SQL</strong> puedan invocar <code>send_notification</code> (push), crea
+estos secretos en el Vault (SQL Editor, una sola vez):</p>
+<pre class="language-sql"><code class="language-sql">select vault.create_secret('&lt;service_role_key&gt;', 'service_role_key');
+select vault.create_secret('https://&lt;ref&gt;.supabase.co/functions/v1', 'functions_url');
+</code></pre>
+<p><code>import_gtfs</code> requiere además la env var <code>ALLOWED_ORIGINS</code> (allowlist CORS,
+sin comodines). Detalles de endurecimiento en
+<a href="./supabase/README.md"><code>supabase/README.md</code></a>.</p>
+<h3 id="5-firebase--fcm-push-reales">5. Firebase / FCM (push reales)</h3>
+<p>Opcional pero recomendado — sin esto la app funciona y simplemente no recibe
+push. Guía completa: <a href="./docs/FCM_SETUP.md"><code>docs/FCM_SETUP.md</code></a> y
+<a href="./docs/PLATFORM_SETUP.md"><code>docs/PLATFORM_SETUP.md</code></a>.</p>
+<ol>
+<li>
+<p><a href="https://console.firebase.google.com">console.firebase.google.com</a> → <strong>Add project</strong>.</p>
+</li>
+<li>
+<p>Añade una app <strong>Android</strong> con package name <code>com.transitly.transitly</code>
+(el <code>applicationId</code> de <code>android/app/build.gradle.kts</code>).</p>
+</li>
+<li>
+<p>Descarga <code>google-services.json</code> → colócalo en <code>android/app/</code>.</p>
+</li>
+<li>
+<p>Genera <code>lib/firebase_options.dart</code>:</p>
+<pre class="language-bash"><code class="language-bash">dart pub global activate flutterfire_cli
+flutterfire configure --project=&lt;tu-proyecto-firebase&gt;
+</code></pre>
+</li>
+<li>
+<p>Para que el <strong>backend envíe</strong> push: Firebase → ⚙️ Configuración del
+proyecto → <em>Cuentas de servicio</em> → <strong>Generar nueva clave privada</strong> (JSON), y:</p>
+<pre class="language-bash"><code class="language-bash">supabase secrets set FCM_PROJECT_ID=&lt;tu-proyecto-firebase&gt; --project-ref &lt;ref&gt;
+supabase secrets set FCM_SERVICE_ACCOUNT_JSON="$(cat service-account.json)" --project-ref &lt;ref&gt;
+supabase functions deploy send_notification --project-ref &lt;ref&gt;
+</code></pre>
+</li>
+</ol>
+<p>Prueba rápida: Firebase Console → Cloud Messaging → <em>Enviar mensaje de
+prueba</em> pegando el token del dispositivo (queda en la tabla <code>device_tokens</code>
+tras iniciar sesión).</p>
+<h3 id="6-variables-de-entorno-de-la-app">6. Variables de entorno de la app</h3>
+<p>La app lee la configuración <strong>en tiempo de compilación</strong> vía <code>--dart-define</code>
+(ver <code>lib/core/env.dart</code>). Lo cómodo es un archivo <code>dart_defines.json</code> en la
+raíz (está <strong>gitignored</strong> — nunca lo subas):</p>
+<pre class="language-json"><code class="language-json">{
+  "SUPABASE_URL": "https://&lt;ref&gt;.supabase.co",
+  "SUPABASE_ANON_KEY": "&lt;anon-key&gt;",
+  "SUPABASE_FUNCTIONS_URL": "https://&lt;ref&gt;.supabase.co/functions/v1",
+  "GOOGLE_WEB_CLIENT_ID": "&lt;client-id&gt;.apps.googleusercontent.com",
+  "POSTHOG_API_KEY": "",
+  "POSTHOG_HOST": "https://eu.posthog.com",
+  "SENTRY_DSN": "",
+  "MAPTILER_API_KEY": ""
+}
+</code></pre>
+<ul>
+<li><strong>Obligatorias</strong>: <code>SUPABASE_URL</code> y <code>SUPABASE_ANON_KEY</code> (si faltan, la app
+arranca con una pantalla de error de entorno).</li>
+<li><strong>Opcionales</strong> (degradan en silencio): telemetría (<code>SENTRY_DSN</code>,
+<code>POSTHOG_API_KEY</code>) y <code>MAPTILER_API_KEY</code> — sin clave de MapTiler el mapa usa
+CartoDB gratuito como fallback. Clave gratuita en
+<a href="https://cloud.maptiler.com">cloud.maptiler.com</a> (100k teselas/mes).</li>
+</ul>
+<p><code>.env.example</code> documenta las mismas variables como referencia.</p>
+<h3 id="7-ejecutar-en-android">7. Ejecutar en Android</h3>
+<pre class="language-bash"><code class="language-bash">flutter run --dart-define-from-file=dart_defines.json
+</code></pre>
+<p>Para el APK de release:</p>
+<pre class="language-bash"><code class="language-bash">flutter build apk --release --dart-define-from-file=dart_defines.json
+</code></pre>
+<p>Si existe <code>android/key.properties</code> (con <code>storeFile</code>, <code>storePassword</code>,
+<code>keyAlias</code>, <code>keyPassword</code>) el build se firma con ese keystore; si no, usa la
+firma debug — suficiente para instalar y probar.</p>
+<h3 id="8-ejecutar-en-web">8. Ejecutar en Web</h3>
+<p>Build de Flutter Web:</p>
+<pre class="language-bash"><code class="language-bash">flutter build web --release --base-href "/app/" --pwa-strategy none \
+  --dart-define-from-file=dart_defines.json
+</code></pre>
+<p>El sitio Astro (<code>astro/</code>, uso local) sirve las páginas públicas SSR y embebe
+la build de Flutter:</p>
+<pre class="language-bash"><code class="language-bash">cd astro
+cp .env.example .env    # PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY, PUBLIC_MAPTILER_API_KEY
+npm install
+npm run dev             # http://localhost:4321
+</code></pre>
+<p>Detalles (entry points por feature, despliegue, Docker) en
+<a href="./docs/PLATFORM_SETUP.md"><code>docs/PLATFORM_SETUP.md</code></a>. La web de entregables
+del TFG vive aparte en <code>presentation/</code> (GitHub Pages).</p>
+<h3 id="9-verificar-la-instalacin">9. Verificar la instalación</h3>
+<pre class="language-bash"><code class="language-bash">flutter analyze     # debe terminar sin issues
+flutter test        # suite completa
+</code></pre>
+<p>Checklist funcional: crear una cuenta (login inmediato, sin email de
+confirmación), iniciar sesión con Google, ver líneas y paradas de COMUJESA en
+el mapa, y — si configuraste FCM — recibir un push de prueba con la app
+cerrada.</p>
 <hr>
-<h2 id="license--data">License &amp; data</h2>
-<p>The COMUJESA timetable / stop / line data shipped under <code>assets/mock/</code> is
-sourced from publicly available timetables and reformatted for educational
-use. This project does not claim authorship of the underlying data.</p>
+<h2 id="nfc-sensible">NFC (sensible)</h2>
+<p>Las claves Mifare por defecto de la tarjeta del Consorcio viven en
+<code>lib/data/nfc/nfc_card_service.dart</code> (ingeniería inversa de la app pública
+<code>saldotarjetas</code>, <strong>solo uso académico</strong>). Se pueden sobreescribir en build:</p>
+<pre class="language-bash"><code class="language-bash">flutter run --dart-define=NFC_KEY_SECTOR0=&lt;hex-6-bytes&gt; --dart-define=NFC_KEY_SECTOR9=&lt;hex-6-bytes&gt;
+</code></pre>
+<hr>
+<h2 id="estructura-del-repositorio">Estructura del repositorio</h2>
+<pre class="language-dart"><code>lib/            App Flutter (domain / data / shared / features)
+supabase/       53 migraciones SQL + 8 Edge Functions (Deno)
+assets/mock/    Datos COMUJESA (fuente del seed)
+tools/          Seed, OCR de horarios, build web, utilidades
+astro/          Sitio web Astro (SSR + islas Flutter Web, uso local)
+presentation/   Web de entregables del TFG (GitHub Pages)
+docs/           Documentación técnica + memoria del TFG
+test/           Suite de tests (unit, widget, smoke)
+multiagent/     Sistema multiagente usado durante el desarrollo
+</code></pre>
+<hr>
+<h2 id="licencia-y-datos">Licencia y datos</h2>
+<p>Los datos de horarios/paradas/líneas de COMUJESA incluidos en <code>assets/mock/</code>
+proceden de horarios públicos, reformateados con fines educativos. Este
+proyecto no reclama autoría sobre los datos subyacentes.</p>
 </section>
 
 

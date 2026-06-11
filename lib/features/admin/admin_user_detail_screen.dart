@@ -934,7 +934,7 @@ class _SummaryTab extends StatelessWidget {
     final messenger = ScaffoldMessenger.of(context);
     try {
       await client
-          .rpc('add_xp', params: {'p_user_id': userId, 'p_xp': delta});
+          .rpc('admin_add_xp', params: {'p_user_id': userId, 'p_xp': delta});
       messenger.showSnackBar(SnackBar(
           content: Text('${delta >= 0 ? '+' : ''}$delta XP aplicado')));
       onChanged();
@@ -951,7 +951,7 @@ class _SummaryTab extends StatelessWidget {
         'reputation_level': 0,
       }).eq('id', userId);
       if (r.minScore > 0) {
-        await client.rpc('add_xp',
+        await client.rpc('admin_add_xp',
             params: {'p_user_id': userId, 'p_xp': r.minScore});
       }
       messenger.showSnackBar(SnackBar(content: Text('Rango → ${r.name}')));

@@ -167,6 +167,21 @@ jobs:
       - name: Run build_runner
         run: dart run build_runner build --delete-conflicting-outputs
 
+      # google-services.json está gitignored (config de cliente Firebase);
+      # el plugin de Google Services lo exige desde que la app integra FCM.
+      # Se materializa desde el secret GOOGLE_SERVICES_JSON.
+      - name: Materialize google-services.json
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: |
+          if [ -n "$GOOGLE_SERVICES_JSON" ]; then
+            printf '%s' "$GOOGLE_SERVICES_JSON" > android/app/google-services.json
+            echo "google-services.json materializado desde secret"
+          else
+            echo "::error::Secret GOOGLE_SERVICES_JSON no configurado — el build Android fallará"
+            exit 1
+          fi
+
       # Valida que la app compila para Android. Sin key.properties se
       # firma con debug keys (válido para CI, no para Play Store).
       # --obfuscate y --split-debug-info aplican ofuscación Dart y

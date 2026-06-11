@@ -66,6 +66,11 @@ no existe. El plan prioriza recuperar la base (P0) antes de seguir añadiendo.
   cobertura real es **17,30 %** (6.233/36.033 líneas) — bajó desde 24 %
   porque junio duplicó las líneas instrumentadas. Gate de CI ajustado a
   16 % para frenar regresiones; la subida escalonada es P4.4.
+- [x] **P0.8 — (descubierto durante P0) Build Android APK roto en CI.**
+  `google-services.json` está gitignored y el plugin de Google Services lo
+  exige desde que junio integró FCM — el job llevaba roto desde entonces.
+  Arreglado 2026-06-12: secret `GOOGLE_SERVICES_JSON` en el repo + paso del
+  workflow que lo materializa antes del build.
 
 ---
 
@@ -82,8 +87,16 @@ no existe. El plan prioriza recuperar la base (P0) antes de seguir añadiendo.
   RLS + políticas (o moverla a un schema privado si es solo contabilidad
   interna de triggers). (`spatial_ref_sys`, el otro ERROR, es de PostGIS y
   puede documentarse como aceptado.)
-- [ ] **P1.2 — Auditar las 60 funciones `SECURITY DEFINER` ejecutables por
-  `anon`/`authenticated`.** Incluyen toda la familia `admin_*`
+- [x] **P1.2 — Auditar las 60 funciones `SECURITY DEFINER`.** ✅ 2026-06-12
+  (migración `20260612104000`). Resultado: (a) **add_xp no validaba rol** —
+  cualquier autenticado podía regalarse XP; ahora hay `admin_add_xp` con
+  check `is_admin()` y `add_xp` quedó solo para triggers/owner (el panel
+  admin usa el wrapper); (b) los 9 triggers de XP pasaron a SECURITY
+  DEFINER; (c) EXECUTE revocado a `anon` en las ~40 RPCs de sesión y
+  revocado del todo en funciones de trigger y helpers internos. Se
+  conservan para `anon` las 13 funciones por diseño: helpers de policies
+  (`is_admin`, `is_route_owner`…) y RPCs read-only de datos públicos
+  (`get_next_departures_*`, `list_zones`…). Original: Incluyen toda la familia `admin_*`
   (`admin_route_delete`, `admin_broadcast_alert`, `admin_ban_users`…).
   Verificar una a una que el cuerpo valida el rol; para las que no deban
   ser públicas: `REVOKE EXECUTE FROM anon, authenticated` y conceder solo a
@@ -95,13 +108,18 @@ no existe. El plan prioriza recuperar la base (P0) antes de seguir añadiendo.
   2026-06-12: la Management API devuelve 402 — HIBP requiere plan Pro.
   Mitigación actual: min 6 caracteres (alineado app/servidor). Retomar si
   el proyecto pasa a Pro.
-- [ ] **P1.5 — Buckets públicos con listado permitido** (`avatars`,
-  `operator-assets`): impedir `list` a anónimos manteniendo lectura por URL.
-- [ ] **P1.6 — `user_route_views` tiene una política RLS always-true** —
-  restringirla a lo que de verdad debe permitir.
-- [ ] **P1.7 — Vista materializada `next_scheduled_arrivals` expuesta en la
-  API** — restringir acceso o sacarla del schema expuesto si el cliente no
-  la consume directamente.
+- [x] **P1.5 — Buckets públicos con listado permitido.** ✅ 2026-06-12
+  (migración `20260612103000`): eliminadas las policies `*_select_public`
+  de `avatars`/`operator-assets` — la descarga por URL pública no pasa por
+  RLS, así que solo desaparece la enumeración. Verificado: ni app ni web
+  usan el cliente de Storage sobre esos buckets.
+- [x] **P1.6 — Policy always-true de `user_route_views`.** ✅ 2026-06-12
+  (migración `20260612102000`): el INSERT ahora exige
+  `viewer_id IS NULL OR viewer_id = auth.uid()` — vistas anónimas legítimas
+  sí, suplantar a otros usuarios no.
+- [x] **P1.7 — MV `next_scheduled_arrivals` expuesta.** ✅ 2026-06-12
+  (migración `20260612102000`): `REVOKE SELECT` a anon/authenticated —
+  ningún cliente la consume (la app usa los RPC `stop_timetable*`).
 - [ ] **P1.8 — FORCE RLS + revisión de policies** (deuda ya documentada en
   `docs/SCALABILITY.md`): aplicar `FORCE ROW LEVEL SECURITY` en tablas
   sensibles para blindar frente a funciones definer descuidadas.
@@ -111,6 +129,14 @@ no existe. El plan prioriza recuperar la base (P0) antes de seguir añadiendo.
 - [ ] **P1.10 — SMTP propio + reactivar verificación de email** (hoy
   "Confirm email" está OFF y el código la bypassa). Pasos exactos ya
   escritos en `docs/SUPABASE_SETUP.md`. Resend/Brevo tienen tier gratuito.
+
+---
+
+**Resultado P1 (2026-06-12):** advisors de seguridad **160 → 74 lints**.
+Lo restante es aceptado por diseño (56 definer con authz interno + 13
+públicas deliberadas), `spatial_ref_sys`/extensiones de PostGIS (no
+movibles sin riesgo) y HIBP (requiere plan Pro). Quedan abiertos P1.8
+(FORCE RLS), P1.9 (service account FCM) y P1.10 (SMTP).
 
 ---
 

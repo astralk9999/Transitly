@@ -39,6 +39,12 @@ enum AppNotificationType {
 abstract class AppNotification with _$AppNotification {
   const AppNotification._();
 
+  // toJson es manual (formato camelCase estable para Hive); el generado
+  // _$AppNotificationToJson quedaba huérfano → warning unused_element.
+  // El ignore es el patrón documentado por freezed para pasar config de
+  // json_serializable en el factory.
+  // ignore: invalid_annotation_target
+  @JsonSerializable(createToJson: false)
   const factory AppNotification({
     required String id,
     required String userId,

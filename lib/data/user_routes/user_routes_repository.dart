@@ -2,7 +2,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../core/utils/app_logger.dart';
-import '../mock/mock_data_service.dart';
 import '../supabase/supabase_client_provider.dart';
 
 /// Modelo para una ruta creada por usuario.
@@ -209,7 +208,7 @@ class UserRoutesRepository {
     try {
       final res = await _client.from('user_routes').select().eq('id', id).maybeSingle();
       if (res == null) return null;
-      final route = UserRouteModel.fromJson(res as Map<String, dynamic>);
+      final route = UserRouteModel.fromJson(res);
 
       // Registrar vista
       unawaited(_recordView(id));
@@ -230,7 +229,7 @@ class UserRoutesRepository {
           .eq('status', 'published')
           .maybeSingle();
       if (res == null) return null;
-      return UserRouteModel.fromJson(res as Map<String, dynamic>);
+      return UserRouteModel.fromJson(res);
     } catch (e) {
       AppLogger.error(_logTag, 'getByShareCode failed', e);
       return null;
@@ -245,7 +244,7 @@ class UserRoutesRepository {
           .eq('public_slug', slug)
           .maybeSingle();
       if (res == null) return null;
-      return UserRouteModel.fromJson(res as Map<String, dynamic>);
+      return UserRouteModel.fromJson(res);
     } catch (e) {
       AppLogger.error(_logTag, 'getBySlug failed', e);
       return null;
@@ -259,7 +258,7 @@ class UserRoutesRepository {
           .insert(route.toJson())
           .select()
           .single();
-      return UserRouteModel.fromJson(res as Map<String, dynamic>);
+      return UserRouteModel.fromJson(res);
     } catch (e) {
       AppLogger.error(_logTag, 'create failed', e);
       rethrow;
@@ -274,7 +273,7 @@ class UserRoutesRepository {
           .eq('id', route.id)
           .select()
           .single();
-      return UserRouteModel.fromJson(res as Map<String, dynamic>);
+      return UserRouteModel.fromJson(res);
     } catch (e) {
       AppLogger.error(_logTag, 'update failed', e);
       rethrow;

@@ -132,7 +132,7 @@ class _CreateRouteWizardState extends ConsumerState<CreateRouteWizard> {
               fromStopId: seg['from'] as String? ?? '',
               toStopId: seg['to'] as String? ?? '',
               points: pts
-                  .whereType<Map>()
+                  .whereType<Map<String, dynamic>>()
                   .map((p) => WizardRoutePathPoint(
                         lat: (p['lat'] as num).toDouble(),
                         lng: (p['lng'] as num).toDouble(),

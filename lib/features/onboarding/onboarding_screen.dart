@@ -6,7 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/theme/transit_animations.dart';
 import '../../core/theme/transit_colors.dart';
 import '../../l10n/generated/app_localizations.dart';
-import '../../shared/widgets/smoke_background.dart';
 import '../../shared/widgets/transit_button.dart';
 import 'onboarding_page_data.dart';
 

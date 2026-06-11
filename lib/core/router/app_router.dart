@@ -23,7 +23,6 @@ import '../../features/contributions/my_contributions_screen.dart';
 import '../../features/debug/component_showcase_screen.dart';
 import '../../features/driver/active_route_screen.dart';
 import '../../features/driver/ai_schedule_import.dart';
-import '../../features/driver/driver_dashboard_screen.dart';
 import '../../features/driver/driver_live_screen.dart';
 import '../../features/driver/driver_history_screen.dart';
 import '../../features/driver/driver_stats_screen.dart';

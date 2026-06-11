@@ -20,11 +20,13 @@ class _StubAssetBundle extends AssetBundle {
   Future<String> loadString(String key, {bool cache = true}) async => content;
 }
 
-Map<String, dynamic> _stop(String code) => {
+/// Cada parada necesita coordenada propia: MockDataService deduplica paradas
+/// físicas por coordenada exacta, así que coordenadas repetidas se fusionan.
+Map<String, dynamic> _stop(String code, [int order = 1]) => {
       'name': code,
       'officialCode': code,
-      'order': 1,
-      'lat': 36.685,
+      'order': order,
+      'lat': 36.685 + order * 0.001,
       'lng': -6.13,
       'municipality': 'Jerez',
     };
@@ -109,10 +111,10 @@ void main() {
       final svc = await _build(_buildJson(
         lines: [
           _line('L1', stops: [
-            _stop('A'),
-            _stop('B'),
-            _stop('C'),
-            _stop('D'),
+            _stop('A', 1),
+            _stop('B', 2),
+            _stop('C', 3),
+            _stop('D', 4),
           ]),
         ],
         activeTrips: [
@@ -136,7 +138,7 @@ void main() {
     test('última parada → nextStop null', () async {
       final svc = await _build(_buildJson(
         lines: [
-          _line('L1', stops: [_stop('A'), _stop('B')]),
+          _line('L1', stops: [_stop('A', 1), _stop('B', 2)]),
         ],
         activeTrips: [
           _trip(id: 't1', routeId: 'L1', currentStopIndex: 1),
@@ -176,7 +178,7 @@ void main() {
     test('currentStopIndex null → currentIdx=0', () async {
       final svc = await _build(_buildJson(
         lines: [
-          _line('L1', stops: [_stop('A'), _stop('B'), _stop('C')]),
+          _line('L1', stops: [_stop('A', 1), _stop('B', 2), _stop('C', 3)]),
         ],
         activeTrips: [
           _trip(id: 't1', routeId: 'L1'),

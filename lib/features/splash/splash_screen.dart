@@ -29,8 +29,6 @@ class _SplashScreenState extends State<SplashScreen>
 
   late final Animation<double> _logoFade;
   late final Animation<double> _logoScale;
-  late final Animation<double> _glowFade;
-  late final Animation<double> _glowScale;
   late final Animation<double> _subFade;
   late final Animation<Offset> _subSlide;
 
@@ -57,16 +55,6 @@ class _SplashScreenState extends State<SplashScreen>
       parent: _mainCtrl,
       curve: const Interval(0.0, 0.6, curve: Curves.elasticOut),
     ));
-
-    _glowFade = TweenSequence<double>([
-      TweenSequenceItem(tween: Tween(begin: 0.0, end: 0.7), weight: 1),
-      TweenSequenceItem(tween: Tween(begin: 0.7, end: 0.35), weight: 1),
-    ]).animate(CurvedAnimation(
-      parent: _mainCtrl,
-      curve: const Interval(0.0, 0.7, curve: Curves.easeOut),
-    ));
-    _glowScale = Tween<double>(begin: 1.0, end: 1.15).animate(
-        CurvedAnimation(parent: _mainCtrl, curve: Curves.easeInOut));
 
     _subFade = CurvedAnimation(
       parent: _mainCtrl,

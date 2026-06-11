@@ -10,7 +10,6 @@ import '../../shared/models/route_model.dart';
 import '../../shared/models/stop_model.dart';
 import '../../shared/providers/is_dark_provider.dart';
 import '../../shared/providers/theme_notifier.dart';
-import '../../shared/providers/theme_provider.dart';
 import '../../shared/widgets/responsive_scaffold.dart';
 import '../../shared/widgets/capacity_indicator.dart';
 import '../../shared/widgets/data_freshness_indicator.dart';

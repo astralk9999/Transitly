@@ -6,7 +6,6 @@ import '../../../core/theme/transit_typography.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../shared/models/user_preferences.dart';
 import '../../../shared/providers/theme_notifier.dart';
-import '../../../shared/providers/theme_provider.dart';
 import '../../../shared/widgets/glass_card.dart';
 
 class ResetSection extends ConsumerWidget {

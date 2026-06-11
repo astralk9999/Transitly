@@ -38,22 +38,22 @@ no existe. El plan prioriza recuperar la base (P0) antes de seguir añadiendo.
 
 > Sin esto, todo lo demás se construye a ciegas. Es lo primero.
 
-- [ ] **P0.1 — Arreglar los 5 errores de compilación de analyze en `lib/`.**
+- [x] **P0.1 — Arreglar los 5 errores de compilación de analyze en `lib/`.**
   Todos en `lib/features/map/widgets/zone_company_line_tree.dart`
   (líneas 238–284: condiciones/negaciones sobre `dynamic` — entró con el
   commit de filtros del mapa `56148098`).
-- [ ] **P0.2 — Arreglar el test que no compila.**
+- [x] **P0.2 — Arreglar el test que no compila.**
   `test/shared/providers/user_favorites_provider_test.dart` (14 errores:
   `UserFavoritesNotifier`/`UserFavoriteStopsNotifier` cambiaron de firma a
   2 argumentos posicionales y el test no se actualizó).
-- [ ] **P0.3 — Arreglar los 17 tests en rojo** (listado en §Anexo A).
+- [x] **P0.3 — Arreglar los 17 tests en rojo** (listado en §Anexo A).
   Son regresiones del sprint de junio: el código cambió y la suite no se
   mantuvo. Revisar uno a uno si el fallo es del test (actualizar) o del
   código (bug real).
-- [ ] **P0.4 — Limpiar los 31 warnings** (imports sin usar, casts
+- [x] **P0.4 — Limpiar los 31 warnings** (imports sin usar, casts
   innecesarios, campos muertos — mecánico, ~1 h) y bajar los 100 infos
   cuando se toque cada fichero.
-- [ ] **P0.5 — Añadir `post-tfg` a los triggers de CI.**
+- [x] **P0.5 — Añadir `post-tfg` a los triggers de CI.**
   `.github/workflows/ci.yml` solo corre en `master`/`main`: ahora mismo la
   rama de trabajo **no tiene CI**. Añadir `post-tfg` a `branches` de `push`
   y `pull_request` (docs.yml y deploy-presentation.yml pueden quedarse solo

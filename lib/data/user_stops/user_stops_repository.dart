@@ -141,7 +141,7 @@ class UserStopsRepository {
           .insert(stop.toJson())
           .select()
           .single();
-      return UserStopModel.fromJson(res as Map<String, dynamic>);
+      return UserStopModel.fromJson(res);
     } catch (e) {
       AppLogger.error(_logTag, 'create stop failed', e);
       rethrow;

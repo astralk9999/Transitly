@@ -49,6 +49,31 @@ class FakeTransform extends Mock
   }
 }
 
+/// Awaitable que se hace pasar por el resultado de `.eq(...)` (la query de
+/// `operators` se await-ea directamente sin `.order`).
+class FakeFilterFuture extends Mock
+    implements PostgrestFilterBuilder<PostgrestList> {
+  final Future<PostgrestList> _future;
+
+  FakeFilterFuture(Future<PostgrestList> future) : _future = future;
+
+  @override
+  Future<R> then<R>(
+    FutureOr<R> Function(PostgrestList) onValue, {
+    Function? onError,
+  }) {
+    return _future.then(onValue, onError: onError);
+  }
+
+  @override
+  Future<PostgrestList> catchError(
+    Function onError, {
+    bool Function(Object)? test,
+  }) {
+    return _future.catchError(onError, test: test);
+  }
+}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -85,6 +110,20 @@ void main() {
         adminUserOverride(),
       ];
 
+  /// La pantalla carga `profiles` (con .order) y `operators` (con .eq) en un
+  /// Future.wait — ambas queries necesitan stub o el load entero falla.
+  void stubOperatorsQuery() {
+    final queryBuilder = MockSupabaseQueryBuilder();
+    final filterBuilder = MockPostgrestFilterBuilder();
+    final result =
+        FakeFilterFuture(Future.value(PostgrestList.from(<dynamic>[])));
+
+    when(() => mockClient.from('operators')).thenAnswer((_) => queryBuilder);
+    when(() => queryBuilder.select(any())).thenAnswer((_) => filterBuilder);
+    when(() => filterBuilder.eq('is_active', true))
+        .thenAnswer((_) => result);
+  }
+
   void stubQuery(List<Map<String, dynamic>> data) {
     final queryBuilder = MockSupabaseQueryBuilder();
     final filterBuilder = MockPostgrestFilterBuilder();
@@ -97,6 +136,7 @@ void main() {
     when(() => queryBuilder.select(any())).thenAnswer((_) => filterBuilder);
     when(() => filterBuilder.order('display_name'))
         .thenAnswer((_) => transform);
+    stubOperatorsQuery();
   }
 
   void stubQueryHanging() {
@@ -111,6 +151,7 @@ void main() {
     when(() => queryBuilder.select(any())).thenAnswer((_) => filterBuilder);
     when(() => filterBuilder.order('display_name'))
         .thenAnswer((_) => transform);
+    stubOperatorsQuery();
   }
 
   group('AdminUsersScreen', () {

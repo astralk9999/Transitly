@@ -17,16 +17,6 @@ _AppNotification _$AppNotificationFromJson(Map<String, dynamic> json) =>
       createdAt: DateTime.parse(json['createdAt'] as String),
     );
 
-Map<String, dynamic> _$AppNotificationToJson(_AppNotification instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'userId': instance.userId,
-      'type': _$AppNotificationTypeEnumMap[instance.type]!,
-      'payload': instance.payload,
-      'read': instance.read,
-      'createdAt': instance.createdAt.toIso8601String(),
-    };
-
 const _$AppNotificationTypeEnumMap = {
   AppNotificationType.incidentResolved: 'incidentResolved',
   AppNotificationType.routePromoted: 'routePromoted',

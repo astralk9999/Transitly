@@ -209,7 +209,7 @@ return $default(_that.id,_that.userId,_that.type,_that.payload,_that.read,_that.
 
 /// @nodoc
 
-
+@JsonSerializable(createToJson: false)
 class _AppNotification extends AppNotification {
   const _AppNotification({required this.id, required this.userId, required this.type, final  Map<String, dynamic> payload = const <String, dynamic>{}, this.read = false, required this.createdAt}): _payload = payload,super._();
   

@@ -61,9 +61,12 @@ void main() {
     expect(find.text('Cargado'), findsOneWidget);
     expect(find.text('assets/mock/comujesa_data.json'), findsOneWidget);
 
-    // Reload button exists with expected label.
-    final button = tester.widget<TransitButton>(find.byType(TransitButton));
-    expect(button.label, 'Recargar desde assets');
+    // Reload button exists with expected label (la pantalla tiene además
+    // botones de sincronizar y exportar, así que no podemos asumir uno solo).
+    final labels = tester
+        .widgetList<TransitButton>(find.byType(TransitButton))
+        .map((b) => b.label);
+    expect(labels, contains('Recargar desde assets'));
     await unmount(tester);
   });
 }

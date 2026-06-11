@@ -71,3 +71,6 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 tools/ocr/out/
+
+# Artefactos Hive que generan los tests en runtime (cajas temporales)
+test/.hive_test_*/

@@ -774,7 +774,8 @@ class _FeedbackTabState extends State<_FeedbackTab> {
         Expanded(
           child: filtered.isEmpty
               ? _emptyState(c, Icons.feedback_outlined,
-                  'Sin feedback pendiente', widget.onRefresh)
+                  AppLocalizations.of(context).managerInboxEmptyFeedback,
+                  widget.onRefresh)
               : RefreshIndicator(
                   onRefresh: widget.onRefresh,
                   child: ListView.builder(

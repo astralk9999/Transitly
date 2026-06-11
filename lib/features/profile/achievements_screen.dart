@@ -3,11 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/theme/transit_colors.dart';
-import '../../core/theme/transit_typography.dart';
 import '../../core/utils/app_logger.dart';
 import '../../data/mock/mock_data_service.dart';
 import '../../l10n/generated/app_localizations.dart';

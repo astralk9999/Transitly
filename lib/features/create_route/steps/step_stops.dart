@@ -77,7 +77,9 @@ class _StepStopsState extends State<StepStops> {
 
   /// Variante legacy con formulario manual (lat/lng a mano) — mantenida
   /// como fallback por si el mapa no carga en el dispositivo (sin internet
-  /// para tiles, etc.). Accesible desde el menú "Más opciones".
+  /// para tiles, etc.). Hoy sin entrada en la UI; re-cablear desde un menú
+  /// "Más opciones" si el fallback vuelve a ser necesario.
+  // ignore: unused_element
   void _showManualAddStopModal() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final colors = TransitColorScheme.of(isDark);

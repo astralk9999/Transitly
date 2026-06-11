@@ -193,9 +193,11 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(l10n.authNoAccount,
-                              style: TransitTypography.bodySecondary(
-                                  c.textMid)),
+                          Flexible(
+                            child: Text(l10n.authNoAccount,
+                                style: TransitTypography.bodySecondary(
+                                    c.textMid)),
+                          ),
                           TextButton(
                             onPressed: () => context.go('/sign-up'),
                             child: Text(l10n.authRegister,
@@ -312,12 +314,14 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                                     Icon(Icons.explore_outlined,
                                         size: 18, color: c.accent),
                                     const SizedBox(width: 8),
-                                    Text(
-                                      'Continuar como invitado',
-                                      style: TransitTypography.bodyPrimary(
-                                              c.accent)
-                                          .copyWith(
-                                        fontWeight: FontWeight.w600,
+                                    Flexible(
+                                      child: Text(
+                                        'Continuar como invitado',
+                                        style: TransitTypography.bodyPrimary(
+                                                c.accent)
+                                            .copyWith(
+                                          fontWeight: FontWeight.w600,
+                                        ),
                                       ),
                                     ),
                                   ],

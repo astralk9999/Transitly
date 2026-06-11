@@ -6,6 +6,7 @@ import '../../../core/theme/transit_typography.dart';
 import '../../../data/mock/mock_data_service.dart';
 import '../../../shared/providers/user_routes_for_map_provider.dart';
 import '../map_filter_controller.dart';
+import '../map_filter_state.dart';
 
 /// Entrada de línea uniforme para el árbol (oficial o comunitaria). El toggle
 /// usa [id] sobre `disabledRouteIds`, que es lo que el mapa filtra realmente.
@@ -32,8 +33,6 @@ class _ZoneCompanyLineTreeState extends ConsumerState<ZoneCompanyLineTree> {
     if (needle.isEmpty) return true;
     return haystack.toLowerCase().contains(needle.toLowerCase());
   }
-
-  static const _communityKey = '__community__';
 
   @override
   Widget build(BuildContext context) {
@@ -228,7 +227,7 @@ class _ZoneCompanyLineTreeState extends ConsumerState<ZoneCompanyLineTree> {
   Widget _opNode(
     TransitColorScheme c,
     MapFilterController ctrl,
-    dynamic f, {
+    MapFilterState f, {
     required String title,
     required String nodeKey,
     required List<_Line> lines,

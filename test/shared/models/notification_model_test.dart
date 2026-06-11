@@ -31,11 +31,13 @@ void main() {
         AppNotificationType.shareReceived,
         AppNotificationType.featureRequestReplied,
         AppNotificationType.busApproachingFavorite,
+        AppNotificationType.xpEarned,
+        AppNotificationType.rankUp,
         AppNotificationType.custom,
       ];
 
       expect(AppNotificationType.values, orderedEquals(expected));
-      expect(AppNotificationType.values.length, 6);
+      expect(AppNotificationType.values.length, 8);
     });
 
     test('isRead defaults to false and can be set to true', () {

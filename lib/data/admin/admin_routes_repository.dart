@@ -232,7 +232,7 @@ class AdminTripRow {
   factory AdminTripRow.fromRow(Map<String, dynamic> j) {
     final raw = (j['arrival_offsets'] as List?) ?? const [];
     final times = raw
-        .whereType<Map>()
+        .whereType<Map<String, dynamic>>()
         .map((m) => (
               stopId: m['stop_id'] as String? ?? '',
               time: (m['time'] as String? ?? '').padLeft(5, '0'),

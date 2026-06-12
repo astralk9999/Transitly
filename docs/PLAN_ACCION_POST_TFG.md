@@ -145,18 +145,34 @@ movibles sin riesgo) y HIBP (requiere plan Pro). Quedan abiertos P1.8
 > 209 lints de performance. Con pocos usuarios no duele; arreglarlo ahora es
 > barato y evita re-aprender el esquema más tarde.
 
-- [ ] **P2.1 — `auth_rls_initplan` ×86:** las políticas usan `auth.uid()`
-  desnudo y PostgreSQL lo re-evalúa por fila. Sustituir por
-  `(select auth.uid())` en todas las policies afectadas (mecánico, una
-  migración).
-- [ ] **P2.2 — `multiple_permissive_policies` ×54:** tablas con varias
-  políticas permisivas para el mismo rol+acción (cada una se evalúa
-  siempre). Consolidar con `OR` donde sea razonable.
-- [ ] **P2.3 — 49 foreign keys sin índice:** crear índices en las FKs con
-  joins/cascadas reales (`bus_positions`, `incidents`, `geo_alerts`…);
-  no indexar por indexar.
-- [ ] **P2.4 — 20 índices sin uso:** revisar y borrar los que nunca se usan
-  (ahorra escritura y espacio). Cruzar con P2.3 antes de borrar.
+- [x] **P2.1 — `auth_rls_initplan` ×86 → 0.** ✅ 2026-06-12 (migración
+  `20260612110000`, reescritura programática de ~98 policies en public y
+  storage). Verificado: el lint desapareció y el RLS sigue funcionando
+  (anon ve líneas oficiales/paradas, no ve lo privado).
+- [x] **P2.2 — `multiple_permissive_policies` ×54.** ✅ 2026-06-12 con
+  decisión documentada (migración `20260612112000`): NO se fusionan las
+  policies por rol (nombres autodocumentados > ganancia marginal); en su
+  lugar `is_admin()`/`is_moderator_or_admin()` quedan envueltas en
+  `(SELECT ...)` → InitPlan una vez por consulta, que era el coste real.
+  El lint seguirá contando 54 (cuenta policies, no coste) — aceptado.
+- [x] **P2.3 — 49 foreign keys sin índice → 0.** ✅ 2026-06-12 (migración
+  `20260612111000`, generador programático `<tabla>_<col>_fk_idx`). Los 49
+  nuevos índices aparecerán como "unused" hasta que tengan tráfico — ver
+  P2.4.
+- [x] **P2.4 — 20 índices sin uso:** revisados uno a uno el 2026-06-12 —
+  decisión: **conservarlos todos**. Son índices funcionales de features
+  reales (GIST del mapa en routes/bus_positions/operators, GIN de búsqueda
+  en user_routes, índices de estado para moderación); `idx_scan = 0` se debe
+  a que el dataset aún es pequeño y el planner elige seq scan. Borrarlos
+  ahorraría escritura marginal y obligaría a recrearlos al crecer. Revisar
+  de nuevo cuando haya tráfico real.
+
+---
+
+**Resultado P2 (2026-06-12):** advisors de rendimiento **209 → 123 lints**;
+`auth_rls_initplan` y `unindexed_foreign_keys` a **cero**. Lo restante son
+las 54 policies separadas por diseño y 69 índices jóvenes/funcionales
+documentados en P2.4.
 
 ---
 

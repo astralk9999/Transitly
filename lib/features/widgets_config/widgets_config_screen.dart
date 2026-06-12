@@ -55,21 +55,21 @@ class _WidgetsConfigScreenState extends ConsumerState<WidgetsConfigScreen> {
                 style: TransitTypography.sectionTitle(c.textMid)),
             const SizedBox(height: 8),
             SegmentedButton<_WidgetType>(
-              segments: const [
+              segments: [
                 ButtonSegment(
                   value: _WidgetType.nextBus,
-                  icon: Icon(Icons.directions_bus, size: 16),
-                  label: Text('Bus'),
+                  icon: const Icon(Icons.directions_bus, size: 16),
+                  label: Text(l10n.widgetsConfigTabBus),
                 ),
                 ButtonSegment(
                   value: _WidgetType.myLine,
-                  icon: Icon(Icons.route_outlined, size: 16),
-                  label: Text('Línea'),
+                  icon: const Icon(Icons.route_outlined, size: 16),
+                  label: Text(l10n.widgetsConfigRouteLabel),
                 ),
                 ButtonSegment(
                   value: _WidgetType.nfcBalance,
-                  icon: Icon(Icons.credit_card, size: 16),
-                  label: Text('Tarjeta'),
+                  icon: const Icon(Icons.credit_card, size: 16),
+                  label: Text(l10n.widgetsConfigTabCard),
                 ),
               ],
               selected: {_selected},
@@ -101,14 +101,14 @@ class _WidgetsConfigScreenState extends ConsumerState<WidgetsConfigScreen> {
                     size: 18, color: c.accent),
                 const SizedBox(width: 6),
                 Text(
-                  'Vista previa en la pantalla de inicio',
+                  l10n.widgetsConfigPreviewTitle,
                   style: TransitTypography.sectionTitle(c.textMid),
                 ),
               ],
             ),
             const SizedBox(height: 8),
             Text(
-              'Así se verá el widget en tu home con tus datos reales.',
+              l10n.widgetsConfigPreviewDesc,
               style: TransitTypography.bodySmall(c.textLo),
             ),
             const SizedBox(height: 12),
@@ -129,7 +129,7 @@ class _WidgetsConfigScreenState extends ConsumerState<WidgetsConfigScreen> {
                 Icon(Icons.tune, size: 18, color: c.accent),
                 const SizedBox(width: 6),
                 Text(
-                  'Apariencia (común a todos los widgets)',
+                  l10n.widgetsConfigAppearanceShared,
                   style: TransitTypography.sectionTitle(c.textMid),
                 ),
               ],
@@ -255,6 +255,7 @@ class _WidgetMockup extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     // El preview reacciona en directo al panel de apariencia.
     final cfg = ref.watch(widgetAppearanceConfigProvider);
     final systemIsDark = Theme.of(context).brightness == Brightness.dark;
@@ -301,23 +302,23 @@ class _WidgetMockup extends ConsumerWidget {
                   c: c,
                   icon: Icons.aspect_ratio,
                   text: switch (cfg.size) {
-                    WidgetSize.small => 'Tamaño S',
-                    WidgetSize.medium => 'Tamaño M',
-                    WidgetSize.large => 'Tamaño L',
+                    WidgetSize.small => l10n.widgetsConfigSizeBadge('S'),
+                    WidgetSize.medium => l10n.widgetsConfigSizeBadge('M'),
+                    WidgetSize.large => l10n.widgetsConfigSizeBadge('L'),
                   }),
               _ConfigBadge(
                   c: c,
                   icon: Icons.palette_outlined,
                   text: switch (cfg.theme) {
-                    WidgetTheme.auto => 'Tema auto',
-                    WidgetTheme.light => 'Tema claro',
-                    WidgetTheme.dark => 'Tema oscuro',
-                    WidgetTheme.brand => 'Tema marca',
+                    WidgetTheme.auto => l10n.widgetsConfigThemeAuto,
+                    WidgetTheme.light => l10n.widgetsConfigThemeLight,
+                    WidgetTheme.dark => l10n.widgetsConfigThemeDark,
+                    WidgetTheme.brand => l10n.widgetsConfigThemeBrand,
                   }),
               _ConfigBadge(
                   c: c,
                   icon: Icons.update,
-                  text: 'Refresco ${cfg.refreshMinutes} min'),
+                  text: l10n.widgetsConfigRefreshBadge(cfg.refreshMinutes)),
             ],
           ),
         ],
@@ -499,7 +500,7 @@ class _MyLineMockup extends ConsumerWidget {
 
     String routeCode = '12';
     Color routeColor = c.accent;
-    String routeName = 'Línea favorita';
+    String routeName = AppLocalizations.of(context).widgetsFavoriteLine;
     List<String> times = ['08:15', '08:30', '08:45', '09:00', '09:15'];
 
     if (favs.isNotEmpty) {
@@ -653,7 +654,7 @@ class _NfcBalanceMockup extends StatelessWidget {
           if (dimens.maxTimes >= 2) ...[
             const SizedBox(height: 2),
             Text(
-              'Última recarga: hoy 14:32',
+              AppLocalizations.of(context).widgetsConfigMockLastTopUp,
               style: TextStyle(
                 color: palette.textLo,
                 fontSize: 11,
@@ -680,18 +681,15 @@ class _ConfigCta extends StatelessWidget {
   final AppLocalizations l10n;
 
   String get _label => switch (type) {
-        _WidgetType.nextBus => 'Configurar línea + parada',
-        _WidgetType.myLine => 'Elegir mi línea favorita',
-        _WidgetType.nfcBalance => 'Vincular mi tarjeta NFC',
+        _WidgetType.nextBus => l10n.widgetsConfigCtaNextBus,
+        _WidgetType.myLine => l10n.widgetsConfigCtaMyLine,
+        _WidgetType.nfcBalance => l10n.widgetsConfigCtaNfc,
       };
 
   String get _description => switch (type) {
-        _WidgetType.nextBus =>
-          'Elige qué parada vigila el widget y mostrará la próxima salida.',
-        _WidgetType.myLine =>
-          'El widget mostrará las próximas 3 salidas de tu línea favorita.',
-        _WidgetType.nfcBalance =>
-          'El widget mostrará el saldo de tu última lectura NFC.',
+        _WidgetType.nextBus => l10n.widgetsConfigCtaNextBusDesc,
+        _WidgetType.myLine => l10n.widgetsConfigCtaMyLineDesc,
+        _WidgetType.nfcBalance => l10n.widgetsConfigCtaNfcDesc,
       };
 
   String get _route => switch (type) {
@@ -741,6 +739,7 @@ class _HowToInstallCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return GlassCard(
       blur: 12,
       fillOpacity: 0.03,
@@ -753,15 +752,15 @@ class _HowToInstallCard extends StatelessWidget {
             children: [
               Icon(Icons.lightbulb_outline, color: c.accent, size: 18),
               const SizedBox(width: 6),
-              Text('Cómo añadirlo al home',
+              Text(l10n.widgetsConfigHowTitle,
                   style: TransitTypography.sectionTitle(c.textMid)),
             ],
           ),
           const SizedBox(height: 8),
-          _Step(c: c, n: 1, text: 'Mantén pulsado un hueco vacío de tu home Android.'),
-          _Step(c: c, n: 2, text: 'Toca "Widgets" en el menú que aparece.'),
-          _Step(c: c, n: 3, text: 'Busca "Transitly" y elige uno de los 3 widgets.'),
-          _Step(c: c, n: 4, text: 'Suéltalo donde quieras y volverá automáticamente con tus datos.'),
+          _Step(c: c, n: 1, text: l10n.widgetsConfigHowStep1),
+          _Step(c: c, n: 2, text: l10n.widgetsConfigHowStep2),
+          _Step(c: c, n: 3, text: l10n.widgetsConfigHowStep3),
+          _Step(c: c, n: 4, text: l10n.widgetsConfigHowStep4),
         ],
       ),
     );

@@ -42,6 +42,12 @@ jobs:
       - name: Flutter analyze
         run: flutter analyze --no-fatal-infos --no-fatal-warnings
 
+      # Ratchet P3.2: impide que crezcan los strings ES hardcodeados.
+      # La línea base (tool/i18n_baseline.txt) baja a medida que se migran
+      # features a ARB; subirla requiere justificación en el PR.
+      - name: i18n ratchet (strings ES hardcodeados)
+        run: bash tool/check_i18n_ratchet.sh
+
   test:
     name: Flutter Test
     runs-on: ubuntu-latest

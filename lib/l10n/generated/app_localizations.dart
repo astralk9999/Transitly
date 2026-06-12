@@ -1252,6 +1252,144 @@ abstract class AppLocalizations {
   /// **'No tienes líneas favoritas.\nMarca una línea como favorita primero.'**
   String get widgetsConfigNoFavLines;
 
+  /// No description provided for @widgetsConfigTabBus.
+  ///
+  /// In es, this message translates to:
+  /// **'Bus'**
+  String get widgetsConfigTabBus;
+
+  /// No description provided for @widgetsConfigTabCard.
+  ///
+  /// In es, this message translates to:
+  /// **'Tarjeta'**
+  String get widgetsConfigTabCard;
+
+  /// No description provided for @widgetsConfigPreviewTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Vista previa en la pantalla de inicio'**
+  String get widgetsConfigPreviewTitle;
+
+  /// No description provided for @widgetsConfigPreviewDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Así se verá el widget en tu home con tus datos reales.'**
+  String get widgetsConfigPreviewDesc;
+
+  /// No description provided for @widgetsConfigAppearanceShared.
+  ///
+  /// In es, this message translates to:
+  /// **'Apariencia (común a todos los widgets)'**
+  String get widgetsConfigAppearanceShared;
+
+  /// No description provided for @widgetsConfigSizeBadge.
+  ///
+  /// In es, this message translates to:
+  /// **'Tamaño {size}'**
+  String widgetsConfigSizeBadge(String size);
+
+  /// No description provided for @widgetsConfigThemeAuto.
+  ///
+  /// In es, this message translates to:
+  /// **'Tema auto'**
+  String get widgetsConfigThemeAuto;
+
+  /// No description provided for @widgetsConfigThemeLight.
+  ///
+  /// In es, this message translates to:
+  /// **'Tema claro'**
+  String get widgetsConfigThemeLight;
+
+  /// No description provided for @widgetsConfigThemeDark.
+  ///
+  /// In es, this message translates to:
+  /// **'Tema oscuro'**
+  String get widgetsConfigThemeDark;
+
+  /// No description provided for @widgetsConfigThemeBrand.
+  ///
+  /// In es, this message translates to:
+  /// **'Tema marca'**
+  String get widgetsConfigThemeBrand;
+
+  /// No description provided for @widgetsConfigRefreshBadge.
+  ///
+  /// In es, this message translates to:
+  /// **'Refresco {minutes} min'**
+  String widgetsConfigRefreshBadge(int minutes);
+
+  /// No description provided for @widgetsConfigMockLastTopUp.
+  ///
+  /// In es, this message translates to:
+  /// **'Última recarga: hoy 14:32'**
+  String get widgetsConfigMockLastTopUp;
+
+  /// No description provided for @widgetsConfigCtaNextBus.
+  ///
+  /// In es, this message translates to:
+  /// **'Configurar línea + parada'**
+  String get widgetsConfigCtaNextBus;
+
+  /// No description provided for @widgetsConfigCtaMyLine.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegir mi línea favorita'**
+  String get widgetsConfigCtaMyLine;
+
+  /// No description provided for @widgetsConfigCtaNfc.
+  ///
+  /// In es, this message translates to:
+  /// **'Vincular mi tarjeta NFC'**
+  String get widgetsConfigCtaNfc;
+
+  /// No description provided for @widgetsConfigCtaNextBusDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige qué parada vigila el widget y mostrará la próxima salida.'**
+  String get widgetsConfigCtaNextBusDesc;
+
+  /// No description provided for @widgetsConfigCtaMyLineDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'El widget mostrará las próximas 3 salidas de tu línea favorita.'**
+  String get widgetsConfigCtaMyLineDesc;
+
+  /// No description provided for @widgetsConfigCtaNfcDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'El widget mostrará el saldo de tu última lectura NFC.'**
+  String get widgetsConfigCtaNfcDesc;
+
+  /// No description provided for @widgetsConfigHowTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Cómo añadirlo al home'**
+  String get widgetsConfigHowTitle;
+
+  /// No description provided for @widgetsConfigHowStep1.
+  ///
+  /// In es, this message translates to:
+  /// **'Mantén pulsado un hueco vacío de tu home Android.'**
+  String get widgetsConfigHowStep1;
+
+  /// No description provided for @widgetsConfigHowStep2.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca \"Widgets\" en el menú que aparece.'**
+  String get widgetsConfigHowStep2;
+
+  /// No description provided for @widgetsConfigHowStep3.
+  ///
+  /// In es, this message translates to:
+  /// **'Busca \"Transitly\" y elige uno de los 3 widgets.'**
+  String get widgetsConfigHowStep3;
+
+  /// No description provided for @widgetsConfigHowStep4.
+  ///
+  /// In es, this message translates to:
+  /// **'Suéltalo donde quieras y volverá automáticamente con tus datos.'**
+  String get widgetsConfigHowStep4;
+
   /// No description provided for @appearanceBrightnessSystem.
   ///
   /// In es, this message translates to:

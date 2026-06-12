@@ -598,6 +598,88 @@ class AppLocalizationsEn extends AppLocalizations {
       'You have no favorite lines.\nMark a line as favorite first.';
 
   @override
+  String get widgetsConfigTabBus => 'Bus';
+
+  @override
+  String get widgetsConfigTabCard => 'Card';
+
+  @override
+  String get widgetsConfigPreviewTitle => 'Home screen preview';
+
+  @override
+  String get widgetsConfigPreviewDesc =>
+      'This is how the widget will look on your home screen with your real data.';
+
+  @override
+  String get widgetsConfigAppearanceShared =>
+      'Appearance (shared by all widgets)';
+
+  @override
+  String widgetsConfigSizeBadge(String size) {
+    return 'Size $size';
+  }
+
+  @override
+  String get widgetsConfigThemeAuto => 'Auto theme';
+
+  @override
+  String get widgetsConfigThemeLight => 'Light theme';
+
+  @override
+  String get widgetsConfigThemeDark => 'Dark theme';
+
+  @override
+  String get widgetsConfigThemeBrand => 'Brand theme';
+
+  @override
+  String widgetsConfigRefreshBadge(int minutes) {
+    return 'Refresh $minutes min';
+  }
+
+  @override
+  String get widgetsConfigMockLastTopUp => 'Last top-up: today 14:32';
+
+  @override
+  String get widgetsConfigCtaNextBus => 'Set up line + stop';
+
+  @override
+  String get widgetsConfigCtaMyLine => 'Choose my favorite line';
+
+  @override
+  String get widgetsConfigCtaNfc => 'Link my NFC card';
+
+  @override
+  String get widgetsConfigCtaNextBusDesc =>
+      'Choose which stop the widget watches; it will show the next departure.';
+
+  @override
+  String get widgetsConfigCtaMyLineDesc =>
+      'The widget will show the next 3 departures of your favorite line.';
+
+  @override
+  String get widgetsConfigCtaNfcDesc =>
+      'The widget will show the balance from your last NFC scan.';
+
+  @override
+  String get widgetsConfigHowTitle => 'How to add it to your home screen';
+
+  @override
+  String get widgetsConfigHowStep1 =>
+      'Long-press an empty spot on your Android home screen.';
+
+  @override
+  String get widgetsConfigHowStep2 =>
+      'Tap \"Widgets\" in the menu that appears.';
+
+  @override
+  String get widgetsConfigHowStep3 =>
+      'Find \"Transitly\" and pick one of the 3 widgets.';
+
+  @override
+  String get widgetsConfigHowStep4 =>
+      'Drop it anywhere; it fills in automatically with your data.';
+
+  @override
   String get appearanceBrightnessSystem => 'System';
 
   @override

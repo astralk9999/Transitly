@@ -597,6 +597,86 @@ class AppLocalizationsAr extends AppLocalizations {
       'ليس لديك خطوط مفضلة.\nحدد خطاً كمفضل أولاً.';
 
   @override
+  String get widgetsConfigTabBus => 'حافلة';
+
+  @override
+  String get widgetsConfigTabCard => 'البطاقة';
+
+  @override
+  String get widgetsConfigPreviewTitle => 'معاينة على الشاشة الرئيسية';
+
+  @override
+  String get widgetsConfigPreviewDesc =>
+      'هكذا سيبدو الودجت على شاشتك الرئيسية ببياناتك الفعلية.';
+
+  @override
+  String get widgetsConfigAppearanceShared => 'المظهر (مشترك بين كل الودجتات)';
+
+  @override
+  String widgetsConfigSizeBadge(String size) {
+    return 'الحجم $size';
+  }
+
+  @override
+  String get widgetsConfigThemeAuto => 'سمة تلقائية';
+
+  @override
+  String get widgetsConfigThemeLight => 'سمة فاتحة';
+
+  @override
+  String get widgetsConfigThemeDark => 'سمة داكنة';
+
+  @override
+  String get widgetsConfigThemeBrand => 'سمة العلامة';
+
+  @override
+  String widgetsConfigRefreshBadge(int minutes) {
+    return 'تحديث كل $minutes دقيقة';
+  }
+
+  @override
+  String get widgetsConfigMockLastTopUp => 'آخر شحن: اليوم 14:32';
+
+  @override
+  String get widgetsConfigCtaNextBus => 'إعداد الخط والمحطة';
+
+  @override
+  String get widgetsConfigCtaMyLine => 'اختيار خطي المفضل';
+
+  @override
+  String get widgetsConfigCtaNfc => 'ربط بطاقة NFC';
+
+  @override
+  String get widgetsConfigCtaNextBusDesc =>
+      'اختر المحطة التي يراقبها الودجت وسيعرض الرحلة القادمة.';
+
+  @override
+  String get widgetsConfigCtaMyLineDesc =>
+      'سيعرض الودجت الرحلات الثلاث القادمة لخطك المفضل.';
+
+  @override
+  String get widgetsConfigCtaNfcDesc => 'سيعرض الودجت الرصيد من آخر قراءة NFC.';
+
+  @override
+  String get widgetsConfigHowTitle => 'كيفية إضافته إلى الشاشة الرئيسية';
+
+  @override
+  String get widgetsConfigHowStep1 =>
+      'اضغط مطولاً على مساحة فارغة في شاشتك الرئيسية.';
+
+  @override
+  String get widgetsConfigHowStep2 =>
+      'اضغط على \"Widgets\" في القائمة التي تظهر.';
+
+  @override
+  String get widgetsConfigHowStep3 =>
+      'ابحث عن \"Transitly\" واختر أحد الودجتات الثلاثة.';
+
+  @override
+  String get widgetsConfigHowStep4 =>
+      'أفلته حيث تريد وسيمتلئ تلقائياً ببياناتك.';
+
+  @override
   String get appearanceBrightnessSystem => 'النظام';
 
   @override

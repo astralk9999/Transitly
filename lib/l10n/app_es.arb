@@ -9,34 +9,48 @@
   "tabMap": "Mapa",
   "tabCard": "Tarjeta",
   "tabProfile": "Perfil",
-  "@tabHome": { "description": "Bottom nav: Home tab" },
-  "@tabSearch": { "description": "Bottom nav: Search tab" },
-  "@tabMap": { "description": "Bottom nav: Map tab" },
-  "@tabCard": { "description": "Bottom nav: NFC card tab" },
-  "@tabProfile": { "description": "Bottom nav: Profile tab" },
-
+  "@tabHome": {
+    "description": "Bottom nav: Home tab"
+  },
+  "@tabSearch": {
+    "description": "Bottom nav: Search tab"
+  },
+  "@tabMap": {
+    "description": "Bottom nav: Map tab"
+  },
+  "@tabCard": {
+    "description": "Bottom nav: NFC card tab"
+  },
+  "@tabProfile": {
+    "description": "Bottom nav: Profile tab"
+  },
   "greetingDawn": "Buena madrugada",
-  "@greetingDawn": { "description": "Greeting: before 6am" },
+  "@greetingDawn": {
+    "description": "Greeting: before 6am"
+  },
   "greetingMorning": "Buenos días",
-  "@greetingMorning": { "description": "Greeting: 6am to 2pm" },
+  "@greetingMorning": {
+    "description": "Greeting: 6am to 2pm"
+  },
   "greetingAfternoon": "Buenas tardes",
-  "@greetingAfternoon": { "description": "Greeting: 2pm to 9pm" },
+  "@greetingAfternoon": {
+    "description": "Greeting: 2pm to 9pm"
+  },
   "greetingNight": "Buenas noches",
-  "@greetingNight": { "description": "Greeting: after 9pm" },
-
+  "@greetingNight": {
+    "description": "Greeting: after 9pm"
+  },
   "nfcErrorUnsupported": "NFC no disponible en este dispositivo",
   "nfcErrorNotMifareClassic": "Esta tarjeta no es compatible",
   "nfcErrorAuthFailed": "No se pudo autenticar la tarjeta",
   "nfcErrorReadFailed": "Error al leer la tarjeta",
   "nfcErrorTagLost": "Tarjeta retirada demasiado pronto",
   "nfcErrorUnknown": "Error desconocido",
-
   "profileSectionAppearance": "APARIENCIA",
   "profileSectionDemoProfile": "PERFIL DE DEMO",
   "profileSectionAccessibility": "ACCESIBILIDAD",
   "profileSectionOfflineData": "DATOS OFFLINE",
   "profileSectionAbout": "ACERCA DE",
-
   "accessibilityTitle": "Accesibilidad",
   "accessibilityThemeSection": "TEMA",
   "accessibilityThemeSystem": "Sistema",
@@ -47,7 +61,6 @@
   "accessibilityLanguageEs": "Español",
   "accessibilityLanguageEn": "Inglés",
   "accessibilityLanguageSystem": "Seguir idioma del sistema",
-
   "offlineDataTitle": "Datos offline",
   "offlineDataContent": "CONTENIDO",
   "offlineDataArchive": "ARCHIVO",
@@ -57,7 +70,6 @@
   "offlineDataLoaded": "Cargado",
   "offlineDataRoutes": "Rutas",
   "offlineDataStops": "Paradas",
-
   "actionClose": "Cerrar",
   "actionRetry": "Reintentar",
   "actionCancel": "Cancelar",
@@ -72,16 +84,13 @@
   "actionSendImprovement": "Enviar mejora",
   "actionSendRequest": "Enviar solicitud",
   "actionSending": "Enviando...",
-
   "sectionUpcomingArrivals": "PRÓXIMAS LLEGADAS",
   "sectionSchedules": "HORARIOS",
   "sectionRecentChanges": "CAMBIOS RECIENTES",
-
   "routeDayWeekday": "Laborable",
   "routeDaySaturday": "Sábado",
   "routeDaySunday": "Domingo",
   "routeDayHoliday": "Festivo",
-
   "stopLinesHeader": "LÍNEAS",
   "routeTimeline": "RECORRIDO",
   "editorStepInfo": "Información",
@@ -89,7 +98,6 @@
   "editorStepStops": "Paradas",
   "editorStepReturn": "Vuelta",
   "editorStepReview": "Revisión",
-
   "actionNext": "Siguiente",
   "actionConfirm": "Confirmar",
   "actionAdd": "Añadir",
@@ -106,141 +114,248 @@
   "actionStop": "Detener",
   "actionContinue": "Continuar",
   "actionFollow": "Seguir",
-
   "featureComingSoon": "Funcionalidad disponible en próxima versión.",
-  "@featureComingSoon": {"description": "Placeholder para features en construcción"},
-
+  "@featureComingSoon": {
+    "description": "Placeholder para features en construcción"
+  },
   "statusPaused": "PAUSADO",
   "statusLive": "EN VIVO",
   "statusRecordingRoute": "GRABANDO RUTA",
-
   "recorderMarkStop": "MARCAR PARADA",
-  "@recorderMarkStop": { "description": "Live route recorder: mark-stop big button" },
+  "@recorderMarkStop": {
+    "description": "Live route recorder: mark-stop big button"
+  },
   "recorderStopMarkedFmt": "PARADA #{number} MARCADA · {distance} km",
   "@recorderStopMarkedFmt": {
     "description": "Live route recorder: stop marked snackbar",
     "placeholders": {
-      "number": { "type": "int", "example": "3" },
-      "distance": { "type": "String", "example": "1.23" }
+      "number": {
+        "type": "int",
+        "example": "3"
+      },
+      "distance": {
+        "type": "String",
+        "example": "1.23"
+      }
     }
   },
-
   "adminUsersTitle": "Gestión de usuarios",
-  "@adminUsersTitle": { "description": "Admin users screen title" },
+  "@adminUsersTitle": {
+    "description": "Admin users screen title"
+  },
   "adminUsersSearchHint": "Buscar usuario...",
-  "@adminUsersSearchHint": { "description": "Admin users search hint" },
+  "@adminUsersSearchHint": {
+    "description": "Admin users search hint"
+  },
   "adminUsersFilterAll": "Todos",
-  "@adminUsersFilterAll": { "description": "Admin users filter: all roles" },
+  "@adminUsersFilterAll": {
+    "description": "Admin users filter: all roles"
+  },
   "adminUsersEmpty": "No se encontraron usuarios",
-  "@adminUsersEmpty": { "description": "Admin users empty state" },
+  "@adminUsersEmpty": {
+    "description": "Admin users empty state"
+  },
   "adminUsersOffline": "Conecta a internet para gestionar usuarios",
-  "@adminUsersOffline": { "description": "Admin users offline message" },
+  "@adminUsersOffline": {
+    "description": "Admin users offline message"
+  },
   "adminUsersRoleAdmin": "Admin",
-  "@adminUsersRoleAdmin": { "description": "Role label: Admin" },
+  "@adminUsersRoleAdmin": {
+    "description": "Role label: Admin"
+  },
   "adminUsersRoleModerator": "Moderador",
-  "@adminUsersRoleModerator": { "description": "Role label: Moderator" },
+  "@adminUsersRoleModerator": {
+    "description": "Role label: Moderator"
+  },
   "adminUsersRoleOperatorAdmin": "Operador Admin",
-  "@adminUsersRoleOperatorAdmin": { "description": "Role label: Operator Admin" },
+  "@adminUsersRoleOperatorAdmin": {
+    "description": "Role label: Operator Admin"
+  },
   "adminUsersRoleDriver": "Conductor",
-  "@adminUsersRoleDriver": { "description": "Role label: Driver" },
+  "@adminUsersRoleDriver": {
+    "description": "Role label: Driver"
+  },
   "adminUsersRolePassenger": "Pasajero",
-  "@adminUsersRolePassenger": { "description": "Role label: Passenger" },
+  "@adminUsersRolePassenger": {
+    "description": "Role label: Passenger"
+  },
   "adminUsersRoleAll": "Todos",
-  "@adminUsersRoleAll": { "description": "Role filter label: All roles" },
+  "@adminUsersRoleAll": {
+    "description": "Role filter label: All roles"
+  },
   "adminUsersError": "Error al cargar usuarios",
-  "@adminUsersError": { "description": "Admin users error loading" },
+  "@adminUsersError": {
+    "description": "Admin users error loading"
+  },
   "adminUsersNoConnection": "Sin conexión",
-  "@adminUsersNoConnection": { "description": "Admin users no connection title" },
+  "@adminUsersNoConnection": {
+    "description": "Admin users no connection title"
+  },
   "adminUsersNoResults": "Sin resultados",
-  "@adminUsersNoResults": { "description": "Admin users no search results title" },
+  "@adminUsersNoResults": {
+    "description": "Admin users no search results title"
+  },
   "adminUsersNoMatchSearch": "No hay usuarios que coincidan con \"{query}\"",
   "@adminUsersNoMatchSearch": {
     "description": "Admin users search no match text",
     "placeholders": {
-      "query": { "type": "String", "example": "Juan" }
+      "query": {
+        "type": "String",
+        "example": "Juan"
+      }
     }
   },
   "adminUsersNoMatchRole": "No hay usuarios con el rol seleccionado",
-  "@adminUsersNoMatchRole": { "description": "Admin users role filter no match text" },
-
+  "@adminUsersNoMatchRole": {
+    "description": "Admin users role filter no match text"
+  },
   "adminOperatorsTitle": "Gestión de operadores",
-  "@adminOperatorsTitle": { "description": "Admin operators screen title" },
+  "@adminOperatorsTitle": {
+    "description": "Admin operators screen title"
+  },
   "adminOperatorsCreate": "Crear operador",
-  "@adminOperatorsCreate": { "description": "Admin operators create button" },
+  "@adminOperatorsCreate": {
+    "description": "Admin operators create button"
+  },
   "adminOperatorsEdit": "Editar operador",
-  "@adminOperatorsEdit": { "description": "Admin operators edit title" },
+  "@adminOperatorsEdit": {
+    "description": "Admin operators edit title"
+  },
   "adminOperatorsDelete": "Eliminar",
-  "@adminOperatorsDelete": { "description": "Admin operators delete button" },
+  "@adminOperatorsDelete": {
+    "description": "Admin operators delete button"
+  },
   "adminOperatorsSlug": "Slug",
-  "@adminOperatorsSlug": { "description": "Admin operators slug field" },
+  "@adminOperatorsSlug": {
+    "description": "Admin operators slug field"
+  },
   "adminOperatorsName": "Nombre",
-  "@adminOperatorsName": { "description": "Admin operators name field" },
+  "@adminOperatorsName": {
+    "description": "Admin operators name field"
+  },
   "adminOperatorsRegion": "Región",
-  "@adminOperatorsRegion": { "description": "Admin operators region field" },
+  "@adminOperatorsRegion": {
+    "description": "Admin operators region field"
+  },
   "adminOperatorsWebsite": "Sitio web",
-  "@adminOperatorsWebsite": { "description": "Admin operators website field" },
+  "@adminOperatorsWebsite": {
+    "description": "Admin operators website field"
+  },
   "adminOperatorsEmail": "Correo de contacto",
-  "@adminOperatorsEmail": { "description": "Admin operators contact email field" },
+  "@adminOperatorsEmail": {
+    "description": "Admin operators contact email field"
+  },
   "adminOperatorsDeleteConfirm": "¿Eliminar este operador?",
-  "@adminOperatorsDeleteConfirm": { "description": "Admin operators delete confirmation" },
+  "@adminOperatorsDeleteConfirm": {
+    "description": "Admin operators delete confirmation"
+  },
   "adminOperatorsEmpty": "No hay operadores registrados",
-  "@adminOperatorsEmpty": { "description": "Admin operators empty state" },
+  "@adminOperatorsEmpty": {
+    "description": "Admin operators empty state"
+  },
   "adminOperatorsCreated": "Operador creado",
-  "@adminOperatorsCreated": { "description": "Admin operators created toast" },
+  "@adminOperatorsCreated": {
+    "description": "Admin operators created toast"
+  },
   "adminOperatorsUpdated": "Operador actualizado",
-  "@adminOperatorsUpdated": { "description": "Admin operators updated toast" },
+  "@adminOperatorsUpdated": {
+    "description": "Admin operators updated toast"
+  },
   "adminOperatorsDeleted": "Operador eliminado",
-  "@adminOperatorsDeleted": { "description": "Admin operators deleted toast" },
+  "@adminOperatorsDeleted": {
+    "description": "Admin operators deleted toast"
+  },
   "adminOperatorsError": "Error al cargar operadores",
-  "@adminOperatorsError": { "description": "Admin operators error loading" },
+  "@adminOperatorsError": {
+    "description": "Admin operators error loading"
+  },
   "adminOperatorsNoConnection": "Sin conexión",
-  "@adminOperatorsNoConnection": { "description": "Admin operators no connection title" },
+  "@adminOperatorsNoConnection": {
+    "description": "Admin operators no connection title"
+  },
   "adminOperatorsOffline": "Conecta a internet para gestionar operadores",
-  "@adminOperatorsOffline": { "description": "Admin operators offline message" },
+  "@adminOperatorsOffline": {
+    "description": "Admin operators offline message"
+  },
   "adminOperatorsErrorDenied": "Permiso denegado para gestionar operadores",
-  "@adminOperatorsErrorDenied": { "description": "Admin operators permission denied error" },
+  "@adminOperatorsErrorDenied": {
+    "description": "Admin operators permission denied error"
+  },
   "adminOperatorsErrorNetwork": "Error de red al cargar operadores",
-  "@adminOperatorsErrorNetwork": { "description": "Admin operators network error" },
+  "@adminOperatorsErrorNetwork": {
+    "description": "Admin operators network error"
+  },
   "adminOperatorsErrorUnknown": "Error desconocido al cargar operadores",
-
   "managerInboxTitle": "Bandeja de gestión",
-  "@managerInboxTitle": { "description": "Manager inbox screen title" },
+  "@managerInboxTitle": {
+    "description": "Manager inbox screen title"
+  },
   "managerInboxFeedback": "Feedback",
-  "@managerInboxFeedback": { "description": "Manager inbox: feedback tab label" },
+  "@managerInboxFeedback": {
+    "description": "Manager inbox: feedback tab label"
+  },
   "managerInboxSuggestions": "Sugerencias",
-  "@managerInboxSuggestions": { "description": "Manager inbox: suggestions tab label" },
+  "@managerInboxSuggestions": {
+    "description": "Manager inbox: suggestions tab label"
+  },
   "managerInboxResolved": "Resueltos",
-  "@managerInboxResolved": { "description": "Manager inbox: resolved tab label" },
+  "@managerInboxResolved": {
+    "description": "Manager inbox: resolved tab label"
+  },
   "managerInboxPending": "{count} pendientes",
   "@managerInboxPending": {
     "description": "Manager inbox pending count",
     "placeholders": {
-      "count": { "type": "int", "example": "5" }
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
     }
   },
   "managerInboxMarkInReview": "Marcar en revisión",
-  "@managerInboxMarkInReview": { "description": "Manager inbox: mark in review button" },
+  "@managerInboxMarkInReview": {
+    "description": "Manager inbox: mark in review button"
+  },
   "managerInboxResolve": "Resolver",
-  "@managerInboxResolve": { "description": "Manager inbox: resolve button" },
+  "@managerInboxResolve": {
+    "description": "Manager inbox: resolve button"
+  },
   "managerInboxReject": "Rechazar",
-  "@managerInboxReject": { "description": "Manager inbox: reject button" },
+  "@managerInboxReject": {
+    "description": "Manager inbox: reject button"
+  },
   "managerInboxEmptyFeedback": "No hay feedback pendiente",
-  "@managerInboxEmptyFeedback": { "description": "Manager inbox: empty feedback state" },
+  "@managerInboxEmptyFeedback": {
+    "description": "Manager inbox: empty feedback state"
+  },
   "managerInboxEmptySuggestions": "No hay sugerencias",
-  "@managerInboxEmptySuggestions": { "description": "Manager inbox: empty suggestions state" },
+  "@managerInboxEmptySuggestions": {
+    "description": "Manager inbox: empty suggestions state"
+  },
   "managerInboxEmptyResolved": "No hay elementos resueltos",
-  "@managerInboxEmptyResolved": { "description": "Manager inbox: empty resolved state" },
+  "@managerInboxEmptyResolved": {
+    "description": "Manager inbox: empty resolved state"
+  },
   "managerInboxOpen": "Abrir",
-  "@managerInboxOpen": { "description": "Manager inbox: open button" },
+  "@managerInboxOpen": {
+    "description": "Manager inbox: open button"
+  },
   "managerInboxStatus": "Estado",
-  "@managerInboxStatus": { "description": "Manager inbox: status label" },
+  "@managerInboxStatus": {
+    "description": "Manager inbox: status label"
+  },
   "managerInboxItemDescription": "Descripción",
-  "@managerInboxItemDescription": { "description": "Manager inbox: description label" },
+  "@managerInboxItemDescription": {
+    "description": "Manager inbox: description label"
+  },
   "managerInboxItemDate": "Fecha",
-  "@managerInboxItemDate": { "description": "Manager inbox: date label" },
+  "@managerInboxItemDate": {
+    "description": "Manager inbox: date label"
+  },
   "managerInboxItemType": "Tipo",
-  "@managerInboxItemType": { "description": "Manager inbox: type label" },
-
+  "@managerInboxItemType": {
+    "description": "Manager inbox: type label"
+  },
   "appearanceTitle": "Apariencia",
   "appearancePalettesSection": "PALETAS",
   "appearanceBrightnessSection": "BRILLO",
@@ -291,6 +406,43 @@
   "widgetsConfigRouteLabel": "Línea",
   "widgetsConfigStopLabel": "Parada",
   "widgetsConfigNoFavLines": "No tienes líneas favoritas.\nMarca una línea como favorita primero.",
+  "widgetsConfigTabBus": "Bus",
+  "widgetsConfigTabCard": "Tarjeta",
+  "widgetsConfigPreviewTitle": "Vista previa en la pantalla de inicio",
+  "widgetsConfigPreviewDesc": "Así se verá el widget en tu home con tus datos reales.",
+  "widgetsConfigAppearanceShared": "Apariencia (común a todos los widgets)",
+  "widgetsConfigSizeBadge": "Tamaño {size}",
+  "@widgetsConfigSizeBadge": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "widgetsConfigThemeAuto": "Tema auto",
+  "widgetsConfigThemeLight": "Tema claro",
+  "widgetsConfigThemeDark": "Tema oscuro",
+  "widgetsConfigThemeBrand": "Tema marca",
+  "widgetsConfigRefreshBadge": "Refresco {minutes} min",
+  "@widgetsConfigRefreshBadge": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "widgetsConfigMockLastTopUp": "Última recarga: hoy 14:32",
+  "widgetsConfigCtaNextBus": "Configurar línea + parada",
+  "widgetsConfigCtaMyLine": "Elegir mi línea favorita",
+  "widgetsConfigCtaNfc": "Vincular mi tarjeta NFC",
+  "widgetsConfigCtaNextBusDesc": "Elige qué parada vigila el widget y mostrará la próxima salida.",
+  "widgetsConfigCtaMyLineDesc": "El widget mostrará las próximas 3 salidas de tu línea favorita.",
+  "widgetsConfigCtaNfcDesc": "El widget mostrará el saldo de tu última lectura NFC.",
+  "widgetsConfigHowTitle": "Cómo añadirlo al home",
+  "widgetsConfigHowStep1": "Mantén pulsado un hueco vacío de tu home Android.",
+  "widgetsConfigHowStep2": "Toca \"Widgets\" en el menú que aparece.",
+  "widgetsConfigHowStep3": "Busca \"Transitly\" y elige uno de los 3 widgets.",
+  "widgetsConfigHowStep4": "Suéltalo donde quieras y volverá automáticamente con tus datos.",
   "appearanceBrightnessSystem": "Sistema",
   "appearanceBrightnessLight": "Claro",
   "appearanceBrightnessDark": "Oscuro",
@@ -322,28 +474,43 @@
   "appearanceCustomPaletteContrastFail": "Contraste bajo",
   "appearanceCustomPaletteSaved": "Paleta guardada",
   "appearanceCustomPaletteAdd": "Crear paleta",
-
   "appearanceMapStyleSection": "ESTILO DE MAPA",
-  "@appearanceMapStyleSection": { "description": "Appearance map style section header" },
+  "@appearanceMapStyleSection": {
+    "description": "Appearance map style section header"
+  },
   "mapStyleStreets": "Calles",
-  "@mapStyleStreets": { "description": "Map style: Streets" },
+  "@mapStyleStreets": {
+    "description": "Map style: Streets"
+  },
   "mapStyleBasic": "Básico",
-  "@mapStyleBasic": { "description": "Map style: Basic" },
+  "@mapStyleBasic": {
+    "description": "Map style: Basic"
+  },
   "mapStyleBright": "Brillante",
-  "@mapStyleBright": { "description": "Map style: Bright" },
+  "@mapStyleBright": {
+    "description": "Map style: Bright"
+  },
   "mapStyleDark": "Oscuro",
-  "@mapStyleDark": { "description": "Map style: Dark" },
+  "@mapStyleDark": {
+    "description": "Map style: Dark"
+  },
   "mapStyleLight": "Claro",
-  "@mapStyleLight": { "description": "Map style: Light" },
-
+  "@mapStyleLight": {
+    "description": "Map style: Light"
+  },
   "appearanceHighContrast": "Alto contraste",
-  "@appearanceHighContrast": { "description": "High contrast mode toggle label" },
+  "@appearanceHighContrast": {
+    "description": "High contrast mode toggle label"
+  },
   "appearanceHighContrastSubtitle": "Bordes más gruesos y mayor contraste de texto",
   "appearanceHcPreserveAccent": "Mantener color de paleta",
-  "@appearanceHighContrastSubtitle": { "description": "High contrast mode toggle subtitle" },
+  "@appearanceHighContrastSubtitle": {
+    "description": "High contrast mode toggle subtitle"
+  },
   "accessibilityHighContrast": "Alto contraste",
-  "@accessibilityHighContrast": { "description": "High contrast mode toggle label in accessibility screen" },
-
+  "@accessibilityHighContrast": {
+    "description": "High contrast mode toggle label in accessibility screen"
+  },
   "nearbyBusesTitle": "Buses cercanos",
   "nearbyBusesEmpty": "Sin buses activos",
   "nearbyBusesNoActiveBuses": "No se encontraron buses en operación en este momento",
@@ -354,26 +521,42 @@
   "nearbyBusesLinkLabel": "Ver lista de buses",
   "nearbyBusesEmptyTitle": "No hay buses cerca",
   "nearbyBusesEmptySubtitle": "Activa la ubicación para ver los buses operando cerca de ti.",
-
   "onboardingSkip": "Saltar",
-  "@onboardingSkip": { "description": "Onboarding skip button" },
+  "@onboardingSkip": {
+    "description": "Onboarding skip button"
+  },
   "onboardingNext": "Siguiente",
-  "@onboardingNext": { "description": "Onboarding next button" },
+  "@onboardingNext": {
+    "description": "Onboarding next button"
+  },
   "onboardingGetStarted": "Empezar",
-  "@onboardingGetStarted": { "description": "Onboarding get started button" },
+  "@onboardingGetStarted": {
+    "description": "Onboarding get started button"
+  },
   "onboardingPage1Title": "Transporte en tiempo real",
-  "@onboardingPage1Title": { "description": "Onboarding page 1 title" },
+  "@onboardingPage1Title": {
+    "description": "Onboarding page 1 title"
+  },
   "onboardingPage1Description": "Consulta dónde está tu autobús ahora mismo, sin esperas innecesarias.",
-  "@onboardingPage1Description": { "description": "Onboarding page 1 description" },
+  "@onboardingPage1Description": {
+    "description": "Onboarding page 1 description"
+  },
   "onboardingPage2Title": "Tu comunidad te ayuda",
-  "@onboardingPage2Title": { "description": "Onboarding page 2 title" },
+  "@onboardingPage2Title": {
+    "description": "Onboarding page 2 title"
+  },
   "onboardingPage2Description": "Reporta incidencias, sugiere rutas y ayuda a otros pasajeros como tú.",
-  "@onboardingPage2Description": { "description": "Onboarding page 2 description" },
+  "@onboardingPage2Description": {
+    "description": "Onboarding page 2 description"
+  },
   "onboardingPage3Title": "Funciona sin internet",
-  "@onboardingPage3Title": { "description": "Onboarding page 3 title" },
+  "@onboardingPage3Title": {
+    "description": "Onboarding page 3 title"
+  },
   "onboardingPage3Description": "Descarga tus rutas y consulta horarios incluso sin conexión.",
-  "@onboardingPage3Description": { "description": "Onboarding page 3 description" },
-
+  "@onboardingPage3Description": {
+    "description": "Onboarding page 3 description"
+  },
   "reputationRankNone": "Sin rango",
   "reputationRankNovice": "Novato",
   "reputationRankContributor": "Colaborador",
@@ -381,7 +564,6 @@
   "reputationRankCartographer": "Cartógrafo",
   "reputationRankGuardian": "Guardián",
   "reputationRankLegend": "Leyenda",
-
   "reputationEventIncidentCreated": "Reporte creado",
   "reputationEventIncidentRejectedSpam": "Reporte rechazado (spam)",
   "reputationEventFeedbackSubmitted": "Feedback enviado",
@@ -391,405 +573,755 @@
   "reputationEventSuggestionVerified": "Sugerencia verificada",
   "reputationEventSuggestionOfficial": "Sugerencia oficializada",
   "reputationEventDuplicateReport": "Reporte duplicado",
-
   "achievementsTitle": "Logros",
-  "@achievementsTitle": { "description": "Achievements screen title" },
+  "@achievementsTitle": {
+    "description": "Achievements screen title"
+  },
   "achievementsLevel": "Nivel: {level} · {xp} XP",
   "@achievementsLevel": {
     "description": "Achievements level display with level name and XP",
     "placeholders": {
-      "level": { "type": "String", "example": "VIAJERO" },
-      "xp": { "type": "int", "example": "450" }
+      "level": {
+        "type": "String",
+        "example": "VIAJERO"
+      },
+      "xp": {
+        "type": "int",
+        "example": "450"
+      }
     }
   },
-
   "achievementsCategoryContribution": "Contribución",
-  "@achievementsCategoryContribution": { "description": "Achievement category: contribution" },
+  "@achievementsCategoryContribution": {
+    "description": "Achievement category: contribution"
+  },
   "achievementsCategoryUsage": "Uso",
-  "@achievementsCategoryUsage": { "description": "Achievement category: usage" },
-
+  "@achievementsCategoryUsage": {
+    "description": "Achievement category: usage"
+  },
   "reputationTitle": "Reputación",
-  "@reputationTitle": { "description": "Reputation screen title" },
+  "@reputationTitle": {
+    "description": "Reputation screen title"
+  },
   "reputationHowToEarn": "Cómo subir",
-  "@reputationHowToEarn": { "description": "Reputation how to earn section header" },
+  "@reputationHowToEarn": {
+    "description": "Reputation how to earn section header"
+  },
   "reputationRanks": "Rangos",
-  "@reputationRanks": { "description": "Reputation ranks section header" },
+  "@reputationRanks": {
+    "description": "Reputation ranks section header"
+  },
   "reputationTooltip": "La reputación es decorativa. Más adelante desbloqueará privilegios.",
-  "@reputationTooltip": { "description": "Reputation screen decorative tooltip" },
+  "@reputationTooltip": {
+    "description": "Reputation screen decorative tooltip"
+  },
   "reputationPoints": "puntos",
-  "@reputationPoints": { "description": "Points unit label" },
+  "@reputationPoints": {
+    "description": "Points unit label"
+  },
   "reputationNextRank": "Siguiente rango",
-  "@reputationNextRank": { "description": "Next rank label in reputation progress" },
+  "@reputationNextRank": {
+    "description": "Next rank label in reputation progress"
+  },
   "reputationMaxRank": "Rango máximo alcanzado",
-  "@reputationMaxRank": { "description": "Max rank reached label" },
-
+  "@reputationMaxRank": {
+    "description": "Max rank reached label"
+  },
   "offlineRegionsTitle": "Mapas offline",
-  "@offlineRegionsTitle": { "description": "Offline regions screen title" },
+  "@offlineRegionsTitle": {
+    "description": "Offline regions screen title"
+  },
   "offlineRegionsAddRegion": "Añadir región",
-  "@offlineRegionsAddRegion": { "description": "FAB tooltip to add an offline region" },
+  "@offlineRegionsAddRegion": {
+    "description": "FAB tooltip to add an offline region"
+  },
   "offlineRegionsEmpty": "No hay mapas descargados",
-  "@offlineRegionsEmpty": { "description": "Empty state title for offline regions" },
+  "@offlineRegionsEmpty": {
+    "description": "Empty state title for offline regions"
+  },
   "offlineRegionsEmptySubtitle": "Descarga zonas del mapa para usarlas sin conexión",
-  "@offlineRegionsEmptySubtitle": { "description": "Empty state subtitle for offline regions" },
+  "@offlineRegionsEmptySubtitle": {
+    "description": "Empty state subtitle for offline regions"
+  },
   "offlineRegionsDeleteConfirm": "¿Eliminar esta región?",
-  "@offlineRegionsDeleteConfirm": { "description": "Delete region confirmation message" },
+  "@offlineRegionsDeleteConfirm": {
+    "description": "Delete region confirmation message"
+  },
   "offlineRegionsDeleteDesc": "Los tiles descargados se perderán y deberás volver a descargarlos para usar el mapa sin conexión",
-  "@offlineRegionsDeleteDesc": { "description": "Delete region description" },
+  "@offlineRegionsDeleteDesc": {
+    "description": "Delete region description"
+  },
   "offlineRegionsStatusReady": "Listo",
-  "@offlineRegionsStatusReady": { "description": "Region status: ready" },
+  "@offlineRegionsStatusReady": {
+    "description": "Region status: ready"
+  },
   "offlineRegionsStatusDownloading": "Descargando",
-  "@offlineRegionsStatusDownloading": { "description": "Region status: downloading" },
+  "@offlineRegionsStatusDownloading": {
+    "description": "Region status: downloading"
+  },
   "offlineRegionsStatusError": "Error",
-  "@offlineRegionsStatusError": { "description": "Region status: error" },
+  "@offlineRegionsStatusError": {
+    "description": "Region status: error"
+  },
   "offlineRegionsStatusStale": "Desactualizado",
-  "@offlineRegionsStatusStale": { "description": "Region status: stale" },
+  "@offlineRegionsStatusStale": {
+    "description": "Region status: stale"
+  },
   "offlineRegionsDownloaded": "Descargado",
-  "@offlineRegionsDownloaded": { "description": "Downloaded date label prefix" },
+  "@offlineRegionsDownloaded": {
+    "description": "Downloaded date label prefix"
+  },
   "offlineRegionsSize": "Tamaño",
-  "@offlineRegionsSize": { "description": "Size label prefix" },
+  "@offlineRegionsSize": {
+    "description": "Size label prefix"
+  },
   "offlineRegionsActionDownload": "Descargar",
-  "@offlineRegionsActionDownload": { "description": "Download button label" },
+  "@offlineRegionsActionDownload": {
+    "description": "Download button label"
+  },
   "offlineRegionsActionDelete": "Eliminar",
-  "@offlineRegionsActionDelete": { "description": "Delete button label" },
+  "@offlineRegionsActionDelete": {
+    "description": "Delete button label"
+  },
   "offlineRegionsRegionName": "Nombre de la región",
-  "@offlineRegionsRegionName": { "description": "Region name input label" },
+  "@offlineRegionsRegionName": {
+    "description": "Region name input label"
+  },
   "offlineRegionsRegionNameHint": "Ej. Centro de Jerez",
-  "@offlineRegionsRegionNameHint": { "description": "Region name input hint" },
+  "@offlineRegionsRegionNameHint": {
+    "description": "Region name input hint"
+  },
   "offlineRegionsZoomMin": "Zoom mínimo",
-  "@offlineRegionsZoomMin": { "description": "Min zoom selector label" },
+  "@offlineRegionsZoomMin": {
+    "description": "Min zoom selector label"
+  },
   "offlineRegionsZoomMax": "Zoom máximo",
-  "@offlineRegionsZoomMax": { "description": "Max zoom selector label" },
+  "@offlineRegionsZoomMax": {
+    "description": "Max zoom selector label"
+  },
   "offlineRegionsEstimatedSize": "Tamaño estimado",
-  "@offlineRegionsEstimatedSize": { "description": "Estimated download size label" },
+  "@offlineRegionsEstimatedSize": {
+    "description": "Estimated download size label"
+  },
   "offlineRegionsSelectArea": "Mueve el mapa para seleccionar un área",
-  "@offlineRegionsSelectArea": { "description": "Instruction to select area on map" },
+  "@offlineRegionsSelectArea": {
+    "description": "Instruction to select area on map"
+  },
   "offlineRegionsDataSynced": "Datos sincronizados",
-  "@offlineRegionsDataSynced": { "description": "Data synced indicator in region card" },
+  "@offlineRegionsDataSynced": {
+    "description": "Data synced indicator in region card"
+  },
   "offlineRegionsMapLink": "Mapas offline",
-
   "appearanceStorageSection": "ALMACENAMIENTO OFF LINE",
-  "@appearanceStorageSection": { "description": "Appearance storage section header" },
+  "@appearanceStorageSection": {
+    "description": "Appearance storage section header"
+  },
   "appearanceStorageTotal": "Espacio usado",
-  "@appearanceStorageTotal": { "description": "Total storage used label" },
+  "@appearanceStorageTotal": {
+    "description": "Total storage used label"
+  },
   "appearanceStorageFmtc": "Mapas FMTC",
-  "@appearanceStorageFmtc": { "description": "FMTC maps storage label" },
+  "@appearanceStorageFmtc": {
+    "description": "FMTC maps storage label"
+  },
   "appearanceStorageHive": "Datos locales",
-  "@appearanceStorageHive": { "description": "Hive local data storage label" },
+  "@appearanceStorageHive": {
+    "description": "Hive local data storage label"
+  },
   "appearanceStoragePending": "Adjuntos pendientes",
-  "@appearanceStoragePending": { "description": "Pending uploads storage label" },
+  "@appearanceStoragePending": {
+    "description": "Pending uploads storage label"
+  },
   "appearanceStorageClearCache": "Limpiar caché de mapas",
-  "@appearanceStorageClearCache": { "description": "Clear map cache button" },
+  "@appearanceStorageClearCache": {
+    "description": "Clear map cache button"
+  },
   "appearanceStorageClearCacheConfirm": "¿Eliminar todos los mapas offline descargados?",
-  "@appearanceStorageClearCacheConfirm": { "description": "Clear map cache confirmation message" },
+  "@appearanceStorageClearCacheConfirm": {
+    "description": "Clear map cache confirmation message"
+  },
   "appearanceStorageClearCacheDone": "Caché de mapas eliminada",
-  "@appearanceStorageClearCacheDone": { "description": "Map cache cleared confirmation" },
+  "@appearanceStorageClearCacheDone": {
+    "description": "Map cache cleared confirmation"
+  },
   "appearanceStorageMaxInfo": "Almacenamiento máximo: 500 MB",
-
   "notificationsTitle": "Notificaciones",
-  "@notificationsTitle": { "description": "Notifications screen title" },
+  "@notificationsTitle": {
+    "description": "Notifications screen title"
+  },
   "notificationsEmpty": "No tienes notificaciones",
-  "@notificationsEmpty": { "description": "Notifications empty state" },
+  "@notificationsEmpty": {
+    "description": "Notifications empty state"
+  },
   "notificationsMarkAllRead": "Marcar todo leído",
-  "@notificationsMarkAllRead": { "description": "Mark all notifications as read button" },
+  "@notificationsMarkAllRead": {
+    "description": "Mark all notifications as read button"
+  },
   "notificationsAllRead": "Todo leído",
-  "@notificationsAllRead": { "description": "All notifications marked as read toast" },
+  "@notificationsAllRead": {
+    "description": "All notifications marked as read toast"
+  },
   "notificationsBellSemantics": "{unreadCount, plural, =0{Notificaciones, ninguna sin leer} =1{Notificaciones, 1 sin leer} other{Notificaciones, {unreadCount} sin leer}}",
   "@notificationsBellSemantics": {
     "description": "Semantic label for notification bell in home shell",
     "placeholders": {
-      "unreadCount": { "type": "int", "example": "3" }
+      "unreadCount": {
+        "type": "int",
+        "example": "3"
+      }
     }
   },
   "notificationTypeIncidentResolved": "Incidencia resuelta",
-  "@notificationTypeIncidentResolved": { "description": "Notification type: incident resolved" },
+  "@notificationTypeIncidentResolved": {
+    "description": "Notification type: incident resolved"
+  },
   "notificationTypeRoutePromoted": "Ruta promocionada",
-  "@notificationTypeRoutePromoted": { "description": "Notification type: route promoted" },
+  "@notificationTypeRoutePromoted": {
+    "description": "Notification type: route promoted"
+  },
   "notificationTypeShareReceived": "Ruta compartida contigo",
-  "@notificationTypeShareReceived": { "description": "Notification type: share received" },
+  "@notificationTypeShareReceived": {
+    "description": "Notification type: share received"
+  },
   "notificationTypeFeatureRequestReplied": "Respuesta a tu solicitud",
-  "@notificationTypeFeatureRequestReplied": { "description": "Notification type: feature request replied" },
+  "@notificationTypeFeatureRequestReplied": {
+    "description": "Notification type: feature request replied"
+  },
   "notificationTypeBusApproaching": "Bus acercándose",
-  "@notificationTypeBusApproaching": { "description": "Notification type: bus approaching" },
+  "@notificationTypeBusApproaching": {
+    "description": "Notification type: bus approaching"
+  },
   "notificationTypeCustom": "Aviso",
-  "@notificationTypeCustom": { "description": "Notification type: custom/fallback" },
+  "@notificationTypeCustom": {
+    "description": "Notification type: custom/fallback"
+  },
   "notificationTypeXpEarned": "Puntos de reputación",
-  "@notificationTypeXpEarned": { "description": "Notification type: XP gained" },
+  "@notificationTypeXpEarned": {
+    "description": "Notification type: XP gained"
+  },
   "notificationTypeRankUp": "¡Subiste de rango!",
-  "@notificationTypeRankUp": { "description": "Notification type: rank up" },
+  "@notificationTypeRankUp": {
+    "description": "Notification type: rank up"
+  },
   "notificationXpEarnedBody": "+{delta} XP · total {total}",
   "@notificationXpEarnedBody": {
     "description": "Body: XP gained",
     "placeholders": {
-      "delta": { "type": "int", "example": "5" },
-      "total": { "type": "int", "example": "55" }
+      "delta": {
+        "type": "int",
+        "example": "5"
+      },
+      "total": {
+        "type": "int",
+        "example": "55"
+      }
     }
   },
   "notificationRankUpBody": "Ahora eres {rank}",
   "@notificationRankUpBody": {
     "description": "Body: rank up",
-    "placeholders": { "rank": { "type": "String", "example": "Colaborador" } }
+    "placeholders": {
+      "rank": {
+        "type": "String",
+        "example": "Colaborador"
+      }
+    }
   },
   "notificationTimeNow": "Ahora",
-  "@notificationTimeNow": { "description": "Relative time: just now" },
+  "@notificationTimeNow": {
+    "description": "Relative time: just now"
+  },
   "notificationTimeMinutes": "{n, plural, =1{Hace 1 min} other{Hace {n} min}}",
   "@notificationTimeMinutes": {
     "description": "Relative time: n minutes ago",
-    "placeholders": { "n": { "type": "int", "example": "5" } }
+    "placeholders": {
+      "n": {
+        "type": "int",
+        "example": "5"
+      }
+    }
   },
   "notificationTimeHours": "{n, plural, =1{Hace 1 h} other{Hace {n} h}}",
   "@notificationTimeHours": {
     "description": "Relative time: n hours ago",
-    "placeholders": { "n": { "type": "int", "example": "3" } }
+    "placeholders": {
+      "n": {
+        "type": "int",
+        "example": "3"
+      }
+    }
   },
   "notificationTimeDays": "{n, plural, =1{Hace 1 d} other{Hace {n} d}}",
-
   "notifPrefSectionTitle": "NOTIFICACIONES",
-  "@notifPrefSectionTitle": { "description": "Profile notifications section header" },
+  "@notifPrefSectionTitle": {
+    "description": "Profile notifications section header"
+  },
   "notifPrefIncidentResolved": "Reportes resueltos",
-  "@notifPrefIncidentResolved": { "description": "Notification toggle: incident resolved" },
+  "@notifPrefIncidentResolved": {
+    "description": "Notification toggle: incident resolved"
+  },
   "notifPrefRoutePromoted": "Mis rutas",
-  "@notifPrefRoutePromoted": { "description": "Notification toggle: route promoted and shares" },
+  "@notifPrefRoutePromoted": {
+    "description": "Notification toggle: route promoted and shares"
+  },
   "notifPrefBusApproaching": "Buses cerca",
-  "@notifPrefBusApproaching": { "description": "Notification toggle: bus approaching favorite stop" },
+  "@notifPrefBusApproaching": {
+    "description": "Notification toggle: bus approaching favorite stop"
+  },
   "notifPrefFeatureRequestReplied": "Sugerencias",
-  "@notifPrefFeatureRequestReplied": { "description": "Notification toggle: feature request replied" },
+  "@notifPrefFeatureRequestReplied": {
+    "description": "Notification toggle: feature request replied"
+  },
   "notifPrefQuietHoursSection": "HORARIO SILENCIOSO",
-  "@notifPrefQuietHoursSection": { "description": "Quiet hours section header" },
+  "@notifPrefQuietHoursSection": {
+    "description": "Quiet hours section header"
+  },
   "notifPrefQuietHoursEnabled": "Activar horario silencioso",
-  "@notifPrefQuietHoursEnabled": { "description": "Quiet hours enable toggle label" },
+  "@notifPrefQuietHoursEnabled": {
+    "description": "Quiet hours enable toggle label"
+  },
   "notifPrefQuietHoursDescription": "Durante este horario no recibirás notificaciones sonoras. Las notificaciones seguirán apareciendo en el centro de notificaciones.",
-  "@notifPrefQuietHoursDescription": { "description": "Quiet hours description text" },
+  "@notifPrefQuietHoursDescription": {
+    "description": "Quiet hours description text"
+  },
   "notifPrefQuietHoursStart": "Desde",
-  "@notifPrefQuietHoursStart": { "description": "Quiet hours start time label" },
+  "@notifPrefQuietHoursStart": {
+    "description": "Quiet hours start time label"
+  },
   "notifPrefQuietHoursEnd": "Hasta",
-  "@notifPrefQuietHoursEnd": { "description": "Quiet hours end time label" },
+  "@notifPrefQuietHoursEnd": {
+    "description": "Quiet hours end time label"
+  },
   "notifPrefQuietHoursNotSet": "No configurado",
-  "@notifPrefQuietHoursNotSet": { "description": "Quiet hours time not set placeholder" },
+  "@notifPrefQuietHoursNotSet": {
+    "description": "Quiet hours time not set placeholder"
+  },
   "notifPrefSelectTime": "Seleccionar hora",
-  "@notifPrefSelectTime": { "description": "Time picker dialog title" },
-
+  "@notifPrefSelectTime": {
+    "description": "Time picker dialog title"
+  },
   "privacyTitle": "Privacidad",
-  "@privacyTitle": { "description": "Privacy screen title" },
+  "@privacyTitle": {
+    "description": "Privacy screen title"
+  },
   "privacySectionConsents": "CONSENTIMIENTOS",
-  "@privacySectionConsents": { "description": "Privacy consents section header" },
+  "@privacySectionConsents": {
+    "description": "Privacy consents section header"
+  },
   "privacyConsentAnalytics": "Analíticas",
-  "@privacyConsentAnalytics": { "description": "Privacy toggle: analytics" },
+  "@privacyConsentAnalytics": {
+    "description": "Privacy toggle: analytics"
+  },
   "privacyConsentAnalyticsDesc": "Datos anónimos de uso para mejorar la app",
-  "@privacyConsentAnalyticsDesc": { "description": "Privacy toggle description: analytics" },
+  "@privacyConsentAnalyticsDesc": {
+    "description": "Privacy toggle description: analytics"
+  },
   "privacyConsentCrashReporting": "Informes de fallos",
-  "@privacyConsentCrashReporting": { "description": "Privacy toggle: crash reporting" },
+  "@privacyConsentCrashReporting": {
+    "description": "Privacy toggle: crash reporting"
+  },
   "privacyConsentCrashReportingDesc": "Envía informes automáticos cuando la app falla",
-  "@privacyConsentCrashReportingDesc": { "description": "Privacy toggle description: crash reporting" },
+  "@privacyConsentCrashReportingDesc": {
+    "description": "Privacy toggle description: crash reporting"
+  },
   "privacyConsentMarketing": "Marketing",
-  "@privacyConsentMarketing": { "description": "Privacy toggle: marketing" },
+  "@privacyConsentMarketing": {
+    "description": "Privacy toggle: marketing"
+  },
   "privacyConsentMarketingDesc": "Recibe novedades y promociones sobre Transitly",
-  "@privacyConsentMarketingDesc": { "description": "Privacy toggle description: marketing" },
+  "@privacyConsentMarketingDesc": {
+    "description": "Privacy toggle description: marketing"
+  },
   "privacySectionMyData": "MIS DATOS",
-  "@privacySectionMyData": { "description": "Privacy my data section header" },
+  "@privacySectionMyData": {
+    "description": "Privacy my data section header"
+  },
   "privacyDownloadData": "Descargar mis datos",
-  "@privacyDownloadData": { "description": "Privacy button: download my data" },
+  "@privacyDownloadData": {
+    "description": "Privacy button: download my data"
+  },
   "privacyRequestDeletion": "Solicitar borrado de cuenta",
-  "@privacyRequestDeletion": { "description": "Privacy button: request account deletion" },
+  "@privacyRequestDeletion": {
+    "description": "Privacy button: request account deletion"
+  },
   "privacySectionLegal": "LEGAL",
-  "@privacySectionLegal": { "description": "Privacy legal section header" },
+  "@privacySectionLegal": {
+    "description": "Privacy legal section header"
+  },
   "privacyTermsOfService": "Términos de servicio",
-  "@privacyTermsOfService": { "description": "Privacy link: terms of service" },
+  "@privacyTermsOfService": {
+    "description": "Privacy link: terms of service"
+  },
   "privacyPrivacyPolicy": "Política de privacidad",
-  "@privacyPrivacyPolicy": { "description": "Privacy link: privacy policy" },
+  "@privacyPrivacyPolicy": {
+    "description": "Privacy link: privacy policy"
+  },
   "privacyDataExportRequested": "Solicitud de exportación enviada. Recibirás un enlace cuando esté lista.",
-  "@privacyDataExportRequested": { "description": "Privacy toast: data export requested" },
+  "@privacyDataExportRequested": {
+    "description": "Privacy toast: data export requested"
+  },
   "privacyDeletionRequested": "Solicitud de borrado enviada. Tus datos se eliminarán en 30 días.",
-  "@privacyDeletionRequested": { "description": "Privacy toast: deletion requested" },
+  "@privacyDeletionRequested": {
+    "description": "Privacy toast: deletion requested"
+  },
   "privacyDeleteConfirmTitle": "¿Solicitar borrado de cuenta?",
-  "@privacyDeleteConfirmTitle": { "description": "Privacy deletion confirmation dialog title" },
+  "@privacyDeleteConfirmTitle": {
+    "description": "Privacy deletion confirmation dialog title"
+  },
   "privacyDeleteConfirmMessage": "Tus datos se eliminarán tras un periodo de espera de 30 días.",
-  "@privacyDeleteConfirmMessage": { "description": "Privacy deletion confirmation dialog message" },
+  "@privacyDeleteConfirmMessage": {
+    "description": "Privacy deletion confirmation dialog message"
+  },
   "privacyDeleteConfirmCancel": "Cancelar",
-  "@privacyDeleteConfirmCancel": { "description": "Privacy deletion dialog cancel" },
+  "@privacyDeleteConfirmCancel": {
+    "description": "Privacy deletion dialog cancel"
+  },
   "privacyDeleteConfirmAction": "Solicitar borrado",
-  "@privacyDeleteConfirmAction": { "description": "Privacy deletion dialog confirm" },
+  "@privacyDeleteConfirmAction": {
+    "description": "Privacy deletion dialog confirm"
+  },
   "privacyLinkLabel": "Privacidad",
-  "@privacyLinkLabel": { "description": "Profile link to privacy screen" },
-
+  "@privacyLinkLabel": {
+    "description": "Profile link to privacy screen"
+  },
   "widgetsTitle": "Widgets",
-  "@widgetsTitle": { "description": "Widgets settings screen title" },
+  "@widgetsTitle": {
+    "description": "Widgets settings screen title"
+  },
   "widgetsSectionInstructions": "INSTRUCCIONES",
-  "@widgetsSectionInstructions": { "description": "Widgets settings instructions section header" },
-  "widgetsInstructionsAndroid": "En Android, mant\u00e9n pulsado en la pantalla de inicio y selecciona \"A\u00f1adir widget\". Busca Transitly en la lista.",
-  "@widgetsInstructionsAndroid": { "description": "Widget add instructions for Android" },
-  "widgetsInstructionsIos": "En iOS, mant\u00e9n pulsado en la pantalla de inicio, pulsa el bot\u00f3n + y busca Transitly.",
-  "@widgetsInstructionsIos": { "description": "Widget add instructions for iOS" },
+  "@widgetsSectionInstructions": {
+    "description": "Widgets settings instructions section header"
+  },
+  "widgetsInstructionsAndroid": "En Android, mantén pulsado en la pantalla de inicio y selecciona \"Añadir widget\". Busca Transitly en la lista.",
+  "@widgetsInstructionsAndroid": {
+    "description": "Widget add instructions for Android"
+  },
+  "widgetsInstructionsIos": "En iOS, mantén pulsado en la pantalla de inicio, pulsa el botón + y busca Transitly.",
+  "@widgetsInstructionsIos": {
+    "description": "Widget add instructions for iOS"
+  },
   "widgetsFavoriteStop": "Parada favorita",
-  "@widgetsFavoriteStop": { "description": "Favorite stop selector label" },
-  "widgetsFavoriteLine": "L\u00ednea favorita",
-  "@widgetsFavoriteLine": { "description": "Favorite line selector label" },
-  "widgetsHowToAdd": "C\u00f3mo a\u00f1adir el widget",
-  "@widgetsHowToAdd": { "description": "How to add widget info button" },
-  "widgetsConfigSaved": "Configuraci\u00f3n guardada",
-  "@widgetsConfigSaved": { "description": "Widget config saved toast" },
-  "offlineBannerOffline": "Sin conexi\u00f3n. Los cambios se guardar\u00e1n y se enviar\u00e1n al volver.",
-  "@offlineBannerOffline": { "description": "Offline banner: no connectivity, no pending actions" },
-  "offlineBannerQueued": "Sin conexi\u00f3n \u00b7 {count, plural, =1{1 acci\u00f3n en cola} other{{count} acciones en cola}}.",
-  "@offlineBannerQueued": { "description": "Offline banner: offline with queued actions", "placeholders": { "count": { "type": "int", "example": "3" } } },
-  "offlineBannerSyncing": "Sincronizando {count, plural, =1{1 acci\u00f3n pendiente} other{{count} acciones pendientes}}\u2026",
-  "@offlineBannerSyncing": { "description": "Offline banner: syncing pending actions", "placeholders": { "count": { "type": "int", "example": "3" } } },
-
+  "@widgetsFavoriteStop": {
+    "description": "Favorite stop selector label"
+  },
+  "widgetsFavoriteLine": "Línea favorita",
+  "@widgetsFavoriteLine": {
+    "description": "Favorite line selector label"
+  },
+  "widgetsHowToAdd": "Cómo añadir el widget",
+  "@widgetsHowToAdd": {
+    "description": "How to add widget info button"
+  },
+  "@widgetsConfigSaved": {
+    "description": "Widget config saved toast"
+  },
+  "offlineBannerOffline": "Sin conexión. Los cambios se guardarán y se enviarán al volver.",
+  "@offlineBannerOffline": {
+    "description": "Offline banner: no connectivity, no pending actions"
+  },
+  "offlineBannerQueued": "Sin conexión · {count, plural, =1{1 acción en cola} other{{count} acciones en cola}}.",
+  "@offlineBannerQueued": {
+    "description": "Offline banner: offline with queued actions",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "offlineBannerSyncing": "Sincronizando {count, plural, =1{1 acción pendiente} other{{count} acciones pendientes}}…",
+  "@offlineBannerSyncing": {
+    "description": "Offline banner: syncing pending actions",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
   "authEmail": "Email",
-  "@authEmail": { "description": "Auth: email field label" },
+  "@authEmail": {
+    "description": "Auth: email field label"
+  },
   "authEmailHint": "tu@email.com",
-  "@authEmailHint": { "description": "Auth: email field hint" },
+  "@authEmailHint": {
+    "description": "Auth: email field hint"
+  },
   "authPassword": "Contraseña",
-  "@authPassword": { "description": "Auth: password field label" },
+  "@authPassword": {
+    "description": "Auth: password field label"
+  },
   "authPasswordHint": "••••••••",
-  "@authPasswordHint": { "description": "Auth: password field hint" },
+  "@authPasswordHint": {
+    "description": "Auth: password field hint"
+  },
   "authPasswordMinHint": "Mínimo 6 caracteres",
-  "@authPasswordMinHint": { "description": "Auth: password minimum length hint" },
+  "@authPasswordMinHint": {
+    "description": "Auth: password minimum length hint"
+  },
   "authName": "Nombre",
-  "@authName": { "description": "Auth: name field label" },
+  "@authName": {
+    "description": "Auth: name field label"
+  },
   "authNameHint": "Tu nombre",
-  "@authNameHint": { "description": "Auth: name field hint" },
+  "@authNameHint": {
+    "description": "Auth: name field hint"
+  },
   "authRequired": "Requerido",
-  "@authRequired": { "description": "Auth: required field validation" },
+  "@authRequired": {
+    "description": "Auth: required field validation"
+  },
   "authRequiredField": "Requerida",
-  "@authRequiredField": { "description": "Auth: required field validation (feminine)" },
+  "@authRequiredField": {
+    "description": "Auth: required field validation (feminine)"
+  },
   "authInvalidEmail": "Email inválido",
-  "@authInvalidEmail": { "description": "Auth: invalid email validation" },
+  "@authInvalidEmail": {
+    "description": "Auth: invalid email validation"
+  },
   "authMinChars": "Mínimo 6 caracteres",
-  "@authMinChars": { "description": "Auth: minimum 6 characters validation" },
+  "@authMinChars": {
+    "description": "Auth: minimum 6 characters validation"
+  },
   "authEnterValidEmail": "Introduce un email válido",
-  "@authEnterValidEmail": { "description": "Auth: enter valid email error" },
+  "@authEnterValidEmail": {
+    "description": "Auth: enter valid email error"
+  },
   "authErrorConnection": "Error de conexión",
-  "@authErrorConnection": { "description": "Auth: connection error" },
+  "@authErrorConnection": {
+    "description": "Auth: connection error"
+  },
   "authErrorGoogle": "Error de conexión con Google",
-  "@authErrorGoogle": { "description": "Auth: Google connection error" },
+  "@authErrorGoogle": {
+    "description": "Auth: Google connection error"
+  },
   "authErrorRateLimited": "Demasiados intentos. Inténtalo en {seconds} segundos.",
   "@authErrorRateLimited": {
     "description": "Auth: rate limited error with countdown",
     "placeholders": {
-      "seconds": { "type": "int", "example": "32" }
+      "seconds": {
+        "type": "int",
+        "example": "32"
+      }
     }
   },
-
   "authSignInSubtitle": "Inicia sesión para continuar",
-  "@authSignInSubtitle": { "description": "Auth: sign in screen subtitle" },
+  "@authSignInSubtitle": {
+    "description": "Auth: sign in screen subtitle"
+  },
   "authSignInButton": "INICIAR SESIÓN",
-  "@authSignInButton": { "description": "Auth: sign in button" },
+  "@authSignInButton": {
+    "description": "Auth: sign in button"
+  },
   "authSignInError": "Error al iniciar sesión",
-  "@authSignInError": { "description": "Auth: sign in error fallback" },
+  "@authSignInError": {
+    "description": "Auth: sign in error fallback"
+  },
   "authNoAccount": "¿No tienes cuenta?",
-  "@authNoAccount": { "description": "Auth: no account question" },
+  "@authNoAccount": {
+    "description": "Auth: no account question"
+  },
   "authRegister": "Regístrate",
-  "@authRegister": { "description": "Auth: register link" },
+  "@authRegister": {
+    "description": "Auth: register link"
+  },
   "authForgotPassword": "¿Olvidaste tu contraseña?",
-  "@authForgotPassword": { "description": "Auth: forgot password link" },
+  "@authForgotPassword": {
+    "description": "Auth: forgot password link"
+  },
   "authOrContinue": "o continúa con",
-  "@authOrContinue": { "description": "Auth: or continue with divider" },
+  "@authOrContinue": {
+    "description": "Auth: or continue with divider"
+  },
   "authGoogleButton": "GOOGLE",
-  "@authGoogleButton": { "description": "Auth: Google sign in button" },
+  "@authGoogleButton": {
+    "description": "Auth: Google sign in button"
+  },
   "authMagicLink": "Acceder con enlace mágico",
-  "@authMagicLink": { "description": "Auth: magic link access button" },
-
+  "@authMagicLink": {
+    "description": "Auth: magic link access button"
+  },
   "authSignUpTitle": "Crear cuenta",
-  "@authSignUpTitle": { "description": "Auth: sign up screen title" },
+  "@authSignUpTitle": {
+    "description": "Auth: sign up screen title"
+  },
   "authSignUpSubtitle": "Únete a Transitly",
-  "@authSignUpSubtitle": { "description": "Auth: sign up screen subtitle" },
+  "@authSignUpSubtitle": {
+    "description": "Auth: sign up screen subtitle"
+  },
   "authSignUpButton": "CREAR CUENTA",
-  "@authSignUpButton": { "description": "Auth: sign up button" },
+  "@authSignUpButton": {
+    "description": "Auth: sign up button"
+  },
   "authSignUpError": "Error al registrarse",
-  "@authSignUpError": { "description": "Auth: sign up error fallback" },
+  "@authSignUpError": {
+    "description": "Auth: sign up error fallback"
+  },
   "authAlreadyHaveAccount": "¿Ya tienes cuenta?",
-  "@authAlreadyHaveAccount": { "description": "Auth: already have account question" },
+  "@authAlreadyHaveAccount": {
+    "description": "Auth: already have account question"
+  },
   "authSignInLink": "Inicia sesión",
-  "@authSignInLink": { "description": "Auth: sign in link" },
-
+  "@authSignInLink": {
+    "description": "Auth: sign in link"
+  },
   "signupAgeGateTitle": "Verificación de edad",
   "signupAgeGateUnder16": "Debes tener al menos 16 años",
   "signupAgeGateLabel": "Fecha de nacimiento",
-
   "authRecoverTitle": "Recuperar contraseña",
-  "@authRecoverTitle": { "description": "Auth: recover password screen title" },
+  "@authRecoverTitle": {
+    "description": "Auth: recover password screen title"
+  },
   "authRecoverSent": "Si el email existe, recibirás un enlace para restablecer tu contraseña.",
-  "@authRecoverSent": { "description": "Auth: recover password sent message" },
+  "@authRecoverSent": {
+    "description": "Auth: recover password sent message"
+  },
   "authRecoverHint": "Introduce tu email y te enviaremos un enlace",
-  "@authRecoverHint": { "description": "Auth: recover password hint" },
+  "@authRecoverHint": {
+    "description": "Auth: recover password hint"
+  },
   "authSendLinkButton": "ENVIAR ENLACE",
-  "@authSendLinkButton": { "description": "Auth: send link button" },
+  "@authSendLinkButton": {
+    "description": "Auth: send link button"
+  },
   "authBackToSignIn": "Volver al inicio de sesión",
-  "@authBackToSignIn": { "description": "Auth: back to sign in link" },
+  "@authBackToSignIn": {
+    "description": "Auth: back to sign in link"
+  },
   "authRecoverError": "Error al enviar la recuperación",
-  "@authRecoverError": { "description": "Auth: recover password error fallback" },
-
+  "@authRecoverError": {
+    "description": "Auth: recover password error fallback"
+  },
   "authMagicLinkTitle": "Enlace mágico",
-  "@authMagicLinkTitle": { "description": "Auth: magic link screen title" },
+  "@authMagicLinkTitle": {
+    "description": "Auth: magic link screen title"
+  },
   "authMagicLinkSent": "Revisa tu email. Te hemos enviado un enlace para acceder.",
-  "@authMagicLinkSent": { "description": "Auth: magic link sent message" },
+  "@authMagicLinkSent": {
+    "description": "Auth: magic link sent message"
+  },
   "authMagicLinkHint": "Te enviamos un enlace de acceso a tu email",
-  "@authMagicLinkHint": { "description": "Auth: magic link hint" },
+  "@authMagicLinkHint": {
+    "description": "Auth: magic link hint"
+  },
   "authMagicLinkError": "Error al enviar el enlace",
-  "@authMagicLinkError": { "description": "Auth: magic link error fallback" },
-
+  "@authMagicLinkError": {
+    "description": "Auth: magic link error fallback"
+  },
   "authVerifyTitle": "Revisa tu correo",
-  "@authVerifyTitle": { "description": "Auth: email verification title" },
+  "@authVerifyTitle": {
+    "description": "Auth: email verification title"
+  },
   "authVerifySignupSent": "Te hemos enviado un email a {email} con un enlace para verificar tu cuenta.",
   "@authVerifySignupSent": {
     "description": "Auth: signup verification email sent dialog body",
     "placeholders": {
-      "email": { "type": "String", "example": "usuario@email.com" }
+      "email": {
+        "type": "String",
+        "example": "usuario@email.com"
+      }
     }
   },
   "authVerifyMessage": "Te hemos enviado un email de verificación. Revisa tu bandeja de entrada y haz clic en el enlace para continuar.",
-  "@authVerifyMessage": { "description": "Auth: email verification message" },
+  "@authVerifyMessage": {
+    "description": "Auth: email verification message"
+  },
   "authResendButton": "REENVIAR EMAIL",
-  "@authResendButton": { "description": "Auth: resend verification button" },
+  "@authResendButton": {
+    "description": "Auth: resend verification button"
+  },
   "authSignOutAndBack": "Cerrar sesión y volver",
-  "@authSignOutAndBack": { "description": "Auth: sign out and go back" },
+  "@authSignOutAndBack": {
+    "description": "Auth: sign out and go back"
+  },
   "authResendSuccess": "Email de verificación reenviado.",
-  "@authResendSuccess": { "description": "Auth: resend success toast" },
+  "@authResendSuccess": {
+    "description": "Auth: resend success toast"
+  },
   "authResendError": "Error al reenviar",
-  "@authResendError": { "description": "Auth: resend error fallback" },
-
+  "@authResendError": {
+    "description": "Auth: resend error fallback"
+  },
   "authActivateDriverTitle": "Activar modo conductor",
-  "@authActivateDriverTitle": { "description": "Auth: activate driver screen title" },
+  "@authActivateDriverTitle": {
+    "description": "Auth: activate driver screen title"
+  },
   "authActivateDriverHint": "Tu compañía te ha dado un código.\nIntrodúcelo aquí para activar el modo conductor.",
-  "@authActivateDriverHint": { "description": "Auth: activate driver hint text" },
+  "@authActivateDriverHint": {
+    "description": "Auth: activate driver hint text"
+  },
   "authActivateNeedLogin": "Necesitas iniciar sesión para activar el modo conductor.",
-  "@authActivateNeedLogin": { "description": "Auth: activate driver need login message" },
+  "@authActivateNeedLogin": {
+    "description": "Auth: activate driver need login message"
+  },
   "authActivateButton": "ACTIVAR",
-  "@authActivateButton": { "description": "Auth: activate driver button" },
+  "@authActivateButton": {
+    "description": "Auth: activate driver button"
+  },
   "authActivateEnterCode": "Introduce el código",
-  "@authActivateEnterCode": { "description": "Auth: activate driver enter code error" },
+  "@authActivateEnterCode": {
+    "description": "Auth: activate driver enter code error"
+  },
   "authActivateCodeNotFound": "Código no encontrado",
-  "@authActivateCodeNotFound": { "description": "Auth: activate driver code not found" },
+  "@authActivateCodeNotFound": {
+    "description": "Auth: activate driver code not found"
+  },
   "authActivateCodeExpired": "El código ha expirado",
-  "@authActivateCodeExpired": { "description": "Auth: activate driver code expired" },
+  "@authActivateCodeExpired": {
+    "description": "Auth: activate driver code expired"
+  },
   "authActivateCodeDepleted": "El código ya no tiene usos disponibles",
-  "@authActivateCodeDepleted": { "description": "Auth: activate driver code depleted" },
+  "@authActivateCodeDepleted": {
+    "description": "Auth: activate driver code depleted"
+  },
   "authActivateError": "Error al activar el código",
-  "@authActivateError": { "description": "Auth: activate driver error fallback" },
+  "@authActivateError": {
+    "description": "Auth: activate driver error fallback"
+  },
   "authActivateNeedSession": "Necesitas iniciar sesión primero",
-  "@authActivateNeedSession": { "description": "Auth: activate driver need session error" },
+  "@authActivateNeedSession": {
+    "description": "Auth: activate driver need session error"
+  },
   "authActivateSuccess": "Bienvenido. Ya puedes usar el modo conductor.",
-  "@authActivateSuccess": { "description": "Auth: activate driver success message" },
-
+  "@authActivateSuccess": {
+    "description": "Auth: activate driver success message"
+  },
   "authSignOutTitle": "¿Cerrar sesión?",
-  "@authSignOutTitle": { "description": "Auth: sign out confirmation title" },
+  "@authSignOutTitle": {
+    "description": "Auth: sign out confirmation title"
+  },
   "authSignOutMessage": "Volverás a la pantalla de inicio de sesión.",
-  "@authSignOutMessage": { "description": "Auth: sign out confirmation message" },
+  "@authSignOutMessage": {
+    "description": "Auth: sign out confirmation message"
+  },
   "authSignOutCancel": "CANCELAR",
-  "@authSignOutCancel": { "description": "Auth: sign out cancel button" },
+  "@authSignOutCancel": {
+    "description": "Auth: sign out cancel button"
+  },
   "authSignOutConfirm": "CERRAR SESIÓN",
-  "@authSignOutConfirm": { "description": "Auth: sign out confirm button" },
+  "@authSignOutConfirm": {
+    "description": "Auth: sign out confirm button"
+  },
   "authDeleteAccountTitle": "¿Eliminar cuenta?",
-  "@authDeleteAccountTitle": { "description": "Auth: delete account confirmation title" },
+  "@authDeleteAccountTitle": {
+    "description": "Auth: delete account confirmation title"
+  },
   "authDeleteAccountMessage": "Esta acción es irreversible.",
-  "@authDeleteAccountMessage": { "description": "Auth: delete account confirmation message" },
+  "@authDeleteAccountMessage": {
+    "description": "Auth: delete account confirmation message"
+  },
   "authDeleteAccountButton": "ELIMINAR",
-  "@authDeleteAccountButton": { "description": "Auth: delete account button" },
+  "@authDeleteAccountButton": {
+    "description": "Auth: delete account button"
+  },
   "authDeleteAccountError": "No se pudo eliminar la cuenta",
-  "@authDeleteAccountError": { "description": "Auth: delete account error toast" },
+  "@authDeleteAccountError": {
+    "description": "Auth: delete account error toast"
+  },
   "authDeleteAccountCancel": "CANCELAR",
-  "@authDeleteAccountCancel": { "description": "Auth: delete account cancel button" },
-
+  "@authDeleteAccountCancel": {
+    "description": "Auth: delete account cancel button"
+  },
   "filterPresetsTitle": "Filtros predefinidos",
   "filterPresetsEmptyTitle": "Sin presets guardados",
   "filterPresetsEmptySubtitle": "Guarda la combinación de filtros del mapa que más uses para aplicarla con un toque.",
@@ -802,10 +1334,12 @@
   "filterPresetsApplied": "Filtros «{name}» aplicados",
   "@filterPresetsApplied": {
     "placeholders": {
-      "name": { "type": "String", "example": "Mañana" }
+      "name": {
+        "type": "String",
+        "example": "Mañana"
+      }
     }
   },
-
   "driverStatsTitle": "Estadísticas",
   "driverStatsEmptyTitle": "Sin datos aún",
   "driverStatsEmptySubtitle": "Tus estadísticas se calculan a partir del historial de viajes.",
@@ -814,12 +1348,10 @@
   "driverStatsTotalCost": "Coste total",
   "driverStatsDistance": "Distancia",
   "driverStatsCo2Saved": "CO₂ ahorrado",
-
   "driverHistoryTitle": "Historial de conductor",
   "driverHistoryEmptyTitle": "Sin viajes todavía",
   "driverHistoryEmptySubtitle": "Cuando completes rutas aparecerán aquí con su trayecto y coste.",
   "driverHistoryUnknownRoute": "Ruta desconocida",
-
   "plannedTripsTitle": "Viajes planificados",
   "plannedTripsEmptyTitle": "Sin viajes planificados",
   "plannedTripsEmptySubtitle": "Marca una ruta como favorita y configura un aviso para verla aquí como viaje habitual.",
@@ -827,10 +1359,12 @@
   "plannedTripsFrom": "Desde {stop}",
   "@plannedTripsFrom": {
     "placeholders": {
-      "stop": { "type": "String", "example": "Plaza Mayor" }
+      "stop": {
+        "type": "String",
+        "example": "Plaza Mayor"
+      }
     }
   },
-
   "aiScheduleImportTitle": "Importar horario",
   "aiScheduleImportEmptyTitle": "Importar horarios",
   "aiScheduleImportEmptySubtitle": "Pega el texto de un horario para extraer las horas de salida automáticamente.",
@@ -841,14 +1375,15 @@
   "aiScheduleImportDetected": "{count, plural, =1{1 salida detectada} other{{count} salidas detectadas}}",
   "@aiScheduleImportDetected": {
     "placeholders": {
-      "count": { "type": "int", "example": "8" }
+      "count": {
+        "type": "int",
+        "example": "8"
+      }
     }
   },
-
   "suggestionContributeTitle": "Contribuir a sugerencias",
   "suggestionContributeEmptyTitle": "Nada que contribuir ahora",
   "suggestionContributeEmptySubtitle": "No hay sugerencias abiertas. Vuelve más tarde o propón una ruta nueva desde la pestaña de sugerencias.",
-
   "cityPickerErrorOperators": "Error al cargar operadores",
   "driversErrorLoading": "Error al cargar conductores",
   "driversErrorRevoking": "Error al revocar conductor",
@@ -860,76 +1395,124 @@
   "routeShareSuccess": "Ruta compartida con {email}",
   "@routeShareSuccess": {
     "placeholders": {
-      "email": { "type": "String", "example": "usuario@email.com" }
+      "email": {
+        "type": "String",
+        "example": "usuario@email.com"
+      }
     }
   },
   "routeShareError": "Error al compartir ruta",
   "routeShareErrorGeneratingLink": "Error al generar enlace",
   "routeDetailNotFound": "Ruta no encontrada",
   "routeDetailAddFavorite": "AÑADIR A MIS LÍNEAS ★",
-  "@routeDetailAddFavorite": {"description": "Button to add route to user favorites"},
+  "@routeDetailAddFavorite": {
+    "description": "Button to add route to user favorites"
+  },
   "routeDetailRemoveFavorite": "EN MIS LÍNEAS ✓",
-  "@routeDetailRemoveFavorite": {"description": "Button to remove route from user favorites"},
+  "@routeDetailRemoveFavorite": {
+    "description": "Button to remove route from user favorites"
+  },
   "favoriteAdded": "Línea añadida a tus favoritas",
-  "@favoriteAdded": {"description": "SnackBar message when a line is added to favorites"},
+  "@favoriteAdded": {
+    "description": "SnackBar message when a line is added to favorites"
+  },
   "favoriteRemoved": "Línea eliminada de tus favoritas",
-  "@favoriteRemoved": {"description": "SnackBar message when a line is removed from favorites"},
+  "@favoriteRemoved": {
+    "description": "SnackBar message when a line is removed from favorites"
+  },
   "stopDetailNotFound": "Parada no encontrada",
   "feedbackErrorSending": "Error al enviar mejora",
   "incidentErrorSending": "Error al enviar reporte",
-
   "homeRouteSemanticsLabel": "{code}, {time}",
   "@homeRouteSemanticsLabel": {
     "placeholders": {
-      "code": { "type": "String", "example": "L1" },
-      "time": { "type": "String", "example": "5 min" }
+      "code": {
+        "type": "String",
+        "example": "L1"
+      },
+      "time": {
+        "type": "String",
+        "example": "5 min"
+      }
     }
   },
-
   "nfcCardBalance": "Saldo: {amount} euros",
   "@nfcCardBalance": {
     "placeholders": {
-      "amount": { "type": "String", "example": "12.50" }
+      "amount": {
+        "type": "String",
+        "example": "12.50"
+      }
     }
   },
   "homeNextBusSemantics": "Tu próximo bus, {route}",
   "@homeNextBusSemantics": {
     "placeholders": {
-      "route": { "type": "String", "example": "L1" }
+      "route": {
+        "type": "String",
+        "example": "L1"
+      }
     }
   },
   "generalComingSoon": "{feature}: próximamente",
   "@generalComingSoon": {
     "placeholders": {
-      "feature": { "type": "String", "example": "Compartir" }
+      "feature": {
+        "type": "String",
+        "example": "Compartir"
+      }
     }
   },
   "capacitySemanticsLabel": "Ocupación: {level}",
   "@capacitySemanticsLabel": {
     "placeholders": {
-      "level": { "type": "String", "example": "Lleno" }
+      "level": {
+        "type": "String",
+        "example": "Lleno"
+      }
     }
   },
   "reputationSemanticsLabel": "Reputación: {level}",
   "@reputationSemanticsLabel": {
     "placeholders": {
-      "level": { "type": "String", "example": "Colaborador" }
+      "level": {
+        "type": "String",
+        "example": "Colaborador"
+      }
     }
   },
   "reputationScoreSemantics": "{label}: {score} puntos",
   "@reputationScoreSemantics": {
     "placeholders": {
-      "label": { "type": "String", "example": "Colaborador" },
-      "score": { "type": "int", "example": "150" }
+      "label": {
+        "type": "String",
+        "example": "Colaborador"
+      },
+      "score": {
+        "type": "int",
+        "example": "150"
+      }
     }
   },
   "routeCardSemantics": "Línea {code}, {name}{status}{minutes}",
   "@routeCardSemantics": {
     "placeholders": {
-      "code": { "type": "String", "example": "L1" },
-      "name": { "type": "String", "example": "Centro-Norte" },
-      "status": { "type": "String", "example": ", A tiempo" },
-      "minutes": { "type": "String", "example": ", 5 min" }
+      "code": {
+        "type": "String",
+        "example": "L1"
+      },
+      "name": {
+        "type": "String",
+        "example": "Centro-Norte"
+      },
+      "status": {
+        "type": "String",
+        "example": ", A tiempo"
+      },
+      "minutes": {
+        "type": "String",
+        "example": ", 5 min"
+      }
     }
   },
   "adminPanelTitle": "Panel de administración",
@@ -939,22 +1522,42 @@
   "driverModeLabel": "Modo conductor",
   "driverGreeting": "Hola {name}",
   "@driverGreeting": {
-    "placeholders": { "name": { "type": "String", "example": "Ana" } }
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Ana"
+      }
+    }
   },
   "driverCurrentOperator": "Operador: {name}",
   "@driverCurrentOperator": {
-    "placeholders": { "name": { "type": "String", "example": "COMUJESA" } }
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "COMUJESA"
+      }
+    }
   },
   "driverSelectRoute": "Seleccionar ruta",
   "driverNoRoutesLoaded": "Sin rutas cargadas",
   "driverChooseAnother": "Elegir otra",
   "envErrorLabel": "Error: {name}",
   "@envErrorLabel": {
-    "placeholders": { "name": { "type": "String", "example": "missing" } }
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "missing"
+      }
+    }
   },
   "envKeyLabel": "Clave: {key}",
   "@envKeyLabel": {
-    "placeholders": { "key": { "type": "String", "example": "SUPABASE_URL" } }
+    "placeholders": {
+      "key": {
+        "type": "String",
+        "example": "SUPABASE_URL"
+      }
+    }
   },
   "feedbackSelectCategoryFirst": "Selecciona una categoría primero",
   "feedbackEnterDescription": "Escribe una descripción",
@@ -968,7 +1571,12 @@
   "incidentReportSent": "Reporte enviado. Gracias por tu colaboración.",
   "inviteCodeGenerated": "Código generado: {code}",
   "@inviteCodeGenerated": {
-    "placeholders": { "code": { "type": "String", "example": "ABC123" } }
+    "placeholders": {
+      "code": {
+        "type": "String",
+        "example": "ABC123"
+      }
+    }
   },
   "inviteGenerateCode": "Generar código",
   "operatorPanelTitle": "Panel del operador",
@@ -980,14 +1588,18 @@
   "suggestRouteSent": "Sugerencia enviada · Te avisaremos",
   "suggestRouteSubmitError": "Error al enviar: {error}",
   "@suggestRouteSubmitError": {
-    "placeholders": { "error": { "type": "String", "example": "timeout" } }
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "timeout"
+      }
+    }
   },
   "searchEmptyTitle": "Escribe un origen y un destino",
   "searchEmptySubtitle": "Te mostraremos las rutas más rápidas",
   "searchUnderConstructionTitle": "Buscador en construcción",
   "searchUnderConstructionSubtitle": "Mientras tanto, puedes sugerirnos rutas",
   "searchReportRouteAction": "Sugerir ruta",
-
   "driverPanelTitle": "MODO CONDUCTOR",
   "driverPanelStartRoute": "Iniciar ruta",
   "driverPanelActiveRoute": "Ruta activa",
@@ -996,21 +1608,29 @@
   "driverPanelMyRoutes": "Mis rutas",
   "driverPanelImportSchedules": "Importar horarios",
   "driverPanelManagementInbox": "Bandeja de gestión",
-
   "driverActiveNoActiveRoute": "No hay ruta activa",
   "driverActiveRouteHeader": "RUTA ACTIVA",
   "driverActiveRouteStartedAt": "{code} · {time} INICIO",
   "@driverActiveRouteStartedAt": {
     "placeholders": {
-      "code": { "type": "String", "example": "L1" },
-      "time": { "type": "String", "example": "08:30" }
+      "code": {
+        "type": "String",
+        "example": "L1"
+      },
+      "time": {
+        "type": "String",
+        "example": "08:30"
+      }
     }
   },
   "driverActiveNextStopHeader": "PRÓXIMA PARADA",
   "driverActiveStopRegisteredFmt": "PARADA REGISTRADA · {time}",
   "@driverActiveStopRegisteredFmt": {
     "placeholders": {
-      "time": { "type": "String", "example": "08:30" }
+      "time": {
+        "type": "String",
+        "example": "08:30"
+      }
     }
   },
   "driverActiveRegisterStop": "REGISTRAR PARADA",
@@ -1019,14 +1639,22 @@
   "driverActiveFinishConfirmTitle": "¿Finalizar ruta?",
   "driverActiveFinishConfirmMessage": "Se registrará la ruta como completada.",
   "driverActiveFinishConfirmButton": "FINALIZAR",
-
   "driverStartTitle": "INICIAR RUTA",
   "driverStartSuggestionFmt": "SUGERENCIA: {code} · {time} · {day}",
   "@driverStartSuggestionFmt": {
     "placeholders": {
-      "code": { "type": "String", "example": "L1" },
-      "time": { "type": "String", "example": "08:30" },
-      "day": { "type": "String", "example": "Laborable" }
+      "code": {
+        "type": "String",
+        "example": "L1"
+      },
+      "time": {
+        "type": "String",
+        "example": "08:30"
+      },
+      "day": {
+        "type": "String",
+        "example": "Laborable"
+      }
     }
   },
   "driverStartIsThisYourRoute": "¿Es tu ruta?",
@@ -1036,22 +1664,33 @@
   "driverStartDepartureFmt": "Salida: {time}",
   "@driverStartDepartureFmt": {
     "placeholders": {
-      "time": { "type": "String", "example": "08:30" }
+      "time": {
+        "type": "String",
+        "example": "08:30"
+      }
     }
   },
   "driverStartStopsAndTime": "{count, plural, =1{1 parada} other{{count} paradas}} · ~{minutes} min",
   "@driverStartStopsAndTime": {
     "placeholders": {
-      "count": { "type": "int", "example": "5" },
-      "minutes": { "type": "int", "example": "15" }
+      "count": {
+        "type": "int",
+        "example": "5"
+      },
+      "minutes": {
+        "type": "int",
+        "example": "15"
+      }
     }
   },
   "driverStartStartButton": "INICIAR RUTA",
-
   "feedbackScreenTitleFmt": "FEEDBACK · {code}",
   "@feedbackScreenTitleFmt": {
     "placeholders": {
-      "code": { "type": "String", "example": "L1" }
+      "code": {
+        "type": "String",
+        "example": "L1"
+      }
     }
   },
   "feedbackDescriptionLabel": "Descripción",
@@ -1061,7 +1700,6 @@
   "feedbackCategorySchedulesLabel": "Los horarios",
   "feedbackCategoryInfoLabel": "Información general",
   "feedbackCategorySuggestionLabel": "Tengo una sugerencia",
-
   "suggestRouteScreenTitle": "SUGERIR RUTA",
   "suggestRouteHelpText": "Ayúdanos a completar el mapa de transporte",
   "suggestRouteFromLabel": "Desde",
@@ -1084,7 +1722,10 @@
   "suggestRouteStopNumber": "Parada {number}",
   "@suggestRouteStopNumber": {
     "placeholders": {
-      "number": { "type": "int", "example": "1" }
+      "number": {
+        "type": "int",
+        "example": "1"
+      }
     }
   },
   "suggestRouteAddStop": "+ Añadir parada",
@@ -1094,7 +1735,6 @@
   "suggestRouteAddTimeTitle": "Añadir hora",
   "suggestRouteAddTimeHint": "HH:MM",
   "suggestRouteAddTimeConfirm": "AÑADIR",
-
   "incidentSheetTitle": "¿QUÉ HA PASADO?",
   "incidentNoShow": "No pasó",
   "incidentDelay": "Retraso",
@@ -1107,11 +1747,9 @@
   "incidentKind": "Amable",
   "incidentClean": "Limpio",
   "incidentCommentHint": "Comentario (opcional)",
-
   "driverStartTrip": "Iniciar viaje",
   "driverSelectRouteFirst": "Selecciona una ruta",
   "driverLoadRoutes": "Cargar rutas",
-
   "routeShareTitle": "Compartir ruta",
   "routeShareWithUser": "Compartir con usuario",
   "routeShareEmailHint": "email@ejemplo.com",
@@ -1120,7 +1758,6 @@
   "routeShareRegenerateLink": "Regenerar enlace",
   "routeShareNeedLogin": "Inicia sesión para compartir rutas",
   "routeShareLinkGenerated": "Enlace generado",
-
   "mapFilterTitle": "Filtros del mapa",
   "mapFilterRouteSource": "Origen de la ruta",
   "mapFilterOfficial": "Oficiales",
@@ -1128,21 +1765,34 @@
   "mapFilterUpcoming": "Próximas salidas",
   "mapFilterMinutes": "{m} min",
   "@mapFilterMinutes": {
-    "placeholders": { "m": { "type": "int", "example": "15" } }
+    "placeholders": {
+      "m": {
+        "type": "int",
+        "example": "15"
+      }
+    }
   },
   "mapFilterAccessibility": "Accesibilidad",
   "mapFilterOnlyAccessible": "Solo accesibles",
   "mapFilterFavorites": "Favoritos",
   "mapFilterOnlyFavorites": "Solo favoritos",
-
   "myContributionsTitle": "Mis contribuciones",
   "myContributionsReload": "Recargar",
   "myContributionsSummary": "{suggestions} sugerencias · {feedbacks} feedbacks · {reports} reportes",
   "@myContributionsSummary": {
     "placeholders": {
-      "suggestions": { "type": "int", "example": "3" },
-      "feedbacks": { "type": "int", "example": "5" },
-      "reports": { "type": "int", "example": "2" }
+      "suggestions": {
+        "type": "int",
+        "example": "3"
+      },
+      "feedbacks": {
+        "type": "int",
+        "example": "5"
+      },
+      "reports": {
+        "type": "int",
+        "example": "2"
+      }
     }
   },
   "myContributionsLabelSuggestions": "sugerencias",
@@ -1158,12 +1808,10 @@
   "myContributionsEmptyReportsSubtitle": "Tus reportes de incidencias aparecerán aquí",
   "myContributionsLocalDraft": "Borrador local",
   "myContributionsNoDescription": "Sin descripción",
-
   "reputationCurrentRank": "Actual",
-
-  "appTagline": "TU TRANSPORTE PÚBLICO",
+  "appTagline": "Plataforma universal de transporte público",
   "@appTagline": {
-    "description": "Splash screen tagline below app title"
+    "description": "Tagline de la app"
   },
   "homeSectionNearbyStops": "PARADAS CERCA DE TI",
   "@homeSectionNearbyStops": {
@@ -1189,7 +1837,6 @@
   "@homeDefaultCity": {
     "description": "Home tab default city name fallback"
   },
-
   "accessibilityThemeSystemSubtitle": "Sigue la configuración del dispositivo",
   "accessibilityThemeLightSubtitle": "Fondo luminoso, alto contraste diurno",
   "accessibilityThemeDarkSubtitle": "Fondo oscuro, menor consumo en OLED",
@@ -1208,98 +1855,183 @@
     "description": "Accessibility system preferences footnote"
   },
   "operatorAdminMissingOperator": "No se encontró el operador asociado a tu cuenta. Contacta con soporte.",
-  "@operatorAdminMissingOperator": {"description": "Error when operator_admin has no operator_id in their profile"},
+  "@operatorAdminMissingOperator": {
+    "description": "Error when operator_admin has no operator_id in their profile"
+  },
   "adminUsersLoadError": "No se pudo cargar la lista de usuarios. Inténtalo de nuevo.",
-  "@adminUsersLoadError": {"description": "Error genérico al cargar admin/users"},
+  "@adminUsersLoadError": {
+    "description": "Error genérico al cargar admin/users"
+  },
   "offlineRegionDemoLimitation": "Área disponible: red de COMUJESA en Jerez de la Frontera. La descarga cubre los tiles del operador para uso offline.",
-  "@offlineRegionDemoLimitation": {"description": "Banner indicating offline region coverage"},
+  "@offlineRegionDemoLimitation": {
+    "description": "Banner indicating offline region coverage"
+  },
   "editorDraftSaved": "Borrador guardado correctamente",
-  "@editorDraftSaved": {"description": "SnackBar message when a route editor draft is saved locally"},
+  "@editorDraftSaved": {
+    "description": "SnackBar message when a route editor draft is saved locally"
+  },
   "cardNfcTitle": "TARJETA NFC",
-  "@cardNfcTitle": {"description": "Título de la pestaña de tarjeta NFC"},
+  "@cardNfcTitle": {
+    "description": "Título de la pestaña de tarjeta NFC"
+  },
   "cardNfcUnavailable": "NFC NO DISPONIBLE",
-  "@cardNfcUnavailable": {"description": "Mensaje cuando NFC no está disponible"},
+  "@cardNfcUnavailable": {
+    "description": "Mensaje cuando NFC no está disponible"
+  },
   "cardNfcExplanation": "La lectura de tarjetas de transporte requiere un dispositivo con NFC. Acerca la tarjeta a la parte trasera del móvil.",
-  "@cardNfcExplanation": {"description": "Explicación de uso de NFC"},
+  "@cardNfcExplanation": {
+    "description": "Explicación de uso de NFC"
+  },
   "scheduleHideAll": "Ocultar ▴",
-  "@scheduleHideAll": {"description": "Botón para ocultar horarios"},
+  "@scheduleHideAll": {
+    "description": "Botón para ocultar horarios"
+  },
   "scheduleShowAll": "Ver todos ▾",
-  "@scheduleShowAll": {"description": "Botón para mostrar todos los horarios"},
+  "@scheduleShowAll": {
+    "description": "Botón para mostrar todos los horarios"
+  },
   "activateDriverCodeHint": "XXX-XXXX-XX",
-  "@activateDriverCodeHint": {"description": "Placeholder para código de activación"},
+  "@activateDriverCodeHint": {
+    "description": "Placeholder para código de activación"
+  },
   "routeFeedbackImproveInfo": "MEJORAR INFORMACIÓN",
-  "@routeFeedbackImproveInfo": {"description": "Título para sugerencia de mejora de ruta"},
+  "@routeFeedbackImproveInfo": {
+    "description": "Título para sugerencia de mejora de ruta"
+  },
   "routeFeedbackLine": "Línea:",
-  "@routeFeedbackLine": {"description": "Etiqueta Línea en feedback"},
+  "@routeFeedbackLine": {
+    "description": "Etiqueta Línea en feedback"
+  },
   "routeFeedbackStop": "Parada:",
-  "@routeFeedbackStop": {"description": "Etiqueta Parada en feedback"},
+  "@routeFeedbackStop": {
+    "description": "Etiqueta Parada en feedback"
+  },
   "routeFeedbackImproveType": "Tipo de mejora",
-  "@routeFeedbackImproveType": {"description": "Etiqueta Tipo de mejora en feedback"},
+  "@routeFeedbackImproveType": {
+    "description": "Etiqueta Tipo de mejora en feedback"
+  },
   "offlineDataReloadButton": "Recargar desde assets",
-  "@offlineDataReloadButton": {"description": "Botón para recargar datos offline"},
+  "@offlineDataReloadButton": {
+    "description": "Botón para recargar datos offline"
+  },
   "offlineDataExplanation": "Esta app usa un bundle JSON local con datos de COMUJESA (Jerez).",
-  "@offlineDataExplanation": {"description": "Explicación de la fuente de datos offline"},
+  "@offlineDataExplanation": {
+    "description": "Explicación de la fuente de datos offline"
+  },
   "aiScheduleImportPrototypeBanner": "PROTOTIPO",
-  "@aiScheduleImportPrototypeBanner": {"description": "Banner de prototipo en importación IA"},
+  "@aiScheduleImportPrototypeBanner": {
+    "description": "Banner de prototipo en importación IA"
+  },
   "appExitConfirmMessage": "Pulsa de nuevo para salir",
-  "@appExitConfirmMessage": {"description": "Mensaje de confirmación al pulsar atrás para salir"},
+  "@appExitConfirmMessage": {
+    "description": "Mensaje de confirmación al pulsar atrás para salir"
+  },
   "profileGuestLabel": "INVITADO",
-  "@profileGuestLabel": {"description": "Etiqueta de invitado en perfil"},
+  "@profileGuestLabel": {
+    "description": "Etiqueta de invitado en perfil"
+  },
   "profileGuestCta": "Inicia sesión para tu perfil",
-  "@profileGuestCta": {"description": "CTA para iniciar sesión en perfil"},
+  "@profileGuestCta": {
+    "description": "CTA para iniciar sesión en perfil"
+  },
   "profileGuestSignIn": "ENTRAR",
-  "@profileGuestSignIn": {"description": "Botón de entrar para invitado en perfil"},
+  "@profileGuestSignIn": {
+    "description": "Botón de entrar para invitado en perfil"
+  },
   "profileSignOutConfirmTitle": "¿Cerrar sesión?",
-  "@profileSignOutConfirmTitle": {"description": "Título diálogo confirmación cierre sesión"},
+  "@profileSignOutConfirmTitle": {
+    "description": "Título diálogo confirmación cierre sesión"
+  },
   "profileSignOutConfirmMessage": "Volverás a la pantalla de inicio de sesión.",
-  "@profileSignOutConfirmMessage": {"description": "Mensaje diálogo confirmación cierre sesión"},
-  "appTagline": "Plataforma universal de transporte público",
-  "@appTagline": {"description": "Tagline de la app"},
+  "@profileSignOutConfirmMessage": {
+    "description": "Mensaje diálogo confirmación cierre sesión"
+  },
   "profileBecomeDriver": "Activar modo conductor",
-  "@profileBecomeDriver": {"description": "Link para activar modo conductor"},
+  "@profileBecomeDriver": {
+    "description": "Link para activar modo conductor"
+  },
   "actionSignIn": "Iniciar sesión",
-  "@actionSignIn": {"description": "Acción de iniciar sesión"},
+  "@actionSignIn": {
+    "description": "Acción de iniciar sesión"
+  },
   "profileAdminSectionTitle": "ADMINISTRACIÓN",
-  "@profileAdminSectionTitle": {"description": "Título sección admin en perfil"},
+  "@profileAdminSectionTitle": {
+    "description": "Título sección admin en perfil"
+  },
   "homeSectionHabitualTrip": "Tu próximo bus",
-  "@homeSectionHabitualTrip": {"description": "Título sección viaje habitual en home"},
+  "@homeSectionHabitualTrip": {
+    "description": "Título sección viaje habitual en home"
+  },
   "homeNoHabitualTrip": "Sin viaje habitual",
-  "@homeNoHabitualTrip": {"description": "Mensaje cuando no hay viaje habitual"},
+  "@homeNoHabitualTrip": {
+    "description": "Mensaje cuando no hay viaje habitual"
+  },
   "homeNoHabitualTripHint": "Añade una línea a favoritos para ver tu próximo bus aquí",
-  "@homeNoHabitualTripHint": {"description": "Hint cuando no hay viaje habitual"},
+  "@homeNoHabitualTripHint": {
+    "description": "Hint cuando no hay viaje habitual"
+  },
   "homeNoNearbyStops": "Sin paradas cercanas",
-  "@homeNoNearbyStops": {"description": "Mensaje cuando no hay paradas cercanas"},
+  "@homeNoNearbyStops": {
+    "description": "Mensaje cuando no hay paradas cercanas"
+  },
   "homeNoNearbyStopsHint": "No se encontraron paradas cerca de tu ubicación",
-  "@homeNoNearbyStopsHint": {"description": "Hint cuando no hay paradas cercanas"},
+  "@homeNoNearbyStopsHint": {
+    "description": "Hint cuando no hay paradas cercanas"
+  },
   "homeNoFavorites": "Sin líneas favoritas",
-  "@homeNoFavorites": {"description": "Mensaje cuando no hay favoritos"},
+  "@homeNoFavorites": {
+    "description": "Mensaje cuando no hay favoritos"
+  },
   "homeNoFavoritesHint": "Pulsa ☆ en cualquier línea para guardarla aquí",
-  "@homeNoFavoritesHint": {"description": "Hint cuando no hay favoritos"},
+  "@homeNoFavoritesHint": {
+    "description": "Hint cuando no hay favoritos"
+  },
   "requireAuthGeneric": "Inicia sesión para acceder a esta función",
-  "@requireAuthGeneric": {"description": "Mensaje genérico cuando se requiere auth"},
+  "@requireAuthGeneric": {
+    "description": "Mensaje genérico cuando se requiere auth"
+  },
   "requireAuthAction": "Inicia sesión para {action}",
   "@requireAuthAction": {
     "description": "Mensaje cuando se requiere auth para una acción específica",
     "placeholders": {
-      "action": {"type": "String", "example": "reportar un incidente"}
+      "action": {
+        "type": "String",
+        "example": "reportar un incidente"
+      }
     }
   },
   "mapLocationPermissionDenied": "Permiso de ubicación denegado",
-  "@mapLocationPermissionDenied": {"description": "Snackbar cuando se deniega permiso de ubicación"},
+  "@mapLocationPermissionDenied": {
+    "description": "Snackbar cuando se deniega permiso de ubicación"
+  },
   "actionOpenSettings": "Abrir ajustes",
-  "@actionOpenSettings": {"description": "Botón para abrir ajustes del sistema"},
+  "@actionOpenSettings": {
+    "description": "Botón para abrir ajustes del sistema"
+  },
   "mapSearchHint": "Buscar rutas, paradas o lugares...",
-  "@mapSearchHint": {"description": "Hint del buscador del mapa"},
+  "@mapSearchHint": {
+    "description": "Hint del buscador del mapa"
+  },
   "mapSearchNoResults": "Sin resultados",
-  "@mapSearchNoResults": {"description": "Mensaje cuando no hay resultados de búsqueda"},
+  "@mapSearchNoResults": {
+    "description": "Mensaje cuando no hay resultados de búsqueda"
+  },
   "mapSearchError": "Error al buscar",
-  "@mapSearchError": {"description": "Mensaje de error en búsqueda"},
+  "@mapSearchError": {
+    "description": "Mensaje de error en búsqueda"
+  },
   "mapSearchSectionRoutes": "Rutas",
-  "@mapSearchSectionRoutes": {"description": "Sección de rutas en resultados"},
+  "@mapSearchSectionRoutes": {
+    "description": "Sección de rutas en resultados"
+  },
   "mapSearchSectionStops": "Paradas",
-  "@mapSearchSectionStops": {"description": "Sección de paradas en resultados"},
+  "@mapSearchSectionStops": {
+    "description": "Sección de paradas en resultados"
+  },
   "mapSearchSectionPlaces": "Lugares",
-  "@mapSearchSectionPlaces": {"description": "Sección de lugares en resultados"},
+  "@mapSearchSectionPlaces": {
+    "description": "Sección de lugares en resultados"
+  },
   "mapLinesSectionTitle": "Líneas",
   "accessibilityLanguageAr": "العربية",
   "accessibilityLanguageArSubtitle": "Forzar árabe",
@@ -1325,13 +2057,19 @@
   "homeNearbyDistance": "{distance} m",
   "@homeNearbyDistance": {
     "placeholders": {
-      "distance": { "type": "String", "example": "350" }
+      "distance": {
+        "type": "String",
+        "example": "350"
+      }
     }
   },
   "homeNextBus": "en {time} min",
   "@homeNextBus": {
     "placeholders": {
-      "time": { "type": "String", "example": "5" }
+      "time": {
+        "type": "String",
+        "example": "5"
+      }
     }
   },
   "homeMyStops": "MIS PARADAS",
@@ -1347,115 +2085,114 @@
   "appearancePaletteName": "Nombre de la paleta",
   "appearanceCustomPalettesSection": "Mis paletas",
   "appearanceDeletePaletteConfirm": "¿Eliminar esta paleta?",
-
-    "createRouteTitle": "Crear ruta",
-    "createRouteEditTitle": "Editar ruta",
-    "createRouteStepBasic": "Info básica",
-    "createRouteStepStops": "Paradas",
-    "createRouteStepSchedules": "Horarios",
-    "createRouteStepVisibility": "Visibilidad",
-    "createRouteStepSummary": "Resumen",
-    "createRouteNameLabel": "Nombre de la ruta",
-    "createRouteNameHint": "Ej: Ruta de la playa",
-    "createRouteDescriptionLabel": "Descripción (opcional)",
-    "createRouteColorLabel": "Color",
-    "createRouteServiceTypeLabel": "Tipo de servicio",
-    "createRouteServiceUrban": "Urbano",
-    "createRouteServiceInterurban": "Interurbano",
-    "createRouteServiceLongDistance": "Larga distancia",
-    "createRouteServiceSchool": "Escolar",
-    "createRouteServiceOnDemand": "A demanda",
-    "createRouteServiceCustom": "Custom",
-    "createRouteStopAdd": "Añadir parada",
-    "createRouteStopSearch": "Buscar parada oficial",
-    "createRouteStopNew": "Crear parada nueva",
-    "createRouteStopName": "Nombre",
-    "createRouteStopLat": "Latitud",
-    "createRouteStopLng": "Longitud",
-    "createRouteStopType": "Tipo de parada",
-    "createRouteStopSuggest": "Sugerir como parada oficial",
-    "createRouteStopDelete": "Eliminar parada",
-    "createRouteScheduleAdd": "Añadir salida",
-    "createRouteScheduleTime": "Hora de salida",
-    "createRouteScheduleDay": "Día",
-    "createRouteScheduleWeekday": "L-V",
-    "createRouteScheduleSaturday": "Sábado",
-    "createRouteScheduleSunday": "Domingo",
-    "createRouteScheduleHoliday": "Festivo",
-    "createRouteScheduleSummer": "Verano",
-    "createRouteScheduleWinter": "Invierno",
-    "createRouteScheduleEveryDay": "Todos los días",
-    "createRouteScheduleFrequency": "Generar frecuencia",
-    "createRouteScheduleEvery": "Cada X minutos",
-    "createRouteScheduleFrom": "Desde",
-    "createRouteScheduleTo": "Hasta",
-    "createRouteVisibilityPublic": "Pública",
-    "createRouteVisibilityPublicDesc": "Visible en el buscador global",
-    "createRouteVisibilityUnlisted": "Solo con código/enlace",
-    "createRouteVisibilityUnlistedDesc": "No aparece en el buscador",
-    "createRouteVisibilityPrivate": "Privada",
-    "createRouteVisibilityPrivateDesc": "Solo tú la ves",
-    "createRouteSummaryStops": "{count} paradas",
-    "createRouteSummarySchedules": "{count} horarios",
-    "createRouteSummaryType": "Tipo: {type}",
-    "createRouteProposeCommunity": "Proponer como ruta comunitaria oficial",
-    "createRoutePublish": "Publicar ruta",
-    "createRouteSaveDraft": "Guardar borrador",
-    "myRoutesTitle": "Mis rutas",
-    "myRoutesEmpty": "Aún no has creado ninguna ruta",
-    "myRoutesCreate": "Crear primera ruta",
-    "myRoutesDeleteConfirm": "¿Eliminar esta ruta?",
-    "myRoutesDeleteConfirmDesc": "Esta acción no se puede deshacer",
-    "communityTitle": "Comunidad",
-    "communitySearchHint": "Buscar rutas...",
-    "communityEmpty": "No se encontraron rutas",
-    "communityFilterAll": "Todas",
-    "communityFilterUrban": "Urbano",
-    "communityFilterInterurban": "Interurbano",
-    "communityFilterLongDistance": "Larga distancia",
-    "communityRouteStops": "Paradas",
-    "communityRouteSchedules": "Horarios",
-    "communityRouteVotes": "Votos",
-    "communityRouteViews": "Visitas",
-    "communityRouteVote": "Votar",
-    "communityRouteUnvote": "Quitar voto",
-    "communityRouteReport": "Reportar",
-    "communityRouteShare": "Compartir",
-    "shareRouteTitle": "Compartir ruta",
-    "shareRouteCode": "Código",
-    "shareRouteCodeCopy": "Copiar código",
-    "shareRouteLink": "Enlace público",
-    "shareRouteLinkCopy": "Copiar enlace",
-    "shareRouteWhatsApp": "WhatsApp",
-    "shareRouteEmail": "Email",
-    "shareRouteQr": "Código QR",
-    "reportRouteTitle": "Reportar ruta",
-    "reportRouteReason": "Motivo",
-    "reportRouteReasonSpam": "Spam",
-    "reportRouteReasonInappropriate": "Contenido inapropiado",
-    "reportRouteReasonWrongData": "Datos incorrectos",
-    "reportRouteReasonDuplicated": "Duplicada",
-    "reportRouteReasonOther": "Otro",
-    "reportRouteDescription": "Descripción (opcional)",
-    "reportRouteSubmit": "Enviar reporte",
-    "reportRouteSuccess": "Reporte enviado correctamente",
-    "adminModerationTitle": "Moderación de rutas",
-    "adminModerationPending": "Pendientes",
-    "adminModerationStops": "Paradas",
-    "adminModerationApprove": "Aprobar",
-    "adminModerationReject": "Rechazar",
-    "adminModerationRejectReason": "Motivo del rechazo",
-    "adminModerationRouteApproved": "Ruta aprobada como comunitaria",
-    "adminModerationRouteRejected": "Ruta rechazada",
-    "adminModerationStopApproved": "Parada promovida a oficial",
-    "adminModerationStopRejected": "Parada rechazada",
-    "routeStatusDraft": "Borrador",
-    "routeStatusPublished": "Publicada",
-    "routeStatusReviewPending": "En revisión",
-    "routeStatusCommunityApproved": "Comunitaria",
-    "routeStatusRejected": "Rechazada",
-    "routeStatusReported": "Reportada",
-    "visibilityPublic": "Pública",
-    "visibilityUnlisted": "No listada",
-    "visibilityPrivate": "Privada"
+  "createRouteTitle": "Crear ruta",
+  "createRouteEditTitle": "Editar ruta",
+  "createRouteStepBasic": "Info básica",
+  "createRouteStepStops": "Paradas",
+  "createRouteStepSchedules": "Horarios",
+  "createRouteStepVisibility": "Visibilidad",
+  "createRouteStepSummary": "Resumen",
+  "createRouteNameLabel": "Nombre de la ruta",
+  "createRouteNameHint": "Ej: Ruta de la playa",
+  "createRouteDescriptionLabel": "Descripción (opcional)",
+  "createRouteColorLabel": "Color",
+  "createRouteServiceTypeLabel": "Tipo de servicio",
+  "createRouteServiceUrban": "Urbano",
+  "createRouteServiceInterurban": "Interurbano",
+  "createRouteServiceLongDistance": "Larga distancia",
+  "createRouteServiceSchool": "Escolar",
+  "createRouteServiceOnDemand": "A demanda",
+  "createRouteServiceCustom": "Custom",
+  "createRouteStopAdd": "Añadir parada",
+  "createRouteStopSearch": "Buscar parada oficial",
+  "createRouteStopNew": "Crear parada nueva",
+  "createRouteStopName": "Nombre",
+  "createRouteStopLat": "Latitud",
+  "createRouteStopLng": "Longitud",
+  "createRouteStopType": "Tipo de parada",
+  "createRouteStopSuggest": "Sugerir como parada oficial",
+  "createRouteStopDelete": "Eliminar parada",
+  "createRouteScheduleAdd": "Añadir salida",
+  "createRouteScheduleTime": "Hora de salida",
+  "createRouteScheduleDay": "Día",
+  "createRouteScheduleWeekday": "L-V",
+  "createRouteScheduleSaturday": "Sábado",
+  "createRouteScheduleSunday": "Domingo",
+  "createRouteScheduleHoliday": "Festivo",
+  "createRouteScheduleSummer": "Verano",
+  "createRouteScheduleWinter": "Invierno",
+  "createRouteScheduleEveryDay": "Todos los días",
+  "createRouteScheduleFrequency": "Generar frecuencia",
+  "createRouteScheduleEvery": "Cada X minutos",
+  "createRouteScheduleFrom": "Desde",
+  "createRouteScheduleTo": "Hasta",
+  "createRouteVisibilityPublic": "Pública",
+  "createRouteVisibilityPublicDesc": "Visible en el buscador global",
+  "createRouteVisibilityUnlisted": "Solo con código/enlace",
+  "createRouteVisibilityUnlistedDesc": "No aparece en el buscador",
+  "createRouteVisibilityPrivate": "Privada",
+  "createRouteVisibilityPrivateDesc": "Solo tú la ves",
+  "createRouteSummaryStops": "{count} paradas",
+  "createRouteSummarySchedules": "{count} horarios",
+  "createRouteSummaryType": "Tipo: {type}",
+  "createRouteProposeCommunity": "Proponer como ruta comunitaria oficial",
+  "createRoutePublish": "Publicar ruta",
+  "createRouteSaveDraft": "Guardar borrador",
+  "myRoutesTitle": "Mis rutas",
+  "myRoutesEmpty": "Aún no has creado ninguna ruta",
+  "myRoutesCreate": "Crear primera ruta",
+  "myRoutesDeleteConfirm": "¿Eliminar esta ruta?",
+  "myRoutesDeleteConfirmDesc": "Esta acción no se puede deshacer",
+  "communityTitle": "Comunidad",
+  "communitySearchHint": "Buscar rutas...",
+  "communityEmpty": "No se encontraron rutas",
+  "communityFilterAll": "Todas",
+  "communityFilterUrban": "Urbano",
+  "communityFilterInterurban": "Interurbano",
+  "communityFilterLongDistance": "Larga distancia",
+  "communityRouteStops": "Paradas",
+  "communityRouteSchedules": "Horarios",
+  "communityRouteVotes": "Votos",
+  "communityRouteViews": "Visitas",
+  "communityRouteVote": "Votar",
+  "communityRouteUnvote": "Quitar voto",
+  "communityRouteReport": "Reportar",
+  "communityRouteShare": "Compartir",
+  "shareRouteTitle": "Compartir ruta",
+  "shareRouteCode": "Código",
+  "shareRouteCodeCopy": "Copiar código",
+  "shareRouteLink": "Enlace público",
+  "shareRouteLinkCopy": "Copiar enlace",
+  "shareRouteWhatsApp": "WhatsApp",
+  "shareRouteEmail": "Email",
+  "shareRouteQr": "Código QR",
+  "reportRouteTitle": "Reportar ruta",
+  "reportRouteReason": "Motivo",
+  "reportRouteReasonSpam": "Spam",
+  "reportRouteReasonInappropriate": "Contenido inapropiado",
+  "reportRouteReasonWrongData": "Datos incorrectos",
+  "reportRouteReasonDuplicated": "Duplicada",
+  "reportRouteReasonOther": "Otro",
+  "reportRouteDescription": "Descripción (opcional)",
+  "reportRouteSubmit": "Enviar reporte",
+  "reportRouteSuccess": "Reporte enviado correctamente",
+  "adminModerationTitle": "Moderación de rutas",
+  "adminModerationPending": "Pendientes",
+  "adminModerationStops": "Paradas",
+  "adminModerationApprove": "Aprobar",
+  "adminModerationReject": "Rechazar",
+  "adminModerationRejectReason": "Motivo del rechazo",
+  "adminModerationRouteApproved": "Ruta aprobada como comunitaria",
+  "adminModerationRouteRejected": "Ruta rechazada",
+  "adminModerationStopApproved": "Parada promovida a oficial",
+  "adminModerationStopRejected": "Parada rechazada",
+  "routeStatusDraft": "Borrador",
+  "routeStatusPublished": "Publicada",
+  "routeStatusReviewPending": "En revisión",
+  "routeStatusCommunityApproved": "Comunitaria",
+  "routeStatusRejected": "Rechazada",
+  "routeStatusReported": "Reportada",
+  "visibilityPublic": "Pública",
+  "visibilityUnlisted": "No listada",
+  "visibilityPrivate": "Privada"
 }

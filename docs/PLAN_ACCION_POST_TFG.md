@@ -126,9 +126,14 @@ no existe. El plan prioriza recuperar la base (P0) antes de seguir añadiendo.
 - [ ] **P1.9 — Completar el pipeline FCM**: subir la service account de
   Firebase a los secrets de la Edge Function (`docs/FCM_SETUP.md` —
   pendiente conocido; sin esto los triggers de push del backend no envían).
-- [ ] **P1.10 — SMTP propio + reactivar verificación de email** (hoy
-  "Confirm email" está OFF y el código la bypassa). Pasos exactos ya
-  escritos en `docs/SUPABASE_SETUP.md`. Resend/Brevo tienen tier gratuito.
+- [ ] **P1.10 — SMTP propio + reactivar verificación de email.** ⏸️ DIFERIDO
+  (decisión 2026-06-12): debe ser gratuito y sin coste. El SMTP por defecto
+  de Supabase ya NO sirve (desde 2024 solo entrega a emails del equipo del
+  proyecto), y cualquier proveedor gratuito (Brevo 300/día, Resend 100/día)
+  exige crear una cuenta — acción del dueño (~5 min), no automatizable.
+  Mientras tanto la verificación sigue OFF y el login inmediato funciona.
+  Cuando exista la cuenta: pegar credenciales SMTP en Supabase → Auth →
+  SMTP Settings y seguir `docs/SUPABASE_SETUP.md` para reactivar.
 
 ---
 
@@ -186,12 +191,17 @@ documentados en P2.4.
   محطة = parada). ARB 868/868/868, `flutter gen-l10n` regenerado y el test
   de paridad `test/smoke/arb_parity_test.dart` en verde. Pendiente ideal:
   revisión por hablante nativo (bloqueador externo B5 histórico).
-- [ ] **P3.2 — Migrar los strings ES hardcodeados a ARB.** 116 ficheros
-  afectados; los peores: `legal_screen` (26), `route_editor_screen` (20),
-  `enums.dart` (20), `invitation_codes_screen` (18), `widgets_config_screen`
-  (17), `admin_operators_screen` (17), `admin_geo_alerts_screen` (17).
-  Sugerencia: hacerlo por feature y añadir un check de CI (grep de
-  caracteres acentuados en literales) para que no vuelva a crecer.
+- [ ] **P3.2 — Migrar los strings ES hardcodeados a ARB.** 🔄 EN CURSO.
+  Hecho 2026-06-12: **ratchet anti-regresión en CI**
+  (`tool/check_i18n_ratchet.sh` + `tool/i18n_baseline.txt`, paso en el job
+  Analyze) — la CI falla si el recuento de líneas con literales ES supera
+  la base; al migrar se consolida con `--update`. Primer fichero migrado
+  como patrón: `widgets_config_screen.dart` (23 claves nuevas ES/EN/AR,
+  reutilizando las `widgetsConfig*` existentes). Base: 529 → **512**.
+  Quedan los peores: `legal_screen` (26), `route_editor_screen` (21),
+  `enums.dart` (20), `invitation_codes_screen` (18),
+  `admin_operators_screen` (18), `admin_geo_alerts_screen` (17) — hacerlo
+  por feature siguiendo el patrón del commit de widgets_config.
 - [ ] **P3.3 — Pasada real con TalkBack** en dispositivo físico + acta.
   Sigue siendo el bloqueador para defender "WCAG 2.2 AA" (deuda histórica).
 - [ ] **P3.4 — RTL en runtime:** probar el locale árabe en dispositivo
@@ -263,17 +273,18 @@ documentados en P2.4.
   PR de release-please `1.13.0`, y la web anuncia `v1.12.4`. Decidir una
   fuente de verdad (release-please ya gestiona pubspec + CHANGELOG) y que
   la web lea esa versión en build en vez de mantenerla a mano.
-- [ ] **P6.4 — Keystore de release + Play App Signing** si se quiere
-  publicar en Play Store (bloqueador histórico B1; ~30 min + secrets en CI).
+- [ ] **P6.4 — Keystore de release + Play App Signing.** ⏸️ DIFERIDO
+  (decisión 2026-06-12): sin Play Store ni gastos por ahora; el APK con
+  firma debug es suficiente para demo/descarga directa.
 
 ---
 
 ## P7 · Web (astro/ y presentation/) — ~2-3 días
 
-- [ ] **P7.1 — Decidir el destino de `astro/`.** El sitio de producto es
-  solo local (la doc lo admite). O se despliega de verdad (Vercel/Netlify/
-  VPS con el adapter node ya configurado) o se documenta como demo local y
-  se deja de invertir en él. Ahora mismo es trabajo que nadie ve.
+- [x] **P7.1 — Destino de `astro/`.** ✅ Decisión del dueño (2026-06-12):
+  **se queda como demo local** mientras el proyecto no genere gastos. No se
+  invierte en despliegue; revisar cuando el proyecto sea "totalmente
+  funcional".
 - [ ] **P7.2 — Sacar el APK de `astro/public/downloads/` (92 MB).**
   Publicarlo como asset de **GitHub Releases** (encaja con release-please)
   y enlazar desde la web; el fichero actual es manual, pesa y no se

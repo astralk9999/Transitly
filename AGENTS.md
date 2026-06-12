@@ -25,7 +25,7 @@ flutter run --dart-define-from-file=dart_defines.json  # Necesita dart-defines (
 
 ```bash
 flutter analyze          # 0 issues — no commits con warnings
-flutter test             # 175 tests
+flutter test             # suite completa (679 tests a 2026-06-12)
 flutter test --coverage  # Escribe coverage/lcov.info
 ```
 
@@ -201,7 +201,7 @@ Formato: `[Tag] mensaje (key=value)`. Ejemplo: `[NfcCardService] read failed (se
 ## Supabase
 
 - Proyecto remoto: `mmzahxtiaurkgtmtehxk` (https://mmzahxtiaurkgtmtehxk.supabase.co)
-- 13 migraciones SQL en `supabase/migrations/`. Aplicar con `supabase db push`.
+- Migraciones SQL en `supabase/migrations/` (60 a 2026-06-12). Aplicar con `supabase db push`.
 - MCP supabase (si configurado) permite `apply_migration` + `execute_sql` vía `@supabase/mcp-server-supabase`.
 - Nunca commitear `.env` ni `.mcp.json`. `.mcp.json.example` como plantilla.
 - RLS default-deny activo (recuento exacto de tablas/policies a re-verificar
@@ -270,8 +270,8 @@ Esta excepción está documentada y es intencional (no es deuda pendiente).
 
 ## Git
 
-- Sin ramas de feature. Todo sobre `master` con conventional commits.
-- No hay CI, no hay pre-commit. Cada commit debe tener `flutter analyze` limpio y tests verdes.
+- `master` está CONGELADA (corrección del TFG en curso). Todo el trabajo va a `post-tfg` (o ramas feature que mergean ahí) con conventional commits.
+- CI en GitHub Actions (`ci.yml`: analyze, test+coverage, build web, build APK, Semgrep, Gitleaks; corre en master y post-tfg) + lefthook pre-commit. Cada commit debe tener `flutter analyze` limpio y tests verdes.
 - Commits atómicos por item/fase. No amend sobre commits ya pusheados.
 - `.env`, `.mcp.json`, `.supabase/` en `.gitignore`.
 

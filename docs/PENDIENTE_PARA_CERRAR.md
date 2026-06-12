@@ -1,5 +1,11 @@
 # Transitly — Pendiente para el próximo ciclo (todo, en un sitio)
 
+> **⚠️ DOCUMENTO HISTÓRICO (congelado a mayo 2026).** Las métricas y
+> pendientes de este documento describen el estado pre-entrega del TFG y NO
+> reflejan el código actual. El plan vivo post-TFG, con la auditoría del
+> 2026-06-12 y el estado real de cada ítem, es
+> [`docs/PLAN_ACCION_POST_TFG.md`](./PLAN_ACCION_POST_TFG.md).
+
 > ## 🏁 FINAL SESSION CLOSE — 2026-05-22
 >
 > **Repositorio cerrado.** Todos los ciclos planificados completados.

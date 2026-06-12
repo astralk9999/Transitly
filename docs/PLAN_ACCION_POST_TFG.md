@@ -180,9 +180,12 @@ documentados en P2.4.
 
 > La historia de i18n/a11y era de las más fuertes del TFG y junio la erosionó.
 
-- [ ] **P3.1 — Re-sincronizar el árabe:** faltan **110 claves** en
-  `app_ar.arb` (758 vs 868). Mientras no se traduzcan, l10n hace fallback
-  al template ES en runtime para esas claves.
+- [x] **P3.1 — Re-sincronizar el árabe.** ✅ 2026-06-12: traducidas las 110
+  claves que faltaban (editor de rutas, comunidad, compartir, moderación,
+  estados) con la terminología existente (خط = línea, مسار = ruta,
+  محطة = parada). ARB 868/868/868, `flutter gen-l10n` regenerado y el test
+  de paridad `test/smoke/arb_parity_test.dart` en verde. Pendiente ideal:
+  revisión por hablante nativo (bloqueador externo B5 histórico).
 - [ ] **P3.2 — Migrar los strings ES hardcodeados a ARB.** 116 ficheros
   afectados; los peores: `legal_screen` (26), `route_editor_screen` (20),
   `enums.dart` (20), `invitation_codes_screen` (18), `widgets_config_screen`
@@ -231,8 +234,10 @@ documentados en P2.4.
   features.
 - [ ] **P5.2 — Limpiar código muerto** detectado por analyze (campos,
   elementos y `_showManualAddStopModal` sin referencias, imports muertos).
-- [ ] **P5.3 — Borrar las ~45 ramas ya mergeadas** (locales y remotas
-  `fix/*`, `review/*`, `update-review`) — ruido puro en el repo.
+- [x] **P5.3 — Borrar ramas mergeadas.** ✅ 2026-06-12: eliminadas 41
+  locales y 40 remotas (todas verificadas `--merged master`). Quedan:
+  master, post-tfg, gh-pages, release-please y las dependabot/* de PRs
+  abiertos.
 - [ ] **P5.4 — Revisar deuda menor arrastrada** de `docs/PENDIENTE_PARA_CERRAR.md`
   §7 que siga aplicando (acceso directo a Hive en `storage_section`, etc.).
 
@@ -313,12 +318,11 @@ documentados en P2.4.
 
 ## P9 · Documentación y gobernanza — ~1 día
 
-- [ ] **P9.1 — Actualizar los docs de auditoría desfasados** o marcarlos
-  como históricos: `PENDIENTES.md`, `PENDIENTE_PARA_CERRAR.md`,
-  `PROPUESTAS_FUTURAS.md`, `00_MAESTRO.md` y `AGENTS.md` citan métricas de
-  mayo (304 tests, 14 migraciones, 4 EF, "CI verde") que ya no son ciertas.
-  Este documento pasa a ser el plan vivo; los demás, o se actualizan o se
-  mueven a `docs/historico/`.
+- [x] **P9.1 — Docs de auditoría desfasados.** ✅ 2026-06-12: banner de
+  «DOCUMENTO HISTÓRICO» con enlace a este plan en `PENDIENTES.md`,
+  `PENDIENTE_PARA_CERRAR.md`, `PROPUESTAS_FUTURAS.md` y `00_MAESTRO.md`;
+  `AGENTS.md` corregido (suite 679, 60 migraciones, CI 6 jobs + lefthook,
+  flujo de ramas master-congelada/post-tfg).
 - [ ] **P9.2 — CHANGELOG real:** el CHANGELOG se quedó en 1.0.0 mientras la
   web anuncia 1.12.x. Resolver junto con P6.3.
 - [ ] **P9.3 — Definir el flujo de la rama `post-tfg`:** features en ramas

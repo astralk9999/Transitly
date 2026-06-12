@@ -1,5 +1,11 @@
 # Pendientes
 
+> **⚠️ DOCUMENTO HISTÓRICO (congelado a mayo 2026).** Las métricas y
+> pendientes de este documento describen el estado pre-entrega del TFG y NO
+> reflejan el código actual. El plan vivo post-TFG, con la auditoría del
+> 2026-06-12 y el estado real de cada ítem, es
+> [`docs/PLAN_ACCION_POST_TFG.md`](./PLAN_ACCION_POST_TFG.md).
+
 > **Origen.** Lista derivada de `docs/historico/AUDIT_2026_04.md` §4 "Propuesta de cierre". Cada item conserva su numeración del audit (`1.x` para puntos a medias, `3.x` para riesgos). Cuando el audit se actualice, este documento se sincroniza.
 >
 > **Convención de buckets.**

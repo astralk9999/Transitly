@@ -2474,339 +2474,339 @@ class AppLocalizationsAr extends AppLocalizations {
   String get appearanceDeletePaletteConfirm => 'حذف هذه اللوحة؟';
 
   @override
-  String get createRouteTitle => 'Crear ruta';
+  String get createRouteTitle => 'إنشاء مسار';
 
   @override
-  String get createRouteEditTitle => 'Editar ruta';
+  String get createRouteEditTitle => 'تعديل المسار';
 
   @override
-  String get createRouteStepBasic => 'Info básica';
+  String get createRouteStepBasic => 'معلومات أساسية';
 
   @override
-  String get createRouteStepStops => 'Paradas';
+  String get createRouteStepStops => 'المحطات';
 
   @override
-  String get createRouteStepSchedules => 'Horarios';
+  String get createRouteStepSchedules => 'الجداول';
 
   @override
-  String get createRouteStepVisibility => 'Visibilidad';
+  String get createRouteStepVisibility => 'الظهور';
 
   @override
-  String get createRouteStepSummary => 'Resumen';
+  String get createRouteStepSummary => 'الملخص';
 
   @override
-  String get createRouteNameLabel => 'Nombre de la ruta';
+  String get createRouteNameLabel => 'اسم المسار';
 
   @override
-  String get createRouteNameHint => 'Ej: Ruta de la playa';
+  String get createRouteNameHint => 'مثال: مسار الشاطئ';
 
   @override
-  String get createRouteDescriptionLabel => 'Descripción (opcional)';
+  String get createRouteDescriptionLabel => 'الوصف (اختياري)';
 
   @override
-  String get createRouteColorLabel => 'Color';
+  String get createRouteColorLabel => 'اللون';
 
   @override
-  String get createRouteServiceTypeLabel => 'Tipo de servicio';
+  String get createRouteServiceTypeLabel => 'نوع الخدمة';
 
   @override
-  String get createRouteServiceUrban => 'Urbano';
+  String get createRouteServiceUrban => 'حضري';
 
   @override
-  String get createRouteServiceInterurban => 'Interurbano';
+  String get createRouteServiceInterurban => 'بين المدن';
 
   @override
-  String get createRouteServiceLongDistance => 'Larga distancia';
+  String get createRouteServiceLongDistance => 'مسافات طويلة';
 
   @override
-  String get createRouteServiceSchool => 'Escolar';
+  String get createRouteServiceSchool => 'مدرسي';
 
   @override
-  String get createRouteServiceOnDemand => 'A demanda';
+  String get createRouteServiceOnDemand => 'عند الطلب';
 
   @override
-  String get createRouteServiceCustom => 'Custom';
+  String get createRouteServiceCustom => 'مخصص';
 
   @override
-  String get createRouteStopAdd => 'Añadir parada';
+  String get createRouteStopAdd => 'إضافة محطة';
 
   @override
-  String get createRouteStopSearch => 'Buscar parada oficial';
+  String get createRouteStopSearch => 'البحث عن محطة رسمية';
 
   @override
-  String get createRouteStopNew => 'Crear parada nueva';
+  String get createRouteStopNew => 'إنشاء محطة جديدة';
 
   @override
-  String get createRouteStopName => 'Nombre';
+  String get createRouteStopName => 'الاسم';
 
   @override
-  String get createRouteStopLat => 'Latitud';
+  String get createRouteStopLat => 'خط العرض';
 
   @override
-  String get createRouteStopLng => 'Longitud';
+  String get createRouteStopLng => 'خط الطول';
 
   @override
-  String get createRouteStopType => 'Tipo de parada';
+  String get createRouteStopType => 'نوع المحطة';
 
   @override
-  String get createRouteStopSuggest => 'Sugerir como parada oficial';
+  String get createRouteStopSuggest => 'اقتراحها كمحطة رسمية';
 
   @override
-  String get createRouteStopDelete => 'Eliminar parada';
+  String get createRouteStopDelete => 'حذف المحطة';
 
   @override
-  String get createRouteScheduleAdd => 'Añadir salida';
+  String get createRouteScheduleAdd => 'إضافة رحلة';
 
   @override
-  String get createRouteScheduleTime => 'Hora de salida';
+  String get createRouteScheduleTime => 'وقت الانطلاق';
 
   @override
-  String get createRouteScheduleDay => 'Día';
+  String get createRouteScheduleDay => 'اليوم';
 
   @override
-  String get createRouteScheduleWeekday => 'L-V';
+  String get createRouteScheduleWeekday => 'الاثنين-الجمعة';
 
   @override
-  String get createRouteScheduleSaturday => 'Sábado';
+  String get createRouteScheduleSaturday => 'السبت';
 
   @override
-  String get createRouteScheduleSunday => 'Domingo';
+  String get createRouteScheduleSunday => 'الأحد';
 
   @override
-  String get createRouteScheduleHoliday => 'Festivo';
+  String get createRouteScheduleHoliday => 'عطلة رسمية';
 
   @override
-  String get createRouteScheduleSummer => 'Verano';
+  String get createRouteScheduleSummer => 'الصيف';
 
   @override
-  String get createRouteScheduleWinter => 'Invierno';
+  String get createRouteScheduleWinter => 'الشتاء';
 
   @override
-  String get createRouteScheduleEveryDay => 'Todos los días';
+  String get createRouteScheduleEveryDay => 'كل الأيام';
 
   @override
-  String get createRouteScheduleFrequency => 'Generar frecuencia';
+  String get createRouteScheduleFrequency => 'توليد تردد';
 
   @override
-  String get createRouteScheduleEvery => 'Cada X minutos';
+  String get createRouteScheduleEvery => 'كل X دقائق';
 
   @override
-  String get createRouteScheduleFrom => 'Desde';
+  String get createRouteScheduleFrom => 'من';
 
   @override
-  String get createRouteScheduleTo => 'Hasta';
+  String get createRouteScheduleTo => 'إلى';
 
   @override
-  String get createRouteVisibilityPublic => 'Pública';
+  String get createRouteVisibilityPublic => 'عامة';
 
   @override
-  String get createRouteVisibilityPublicDesc => 'Visible en el buscador global';
+  String get createRouteVisibilityPublicDesc => 'تظهر في البحث العام';
 
   @override
-  String get createRouteVisibilityUnlisted => 'Solo con código/enlace';
+  String get createRouteVisibilityUnlisted => 'بالرمز أو الرابط فقط';
 
   @override
-  String get createRouteVisibilityUnlistedDesc => 'No aparece en el buscador';
+  String get createRouteVisibilityUnlistedDesc => 'لا تظهر في البحث';
 
   @override
-  String get createRouteVisibilityPrivate => 'Privada';
+  String get createRouteVisibilityPrivate => 'خاصة';
 
   @override
-  String get createRouteVisibilityPrivateDesc => 'Solo tú la ves';
+  String get createRouteVisibilityPrivateDesc => 'أنت فقط من يراها';
 
   @override
   String createRouteSummaryStops(Object count) {
-    return '$count paradas';
+    return '$count محطات';
   }
 
   @override
   String createRouteSummarySchedules(Object count) {
-    return '$count horarios';
+    return '$count جداول';
   }
 
   @override
   String createRouteSummaryType(Object type) {
-    return 'Tipo: $type';
+    return 'النوع: $type';
   }
 
   @override
-  String get createRouteProposeCommunity =>
-      'Proponer como ruta comunitaria oficial';
+  String get createRouteProposeCommunity => 'اقتراحه كمسار مجتمعي رسمي';
 
   @override
-  String get createRoutePublish => 'Publicar ruta';
+  String get createRoutePublish => 'نشر المسار';
 
   @override
-  String get createRouteSaveDraft => 'Guardar borrador';
+  String get createRouteSaveDraft => 'حفظ كمسودة';
 
   @override
-  String get myRoutesTitle => 'Mis rutas';
+  String get myRoutesTitle => 'مساراتي';
 
   @override
-  String get myRoutesEmpty => 'Aún no has creado ninguna ruta';
+  String get myRoutesEmpty => 'لم تُنشئ أي مسار بعد';
 
   @override
-  String get myRoutesCreate => 'Crear primera ruta';
+  String get myRoutesCreate => 'إنشاء أول مسار';
 
   @override
-  String get myRoutesDeleteConfirm => '¿Eliminar esta ruta?';
+  String get myRoutesDeleteConfirm => 'هل تريد حذف هذا المسار؟';
 
   @override
-  String get myRoutesDeleteConfirmDesc => 'Esta acción no se puede deshacer';
+  String get myRoutesDeleteConfirmDesc => 'لا يمكن التراجع عن هذا الإجراء';
 
   @override
-  String get communityTitle => 'Comunidad';
+  String get communityTitle => 'المجتمع';
 
   @override
-  String get communitySearchHint => 'Buscar rutas...';
+  String get communitySearchHint => 'البحث عن مسارات...';
 
   @override
-  String get communityEmpty => 'No se encontraron rutas';
+  String get communityEmpty => 'لم يتم العثور على مسارات';
 
   @override
-  String get communityFilterAll => 'Todas';
+  String get communityFilterAll => 'الكل';
 
   @override
-  String get communityFilterUrban => 'Urbano';
+  String get communityFilterUrban => 'حضري';
 
   @override
-  String get communityFilterInterurban => 'Interurbano';
+  String get communityFilterInterurban => 'بين المدن';
 
   @override
-  String get communityFilterLongDistance => 'Larga distancia';
+  String get communityFilterLongDistance => 'مسافات طويلة';
 
   @override
-  String get communityRouteStops => 'Paradas';
+  String get communityRouteStops => 'المحطات';
 
   @override
-  String get communityRouteSchedules => 'Horarios';
+  String get communityRouteSchedules => 'الجداول';
 
   @override
-  String get communityRouteVotes => 'Votos';
+  String get communityRouteVotes => 'الأصوات';
 
   @override
-  String get communityRouteViews => 'Visitas';
+  String get communityRouteViews => 'المشاهدات';
 
   @override
-  String get communityRouteVote => 'Votar';
+  String get communityRouteVote => 'تصويت';
 
   @override
-  String get communityRouteUnvote => 'Quitar voto';
+  String get communityRouteUnvote => 'إزالة التصويت';
 
   @override
-  String get communityRouteReport => 'Reportar';
+  String get communityRouteReport => 'إبلاغ';
 
   @override
-  String get communityRouteShare => 'Compartir';
+  String get communityRouteShare => 'مشاركة';
 
   @override
-  String get shareRouteTitle => 'Compartir ruta';
+  String get shareRouteTitle => 'مشاركة المسار';
 
   @override
-  String get shareRouteCode => 'Código';
+  String get shareRouteCode => 'الرمز';
 
   @override
-  String get shareRouteCodeCopy => 'Copiar código';
+  String get shareRouteCodeCopy => 'نسخ الرمز';
 
   @override
-  String get shareRouteLink => 'Enlace público';
+  String get shareRouteLink => 'رابط عام';
 
   @override
-  String get shareRouteLinkCopy => 'Copiar enlace';
+  String get shareRouteLinkCopy => 'نسخ الرابط';
 
   @override
-  String get shareRouteWhatsApp => 'WhatsApp';
+  String get shareRouteWhatsApp => 'واتساب';
 
   @override
-  String get shareRouteEmail => 'Email';
+  String get shareRouteEmail => 'البريد الإلكتروني';
 
   @override
-  String get shareRouteQr => 'Código QR';
+  String get shareRouteQr => 'رمز QR';
 
   @override
-  String get reportRouteTitle => 'Reportar ruta';
+  String get reportRouteTitle => 'الإبلاغ عن المسار';
 
   @override
-  String get reportRouteReason => 'Motivo';
+  String get reportRouteReason => 'السبب';
 
   @override
-  String get reportRouteReasonSpam => 'Spam';
+  String get reportRouteReasonSpam => 'بريد مزعج';
 
   @override
-  String get reportRouteReasonInappropriate => 'Contenido inapropiado';
+  String get reportRouteReasonInappropriate => 'محتوى غير لائق';
 
   @override
-  String get reportRouteReasonWrongData => 'Datos incorrectos';
+  String get reportRouteReasonWrongData => 'بيانات غير صحيحة';
 
   @override
-  String get reportRouteReasonDuplicated => 'Duplicada';
+  String get reportRouteReasonDuplicated => 'مسار مكرر';
 
   @override
-  String get reportRouteReasonOther => 'Otro';
+  String get reportRouteReasonOther => 'سبب آخر';
 
   @override
-  String get reportRouteDescription => 'Descripción (opcional)';
+  String get reportRouteDescription => 'الوصف (اختياري)';
 
   @override
-  String get reportRouteSubmit => 'Enviar reporte';
+  String get reportRouteSubmit => 'إرسال البلاغ';
 
   @override
-  String get reportRouteSuccess => 'Reporte enviado correctamente';
+  String get reportRouteSuccess => 'تم إرسال البلاغ بنجاح';
 
   @override
-  String get adminModerationTitle => 'Moderación de rutas';
+  String get adminModerationTitle => 'الإشراف على المسارات';
 
   @override
-  String get adminModerationPending => 'Pendientes';
+  String get adminModerationPending => 'قيد الانتظار';
 
   @override
-  String get adminModerationStops => 'Paradas';
+  String get adminModerationStops => 'المحطات';
 
   @override
-  String get adminModerationApprove => 'Aprobar';
+  String get adminModerationApprove => 'موافقة';
 
   @override
-  String get adminModerationReject => 'Rechazar';
+  String get adminModerationReject => 'رفض';
 
   @override
-  String get adminModerationRejectReason => 'Motivo del rechazo';
+  String get adminModerationRejectReason => 'سبب الرفض';
 
   @override
-  String get adminModerationRouteApproved => 'Ruta aprobada como comunitaria';
+  String get adminModerationRouteApproved =>
+      'تمت الموافقة على المسار كمسار مجتمعي';
 
   @override
-  String get adminModerationRouteRejected => 'Ruta rechazada';
+  String get adminModerationRouteRejected => 'تم رفض المسار';
 
   @override
-  String get adminModerationStopApproved => 'Parada promovida a oficial';
+  String get adminModerationStopApproved => 'تمت ترقية المحطة إلى محطة رسمية';
 
   @override
-  String get adminModerationStopRejected => 'Parada rechazada';
+  String get adminModerationStopRejected => 'تم رفض المحطة';
 
   @override
-  String get routeStatusDraft => 'Borrador';
+  String get routeStatusDraft => 'مسودة';
 
   @override
-  String get routeStatusPublished => 'Publicada';
+  String get routeStatusPublished => 'منشور';
 
   @override
-  String get routeStatusReviewPending => 'En revisión';
+  String get routeStatusReviewPending => 'قيد المراجعة';
 
   @override
-  String get routeStatusCommunityApproved => 'Comunitaria';
+  String get routeStatusCommunityApproved => 'مسار مجتمعي';
 
   @override
-  String get routeStatusRejected => 'Rechazada';
+  String get routeStatusRejected => 'مرفوض';
 
   @override
-  String get routeStatusReported => 'Reportada';
+  String get routeStatusReported => 'مُبلغ عنه';
 
   @override
-  String get visibilityPublic => 'Pública';
+  String get visibilityPublic => 'عامة';
 
   @override
-  String get visibilityUnlisted => 'No listada';
+  String get visibilityUnlisted => 'غير مدرجة';
 
   @override
-  String get visibilityPrivate => 'Privada';
+  String get visibilityPrivate => 'خاصة';
 }

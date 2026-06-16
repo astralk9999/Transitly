@@ -85,7 +85,7 @@ jobs:
 
       - name: Upload coverage artifact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: lcov
           path: coverage/lcov.info
@@ -216,14 +216,14 @@ jobs:
           echo "All APKs within ${BUDGET_MB} MB budget"
 
       - name: Upload debug info (obfuscation symbols)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: debug-info
           path: build/debug-info/
           if-no-files-found: warn
 
       - name: Upload APK artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: android-apk
           path: build/app/outputs/flutter-apk/*.apk
